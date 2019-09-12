@@ -1,0 +1,37 @@
+---
+- debug: msg='START common/toplevel.yaml on connection={{ ansible_connection }}'
+
+- name: setup
+  cisco.nxos.nxos_config:
+    lines: hostname switch
+    match: none
+    provider: "{{ connection }}"
+
+- name: configure top level command
+  cisco.nxos.nxos_config:
+    lines: hostname foo
+    provider: "{{ connection }}"
+  register: result
+
+- assert:
+    that:
+      - "result.changed == true"
+      - "'hostname foo' in result.updates"
+
+- name: configure top level command idempotent check
+  cisco.nxos.nxos_config:
+    lines: hostname foo
+    provider: "{{ connection }}"
+  register: result
+
+- assert:
+    that:
+      - "result.changed == false"
+
+- name: teardown
+  cisco.nxos.nxos_config:
+    lines: hostname switch
+    match: none
+    provider: "{{ connection }}"
+
+- debug: msg='END common/toplevel.yaml on connection={{ ansible_connection }}'
