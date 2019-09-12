@@ -1,0 +1,39 @@
+---
+- debug: msg="START common/save.yaml on connection={{ ansible_connection }}"
+
+# Select interface for test
+- set_fact: intname="{{ nxos_int1 }}"
+
+- name: setup
+  cisco.nxos.nxos_config:
+    commands:
+      - no description
+      - no shutdown
+    parents:
+      - "interface {{ intname }}"
+    match: none
+    provider: "{{ connection }}"
+
+- name: save config
+  cisco.nxos.nxos_config:
+    save_when: always
+    timeout: 300
+    provider: "{{ connection }}"
+  register: result
+
+- assert:
+    that:
+      - "result.changed == true"
+
+- name: save should always run
+  cisco.nxos.nxos_config:
+    save_when: always
+    timeout: 300
+    provider: "{{ connection }}"
+  register: result
+
+- assert:
+    that:
+      - "result.changed == true"
+
+- debug: msg="END common/save.yaml on connection={{ ansible_connection }}"
