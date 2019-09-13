@@ -141,6 +141,7 @@ cmds:
 """
 
 
+import re
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     NxosCmdRef,
 )
@@ -281,6 +282,23 @@ fabricpath_vlan:
 """
 
 
+def reorder_cmds(cmds):
+    """
+    There is a bug in some image versions where bfd echo-interface and
+    bfd echo-rx-interval need to be applied last for them to nvgen properly.
+    """
+    regex1 = re.compile(r"^bfd echo-interface")
+    regex2 = re.compile(r"^bfd echo-rx-interval")
+    filtered_cmds = [i for i in cmds if not regex1.match(i)]
+    filtered_cmds = [i for i in filtered_cmds if not regex2.match(i)]
+    echo_int_cmd = [i for i in cmds if regex1.match(i)]
+    echo_rx_cmd = [i for i in cmds if regex2.match(i)]
+    filtered_cmds.extend(echo_int_cmd)
+    filtered_cmds.extend(echo_rx_cmd)
+
+    return filtered_cmds
+
+
 def main():
     argument_spec = dict(
         echo_interface=dict(required=False, type="str"),
@@ -308,7 +326,7 @@ def main():
     cmd_ref = NxosCmdRef(module, BFD_CMD_REF)
     cmd_ref.get_existing()
     cmd_ref.get_playvals()
-    cmds = cmd_ref.get_proposed()
+    cmds = reorder_cmds(cmd_ref.get_proposed())
 
     result = {
         "changed": False,
