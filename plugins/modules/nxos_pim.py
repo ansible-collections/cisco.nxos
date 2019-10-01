@@ -85,7 +85,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
-    check_args,
 )
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.network.common.config import CustomNetworkConfig
@@ -166,7 +165,6 @@ def main():
         argument_spec=argument_spec, supports_check_mode=True
     )
     warnings = list()
-    check_args(module, warnings)
     result = {"changed": False, "commands": [], "warnings": warnings}
 
     params = module.params

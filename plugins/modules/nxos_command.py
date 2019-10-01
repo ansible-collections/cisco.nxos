@@ -138,7 +138,6 @@ from ansible.module_utils.network.common.utils import (
     to_lines,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    check_args,
     nxos_argument_spec,
     run_commands,
 )
@@ -186,7 +185,6 @@ def main():
 
     warnings = list()
     result = {"changed": False, "warnings": warnings}
-    check_args(module, warnings)
     commands = parse_commands(module, warnings)
     wait_for = module.params["wait_for"] or list()
 

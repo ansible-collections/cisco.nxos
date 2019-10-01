@@ -94,7 +94,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
-    check_args,
 )
 from ansible.module_utils.basic import AnsibleModule
 
@@ -259,7 +258,6 @@ def main():
     )
 
     warnings = list()
-    check_args(module, warnings)
 
     key_id = module.params["key_id"]
     md5string = module.params["md5string"]

@@ -74,7 +74,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
-    check_args,
 )
 from ansible.module_utils.basic import AnsibleModule
 
@@ -120,7 +119,6 @@ def main():
     )
 
     warnings = list()
-    check_args(module, warnings)
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     contact = module.params["contact"]

@@ -317,9 +317,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    check_args as nxos_check_args,
-)
 from ansible.module_utils.network.common.utils import to_list
 
 
@@ -420,7 +417,6 @@ def main():
     )
 
     warnings = list()
-    nxos_check_args(module, warnings)
 
     result = {"changed": False, "warnings": warnings}
 

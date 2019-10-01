@@ -143,7 +143,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
-    check_args,
 )
 
 
@@ -357,9 +356,6 @@ def main():
         required_if=required_if,
         supports_check_mode=True,
     )
-
-    warnings = list()
-    check_args(module, warnings)
 
     action = module.params["action"]
     comparison_results_file = module.params["comparison_results_file"]

@@ -154,7 +154,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
-    check_args,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_interface_type,
@@ -539,7 +538,6 @@ def main():
     )
 
     warnings = list()
-    check_args(module, warnings)
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     state = module.params["state"]

@@ -147,7 +147,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
-    check_args,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
@@ -321,7 +320,6 @@ def main():
         argument_spec=argument_spec, supports_check_mode=True
     )
     warnings = list()
-    check_args(module, warnings)
 
     cmd_ref = NxosCmdRef(module, BFD_CMD_REF)
     cmd_ref.get_existing()
