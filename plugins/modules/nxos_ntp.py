@@ -111,7 +111,6 @@ import re
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    check_args,
     load_config,
     nxos_argument_spec,
     run_commands,
@@ -345,7 +344,6 @@ def main():
     )
 
     warnings = list()
-    check_args(module, warnings)
 
     server = module.params["server"] or None
     peer = module.params["peer"] or None

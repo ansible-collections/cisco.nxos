@@ -120,7 +120,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
-    check_args,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     run_commands,
@@ -410,7 +409,6 @@ def main():
 
     warnings = list()
     result = {"changed": False, "commands": [], "warnings": warnings}
-    check_args(module, warnings)
 
     state = module.params["state"]
 

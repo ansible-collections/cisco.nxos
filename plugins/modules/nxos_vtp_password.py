@@ -107,7 +107,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
-    check_args,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
@@ -209,7 +208,6 @@ def main():
     )
 
     warnings = list()
-    check_args(module, warnings)
 
     vtp_password = module.params["vtp_password"] or None
     state = module.params["state"]
