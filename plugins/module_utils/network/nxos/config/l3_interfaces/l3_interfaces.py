@@ -24,6 +24,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
     normalize_interface,
     search_obj_in_list,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    remove_rsvd_interfaces,
+    get_interface_type,
+)
 
 
 class L3_interfaces(ConfigBase):
@@ -52,9 +56,13 @@ class L3_interfaces(ConfigBase):
         l3_interfaces_facts = facts["ansible_network_resources"].get(
             "l3_interfaces"
         )
+
         if not l3_interfaces_facts:
             return []
-        return l3_interfaces_facts
+        return remove_rsvd_interfaces(l3_interfaces_facts)
+
+    def edit_config(self, commands):
+        return self._connection.edit_config(commands)
 
     def execute_module(self):
         """ Execute the module
@@ -70,7 +78,7 @@ class L3_interfaces(ConfigBase):
         commands.extend(self.set_config(existing_l3_interfaces_facts))
         if commands:
             if not self._module.check_mode:
-                self._connection.edit_config(commands)
+                self.edit_config(commands)
             result["changed"] = True
         result["commands"] = commands
 
@@ -96,6 +104,10 @@ class L3_interfaces(ConfigBase):
         if config:
             for w in config:
                 w.update({"name": normalize_interface(w["name"])})
+                if get_interface_type(w["name"]) == "management":
+                    self._module.fail_json(
+                        msg="The 'management' interface is not allowed to be managed by this module"
+                    )
                 want.append(remove_empties(w))
         have = existing_l3_interfaces_facts
         resp = self.set_state(want, have)
