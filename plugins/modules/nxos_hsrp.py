@@ -78,7 +78,6 @@ EXAMPLES = r"""
     priority: 150
     interface: vlan10
     preempt: enabled
-    host: 68.170.147.165
 
 - name: Ensure HSRP is configured with following params on a SVI
         with clear text authentication
@@ -88,7 +87,6 @@ EXAMPLES = r"""
     priority: 150
     interface: vlan10
     preempt: enabled
-    host: 68.170.147.165
     auth_type: text
     auth_string: CISCO
 
@@ -100,7 +98,6 @@ EXAMPLES = r"""
     priority: 150
     interface: vlan10
     preempt: enabled
-    host: 68.170.147.165
     auth_type: md5
     auth_string: "0 1234"
 
@@ -112,7 +109,6 @@ EXAMPLES = r"""
     priority: 150
     interface: vlan10
     preempt: enabled
-    host: 68.170.147.165
     auth_type: md5
     auth_string: "7 1234"
 
@@ -121,7 +117,6 @@ EXAMPLES = r"""
     group: 10
     interface: vlan10
     vip: 10.1.1.1
-    host: 68.170.147.165
     state: absent
 """
 
