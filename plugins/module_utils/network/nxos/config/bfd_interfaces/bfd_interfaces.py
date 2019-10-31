@@ -64,9 +64,10 @@ class Bfd_interfaces(ConfigBase):
         warnings = list()
         cmds = list()
 
-        existing_bfd_interfaces_facts, platform = (
-            self.get_bfd_interfaces_facts()
-        )
+        (
+            existing_bfd_interfaces_facts,
+            platform,
+        ) = self.get_bfd_interfaces_facts()
         cmds.extend(self.set_config(existing_bfd_interfaces_facts, platform))
         if cmds:
             if not self._module.check_mode:
@@ -74,9 +75,10 @@ class Bfd_interfaces(ConfigBase):
             result["changed"] = True
         result["commands"] = cmds
 
-        changed_bfd_interfaces_facts, platform = (
-            self.get_bfd_interfaces_facts()
-        )
+        (
+            changed_bfd_interfaces_facts,
+            platform,
+        ) = self.get_bfd_interfaces_facts()
         result["before"] = existing_bfd_interfaces_facts
         if result["changed"]:
             result["after"] = changed_bfd_interfaces_facts
