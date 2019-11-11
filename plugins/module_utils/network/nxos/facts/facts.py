@@ -21,6 +21,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.lega
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bfd_interfaces.bfd_interfaces import (
     Bfd_interfacesFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hsrp_interfaces.hsrp_interfaces import (
+    Hsrp_interfacesFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.interfaces.interfaces import (
     InterfacesFacts,
 )
@@ -60,6 +63,7 @@ FACT_LEGACY_SUBSETS = dict(
 )
 FACT_RESOURCE_SUBSETS = dict(
     bfd_interfaces=Bfd_interfacesFacts,
+    hsrp_interfaces=Hsrp_interfacesFacts,
     lag_interfaces=Lag_interfacesFacts,
     lldp_global=Lldp_globalFacts,
     telemetry=TelemetryFacts,
