@@ -1,0 +1,9 @@
+---
+authors:
+  - Ansible Network Community (ansible-network)
+license_file: LICENSE
+name: nxos
+namespace: cisco
+readme: README.rst
+repository: https://github.com/ansible-network/ansible_collections.cisco.nxos
+version: 0.0.1
