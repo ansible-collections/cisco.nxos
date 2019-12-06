@@ -17,7 +17,6 @@
 - name: save config
   cisco.nxos.nxos_config:
     save_when: always
-    timeout: 300
     provider: "{{ connection }}"
   register: result
 
@@ -28,7 +27,6 @@
 - name: save should always run
   cisco.nxos.nxos_config:
     save_when: always
-    timeout: 300
     provider: "{{ connection }}"
   register: result
 
