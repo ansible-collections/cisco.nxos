@@ -1,22 +1,25 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_telemetry replaced sanity test"
+- debug: msg="START connection={{ ansible_connection }} nxos_telemetry replaced
+    sanity test"
 
 - set_fact: source_interface="Loopback55"
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
 - set_fact: command_list_length=27
+
 - set_fact: command_list_length=28
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
 - set_fact: dict_facts_length=6
+
 - set_fact: dict_facts_length=7
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
 - name: Setup - disable feature telemetry
-  cisco.nxos.nxos_feature: &setup_teardown
+  ignore_errors: true
+  cisco.nxos.nxos_feature: &id003
     feature: telemetry
     state: disabled
-  ignore_errors: yes
 
 - name: Setup - enable feature telemetry
   cisco.nxos.nxos_feature:
@@ -24,167 +27,156 @@
     state: enabled
 
 - name: Setup - add initial telemetry config
-  network.cli.cli_config:
-    config: |
-      telemetry
-        certificate test_cert host.example.com
-        destination-profile
-          use-vrf blue
-          use-compression gzip
-        destination-group 2
-          ip address 192.168.0.1 port 50001 protocol gRPC encoding GPB
-          ip address 192.168.0.2 port 60001 protocol gRPC encoding GPB
-        destination-group 10
-          ip address 192.168.0.1 port 50001 protocol gRPC encoding GPB
-          ip address 192.168.0.2 port 60001 protocol gRPC encoding GPB
-          ip address 192.168.1.1 port 55 protocol HTTP encoding JSON
-          ip address 192.168.1.2 port 100 protocol gRPC encoding GPB
-        destination-group 99
-        sensor-group 2
-          data-source NX-API
-          path sys/bgp/inst depth unbounded query-condition foo filter-condition foo
-        sensor-group 8
-          data-source NX-API
-          path sys/bgp depth 0 query-condition foo filter-condition foo
-        sensor-group 55
-          data-source DME
-          path sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11] depth 0 query-condition foo filter-condition foo
-          path sys/ospf depth 0 query-condition foo filter-condition or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
-        sensor-group 77
-        subscription 44
-          dst-grp 2
-          dst-grp 10
-          snsr-grp 2 sample-interval 2000
-          snsr-grp 8 sample-interval 2000
-        subscription 55
-          dst-grp 10
-          snsr-grp 55 sample-interval 2000
-        subscription 99
-          dst-grp 2
-          dst-grp 99
-          snsr-grp 8 sample-interval 90000
-          snsr-grp 77 sample-interval 2000
+  ansible.netcommon.cli_config:
+    config: "telemetry\n  certificate test_cert host.example.com\n  destination-profile\n\
+      \    use-vrf blue\n    use-compression gzip\n  destination-group 2\n    ip\
+      \ address 192.168.0.1 port 50001 protocol gRPC encoding GPB\n    ip address\
+      \ 192.168.0.2 port 60001 protocol gRPC encoding GPB\n  destination-group 10\n\
+      \    ip address 192.168.0.1 port 50001 protocol gRPC encoding GPB\n    ip\
+      \ address 192.168.0.2 port 60001 protocol gRPC encoding GPB\n    ip address\
+      \ 192.168.1.1 port 55 protocol HTTP encoding JSON\n    ip address 192.168.1.2\
+      \ port 100 protocol gRPC encoding GPB\n  destination-group 99\n  sensor-group\
+      \ 2\n    data-source NX-API\n    path \"show bgp l2vpn evpn summary\" depth\
+      \ unbounded query-condition foo filter-condition foo\n  sensor-group 8\n \
+      \   data-source NX-API\n    path \"show ip bgp neighbors\" depth 0 query-condition\
+      \ foo filter-condition foo\n  sensor-group 55\n    data-source DME\n    path\
+      \ sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11] depth 0 query-condition\
+      \ foo filter-condition foo\n    path sys/ospf depth 0 query-condition foo\
+      \ filter-condition or(eq(ethpmPhysIf.operSt,\"down\"),eq(ethpmPhysIf.operSt,\"\
+      up\"))\n  sensor-group 77\n  subscription 44\n    dst-grp 2\n    dst-grp 10\n\
+      \    snsr-grp 2 sample-interval 2000\n    snsr-grp 8 sample-interval 2000\n\
+      \  subscription 55\n    dst-grp 10\n    snsr-grp 55 sample-interval 2000\n\
+      \  subscription 99\n    dst-grp 2\n    dst-grp 99\n    snsr-grp 8 sample-interval\
+      \ 90000\n    snsr-grp 77 sample-interval 2000\n"
+
 - name: Setup - add initial source-interface telemetry config
-  network.cli.cli_config:
-    config: |
-      telemetry
-        destination-profile
-          source-interface loopback55
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
+  ansible.netcommon.cli_config:
+    config: "telemetry\n  destination-profile\n    source-interface loopback55\n"
 
 - block:
-  - name: Gather Telemetry Facts Before Changes
-    cisco.nxos.nxos_facts: &facts
-      gather_subset:
-        - '!all'
-        - '!min'
-      gather_network_resources:
-        - telemetry
 
-  - name: Telemetry - replaced
-    cisco.nxos.nxos_telemetry: &replace
-      state: 'replaced'
-      config:
-        certificate:
-          key: /file_dir/new_server.key
-          hostname: newhost.example.com
-        vrf: management
-        compression: gzip
-        destination_groups:
-          - id: 2
-            destination:
-              ip: 192.168.0.1
-              port: 65001
-              protocol: grpc
-              encoding: gpb
-          - id: 2
-            destination:
-              ip: 192.168.0.3
-              port: 55001
-              protocol: grpc
-              encoding: gpb
-        sensor_groups:
-          - id: 100
-            data_source: NX-API
-            path:
-              name: sys/bgp/inst
-              depth: unbounded
-              query_condition: foo
-              filter_condition: foo
-        subscriptions:
-          - id: 99
-            destination_group: 2
-            sensor_group:
-              id: 100
-              sample_interval: 2000
-    register: result
+    - name: Gather Telemetry Facts Before Changes
+      cisco.nxos.nxos_facts: &id001
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - telemetry
 
-  - assert:
-      that:
-        - "result.changed == true"
-        - "result.before|length == {{ dict_facts_length }}"
-        - "result.before.certificate|length == 2"
-        - "result.before.destination_groups|length == 7"
-        - "result.before.sensor_groups|length == 8"
-        - "result.before.subscriptions|length == 10"
-        - "'telemetry' in result.commands"
-        - "'no subscription 55' in result.commands"
-        - "'subscription 99' in result.commands"
-        - "'no dst-grp 99' in result.commands"
-        - "'no snsr-grp 8 sample-interval 90000' in result.commands"
-        - "'no snsr-grp 77 sample-interval 2000' in result.commands"
-        - "'no subscription 44' in result.commands"
-        - "'no sensor-group 55' in result.commands"
-        - "'no sensor-group 8' in result.commands"
-        - "'no sensor-group 2' in result.commands"
-        - "'no sensor-group 77' in result.commands"
-        - "'no destination-group 99' in result.commands"
-        - "'no destination-group 10' in result.commands"
-        - "'destination-group 2' in result.commands"
-        - "'no ip address 192.168.0.1 port 50001 protocol grpc encoding gpb' in result.commands"
-        - "'no ip address 192.168.0.2 port 60001 protocol grpc encoding gpb' in result.commands"
-        - "'destination-group 2' in result.commands"
-        - "'ip address 192.168.0.1 port 65001 protocol grpc encoding gpb' in result.commands"
-        - "'ip address 192.168.0.3 port 55001 protocol grpc encoding gpb' in result.commands"
-        - "'sensor-group 100' in result.commands"
-        - "'path sys/bgp/inst depth unbounded query-condition foo filter-condition foo' in result.commands"
-        - "'data-source NX-API' in result.commands"
-        - "'subscription 99' in result.commands"
-        - "'snsr-grp 100 sample-interval 2000' in result.commands"
-        - "'certificate /file_dir/new_server.key newhost.example.com' in result.commands"
-        - "'destination-profile' in result.commands"
-        - "'use-vrf management' in result.commands"
-        - "result.commands|length == {{ command_list_length }}"
+    - name: Telemetry - replaced
+      register: result
+      cisco.nxos.nxos_telemetry: &id002
+        state: replaced
+        config:
+          certificate:
+            key: /file_dir/new_server.key
+            hostname: newhost.example.com
+          vrf: management
+          compression: gzip
+          destination_groups:
 
-  # Source interface may or may not be included based on the image version.
-  - assert:
-      that:
-        - "'no source-interface loopback55' in result.commands"
-    when: imagetag and (major_version is version_compare('9.1', 'ge'))
+            - id: 2
+              destination:
+                ip: 192.168.0.1
+                port: 65001
+                protocol: grpc
+                encoding: gpb
 
-  - assert:
-      that:
-        - "(ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0"
+            - id: 2
+              destination:
+                ip: 192.168.0.3
+                port: 55001
+                protocol: grpc
+                encoding: gpb
+          sensor_groups:
 
-  - name: Gather Telemetry Facts After Changes
-    cisco.nxos.nxos_facts: *facts
+            - id: 100
+              data_source: NX-API
+              path:
+                name: '"show bgp l2vpn evpn summary"'
+                depth: unbounded
+                query_condition: foo
+                filter_condition: foo
+          subscriptions:
 
-  - assert:
-      that:
-        - "(ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length == 0"
+            - id: 99
+              destination_group: 2
+              sensor_group:
+                id: 100
+                sample_interval: 2000
 
-  - name: Telemetry - replaced - idempotence
-    cisco.nxos.nxos_telemetry: *replace
-    register: result
+    - assert:
+        that:
+          - result.changed == true
+          - result.before|length == {{ dict_facts_length }}
+          - result.before.certificate|length == 2
+          - result.before.destination_groups|length == 7
+          - result.before.sensor_groups|length == 8
+          - result.before.subscriptions|length == 10
+          - "'telemetry' in result.commands"
+          - "'no subscription 55' in result.commands"
+          - "'subscription 99' in result.commands"
+          - "'no dst-grp 99' in result.commands"
+          - "'no snsr-grp 8 sample-interval 90000' in result.commands"
+          - "'no snsr-grp 77 sample-interval 2000' in result.commands"
+          - "'no subscription 44' in result.commands"
+          - "'no sensor-group 55' in result.commands"
+          - "'no sensor-group 8' in result.commands"
+          - "'no sensor-group 2' in result.commands"
+          - "'no sensor-group 77' in result.commands"
+          - "'no destination-group 99' in result.commands"
+          - "'no destination-group 10' in result.commands"
+          - "'destination-group 2' in result.commands"
+          - "'no ip address 192.168.0.1 port 50001 protocol grpc encoding gpb' in\
+            \ result.commands"
+          - "'no ip address 192.168.0.2 port 60001 protocol grpc encoding gpb' in\
+            \ result.commands"
+          - "'destination-group 2' in result.commands"
+          - "'ip address 192.168.0.1 port 65001 protocol grpc encoding gpb' in result.commands"
+          - "'ip address 192.168.0.3 port 55001 protocol grpc encoding gpb' in result.commands"
+          - "'sensor-group 100' in result.commands"
+          - result.commands is search("path .*show bgp l2vpn evpn summary.* depth
+            unbounded query-condition foo filter-condition foo")
+          - "'data-source NX-API' in result.commands"
+          - "'subscription 99' in result.commands"
+          - "'snsr-grp 100 sample-interval 2000' in result.commands"
+          - "'certificate /file_dir/new_server.key newhost.example.com' in result.commands"
+          - "'destination-profile' in result.commands"
+          - "'use-vrf management' in result.commands"
+          - result.commands|length == {{ command_list_length }}
 
-  - assert:
-      that:
-        - "result.changed == false"
-        - "result.commands|length == 0"
+    - assert:
+        that:
+          - "'no source-interface loopback55' in result.commands"
+      when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
+    - assert:
+        that:
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length
+            == 0
+
+    - name: Gather Telemetry Facts After Changes
+      cisco.nxos.nxos_facts: *id001
+
+    - assert:
+        that:
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length
+            == 0
+
+    - name: Telemetry - replaced - idempotence
+      register: result
+      cisco.nxos.nxos_telemetry: *id002
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
   always:
-  - name: Teardown
-    cisco.nxos.nxos_feature: *setup_teardown
-    ignore_errors: yes
 
-  - debug: msg="END connection={{ ansible_connection }} nxos_telemetry replaced sanity test"
+    - name: Teardown
+      ignore_errors: true
+      cisco.nxos.nxos_feature: *id003
+
+    - debug: msg="END connection={{ ansible_connection }} nxos_telemetry replaced
+        sanity test"

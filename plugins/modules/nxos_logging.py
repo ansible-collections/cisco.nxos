@@ -11,88 +11,95 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: nxos_logging
-version_added: "2.4"
-author: "Trishna Guha (@trishnaguha)"
+DOCUMENTATION = """module: nxos_logging
+author: Trishna Guha (@trishnaguha)
 short_description: Manage logging on network devices
 description:
-  - This module provides declarative management of logging
-    on Cisco NX-OS devices.
+- This module provides declarative management of logging on Cisco NX-OS devices.
 options:
   dest:
     description:
-      - Destination of the logs.
-    choices: ['console', 'logfile', 'module', 'monitor', 'server']
+    - Destination of the logs.
+    choices:
+    - console
+    - logfile
+    - module
+    - monitor
+    - server
   remote_server:
     description:
-      - Hostname or IP Address for remote logging (when dest is 'server').
-    version_added: '2.7'
+    - Hostname or IP Address for remote logging (when dest is 'server').
   use_vrf:
     description:
-      - VRF to be used while configuring remote logging (when dest is 'server').
-    version_added: '2.7'
+    - VRF to be used while configuring remote logging (when dest is 'server').
   interface:
     description:
-      - Interface to be used while configuring source-interface for logging (e.g., 'Ethernet1/2', 'mgmt0')
-    version_added: '2.7'
+    - Interface to be used while configuring source-interface for logging (e.g., 'Ethernet1/2',
+      'mgmt0')
   name:
     description:
-      - If value of C(dest) is I(logfile) it indicates file-name.
+    - If value of C(dest) is I(logfile) it indicates file-name.
   facility:
     description:
-      - Facility name for logging.
+    - Facility name for logging.
   dest_level:
     description:
-      - Set logging severity levels.
-    aliases: ['level']
+    - Set logging severity levels.
+    aliases:
+    - level
   facility_level:
     description:
-      - Set logging severity levels for facility based log messages.
+    - Set logging severity levels for facility based log messages.
   aggregate:
     description: List of logging definitions.
   state:
     description:
-      - State of the logging configuration.
+    - State of the logging configuration.
     default: present
-    choices: ['present', 'absent']
+    choices:
+    - present
+    - absent
   event:
     description:
-      - Link/trunk enable/default interface configuration logging
-    choices: ['link-enable', 'link-default', 'trunk-enable', 'trunk-default']
-    version_added: '2.8'
+    - Link/trunk enable/default interface configuration logging
+    choices:
+    - link-enable
+    - link-default
+    - trunk-enable
+    - trunk-default
   interface_message:
     description:
-      - Add interface description to interface syslogs.
-        Does not work with version 6.0 images using nxapi as a transport.
-    choices: ['add-interface-description']
-    version_added: '2.8'
+    - Add interface description to interface syslogs. Does not work with version 6.0
+      images using nxapi as a transport.
+    choices:
+    - add-interface-description
   file_size:
     description:
-      - Set logfile size
-    version_added: '2.8'
+    - Set logfile size
   facility_link_status:
     description:
-      - Set logging facility ethpm link status.
-        Not idempotent with version 6.0 images.
-    choices: ['link-down-notif', 'link-down-error', 'link-up-notif', 'link-up-error']
-    version_added: '2.8'
+    - Set logging facility ethpm link status. Not idempotent with version 6.0 images.
+    choices:
+    - link-down-notif
+    - link-down-error
+    - link-up-notif
+    - link-up-error
   timestamp:
     description:
-      - Set logging timestamp format
-    choices: ['microseconds', 'milliseconds', 'seconds']
-    version_added: '2.8'
+    - Set logging timestamp format
+    choices:
+    - microseconds
+    - milliseconds
+    - seconds
   purge:
     description:
-      - Remove any switch logging configuration that does not match what has been configured
-        Not supported for ansible_connection local.
-        All nxos_logging tasks must use the same ansible_connection type.
-
+    - Remove any switch logging configuration that does not match what has been configured
+      Not supported for ansible_connection local. All nxos_logging tasks must use
+      the same ansible_connection type.
     type: bool
-    default: no
-    version_added: '2.8'
-extends_documentation_fragment: nxos
+    default: false
+extends_documentation_fragment:
+- cisco.nxos.nxos
 """
 
 EXAMPLES = """

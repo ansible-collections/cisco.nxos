@@ -23,57 +23,53 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_snmp_user
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_snmp_user
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages SNMP users for monitoring.
 description:
-    - Manages SNMP user configuration.
+- Manages SNMP user configuration.
 author:
-    - Jason Edelman (@jedelman8)
+- Jason Edelman (@jedelman8)
 notes:
-    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-    - Authentication parameters not idempotent.
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Authentication parameters not idempotent.
 options:
-    user:
-        description:
-            - Name of the user.
-        required: true
-    group:
-        description:
-            - Group to which the user will belong to.
-              If state = present, and the user is existing,
-              the group is added to the user. If the user
-              is not existing, user entry is created with this
-              group argument.
-              If state = absent, only the group is removed from the
-              user entry. However, to maintain backward compatibility,
-              if the existing user belongs to only one group, and if
-              group argument is same as the existing user's group,
-              then the user entry also is deleted.
-    authentication:
-        description:
-            - Authentication parameters for the user.
-        choices: ['md5', 'sha']
-    pwd:
-        description:
-            - Authentication password when using md5 or sha.
-              This is not idempotent
-    privacy:
-        description:
-            - Privacy password for the user.
-              This is not idempotent
-    encrypt:
-        description:
-            - Enables AES-128 bit encryption when using privacy password.
-        type: bool
-    state:
-        description:
-            - Manage the state of the resource.
-        default: present
-        choices: ['present','absent']
+  user:
+    description:
+    - Name of the user.
+    required: true
+  group:
+    description:
+    - Group to which the user will belong to. If state = present, and the user is
+      existing, the group is added to the user. If the user is not existing, user
+      entry is created with this group argument. If state = absent, only the group
+      is removed from the user entry. However, to maintain backward compatibility,
+      if the existing user belongs to only one group, and if group argument is same
+      as the existing user's group, then the user entry also is deleted.
+  authentication:
+    description:
+    - Authentication parameters for the user.
+    choices:
+    - md5
+    - sha
+  pwd:
+    description:
+    - Authentication password when using md5 or sha. This is not idempotent
+  privacy:
+    description:
+    - Privacy password for the user. This is not idempotent
+  encrypt:
+    description:
+    - Enables AES-128 bit encryption when using privacy password.
+    type: bool
+  state:
+    description:
+    - Manage the state of the resource.
+    default: present
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """

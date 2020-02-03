@@ -1,101 +1,95 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_udld sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - set_fact: udld_run="true"
+
 - set_fact: udld_run="false"
-  when: ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3', 'lt'))))
+  when: ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3',
+    'lt'))))
+
 - set_fact: udld_run="false"
   when: titanium
 
 - block:
-  - name: "Enable feature udld"
-    cisco.nxos.nxos_feature: 
-      feature: udld
-      provider: "{{ connection }}"
-      state: enabled
 
-  - name: Configure udld
-    cisco.nxos.nxos_udld: &conf1
-      aggressive: enabled
-      msg_time: 20
-      provider: "{{ connection }}"
-    register: result
+    - name: Enable feature udld
+      cisco.nxos.nxos_feature:
+        feature: udld
+        state: enabled
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: Configure udld
+      register: result
+      cisco.nxos.nxos_udld: &id001
+        aggressive: enabled
+        msg_time: 20
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_udld: *conf1
-    register: result
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_udld: *id001
 
-  - name: Reset udld
-    cisco.nxos.nxos_udld:
-      reset: True
-      provider: "{{ connection }}"
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - name: Configure udld2
-    cisco.nxos.nxos_udld: &conf2
-      aggressive: disabled
-      provider: "{{ connection }}"
-    register: result
+    - name: Reset udld
+      cisco.nxos.nxos_udld:
+        reset: true
 
-  - assert: *true
+    - name: Configure udld2
+      register: result
+      cisco.nxos.nxos_udld: &id003
+        aggressive: disabled
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_udld: *conf2
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_udld: *id003
 
-  - name: Configure udld3
-    cisco.nxos.nxos_udld: &conf3
-      msg_time: default
-      provider: "{{ connection }}"
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Configure udld3
+      register: result
+      cisco.nxos.nxos_udld: &id005
+        msg_time: default
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_udld: *conf3
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_udld: *id005
 
-  - name: Configure udld again
-    cisco.nxos.nxos_udld: *conf1
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Configure udld again
+      register: result
+      cisco.nxos.nxos_udld: *id001
 
-  - name: Remove udld config
-    cisco.nxos.nxos_udld: &conf4
-      provider: "{{ connection }}"
-      state: absent
-    register: result
+    - assert: *id002
 
-  - assert: *true
+    - name: Remove udld config
+      register: result
+      cisco.nxos.nxos_udld: &id006
+        state: absent
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_udld: *conf4
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_udld: *id006
 
+    - assert: *id004
   when: udld_run
-
   always:
-  - name: "Disable udld"
-    cisco.nxos.nxos_feature: 
-      feature: udld
-      provider: "{{ connection }}"
-      state: disabled
-    ignore_errors: yes
+
+    - name: Disable udld
+      ignore_errors: true
+      cisco.nxos.nxos_feature:
+        feature: udld
+        state: disabled
 
 - debug: msg="END connection={{ ansible_connection }} nxos_udld sanity test"

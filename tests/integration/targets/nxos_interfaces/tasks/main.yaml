@@ -1,2 +1,8 @@
 ---
-- { include: cli.yaml, tags: ['cli'] }
+- name: Set system defaults for switchports
+  cisco.nxos.nxos_config:
+    lines: "no system default switchport\nsystem default switchport shutdown\n"
+
+- include: cli.yaml
+  tags:
+    - cli

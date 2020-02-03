@@ -1,83 +1,77 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_snmp_traps sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - name: Setup - Remove snmp_traps if configured
-  cisco.nxos.nxos_snmp_traps: &remove
+  cisco.nxos.nxos_snmp_traps: &id006
     group: all
-    provider: "{{ connection }}"
     state: disabled
 
 - block:
-  - name: Configure one snmp trap group
-    cisco.nxos.nxos_snmp_traps: &config
-      group: bridge
-      provider: "{{ connection }}"
-      state: enabled
-    register: result
 
-  - assert: &true
-      that:
-        - "result.changed == true"
-
-  - name: Idempotence Check
-    cisco.nxos.nxos_snmp_traps: *config
-    register: result
-
-  - assert: &false
-      that:
-        - "result.changed == false"
-
-  - name: Remove snmp trap group
-    cisco.nxos.nxos_snmp_traps: &rem1
-      group: bridge
-      provider: "{{ connection }}"
-      state: disabled
-    register: result
-
-  - assert: *true
-
-  - name: Idempotence Check
-    cisco.nxos.nxos_snmp_traps: *rem1
-    register: result
-
-  - assert: *false
-
-  - name: Configure all snmp trap groups
-    cisco.nxos.nxos_snmp_traps: &config1
-      group: all
-      provider: "{{ connection }}"
-      state: enabled
-    register: result
-
-  - assert: *true
-
-  - block:
-    # On I2/I7, link command does not work properly
-    # On D1, callhome command does not work properly
-    # skip for these older platforms
-    - name: Idempotence Check
-      cisco.nxos.nxos_snmp_traps: *config1
+    - name: Configure one snmp trap group
       register: result
+      cisco.nxos.nxos_snmp_traps: &id001
+        group: bridge
+        state: enabled
 
-    - assert: *false
-    when: imagetag is not search("I2|I7|D1")
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - name: Cleanup
-    cisco.nxos.nxos_snmp_traps: *remove
-    register: result
+    - name: Idempotence Check
+      register: result
+      cisco.nxos.nxos_snmp_traps: *id001
 
-  - assert: *true
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - name: Cleanup Idempotence
-    cisco.nxos.nxos_snmp_traps: *remove
-    register: result
+    - name: Remove snmp trap group
+      register: result
+      cisco.nxos.nxos_snmp_traps: &id003
+        group: bridge
+        state: disabled
 
-  - assert: *false
+    - assert: *id002
 
+    - name: Idempotence Check
+      register: result
+      cisco.nxos.nxos_snmp_traps: *id003
+
+    - assert: *id004
+
+    - name: Configure all snmp trap groups
+      register: result
+      cisco.nxos.nxos_snmp_traps: &id005
+        group: all
+        state: enabled
+
+    - assert: *id002
+
+    - block:
+
+        - name: Idempotence Check
+          register: result
+          cisco.nxos.nxos_snmp_traps: *id005
+
+        - assert: *id004
+      when: imagetag is not search("I2|I7|D1")
+
+    - name: Cleanup
+      register: result
+      cisco.nxos.nxos_snmp_traps: *id006
+
+    - assert: *id002
+
+    - name: Cleanup Idempotence
+      register: result
+      cisco.nxos.nxos_snmp_traps: *id006
+
+    - assert: *id004
   always:
-  - name: Cleanup
-    cisco.nxos.nxos_snmp_traps: *remove
 
-  - debug: msg="END connection={{ ansible_connection }} nxos_snmp_traps sanity test"
+    - name: Cleanup
+      cisco.nxos.nxos_snmp_traps: *id006
+
+    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_traps sanity
+        test"

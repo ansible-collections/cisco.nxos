@@ -2,18 +2,21 @@
 - debug: msg="START common/contains.yaml on connection={{ ansible_connection }}"
 
 - name: test contains operator
+  register: result
   cisco.nxos.nxos_command:
     commands:
-      - { command: 'show version', output: 'text' }
-      - { command: 'show interface mgmt0', output: 'json' }
+
+      - command: show version
+        output: text
+
+      - command: show interface mgmt0
+        output: json
     wait_for:
-      - "result[0] contains NX-OS"
-      - "result[1].TABLE_interface.ROW_interface.interface contains mgmt"
-    provider: "{{ connection }}"
-  register: result
+      - result[0] contains NX-OS
+      - result[1].TABLE_interface.ROW_interface.interface contains mgmt
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - debug: msg="END common/contains.yaml on connection={{ ansible_connection }}"

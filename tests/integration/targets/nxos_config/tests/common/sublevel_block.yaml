@@ -1,14 +1,15 @@
 ---
-- debug: msg='START common/sublevel_block.yaml on connection={{ ansible_connection }}'
+- debug: msg='START common/sublevel_block.yaml on connection={{ ansible_connection
+    }}'
 
 - name: setup
-  cisco.nxos.nxos_config: &clear
+  ignore_errors: true
+  cisco.nxos.nxos_config: &id001
     lines: no ip access-list test
     match: none
-    provider: "{{ connection }}"
-  ignore_errors: yes
 
 - name: configure sub level command using block replace
+  register: result
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -17,12 +18,10 @@
       - 40 permit ip 192.0.2.4/32 any log
     parents: ip access-list test
     replace: block
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
       - "'ip access-list test' in result.updates"
       - "'10 permit ip 192.0.2.1/32 any log' in result.updates"
       - "'20 permit ip 192.0.2.2/32 any log' in result.updates"
@@ -30,6 +29,7 @@
       - "'40 permit ip 192.0.2.4/32 any log' in result.updates"
 
 - name: check sub level command using block replace
+  register: result
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -38,14 +38,13 @@
       - 40 permit ip 192.0.2.4/32 any log
     parents: ip access-list test
     replace: block
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - name: teardown
-  cisco.nxos.nxos_config: *clear
+  cisco.nxos.nxos_config: *id001
 
-- debug: msg='END common/sublevel_block.yaml on connection={{ ansible_connection }}'
+- debug: msg='END common/sublevel_block.yaml on connection={{ ansible_connection
+    }}'

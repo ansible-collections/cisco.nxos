@@ -1,66 +1,67 @@
 ---
 - debug: msg="START cli/sanity.yaml on connection={{ ansible_connection }}"
 
-- name: "Disable feature BGP"
+- name: Disable feature BGP
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
 - block:
-  - name: "Run show running-config bgp - should fail"
-    cisco.nxos.nxos_command:
-      commands:
-        - sh running-config bgp
-    ignore_errors: yes
-    register: result
 
-  - assert: &fail
-      that:
-        - "result.failed == true"
+    - name: Run show running-config bgp - should fail
+      ignore_errors: true
+      register: result
+      cisco.nxos.nxos_command:
+        commands:
+          - sh running-config bgp
 
-  - name: "Enable feature BGP"
-    cisco.nxos.nxos_feature:
-      feature: bgp
-      state: enabled
+    - assert: &id001
+        that:
+          - result.failed == true
 
-  - name: "Configure BGP defaults"
-    cisco.nxos.nxos_bgp: &configure_default
-      asn: 65535
-      router_id: 192.0.2.1
-      state: present
-    register: result
+    - name: Enable feature BGP
+      cisco.nxos.nxos_feature:
+        feature: bgp
+        state: enabled
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: Configure BGP defaults
+      register: result
+      cisco.nxos.nxos_bgp:
+        asn: 65535
+        router_id: 192.0.2.1
+        state: present
 
-  - name: "Run show running-config bgp - should pass"
-    cisco.nxos.nxos_command:
-      commands:
-        - sh running-config bgp
-    register: result
+    - assert:
+        that:
+          - result.changed == true
 
-  - assert:
-      that:
-        - "result.failed == false"
-        - "'65535' in result.stdout[0]"
+    - name: Run show running-config bgp - should pass
+      register: result
+      cisco.nxos.nxos_command:
+        commands:
+          - sh running-config bgp
 
-  - name: "Run an invalid command - should fail"
-    cisco.nxos.nxos_command:
-      commands:
-        - show interface bief
-    ignore_errors: yes
-    register: result
+    - assert:
+        that:
+          - result.failed == false
+          - "'65535' in result.stdout[0]"
 
-  - assert: *fail
+    - name: Run an invalid command - should fail
+      ignore_errors: true
+      register: result
+      cisco.nxos.nxos_command:
+        commands:
+          - show interface bief
 
+    - assert: *id001
   rescue:
-  - debug: msg="nxos_command sanity test failure detected"
 
+    - debug: msg="nxos_command sanity test failure detected"
   always:
-  - name: "Disable feature bgp"
-    cisco.nxos.nxos_feature:
-      feature: bgp
-      state: disabled
+
+    - name: Disable feature bgp
+      cisco.nxos.nxos_feature:
+        feature: bgp
+        state: disabled
 
 - debug: msg="END cli/sanity.yaml on connection={{ ansible_connection }}"

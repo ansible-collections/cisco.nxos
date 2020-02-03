@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: "Start nxos_lacp merged integration tests connection={{ ansible_connection }}"
+    msg: Start nxos_lacp merged integration tests connection={{ ansible_connection
+      }}
 
 - name: Enable lacp
   cisco.nxos.nxos_feature:
@@ -13,54 +14,55 @@
   when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
 - block:
-  - name: Merged
-    cisco.nxos.nxos_lacp: &merged
-      config:
-        system:
-          priority: 11
-          mac: "{{ mac|default(omit) }}"
-      state: merged
-    register: result
 
-  - assert:
-      that:
-        - "result.before|length == 0"
-        - "result.changed == true"
-        - "'lacp system-priority 11' in result.commands"
-        - "'lacp system-mac 00c1.4c00.bd15 role primary' in result.commands"
-        - "result.commands|length == 2"
-    when: platform is search('N9K') and imagetag is not search('I[2-6]')
+    - name: Merged
+      register: result
+      cisco.nxos.nxos_lacp: &id001
+        config:
+          system:
+            priority: 11
+            mac: '{{ mac|default(omit) }}'
+        state: merged
 
-  - assert:
-      that:
-        - "result.before|length == 0"
-        - "result.changed == true"
-        - "'lacp system-priority 11' in result.commands"
-        - "result.commands|length == 1"
-    when: platform is not search('N9K')
+    - assert:
+        that:
+          - result.before|length == 0
+          - result.changed == true
+          - "'lacp system-priority 11' in result.commands"
+          - "'lacp system-mac 00c1.4c00.bd15 role primary' in result.commands"
+          - result.commands|length == 2
+      when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
-  - name: Gather lacp facts
-    cisco.nxos.nxos_facts:
-      gather_subset:
-        - '!all'
-        - '!min'
-      gather_network_resources: lacp
+    - assert:
+        that:
+          - result.before|length == 0
+          - result.changed == true
+          - "'lacp system-priority 11' in result.commands"
+          - result.commands|length == 1
+      when: platform is not search('N9K')
 
-  - assert:
-      that:
-        - "ansible_facts.network_resources.lacp == result.after"
+    - name: Gather lacp facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: lacp
 
-  - name: Idempotence - Merged
-    cisco.nxos.nxos_lacp: *merged
-    register: result
+    - assert:
+        that:
+          - ansible_facts.network_resources.lacp == result.after
 
-  - assert:
-      that:
-        - "result.changed == false"
-        - "result.commands|length == 0"
+    - name: Idempotence - Merged
+      register: result
+      cisco.nxos.nxos_lacp: *id001
 
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
   always:
-  - name: teardown
-    cisco.nxos.nxos_feature:
-      feature: lacp
-      state: disabled
+
+    - name: teardown
+      cisco.nxos.nxos_feature:
+        feature: lacp
+        state: disabled

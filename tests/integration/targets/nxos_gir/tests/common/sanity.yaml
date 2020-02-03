@@ -1,119 +1,110 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_gir sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
-- set_fact: gir_run="true"
-- set_fact: gir_run="false"
-  when: platform is search("N35")
-#- name: "Setup"
-#  nxos_gir: &setup
-#    system_mode_maintenance: false
-#    provider: "{{ connection }}"
-#  ignore_errors: yes
+- set_fact: gir_run='{{ true if (platform is not search("N35")) else false }}'
+
+- name: Setup0
+  ignore_errors: true
+  cisco.nxos.nxos_config: &id007
+    lines:
+      - no system mode maintenance timeout 30
+      - no configure maintenance profile normal-mode
+      - no configure maintenance profile maintenance-mode
+    match: none
+
+- name: Setup1
+  ignore_errors: true
+  cisco.nxos.nxos_gir:
+    system_mode_maintenance: false
 
 - block:
-  - name: "Put system in maintenance mode with reload reset reason"
-    cisco.nxos.nxos_gir: &reset_reason
-      system_mode_maintenance_on_reload_reset_reason: manual_reload
-      provider: "{{ connection }}"
-    register: result
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: Put system in maintenance mode with reload reset reason
+      register: result
+      cisco.nxos.nxos_gir: &id001
+        system_mode_maintenance_on_reload_reset_reason: manual_reload
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_gir: *reset_reason
-    register: result
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_gir: *id001
 
-  - name: "Remove reload reason"
-    cisco.nxos.nxos_gir: &remove_reason
-      system_mode_maintenance_on_reload_reset_reason: manual_reload
-      state: absent
-      provider: "{{ connection }}"
-    register: result
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - assert: *true
+    - name: Remove reload reason
+      register: result
+      cisco.nxos.nxos_gir: &id003
+        system_mode_maintenance_on_reload_reset_reason: manual_reload
+        state: absent
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_gir: *remove_reason
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_gir: *id003
 
-  - name: "Put system in maintenance mode with timeout"
-    cisco.nxos.nxos_gir: &mtime
-      system_mode_maintenance_timeout: 30
-      provider: "{{ connection }}"
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Put system in maintenance mode with timeout
+      register: result
+      cisco.nxos.nxos_gir: &id005
+        system_mode_maintenance_timeout: 30
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_gir: *mtime
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_gir: *id005
 
-  - name: "Remove maintenance mode timeout"
-    cisco.nxos.nxos_gir: &remove_timeout
-      system_mode_maintenance_timeout: 30
-      state: absent
-      provider: "{{ connection }}"
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Remove maintenance mode timeout
+      register: result
+      cisco.nxos.nxos_gir: &id006
+        system_mode_maintenance_timeout: 30
+        state: absent
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_gir: *remove_timeout
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_gir: *id006
 
-#  - name: "Put system in maintenance mode"
-#    nxos_gir: &configure_system_mode_maintenance
-#      system_mode_maintenance: true
-#      provider: "{{ connection }}"
-#    register: result
-#
-#  - assert: *true
+    - assert: *id004
 
+    - name: Put system in maintenance mode
+      register: result
+      cisco.nxos.nxos_gir:
+        system_mode_maintenance: true
+
+    - assert: *id002
   when: gir_run
-
   rescue:
 
-  - debug: msg="connection={{ ansible_connection }} nxos_gir failure detected"
-
+    - debug: msg="connection={{ ansible_connection }} nxos_gir failure detected"
   always:
 
-  - name: "Remove snapshots"
-    cisco.nxos.nxos_snapshot:
-      action: delete_all
-      provider: "{{ connection }}"
-    ignore_errors: yes
+    - name: Remove snapshots
+      ignore_errors: true
+      cisco.nxos.nxos_snapshot:
+        action: delete_all
 
-  - name: "Remove other config1"
-    cisco.nxos.nxos_config:
-      lines: no configure maintenance profile normal-mode
-      match: none
-      provider: "{{ connection }}"
-    ignore_errors: yes
+    - name: Teardown0
+      ignore_errors: true
+      cisco.nxos.nxos_config: *id007
 
-  - name: "Remove other config2"
-    cisco.nxos.nxos_config:
-      lines: no configure maintenance profile maintenance-mode
-      match: none
-      provider: "{{ connection }}"
-    ignore_errors: yes
-
-#  - name: "Put system back in normal mode"
-#    nxos_gir: *setup
-#    register: result
-#    ignore_errors: yes
+    - name: Put system back in normal mode
+      retries: 3
+      delay: 30
+      register: result
+      until: result is not failed
+      ignore_errors: true
+      cisco.nxos.nxos_gir:
+        system_mode_maintenance: false
 
 - debug: msg="END connection={{ ansible_connection }} nxos_gir sanity test"

@@ -23,68 +23,72 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_snmp_host
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_snmp_host
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages SNMP host configuration.
 description:
-    - Manages SNMP host configuration parameters.
+- Manages SNMP host configuration parameters.
 author:
-    - Jason Edelman (@jedelman8)
-    - Gabriele Gerbino (@GGabriele)
+- Jason Edelman (@jedelman8)
+- Gabriele Gerbino (@GGabriele)
 notes:
-    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-    - C(state=absent) removes the host configuration if it is configured.
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- C(state=absent) removes the host configuration if it is configured.
 options:
-    snmp_host:
-        description:
-            - IP address of hostname of target host.
-        required: true
-    version:
-        description:
-            - SNMP version. If this is not specified, v1 is used.
-        choices: ['v1', 'v2c', 'v3']
-    v3:
-        description:
-            - Use this when verion is v3. SNMPv3 Security level.
-        choices: ['noauth', 'auth', 'priv']
-    community:
-        description:
-            - Community string or v3 username.
-    udp:
-        description:
-            - UDP port number (0-65535).
-        default: 162
-    snmp_type:
-        description:
-            - type of message to send to host. If this is not
-              specified, trap type is used.
-        choices: ['trap', 'inform']
-    vrf:
-        description:
-            - VRF to use to source traffic to source.
-              If state = absent, the vrf is removed.
-    vrf_filter:
-        description:
-            - Name of VRF to filter.
-              If state = absent, the vrf is removed from the filter.
-    src_intf:
-        description:
-            - Source interface. Must be fully qualified interface name.
-              If state = absent, the interface is removed.
-    state:
-        description:
-            - Manage the state of the resource. If state = present, the
-              host is added to the configuration. If only vrf and/or
-              vrf_filter and/or src_intf are given, they will be added to
-              the existing host configuration. If state = absent, the
-              host is removed if community parameter is given. It is possible
-              to remove only vrf and/or src_int and/or vrf_filter
-              by providing only those parameters and no community parameter.
-        default: present
-        choices: ['present','absent']
+  snmp_host:
+    description:
+    - IP address of hostname of target host.
+    required: true
+  version:
+    description:
+    - SNMP version. If this is not specified, v1 is used.
+    choices:
+    - v1
+    - v2c
+    - v3
+  v3:
+    description:
+    - Use this when verion is v3. SNMPv3 Security level.
+    choices:
+    - noauth
+    - auth
+    - priv
+  community:
+    description:
+    - Community string or v3 username.
+  udp:
+    description:
+    - UDP port number (0-65535).
+    default: 162
+  snmp_type:
+    description:
+    - type of message to send to host. If this is not specified, trap type is used.
+    choices:
+    - trap
+    - inform
+  vrf:
+    description:
+    - VRF to use to source traffic to source. If state = absent, the vrf is removed.
+  vrf_filter:
+    description:
+    - Name of VRF to filter. If state = absent, the vrf is removed from the filter.
+  src_intf:
+    description:
+    - Source interface. Must be fully qualified interface name. If state = absent,
+      the interface is removed.
+  state:
+    description:
+    - Manage the state of the resource. If state = present, the host is added to the
+      configuration. If only vrf and/or vrf_filter and/or src_intf are given, they
+      will be added to the existing host configuration. If state = absent, the host
+      is removed if community parameter is given. It is possible to remove only vrf
+      and/or src_int and/or vrf_filter by providing only those parameters and no community
+      parameter.
+    default: present
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """

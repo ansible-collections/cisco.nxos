@@ -1,208 +1,199 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_aaa_server_host radius.yaml sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
+- debug: msg="START connection={{ ansible_connection }} nxos_aaa_server_host radius.yaml
+    sanity test"
 
-- name: "Setup"
-  cisco.nxos.nxos_aaa_server_host: &remove
+- name: Setup
+  ignore_errors: true
+  cisco.nxos.nxos_aaa_server_host: &id002
     server_type: radius
     address: 8.8.8.8
-    provider: "{{ connection }}"
     state: absent
-  ignore_errors: yes
 
 - block:
-  - name: "Configure radius server defaults"
-    cisco.nxos.nxos_aaa_server_host: &configure_default_radius
-      server_type: radius
-      address: 8.8.8.8
-      provider: "{{ connection }}"
-      state: present
-    register: result
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: Configure radius server defaults
+      register: result
+      cisco.nxos.nxos_aaa_server_host: &id001
+        server_type: radius
+        address: 8.8.8.8
+        state: present
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server_host: *configure_default_radius
-    register: result
+    - assert: &id003
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id001
 
-  - name: "Remove radius server configuration"
-    cisco.nxos.nxos_aaa_server_host: *remove
-    register: result
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - assert: *true
+    - name: Remove radius server configuration
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id002
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server_host: *remove
-    register: result
+    - assert: *id003
 
-  - assert: *false
- 
-  - name: "Configure radius server non defaults"
-    cisco.nxos.nxos_aaa_server_host: &configure_radius_non_default
-      server_type: radius
-      address: 8.8.8.8
-      host_timeout: 25
-      auth_port: 2083
-      acct_port: 2084
-      provider: "{{ connection }}"
-      state: present
-    register: result
- 
-  - assert: *true
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id002
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server_host: *configure_radius_non_default
-    register: result
+    - assert: *id004
 
-  - assert: *false
+    - name: Configure radius server non defaults
+      register: result
+      cisco.nxos.nxos_aaa_server_host: &id005
+        server_type: radius
+        address: 8.8.8.8
+        host_timeout: 25
+        auth_port: 2083
+        acct_port: 2084
+        state: present
 
-  - name: "Configure some defaults on radius server"
-    cisco.nxos.nxos_aaa_server_host: &configure_some_radius_default
-      server_type: radius
-      address: 8.8.8.8
-      host_timeout: default
-      auth_port: 1000
-      acct_port: default
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - assert: *id003
 
-  - assert: *true
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id005
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server_host: *configure_some_radius_default
-    register: result
+    - assert: *id004
 
-  - assert: *false
+    - name: Configure some defaults on radius server
+      register: result
+      cisco.nxos.nxos_aaa_server_host: &id006
+        server_type: radius
+        address: 8.8.8.8
+        host_timeout: default
+        auth_port: 1000
+        acct_port: default
+        state: present
 
-  - name: "Configure radius server with clear text pwd"
-    cisco.nxos.nxos_aaa_server_host: &configure_radius_clear_text
-      server_type: radius
-      address: 8.8.8.8
-      host_timeout: 25
-      auth_port: default
-      acct_port: 2084
-      encrypt_type: 0
-      key: hello
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - assert: *id003
 
-  - assert: *true
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id006
 
-  - name: "Check NOT Idempotent"
-    cisco.nxos.nxos_aaa_server_host: *configure_radius_clear_text
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Configure radius server with clear text pwd
+      register: result
+      cisco.nxos.nxos_aaa_server_host: &id007
+        server_type: radius
+        address: 8.8.8.8
+        host_timeout: 25
+        auth_port: default
+        acct_port: 2084
+        encrypt_type: 0
+        key: hello
+        state: present
 
-  - name: "Remove radius server configuration"
-    cisco.nxos.nxos_aaa_server_host: *remove
-    register: result
+    - assert: *id003
 
-  - assert: *true
+    - name: Check NOT Idempotent
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id007
 
-  - name: "Configure radius server with type 7 encryption"
-    cisco.nxos.nxos_aaa_server_host: &configure_radius_type7
-      server_type: radius
-      address: 8.8.8.8
-      host_timeout: 25
-      auth_port: 2083
-      acct_port: 2084
-      encrypt_type: 7
-      key: hello
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - assert: *id003
 
-  - assert: *true
+    - name: Remove radius server configuration
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id002
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server_host: *configure_radius_type7
-    register: result
+    - assert: *id003
 
-  - assert: *false
+    - name: Configure radius server with type 7 encryption
+      register: result
+      cisco.nxos.nxos_aaa_server_host: &id008
+        server_type: radius
+        address: 8.8.8.8
+        host_timeout: 25
+        auth_port: 2083
+        acct_port: 2084
+        encrypt_type: 7
+        key: hello
+        state: present
 
-  - name: "Configure radius server with new type 7 encryption key"
-    cisco.nxos.nxos_aaa_server_host: &configure_radius_new_type7
-      server_type: radius
-      address: 8.8.8.8
-      host_timeout: 25
-      auth_port: 2083
-      acct_port: 2084
-      encrypt_type: 7
-      key: helloback
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - assert: *id003
 
-  - assert:
-      that:
-        - "result.changed == true"
-        - "'key 7' in result.updates[0]"
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id008
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server_host: *configure_radius_new_type7
-    register: result
+    - assert: *id004
 
-  - assert: *false
+    - name: Configure radius server with new type 7 encryption key
+      register: result
+      cisco.nxos.nxos_aaa_server_host: &id009
+        server_type: radius
+        address: 8.8.8.8
+        host_timeout: 25
+        auth_port: 2083
+        acct_port: 2084
+        encrypt_type: 7
+        key: helloback
+        state: present
 
-  - name: "Configure radius server with default key"
-    cisco.nxos.nxos_aaa_server_host: &configure_radius_defkey
-      server_type: radius
-      address: 8.8.8.8
-      host_timeout: default
-      auth_port: 1000
-      acct_port: default
-      encrypt_type: 7
-      key: default
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - assert:
+        that:
+          - result.changed == true
+          - "'key 7' in result.updates[0]"
 
-  - assert: *true
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id009
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server_host: *configure_radius_defkey
-    register: result
+    - assert: *id004
 
-  - assert: *false
+    - name: Configure radius server with default key
+      register: result
+      cisco.nxos.nxos_aaa_server_host: &id010
+        server_type: radius
+        address: 8.8.8.8
+        host_timeout: default
+        auth_port: 1000
+        acct_port: default
+        encrypt_type: 7
+        key: default
+        state: present
 
-  - name: "Configure radius server with all def"
-    cisco.nxos.nxos_aaa_server_host: &configure_radius_alldef
-      server_type: radius
-      address: 8.8.8.8
-      host_timeout: default
-      auth_port: default
-      acct_port: default
-      key: default
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - assert: *id003
 
-  - assert: *true
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id010
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server_host: *configure_radius_alldef
-    register: result
+    - assert: *id004
 
-  - assert: *false
+    - name: Configure radius server with all def
+      register: result
+      cisco.nxos.nxos_aaa_server_host: &id011
+        server_type: radius
+        address: 8.8.8.8
+        host_timeout: default
+        auth_port: default
+        acct_port: default
+        key: default
+        state: present
 
+    - assert: *id003
+
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id011
+
+    - assert: *id004
   rescue:
 
-  - debug: msg="connection={{ ansible_connection }} nxos_aaa_server_host failure detected"
-
+    - debug: msg="connection={{ ansible_connection }} nxos_aaa_server_host failure
+        detected"
   always:
 
-  - name: "Remove radius server configuration"
-    cisco.nxos.nxos_aaa_server_host: *remove
-    register: result
+    - name: Remove radius server configuration
+      register: result
+      cisco.nxos.nxos_aaa_server_host: *id002
 
-  - debug: msg="END connection={{ ansible_connection }} nxos_aaa_server_host radius.yaml sanity test"
+    - debug: msg="END connection={{ ansible_connection }} nxos_aaa_server_host radius.yaml
+        sanity test"

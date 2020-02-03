@@ -1,85 +1,80 @@
 ---
 - debug:
-    msg: "Start nxos_lacp_interfaces merged integration tests connection={{ ansible_connection }}"
-
-#
-# "lacp mode delay" is not supported on Nexus 9500 series switches.
-# Three models of Nexus 9500 switches have chassis types C9504, C9508 and C9516.
-#
+    msg: Start nxos_lacp_interfaces merged integration tests connection={{ ansible_connection
+      }}
 
 - set_fact:
     mode: delay
-  when: platform is not search('N3K|N5K|N6K|N7K') and imagetag is not search('A8|I2') and
-    image_version is not search ('9.2') and chassis_type is not search('C95')
+  when: platform is not search('N3K|N5K|N6K|N7K') and imagetag is not search('A8|I2')
+    and image_version is not search ('9.2') and chassis_type is not search('C95')
 
 - name: setup1
-  network.cli.cli_config: &cleanup
-    config: |
-      no interface port-channel5
-      no interface port-channel10
-      no feature lacp
+  ansible.netcommon.cli_config: &id002
+    config: "no interface port-channel5\nno interface port-channel10\nno feature\
+      \ lacp\n"
 
 - block:
-  - name: setup2
-    network.cli.cli_config:
-      config: |
-        feature lacp
 
-  - name: setup3 - L2 for mode command
-    network.cli.cli_config:
-      config: |
-        interface port-channel5
-          switchport
-    when: mode is defined
+    - name: setup2
+      ansible.netcommon.cli_config:
+        config: "feature lacp\n"
 
-  - name: Merged
-    cisco.nxos.nxos_lacp_interfaces: &merged
-      config:
-        - name: port-channel10
-          links:
-            min: 5
-        - name: port-channel5
-          mode: "{{ mode | default(omit) }}"
-          links:
-            max: 10
-      state:  merged
-    register: result
+    - name: setup3 - L2 for mode command
+      when: mode is defined
+      ansible.netcommon.cli_config:
+        config: "interface port-channel5\n  switchport\n"
 
-  - assert:
-      that:
-        - "result.changed == true"
-        - "result.before|length == 0"
-        - "'interface port-channel10' in result.commands"
-        - "'lacp min-links 5' in result.commands"
-        - "'interface port-channel5' in result.commands"
-        - "'lacp max-bundle 10' in result.commands"
+    - name: Merged
+      register: result
+      cisco.nxos.nxos_lacp_interfaces: &id001
+        config:
 
-  - assert:
-      that:
-        - "'lacp mode delay' in result.commands"
-        - "result.commands|length == 5"
-    when: mode is defined
+          - name: port-channel10
+            links:
+              min: 5
 
-  - name: Gather lacp_interfaces facts
-    cisco.nxos.nxos_facts:
-      gather_subset:
-        - '!all'
-        - '!min'
-      gather_network_resources: lacp_interfaces
+          - name: port-channel5
+            mode: '{{ mode | default(omit) }}'
+            links:
+              max: 10
+        state: merged
 
-  - assert:
-      that:
-        - "ansible_facts.network_resources.lacp_interfaces|symmetric_difference(result.after)|length == 0"
+    - assert:
+        that:
+          - result.changed == true
+          - result.before|length == 0
+          - "'interface port-channel10' in result.commands"
+          - "'lacp min-links 5' in result.commands"
+          - "'interface port-channel5' in result.commands"
+          - "'lacp max-bundle 10' in result.commands"
 
-  - name: Idempotence - Merged
-    cisco.nxos.nxos_lacp_interfaces: *merged
-    register: result
+    - assert:
+        that:
+          - "'lacp mode delay' in result.commands"
+          - result.commands|length == 5
+      when: mode is defined
 
-  - assert:
-      that:
-        - "result.changed == false"
-        - "result.commands|length == 0"
+    - name: Gather lacp_interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: lacp_interfaces
 
+    - assert:
+        that:
+          - ansible_facts.network_resources.lacp_interfaces|symmetric_difference(result.after)|length
+            == 0
+
+    - name: Idempotence - Merged
+      register: result
+      cisco.nxos.nxos_lacp_interfaces: *id001
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
   always:
-  - name: teardown
-    network.cli.cli_config: *cleanup
+
+    - name: teardown
+      ansible.netcommon.cli_config: *id002

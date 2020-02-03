@@ -2,31 +2,29 @@
 - debug: msg="START common/equal.yaml on connection={{ ansible_connection }}"
 
 - name: test eq operator
+  register: result
   cisco.nxos.nxos_command:
     commands:
       - show version
       - show interface mgmt0 | json
     wait_for:
-      - "result[1].TABLE_interface.ROW_interface.state eq up"
-    provider: "{{ connection }}"
-  register: result
+      - result[1].TABLE_interface.ROW_interface.state eq up
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - name: test == operator
+  register: result
   cisco.nxos.nxos_command:
     commands:
       - show version
       - show interface mgmt0 | json
     wait_for:
-      - "result[1].TABLE_interface.ROW_interface.state == up"
-    provider: "{{ connection }}"
-  register: result
+      - result[1].TABLE_interface.ROW_interface.state == up
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - debug: msg="END common/equal.yaml on connection={{ ansible_connection }}"

@@ -9,11 +9,11 @@
     match: none
 
 - name: configure domain_list
+  register: result
   cisco.nxos.nxos_system:
     domain_search:
       - ansible.com
       - redhat.com
-  register: result
 
 - assert:
     that:
@@ -22,21 +22,21 @@
       - "'ip domain-list redhat.com' in result.commands"
 
 - name: verify domain_list
+  register: result
   cisco.nxos.nxos_system:
     domain_search:
       - ansible.com
       - redhat.com
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: remove one entry
+  register: result
   cisco.nxos.nxos_system:
     domain_search:
       - ansible.com
-  register: result
 
 - assert:
     that:
@@ -44,21 +44,21 @@
       - "'no ip domain-list redhat.com' in result.commands"
 
 - name: verify remove one entry
+  register: result
   cisco.nxos.nxos_system:
     domain_search:
       - ansible.com
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: add one entry
+  register: result
   cisco.nxos.nxos_system:
     domain_search:
       - ansible.com
       - redhat.com
-  register: result
 
 - assert:
     that:
@@ -66,22 +66,22 @@
       - "'ip domain-list redhat.com' in result.commands"
 
 - name: verify add one entry
+  register: result
   cisco.nxos.nxos_system:
     domain_search:
       - ansible.com
       - redhat.com
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
 - name: add and remove one entry
+  register: result
   cisco.nxos.nxos_system:
     domain_search:
       - ansible.com
       - eng.ansible.com
-  register: result
 
 - assert:
     that:
@@ -91,11 +91,11 @@
       - result.commands|length == 2
 
 - name: verify add and remove one entry
+  register: result
   cisco.nxos.nxos_system:
     domain_search:
       - ansible.com
       - eng.ansible.com
-  register: result
 
 - assert:
     that:

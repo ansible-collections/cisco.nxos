@@ -23,77 +23,72 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_user
-extends_documentation_fragment: nxos
-version_added: "2.3"
-author: "Peter Sprygada (@privateip)"
+DOCUMENTATION = """module: nxos_user
+extends_documentation_fragment:
+- cisco.nxos.nxos
+author: Peter Sprygada (@privateip)
 short_description: Manage the collection of local users on Nexus devices
 description:
-  - This module provides declarative management of the local usernames
-    configured on Cisco Nexus devices.  It allows playbooks to manage
-    either individual usernames or the collection of usernames in the
-    current running config.  It also supports purging usernames from the
-    configuration that are not explicitly defined.
+- This module provides declarative management of the local usernames configured on
+  Cisco Nexus devices.  It allows playbooks to manage either individual usernames
+  or the collection of usernames in the current running config.  It also supports
+  purging usernames from the configuration that are not explicitly defined.
 options:
   aggregate:
     description:
-      - The set of username objects to be configured on the remote
-        Cisco Nexus device.  The list entries can either be the username
-        or a hash of username and properties.  This argument is mutually
-        exclusive with the C(name) argument.
-    aliases: ['users', 'collection']
-    version_added: "2.4"
+    - The set of username objects to be configured on the remote Cisco Nexus device.  The
+      list entries can either be the username or a hash of username and properties.  This
+      argument is mutually exclusive with the C(name) argument.
+    aliases:
+    - users
+    - collection
   name:
     description:
-      - The username to be configured on the remote Cisco Nexus
-        device.  This argument accepts a string value and is mutually
-        exclusive with the C(aggregate) argument.
+    - The username to be configured on the remote Cisco Nexus device.  This argument
+      accepts a string value and is mutually exclusive with the C(aggregate) argument.
   configured_password:
     description:
-      - The password to be configured on the network device. The
-        password needs to be provided in cleartext and it will be encrypted
-        on the device.
-        Please note that this option is not same as C(provider password).
-    version_added: "2.4"
+    - The password to be configured on the network device. The password needs to be
+      provided in cleartext and it will be encrypted on the device. Please note that
+      this option is not same as C(provider password).
   update_password:
     description:
-      - Since passwords are encrypted in the device running config, this
-        argument will instruct the module when to change the password.  When
-        set to C(always), the password will always be updated in the device
-        and when set to C(on_create) the password will be updated only if
-        the username is created.
+    - Since passwords are encrypted in the device running config, this argument will
+      instruct the module when to change the password.  When set to C(always), the
+      password will always be updated in the device and when set to C(on_create) the
+      password will be updated only if the username is created.
     default: always
-    choices: ['on_create', 'always']
+    choices:
+    - on_create
+    - always
   role:
     description:
-      - The C(role) argument configures the role for the username in the
-        device running configuration.  The argument accepts a string value
-        defining the role name.  This argument does not check if the role
-        has been configured on the device.
-    aliases: ['roles']
+    - The C(role) argument configures the role for the username in the device running
+      configuration.  The argument accepts a string value defining the role name.  This
+      argument does not check if the role has been configured on the device.
+    aliases:
+    - roles
   sshkey:
     description:
-      - The C(sshkey) argument defines the SSH public key to configure
-        for the username.  This argument accepts a valid SSH key value.
+    - The C(sshkey) argument defines the SSH public key to configure for the username.  This
+      argument accepts a valid SSH key value.
   purge:
     description:
-      - The C(purge) argument instructs the module to consider the
-        resource definition absolute.  It will remove any previously
-        configured usernames on the device with the exception of the
-        `admin` user which cannot be deleted per nxos constraints.
+    - The C(purge) argument instructs the module to consider the resource definition
+      absolute.  It will remove any previously configured usernames on the device
+      with the exception of the `admin` user which cannot be deleted per nxos constraints.
     type: bool
     default: 'no'
   state:
     description:
-      - The C(state) argument configures the state of the username definition
-        as it relates to the device operational configuration.  When set
-        to I(present), the username(s) should be configured in the device active
-        configuration and when set to I(absent) the username(s) should not be
-        in the device active configuration
+    - The C(state) argument configures the state of the username definition as it
+      relates to the device operational configuration.  When set to I(present), the
+      username(s) should be configured in the device active configuration and when
+      set to I(absent) the username(s) should not be in the device active configuration
     default: present
-    choices: ['present', 'absent']
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """
@@ -151,7 +146,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.six import iteritems
-from ansible.module_utils.network.common.utils import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
     to_list,
 )
@@ -202,12 +197,30 @@ def map_obj_to_commands(updates, module):
         def remove(x):
             return commands.append("no username %s %s" % (want["name"], x))
 
+        def configure_roles():
+            if want["roles"]:
+                if have:
+                    for item in set(have["roles"]).difference(want["roles"]):
+                        remove("role %s" % item)
+
+                    for item in set(want["roles"]).difference(have["roles"]):
+                        add("role %s" % item)
+                else:
+                    for item in want["roles"]:
+                        add("role %s" % item)
+
+                return True
+            return False
+
         if want["state"] == "absent":
             commands.append("no username %s" % want["name"])
             continue
 
+        roles_configured = False
         if want["state"] == "present" and not have:
-            commands.append("username %s" % want["name"])
+            roles_configured = configure_roles()
+            if not roles_configured:
+                commands.append("username %s" % want["name"])
 
         if needs_update("configured_password"):
             if update_password == "always" or not have:
@@ -216,16 +229,8 @@ def map_obj_to_commands(updates, module):
         if needs_update("sshkey"):
             add("sshkey %s" % want["sshkey"])
 
-        if want["roles"]:
-            if have:
-                for item in set(have["roles"]).difference(want["roles"]):
-                    remove("role %s" % item)
-
-                for item in set(want["roles"]).difference(have["roles"]):
-                    add("role %s" % item)
-            else:
-                for item in want["roles"]:
-                    add("role %s" % item)
+        if not roles_configured:
+            configure_roles()
 
     return commands
 

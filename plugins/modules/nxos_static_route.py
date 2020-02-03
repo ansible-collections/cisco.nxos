@@ -22,59 +22,58 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_static_route
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_static_route
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages static route configuration
 description:
-  - Manages static route configuration
+- Manages static route configuration
 author: Gabriele Gerbino (@GGabriele)
 notes:
-  - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-  - If no vrf is supplied, vrf is set to default.
-  - If C(state=absent), the route will be removed, regardless of the
-    non-required parameters.
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- If no vrf is supplied, vrf is set to default.
+- If C(state=absent), the route will be removed, regardless of the non-required parameters.
 options:
   prefix:
     description:
-      - Destination prefix of static route.
+    - Destination prefix of static route.
     required: true
     aliases:
-      - address
+    - address
   next_hop:
     description:
-      - Next hop address or interface of static route.
-        If interface, it must be the fully-qualified interface name.
+    - Next hop address or interface of static route. If interface, it must be the
+      fully-qualified interface name.
     required: true
   vrf:
     description:
-      - VRF for static route.
+    - VRF for static route.
     default: default
   tag:
     description:
-      - Route tag value (numeric) or keyword 'default'.
+    - Route tag value (numeric) or keyword 'default'.
   route_name:
     description:
-      - Name of the route or keyword 'default'. Used with the name parameter on the CLI.
+    - Name of the route or keyword 'default'. Used with the name parameter on the
+      CLI.
   pref:
     description:
-      - Preference or administrative difference of route (range 1-255) or keyword 'default'.
+    - Preference or administrative difference of route (range 1-255) or keyword 'default'.
     aliases:
-      - admin_distance
+    - admin_distance
   aggregate:
     description: List of static route definitions
-    version_added: 2.5
   track:
     description:
-      - Track value (range 1 - 512). Track must already be configured on the device before adding the route.
-    version_added: "2.8"
+    - Track value (range 1 - 512). Track must already be configured on the device
+      before adding the route.
   state:
     description:
-      - Manage the state of the resource.
-    choices: ['present','absent']
-    default: 'present'
+    - Manage the state of the resource.
+    choices:
+    - present
+    - absent
+    default: present
 """
 
 EXAMPLES = """
@@ -104,8 +103,12 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxos_argument_spec,
 )
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.config import CustomNetworkConfig
-from ansible.module_utils.network.common.utils import remove_default_spec
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    CustomNetworkConfig,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    remove_default_spec,
+)
 
 
 def reconcile_candidate(module, candidate, prefix, want):

@@ -1,9 +1,8 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_vrf sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - set_fact: intname1="{{ nxos_int1 }}"
+
 - set_fact: intname2="{{ nxos_int2 }}"
 
 - set_fact: rdnd="1:2"
@@ -18,100 +17,96 @@
 - set_fact: vnid="default"
   when: platform is not match("N35|N7K|N3L")
 
-- name: "Enable feature BGP"
+- name: Enable feature BGP
+  ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
-    provider: "{{ connection }}"
     state: enabled
-  ignore_errors: yes
 
-- name: "Setup: Enable nv overlay evpn"
+- name: 'Setup: Enable nv overlay evpn'
+  ignore_errors: true
+  when: platform is match("N5K|N6K")
   cisco.nxos.nxos_config:
     commands:
       - nv overlay evpn
-    provider: "{{ connection }}"
-  ignore_errors: yes
-  when: platform is match("N5K|N6K")
+    provider: '{{ connection }}'
 
 - block:
-  - name: Ensure ntc VRF exists on switch
-    cisco.nxos.nxos_vrf: &configure
-      vrf: ntc
-      admin_state: down
-      description: testing
-      vni: "{{vnind|default(omit)}}"
-      rd: "{{rdnd|default(omit)}}"
-      interfaces:
-        - "{{ intname1 }}"
-        - "{{ intname2 }}"
-      provider: "{{ connection }}"
-    register: result
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: Ensure ntc VRF exists on switch
+      register: result
+      cisco.nxos.nxos_vrf: &id001
+        vrf: ntc
+        admin_state: down
+        description: testing
+        vni: '{{vnind|default(omit)}}'
+        rd: '{{rdnd|default(omit)}}'
+        interfaces:
+          - '{{ intname1 }}'
+          - '{{ intname2 }}'
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vrf: *configure
-    register: result
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_vrf: *id001
 
-  - pause:
-      seconds: 30
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - name: Remove config
-    cisco.nxos.nxos_vrf: &remconf
-      vrf: ntc
-      admin_state: up
-      vni: "{{vnid|default(omit)}}"
-      rd: "{{rdd|default(omit)}}"
-      interfaces: default
-      provider: "{{ connection }}"
-    register: result
+    - pause:
+        seconds: 30
 
-  - assert: *true
+    - name: Remove config
+      register: result
+      cisco.nxos.nxos_vrf: &id003
+        vrf: ntc
+        admin_state: up
+        vni: '{{vnid|default(omit)}}'
+        rd: '{{rdd|default(omit)}}'
+        interfaces: default
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vrf: *remconf
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_vrf: *id003
 
-  - name: Ensure ntc VRF does not exist on switch
-    cisco.nxos.nxos_vrf: &remove
-      vrf: ntc
-      provider: "{{ connection }}"
-      state: absent
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Ensure ntc VRF does not exist on switch
+      register: result
+      cisco.nxos.nxos_vrf: &id005
+        vrf: ntc
+        state: absent
 
-  - pause:
-      seconds: 30
+    - assert: *id002
 
-  - name: "Remove Idempotence"
-    cisco.nxos.nxos_vrf: *remove
-    register: result
+    - pause:
+        seconds: 30
 
-  - assert: *false
+    - name: Remove Idempotence
+      register: result
+      cisco.nxos.nxos_vrf: *id005
 
+    - assert: *id004
   always:
-  - name: "Setup: Disable nv overlay evpn"
-    cisco.nxos.nxos_config:
-      commands:
-        - no nv overlay evpn
-      provider: "{{ connection }}"
-    ignore_errors: yes
-    when: platform is match("N5K|N6K")
 
-  - name: "Disable feature BGP"
-    cisco.nxos.nxos_feature:
-      feature: bgp
-      provider: "{{ connection }}"
-      state: disabled
-    ignore_errors: yes
+    - name: 'Setup: Disable nv overlay evpn'
+      ignore_errors: true
+      when: platform is match("N5K|N6K")
+      cisco.nxos.nxos_config:
+        commands:
+          - no nv overlay evpn
+        provider: '{{ connection }}'
 
-  - debug: msg="END connection={{ ansible_connection }} nxos_vrf sanity test"
+    - name: Disable feature BGP
+      ignore_errors: true
+      cisco.nxos.nxos_feature:
+        feature: bgp
+        state: disabled
+
+    - debug: msg="END connection={{ ansible_connection }} nxos_vrf sanity test"

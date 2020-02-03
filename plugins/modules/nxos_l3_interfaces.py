@@ -36,15 +36,12 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: nxos_l3_interfaces
-version_added: 2.9
+DOCUMENTATION = """module: nxos_l3_interfaces
 short_description: Manages Layer-3 Interfaces attributes of NX-OS Interfaces
 description: This module manages Layer-3 interfaces attributes of NX-OS Interfaces.
 author: Trishna Guha (@trishnaguha)
 notes:
-  - Tested against NXOS 7.3.(0)D1(1) on VIRL
+- Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
   config:
     description: A dictionary of Layer-3 interface options
@@ -53,52 +50,66 @@ options:
     suboptions:
       name:
         description:
-          - Full name of L3 interface, i.e. Ethernet1/1.
+        - Full name of L3 interface, i.e. Ethernet1/1.
         type: str
         required: true
+      dot1q:
+        description:
+        - Configures IEEE 802.1Q VLAN encapsulation on a subinterface.
+        type: int
+        version_added: 2.1
       ipv4:
         description:
-          - IPv4 address and attributes of the L3 interface.
+        - IPv4 address and attributes of the L3 interface.
         type: list
         elements: dict
         suboptions:
           address:
             description:
-              - IPV4 address of the L3 interface.
+            - IPV4 address of the L3 interface.
             type: str
           tag:
             description:
-              - URIB route tag value for local/direct routes.
+            - URIB route tag value for local/direct routes.
             type: int
           secondary:
             description:
-              - A boolean attribute to manage addition of secondary IP address.
+            - A boolean attribute to manage addition of secondary IP address.
             type: bool
-            default: False
+            default: false
       ipv6:
         description:
-          - IPv6 address and attributes of the L3 interface.
+        - IPv6 address and attributes of the L3 interface.
         type: list
         elements: dict
         suboptions:
           address:
             description:
-              - IPV6 address of the L3 interface.
+            - IPV6 address of the L3 interface.
             type: str
           tag:
             description:
-              - URIB route tag value for local/direct routes.
+            - URIB route tag value for local/direct routes.
             type: int
-
+      redirects:
+        description:
+        - Enables/disables ip redirects
+        type: bool
+        version_added: 2.1
+      unreachables:
+        description:
+        - Enables/disables ip redirects
+        type: bool
+        version_added: 2.1
   state:
     description:
-      - The state of the configuration after module completion.
+    - The state of the configuration after module completion.
     type: str
     choices:
-      - merged
-      - replaced
-      - overridden
-      - deleted
+    - merged
+    - replaced
+    - overridden
+    - deleted
     default: merged
 """
 EXAMPLES = """
@@ -122,6 +133,10 @@ EXAMPLES = """
         ipv6:
           - address: fd5d:12c9:2201:2::1/64
             tag: 6
+      - name: Ethernet1/7.42
+        dot1q: 42
+        redirects: False
+        unreachables: False
     state: merged
 
 # After state:
@@ -130,8 +145,12 @@ EXAMPLES = """
 # interface Ethernet1/6
 #   ip address 192.168.22.1/24 tag 5
 #   ip address 10.1.1.1/24 secondary tag 10
-# interfaqce Ethernet1/6
+# interface Ethernet1/6
 #   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
+# interface Ethernet1/7.42
+#   encapsulation dot1q 42
+#   no ip redirects
+#   no ip unreachables
 
 
 # Using replaced

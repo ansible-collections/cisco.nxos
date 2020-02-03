@@ -22,28 +22,28 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: nxos_feature
-extends_documentation_fragment: nxos
-version_added: "2.1"
+DOCUMENTATION = """module: nxos_feature
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manage features in NX-OS switches.
 description:
-  - Offers ability to enable and disable features in NX-OS.
+- Offers ability to enable and disable features in NX-OS.
 author:
-  - Jason Edelman (@jedelman8)
-  - Gabriele Gerbino (@GGabriele)
+- Jason Edelman (@jedelman8)
+- Gabriele Gerbino (@GGabriele)
 options:
   feature:
     description:
-      - Name of feature.
+    - Name of feature.
     required: true
   state:
     description:
-      - Desired state of the feature.
+    - Desired state of the feature.
     required: false
-    default: 'enabled'
-    choices: ['enabled','disabled']
+    default: enabled
+    choices:
+    - enabled
+    - disabled
 """
 
 EXAMPLES = """

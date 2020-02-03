@@ -1,91 +1,85 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_pim sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
-- name: "Setup: Disable features"
-  cisco.nxos.nxos_feature: &disable_feature
-    feature: "{{ item }}"
-    provider: "{{ connection }}"
-    state: disabled
-  ignore_errors: yes
+- name: 'Setup: Disable features'
+  ignore_errors: true
   loop:
     - pim
     - bfd
-
-- name: "Setup: Enable features"
   cisco.nxos.nxos_feature:
-    feature: "{{ item }}"
-    provider: "{{ connection }}"
-    state: enabled
+    feature: '{{ item }}'
+    state: disabled
+
+- name: 'Setup: Enable features'
   loop:
     - pim
     - bfd
+  cisco.nxos.nxos_feature:
+    feature: '{{ item }}'
+    state: enabled
 
-- name: "Setup: Configure ssm_range none"
-  cisco.nxos.nxos_pim: &none
-    ssm_range: "none"
-    provider: "{{ connection }}"
+- name: 'Setup: Configure ssm_range none'
+  cisco.nxos.nxos_pim: &id005
+    ssm_range: none
 
 - block:
-  - name: Initial config from none
-    cisco.nxos.nxos_pim: &configure
-      bfd: enable
-      ssm_range:
-        - "239.128.1.0/24"
-        - "224.0.0.0/8"
-      provider: "{{ connection }}"
-    register: result
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: Initial config from none
+      register: result
+      cisco.nxos.nxos_pim: &id001
+        bfd: enable
+        ssm_range:
+          - 239.128.1.0/24
+          - 224.0.0.0/8
 
-  - name: Initial config idempotence
-    cisco.nxos.nxos_pim: *configure
-    register: result
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Initial config idempotence
+      register: result
+      cisco.nxos.nxos_pim: *id001
 
-  - name: Configure ssm_range default
-    cisco.nxos.nxos_pim: &conf_default
-      bfd: disable
-      ssm_range: "default"
-      provider: "{{ connection }}"
-    register: result
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - assert: *true
+    - name: Configure ssm_range default
+      register: result
+      cisco.nxos.nxos_pim: &id003
+        bfd: disable
+        ssm_range: default
 
-  - name: ssm_range default idempotence
-    cisco.nxos.nxos_pim: *conf_default
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: ssm_range default idempotence
+      register: result
+      cisco.nxos.nxos_pim: *id003
 
-  - name: Configure ssm_range none
-    cisco.nxos.nxos_pim: *none
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Configure ssm_range none
+      register: result
+      cisco.nxos.nxos_pim: *id005
 
-  - meta: end_play
-  - name: ssm_range none idempotence
-    cisco.nxos.nxos_pim: *none
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - meta: end_play
 
+    - name: ssm_range none idempotence
+      register: result
+      cisco.nxos.nxos_pim: *id005
+
+    - assert: *id004
   always:
-  - name: "Teardown: Disable features"
-    cisco.nxos.nxos_feature:
-      feature: "{{ item }}"
-      provider: "{{ connection }}"
-      state: disabled
-    ignore_errors: yes
-    loop:
-      - pim
-      - bfd
+
+    - name: 'Teardown: Disable features'
+      ignore_errors: true
+      loop:
+        - pim
+        - bfd
+      cisco.nxos.nxos_feature:
+        feature: '{{ item }}'
+        state: disabled
 
 - debug: msg="END connection={{ ansible_connection }} nxos_pim sanity test"

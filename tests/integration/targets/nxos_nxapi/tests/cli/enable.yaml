@@ -2,33 +2,31 @@
 - debug: msg="START cli/enable.yaml"
 
 - name: Setup - put NXAPI in stopped state
-  cisco.nxos.nxos_nxapi:
-      state: absent
   register: result
+  cisco.nxos.nxos_nxapi:
+    state: absent
 
 - name: Enable NXAPI
-  cisco.nxos.nxos_nxapi:
-      state: present
   register: result
+  cisco.nxos.nxos_nxapi:
+    state: present
 
 - name: Check NXAPI state
-  cisco.nxos.nxos_command:
-      commands:
-          - show feature | grep nxapi
   register: result
+  cisco.nxos.nxos_command:
+    commands:
+      - show feature | grep nxapi
 
 - name: Assert NXAPI is enabled
   assert:
-      that: result.stdout[0]  is search('enabled')
+    that: result.stdout[0]  is search('enabled')
 
 - name: Enable NXAPI again
-  cisco.nxos.nxos_nxapi:
   register: result
+  cisco.nxos.nxos_nxapi:
 
 - name: Assert idempotence
   assert:
-    that:
-      result.changed == false
-
+    that: result.changed == false
 
 - debug: msg="END cli/enable.yaml"

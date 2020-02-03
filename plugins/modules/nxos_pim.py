@@ -23,32 +23,29 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_pim
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_pim
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages configuration of a PIM instance.
 description:
-    - Manages configuration of a Protocol Independent Multicast (PIM) instance.
+- Manages configuration of a Protocol Independent Multicast (PIM) instance.
 author: Gabriele Gerbino (@GGabriele)
 options:
   bfd:
     description:
-      - Enables BFD on all PIM interfaces.
-      - "Dependency: 'feature bfd'"
-    version_added: "2.9"
+    - Enables BFD on all PIM interfaces.
+    - "Dependency: ''feature bfd''"
     type: str
-    choices: ['enable', 'disable']
-
+    choices:
+    - enable
+    - disable
   ssm_range:
     description:
-      - Configure group ranges for Source Specific Multicast (SSM).
-        Valid values are multicast addresses or the keyword C(none)
-        or keyword C(default). C(none) removes all SSM group ranges.
-        C(default) will set ssm_range to the default multicast address.
-        If you set multicast address, please ensure that it is not the
-        same as the C(default), otherwise use the C(default) option.
+    - Configure group ranges for Source Specific Multicast (SSM). Valid values are
+      multicast addresses or the keyword C(none) or keyword C(default). C(none) removes
+      all SSM group ranges. C(default) will set ssm_range to the default multicast
+      address. If you set multicast address, please ensure that it is not the same
+      as the C(default), otherwise use the C(default) option.
     required: true
 """
 EXAMPLES = """
@@ -87,7 +84,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxos_argument_spec,
 )
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.config import CustomNetworkConfig
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    CustomNetworkConfig,
+)
 
 
 PARAM_TO_COMMAND_KEYMAP = {

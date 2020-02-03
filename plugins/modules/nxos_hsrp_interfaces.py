@@ -36,14 +36,11 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: nxos_hsrp_interfaces
-version_added: "2.10"
-short_description: 'Manages HSRP attributes of NXOS interfaces.'
-description: 'Manages Hot Standby Router Protocol (HSRP) interface attributes.'
+DOCUMENTATION = """module: nxos_hsrp_interfaces
+short_description: Manages HSRP attributes of NXOS interfaces.
+description: Manages Hot Standby Router Protocol (HSRP) interface attributes.
 author: Chris Van Heuveln (@chrisvanheuveln)
-notes:
+notes: null
 options:
   config:
     description: The provided configuration

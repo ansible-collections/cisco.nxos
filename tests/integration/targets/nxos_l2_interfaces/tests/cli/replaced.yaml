@@ -1,69 +1,69 @@
 ---
 - debug:
-    msg: "Start nxos_l2_interfaces replaced integration tests connection={{ ansible_connection }}"
+    msg: Start nxos_l2_interfaces replaced integration tests connection={{ ansible_connection
+      }}
 
 - set_fact: test_int1="{{ nxos_int1 }}"
+
 - set_fact: test_int2="{{ nxos_int2 }}"
 
 - name: setup1
-  network.cli.cli_config: &cleanup
-    config: |
-      default interface {{ test_int1 }}
-      default interface {{ test_int2 }}
-  ignore_errors: yes
+  ignore_errors: true
+  ansible.netcommon.cli_config: &id003
+    config: "default interface {{ test_int1 }}\ndefault interface {{ test_int2 }}\n"
 
 - block:
-  - name: setup2
-    network.cli.cli_config:
-      config: |
-        interface {{ test_int1 }}
-          switchport
-          switchport access vlan 5
-        interface {{ test_int2 }}
-          switchport
-          switchport trunk native vlan 15
 
-  - name: Gather l2_interfaces facts
-    cisco.nxos.nxos_facts: &facts
-      gather_subset:
-        - '!all'
-        - '!min'
-      gather_network_resources: l2_interfaces
+    - name: setup2
+      ansible.netcommon.cli_config:
+        config: "interface {{ test_int1 }}\n  switchport\n  switchport access vlan\
+          \ 5\ninterface {{ test_int2 }}\n  switchport\n  switchport trunk native\
+          \ vlan 15\n"
 
-  - name: Replaced
-    cisco.nxos.nxos_l2_interfaces: &replaced
-      config:
-        - name: "{{ test_int1 }}"
-          access:
-            vlan: 8
-      state: replaced
-    register: result
+    - name: Gather l2_interfaces facts
+      cisco.nxos.nxos_facts: &id001
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: l2_interfaces
 
-  - assert:
-      that:
-        - "ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.before)|length == 0"
-        - "result.changed == true"
-        - "'interface {{ test_int1 }}' in result.commands"
-        - "'switchport access vlan 8' in result.commands"
-        - "result.commands|length == 2"
+    - name: Replaced
+      register: result
+      cisco.nxos.nxos_l2_interfaces: &id002
+        config:
 
-  - name: Gather l2_interfaces post facts
-    cisco.nxos.nxos_facts: *facts
+          - name: '{{ test_int1 }}'
+            access:
+              vlan: 8
+        state: replaced
 
-  - assert:
-      that:
-        - "ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.after)|length == 0"
+    - assert:
+        that:
+          - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.before)|length
+            == 0
+          - result.changed == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'switchport access vlan 8' in result.commands"
+          - result.commands|length == 2
 
-  - name: Idempotence - Replaced
-    cisco.nxos.nxos_l2_interfaces: *replaced
-    register: result
+    - name: Gather l2_interfaces post facts
+      cisco.nxos.nxos_facts: *id001
 
-  - assert:
-      that:
-        - "result.changed == false"
-        - "result.commands|length == 0"
+    - assert:
+        that:
+          - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.after)|length
+            == 0
 
+    - name: Idempotence - Replaced
+      register: result
+      cisco.nxos.nxos_l2_interfaces: *id002
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
   always:
-  - name: teardown
-    network.cli.cli_config: *cleanup
-    ignore_errors: yes
+
+    - name: teardown
+      ignore_errors: true
+      ansible.netcommon.cli_config: *id003

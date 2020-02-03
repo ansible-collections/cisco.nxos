@@ -1,55 +1,59 @@
 ---
 - debug:
-    msg: "Start nxos_vlans merged integration tests connection={{ ansible_connection }}"
+    msg: Start nxos_vlans merged integration tests connection={{ ansible_connection
+      }}
 
 - name: setup
-  network.cli.cli_config: &cleanup
-    config: |
-      no vlan 2-100
+  ansible.netcommon.cli_config: &id002
+    config: "no vlan 2-100\n"
 
 - block:
-  - name: Merged
-    cisco.nxos.nxos_vlans: &merged
-      config:
-        - vlan_id: 5
-          name: vlan5
-        - vlan_id: 6
-          name: vlan6
-          state: suspend
-      state:  merged
-    register: result
 
-  - assert:
-      that:
-        - "result.changed == true"
-        - "result.before|length == 0"
-        - "'vlan 5' in result.commands"
-        - "'name vlan5' in result.commands"
-        - "'vlan 6' in result.commands"
-        - "'name vlan6' in result.commands"
-        - "'state suspend' in result.commands"
-        - "result.commands|length == 5"
+    - name: Merged
+      register: result
+      cisco.nxos.nxos_vlans: &id001
+        config:
 
-  - name: Gather vlans facts
-    cisco.nxos.nxos_facts:
-      gather_subset:
-        - '!all'
-        - '!min'
-      gather_network_resources: vlans
+          - vlan_id: 5
+            name: vlan5
 
-  - assert:
-      that:
-        - "result.after|length == (ansible_facts.network_resources.vlans|length - 1)"
+          - vlan_id: 6
+            name: vlan6
+            state: suspend
+        state: merged
 
-  - name: Idempotence - Merged
-    cisco.nxos.nxos_vlans: *merged
-    register: result
+    - assert:
+        that:
+          - result.changed == true
+          - result.before|length == 0
+          - "'vlan 5' in result.commands"
+          - "'name vlan5' in result.commands"
+          - "'vlan 6' in result.commands"
+          - "'name vlan6' in result.commands"
+          - "'state suspend' in result.commands"
+          - result.commands|length == 5
 
-  - assert:
-      that:
-        - "result.changed == false"
-        - "result.commands|length == 0"
+    - name: Gather vlans facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: vlans
 
+    - assert:
+        that:
+          - result.after|length == (ansible_facts.network_resources.vlans|length
+            - 1)
+
+    - name: Idempotence - Merged
+      register: result
+      cisco.nxos.nxos_vlans: *id001
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
   always:
-  - name: teardown
-    network.cli.cli_config: *cleanup
+
+    - name: teardown
+      ansible.netcommon.cli_config: *id002

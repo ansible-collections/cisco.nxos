@@ -1,64 +1,61 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_community sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
+- debug: msg="START connection={{ ansible_connection }} nxos_snmp_community sanity
+    test"
 
 - name: Setup - Remove snmp_contact if configured
-  cisco.nxos.nxos_snmp_contact: &remove
+  cisco.nxos.nxos_snmp_contact: &id005
     contact: Test
-    provider: "{{ connection }}"
-    state: absent 
+    state: absent
 
 - block:
 
-  - name: Configure snmp contact
-    cisco.nxos.nxos_snmp_contact: &config
-      contact: Testing
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - name: Configure snmp contact
+      register: result
+      cisco.nxos.nxos_snmp_contact: &id001
+        contact: Testing
+        state: present
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - name: Idempotence Check
-    cisco.nxos.nxos_snmp_contact: *config
-    register: result
+    - name: Idempotence Check
+      register: result
+      cisco.nxos.nxos_snmp_contact: *id001
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - name: Change snmp contact
-    cisco.nxos.nxos_snmp_contact: &config1
-      contact: Test
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - name: Change snmp contact
+      register: result
+      cisco.nxos.nxos_snmp_contact: &id003
+        contact: Test
+        state: present
 
-  - assert: *true
+    - assert: *id002
 
-  - name: Idempotence Check
-    cisco.nxos.nxos_snmp_contact: *config1
-    register: result
+    - name: Idempotence Check
+      register: result
+      cisco.nxos.nxos_snmp_contact: *id003
 
-  - assert: *false
+    - assert: *id004
 
-  - name: Remove snmp contact
-    cisco.nxos.nxos_snmp_contact: *remove
-    register: result
+    - name: Remove snmp contact
+      register: result
+      cisco.nxos.nxos_snmp_contact: *id005
 
-  - assert: *true
+    - assert: *id002
 
-  - name: Idempotence Check
-    cisco.nxos.nxos_snmp_contact: *remove
-    register: result
+    - name: Idempotence Check
+      register: result
+      cisco.nxos.nxos_snmp_contact: *id005
 
-  - assert: *false
-
+    - assert: *id004
   always:
-  - name: Cleanup 
-    cisco.nxos.nxos_snmp_contact: *remove
 
-  - debug: msg="END connection={{ ansible_connection }} nxos_snmp_community sanity test"
+    - name: Cleanup
+      cisco.nxos.nxos_snmp_contact: *id005
+
+    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_community sanity
+        test"

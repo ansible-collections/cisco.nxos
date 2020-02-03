@@ -23,39 +23,41 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_snmp_community
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_snmp_community
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages SNMP community configs.
 description:
-    - Manages SNMP community configuration.
+- Manages SNMP community configuration.
 author:
-    - Jason Edelman (@jedelman8)
-    - Gabriele Gerbino (@GGabriele)
+- Jason Edelman (@jedelman8)
+- Gabriele Gerbino (@GGabriele)
 notes:
-    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
 options:
-    community:
-        description:
-            - Case-sensitive community string.
-        required: true
-    access:
-        description:
-            - Access type for community.
-        choices: ['ro','rw']
-    group:
-        description:
-            - Group to which the community belongs.
-    acl:
-        description:
-            - ACL name to filter snmp requests or keyword 'default'.
-    state:
-        description:
-            - Manage the state of the resource.
-        default: present
-        choices: ['present','absent']
+  community:
+    description:
+    - Case-sensitive community string.
+    required: true
+  access:
+    description:
+    - Access type for community.
+    choices:
+    - ro
+    - rw
+  group:
+    description:
+    - Group to which the community belongs.
+  acl:
+    description:
+    - ACL name to filter snmp requests or keyword 'default'.
+  state:
+    description:
+    - Manage the state of the resource.
+    default: present
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """
@@ -157,10 +159,13 @@ def config_snmp_community(delta, community):
         "no_acl": "no snmp-server community {0} use-acl {no_acl}",
     }
     commands = []
-    for k, v in delta.items():
+    for k in delta.keys():
         cmd = CMDS.get(k).format(community, **delta)
         if cmd:
-            commands.append(cmd)
+            if "group" in cmd:
+                commands.insert(0, cmd)
+            else:
+                commands.append(cmd)
             cmd = None
     return commands
 
@@ -227,6 +232,7 @@ def main():
             commands.append(command)
 
     cmds = flatten_list(commands)
+
     if cmds:
         results["changed"] = True
         if not module.check_mode:

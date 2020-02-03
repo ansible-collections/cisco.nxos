@@ -1,62 +1,61 @@
 ---
 - debug:
-    msg: "Start nxos_vlans replaced integration tests connection={{ ansible_connection }}"
+    msg: Start nxos_vlans replaced integration tests connection={{ ansible_connection
+      }}
 
 - name: setup1
-  network.cli.cli_config: &cleanup
-    config: |
-      no vlan 2-100
+  ansible.netcommon.cli_config: &id003
+    config: "no vlan 2-100\n"
 
 - block:
-  - name: setup2
-    network.cli.cli_config:
-      config: |
-        vlan 5
-          name test-vlan5
-        vlan 6
-          name test-vlan6
-          exit
 
-  - name: Gather vlans facts
-    cisco.nxos.nxos_facts: &facts
-      gather_subset:
-        - '!all'
-        - '!min'
-      gather_network_resources: vlans
+    - name: setup2
+      ansible.netcommon.cli_config:
+        config: "vlan 5\n  name test-vlan5\nvlan 6\n  name test-vlan6\n  exit\n"
 
-  - name: Replaced
-    cisco.nxos.nxos_vlans: &replaced
-      config:
-        - vlan_id: 6
-          state: suspend
-      state: replaced
-    register: result
+    - name: Gather vlans facts
+      cisco.nxos.nxos_facts: &id001
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: vlans
 
-  - assert:
-      that:
-        - "result.before|length == (ansible_facts.network_resources.vlans|length - 1)"
-        - "result.changed == true"
-        - "'vlan 6' in result.commands"
-        - "'no name' in result.commands"
-        - "'state suspend' in result.commands"
-        - "result.commands|length == 3"
+    - name: Replaced
+      register: result
+      cisco.nxos.nxos_vlans: &id002
+        config:
 
-  - name: Gather vlans post facts
-    cisco.nxos.nxos_facts: *facts
+          - vlan_id: 6
+            state: suspend
+        state: replaced
 
-  - assert:
-      that:
-        - "result.after|length == (ansible_facts.network_resources.vlans|length - 1)"
+    - assert:
+        that:
+          - result.before|length == (ansible_facts.network_resources.vlans|length
+            - 1)
+          - result.changed == true
+          - "'vlan 6' in result.commands"
+          - "'no name' in result.commands"
+          - "'state suspend' in result.commands"
+          - result.commands|length == 3
 
-  - name: Idempotence - Replaced
-    cisco.nxos.nxos_vlans: *replaced
-    register: result
+    - name: Gather vlans post facts
+      cisco.nxos.nxos_facts: *id001
 
-  - assert:
-      that:
-        - "result.changed == false"
-        - "result.commands|length == 0"
+    - assert:
+        that:
+          - result.after|length == (ansible_facts.network_resources.vlans|length
+            - 1)
 
+    - name: Idempotence - Replaced
+      register: result
+      cisco.nxos.nxos_vlans: *id002
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
   always:
-  - name: teardown
-    network.cli.cli_config: *cleanup
+
+    - name: teardown
+      ansible.netcommon.cli_config: *id003

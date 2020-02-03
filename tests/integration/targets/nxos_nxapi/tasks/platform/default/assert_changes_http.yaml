@@ -3,7 +3,8 @@
   assert:
     that:
       - result.stdout[0]['TABLE_listen_on_port']['ROW_listen_on_port'].l_port
-      - result.stdout[0]['TABLE_listen_on_port']['ROW_listen_on_port'].l_port|string is search("80")
+      - result.stdout[0]['TABLE_listen_on_port']['ROW_listen_on_port'].l_port|string
+        is search("80")
       - result.stdout[0]['operation_status'].o_status == 'nxapi enabled'
   when: result.stdout[0].TABLE_listen_on_port is defined
 

@@ -17,8 +17,10 @@ import re
 import ast
 from copy import deepcopy
 
-from ansible.module_utils.network.common import utils
-from ansible.module_utils.network.common.utils import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     parse_conf_arg,
     parse_conf_cmd_arg,
 )

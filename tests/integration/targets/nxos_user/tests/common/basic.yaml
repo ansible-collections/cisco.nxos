@@ -1,59 +1,62 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_user basic test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - name: Remove old entries of user
   cisco.nxos.nxos_user:
     aggregate:
-      - { name: ansibletest1 }
-      - { name: ansibletest2 }
-      - { name: ansibletest3 }
-    provider: "{{ connection }}"
+
+      - name: ansibletest1
+
+      - name: ansibletest2
+
+      - name: ansibletest3
     state: absent
 
-# Start tests
 - name: Create user
+  register: result
   cisco.nxos.nxos_user:
     name: ansibletest1
     roles: network-operator
-    provider: "{{ connection }}"
     state: present
-  register: result
+
+- debug: msg="{{result}}"
 
 - assert:
     that:
-      - 'result.changed == true'
+      - result.changed == true
       - '"username" in result.commands[0]'
-      - '"role network-operator" in result.commands[1]'
+      - '"role network-operator" in result.commands[0]'
 
 - name: Collection of users
+  register: result
   cisco.nxos.nxos_user:
     aggregate:
-      - { name: ansibletest2 }
-      - { name: ansibletest3 }
-    provider: "{{ connection }}"
+
+      - name: ansibletest2
+
+      - name: ansibletest3
     state: present
     roles: network-admin
-  register: result
 
 - assert:
     that:
-      - 'result.changed == true'
+      - result.changed == true
 
 - name: tearDown
+  register: result
   cisco.nxos.nxos_user:
     aggregate:
-      - { name: ansibletest1 }
-      - { name: ansibletest2 }
-      - { name: ansibletest3 }
-    provider: "{{ connection }}"
+
+      - name: ansibletest1
+
+      - name: ansibletest2
+
+      - name: ansibletest3
     state: absent
-  register: result
 
 - assert:
     that:
-      - 'result.changed == true'
+      - result.changed == true
       - '"no username" in result.commands[0]'
 
 - debug: msg="END connection={{ ansible_connection }} nxos_user basic test"

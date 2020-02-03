@@ -1,8 +1,6 @@
 ---
-- debug: msg="START nxos cli/net_system.yaml on connection={{ ansible_connection }}"
-
-# Add minimal testcase to check args are passed correctly to
-# implementation module and module run is successful.
+- debug: msg="START nxos cli/net_system.yaml on connection={{ ansible_connection
+    }}"
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -12,11 +10,11 @@
     match: none
 
 - name: configure domain_list using platform agnostic module
-  net_system:
+  register: result
+  ansible.netcommon.net_system:
     domain_search:
       - ansible.com
       - redhat.com
-  register: result
 
 - assert:
     that:

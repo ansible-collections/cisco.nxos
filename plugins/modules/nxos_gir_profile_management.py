@@ -23,35 +23,36 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_gir_profile_management
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_gir_profile_management
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Create a maintenance-mode or normal-mode profile for GIR.
 description:
-    - Manage a maintenance-mode or normal-mode profile with configuration
-      commands that can be applied during graceful removal
-      or graceful insertion.
+- Manage a maintenance-mode or normal-mode profile with configuration commands that
+  can be applied during graceful removal or graceful insertion.
 author:
-    - Gabriele Gerbino (@GGabriele)
+- Gabriele Gerbino (@GGabriele)
 notes:
-    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-    - C(state=absent) removes the whole profile.
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- C(state=absent) removes the whole profile.
 options:
-    commands:
-        description:
-            - List of commands to be included into the profile.
-    mode:
-        description:
-            - Configure the profile as Maintenance or Normal mode.
-        required: true
-        choices: ['maintenance', 'normal']
-    state:
-        description:
-            - Specify desired state of the resource.
-        default: present
-        choices: ['present','absent']
+  commands:
+    description:
+    - List of commands to be included into the profile.
+  mode:
+    description:
+    - Configure the profile as Maintenance or Normal mode.
+    required: true
+    choices:
+    - maintenance
+    - normal
+  state:
+    description:
+    - Specify desired state of the resource.
+    default: present
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """
@@ -108,7 +109,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxos_argument_spec,
 )
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.config import CustomNetworkConfig
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    CustomNetworkConfig,
+)
 
 
 def get_existing(module):

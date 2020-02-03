@@ -7,22 +7,22 @@
     match: none
 
 - name: configure domain_name
+  register: result
   cisco.nxos.nxos_system:
     domain_name: eng.ansible.com
-  register: result
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
 
 - name: verify domain_name
+  register: result
   cisco.nxos.nxos_system:
     domain_name: eng.ansible.com
-  register: result
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - name: teardown
   cisco.nxos.nxos_config:

@@ -1,203 +1,197 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_pim_interface sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
+- debug: msg="START connection={{ ansible_connection }} nxos_pim_interface sanity
+    test"
 
-- name: "Setup: Disable features"
-  cisco.nxos.nxos_feature: &disable_feature
-    feature: "{{ item }}"
-    provider: "{{ connection }}"
+- name: 'Setup: Disable features'
+  loop:
+    - pim
+    - bfd
+  ignore_errors: true
+  cisco.nxos.nxos_feature: &id011
+    feature: '{{ item }}'
     state: disabled
-  loop: ['pim', 'bfd']
-  ignore_errors: yes
 
-- name: "Setup: Enable features"
+- name: 'Setup: Enable features'
+  loop:
+    - pim
+    - bfd
   cisco.nxos.nxos_feature:
-    feature: "{{ item }}"
-    provider: "{{ connection }}"
+    feature: '{{ item }}'
     state: enabled
-  loop: ['pim', 'bfd']
 
 - set_fact: testint="{{ nxos_int1 }}"
 
-- name: "Setup: Put interface {{ testint }} into a default state"
+- name: 'Setup: Put interface {{ testint }} into a default state'
+  ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
-      - "default interface {{ testint }}"
-    provider: "{{ connection }}"
-  ignore_errors: yes
+      - default interface {{ testint }}
 
-- name: "Ensure {{testint}} is layer3"
+- name: Ensure {{testint}} is layer3
   cisco.nxos.nxos_interface:
-    interface: "{{ testint }}"
+    interface: '{{ testint }}'
     mode: layer3
-    description: 'Configured by Ansible - Layer3'
-    admin_state: 'up'
-    provider: "{{ connection }}"
+    description: Configured by Ansible - Layer3
+    admin_state: up
     state: present
 
 - block:
-  - name: Configure nxos_pim_interface state absent
-    cisco.nxos.nxos_pim_interface: &pimabsent
-      interface: "{{ testint }}"
-      provider: "{{ connection }}"
-      state: absent
 
-  - name: configure jp policy and type
-    cisco.nxos.nxos_pim_interface: &configjp
-      interface: "{{ testint }}"
-      jp_policy_in: JPIN
-      jp_policy_out: JPOUT
-      jp_type_in: routemap
-      jp_type_out: routemap
-      sparse: True
-      border: True
-      provider: "{{ connection }}"
-    register: result
+    - name: Configure nxos_pim_interface state absent
+      cisco.nxos.nxos_pim_interface: &id010
+        interface: '{{ testint }}'
+        state: absent
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: configure jp policy and type
+      register: result
+      cisco.nxos.nxos_pim_interface: &id001
+        interface: '{{ testint }}'
+        jp_policy_in: JPIN
+        jp_policy_out: JPOUT
+        jp_type_in: routemap
+        jp_type_out: routemap
+        sparse: true
+        border: true
 
-  - name: Check idempotence
-    cisco.nxos.nxos_pim_interface: *configjp
-    register: result
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Check idempotence
+      register: result
+      cisco.nxos.nxos_pim_interface: *id001
 
-  - name: configure neighbor policy and rm
-    cisco.nxos.nxos_pim_interface: &confignpr
-      interface: "{{ testint }}"
-      neighbor_policy: NPR
-      neighbor_type: routemap
-      provider: "{{ connection }}"
-    register: result
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - assert: *true
+    - name: configure neighbor policy and rm
+      register: result
+      cisco.nxos.nxos_pim_interface: &id003
+        interface: '{{ testint }}'
+        neighbor_policy: NPR
+        neighbor_type: routemap
 
-  - name: Check idempotence
-    cisco.nxos.nxos_pim_interface: *confignpr
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check idempotence
+      register: result
+      cisco.nxos.nxos_pim_interface: *id003
 
-  - pause:
-      seconds: 5
+    - assert: *id004
 
-  - name: configure neighbor policy and prefix
-    cisco.nxos.nxos_pim_interface: &confignpp
-      interface: "{{ testint }}"
-      neighbor_policy: NPPF
-      neighbor_type: prefix
-      provider: "{{ connection }}"
-    register: result
+    - pause:
+        seconds: 5
 
-  - assert: *true
+    - name: configure neighbor policy and prefix
+      register: result
+      cisco.nxos.nxos_pim_interface: &id005
+        interface: '{{ testint }}'
+        neighbor_policy: NPPF
+        neighbor_type: prefix
 
-  - name: Check idempotence
-    cisco.nxos.nxos_pim_interface: *confignpp
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check idempotence
+      register: result
+      cisco.nxos.nxos_pim_interface: *id005
 
-  - name: configure hello_auth_key
-    cisco.nxos.nxos_pim_interface: &confighak1
-      interface: "{{ testint }}"
-      hello_auth_key: password1
-      provider: "{{ connection }}"
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: configure hello_auth_key
+      register: result
+      cisco.nxos.nxos_pim_interface:
+        interface: '{{ testint }}'
+        hello_auth_key: password1
 
-  - name: configure pim other params
-    cisco.nxos.nxos_pim_interface: &configo
-      interface: "{{ testint }}"
-      dr_prio: 10
-      hello_interval: 40
-      sparse: True
-      border: True
-      bfd: enable
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - assert: *id002
 
-  - assert: *true
+    - name: configure pim other params
+      register: result
+      cisco.nxos.nxos_pim_interface: &id006
+        interface: '{{ testint }}'
+        dr_prio: 10
+        hello_interval: 40
+        sparse: true
+        border: true
+        bfd: enable
+        state: present
 
-  - name: Check idempotence
-    cisco.nxos.nxos_pim_interface: *configo
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check idempotence
+      register: result
+      cisco.nxos.nxos_pim_interface: *id006
 
-  - name: configure negative
-    cisco.nxos.nxos_pim_interface: &configno
-      interface: "{{ testint }}"
-      sparse: False
-      border: False
-      bfd: disable
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: configure negative
+      register: result
+      cisco.nxos.nxos_pim_interface: &id007
+        interface: '{{ testint }}'
+        sparse: false
+        border: false
+        bfd: disable
+        state: present
 
-  - name: Check idempotence
-    cisco.nxos.nxos_pim_interface: *configno
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check idempotence
+      register: result
+      cisco.nxos.nxos_pim_interface: *id007
 
-  - pause:
-      seconds: 5
+    - assert: *id004
 
-  - name: configure state default
-    cisco.nxos.nxos_pim_interface: &configdefault
-      interface: "{{ testint }}"
-      provider: "{{ connection }}"
-      state: default
-    register: result
+    - pause:
+        seconds: 5
 
-  - assert: *true
+    - name: configure state default
+      register: result
+      cisco.nxos.nxos_pim_interface: &id008
+        interface: '{{ testint }}'
+        state: default
 
-  - name: Check idempotence
-    cisco.nxos.nxos_pim_interface: *configdefault
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check idempotence
+      register: result
+      cisco.nxos.nxos_pim_interface: *id008
 
-  - name: configure border
-    cisco.nxos.nxos_pim_interface: &configb
-      interface: "{{ testint }}"
-      border: True
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: configure border
+      register: result
+      cisco.nxos.nxos_pim_interface: &id009
+        interface: '{{ testint }}'
+        border: true
+        state: present
 
-  - name: Check idempotence
-    cisco.nxos.nxos_pim_interface: *configb
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check idempotence
+      register: result
+      cisco.nxos.nxos_pim_interface: *id009
 
-  - name: configure state absent
-    cisco.nxos.nxos_pim_interface: *pimabsent
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: configure state absent
+      register: result
+      cisco.nxos.nxos_pim_interface: *id010
 
-  - name: Check idempotence
-    cisco.nxos.nxos_pim_interface: *pimabsent
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Check idempotence
+      register: result
+      cisco.nxos.nxos_pim_interface: *id010
 
+    - assert: *id004
   always:
-  - name: "Disable feature PIM"
-    cisco.nxos.nxos_feature: *disable_feature
-    loop: ['pim', 'bfd']
 
-- debug: msg="END connection={{ ansible_connection }} nxos_pim_interface sanity test"
+    - name: Disable feature PIM
+      loop:
+        - pim
+        - bfd
+      cisco.nxos.nxos_feature: *id011
+
+- debug: msg="END connection={{ ansible_connection }} nxos_pim_interface sanity
+    test"

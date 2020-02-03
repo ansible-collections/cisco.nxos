@@ -11,9 +11,9 @@
       - 50 permit ip 192.0.2.5/32 any log
     parents: ip access-list test
     match: none
-    provider: "{{ connection }}"
 
 - name: configure sub level command using strict match
+  register: result
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -24,12 +24,10 @@
     before: no ip access-list test
     match: strict
     replace: block
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
       - "'ip access-list test' in result.updates"
       - "'10 permit ip 192.0.2.1/32 any log' in result.updates"
       - "'30 permit ip 192.0.2.2/32 any log' in result.updates"
@@ -38,6 +36,7 @@
       - "'50 permit ip 192.0.2.5/32 any log' not in result.updates"
 
 - name: check sub level command using strict match
+  register: result
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -46,17 +45,14 @@
       - 40 permit ip 192.0.2.4/32 any log
     parents: ip access-list test
     match: strict
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - name: teardown
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
-    provider: "{{ connection }}"
 
 - debug: msg="END nxapi/sublevel_strict.yaml"

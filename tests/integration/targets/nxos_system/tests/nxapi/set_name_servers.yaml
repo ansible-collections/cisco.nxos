@@ -1,29 +1,24 @@
 ---
 - debug: msg="START nxapi/set_name_servers.yaml"
 
-
-# nxapi will error if you try and remove a non-existent entry,
-# Therefore we do this as a with_items loop with ignore_errors
 - name: setup
-  cisco.nxos.nxos_config: &reset
+  ignore_errors: true
+  with_items:
+    - 192.0.2.1
+    - 192.0.2.2
+    - 192.0.2.3
+  cisco.nxos.nxos_config: &id002
     lines:
       - no ip name-server {{ item }}
     match: none
-    provider: "{{ connection }}"
-  ignore_errors: yes
-  with_items:
-      - 192.0.2.1
-      - 192.0.2.2
-      - 192.0.2.3
 
 - name: configure name_servers
+  register: result
   cisco.nxos.nxos_system:
     name_servers:
       - 192.0.2.1
       - 192.0.2.2
       - 192.0.2.3
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
@@ -33,52 +28,23 @@
       - "'ip name-server 192.0.2.3' in result.commands"
 
 - name: verify name_servers
+  register: result
   cisco.nxos.nxos_system:
     name_servers:
       - 192.0.2.1
       - 192.0.2.2
       - 192.0.2.3
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
       - result.changed == false
 
-#- name: change to vrf
-#  nxos_system:
-#    name_servers:
-#      - 192.0.2.1
-#      - { server: 192.0.2.2, vrf: ansible }
-#      - 192.0.2.3
-#  register: result
-
-#- assert:
-#    that:
-#      - result.changed == true
-#      - result.commands|length == 2
-#      - "'no ip name-server 192.0.2.2' in result.commands"
-#      - "'ip name-server 192.0.2.2 vrf ansible' in result.commands"
-
-#- name: verify change to vrf
-#  nxos_system:
-#    name_servers:
-#      - 192.0.2.1
-#      - { server: 192.0.2.2, vrf: ansible }
-#      - 192.0.2.3
-#  register: result
-#
-#- assert:
-#    that:
-#      - result.changed == false
-
 - name: remove one
+  register: result
   cisco.nxos.nxos_system:
     name_servers:
       - 192.0.2.1
       - 192.0.2.2
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
@@ -87,29 +53,28 @@
       - "'no ip name-server 192.0.2.3' in result.commands"
 
 - name: default name server
-  cisco.nxos.nxos_system: &defns
-    name_servers: default
-    provider: "{{ connection }}"
   register: result
+  cisco.nxos.nxos_system: &id001
+    name_servers: default
 
 - assert:
     that:
       - result.changed == true
 
 - name: Idempotent check
-  cisco.nxos.nxos_system: *defns
   register: result
+  cisco.nxos.nxos_system: *id001
 
 - assert:
     that:
       - result.changed == false
 
 - name: teardown
-  cisco.nxos.nxos_config: *reset
   with_items:
-      - 192.0.2.1
-      - 192.0.2.2
-      - 192.0.2.3
-  ignore_errors: yes
+    - 192.0.2.1
+    - 192.0.2.2
+    - 192.0.2.3
+  ignore_errors: true
+  cisco.nxos.nxos_config: *id002
 
 - debug: msg="END nxapi/set_name_servers.yaml"
