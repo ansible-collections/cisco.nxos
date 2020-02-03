@@ -42,7 +42,7 @@ class InterfacesArgs(object):  # pylint: disable=R0903
             "options": {
                 "description": {"type": "str"},
                 "duplex": {"choices": ["full", "half", "auto"], "type": "str"},
-                "enabled": {"default": True, "type": "bool"},
+                "enabled": {"type": "bool"},
                 "fabric_forwarding_anycast_gateway": {"type": "bool"},
                 "ip_forward": {"type": "bool"},
                 "mode": {"choices": ["layer2", "layer3"], "type": "str"},

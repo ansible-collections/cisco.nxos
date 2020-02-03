@@ -1,86 +1,76 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_banner sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - set_fact: banner_exec_image_ok
-  # N5K/N6K/N9K-F support banner exec but have image defects
   when: platform is search("N7K|N3K-F")
 
 - set_fact: banner_motd_image_ok
-  # multiline banner issues
-  when: imagetag is not search("I7") and ansible_connection != "httpapi"
+  when: imagetag is not search("I7") and ansible_connection != "ansible.netcommon.httpapi"
 
-
-# banner exec tests
 - block:
-  - debug: msg="START nxos_banner exec tests"
-  - name: setup exec
-    cisco.nxos.nxos_banner: &remove_exec
-      banner: exec
-      state: absent
 
-  - name: Set exec
-    cisco.nxos.nxos_banner: &exec
-      banner: exec
-      text: |
-        this is my exec banner
-        that has a multiline
-        string
-      state: present
-    register: result
+    - debug: msg="START nxos_banner exec tests"
 
-  - assert:
-      that:
-        - "result.changed == true"
-        - "'banner exec @\nthis is my exec banner\nthat has a multiline\nstring\n@' in result.commands"
+    - name: setup exec
+      cisco.nxos.nxos_banner: &id002
+        banner: exec
+        state: absent
 
-  - name: Set exec again (idempotent)
-    cisco.nxos.nxos_banner: *exec
-    register: result
+    - name: Set exec
+      register: result
+      cisco.nxos.nxos_banner: &id001
+        banner: exec
+        text: "this is my exec banner\nthat has a multiline\nstring\n"
+        state: present
 
-  - assert:
-      that:
-        - "result.changed == false"
-        - "result.commands | length == 0"
+    - assert:
+        that:
+          - result.changed == true
+          - "'banner exec @\nthis is my exec banner\nthat has a multiline\nstring\n\
+            @' in result.commands"
 
-  - name: teardown exec
-    cisco.nxos.nxos_banner: *remove_exec
+    - name: Set exec again (idempotent)
+      register: result
+      cisco.nxos.nxos_banner: *id001
 
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+
+    - name: teardown exec
+      cisco.nxos.nxos_banner: *id002
   when: banner_exec_image_ok is defined
 
-# banner motd tests
 - block:
-  - name: setup motd
-    cisco.nxos.nxos_banner: &remove_motd
-      banner: motd
-      state: absent
 
-  - name: Set motd
-    cisco.nxos.nxos_banner: &motd
-      banner: motd
-      text: |
-        Junk motd banner
-        over multiple lines
-      state: present
-    register: result
+    - name: setup motd
+      cisco.nxos.nxos_banner: &id004
+        banner: motd
+        state: absent
 
-  - assert:
-      that:
-        - "result.changed == true"
-        - "'banner motd @\nJunk motd banner\nover multiple lines\n@' in result.commands"
+    - name: Set motd
+      register: result
+      cisco.nxos.nxos_banner: &id003
+        banner: motd
+        text: "Junk motd banner\nover multiple lines\n"
+        state: present
 
-  - name: Set motd again (idempotent)
-    cisco.nxos.nxos_banner: *motd
-    register: result
+    - assert:
+        that:
+          - result.changed == true
+          - "'banner motd @\nJunk motd banner\nover multiple lines\n@' in result.commands"
 
-  - assert:
-      that:
-        - "result.changed == false"
+    - name: Set motd again (idempotent)
+      register: result
+      cisco.nxos.nxos_banner: *id003
 
-  - name: teardown motd
-    cisco.nxos.nxos_banner: *remove_motd
+    - assert:
+        that:
+          - result.changed == false
 
+    - name: teardown motd
+      cisco.nxos.nxos_banner: *id004
   when: banner_motd_image_ok is defined
 
 - debug: msg="END connection={{ ansible_connection }} nxos_banner sanity test"

@@ -1,5 +1,5 @@
 ---
-testcase: "*"
+testcase: '*'
 vrfs:
-  - default
-  - myvrf
+- default
+- myvrf

@@ -2,40 +2,36 @@
 - debug: msg="START nxapi/sublevel.yaml"
 
 - name: setup
+  ignore_errors: true
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
-    provider: "{{ connection }}"
-  ignore_errors: yes
 
 - name: configure sub level command
+  register: result
   cisco.nxos.nxos_config:
     lines: 10 permit ip any any log
     parents: ip access-list test
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
       - "'ip access-list test' in result.updates"
       - "'10 permit ip any any log' in result.updates"
 
 - name: configure sub level command idempotent check
+  register: result
   cisco.nxos.nxos_config:
     lines: 10 permit ip any any log
     parents: ip access-list test
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - name: teardown
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
-    provider: "{{ connection }}"
 
 - debug: msg="END nxapi/sublevel.yaml"

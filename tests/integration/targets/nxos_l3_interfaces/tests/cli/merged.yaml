@@ -1,62 +1,72 @@
 ---
 - debug:
-    msg: "Start nxos_l3_interfaces merged integration tests connection={{ ansible_connection }}"
+    msg: Start nxos_l3_interfaces merged integration tests connection={{ ansible_connection
+      }}
 
-- set_fact: test_int1="{{ nxos_int1 }}"
+- set_fact:
+    test_int3: '{{ nxos_int3 }}'
+    subint3: '{{ nxos_int3 }}.42'
 
 - name: setup1
-  network.cli.cli_config: &cleanup
-    config: |
-      default interface {{ test_int1 }}
+  ignore_errors: true
+  ansible.netcommon.cli_config:
+    config: "no system default switchport\ndefault interface {{ test_int3 }}\ninterface\
+      \ {{ test_int3 }}\n  no switchport\n"
+
+- name: setup2 cleanup all L3 states on all interfaces
+  cisco.nxos.nxos_l3_interfaces:
+    state: deleted
 
 - block:
-  - name: setup2
-    network.cli.cli_config:
-      config: |
-        interface {{ test_int1 }}
-          no switchport
 
-  - name: Merged
-    cisco.nxos.nxos_l3_interfaces: &merged
-      config:
-        - name: "{{ test_int1 }}"
-          ipv4:
-            - address: 192.168.10.2/24
-      state:  merged
-    register: result
+    - name: Merged
+      register: result
+      cisco.nxos.nxos_l3_interfaces: &id001
+        config:
 
-  - assert:
-      that:
-        - "result.changed == true"
-        - "result.before|length == 0"
-        - "'interface {{ test_int1 }}' in result.commands"
-        - "'ip address 192.168.10.2/24' in result.commands"
-        - "result.commands|length == 2"
+          - name: '{{ subint3 }}'
+            dot1q: 42
+            redirects: false
+            unreachables: true
+            ipv4:
 
-  - name: Gather l3_interfaces facts
-    cisco.nxos.nxos_facts:
-      gather_subset:
-        - '!all'
-        - '!min'
-      gather_network_resources: l3_interfaces
+              - address: 192.168.10.2/24
+        state: merged
 
-  # The nxos_l3_interfaces module should never attempt to modify the mgmt interface ip.
-  # The module will still collect facts about the interface however so in this case
-  # the facts will contain all l3 enabled interfaces including mgmt) but the after state in
-  # result will only contain the modification
-  - assert:
-      that:
-        - "result.after|length == (ansible_facts.network_resources.l3_interfaces|length - 1)"
+    - assert:
+        that:
+          - result.changed == true
+          - result.before|length == 0
+          - "'interface {{ subint3 }}' in result.commands"
+          - "'encapsulation dot1q 42' in result.commands"
+          - "'no ip redirects' in result.commands"
+          - "'ip unreachables' in result.commands"
+          - "'ip address 192.168.10.2/24' in result.commands"
+          - result.commands|length == 5
 
-  - name: Idempotence - Merged
-    cisco.nxos.nxos_l3_interfaces: *merged
-    register: result
+    - name: Gather l3_interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: l3_interfaces
 
-  - assert:
-      that:
-        - "result.changed == false"
-        - "result.commands|length == 0"
+    - assert:
+        that:
+          - result.after|length == (ansible_facts.network_resources.l3_interfaces|length|int
+            - rsvd_intf_len|int)
 
+    - name: Idempotence - Merged
+      register: result
+      cisco.nxos.nxos_l3_interfaces: *id001
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
   always:
-  - name: teardown
-    network.cli.cli_config: *cleanup
+
+    - name: teardown
+      ignore_errors: true
+      ansible.netcommon.cli_config:
+        config: "no interface {{ subint3 }}\n"

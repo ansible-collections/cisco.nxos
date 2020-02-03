@@ -23,57 +23,53 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_install_os
-extends_documentation_fragment: nxos
+DOCUMENTATION = """module: nxos_install_os
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Set boot options like boot, kickstart image and issu.
 description:
-    - Install an operating system by setting the boot options like boot
-      image and kickstart image and optionally select to install using
-      ISSU (In Server Software Upgrade).
+- Install an operating system by setting the boot options like boot image and kickstart
+  image and optionally select to install using ISSU (In Server Software Upgrade).
 notes:
-    - Tested against the following platforms and images
-      - N9k 7.0(3)I4(6), 7.0(3)I5(3), 7.0(3)I6(1), 7.0(3)I7(1), 7.0(3)F2(2), 7.0(3)F3(2)
-      - N3k 6.0(2)A8(6), 6.0(2)A8(8), 7.0(3)I6(1), 7.0(3)I7(1)
-      - N7k 7.3(0)D1(1), 8.0(1), 8.1(1), 8.2(1)
-    - This module requires both the ANSIBLE_PERSISTENT_CONNECT_TIMEOUT and
-      ANSIBLE_PERSISTENT_COMMAND_TIMEOUT timers to be set to 600 seconds or higher.
-      The module will exit if the timers are not set properly.
-    - When using connection local, ANSIBLE_PERSISTENT_CONNECT_TIMEOUT and
-      ANSIBLE_PERSISTENT_COMMAND_TIMEOUT can only be set using ENV variables or
-      the ansible.cfg file.
-    - Do not include full file paths, just the name of the file(s) stored on
-      the top level flash directory.
-    - This module attempts to install the software immediately,
-      which may trigger a reboot.
-    - In check mode, the module will indicate if an upgrade is needed and
-      whether or not the upgrade is disruptive or non-disruptive(ISSU).
+- Tested against the following platforms and images - N9k 7.0(3)I4(6), 7.0(3)I5(3),
+  7.0(3)I6(1), 7.0(3)I7(1), 7.0(3)F2(2), 7.0(3)F3(2) - N3k 6.0(2)A8(6), 6.0(2)A8(8),
+  7.0(3)I6(1), 7.0(3)I7(1) - N7k 7.3(0)D1(1), 8.0(1), 8.1(1), 8.2(1)
+- This module requires both the ANSIBLE_PERSISTENT_CONNECT_TIMEOUT and ANSIBLE_PERSISTENT_COMMAND_TIMEOUT
+  timers to be set to 600 seconds or higher. The module will exit if the timers are
+  not set properly.
+- When using connection local, ANSIBLE_PERSISTENT_CONNECT_TIMEOUT and ANSIBLE_PERSISTENT_COMMAND_TIMEOUT
+  can only be set using ENV variables or the ansible.cfg file.
+- Do not include full file paths, just the name of the file(s) stored on the top level
+  flash directory.
+- This module attempts to install the software immediately, which may trigger a reboot.
+- In check mode, the module will indicate if an upgrade is needed and whether or not
+  the upgrade is disruptive or non-disruptive(ISSU).
 author:
-    - Jason Edelman (@jedelman8)
-    - Gabriele Gerbibo (@GGabriele)
-version_added: 2.2
+- Jason Edelman (@jedelman8)
+- Gabriele Gerbibo (@GGabriele)
 options:
-    system_image_file:
-        description:
-            - Name of the system (or combined) image file on flash.
-        required: true
-    kickstart_image_file:
-        description:
-            - Name of the kickstart image file on flash.
-              (Not required on all Nexus platforms)
-    issu:
-        version_added: "2.5"
-        description:
-            - Upgrade using In Service Software Upgrade (ISSU).
-              (Supported on N5k, N7k, N9k platforms)
-            - Selecting 'required' or 'yes' means that upgrades will only
-              proceed if the switch is capable of ISSU.
-            - Selecting 'desired' means that upgrades will use ISSU if possible
-              but will fall back to disruptive upgrade if needed.
-            - Selecting 'no' means do not use ISSU. Forced disruptive.
-        choices: ['required','desired', 'yes', 'no']
-        default: 'no'
+  system_image_file:
+    description:
+    - Name of the system (or combined) image file on flash.
+    required: true
+  kickstart_image_file:
+    description:
+    - Name of the kickstart image file on flash. (Not required on all Nexus platforms)
+  issu:
+    description:
+    - Upgrade using In Service Software Upgrade (ISSU). (Supported on N5k, N7k, N9k
+      platforms)
+    - Selecting 'required' or 'yes' means that upgrades will only proceed if the switch
+      is capable of ISSU.
+    - Selecting 'desired' means that upgrades will use ISSU if possible but will fall
+      back to disruptive upgrade if needed.
+    - Selecting 'no' means do not use ISSU. Forced disruptive.
+    choices:
+    - required
+    - desired
+    - 'yes'
+    - 'no'
+    default: 'no'
 """
 
 EXAMPLES = """

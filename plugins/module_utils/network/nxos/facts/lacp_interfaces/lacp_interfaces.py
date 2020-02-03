@@ -16,7 +16,9 @@ __metaclass__ = type
 import re
 from copy import deepcopy
 
-from ansible.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_interfacesArgs,
 )

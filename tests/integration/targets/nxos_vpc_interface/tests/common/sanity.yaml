@@ -1,143 +1,140 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vpc_interface sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
+- debug: msg="START connection={{ ansible_connection }} nxos_vpc_interface sanity
+    test"
 
 - block:
-  - name: enable feature vpc
-    cisco.nxos.nxos_feature:
-      feature: vpc
-      provider: "{{ connection }}"
-      state: enabled
 
-  - name: create port-channel10
-    cisco.nxos.nxos_config:
-      commands:
-        - interface port-channel10
-        - switchport
-      match: none
-      provider: "{{ connection }}"
+    - name: enable feature vpc
+      cisco.nxos.nxos_feature:
+        feature: vpc
+        state: enabled
 
-  - name: create port-channel11
-    cisco.nxos.nxos_config:
-      commands:
-        - interface port-channel11
-        - switchport
-      match: none
-      provider: "{{ connection }}"
+    - name: create port-channel10
+      cisco.nxos.nxos_config:
+        commands:
+          - interface port-channel10
+          - switchport
+        match: none
 
-  - name: configure vpc
-    cisco.nxos.nxos_vpc:
-      provider: "{{ connection }}"
-      state: present
-      domain: 100
-      role_priority: 32667
-      system_priority: 2000
-      pkl_dest: 192.168.100.4
-      pkl_src: 10.1.100.20
-      peer_gw: true
-      auto_recovery: false
+    - name: create port-channel11
+      cisco.nxos.nxos_config:
+        commands:
+          - interface port-channel11
+          - switchport
+        match: none
 
-  - name: Configure vpc port channel
-    cisco.nxos.nxos_vpc_interface: &conf
-      portchannel: 10
-      vpc: 10
-      provider: "{{ connection }}"
-    register: result
+    - name: configure vpc
+      cisco.nxos.nxos_vpc:
+        state: present
+        domain: 100
+        role_priority: 32667
+        system_priority: 2000
+        pkl_dest: 192.168.100.4
+        pkl_src: 10.1.100.20
+        peer_gw: true
+        auto_recovery: false
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: Configure vpc port channel
+      register: result
+      cisco.nxos.nxos_vpc_interface: &id001
+        portchannel: 10
+        vpc: 10
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vpc_interface: *conf
-    register: result
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_vpc_interface: *id001
 
-  - name: Configure vpc port channel
-    cisco.nxos.nxos_vpc_interface: &conf1
-      portchannel: 11
-      peer_link: True
-      provider: "{{ connection }}"
-    register: result
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - assert: *true
+    - name: Configure vpc port channel
+      register: result
+      when: image_version != "7.0(3)I5(1)"
+      cisco.nxos.nxos_vpc_interface: &id003
+        portchannel: 11
+        peer_link: true
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vpc_interface: *conf1
-    register: result
+    - assert: *id002
+      when: image_version != "7.0(3)I5(1)"
 
-  - assert: *false
+    - name: Conf Idempotence
+      register: result
+      when: image_version != "7.0(3)I5(1)"
+      cisco.nxos.nxos_vpc_interface: *id003
 
-  - name: Configure vpc port channel
-    cisco.nxos.nxos_vpc_interface: &conf2
-      portchannel: 11
-      peer_link: False
-      provider: "{{ connection }}"
-    register: result
+    - assert: *id004
+      when: image_version != "7.0(3)I5(1)"
 
-  - assert: *true
+    - name: Configure vpc port channel
+      register: result
+      when: image_version != "7.0(3)I5(1)"
+      cisco.nxos.nxos_vpc_interface: &id005
+        portchannel: 11
+        peer_link: false
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vpc_interface: *conf2
-    register: result
+    - assert: *id002
+      when: image_version != "7.0(3)I5(1)"
 
-  - assert: *false
+    - name: Conf Idempotence
+      register: result
+      when: image_version != "7.0(3)I5(1)"
+      cisco.nxos.nxos_vpc_interface: *id005
 
-  - name: remove vpc port channel
-    cisco.nxos.nxos_vpc_interface: &remove
-      portchannel: 10
-      vpc: 10
-      provider: "{{ connection }}"
-      state: absent
-    register: result
+    - assert: *id004
+      when: image_version != "7.0(3)I5(1)"
 
-  - assert: *true
+    - name: remove vpc port channel
+      register: result
+      cisco.nxos.nxos_vpc_interface: &id006
+        portchannel: 10
+        vpc: 10
+        state: absent
 
-  - name: "Remove Idempotence"
-    cisco.nxos.nxos_vpc_interface: *remove
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Remove Idempotence
+      register: result
+      cisco.nxos.nxos_vpc_interface: *id006
 
+    - assert: *id004
   always:
-  - name: remove vpc
-    cisco.nxos.nxos_vpc:
-      provider: "{{ connection }}"
-      state: absent
-      domain: 100
-      role_priority: 32667
-      system_priority: 2000
-      pkl_dest: 192.168.100.4
-      pkl_src: 10.1.100.20
-      peer_gw: true
-      auto_recovery: false
-    ignore_errors: yes
 
-  - name: remove vpc port channel
-    cisco.nxos.nxos_vpc_interface:
-      portchannel: 10
-      vpc: 10
-      provider: "{{ connection }}"
-      state: absent
-    ignore_errors: yes
+    - name: remove vpc
+      ignore_errors: true
+      cisco.nxos.nxos_vpc:
+        state: absent
+        domain: 100
+        role_priority: 32667
+        system_priority: 2000
+        pkl_dest: 192.168.100.4
+        pkl_src: 10.1.100.20
+        peer_gw: true
+        auto_recovery: false
 
-  - name: remove port channel
-    cisco.nxos.nxos_config:
-      commands:
-        - no interface port-channel10
-        - no interface port-channel11
-      match: none
-      provider: "{{ connection }}"
-    ignore_errors: yes
+    - name: remove vpc port channel
+      ignore_errors: true
+      cisco.nxos.nxos_vpc_interface:
+        portchannel: 10
+        vpc: 10
+        state: absent
 
-  - name: disable feature vpc
-    cisco.nxos.nxos_feature:
-      feature: vpc
-      provider: "{{ connection }}"
-      state: disabled
+    - name: remove port channel
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        commands:
+          - no interface port-channel10
+          - no interface port-channel11
+        match: none
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vpc_interface sanity test"
+    - name: disable feature vpc
+      cisco.nxos.nxos_feature:
+        feature: vpc
+        state: disabled
+
+- debug: msg="END connection={{ ansible_connection }} nxos_vpc_interface sanity
+    test"

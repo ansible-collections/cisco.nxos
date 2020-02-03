@@ -23,30 +23,26 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_smu
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_smu
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Perform SMUs on Cisco NX-OS devices.
 description:
-    - Perform software maintenance upgrades (SMUs) on Cisco NX-OS devices.
+- Perform software maintenance upgrades (SMUs) on Cisco NX-OS devices.
 author: Gabriele Gerbino (@GGabriele)
 notes:
-    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-    - The module can only activate and commit a package,
-      not remove or deactivate it.
-    - Use C(transport=nxapi) to avoid connection timeout
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- The module can only activate and commit a package, not remove or deactivate it.
+- Use C(transport=nxapi) to avoid connection timeout
 options:
-    pkg:
-        description:
-            - Name of the remote package.
-        required: true
-    file_system:
-        description:
-            - The remote file system of the device. If omitted,
-              devices that support a file_system parameter will use
-              their default values.
+  pkg:
+    description:
+    - Name of the remote package.
+    required: true
+  file_system:
+    description:
+    - The remote file system of the device. If omitted, devices that support a file_system
+      parameter will use their default values.
 """
 
 EXAMPLES = """

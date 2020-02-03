@@ -1,8 +1,10 @@
 ---
 - debug:
-    msg: "Start nxos_lag_interfaces deleted integration tests connection={{ ansible_connection }}"
+    msg: Start nxos_lag_interfaces deleted integration tests connection={{ ansible_connection
+      }}
 
 - set_fact: test_int1="{{ nxos_int1 }}"
+
 - set_fact: test_int2="{{ nxos_int2 }}"
 
 - name: enable feature lacp
@@ -10,57 +12,59 @@
     feature: lacp
 
 - name: Setup1
-  cisco.nxos.nxos_lag_interfaces: &remove_lags
+  cisco.nxos.nxos_lag_interfaces: &id003
     state: deleted
 
 - block:
-  - name: Setup2
-    cisco.nxos.nxos_config:
-      lines:
-        - "channel-group 10"
-      parents: "{{ item }}"
-    loop:
-      - "interface {{ test_int1 }}"
-      - "interface {{ test_int2 }}"
 
-  - name: Gather LAG interfaces facts
-    cisco.nxos.nxos_facts: &facts
-      gather_subset:
-        - '!all'
-        - '!min'
-      gather_network_resources: lag_interfaces
+    - name: Setup2
+      loop:
+        - interface {{ test_int1 }}
+        - interface {{ test_int2 }}
+      cisco.nxos.nxos_config:
+        lines:
+          - channel-group 10
+        parents: '{{ item }}'
 
-  - name: deleted
-    cisco.nxos.nxos_lag_interfaces: &deleted
-      state: deleted
-    register: result
+    - name: Gather LAG interfaces facts
+      cisco.nxos.nxos_facts: &id001
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: lag_interfaces
 
-  - assert:
-      that:
-        - "ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length == 0"
+    - name: deleted
+      register: result
+      cisco.nxos.nxos_lag_interfaces: &id002
+        state: deleted
 
-  - name: Gather LAG interfaces post facts
-    cisco.nxos.nxos_facts: *facts
+    - assert:
+        that:
+          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length
+            == 0
 
-  - assert:
-      that:
-        - "result.after|length == 0"
-        - "result.changed == true"
+    - name: Gather LAG interfaces post facts
+      cisco.nxos.nxos_facts: *id001
 
-  - name: Idempotence - deleted
-    cisco.nxos.nxos_lag_interfaces: *deleted
-    register: result
+    - assert:
+        that:
+          - result.after|length == 0
+          - result.changed == true
 
-  - assert:
-      that:
-        - "result.changed == false"
+    - name: Idempotence - deleted
+      register: result
+      cisco.nxos.nxos_lag_interfaces: *id002
 
+    - assert:
+        that:
+          - result.changed == false
   always:
-  - name: Teardown
-    cisco.nxos.nxos_lag_interfaces: *remove_lags
-    ignore_errors: yes
 
-  - name: disable feature lacp
-    cisco.nxos.nxos_feature:
-      feature: lacp
-      state: disabled
+    - name: Teardown
+      ignore_errors: true
+      cisco.nxos.nxos_lag_interfaces: *id003
+
+    - name: disable feature lacp
+      cisco.nxos.nxos_feature:
+        feature: lacp
+        state: disabled

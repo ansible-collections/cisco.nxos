@@ -1,11 +1,10 @@
 ---
-- name: "Delete Files To Make Room On Bootflash"
-  cisco.nxos.nxos_config: &remove_file
+- name: Delete Files To Make Room On Bootflash
+  ignore_errors: true
+  with_items: '{{ delete_image_list }}'
+  cisco.nxos.nxos_config:
     lines:
       - terminal dont-ask
       - allow delete boot-image
-      - "delete {{ item }}"
+      - delete {{ item }}
     match: none
-    provider: "{{ connection }}"
-  ignore_errors: yes
-  with_items: "{{ delete_image_list }}"

@@ -1,7 +1,5 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_snapshot sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - set_fact: snapshot_run="true"
 
@@ -12,127 +10,120 @@
   when: platform is match('N35')
 
 - set_fact: add_sec="true"
+
 - set_fact: add_sec="false"
   when: imagetag is search("D1")
 
 - block:
-  - name: create snapshot
-    cisco.nxos.nxos_snapshot: &crss1
-      action: create
-      snapshot_name: test_snapshot1
-      description: Ansible
-      save_snapshot_locally: True
-      provider: "{{ connection }}"
-    register: result
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: create snapshot
+      register: result
+      cisco.nxos.nxos_snapshot: &id001
+        action: create
+        snapshot_name: test_snapshot1
+        description: Ansible
+        save_snapshot_locally: true
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_snapshot: *crss1
-    register: result
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_snapshot: *id001
 
-  - block:
-    - name: Add section
-      cisco.nxos.nxos_snapshot: &add
-        action: add
+    - assert: &id004
+        that:
+          - result.changed == false
+
+    - block:
+
+        - name: Add section
+          register: result
+          cisco.nxos.nxos_snapshot: &id003
+            action: add
+            section: myshow
+            show_command: show ip interface brief
+            row_id: ROW_intf
+            element_key1: intf-name
+            element_key2: intf-name
+
+        - assert: *id002
+
+        - name: Conf Idempotence
+          register: result
+          cisco.nxos.nxos_snapshot: *id003
+
+        - assert: *id004
+      when: add_sec
+
+    - name: create another snapshot
+      register: result
+      cisco.nxos.nxos_snapshot: &id005
+        action: create
+        snapshot_name: test_snapshot2
+        description: row
         section: myshow
         show_command: show ip interface brief
         row_id: ROW_intf
         element_key1: intf-name
-        element_key2: intf-name
-        provider: "{{ connection }}"
+
+    - assert: *id002
+
+    - name: Conf Idempotence
       register: result
+      cisco.nxos.nxos_snapshot: *id005
 
-    - assert: *true
-  
-    - name: "Conf Idempotence"
-      cisco.nxos.nxos_snapshot: *add
+    - assert: *id004
+
+    - name: compare snapshots
+      cisco.nxos.nxos_snapshot:
+        action: compare
+        snapshot1: test_snapshot1
+        snapshot2: test_snapshot2
+        comparison_results_file: compare_snapshots.txt
+        compare_option: summary
+        path: .
+
+    - name: delete snapshot
       register: result
+      cisco.nxos.nxos_snapshot: &id006
+        snapshot_name: test_snapshot2
+        action: delete
 
-    - assert: *false
+    - assert: *id002
 
-    when: add_sec
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_snapshot: *id006
 
-  - name: create another snapshot
-    cisco.nxos.nxos_snapshot: &crss2
-      action: create
-      snapshot_name: test_snapshot2
-      description: row
-      section: myshow
-      show_command: show ip interface brief
-      row_id: ROW_intf
-      element_key1: intf-name
-      provider: "{{ connection }}"
-    register: result
+    - assert: *id004
 
-  - assert: *true
-  
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_snapshot: *crss2
-    register: result
+    - name: delete all snapshots
+      register: result
+      cisco.nxos.nxos_snapshot: &id007
+        action: delete_all
 
-  - assert: *false
+    - assert: *id002
 
-  - name: compare snapshots
-    cisco.nxos.nxos_snapshot:
-      action: compare
-      snapshot1: test_snapshot1
-      snapshot2: test_snapshot2
-      comparison_results_file: compare_snapshots.txt
-      compare_option: summary
-      path: '.'
-      provider: "{{ connection }}"
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_snapshot: *id007
 
-  - name: delete snapshot
-    cisco.nxos.nxos_snapshot: &del
-      snapshot_name: test_snapshot2
-      action: delete
-      provider: "{{ connection }}"
-    register: result
-
-  - assert: *true
-  
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_snapshot: *del
-    register: result
-
-  - assert: *false
-
-  - name: delete all snapshots
-    cisco.nxos.nxos_snapshot: &delall
-      action: delete_all
-      provider: "{{ connection }}"
-    register: result
-
-  - assert: *true
-  
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_snapshot: *delall
-    register: result
-
-  - assert: *false
-
+    - assert: *id004
   when: snapshot_run
-
   always:
-  - name: delete all sections
-    cisco.nxos.nxos_config:
-      commands:
-        - snapshot section delete myshow
-      match: none
-      provider: "{{ connection }}"
-    ignore_errors: yes
 
-  - name: delete all snapshots
-    cisco.nxos.nxos_snapshot:
-      action: delete_all
-      provider: "{{ connection }}"
-    ignore_errors: yes
+    - name: delete all sections
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        commands:
+          - snapshot section delete myshow
+        match: none
+
+    - name: delete all snapshots
+      ignore_errors: true
+      cisco.nxos.nxos_snapshot:
+        action: delete_all
 
 - debug: msg="END connection={{ ansible_connection }} nxos_snapshot sanity test"

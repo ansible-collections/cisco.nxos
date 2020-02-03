@@ -2,6 +2,7 @@
 - debug: msg="START nxapi/sublevel_exact.yaml"
 
 - name: setup
+  ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -11,10 +12,9 @@
       - 50 permit ip 192.0.2.5/32 any log
     parents: ip access-list test
     match: none
-    provider: "{{ connection }}"
-  ignore_errors: yes
 
 - name: configure sub level command using exact match
+  register: result
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -25,12 +25,10 @@
     before: no ip access-list test
     match: exact
     replace: block
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
       - "'ip access-list test' in result.updates"
       - "'10 permit ip 192.0.2.1/32 any log' in result.updates"
       - "'20 permit ip 192.0.2.2/32 any log' in result.updates"
@@ -39,6 +37,7 @@
       - "'50 permit ip 192.0.2.5/32 any log' not in result.updates"
 
 - name: check sub level command using exact match
+  register: result
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -47,17 +46,14 @@
       - 40 permit ip 192.0.2.4/32 any log
     parents: ip access-list test
     match: exact
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - name: teardown
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
-    provider: "{{ connection }}"
 
 - debug: msg="END nxapi/sublevel_exact.yaml"

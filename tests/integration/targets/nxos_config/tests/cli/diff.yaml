@@ -6,11 +6,12 @@
     lines: hostname switch
 
 - name: nxos_config diff against retrieved config
-  cisco.nxos.nxos_config:
-    diff_against: intended
-    intended_config: "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config') }}"
   diff: true
   register: result
+  cisco.nxos.nxos_config:
+    diff_against: intended
+    intended_config: "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
+      \ }}"
 
 - assert:
     that:
@@ -18,12 +19,14 @@
       - "'hostname switch' in result['diff']['before']"
 
 - name: nxos_config diff against provided running_config
-  cisco.nxos.nxos_config:
-    diff_against: intended
-    intended_config: "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config') }}"
-    running_config: "{{ lookup('file', '{{ role_path }}/templates/basic/base_running_config') }}"
   diff: true
   register: result
+  cisco.nxos.nxos_config:
+    diff_against: intended
+    intended_config: "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
+      \ }}"
+    running_config: "{{ lookup('file', '{{ role_path }}/templates/basic/base_running_config')\
+      \ }}"
 
 - assert:
     that:

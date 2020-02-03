@@ -5,9 +5,8 @@
   cisco.nxos.nxos_config:
     lines: ip access-list test
     match: none
-    provider: "{{ connection }}"
 
-- name: "nxos_config sanity test"
+- name: nxos_config sanity test
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -18,9 +17,8 @@
     parents: ip access-list test
     before: no ip access-list test
     match: exact
-    provider: "{{ connection }}"
 
-- name: "nxos_config sanity test - replace block"
+- name: nxos_config sanity test - replace block
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -30,49 +28,44 @@
     parents: ip access-list test
     before: no ip access-list test
     replace: block
-    provider: "{{ connection }}"
 
 - name: teardown
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
-    provider: "{{ connection }}"
 
 - debug: msg='Verify https://github.com/ansible/ansible/issues/50635'
 
 - name: PUT INTERFACE INTO DEFAULT STATE
   cisco.nxos.nxos_config:
     lines:
-      - "default interface {{ nxos_int1 }}"
-    provider: "{{ connection }}"
+      - default interface {{ nxos_int1 }}
 
 - name: MAKE INTERFACE A SWITCHPORT
   cisco.nxos.nxos_config:
     lines:
       - switchport
-    parents: "interface {{ nxos_int1 }}"
-    provider: "{{ connection }}"
+    parents: interface {{ nxos_int1 }}
 
 - name: CONFIGURE EDGE TRUNK TYPE
-  cisco.nxos.nxos_config: &config
+  register: result
+  cisco.nxos.nxos_config: &id001
     lines:
       - description foo
       - switchport access vlan 3333
       - spanning-tree port type edge
-    parents: "interface {{ nxos_int1 }}"
-    provider: "{{ connection }}"
-  register: result
+    parents: interface {{ nxos_int1 }}
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
 
 - name: IDEMPOTENCE CHECK
-  cisco.nxos.nxos_config: *config
   register: result
+  cisco.nxos.nxos_config: *id001
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - debug: msg="END common/sanity.yaml on connection={{ ansible_connection }}"

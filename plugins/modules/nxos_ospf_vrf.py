@@ -22,93 +22,89 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: nxos_ospf_vrf
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_ospf_vrf
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages a VRF for an OSPF router.
 description:
-  - Manages a VRF for an OSPF router.
+- Manages a VRF for an OSPF router.
 author: Gabriele Gerbino (@GGabriele)
 notes:
-  - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-  - Value I(default) restores params default value, if any.
-    Otherwise it removes the existing param configuration.
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Value I(default) restores params default value, if any. Otherwise it removes the
+  existing param configuration.
 options:
   vrf:
     description:
-      - Name of the resource instance. Valid value is a string.
-        The name 'default' is a valid VRF representing the global OSPF.
+    - Name of the resource instance. Valid value is a string. The name 'default' is
+      a valid VRF representing the global OSPF.
     default: default
   ospf:
     description:
-      - Name of the OSPF instance.
+    - Name of the OSPF instance.
     required: true
   router_id:
     description:
-      - Router Identifier (ID) of the OSPF router VRF instance.
+    - Router Identifier (ID) of the OSPF router VRF instance.
   default_metric:
     description:
-      - Specify the default Metric value. Valid values are an integer
-        or the keyword 'default'.
+    - Specify the default Metric value. Valid values are an integer or the keyword
+      'default'.
   log_adjacency:
     description:
-      - Controls the level of log messages generated whenever a
-        neighbor changes state. Valid values are 'log', 'detail',
-        and 'default'.
-    choices: ['log','detail','default']
+    - Controls the level of log messages generated whenever a neighbor changes state.
+      Valid values are 'log', 'detail', and 'default'.
+    choices:
+    - log
+    - detail
+    - default
   timer_throttle_lsa_start:
     description:
-      - Specify the start interval for rate-limiting Link-State
-        Advertisement (LSA) generation. Valid values are an integer,
-        in milliseconds, or the keyword 'default'.
+    - Specify the start interval for rate-limiting Link-State Advertisement (LSA)
+      generation. Valid values are an integer, in milliseconds, or the keyword 'default'.
   timer_throttle_lsa_hold:
     description:
-      - Specify the hold interval for rate-limiting Link-State
-        Advertisement (LSA) generation. Valid values are an integer,
-        in milliseconds, or the keyword 'default'.
+    - Specify the hold interval for rate-limiting Link-State Advertisement (LSA) generation.
+      Valid values are an integer, in milliseconds, or the keyword 'default'.
   timer_throttle_lsa_max:
     description:
-      - Specify the max interval for rate-limiting Link-State
-        Advertisement (LSA) generation. Valid values are an integer,
-        in milliseconds, or the keyword 'default'.
+    - Specify the max interval for rate-limiting Link-State Advertisement (LSA) generation.
+      Valid values are an integer, in milliseconds, or the keyword 'default'.
   timer_throttle_spf_start:
     description:
-      - Specify initial Shortest Path First (SPF) schedule delay.
-        Valid values are an integer, in milliseconds, or
-        the keyword 'default'.
+    - Specify initial Shortest Path First (SPF) schedule delay. Valid values are an
+      integer, in milliseconds, or the keyword 'default'.
   timer_throttle_spf_hold:
     description:
-      - Specify minimum hold time between Shortest Path First (SPF)
-        calculations. Valid values are an integer, in milliseconds,
-        or the keyword 'default'.
+    - Specify minimum hold time between Shortest Path First (SPF) calculations. Valid
+      values are an integer, in milliseconds, or the keyword 'default'.
   timer_throttle_spf_max:
     description:
-      - Specify the maximum wait time between Shortest Path First (SPF)
-        calculations. Valid values are an integer, in milliseconds,
-        or the keyword 'default'.
+    - Specify the maximum wait time between Shortest Path First (SPF) calculations.
+      Valid values are an integer, in milliseconds, or the keyword 'default'.
   auto_cost:
     description:
-      - Specifies the reference bandwidth used to assign OSPF cost.
-        Valid values are an integer, in Mbps, or the keyword 'default'.
+    - Specifies the reference bandwidth used to assign OSPF cost. Valid values are
+      an integer, in Mbps, or the keyword 'default'.
   bfd:
     description:
-      - Enables BFD on all OSPF interfaces.
-      - "Dependency: 'feature bfd'"
-    version_added: "2.9"
+    - Enables BFD on all OSPF interfaces.
+    - "Dependency: ''feature bfd''"
     type: str
-    choices: ['enable', 'disable']
+    choices:
+    - enable
+    - disable
   passive_interface:
     description:
-      - Setting to C(yes) will suppress routing update on interface.
-    version_added: "2.4"
+    - Setting to C(yes) will suppress routing update on interface.
     type: bool
   state:
     description:
-      - State of ospf vrf configuration.
+    - State of ospf vrf configuration.
     default: present
-    choices: ['present', 'absent']
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """
@@ -146,7 +142,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxos_argument_spec,
 )
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.config import CustomNetworkConfig
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    CustomNetworkConfig,
+)
 
 
 BOOL_PARAMS = ["passive_interface"]
@@ -314,7 +312,7 @@ def state_present(module, existing, proposed, candidate):
                 if len(value) < 5:
                     command = "{0} {1} Mbps".format(key, value)
                 else:
-                    value = str(int(value) / 1000)
+                    value = str(int(value) // 1000)
                     command = "{0} {1} Gbps".format(key, value)
             elif key == "bfd":
                 command = "no bfd" if value == "disable" else "bfd"

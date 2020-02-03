@@ -14,7 +14,9 @@ Populate the facts tree based on the current device configuration.
 import re
 from copy import deepcopy
 
-from ansible.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bfd_interfaces.bfd_interfaces import (
     Bfd_interfacesArgs,
 )

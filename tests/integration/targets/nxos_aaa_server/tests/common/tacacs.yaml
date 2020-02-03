@@ -1,116 +1,108 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
+- debug: msg="START connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml
+    sanity test"
 
-- name: "Enable feature tacacs+"
+- name: Enable feature tacacs+
   cisco.nxos.nxos_feature:
     feature: tacacs+
-    provider: "{{ connection }}"
     state: enabled
 
-- name: "Setup"
-  cisco.nxos.nxos_aaa_server: &remove
+- name: Setup
+  ignore_errors: true
+  cisco.nxos.nxos_aaa_server: &id004
     server_type: tacacs
     deadtime: default
     server_timeout: default
     directed_request: default
-    provider: "{{ connection }}"
     state: default
-  ignore_errors: yes
 
 - block:
-  - name: "Configure tacacs server defaults"
-    cisco.nxos.nxos_aaa_server: &configure_default_tacacs
-      server_type: tacacs
-      provider: "{{ connection }}"
-      state: present
-    register: result
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server: *configure_default_tacacs
-    register: result
+    - name: Configure tacacs server defaults
+      register: result
+      cisco.nxos.nxos_aaa_server: &id001
+        server_type: tacacs
+        state: present
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server: *id001
 
-  - name: "Configure tacacs server non defaults"
-    cisco.nxos.nxos_aaa_server: &configure_tacacs_non_default
-      server_type: tacacs
-      server_timeout: 9
-      deadtime: 20
-      directed_request: enabled
-      provider: "{{ connection }}"
-      state: present
-    register: result
-  
-  - assert: &true
-     that:
-        - "result.changed == true"
+    - assert: &id003
+        that:
+          - result.changed == false
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server: *configure_tacacs_non_default
-    register: result
+    - name: Configure tacacs server non defaults
+      register: result
+      cisco.nxos.nxos_aaa_server: &id002
+        server_type: tacacs
+        server_timeout: 9
+        deadtime: 20
+        directed_request: enabled
+        state: present
 
-  - assert: *false
+    - assert: &id005
+        that:
+          - result.changed == true
 
-  - name: "Remove tacacs server configuration"
-    cisco.nxos.nxos_aaa_server: *remove
-    register: result
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server: *id002
 
-  - assert: *true
+    - assert: *id003
 
-  - name: "Configure tacacs server with global key"
-    cisco.nxos.nxos_aaa_server: &configure_tacacs_global_key
-      server_type: tacacs
-      encrypt_type: 7
-      global_key: test_key
-      provider: "{{ connection }}"
-      state: present
-    register: result
-   
-  - assert: *true
+    - name: Remove tacacs server configuration
+      register: result
+      cisco.nxos.nxos_aaa_server: *id004
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server: *configure_tacacs_global_key
-    register: result
+    - assert: *id005
 
-  - assert: *false
+    - name: Configure tacacs server with global key
+      register: result
+      cisco.nxos.nxos_aaa_server: &id006
+        server_type: tacacs
+        encrypt_type: 7
+        global_key: test_key
+        state: present
 
-  - name: "Remove tacacs server configuration"
-    cisco.nxos.nxos_aaa_server: &tac_def
-      server_type: tacacs
-      deadtime: default
-      server_timeout: default
-      global_key: default
-      directed_request: default
-      provider: "{{ connection }}"
-      state: default
-    register: result
+    - assert: *id005
 
-  - assert: *true
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server: *id006
 
-  - name: "Check Idempotence"
-    cisco.nxos.nxos_aaa_server: *tac_def
-    register: result
+    - assert: *id003
 
-  - assert: *false
+    - name: Remove tacacs server configuration
+      register: result
+      cisco.nxos.nxos_aaa_server: &id007
+        server_type: tacacs
+        deadtime: default
+        server_timeout: default
+        global_key: default
+        directed_request: default
+        state: default
 
+    - assert: *id005
+
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_aaa_server: *id007
+
+    - assert: *id003
   rescue:
 
-  - debug: msg="connection={{ ansible_connection }} nxos_aaa_server failure detected"
-
+    - debug: msg="connection={{ ansible_connection }} nxos_aaa_server failure detected"
   always:
 
-  - name: "Remove tacacs server configuration"
-    cisco.nxos.nxos_aaa_server: *remove
-    register: result
+    - name: Remove tacacs server configuration
+      register: result
+      cisco.nxos.nxos_aaa_server: *id004
 
-  - name: "Disable feature tacacs+"
-    cisco.nxos.nxos_feature:
-      feature: tacacs+
-      provider: "{{ connection }}"
-      state: disabled
+    - name: Disable feature tacacs+
+      cisco.nxos.nxos_feature:
+        feature: tacacs+
+        state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml sanity test"
+- debug: msg="END connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml
+    sanity test"

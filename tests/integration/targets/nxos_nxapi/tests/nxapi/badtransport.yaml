@@ -2,16 +2,16 @@
 - debug: msg="START nxapi/badtransport.yaml"
 
 - name: Sending transport other than cli should fail
-  cisco.nxos.nxos_nxapi:
-    enable_http: no
-    enable_sandbox: no
-    https_port: 9443
-    provider: "{{ nxapi }}"
   register: result
-  ignore_errors: yes
+  ignore_errors: true
+  cisco.nxos.nxos_nxapi:
+    enable_http: false
+    enable_sandbox: false
+    https_port: 9443
+    provider: '{{ nxapi }}'
 
 - assert:
-     that:
-        - result.failed and result.msg is search('Transport')
+    that:
+      - result.failed and result.msg is search('Transport')
 
 - debug: msg="END nxapi/badtransport.yaml"

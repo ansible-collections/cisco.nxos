@@ -22,27 +22,26 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: nxos_ospf
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_ospf
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages configuration of an ospf instance.
 description:
-  - Manages configuration of an ospf instance.
+- Manages configuration of an ospf instance.
 author: Gabriele Gerbino (@GGabriele)
 options:
   ospf:
     description:
-      - Name of the ospf instance.
+    - Name of the ospf instance.
     required: true
   state:
     description:
-      - Determines whether the config should be present or not
-        on the device.
+    - Determines whether the config should be present or not on the device.
     required: false
     default: present
-    choices: ['present','absent']
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """
@@ -68,7 +67,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxos_argument_spec,
 )
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.config import CustomNetworkConfig
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    CustomNetworkConfig,
+)
 
 
 PARAM_TO_COMMAND_KEYMAP = {"ospf": "router ospf"}

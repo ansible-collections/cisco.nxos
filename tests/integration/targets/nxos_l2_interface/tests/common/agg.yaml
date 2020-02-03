@@ -1,31 +1,35 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_l2_interface aggregate test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
+- debug: msg="START connection={{ ansible_connection }} nxos_l2_interface aggregate
+    test"
 
-# Select interface for test
 - set_fact: intname1="{{ nxos_int1 }}"
+
 - set_fact: intname2="{{ nxos_int2 }}"
 
-- name: "Setup vlans"
+- name: Setup vlans
   cisco.nxos.nxos_vlan:
-    vlan_range: "6,15"
-    provider: "{{ connection }}"
+    vlan_range: 6,15
 
 - name: Setup - Ensure interfaces are layer2
   cisco.nxos.nxos_interface:
     aggregate:
-      - { name: "{{ intname1 }}" }
-      - { name: "{{ intname2 }}" }
+
+      - name: '{{ intname1 }}'
+
+      - name: '{{ intname2 }}'
     mode: layer2
-    provider: "{{ connection }}"
 
 - name: Setup - Remove interface aggregate before testing
   cisco.nxos.nxos_l2_interface:
     aggregate:
-      - { name: "{{ intname1 }}", mode: access, access_vlan: 6 }
-      - { name: "{{ intname2 }}", mode: access, access_vlan: 15 }
-    provider: "{{ connection }}"
+
+      - name: '{{ intname1 }}'
+        mode: access
+        access_vlan: 6
+
+      - name: '{{ intname2 }}'
+        mode: access
+        access_vlan: 15
     state: absent
 
 - name: Sleep for 2 seconds on Fretta Platform
@@ -33,70 +37,86 @@
   when: platform is match("N9K-F")
 
 - block:
-  - name: Configure interface for access_vlan aggregate
-    cisco.nxos.nxos_l2_interface: &conf_agg
-      aggregate:
-        - { name: "{{ intname1 }}", mode: access, access_vlan: 6 }
-        - { name: "{{ intname2 }}", mode: access, access_vlan: 15 }
-      provider: "{{ connection }}"
-    register: result
 
-  - assert:
-      that:
-        - "result.changed == true"
+    - name: Configure interface for access_vlan aggregate
+      register: result
+      cisco.nxos.nxos_l2_interface: &id001
+        aggregate:
 
-  - name: Sleep for 2 seconds on Fretta Platform
-    wait_for: timeout=2
-    when: platform is match("N9K-F")
+          - name: '{{ intname1 }}'
+            mode: access
+            access_vlan: 6
 
-  - name: Configure interface for access_vlan aggregate(Idempotence)
-    cisco.nxos.nxos_l2_interface: *conf_agg
-    register: result
+          - name: '{{ intname2 }}'
+            mode: access
+            access_vlan: 15
 
-  - assert:
-      that:
-        - "result.changed == false"
+    - assert:
+        that:
+          - result.changed == true
 
-  - name: Remove interface aggregate
-    cisco.nxos.nxos_l2_interface: &rm_agg
-      aggregate:
-        - { name: "{{ intname1 }}", mode: access, access_vlan: 6 }
-        - { name: "{{ intname2 }}", mode: access, access_vlan: 15 }
-      provider: "{{ connection }}"
-      state: absent
-    register: result
+    - name: Sleep for 2 seconds on Fretta Platform
+      wait_for: timeout=2
+      when: platform is match("N9K-F")
 
-  - assert:
-      that:
-        - "result.changed == true"
+    - name: Configure interface for access_vlan aggregate(Idempotence)
+      register: result
+      cisco.nxos.nxos_l2_interface: *id001
 
-  - name: Sleep for 2 seconds on Fretta Platform
-    wait_for: timeout=2
-    when: platform is match("N9K-F")
+    - assert:
+        that:
+          - result.changed == false
 
-  - name: Remove interface aggregate(Idempotence)
-    cisco.nxos.nxos_l2_interface: *rm_agg
-    register: result
+    - name: Remove interface aggregate
+      register: result
+      cisco.nxos.nxos_l2_interface: &id002
+        aggregate:
 
-  - assert:
-      that:
-        - "result.changed == false"
+          - name: '{{ intname1 }}'
+            mode: access
+            access_vlan: 6
 
+          - name: '{{ intname2 }}'
+            mode: access
+            access_vlan: 15
+        state: absent
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Sleep for 2 seconds on Fretta Platform
+      wait_for: timeout=2
+      when: platform is match("N9K-F")
+
+    - name: Remove interface aggregate(Idempotence)
+      register: result
+      cisco.nxos.nxos_l2_interface: *id002
+
+    - assert:
+        that:
+          - result.changed == false
   always:
-  - name: "remove vlans"
-    cisco.nxos.nxos_vlan:
-      vlan_range: "6,15"
-      provider: "{{ connection }}"
-      state: absent
-    ignore_errors: yes
 
-  - name: "Remove interface aggregate after testing"
-    cisco.nxos.nxos_l2_interface:
-      aggregate:
-        - { name: "{{ intname1 }}", mode: access, access_vlan: 6 }
-        - { name: "{{ intname2 }}", mode: access, access_vlan: 15 }
-      provider: "{{ connection }}"
-      state: absent
-    ignore_errors: yes
+    - name: remove vlans
+      ignore_errors: true
+      cisco.nxos.nxos_vlan:
+        vlan_range: 6,15
+        state: absent
 
-- debug: msg="END connection={{ ansible_connection }} nxos_l2_interface aggregate test"
+    - name: Remove interface aggregate after testing
+      ignore_errors: true
+      cisco.nxos.nxos_l2_interface:
+        aggregate:
+
+          - name: '{{ intname1 }}'
+            mode: access
+            access_vlan: 6
+
+          - name: '{{ intname2 }}'
+            mode: access
+            access_vlan: 15
+        state: absent
+
+- debug: msg="END connection={{ ansible_connection }} nxos_l2_interface aggregate
+    test"

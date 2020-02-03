@@ -23,30 +23,30 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_snmp_location
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_snmp_location
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages SNMP location information.
 description:
-    - Manages SNMP location configuration.
+- Manages SNMP location configuration.
 author:
-    - Jason Edelman (@jedelman8)
-    - Gabriele Gerbino (@GGabriele)
+- Jason Edelman (@jedelman8)
+- Gabriele Gerbino (@GGabriele)
 notes:
-    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
 options:
-    location:
-        description:
-            - Location information.
-        required: true
-    state:
-        description:
-            - Manage the state of the resource.
-        required: false
-        default: present
-        choices: ['present','absent']
+  location:
+    description:
+    - Location information.
+    required: true
+  state:
+    description:
+    - Manage the state of the resource.
+    required: false
+    default: present
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """

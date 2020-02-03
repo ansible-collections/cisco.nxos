@@ -1,230 +1,220 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_pim_rp_address sanity"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - block:
-  # platforms do not support bidir
-  - set_fact: bidir_true="true"
-  - set_fact: bidir_false="false"
+
+    - set_fact: bidir_true="true"
+
+    - set_fact: bidir_false="false"
   when: platform is not search('N3L')
 
 - block:
-  # platforms can only remove rpa, cannot remove rpa+prefixlist or rpa+routemap
-  - set_fact: pim_prefix_list="pim_prefix_list"
-  - set_fact: pim_route_map="pim_route_map"
+
+    - set_fact: pim_prefix_list="pim_prefix_list"
+
+    - set_fact: pim_route_map="pim_route_map"
   when: platform is not search('N3L|N7K')
 
 - block:
-  - name: "Disable feature PIM"
-    cisco.nxos.nxos_feature: &disable_feature
-      feature: pim
-      provider: "{{ connection }}"
-      state: disabled
 
-  - name: "Enable feature PIM"
-    cisco.nxos.nxos_feature: &enable_feature
-      feature: pim
-      provider: "{{ connection }}"
-      state: enabled
+    - name: Disable feature PIM
+      cisco.nxos.nxos_feature: &id014
+        feature: pim
+        state: disabled
 
-  - name: 1.0 Configure rp_address + group_list
-    # This test should always run regardless of bidir support
-    cisco.nxos.nxos_pim_rp_address: &configgl
-      rp_address: "10.1.1.1"
-      group_list: "224.0.0.0/8"
-      bidir: "{{ bidir_true|default(omit) }}"
-      provider: "{{ connection }}"
-      state: present
-    register: result
+    - name: Enable feature PIM
+      cisco.nxos.nxos_feature:
+        feature: pim
+        state: enabled
 
-  - assert: &true
-      that:
-        - "result.changed == true"
-
-  - name: 1.0 Idempotence rp_address + group_list
-    cisco.nxos.nxos_pim_rp_address: *configgl
-    register: result
-
-  - assert: &false
-      that:
-        - "result.changed == false"
-
-  - block: # bidir test
-    - name: 1.1 Configure rp_address + group_list (bidir_false)
-      cisco.nxos.nxos_pim_rp_address: &config11
-        rp_address: "10.1.1.1"
-        group_list: "224.0.0.0/8"
-        bidir: false
-        provider: "{{ connection }}"
+    - name: 1.0 Configure rp_address + group_list
+      register: result
+      cisco.nxos.nxos_pim_rp_address: &id001
+        rp_address: 10.1.1.1
+        group_list: 224.0.0.0/8
+        bidir: '{{ bidir_true|default(omit) }}'
         state: present
+
+    - assert: &id002
+        that:
+          - result.changed == true
+
+    - name: 1.0 Idempotence rp_address + group_list
       register: result
+      cisco.nxos.nxos_pim_rp_address: *id001
 
-    - assert: *true
+    - assert: &id004
+        that:
+          - result.changed == false
 
-    - name: 1.1 Idempotence rp_address + group_list (bidir_false)
-      cisco.nxos.nxos_pim_rp_address: *config11
+    - block:
+
+        - name: 1.1 Configure rp_address + group_list (bidir_false)
+          register: result
+          cisco.nxos.nxos_pim_rp_address: &id003
+            rp_address: 10.1.1.1
+            group_list: 224.0.0.0/8
+            bidir: false
+            state: present
+
+        - assert: *id002
+
+        - name: 1.1 Idempotence rp_address + group_list (bidir_false)
+          register: result
+          cisco.nxos.nxos_pim_rp_address: *id003
+
+        - assert: *id004
+
+        - name: 1.2 Configure rp_address (bidir_true)
+          register: result
+          cisco.nxos.nxos_pim_rp_address: &id005
+            rp_address: 10.1.1.1
+            bidir: true
+            state: present
+
+        - assert: *id002
+
+        - name: 1.2 Idempotence rp_address (bidir_true)
+          register: result
+          cisco.nxos.nxos_pim_rp_address: *id005
+
+        - assert: *id004
+
+        - name: 1.3 Configure rp_address (bidir_false)
+          register: result
+          cisco.nxos.nxos_pim_rp_address: &id006
+            rp_address: 10.1.1.1
+            bidir: false
+            state: present
+
+        - assert: *id002
+
+        - name: 1.3 Idempotence rp_address (bidir_false)
+          register: result
+          cisco.nxos.nxos_pim_rp_address: *id006
+
+        - assert: *id004
+      when: bidir_true is defined
+
+    - name: 1.4 Remove rp_address + group_list
       register: result
+      cisco.nxos.nxos_pim_rp_address: &id007
+        rp_address: 10.1.1.1
+        group_list: 224.0.0.0/8
+        state: absent
 
-    - assert: *false
+    - assert: *id002
 
-    - name: 1.2 Configure rp_address (bidir_true)
-      cisco.nxos.nxos_pim_rp_address: &config12
-        rp_address: "10.1.1.1"
-        bidir: true
-        provider: "{{ connection }}"
+    - name: 1.4 Idempotence remove rp_address + group_list
+      register: result
+      cisco.nxos.nxos_pim_rp_address: *id007
+
+    - assert: *id004
+
+    - name: 2.0 Configure rp_address + prefix_list (bidir_true)
+      register: result
+      cisco.nxos.nxos_pim_rp_address: &id008
+        rp_address: 10.1.1.2
+        prefix_list: '{{ pim_prefix_list|default(omit) }}'
+        bidir: '{{ bidir_true|default(omit) }}'
         state: present
+
+    - assert: *id002
+
+    - name: 2.0 Idempotence rp_address + prefix_list (bidir_true)
       register: result
+      cisco.nxos.nxos_pim_rp_address: *id008
 
-    - assert: *true
+    - assert: *id004
 
-    - name: 1.2 Idempotence rp_address (bidir_true)
-      cisco.nxos.nxos_pim_rp_address: *config12
+    - block:
+
+        - name: 2.1 Configure rp_address + prefix_list (bidir_false)
+          register: result
+          cisco.nxos.nxos_pim_rp_address: &id009
+            rp_address: 10.1.1.2
+            prefix_list: '{{ pim_prefix_list|default(omit) }}'
+            bidir: '{{ bidir_false|default(omit) }}'
+            state: present
+
+        - assert: *id002
+
+        - name: 2.1 Idempotence rp_address + prefix_list (bidir_false)
+          register: result
+          cisco.nxos.nxos_pim_rp_address: *id009
+
+        - assert: *id004
+      when: bidir_false is defined
+
+    - name: 2.2 Remove rp_address + prefix_list (bidir_false)
       register: result
+      cisco.nxos.nxos_pim_rp_address: &id010
+        rp_address: 10.1.1.2
+        prefix_list: '{{ pim_prefix_list|default(omit)}}'
+        bidir: '{{ bidir_false|default(omit)}}'
+        state: absent
 
-    - assert: *false
+    - assert: *id002
 
-    - name: 1.3 Configure rp_address (bidir_false)
-      cisco.nxos.nxos_pim_rp_address: &config13
-        rp_address: "10.1.1.1"
-        bidir: false
-        provider: "{{ connection }}"
+    - name: 2.2 Idempotence remove rp_address + prefix_list (bidir_false)
+      register: result
+      cisco.nxos.nxos_pim_rp_address: *id010
+
+    - assert: *id004
+
+    - name: 3.0 Configure rp_address + route_map + (bidir_true)
+      register: result
+      cisco.nxos.nxos_pim_rp_address: &id011
+        rp_address: 10.1.1.3
+        route_map: '{{ pim_route_map|default(omit)}}'
+        bidir: '{{ bidir_true|default(omit) }}'
         state: present
+
+    - assert: *id002
+
+    - name: 3.0 Idempotence rp_address + route_map + (bidir_true)
       register: result
+      cisco.nxos.nxos_pim_rp_address: *id011
 
-    - assert: *true
+    - assert: *id004
 
-    - name: 1.3 Idempotence rp_address (bidir_false)
-      cisco.nxos.nxos_pim_rp_address: *config13
+    - block:
+
+        - name: 3.1 Configure rp_address + route_map (bidir_false)
+          register: result
+          cisco.nxos.nxos_pim_rp_address: &id012
+            rp_address: 10.1.1.3
+            route_map: '{{ pim_route_map|default(omit)}}'
+            bidir: '{{ bidir_false|default(omit)}}'
+            state: present
+
+        - assert: *id002
+
+        - name: 3.1 Idempotence rp_address + route_map
+          register: result
+          cisco.nxos.nxos_pim_rp_address: *id012
+
+        - assert: *id004
+      when: bidir_false is defined
+
+    - name: 3.2 Remove rp_address + route_map (bidir_false)
       register: result
+      cisco.nxos.nxos_pim_rp_address: &id013
+        rp_address: 10.1.1.3
+        route_map: '{{ pim_route_map|default(omit)}}'
+        bidir: '{{ bidir_false|default(omit)}}'
+        state: absent
 
-    - assert: *false
-    when: bidir_true is defined
+    - assert: *id002
 
-  - name: 1.4 Remove rp_address + group_list
-    cisco.nxos.nxos_pim_rp_address: &config14
-      rp_address: "10.1.1.1"
-      group_list: "224.0.0.0/8"
-      provider: "{{ connection }}"
-      state: absent
-    register: result
-
-  - assert: *true
-
-  - name: 1.4 Idempotence remove rp_address + group_list
-    cisco.nxos.nxos_pim_rp_address: *config14
-    register: result
-
-  - assert: *false
-
-  - name: 2.0 Configure rp_address + prefix_list (bidir_true)
-    cisco.nxos.nxos_pim_rp_address: &config20
-      rp_address: "10.1.1.2"
-      prefix_list: "{{ pim_prefix_list|default(omit) }}"
-      bidir: "{{ bidir_true|default(omit) }}"
-      provider: "{{ connection }}"
-      state: present
-    register: result
-
-  - assert: *true
-
-  - name: 2.0 Idempotence rp_address + prefix_list (bidir_true)
-    cisco.nxos.nxos_pim_rp_address: *config20
-    register: result
-
-  - assert: *false
-
-  - block: # bidir test
-    - name: 2.1 Configure rp_address + prefix_list (bidir_false)
-      cisco.nxos.nxos_pim_rp_address: &config21
-        rp_address: "10.1.1.2"
-        prefix_list: "{{ pim_prefix_list|default(omit) }}"
-        bidir: "{{ bidir_false|default(omit) }}"
-        provider: "{{ connection }}"
-        state: present
+    - name: 3.2 Idempotence remove rp_address + route_map (bidir_false)
       register: result
+      cisco.nxos.nxos_pim_rp_address: *id013
 
-    - assert: *true
-
-    - name: 2.1 Idempotence rp_address + prefix_list (bidir_false)
-      cisco.nxos.nxos_pim_rp_address: *config21
-      register: result
-
-    - assert: *false
-    when: bidir_false is defined
-
-  - name: 2.2 Remove rp_address + prefix_list (bidir_false)
-    cisco.nxos.nxos_pim_rp_address: &config22
-      rp_address: "10.1.1.2"
-      prefix_list: "{{ pim_prefix_list|default(omit)}}"
-      bidir: "{{ bidir_false|default(omit)}}"
-      provider: "{{ connection }}"
-      state: absent
-    register: result
-
-  - assert: *true
-
-  - name: 2.2 Idempotence remove rp_address + prefix_list (bidir_false)
-    cisco.nxos.nxos_pim_rp_address: *config22
-    register: result
-
-  - assert: *false
-
-  - name: 3.0 Configure rp_address + route_map + (bidir_true)
-    cisco.nxos.nxos_pim_rp_address: &config30
-      rp_address: "10.1.1.3"
-      route_map: "{{ pim_route_map|default(omit)}}"
-      bidir: "{{ bidir_true|default(omit) }}"
-      provider: "{{ connection }}"
-      state: present
-    register: result
-
-  - assert: *true
-
-  - name: 3.0 Idempotence rp_address + route_map + (bidir_true)
-    cisco.nxos.nxos_pim_rp_address: *config30
-    register: result
-
-  - assert: *false
-
-  - block: # bidir test
-    - name: 3.1 Configure rp_address + route_map (bidir_false)
-      cisco.nxos.nxos_pim_rp_address: &config31
-        rp_address: "10.1.1.3"
-        route_map: "{{ pim_route_map|default(omit)}}"
-        bidir: "{{ bidir_false|default(omit)}}"
-        provider: "{{ connection }}"
-        state: present
-      register: result
-
-    - assert: *true
-
-    - name: 3.1 Idempotence rp_address + route_map
-      cisco.nxos.nxos_pim_rp_address: *config31
-      register: result
-
-    - assert: *false
-    when: bidir_false is defined
-
-  - name: 3.2 Remove rp_address + route_map (bidir_false)
-    cisco.nxos.nxos_pim_rp_address: &config32
-      rp_address: "10.1.1.3"
-      route_map: "{{ pim_route_map|default(omit)}}"
-      bidir: "{{ bidir_false|default(omit)}}"
-      provider: "{{ connection }}"
-      state: absent
-    register: result
-
-  - assert: *true
-
-  - name: 3.2 Idempotence remove rp_address + route_map (bidir_false)
-    cisco.nxos.nxos_pim_rp_address: *config32
-    register: result
-
-  - assert: *false
-
+    - assert: *id004
   always:
-    - name: "Disable feature PIM"
-      cisco.nxos.nxos_feature: *disable_feature
+
+    - name: Disable feature PIM
+      cisco.nxos.nxos_feature: *id014
 
 - debug: msg="END connection={{ ansible_connection }} nxos_pim_rp_address sanity"

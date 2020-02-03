@@ -1,7 +1,6 @@
 ---
 - debug: msg="START common/save.yaml on connection={{ ansible_connection }}"
 
-# Select interface for test
 - set_fact: intname="{{ nxos_int1 }}"
 
 - name: setup
@@ -10,28 +9,25 @@
       - no description
       - no shutdown
     parents:
-      - "interface {{ intname }}"
+      - interface {{ intname }}
     match: none
-    provider: "{{ connection }}"
 
 - name: save config
+  register: result
   cisco.nxos.nxos_config:
     save_when: always
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
 
 - name: save should always run
+  register: result
   cisco.nxos.nxos_config:
     save_when: always
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
 
 - debug: msg="END common/save.yaml on connection={{ ansible_connection }}"

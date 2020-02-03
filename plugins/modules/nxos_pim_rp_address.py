@@ -23,47 +23,45 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_pim_rp_address
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_pim_rp_address
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages configuration of an PIM static RP address instance.
 description:
-  - Manages configuration of an Protocol Independent Multicast (PIM) static
-    rendezvous point (RP) address instance.
+- Manages configuration of an Protocol Independent Multicast (PIM) static rendezvous
+  point (RP) address instance.
 author: Gabriele Gerbino (@GGabriele)
 notes:
-  - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-  - C(state=absent) is currently not supported on all platforms.
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- C(state=absent) is currently not supported on all platforms.
 options:
   rp_address:
     description:
-      - Configures a Protocol Independent Multicast (PIM) static
-        rendezvous point (RP) address. Valid values are
-        unicast addresses.
+    - Configures a Protocol Independent Multicast (PIM) static rendezvous point (RP)
+      address. Valid values are unicast addresses.
     required: true
   group_list:
     description:
-      - Group range for static RP. Valid values are multicast addresses.
+    - Group range for static RP. Valid values are multicast addresses.
   prefix_list:
     description:
-      - Prefix list policy for static RP. Valid values are prefix-list
-        policy names.
+    - Prefix list policy for static RP. Valid values are prefix-list policy names.
   route_map:
     description:
-      - Route map policy for static RP. Valid values are route-map
-        policy names.
+    - Route map policy for static RP. Valid values are route-map policy names.
   bidir:
     description:
-      - Group range is treated in PIM bidirectional mode.
+    - Group range is treated in PIM bidirectional mode.
     type: bool
   state:
     description:
-      - Specify desired state of the resource.
+    - Specify desired state of the resource.
     required: true
     default: present
-    choices: ['present','absent','default']
+    choices:
+    - present
+    - absent
+    - default
 """
 EXAMPLES = """
 - nxos_pim_rp_address:
@@ -90,7 +88,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxos_argument_spec,
 )
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.config import CustomNetworkConfig
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    CustomNetworkConfig,
+)
 
 
 def get_existing(module, args, gl):

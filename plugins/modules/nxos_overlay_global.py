@@ -22,24 +22,22 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: nxos_overlay_global
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_overlay_global
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Configures anycast gateway MAC of the switch.
 description:
-  - Configures anycast gateway MAC of the switch.
+- Configures anycast gateway MAC of the switch.
 author: Gabriele Gerbino (@GGabriele)
 notes:
-  - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-  - Default restores params default value
-  - Supported MAC address format are "E.E.E", "EE-EE-EE-EE-EE-EE",
-    "EE:EE:EE:EE:EE:EE" and "EEEE.EEEE.EEEE"
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Default restores params default value
+- Supported MAC address format are "E.E.E", "EE-EE-EE-EE-EE-EE", "EE:EE:EE:EE:EE:EE"
+  and "EEEE.EEEE.EEEE"
 options:
   anycast_gateway_mac:
     description:
-      - Anycast gateway mac of the switch.
+    - Anycast gateway mac of the switch.
     required: true
 """
 
@@ -65,7 +63,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxos_argument_spec,
 )
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.config import CustomNetworkConfig
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    CustomNetworkConfig,
+)
 
 PARAM_TO_COMMAND_KEYMAP = {
     "anycast_gateway_mac": "fabric forwarding anycast-gateway-mac"

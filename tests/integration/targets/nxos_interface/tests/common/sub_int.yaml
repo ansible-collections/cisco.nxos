@@ -1,79 +1,75 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_interface sub-interface test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
+- debug: msg="START connection={{ ansible_connection }} nxos_interface sub-interface
+    test"
 
 - set_fact: testint="{{ nxos_int1 }}"
 
 - name: Setup - delete sub-interface
-  cisco.nxos.nxos_interface: &rm
-    name: "{{ testint }}.20"
-    provider: "{{ connection }}"
+  ignore_errors: true
+  cisco.nxos.nxos_interface: &id003
+    name: '{{ testint }}.20'
     state: absent
-  ignore_errors: yes
 
 - name: Setup - Ensure the interface is layer3
   cisco.nxos.nxos_interface:
-    name: "{{ testint }}"
+    name: '{{ testint }}'
     mode: layer3
-    provider: "{{ connection }}"
 
 - name: Create sub-interface
-  cisco.nxos.nxos_interface: &sub_int
-    name: "{{ testint }}.20"
-    description: "sub-interface Configured by Ansible"
+  register: result
+  cisco.nxos.nxos_interface: &id001
+    name: '{{ testint }}.20'
+    description: sub-interface Configured by Ansible
     admin_state: up
     mtu: 800
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
 
 - name: Create sub-interface (Idempotence)
-  cisco.nxos.nxos_interface: *sub_int
   register: result
+  cisco.nxos.nxos_interface: *id001
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - name: Make admin_state down
-  cisco.nxos.nxos_interface: &state_down
-    name: "{{ testint }}.20"
-    description: "sub-interface Configured by Ansible"
+  register: result
+  cisco.nxos.nxos_interface: &id002
+    name: '{{ testint }}.20'
+    description: sub-interface Configured by Ansible
     admin_state: down
     mtu: 800
-    provider: "{{ connection }}"
-  register: result
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
 
 - name: Create sub-interface (Idempotence)
-  cisco.nxos.nxos_interface: *state_down
   register: result
+  cisco.nxos.nxos_interface: *id002
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
 - name: Remove sub-interface
-  cisco.nxos.nxos_interface: *rm
   register: result
+  cisco.nxos.nxos_interface: *id003
 
 - assert:
     that:
-      - "result.changed == true"
+      - result.changed == true
 
 - name: Remove sub-interface (Idempotence)
-  cisco.nxos.nxos_interface: *rm
   register: result
+  cisco.nxos.nxos_interface: *id003
 
 - assert:
     that:
-      - "result.changed == false"
+      - result.changed == false
 
-- debug: msg="END connection={{ ansible_connection }} nxos_interface sub-interface test"
+- debug: msg="END connection={{ ansible_connection }} nxos_interface sub-interface
+    test"

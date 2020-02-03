@@ -23,62 +23,55 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_system
-extends_documentation_fragment: nxos
-version_added: "2.3"
-author: "Peter Sprygada (@privateip)"
+DOCUMENTATION = """module: nxos_system
+extends_documentation_fragment:
+- cisco.nxos.nxos
+author: Peter Sprygada (@privateip)
 short_description: Manage the system attributes on Cisco NXOS devices
 description:
-  - This module provides declarative management of node system attributes
-    on Cisco NXOS devices.  It provides an option to configure host system
-    parameters or remove those parameters from the device active
-    configuration.
+- This module provides declarative management of node system attributes on Cisco NXOS
+  devices.  It provides an option to configure host system parameters or remove those
+  parameters from the device active configuration.
 options:
   hostname:
     description:
-      - Configure the device hostname parameter. This option takes an ASCII string value
-        or keyword 'default'
+    - Configure the device hostname parameter. This option takes an ASCII string value
+      or keyword 'default'
   domain_name:
     description:
-      - Configures the default domain
-        name suffix to be used when referencing this node by its
-        FQDN.  This argument accepts either a list of domain names or
-        a list of dicts that configure the domain name and VRF name or
-        keyword 'default'. See examples.
+    - Configures the default domain name suffix to be used when referencing this node
+      by its FQDN.  This argument accepts either a list of domain names or a list
+      of dicts that configure the domain name and VRF name or keyword 'default'. See
+      examples.
   domain_lookup:
     description:
-      - Enables or disables the DNS
-        lookup feature in Cisco NXOS.  This argument accepts boolean
-        values.  When enabled, the system will try to resolve hostnames
-        using DNS and when disabled, hostnames will not be resolved.
+    - Enables or disables the DNS lookup feature in Cisco NXOS.  This argument accepts
+      boolean values.  When enabled, the system will try to resolve hostnames using
+      DNS and when disabled, hostnames will not be resolved.
     type: bool
   domain_search:
     description:
-      - Configures a list of domain
-        name suffixes to search when performing DNS name resolution.
-        This argument accepts either a list of domain names or
-        a list of dicts that configure the domain name and VRF name or
-        keyword 'default'. See examples.
+    - Configures a list of domain name suffixes to search when performing DNS name
+      resolution. This argument accepts either a list of domain names or a list of
+      dicts that configure the domain name and VRF name or keyword 'default'. See
+      examples.
   name_servers:
     description:
-      - List of DNS name servers by IP address to use to perform name resolution
-        lookups.  This argument accepts either a list of DNS servers or
-        a list of hashes that configure the name server and VRF name or
-        keyword 'default'. See examples.
+    - List of DNS name servers by IP address to use to perform name resolution lookups.  This
+      argument accepts either a list of DNS servers or a list of hashes that configure
+      the name server and VRF name or keyword 'default'. See examples.
   system_mtu:
     description:
-      - Specifies the mtu, must be an integer or keyword 'default'.
+    - Specifies the mtu, must be an integer or keyword 'default'.
   state:
     description:
-      - State of the configuration
-        values in the device's current active configuration.  When set
-        to I(present), the values should be configured in the device active
-        configuration and when set to I(absent) the values should not be
-        in the device active configuration
+    - State of the configuration values in the device's current active configuration.  When
+      set to I(present), the values should be configured in the device active configuration
+      and when set to I(absent) the values should not be in the device active configuration
     default: present
-    choices: ['present', 'absent']
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """
@@ -124,8 +117,12 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.six import iteritems
-from ansible.module_utils.network.common.config import NetworkConfig
-from ansible.module_utils.network.common.utils import ComplexList
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    NetworkConfig,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    ComplexList,
+)
 
 _CONFIGURED_VRFS = None
 

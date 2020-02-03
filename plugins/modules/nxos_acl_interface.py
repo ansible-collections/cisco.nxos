@@ -23,37 +23,39 @@ ANSIBLE_METADATA = {
 }
 
 
-DOCUMENTATION = """
----
-module: nxos_acl_interface
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_acl_interface
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages applying ACLs to interfaces.
 description:
-  - Manages applying ACLs to interfaces.
+- Manages applying ACLs to interfaces.
 author:
-  - Jason Edelman (@jedelman8)
-  - Gabriele Gerbino (@GGabriele)
+- Jason Edelman (@jedelman8)
+- Gabriele Gerbino (@GGabriele)
 options:
   name:
     description:
-      - Case sensitive name of the access list (ACL).
+    - Case sensitive name of the access list (ACL).
     required: true
   interface:
     description:
-      - Full name of interface, e.g. I(Ethernet1/1).
+    - Full name of interface, e.g. I(Ethernet1/1).
     required: true
   direction:
     description:
-      - Direction ACL to be applied in on the interface.
+    - Direction ACL to be applied in on the interface.
     required: true
-    choices: ['ingress', 'egress']
+    choices:
+    - ingress
+    - egress
   state:
     description:
-      - Specify desired state of the resource.
+    - Specify desired state of the resource.
     required: false
     default: present
-    choices: ['present','absent']
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """

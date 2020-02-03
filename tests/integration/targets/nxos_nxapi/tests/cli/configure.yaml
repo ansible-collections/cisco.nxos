@@ -9,133 +9,134 @@
     state: absent
 
 - block:
-  - name: Configure NXAPI HTTPS
-    cisco.nxos.nxos_nxapi: &configure_https
-      enable_http: no
-      enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
-      enable_https: yes
-      https_port: 9443
-    register: result
 
-  - nxos_command:
-      commands:
-        - show nxapi | json
-    register: result
+    - name: Configure NXAPI HTTPS
+      register: result
+      cisco.nxos.nxos_nxapi: &id001
+        enable_http: false
+        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_https: true
+        https_port: 9443
 
-  - include: targets/nxos_nxapi/tasks/platform/n7k/assert_changes_https.yaml
-    when: platform is match('N7K')
+    - register: result
+      cisco.nxos.nxos_command:
+        commands:
+          - show nxapi | json
 
-  - include: targets/nxos_nxapi/tasks/platform/n5k/assert_changes_https.yaml
-    when: platform is search('N5K|N6K')
+    - include: tasks/platform/n7k/assert_changes_https.yaml
+      when: platform is match('N7K')
 
-  - include: targets/nxos_nxapi/tasks/platform/default/assert_changes_https.yaml
-    when: platform is not search('N35|N5K|N6K|N7K')
+    - include: tasks/platform/n5k/assert_changes_https.yaml
+      when: platform is search('N5K|N6K')
 
-  - name: Configure NXAPI HTTPS again
-    cisco.nxos.nxos_nxapi: *configure_https
-    register: result
+    - include: tasks/platform/default/assert_changes_https.yaml
+      when: platform is not search('N35|N5K|N6K|N7K')
 
-  - name: Assert configuration is idempotent
-    assert: &assert_false
-      that:
-        - result.changed == false
+    - name: Configure NXAPI HTTPS again
+      register: result
+      cisco.nxos.nxos_nxapi: *id001
 
-  - name: Configure NXAPI HTTPS & HTTP
-    cisco.nxos.nxos_nxapi: &configure_https_http
-      enable_http: yes
-      enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
-      enable_https: yes
-      https_port: 9443
-    register: result
+    - name: Assert configuration is idempotent
+      assert: &id003
+        that:
+          - result.changed == false
 
-  - nxos_command:
-      commands:
-        - show nxapi | json
-    register: result
+    - name: Configure NXAPI HTTPS & HTTP
+      register: result
+      cisco.nxos.nxos_nxapi: &id002
+        enable_http: true
+        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_https: true
+        https_port: 9443
 
-  - include: targets/nxos_nxapi/tasks/platform/n7k/assert_changes_https_http.yaml
-    when: platform is match('N7K')
+    - register: result
+      cisco.nxos.nxos_command:
+        commands:
+          - show nxapi | json
 
-  - include: targets/nxos_nxapi/tasks/platform/n5k/assert_changes_https_http.yaml
-    when: platform is match('N5K')
+    - include: tasks/platform/n7k/assert_changes_https_http.yaml
+      when: platform is match('N7K')
 
-  - include: targets/nxos_nxapi/tasks/platform/default/assert_changes_https_http.yaml
-    when: platform is not search('N35|N5K|N6K|N7K')
+    - include: tasks/platform/n5k/assert_changes_https_http.yaml
+      when: platform is match('N5K')
 
-  - name: Configure NXAPI HTTPS & HTTP again
-    cisco.nxos.nxos_nxapi: *configure_https_http
-    register: result
+    - include: tasks/platform/default/assert_changes_https_http.yaml
+      when: platform is not search('N35|N5K|N6K|N7K')
 
-  - name: Assert configuration is idempotent
-    assert: *assert_false
+    - name: Configure NXAPI HTTPS & HTTP again
+      register: result
+      cisco.nxos.nxos_nxapi: *id002
 
-  - name: Configure different NXAPI HTTPS & HTTP ports
-    cisco.nxos.nxos_nxapi: &configure_https_http_ports
-      enable_http: yes
-      enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
-      enable_https: yes
-      http_port: 99
-      https_port: 500
-    register: result
+    - name: Assert configuration is idempotent
+      assert: *id003
 
-  - nxos_command:
-      commands:
-        - show nxapi | json
-    register: result
+    - name: Configure different NXAPI HTTPS & HTTP ports
+      register: result
+      cisco.nxos.nxos_nxapi: &id004
+        enable_http: true
+        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_https: true
+        http_port: 99
+        https_port: 500
 
-  - include: targets/nxos_nxapi/tasks/platform/n7k/assert_changes_https_http_ports.yaml
-    when: platform is match('N7K')
+    - register: result
+      cisco.nxos.nxos_command:
+        commands:
+          - show nxapi | json
 
-  - include: targets/nxos_nxapi/tasks/platform/n5k/assert_changes_https_http_ports.yaml
-    when: platform is match('N5K')
+    - include: tasks/platform/n7k/assert_changes_https_http_ports.yaml
+      when: platform is match('N7K')
 
-  - include: targets/nxos_nxapi/tasks/platform/default/assert_changes_https_http_ports.yaml
-    when: platform is not search('N35|N5K|N6K|N7K')
+    - include: tasks/platform/n5k/assert_changes_https_http_ports.yaml
+      when: platform is match('N5K')
 
-  - name: Configure different NXAPI HTTPS & HTTP ports again
-    cisco.nxos.nxos_nxapi: *configure_https_http_ports
-    register: result
+    - include: tasks/platform/default/assert_changes_https_http_ports.yaml
+      when: platform is not search('N35|N5K|N6K|N7K')
 
-  - name: Assert configuration is idempotent
-    assert: *assert_false
+    - name: Configure different NXAPI HTTPS & HTTP ports again
+      register: result
+      cisco.nxos.nxos_nxapi: *id004
 
-  - name: Configure NXAPI HTTP
-    cisco.nxos.nxos_nxapi: &configure_http
-      enable_http: yes
-      enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
-      enable_https: no
-    register: result
+    - name: Assert configuration is idempotent
+      assert: *id003
 
-  - nxos_command:
-      commands:
-        - show nxapi | json
-    register: result
+    - name: Configure NXAPI HTTP
+      register: result
+      cisco.nxos.nxos_nxapi: &id005
+        enable_http: true
+        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_https: false
 
-  - include: targets/nxos_nxapi/tasks/platform/n7k/assert_changes_http.yaml
-    when: platform is match('N7K')
+    - register: result
+      cisco.nxos.nxos_command:
+        commands:
+          - show nxapi | json
 
-  - include: targets/nxos_nxapi/tasks/platform/n5k/assert_changes_http.yaml
-    when: platform is match('N5K')
+    - include: tasks/platform/n7k/assert_changes_http.yaml
+      when: platform is match('N7K')
 
-  - include: targets/nxos_nxapi/tasks/platform/default/assert_changes_http.yaml
-    when: platform is not search('N35|N5K|N6K|N7K')
+    - include: tasks/platform/n5k/assert_changes_http.yaml
+      when: platform is match('N5K')
 
-  - name: Configure NXAPI HTTP again
-    cisco.nxos.nxos_nxapi: *configure_http
-    register: result
+    - include: tasks/platform/default/assert_changes_http.yaml
+      when: platform is not search('N35|N5K|N6K|N7K')
 
-  - name: Assert configuration is idempotent
-    assert: *assert_false
+    - name: Configure NXAPI HTTP again
+      register: result
+      cisco.nxos.nxos_nxapi: *id005
 
+    - name: Assert configuration is idempotent
+      assert: *id003
   always:
-  - name: Cleanup - Disable NXAPI
-    cisco.nxos.nxos_nxapi:
-      state: absent
-    register: result
 
-  - name: Cleanup - Re-enable NXAPI
-    cisco.nxos.nxos_nxapi:
-      state: present
-    register: result
+    - name: Cleanup - Disable NXAPI
+      register: result
+      cisco.nxos.nxos_nxapi:
+        state: absent
 
-  - debug: msg="END cli/configure.yaml"
+    - name: Cleanup - Re-enable NXAPI
+      register: result
+      cisco.nxos.nxos_nxapi:
+        state: present
+
+    - debug: msg="END cli/configure.yaml"

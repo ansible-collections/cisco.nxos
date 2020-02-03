@@ -22,39 +22,40 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = """
----
-module: nxos_vrf_af
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = """module: nxos_vrf_af
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages VRF AF.
 description:
-  - Manages VRF AF
+- Manages VRF AF
 author: Gabriele Gerbino (@GGabriele)
 notes:
-  - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-  - Default, where supported, restores params default value.
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Default, where supported, restores params default value.
 options:
   vrf:
     description:
-      - Name of the VRF.
+    - Name of the VRF.
     required: true
   afi:
     description:
-      - Address-Family Identifier (AFI).
+    - Address-Family Identifier (AFI).
     required: true
-    choices: ['ipv4', 'ipv6']
+    choices:
+    - ipv4
+    - ipv6
   route_target_both_auto_evpn:
     description:
-      - Enable/Disable the EVPN route-target 'auto' setting for both
-        import and export target communities.
+    - Enable/Disable the EVPN route-target 'auto' setting for both import and export
+      target communities.
     type: bool
   state:
     description:
-      - Determines whether the config should be present or
-        not on the device.
+    - Determines whether the config should be present or not on the device.
     default: present
-    choices: ['present','absent']
+    choices:
+    - present
+    - absent
 """
 
 EXAMPLES = """
@@ -80,7 +81,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxos_argument_spec,
 )
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.network.common.config import NetworkConfig
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    NetworkConfig,
+)
 
 
 def main():

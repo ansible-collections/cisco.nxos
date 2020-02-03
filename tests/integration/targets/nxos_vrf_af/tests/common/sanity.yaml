@@ -1,161 +1,146 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_vrf_af sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - name: Configure feature bgp
   cisco.nxos.nxos_feature:
     feature: bgp
-    provider: "{{ connection }}"
     state: enabled
 
 - name: Configure feature nv overlay
+  ignore_errors: true
   cisco.nxos.nxos_config:
-    commands: "feature nv overlay"
-    provider: "{{ connection }}"
-  ignore_errors: yes
+    commands: feature nv overlay
 
 - name: Configure nv overlay evpn
+  ignore_errors: true
   cisco.nxos.nxos_config:
-    commands: "nv overlay evpn"
-    provider: "{{ connection }}"
-  ignore_errors: yes
+    commands: nv overlay evpn
 
 - block:
-  - name: Configure vrf af ipv4
-    cisco.nxos.nxos_vrf_af: &configure4
-      vrf: ansible
-      afi: ipv4
-      route_target_both_auto_evpn: True
-      provider: "{{ connection }}"
-    register: result
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: Configure vrf af ipv4
+      register: result
+      cisco.nxos.nxos_vrf_af: &id001
+        vrf: ansible
+        afi: ipv4
+        route_target_both_auto_evpn: true
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vrf_af: *configure4
-    register: result
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_vrf_af: *id001
 
-  - name: Configure vrf af ipv6
-    cisco.nxos.nxos_vrf_af: &configure6
-      vrf: ansible
-      afi: ipv6
-      route_target_both_auto_evpn: True
-      provider: "{{ connection }}"
-    register: result
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - assert: *true
+    - name: Configure vrf af ipv6
+      register: result
+      cisco.nxos.nxos_vrf_af: &id003
+        vrf: ansible
+        afi: ipv6
+        route_target_both_auto_evpn: true
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vrf_af: *configure6
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_vrf_af: *id003
 
-  - name: Remove router target4
-    cisco.nxos.nxos_vrf_af: &rrt4
-      vrf: ansible
-      afi: ipv4
-      route_target_both_auto_evpn: False
-      provider: "{{ connection }}"
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Remove router target4
+      register: result
+      cisco.nxos.nxos_vrf_af: &id005
+        vrf: ansible
+        afi: ipv4
+        route_target_both_auto_evpn: false
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vrf_af: *rrt4
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_vrf_af: *id005
 
-  - name: Remove router target6
-    cisco.nxos.nxos_vrf_af: &rrt6
-      vrf: ansible
-      afi: ipv6
-      route_target_both_auto_evpn: False
-      provider: "{{ connection }}"
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Remove router target6
+      register: result
+      cisco.nxos.nxos_vrf_af: &id006
+        vrf: ansible
+        afi: ipv6
+        route_target_both_auto_evpn: false
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vrf_af: *rrt6
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_vrf_af: *id006
 
-  - name: Remove vrf af v6
-    cisco.nxos.nxos_vrf_af: &remove6
-      vrf: ansible
-      afi: ipv6
-      route_target_both_auto_evpn: True
-      provider: "{{ connection }}"
-      state: absent
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Remove vrf af v6
+      register: result
+      cisco.nxos.nxos_vrf_af: &id007
+        vrf: ansible
+        afi: ipv6
+        route_target_both_auto_evpn: true
+        state: absent
 
-  - pause:
-      seconds: 30
+    - assert: *id002
 
-  - name: "Remove Idempotence"
-    cisco.nxos.nxos_vrf_af: *remove6
-    register: result
+    - pause:
+        seconds: 30
 
-  - assert: *false
+    - name: Remove Idempotence
+      register: result
+      cisco.nxos.nxos_vrf_af: *id007
 
-  - name: Remove vrf af v4
-    cisco.nxos.nxos_vrf_af: &remove4
-      vrf: ansible
-      afi: ipv4
-      route_target_both_auto_evpn: True
-      provider: "{{ connection }}"
-      state: absent
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Remove vrf af v4
+      register: result
+      cisco.nxos.nxos_vrf_af: &id008
+        vrf: ansible
+        afi: ipv4
+        route_target_both_auto_evpn: true
+        state: absent
 
-  - pause:
-      seconds: 30
+    - assert: *id002
 
-  - name: "Remove Idempotence"
-    cisco.nxos.nxos_vrf_af: *remove4
-    register: result
+    - pause:
+        seconds: 30
 
-  - assert: *false
+    - name: Remove Idempotence
+      register: result
+      cisco.nxos.nxos_vrf_af: *id008
 
+    - assert: *id004
   when: not platform is search("N35|N3L")
-
   always:
-  - name: Remove vrf
-    cisco.nxos.nxos_config:
-      commands: "no vrf context ansible"
-      provider: "{{ connection }}"
-    ignore_errors: yes
 
-  - name: Remove nv overlay evpn
-    cisco.nxos.nxos_config:
-      commands: "no nv overlay evpn"
-      provider: "{{ connection }}"
-    ignore_errors: yes
+    - name: Remove vrf
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        commands: no vrf context ansible
 
-  - name: Remove feature nv overlay
-    cisco.nxos.nxos_config:
-      commands: "no feature nv overlay"
-      provider: "{{ connection }}"
-    ignore_errors: yes
+    - name: Remove nv overlay evpn
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        commands: no nv overlay evpn
 
-  - name: Remove feature bgp
-    cisco.nxos.nxos_feature:
-      feature: bgp
-      provider: "{{ connection }}"
-      state: disabled
-    ignore_errors: yes
+    - name: Remove feature nv overlay
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        commands: no feature nv overlay
+
+    - name: Remove feature bgp
+      ignore_errors: true
+      cisco.nxos.nxos_feature:
+        feature: bgp
+        state: disabled
 
 - debug: msg="END connection={{ ansible_connection }} nxos_vrf_af sanity test"

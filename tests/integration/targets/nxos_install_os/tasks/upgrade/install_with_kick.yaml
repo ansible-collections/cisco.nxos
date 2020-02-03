@@ -1,32 +1,29 @@
 ---
-- name: "Install OS image {{ si }}"
-  check_mode: "{{ checkmode }}"
-  cisco.nxos.nxos_install_os:
-    system_image_file: "{{ si }}"
-    kickstart_image_file: "{{ ki }}"
-    issu: "{{ issu }}"
-    provider: "{{ connection }}"
+- name: Install OS image {{ si }}
+  check_mode: '{{ checkmode }}'
   register: result
   when: not force
+  cisco.nxos.nxos_install_os:
+    system_image_file: '{{ si }}'
+    kickstart_image_file: '{{ ki }}'
+    issu: '{{ issu }}'
 
-- name: "Set OS image {{ si }} boot pointers"
+- name: Set OS image {{ si }} boot pointers
+  when: force
   cisco.nxos.nxos_config:
     lines:
       - no boot kickstart
       - no boot system
-      - "boot kickstart bootflash:{{ ki }}"
-      - "boot system bootflash:{{ si }}"
+      - boot kickstart bootflash:{{ ki }}
+      - boot system bootflash:{{ si }}
       - copy run start
     match: line
-    provider: "{{ connection }}"
-  when: force
 
-- name: "Boot image {{ si }} using reload"
-  cisco.nxos.nxos_command:
-    commands: 'terminal dont-ask ; reload'
-    provider: "{{ connection }}"
-  ignore_errors: yes
+- name: Boot image {{ si }} using reload
+  ignore_errors: true
   when: force
+  cisco.nxos.nxos_command:
+    commands: terminal dont-ask ; reload
 
 - debug: msg=" {{ result['install_state'] }}"
   when: not force
@@ -37,11 +34,12 @@
     state: started
     timeout: 500
     delay: 60
-    host: "{{ inventory_hostname }}"
+    host: '{{ inventory_hostname }}'
   when: result.changed and not checkmode
 
 - debug: msg='Wait 5 mins to allow system to stabilize'
   when: result.changed and not checkmode
+
 - pause:
     seconds: 300
   when: result.changed and not checkmode

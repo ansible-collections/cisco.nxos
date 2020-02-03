@@ -1,21 +1,19 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_acl sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - set_fact: time_range="ans-range"
   when: platform is not search('N35|N5K|N6K')
 
-- name: "Setup: Cleanup possibly existing acl."
-  cisco.nxos.nxos_acl: &remove
+- name: 'Setup: Cleanup possibly existing acl.'
+  ignore_errors: true
+  cisco.nxos.nxos_acl: &id012
     name: TEST_ACL
     seq: 10
-    provider: "{{ connection }}"
     state: delete_acl
-  ignore_errors: yes
 
-- name: "Configure ACE10"
-  cisco.nxos.nxos_acl: &conf10
+- name: Configure ACE10
+  register: result
+  cisco.nxos.nxos_acl: &id001
     name: TEST_ACL
     seq: 10
     action: permit
@@ -24,37 +22,36 @@
     src_port_op: range
     src_port1: 1900
     src_port2: 1910
-    ack: 'enable'
-    dscp: 'af43'
+    ack: enable
+    dscp: af43
     dest: any
     dest_port_op: neq
     dest_port1: 1899
-    urg: 'enable'
-    psh: 'enable'
-    established: 'enable'
-    log: 'enable'
-    fin: 'enable'
-    rst: 'enable'
-    syn: 'enable'
-    time_range: "{{time_range|default(omit)}}"
-    provider: "{{ connection }}"
+    urg: enable
+    psh: enable
+    established: enable
+    log: enable
+    fin: enable
+    rst: enable
+    syn: enable
+    time_range: '{{time_range|default(omit)}}'
     state: present
-  register: result
 
-- assert: &true
+- assert: &id002
     that:
-      - "result.changed == true"
+      - result.changed == true
 
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *conf10
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id001
 
-- assert: &false
+- assert: &id004
     that:
-      - "result.changed == false"
+      - result.changed == false
 
-- name: "Change ACE10"
-  cisco.nxos.nxos_acl: &chg10
+- name: Change ACE10
+  register: result
+  cisco.nxos.nxos_acl: &id003
     name: TEST_ACL
     seq: 10
     action: deny
@@ -63,69 +60,66 @@
     src_port_op: range
     src_port1: 1900
     src_port2: 1910
-    ack: 'enable'
-    dscp: 'af43'
+    ack: enable
+    dscp: af43
     dest: any
     dest_port_op: neq
     dest_port1: 1899
-    urg: 'enable'
-    psh: 'enable'
-    established: 'enable'
-    log: 'enable'
-    fin: 'enable'
-    rst: 'enable'
-    syn: 'enable'
-    time_range: "{{time_range|default(omit)}}"
-    provider: "{{ connection }}"
+    urg: enable
+    psh: enable
+    established: enable
+    log: enable
+    fin: enable
+    rst: enable
+    syn: enable
+    time_range: '{{time_range|default(omit)}}'
     state: present
+
+- assert: *id002
+
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id003
 
-- assert: *true
+- assert: *id004
 
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *chg10
+- name: ace remark
   register: result
-
-- assert: *false
-
-- name: "ace remark"
-  cisco.nxos.nxos_acl: &remark
+  cisco.nxos.nxos_acl: &id005
     name: TEST_ACL
     seq: 20
     action: remark
     remark: test_remark
-    provider: "{{ connection }}"
     state: present
+
+- assert: *id002
+
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id005
 
-- assert: *true
+- assert: *id004
 
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *remark
+- name: change remark
   register: result
-
-- assert: *false
-
-- name: "change remark"
-  cisco.nxos.nxos_acl: &chgremark
+  cisco.nxos.nxos_acl: &id006
     name: TEST_ACL
     seq: 20
     action: remark
     remark: changed_remark
-    provider: "{{ connection }}"
     state: present
+
+- assert: *id002
+
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id006
 
-- assert: *true
+- assert: *id004
 
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *chgremark
+- name: ace 30
   register: result
-
-- assert: *false
-
-- name: "ace 30"
-  cisco.nxos.nxos_acl: &ace30
+  cisco.nxos.nxos_acl: &id007
     name: TEST_ACL
     seq: 30
     action: deny
@@ -134,20 +128,19 @@
     dest: any
     fragments: enable
     precedence: network
-    provider: "{{ connection }}"
     state: present
+
+- assert: *id002
+
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id007
 
-- assert: *true
+- assert: *id004
 
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *ace30
+- name: change ace 30 options
   register: result
-
-- assert: *false
-
-- name: "change ace 30 options"
-  cisco.nxos.nxos_acl: &chgace30opt
+  cisco.nxos.nxos_acl: &id008
     name: TEST_ACL
     seq: 30
     action: deny
@@ -155,20 +148,19 @@
     src: any
     dest: any
     precedence: network
-    provider: "{{ connection }}"
     state: present
+
+- assert: *id002
+
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id008
 
-- assert: *true
+- assert: *id004
 
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *chgace30opt
+- name: ace 40
   register: result
-
-- assert: *false
-
-- name: "ace 40"
-  cisco.nxos.nxos_acl: &ace40
+  cisco.nxos.nxos_acl: &id009
     name: TEST_ACL
     seq: 40
     action: permit
@@ -178,20 +170,19 @@
     src_port1: 1200
     dest: any
     precedence: network
-    provider: "{{ connection }}"
     state: present
+
+- assert: *id002
+
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id009
 
-- assert: *true
+- assert: *id004
 
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *ace40
+- name: change ace 40
   register: result
-
-- assert: *false
-
-- name: "change ace 40"
-  cisco.nxos.nxos_acl: &chgace40
+  cisco.nxos.nxos_acl: &id010
     name: TEST_ACL
     seq: 40
     action: permit
@@ -199,44 +190,41 @@
     src: any
     dest: any
     precedence: network
-    provider: "{{ connection }}"
     state: present
+
+- assert: *id002
+
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id010
 
-- assert: *true
+- assert: *id004
 
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *chgace40
+- name: remove ace 30
   register: result
-
-- assert: *false
-
-- name: "remove ace 30"
-  cisco.nxos.nxos_acl: &remace30
+  cisco.nxos.nxos_acl: &id011
     name: TEST_ACL
     seq: 30
-    provider: "{{ connection }}"
     state: absent
+
+- assert: *id002
+
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id011
 
-- assert: *true
+- assert: *id004
 
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *remace30
+- name: Remove ACL
   register: result
+  cisco.nxos.nxos_acl: *id012
 
-- assert: *false
+- assert: *id002
 
-- name: "Remove ACL"
-  cisco.nxos.nxos_acl: *remove
+- name: Check Idempotence
   register: result
+  cisco.nxos.nxos_acl: *id012
 
-- assert: *true
-
-- name: "Check Idempotence"
-  cisco.nxos.nxos_acl: *remove
-  register: result
-
-- assert: *false
+- assert: *id004
 
 - debug: msg="END connection={{ ansible_connection }} nxos_acl sanity test"

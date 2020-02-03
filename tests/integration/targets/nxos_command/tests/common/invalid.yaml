@@ -2,27 +2,26 @@
 - debug: msg="START common/invalid.yaml on connection={{ ansible_connection }}"
 
 - name: run invalid command
-  cisco.nxos.nxos_command:
-    commands: ['show foo']
-    provider: "{{ connection }}"
   register: result
-  ignore_errors: yes
+  ignore_errors: true
+  cisco.nxos.nxos_command:
+    commands:
+      - show foo
 
 - assert:
     that:
-      - "result.failed == true"
+      - result.failed == true
 
 - name: run commands that include invalid command
+  register: result
+  ignore_errors: true
   cisco.nxos.nxos_command:
     commands:
       - show version
       - show foo
-    provider: "{{ connection }}"
-  register: result
-  ignore_errors: yes
 
 - assert:
     that:
-      - "result.failed == true"
+      - result.failed == true
 
 - debug: msg="END common/invalid.yaml on connection={{ ansible_connection }}"

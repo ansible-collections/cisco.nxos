@@ -1,9 +1,9 @@
 ---
-  - debug:
-      msg: "Start nxos_lldp_global merged integration tests connection={{ansible_connection}}"
+- debug:
+    msg: Start nxos_lldp_global merged integration tests connection={{ansible_connection}}
 
-  # N35 skips all tests, image issues.
-  - block:
+- block:
+
     - set_fact:
         port_id: 1
         tlv_power_mgmt:
@@ -11,7 +11,7 @@
       when: platform is not search('N5K|N6K|N7K') and imagetag is not search("I[2345]")
 
     - name: feature off to cleanup lldp
-      cisco.nxos.nxos_feature: &feature_off
+      cisco.nxos.nxos_feature: &id002
         feature: lldp
         state: disabled
 
@@ -20,19 +20,19 @@
         feature: lldp
 
     - name: Merged
-      cisco.nxos.nxos_lldp_global: &merged
+      register: result
+      cisco.nxos.nxos_lldp_global: &id001
         config:
           reinit: 5
           timer: 40
-          port_id: "{{port_id|default(omit)}}"
-          tlv_select: "{{tlv_power_mgmt|default(omit)}}"
+          port_id: '{{port_id|default(omit)}}'
+          tlv_select: '{{tlv_power_mgmt|default(omit)}}'
         state: merged
-      register: result
 
     - assert:
         that:
-          - "result.before|length == 0"
-          - "result.changed == true"
+          - result.before|length == 0
+          - result.changed == true
           - "'lldp reinit 5' in result.commands"
           - "'lldp timer 40' in result.commands"
 
@@ -55,18 +55,18 @@
 
     - assert:
         that:
-          - "ansible_facts.network_resources.lldp_global == result.after"
+          - ansible_facts.network_resources.lldp_global == result.after
 
     - name: Idempotence - Merged
-      cisco.nxos.nxos_lldp_global: *merged
       register: result
+      cisco.nxos.nxos_lldp_global: *id001
 
     - assert:
         that:
-          - "result.changed == false"
-          - "result.commands | length == 0"
-    always:
-    - name: teardown
-      cisco.nxos.nxos_feature: *feature_off
+          - result.changed == false
+          - result.commands | length == 0
+  always:
 
-    when: platform is not search('N35')
+    - name: teardown
+      cisco.nxos.nxos_feature: *id002
+  when: platform is not search('N35')

@@ -1,144 +1,133 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_vrrp sanity test"
-- debug: msg="Using provider={{ connection.transport }}"
-  when: ansible_connection == "local"
 
 - block:
-  - name: "Enable interface-vlan"
-    cisco.nxos.nxos_feature: 
-      feature: interface-vlan
-      provider: "{{ connection }}"
-      state: enabled
 
-  - name: "Enable vrrp"
-    cisco.nxos.nxos_feature: 
-      feature: vrrp
-      provider: "{{ connection }}"
-      state: enabled
+    - name: Enable interface-vlan
+      cisco.nxos.nxos_feature:
+        feature: interface-vlan
+        state: enabled
 
-  - name: "create int vlan 10"
-    cisco.nxos.nxos_config: 
-      commands: "int vlan 10"
-      provider: "{{ connection }}"
+    - name: Enable vrrp
+      cisco.nxos.nxos_feature:
+        feature: vrrp
+        state: enabled
 
-  - name: Ensure vrrp group 100 and vip 10.1.100.1 is on vlan10
-    cisco.nxos.nxos_vrrp: &configure
-      interface: vlan10
-      group: 100
-      vip: 10.1.100.1
-      admin_state: 'no shutdown'
-      provider: "{{ connection }}"
-    register: result
+    - name: create int vlan 10
+      cisco.nxos.nxos_config:
+        commands: int vlan 10
 
-  - assert: &true
-      that:
-        - "result.changed == true"
+    - name: Ensure vrrp group 100 and vip 10.1.100.1 is on vlan10
+      register: result
+      cisco.nxos.nxos_vrrp: &id001
+        interface: vlan10
+        group: 100
+        vip: 10.1.100.1
+        admin_state: no shutdown
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vrrp: *configure
-    register: result
+    - assert: &id002
+        that:
+          - result.changed == true
 
-  - assert: &false
-      that:
-        - "result.changed == false"
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_vrrp: *id001
 
-  - name: Ensure vrrp group 100 is default
-    cisco.nxos.nxos_vrrp: &configure_def
-      interface: vlan10
-      group: 100
-      vip: default
-      admin_state: default
-      provider: "{{ connection }}"
-    register: result
+    - assert: &id004
+        that:
+          - result.changed == false
 
-  - assert: *true
+    - name: Ensure vrrp group 100 is default
+      register: result
+      cisco.nxos.nxos_vrrp: &id003
+        interface: vlan10
+        group: 100
+        vip: default
+        admin_state: default
 
-  - name: "Conf Idempotence"
-    cisco.nxos.nxos_vrrp: *configure_def
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Conf Idempotence
+      register: result
+      cisco.nxos.nxos_vrrp: *id003
 
-  - name: Ensure removal of the vrrp group config
-    cisco.nxos.nxos_vrrp: &remove
-      interface: vlan10
-      group: 100
-      provider: "{{ connection }}"
-      state: absent
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Ensure removal of the vrrp group config
+      register: result
+      cisco.nxos.nxos_vrrp: &id005
+        interface: vlan10
+        group: 100
+        state: absent
 
-  - pause:
-      seconds: 30
+    - assert: *id002
 
-  - name: "Remove Idempotence"
-    cisco.nxos.nxos_vrrp: *remove
-    register: result
+    - pause:
+        seconds: 30
 
-  - assert: *false
+    - name: Remove Idempotence
+      register: result
+      cisco.nxos.nxos_vrrp: *id005
 
-  - pause:
-      seconds: 30
+    - assert: *id004
 
-  - name: Re-config with more params
-    cisco.nxos.nxos_vrrp: &reconfig
-      interface: vlan10
-      group: 100
-      vip: 10.1.100.1
-      preempt: False
-      interval: 10
-      priority: 130
-      authentication: AUTHKEY
-      provider: "{{ connection }}"
-    register: result
+    - pause:
+        seconds: 30
 
-  - assert: *true
+    - name: Re-config with more params
+      register: result
+      cisco.nxos.nxos_vrrp: &id006
+        interface: vlan10
+        group: 100
+        vip: 10.1.100.1
+        preempt: false
+        interval: 10
+        priority: 130
+        authentication: AUTHKEY
 
-  - name: "Reconfig Idempotence"
-    cisco.nxos.nxos_vrrp: *reconfig
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Reconfig Idempotence
+      register: result
+      cisco.nxos.nxos_vrrp: *id006
 
-  - name: Re-config with defaults
-    cisco.nxos.nxos_vrrp: &reconfig_def
-      interface: vlan10
-      group: 100
-      vip: default
-      preempt: True
-      interval: default
-      priority: default
-      authentication: default
-      provider: "{{ connection }}"
-    register: result
+    - assert: *id004
 
-  - assert: *true
+    - name: Re-config with defaults
+      register: result
+      cisco.nxos.nxos_vrrp: &id007
+        interface: vlan10
+        group: 100
+        vip: default
+        preempt: true
+        interval: default
+        priority: default
+        authentication: default
 
-  - name: "Reconfig Idempotence"
-    cisco.nxos.nxos_vrrp: *reconfig_def
-    register: result
+    - assert: *id002
 
-  - assert: *false
+    - name: Reconfig Idempotence
+      register: result
+      cisco.nxos.nxos_vrrp: *id007
 
+    - assert: *id004
   always:
+
     - name: remove vrrp
-      cisco.nxos.nxos_vrrp: *remove
-      ignore_errors: yes
-  
-    - name: "Disable interface-vlan"
-      cisco.nxos.nxos_config: 
+      ignore_errors: true
+      cisco.nxos.nxos_vrrp: *id005
+
+    - name: Disable interface-vlan
+      ignore_errors: true
+      cisco.nxos.nxos_config:
         commands:
           - no feature interface-vlan
         match: none
-        provider: "{{ connection }}"
-      ignore_errors: yes
 
-    - name: "Disable vrrp"
-      cisco.nxos.nxos_feature: 
+    - name: Disable vrrp
+      ignore_errors: true
+      cisco.nxos.nxos_feature:
         feature: vrrp
-        provider: "{{ connection }}"
         state: disabled
-      ignore_errors: yes
 
 - debug: msg="END connection={{ ansible_connection }} nxos_vrrp sanity test"

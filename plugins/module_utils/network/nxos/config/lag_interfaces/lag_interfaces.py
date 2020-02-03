@@ -14,14 +14,20 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible.module_utils.network.common.cfg.base import ConfigBase
-from ansible.module_utils.network.common.utils import to_list, remove_empties
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
+    ConfigBase,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    to_list,
+    remove_empties,
+    dict_diff,
+    search_obj_in_list,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
     Facts,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
-    search_obj_in_list,
 )
 
 
@@ -191,13 +197,24 @@ class Lag_interfaces(ConfigBase):
                 commands.extend(self.del_all_commands(h))
         return commands
 
-    def diff_list_of_dicts(self, w, h):
+    def diff_list_of_dicts(self, want, have):
+        if not want:
+            want = []
+
+        if not have:
+            have = []
+
         diff = []
-        set_w = set(tuple(d.items()) for d in w)
-        set_h = set(tuple(d.items()) for d in h)
-        difference = set_w.difference(set_h)
-        for element in difference:
-            diff.append(dict((x, y) for x, y in element))
+        for w_item in want:
+            h_item = (
+                search_obj_in_list(w_item["member"], have, key="member") or {}
+            )
+            delta = dict_diff(h_item, w_item)
+            if delta:
+                if "member" not in delta.keys():
+                    delta["member"] = w_item["member"]
+                diff.append(delta)
+
         return diff
 
     def intersect_list_of_dicts(self, w, h):

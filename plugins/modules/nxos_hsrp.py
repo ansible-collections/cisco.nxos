@@ -8,66 +8,71 @@ ANSIBLE_METADATA = {
     "supported_by": "network",
 }
 
-DOCUMENTATION = r"""
----
-module: nxos_hsrp
-extends_documentation_fragment: nxos
-version_added: "2.2"
+DOCUMENTATION = r"""module: nxos_hsrp
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Manages HSRP configuration on NX-OS switches.
 description:
-  - Manages HSRP configuration on NX-OS switches.
+- Manages HSRP configuration on NX-OS switches.
 author:
-  - Jason Edelman (@jedelman8)
-  - Gabriele Gerbino (@GGabriele)
+- Jason Edelman (@jedelman8)
+- Gabriele Gerbino (@GGabriele)
 notes:
-  - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-  - HSRP feature needs to be enabled first on the system.
-  - SVIs must exist before using this module.
-  - Interface must be a L3 port before using this module.
-  - HSRP cannot be configured on loopback interfaces.
-  - MD5 authentication is only possible with HSRPv2 while it is ignored if
-    HSRPv1 is used instead, while it will not raise any error. Here we allow
-    MD5 authentication only with HSRPv2 in order to enforce better practice.
+- Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- HSRP feature needs to be enabled first on the system.
+- SVIs must exist before using this module.
+- Interface must be a L3 port before using this module.
+- HSRP cannot be configured on loopback interfaces.
+- MD5 authentication is only possible with HSRPv2 while it is ignored if HSRPv1 is
+  used instead, while it will not raise any error. Here we allow MD5 authentication
+  only with HSRPv2 in order to enforce better practice.
 options:
   group:
     description:
-      - HSRP group number.
+    - HSRP group number.
     required: true
   interface:
     description:
-      - Full name of interface that is being managed for HSRP.
+    - Full name of interface that is being managed for HSRP.
     required: true
   version:
     description:
-      - HSRP version.
+    - HSRP version.
     default: 1
-    choices: ['1','2']
+    choices:
+    - '1'
+    - '2'
   priority:
     description:
-      - HSRP priority or keyword 'default'.
+    - HSRP priority or keyword 'default'.
   preempt:
     description:
-      - Enable/Disable preempt.
-    choices: ['enabled', 'disabled']
+    - Enable/Disable preempt.
+    choices:
+    - enabled
+    - disabled
   vip:
     description:
-      - HSRP virtual IP address or keyword 'default'
+    - HSRP virtual IP address or keyword 'default'
   auth_string:
     description:
-      - Authentication string. If this needs to be hidden(for md5 type), the string
-        should be 7 followed by the key string. Otherwise, it can be 0 followed by
-        key string or just key string (for backward compatibility). For text type,
-        this should be just be a key string. if this is 'default', authentication
-        is removed.
+    - Authentication string. If this needs to be hidden(for md5 type), the string
+      should be 7 followed by the key string. Otherwise, it can be 0 followed by key
+      string or just key string (for backward compatibility). For text type, this
+      should be just be a key string. if this is 'default', authentication is removed.
   auth_type:
     description:
-      - Authentication type.
-    choices: ['text','md5']
+    - Authentication type.
+    choices:
+    - text
+    - md5
   state:
     description:
-      - Specify desired state of the resource.
-    choices: ['present','absent']
-    default: 'present'
+    - Specify desired state of the resource.
+    choices:
+    - present
+    - absent
+    default: present
 """
 
 EXAMPLES = r"""
@@ -201,6 +206,8 @@ def get_hsrp_group(group, interface, module):
     try:
         body = run_commands(module, [command])[0]
         hsrp_table = body["TABLE_grp_detail"]["ROW_grp_detail"]
+        if "sh_keystring_attr" not in hsrp_table:
+            del hsrp_key["sh_keystring_attr"]
         if "unknown enum:" in str(hsrp_table):
             hsrp_table = get_hsrp_group_unknown_enum(
                 module, command, hsrp_table
