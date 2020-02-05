@@ -7,7 +7,7 @@
 
 - name: setup
   ignore_errors: true
-  ansible.netcommon.cli_config: &id002
+  ansible.netcommon.cli_config: &id003
     config: "default interface {{ test_int1 }}\n"
 
 - block:
@@ -24,6 +24,8 @@
           - name: '{{ test_int1 }}'
             access:
               vlan: 6
+            trunk:
+              allowed_vlans: 200
         state: merged
 
     - assert:
@@ -32,7 +34,7 @@
           - result.before|length == 0
           - "'interface {{ test_int1 }}' in result.commands"
           - "'switchport access vlan 6' in result.commands"
-          - result.commands|length == 2
+          - result.commands|length == 3
 
     - name: Gather l2_interfaces facts
       cisco.nxos.nxos_facts:
@@ -54,8 +56,46 @@
         that:
           - result.changed == false
           - result.commands|length == 0
+
+    - name: Merge with existing vlans
+      register: result
+      cisco.nxos.nxos_l2_interfaces: &id002
+        config:
+
+          - name: '{{ test_int1 }}'
+            trunk:
+              allowed_vlans: 10-12
+        state: merged
+
+    - assert:
+        that:
+          - result.changed == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'switchport trunk allowed vlan add 10,11,12' in result.commands"
+          - result.commands|length == 2
+
+    - name: Gather l2_interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: l2_interfaces
+
+    - assert:
+        that:
+          - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.after)|length
+            == 0
+
+    - name: Idempotence - with newly added vlans
+      register: result
+      cisco.nxos.nxos_l2_interfaces: *id002
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
   always:
 
     - name: teardown
       ignore_errors: true
-      ansible.netcommon.cli_config: *id002
+      ansible.netcommon.cli_config: *id003
