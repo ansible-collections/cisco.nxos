@@ -5,5 +5,5 @@ license_file: LICENSE
 name: nxos
 namespace: cisco
 readme: README.rst
-repository: https://github.com/ansible-network/ansible_collections.cisco.nxos
+repository: https://github.com/ansible-collections/nxos
 version: 0.0.1
