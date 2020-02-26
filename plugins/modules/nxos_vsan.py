@@ -243,7 +243,7 @@ def main():
             sw_vsaninterfaces = []
 
         if vsanremove:
-            # Negetive case:
+            # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
                     str(vsanid)
@@ -261,7 +261,7 @@ def main():
                 )
             continue
         else:
-            # Negetive case:
+            # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
                     str(vsanid)
@@ -279,7 +279,7 @@ def main():
                     messages.append("creating vsan " + str(vsanid))
 
         if vsanname is not None:
-            # Negetive case:
+            # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
                     str(vsanid) + " is a reserved vsan, and cannot be renamed"
@@ -305,7 +305,7 @@ def main():
                     )
 
         if vsansuspend:
-            # Negetive case:
+            # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
                     str(vsanid)
