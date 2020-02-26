@@ -17,8 +17,8 @@
     - name: setup2
       ansible.netcommon.cli_config:
         config: "interface {{ test_int1 }}\n  switchport\n  switchport trunk native\
-          \ vlan 10\ninterface {{ test_int2 }}\n  switchport\n  switchport trunk\
-          \ allowed vlan 20\n"
+          \ vlan 10\ninterface {{ test_int2 }}\n  switchport\n  switchport mode\
+          \ trunk\n  switchport trunk allowed vlan 20\n"
 
     - name: Gather l2_interfaces facts
       cisco.nxos.nxos_facts:
@@ -41,6 +41,7 @@
           - "'interface {{ test_int1 }}' in result.commands"
           - "'no switchport trunk native vlan' in result.commands"
           - "'interface {{ test_int2 }}' in result.commands"
+          - "'no switchport mode' in result.commands"
           - "'no switchport trunk allowed vlan' in result.commands"
           - result.commands|length == 4
 
