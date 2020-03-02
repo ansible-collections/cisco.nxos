@@ -1,0 +1,5 @@
+---
+- ignore_errors: true
+  ansible.netcommon.cli_config:
+    config: "no interface port-channel1\nno interface port-channel2\nno interface\
+      \ port-channel12\n"
