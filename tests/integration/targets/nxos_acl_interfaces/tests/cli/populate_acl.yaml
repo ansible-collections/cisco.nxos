@@ -1,0 +1,5 @@
+---
+- name: Adding base configuration
+  ansible.netcommon.cli_config:
+    config: "ip access-list ACL1v4\nip access-list NewACLv4\nipv6 access-list ACL1v6\n\
+      ipv6 access-list NewACLv6\nip access-list PortACL\n"

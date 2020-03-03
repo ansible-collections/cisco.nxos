@@ -104,8 +104,7 @@ class TestNxosModule(ModuleTestCase):
         else:
             result = self.changed(changed)
             self.assertEqual(result["changed"], changed, result)
-
-        if commands is not None:
+        if commands is not None and len(commands) > 0:
             if sort:
                 self.assertEqual(
                     sorted(commands),
@@ -122,7 +121,6 @@ class TestNxosModule(ModuleTestCase):
     def failed(self):
         with self.assertRaises(AnsibleFailJson) as exc:
             self.module.main()
-
         result = exc.exception.args[0]
         self.assertTrue(result["failed"], result)
         return result
