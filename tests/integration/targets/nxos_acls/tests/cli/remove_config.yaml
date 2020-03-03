@@ -1,0 +1,5 @@
+---
+- name: Remove config
+  ansible.netcommon.cli_config:
+    config: "no ip access-list ACL1v4\nno ip access-list ACL2v4\nno ipv6 access-list\
+      \ ACL1v6\nno ipv6 access-list ACL2v6\nno ip access-list NewACL\n"

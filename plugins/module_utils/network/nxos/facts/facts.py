@@ -56,6 +56,12 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.lldp
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.lldp_interfaces.lldp_interfaces import (
     Lldp_interfacesFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acl_interfaces.acl_interfaces import (
+    Acl_interfacesFacts,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acls.acls import (
+    AclsFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(
@@ -79,6 +85,8 @@ FACT_RESOURCE_SUBSETS = dict(
     l3_interfaces=L3_interfacesFacts,
     l2_interfaces=L2_interfacesFacts,
     lldp_interfaces=Lldp_interfacesFacts,
+    acl_interfaces=Acl_interfacesFacts,
+    acls=AclsFacts,
 )
 
 
