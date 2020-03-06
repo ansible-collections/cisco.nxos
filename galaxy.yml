@@ -9,3 +9,4 @@ namespace: cisco
 readme: README.rst
 repository: https://github.com/ansible-collections/nxos
 version: 0.0.1
+tags: [cisco, nxos, networking, nxapi, netconf]
