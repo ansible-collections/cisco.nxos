@@ -62,6 +62,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acl_
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acls.acls import (
     AclsFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acls.acls import (
+    Static_routesFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(
@@ -87,6 +90,7 @@ FACT_RESOURCE_SUBSETS = dict(
     lldp_interfaces=Lldp_interfacesFacts,
     acl_interfaces=Acl_interfacesFacts,
     acls=AclsFacts,
+    static_routes=Static_routesFacts,
 )
 
 
