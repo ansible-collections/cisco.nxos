@@ -235,6 +235,7 @@ DEST_GROUP = ["console", "logfile", "module", "monitor", "server"]
 
 def map_obj_to_commands(module, updates):
     commands = list()
+    data = get_config(module, flags=[" all | section logging"])
     want, have = updates
 
     for w in want:
@@ -346,7 +347,7 @@ def map_obj_to_commands(module, updates):
                     if w["facility_level"]:
                         if w["use_vrf"]:
                             commands.append(
-                                "logging server {0} {1} facility {2} use-vrf {3}".format(
+                                "logging server {0} {1} use-vrf {3} facility {2}".format(
                                     w["remote_server"],
                                     w["facility_level"],
                                     w["facility"],
@@ -410,7 +411,23 @@ def map_obj_to_commands(module, updates):
             if w["timestamp"] and w["timestamp"] in STATIC_CLI:
                 commands.append(STATIC_CLI[w["timestamp"]])
 
-    return commands
+    commandset = []
+    have_cmds = []
+    # Adding check for idempotence
+    for h_cmd in data.split('\n'):
+        if 'source-interface' in h_cmd:
+            interface = parse_interface(h_cmd)
+            have_cmds.append(
+                "logging source-interface {0} {1}".format(
+                        *split_interface(interface)
+                )
+            )
+        have_cmds.append(h_cmd)
+                
+    for w_cmd in commands:
+        if w_cmd not in have_cmds:
+            commandset.append(w_cmd) 
+    return commandset
 
 
 def match_facility_default(module, facility, want_level):
@@ -447,7 +464,7 @@ def match_facility_default(module, facility, want_level):
 def split_interface(interface):
     match = re.search(r"(\D+)(\S*)", interface, re.M)
     if match:
-        return match.group(1), match.group(2)
+        return match.group(1).strip(), match.group(2).strip()
 
 
 def parse_facility_link_status(line, facility, status):
@@ -731,7 +748,6 @@ def map_config_to_obj(module):
     ]
 
     default_data = run_commands(module, cmd)
-
     for line in default_data:
         flag = False
         match = re.search(
@@ -939,7 +955,6 @@ def main():
 
     commands = map_obj_to_commands(module, (want, have))
     result["commands"] = commands
-
     if commands:
         if not module.check_mode:
             load_config(module, commands)

@@ -184,7 +184,7 @@
 - assert:
     that:
       - result.changed == true
-      - '"logging server test-syslogserver.com 1 facility auth use-vrf management"
+      - '"logging server test-syslogserver.com 1 use-vrf management facility auth"
         in result.commands'
 
 - name: Configure Remote Logging (idempotent)
