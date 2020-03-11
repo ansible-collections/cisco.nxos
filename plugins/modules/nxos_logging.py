@@ -414,19 +414,19 @@ def map_obj_to_commands(module, updates):
     commandset = []
     have_cmds = []
     # Adding check for idempotence
-    for h_cmd in data.split('\n'):
-        if 'source-interface' in h_cmd:
+    for h_cmd in data.split("\n"):
+        if "source-interface" in h_cmd:
             interface = parse_interface(h_cmd)
             have_cmds.append(
                 "logging source-interface {0} {1}".format(
-                        *split_interface(interface)
+                    *split_interface(interface)
                 )
             )
         have_cmds.append(h_cmd)
-                
+
     for w_cmd in commands:
         if w_cmd not in have_cmds:
-            commandset.append(w_cmd) 
+            commandset.append(w_cmd)
     return commandset
 
 
