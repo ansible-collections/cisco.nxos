@@ -23,34 +23,34 @@ __metaclass__ = type
 import json
 
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible.modules.network.nxos import _nxos_vlan
+from ansible_collections.cisco.nxos.plugins.modules import nxos_vlan
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosVlanModule(TestNxosModule):
 
-    module = _nxos_vlan
+    module = nxos_vlan
 
     def setUp(self):
         super(TestNxosVlanModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible.modules.network.nxos._nxos_vlan.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.run_commands"
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible.modules.network.nxos._nxos_vlan.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.load_config"
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible.modules.network.nxos._nxos_vlan.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.get_config"
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible.modules.network.nxos._nxos_vlan.get_capabilities"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.get_capabilities"
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {
