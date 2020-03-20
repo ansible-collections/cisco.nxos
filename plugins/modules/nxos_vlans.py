@@ -42,7 +42,8 @@ short_description: Create VLAN and manage VLAN configurations on NX-OS Interface
 description: This module creates and manages VLAN configurations on Cisco NX-OS Interfaces.
 author: Trishna Guha (@trishnaguha)
 notes:
-- Tested against NXOS 7.3.(0)D1(1) on VIRL
+- Tested against NXOS 7.0(3)I5(1).
+- This module works with connection C(network_cli). See L(the NX-OS Platform Options,../network/user_guide/platform_nxos.html).
 options:
   config:
     description: A dictionary of Vlan options

@@ -41,7 +41,8 @@ description: This module configures and manages the Link Layer Discovery Protoco
   attributes on NX-OS platforms.
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
-- Tested against NxOS 7.3.(0)D1(1) on VIRL
+- Tested against NXOS 7.0(3)I5(1).
+- This module works with connection C(network_cli). See L(the NX-OS Platform Options,../network/user_guide/platform_nxos.html).
 - The LLDP feature needs to be enabled before using this module
 options:
   config:

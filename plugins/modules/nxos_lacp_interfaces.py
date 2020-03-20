@@ -44,7 +44,8 @@ description: This module manages Link Aggregation Control Protocol (LACP) attrib
   of NX-OS Interfaces.
 author: Trishna Guha (@trishnaguha)
 notes:
-- Tested against NXOS 7.3.(0)D1(1) on VIRL
+- Tested against NXOS 7.0(3)I5(1).
+- This module works with connection C(network_cli). See L(the NX-OS Platform Options,../network/user_guide/platform_nxos.html).
 options:
   config:
     description: A dictionary of LACP interfaces options.

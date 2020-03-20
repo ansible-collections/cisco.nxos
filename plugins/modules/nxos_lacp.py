@@ -43,7 +43,8 @@ description: This module manages Global Link Aggregation Control Protocol (LACP)
   NX-OS devices.
 author: Trishna Guha (@trishnaguha)
 notes:
-- Tested against NXOS 7.3.(0)D1(1) on VIRL.
+- Tested against NXOS 7.0(3)I5(1).
+- This module works with connection C(network_cli). See L(the NX-OS Platform Options,../network/user_guide/platform_nxos.html).
 - Feature lacp should be enabled for this module.
 options:
   config:

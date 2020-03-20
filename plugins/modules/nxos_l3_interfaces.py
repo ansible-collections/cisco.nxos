@@ -41,7 +41,8 @@ short_description: Manages Layer-3 Interfaces attributes of NX-OS Interfaces
 description: This module manages Layer-3 interfaces attributes of NX-OS Interfaces.
 author: Trishna Guha (@trishnaguha)
 notes:
-- Tested against NXOS 7.3.(0)D1(1) on VIRL
+- Tested against NXOS 7.0(3)I5(1).
+- This module works with connection C(network_cli). See L(the NX-OS Platform Options,../network/user_guide/platform_nxos.html).
 options:
   config:
     description: A dictionary of Layer-3 interface options

@@ -40,7 +40,8 @@ short_description: Manage named IP ACLs on the Cisco NX-OS platform
 description: Manage named IP ACLs on the Cisco NX-OS platform
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
-- Tested against NX-OS 7.3.(0)D1(1) on VIRL
+- Tested against NXOS 7.0(3)I5(1).
+- This module works with connection C(network_cli). See L(the NX-OS Platform Options,../network/user_guide/platform_nxos.html).
 - As NX-OS allows configuring a rule again with different sequence numbers, the user
   is expected to provide sequence numbers for the access control entries to preserve
   idempotency. If no sequence number is given, the rule will be added as a new rule

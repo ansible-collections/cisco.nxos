@@ -41,7 +41,8 @@ short_description: Add and remove Access Control Lists on interfaces in NX-OS pl
 description: Add and remove Access Control Lists on interfaces in NX-OS platform
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
-- Tested against NX-OS 7.3.(0)D1(1) on VIRL
+- Tested against NXOS 7.0(3)I5(1).
+- This module works with connection C(network_cli). See L(the NX-OS Platform Options,../network/user_guide/platform_nxos.html).
 options:
   running_config:
     description:
