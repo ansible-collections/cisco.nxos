@@ -11,17 +11,27 @@ necessary to bring the current configuration to it's desired end-state is
 created
 """
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list, remove_empties, dict_diff
+    to_list,
+    remove_empties,
+    dict_diff,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
 from copy import deepcopy
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import flatten_dict, search_obj_in_list, get_interface_type, normalize_interface
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    flatten_dict,
+    search_obj_in_list,
+    get_interface_type,
+    normalize_interface,
+)
 
 
 class Static_routes(ConfigBase):
@@ -29,14 +39,9 @@ class Static_routes(ConfigBase):
     The nxos_xstatic_routes class
     """
 
-    gather_subset = [
-        '!all',
-        '!min',
-    ]
+    gather_subset = ["!all", "!min"]
 
-    gather_network_resources = [
-        'static_routes',
-    ]
+    gather_network_resources = ["static_routes"]
 
     def __init__(self, module):
         super(Static_routes, self).__init__(module)
@@ -48,9 +53,11 @@ class Static_routes(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data)
-        static_routes_facts = facts['ansible_network_resources'].get(
-            'static_routes')
+            self.gather_subset, self.gather_network_resources, data=data
+        )
+        static_routes_facts = facts["ansible_network_resources"].get(
+            "static_routes"
+        )
         if not static_routes_facts:
             return []
 
@@ -68,19 +75,19 @@ class Static_routes(ConfigBase):
         :rtype: A dictionary
         :returns: The result from module execution
         """
-        result = {'changed': False}
+        result = {"changed": False}
         warnings = list()
         commands = list()
-        state = self._module.params['state']
-        action_states = ['merged', 'replaced', 'deleted', 'overridden']
+        state = self._module.params["state"]
+        action_states = ["merged", "replaced", "deleted", "overridden"]
 
-        if state == 'gathered':
-            result['gathered'] = self.get_static_routes_facts()
-        elif state == 'rendered':
-            result['rendered'] = self.set_config({})
+        if state == "gathered":
+            result["gathered"] = self.get_static_routes_facts()
+        elif state == "rendered":
+            result["rendered"] = self.set_config({})
             # no need to fetch facts for rendered
-        elif state == 'parsed':
-            result['parsed'] = self.set_config({})
+        elif state == "parsed":
+            result["parsed"] = self.set_config({})
             # no need to fetch facts for parsed
         else:
             existing_static_routes_facts = self.get_static_routes_facts()
@@ -88,14 +95,14 @@ class Static_routes(ConfigBase):
             if commands and state in action_states:
                 if not self._module.check_mode:
                     self._connection.edit_config(commands)
-                result['changed'] = True
-                result['before'] = existing_static_routes_facts
-                result['commands'] = commands
+                result["changed"] = True
+                result["before"] = existing_static_routes_facts
+                result["commands"] = commands
 
             changed_static_routes_facts = self.get_static_routes_facts()
-            if result['changed']:
-                result['after'] = changed_static_routes_facts
-        result['warnings'] = warnings
+            if result["changed"]:
+                result["after"] = changed_static_routes_facts
+        result["warnings"] = warnings
         return result
 
     def set_config(self, existing_static_routes_facts):
@@ -106,7 +113,7 @@ class Static_routes(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        config = self._module.params['config']
+        config = self._module.params["config"]
         want = []
         if config:
             for w in config:
@@ -126,22 +133,22 @@ class Static_routes(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        state = self._module.params['state']
+        state = self._module.params["state"]
         commands = []
-        if state == 'overridden':
-            commands = (self._state_overridden(want, have))
-        elif state == 'deleted':
-            commands = (self._state_deleted(want, have))
-        elif state == 'rendered':
+        if state == "overridden":
+            commands = self._state_overridden(want, have)
+        elif state == "deleted":
+            commands = self._state_deleted(want, have)
+        elif state == "rendered":
             commands = self._state_rendered(want, have=[])
-        elif state == 'parsed':
-            want = self._module.params['running_config']
+        elif state == "parsed":
+            want = self._module.params["running_config"]
             commands = self._state_parsed(want)
         else:
             for w in want:
-                if state == 'merged':
+                if state == "merged":
                     commands.extend(self._state_merged(w, have))
-                elif state == 'replaced':
+                elif state == "replaced":
                     commands.extend(self._state_replaced(w, have))
         return commands
 
@@ -163,114 +170,157 @@ class Static_routes(ConfigBase):
         """
         commands = []
         delete_commands = []
-        state = self._module.params['state']
+        state = self._module.params["state"]
         merged_commands = []
-        obj_in_have = search_obj_in_list(want['vrf'], have, 'vrf')
+        obj_in_have = search_obj_in_list(want["vrf"], have, "vrf")
         # in replaced, we check if whatever in have is in want, unlike merged. This is because we need to apply deleted on have config
-        if obj_in_have and obj_in_have != {'vrf': 'default'}:
+        if obj_in_have and obj_in_have != {"vrf": "default"}:
             want_afi_list = []
-            if 'address_families' in want.keys():
-                want_afi_list = [w['afi'] for w in want['address_families']]
+            if "address_families" in want.keys():
+                want_afi_list = [w["afi"] for w in want["address_families"]]
             if len(want_afi_list) > 0:
-                for h in obj_in_have['address_families']:
-                    if h['afi'] in want_afi_list:
-                        want_afi = search_obj_in_list(h['afi'],
-                                                      want['address_families'],
-                                                      'afi')
+                for h in obj_in_have["address_families"]:
+                    if h["afi"] in want_afi_list:
+                        want_afi = search_obj_in_list(
+                            h["afi"], want["address_families"], "afi"
+                        )
                         want_dest_list = []
-                        if 'routes' in want_afi.keys():
-                            want_dest_list = [w['dest']
-                                              for w in want_afi['routes']]
+                        if "routes" in want_afi.keys():
+                            want_dest_list = [
+                                w["dest"] for w in want_afi["routes"]
+                            ]
                         if len(want_dest_list) > 0:
-                            for ro in h['routes']:
-                                if ro['dest'] in want_dest_list:
+                            for ro in h["routes"]:
+                                if ro["dest"] in want_dest_list:
                                     want_dest = search_obj_in_list(
-                                        ro['dest'], want_afi['routes'], 'dest')
+                                        ro["dest"], want_afi["routes"], "dest"
+                                    )
                                     want_next_hops = []
-                                    if 'next_hops' in want_dest.keys():
+                                    if "next_hops" in want_dest.keys():
                                         want_next_hops = [
-                                            nh for nh in want_dest['next_hops']]
+                                            nh for nh in want_dest["next_hops"]
+                                        ]
                                     if len(want_next_hops) > 0:
-                                        for next_hop in ro['next_hops']:
+                                        for next_hop in ro["next_hops"]:
                                             if next_hop not in want_next_hops:
                                                 # have's next hop not in want, so delete it
                                                 delete_dict = {
-                                                    'vrf':
-                                                    obj_in_have['vrf'],
-                                                    'address_families': [{
-                                                        'afi':
-                                                        h['afi'],
-                                                        'routes': [{
-                                                            'dest': ro['dest'],
-                                                            'next_hops': [next_hop]
-                                                        }]
-                                                    }]
+                                                    "vrf": obj_in_have["vrf"],
+                                                    "address_families": [
+                                                        {
+                                                            "afi": h["afi"],
+                                                            "routes": [
+                                                                {
+                                                                    "dest": ro[
+                                                                        "dest"
+                                                                    ],
+                                                                    "next_hops": [
+                                                                        next_hop
+                                                                    ],
+                                                                }
+                                                            ],
+                                                        }
+                                                    ],
                                                 }
                                                 delete_commands.extend(
-                                                    self.del_commands([delete_dict]))
+                                                    self.del_commands(
+                                                        [delete_dict]
+                                                    )
+                                                )
                                     else:
                                         # want has no next_hops, so delete all next_hops under that dest
-                                        if state == 'overridden':
+                                        if state == "overridden":
                                             delete_dict = {
-                                                'vrf':
-                                                obj_in_have['vrf'],
-                                                'address_families': [{
-                                                    'afi':
-                                                    h['afi'],
-                                                    'routes': [{
-                                                        'dest': ro['dest'],
-                                                        'next_hops': ro['next_hops']
-                                                    }]
-                                                }]
+                                                "vrf": obj_in_have["vrf"],
+                                                "address_families": [
+                                                    {
+                                                        "afi": h["afi"],
+                                                        "routes": [
+                                                            {
+                                                                "dest": ro[
+                                                                    "dest"
+                                                                ],
+                                                                "next_hops": ro[
+                                                                    "next_hops"
+                                                                ],
+                                                            }
+                                                        ],
+                                                    }
+                                                ],
                                             }
                                             delete_commands.extend(
-                                                self.del_commands([delete_dict]))
+                                                self.del_commands(
+                                                    [delete_dict]
+                                                )
+                                            )
                                 else:
-                                    if state == 'overridden':
+                                    if state == "overridden":
                                         delete_dict = {
-                                            'vrf':
-                                            obj_in_have['vrf'],
-                                            'address_families': [{
-                                                'afi':
-                                                h['afi'],
-                                                'routes': [{
-                                                    'dest': ro['dest'],
-                                                    'next_hops': ro['next_hops']
-                                                }]
-                                            }]
+                                            "vrf": obj_in_have["vrf"],
+                                            "address_families": [
+                                                {
+                                                    "afi": h["afi"],
+                                                    "routes": [
+                                                        {
+                                                            "dest": ro["dest"],
+                                                            "next_hops": ro[
+                                                                "next_hops"
+                                                            ],
+                                                        }
+                                                    ],
+                                                }
+                                            ],
                                         }
                                         delete_commands.extend(
-                                            self.del_commands([delete_dict]))
+                                            self.del_commands([delete_dict])
+                                        )
 
                         else:
-                            if state == 'overridden':  # want has no 'routes' key, so delete all routes under that afi
-                                if 'routes' in h.keys():
+                            if (
+                                state == "overridden"
+                            ):  # want has no 'routes' key, so delete all routes under that afi
+                                if "routes" in h.keys():
                                     delete_dict = {
-                                        'vrf':
-                                        obj_in_have['vrf'],
-                                        'address_families': [{
-                                            'afi': h['afi'],
-                                            'routes': h['routes']
-                                        }]
+                                        "vrf": obj_in_have["vrf"],
+                                        "address_families": [
+                                            {
+                                                "afi": h["afi"],
+                                                "routes": h["routes"],
+                                            }
+                                        ],
                                     }
                                     delete_commands.extend(
-                                        self.del_commands([delete_dict]))
+                                        self.del_commands([delete_dict])
+                                    )
             else:
-                if state == 'overridden':  # want has 'vrf' key only. So delete all address families in it
+                if (
+                    state == "overridden"
+                ):  # want has 'vrf' key only. So delete all address families in it
                     delete_commands.extend(
-                        self.del_commands([{
-                            'address_families': [h for h in obj_in_have['address_families']],
-                            'vrf': obj_in_have['vrf']
-                        }]))
+                        self.del_commands(
+                            [
+                                {
+                                    "address_families": [
+                                        h
+                                        for h in obj_in_have[
+                                            "address_families"
+                                        ]
+                                    ],
+                                    "vrf": obj_in_have["vrf"],
+                                }
+                            ]
+                        )
+                    )
         final_delete_commands = []
         for d in delete_commands:
             if d not in final_delete_commands:
                 final_delete_commands.append(d)
         # if there are two afis, 'vrf context..' is added twice fom del_commands. The above code removes the redundant 'vrf context ..'
-        merged_commands = (self.set_commands(want, have))
+        merged_commands = self.set_commands(want, have)
         if merged_commands:
             cmds = set(final_delete_commands).intersection(
-                set(merged_commands))
+                set(merged_commands)
+            )
             for c in cmds:
                 merged_commands.remove(c)
 
@@ -287,9 +337,9 @@ class Static_routes(ConfigBase):
                   to the desired configuration
         """
         commands = []
-        want_vrfs = [w['vrf'] for w in want]
+        want_vrfs = [w["vrf"] for w in want]
         for h in have:
-            if h['vrf'] not in want_vrfs and h['vrf'] != 'management':
+            if h["vrf"] not in want_vrfs and h["vrf"] != "management":
                 commands.extend(self._state_deleted([h], have))
         for w in want:
             commands.extend(self._state_replaced(w, have))
@@ -315,49 +365,59 @@ class Static_routes(ConfigBase):
         if want:
             for w in want:
                 delete_dict = {}
-                obj_in_have = search_obj_in_list(w['vrf'], have, 'vrf')
+                obj_in_have = search_obj_in_list(w["vrf"], have, "vrf")
                 if obj_in_have:
-                    if 'address_families' in w.keys():
-                        o1 = obj_in_have['address_families']
-                        afi_list = [o['afi'] for o in o1]  # have's afi list
-                        for w1 in w['address_families']:
-                            if w1['afi'] in afi_list:
-                                o2 = search_obj_in_list(w1['afi'], o1, 'afi')
-                                if 'routes' in w1.keys():
-                                    for w2 in w1['routes']:
+                    if "address_families" in w.keys():
+                        o1 = obj_in_have["address_families"]
+                        afi_list = [o["afi"] for o in o1]  # have's afi list
+                        for w1 in w["address_families"]:
+                            if w1["afi"] in afi_list:
+                                o2 = search_obj_in_list(w1["afi"], o1, "afi")
+                                if "routes" in w1.keys():
+                                    for w2 in w1["routes"]:
                                         o3 = search_obj_in_list(
-                                            w2['dest'], o2['routes'], 'dest')
+                                            w2["dest"], o2["routes"], "dest"
+                                        )
                                         hops = []
-                                        if 'next_hops' in w2.keys():
-                                            for nh in w2['next_hops']:
-                                                if nh in o3['next_hops']:
+                                        if "next_hops" in w2.keys():
+                                            for nh in w2["next_hops"]:
+                                                if nh in o3["next_hops"]:
                                                     hops.append(nh)
                                         else:
                                             # if next hops not given
-                                            hops = o3['next_hops']
+                                            hops = o3["next_hops"]
 
-                                        delete_dict = {'vrf': obj_in_have['vrf'],
-                                                       'address_families': [{'afi': w1['afi'],
-                                                                             'routes': [{
-                                                                                 'dest': w2['dest'],
-                                                                                 'next_hops': hops
-                                                                             }]}]}
+                                        delete_dict = {
+                                            "vrf": obj_in_have["vrf"],
+                                            "address_families": [
+                                                {
+                                                    "afi": w1["afi"],
+                                                    "routes": [
+                                                        {
+                                                            "dest": w2["dest"],
+                                                            "next_hops": hops,
+                                                        }
+                                                    ],
+                                                }
+                                            ],
+                                        }
                                         commands.extend(
-                                            self.del_commands(
-                                                [delete_dict]))
+                                            self.del_commands([delete_dict])
+                                        )
                                 else:
                                     # case when only afi given for delete
                                     delete_dict = {
-                                        'vrf': obj_in_have['vrf'],
-                                        'address_families': [{
-                                            'afi':
-                                            o2['afi'],
-                                            'routes':
-                                            o2['routes']
-                                        }]
+                                        "vrf": obj_in_have["vrf"],
+                                        "address_families": [
+                                            {
+                                                "afi": o2["afi"],
+                                                "routes": o2["routes"],
+                                            }
+                                        ],
                                     }
                                     commands.extend(
-                                        self.del_commands([delete_dict]))
+                                        self.del_commands([delete_dict])
+                                    )
                     else:
                         # only vrf given to delete
                         commands.extend(self.del_commands([obj_in_have]))
@@ -366,7 +426,7 @@ class Static_routes(ConfigBase):
                 # delete everything
                 del_have = []
                 for h in have:
-                    if h['vrf'] != 'management':  # protect management vrf
+                    if h["vrf"] != "management":  # protect management vrf
                         del_have.append(h)
                 commands = self.del_commands(del_have)
 
@@ -380,51 +440,58 @@ class Static_routes(ConfigBase):
     def del_commands(self, have):
         commands = []
         for h in have:
-            if h != {'vrf': 'default'}:
-                vrf = h['vrf']
-                commands.append('vrf context ' + vrf)
-                for af in h['address_families']:
-                    for route in af['routes']:
-                        for next_hop in route['next_hops']:
+            if h != {"vrf": "default"}:
+                vrf = h["vrf"]
+                commands.append("vrf context " + vrf)
+                for af in h["address_families"]:
+                    for route in af["routes"]:
+                        for next_hop in route["next_hops"]:
                             command = self.del_next_hop(af, route, next_hop)
                             commands.append(command.strip())
         return commands
 
     def del_next_hop(self, af, route, next_hop):
-        command = ''
-        if af['afi'] == 'ipv4':
-            command = 'no ip route ' + \
-                route['dest'] + ' ' + self.add_commands(next_hop)
+        command = ""
+        if af["afi"] == "ipv4":
+            command = (
+                "no ip route "
+                + route["dest"]
+                + " "
+                + self.add_commands(next_hop)
+            )
         else:
-            command = 'no ipv6 route ' + \
-                route['dest'] + ' ' + self.add_commands(next_hop)
+            command = (
+                "no ipv6 route "
+                + route["dest"]
+                + " "
+                + self.add_commands(next_hop)
+            )
         return command
 
     def add_commands(self, want):
-        command = ''
+        command = ""
         params = want.keys()
-        pref = vrf = ip = intf = name = tag = track = ''
-        if 'admin_distance' in params:
-            pref = str(want['admin_distance']) + ' '
-        if 'track' in params:
-            track = 'track ' + str(want['track']) + ' '
-        if 'dest_vrf' in params:
-            vrf = 'vrf ' + str(want['dest_vrf']) + ' '
-        if 'forward_router_address' in params:
-            ip = want['forward_router_address'] + ' '
-        if 'interface' in params:
-            intf = normalize_interface(want['interface']) + ' '
-            if 'null0' in intf:
-                ip = ''
-                intf = 'null0 '
-        if 'route_name' in params:
-            name = 'name ' + str(want['route_name']) + ' '
-        if 'tag' in params:
-            tag = 'tag ' + str(want['tag']) + ' '
+        pref = vrf = ip = intf = name = tag = track = ""
+        if "admin_distance" in params:
+            pref = str(want["admin_distance"]) + " "
+        if "track" in params:
+            track = "track " + str(want["track"]) + " "
+        if "dest_vrf" in params:
+            vrf = "vrf " + str(want["dest_vrf"]) + " "
+        if "forward_router_address" in params:
+            ip = want["forward_router_address"] + " "
+        if "interface" in params:
+            intf = normalize_interface(want["interface"]) + " "
+            if "null0" in intf:
+                ip = ""
+                intf = "null0 "
+        if "route_name" in params:
+            name = "name " + str(want["route_name"]) + " "
+        if "tag" in params:
+            tag = "tag " + str(want["tag"]) + " "
         command = intf + ip + vrf + name + tag + track + pref
-        if intf != 'Null0 ' and ip == '':
-            self._module.fail_json(
-                msg='forward_router_address error')
+        if intf != "Null0 " and ip == "":
+            self._module.fail_json(msg="forward_router_address error")
         return command.strip()
 
     def set_commands(self, want, have):
@@ -433,85 +500,97 @@ class Static_routes(ConfigBase):
         want = remove_empties(want)
         vrf_list = []
         if have:
-            vrf_list = [h['vrf'] for h in have]
-        if want['vrf'] in vrf_list and have != [{'vrf': 'default'}]:
+            vrf_list = [h["vrf"] for h in have]
+        if want["vrf"] in vrf_list and have != [{"vrf": "default"}]:
             for x in have:
-                if x['vrf'] == want['vrf']:
+                if x["vrf"] == want["vrf"]:
                     h1 = x  # this has the 'have' dict with same vrf as want
-            if 'address_families' in h1.keys():
-                afi_list = [h['afi'] for h in h1['address_families']]
-                if 'address_families' in want.keys():
-                    for af in want['address_families']:
-                        if af['afi'] in afi_list:
-                            for x in h1['address_families']:
-                                if x['afi'] == af['afi']:
-                                    h2 = x  # this has the have dict with same vrf and afi as want
-                            dest_list = [h['dest'] for h in h2['routes']]
-                            if 'routes' in af.keys():
-                                for ro in af['routes']:
-                                    if ro['dest'] in dest_list:
-                                        for x in h2['routes']:
-                                            if x['dest'] == ro['dest']:
-                                                h3 = x  # this has the have dict with same vrf, afi and dest as want
+            if "address_families" in h1.keys():
+                afi_list = [h["afi"] for h in h1["address_families"]]
+                if "address_families" in want.keys():
+                    for af in want["address_families"]:
+                        if af["afi"] in afi_list:
+                            for x in h1["address_families"]:
+                                if x["afi"] == af["afi"]:
+                                    h2 = (
+                                        x
+                                    )  # this has the have dict with same vrf and afi as want
+                            dest_list = [h["dest"] for h in h2["routes"]]
+                            if "routes" in af.keys():
+                                for ro in af["routes"]:
+                                    if ro["dest"] in dest_list:
+                                        for x in h2["routes"]:
+                                            if x["dest"] == ro["dest"]:
+                                                h3 = (
+                                                    x
+                                                )  # this has the have dict with same vrf, afi and dest as want
                                         next_hop_list = [
-                                            h for h in h3['next_hops']]
-                                        if 'next_hops' in ro.keys():
-                                            for nh in ro['next_hops']:
-                                                if 'interface' in nh.keys():
-                                                    nh['interface'] = normalize_interface(
-                                                        nh['interface'])
+                                            h for h in h3["next_hops"]
+                                        ]
+                                        if "next_hops" in ro.keys():
+                                            for nh in ro["next_hops"]:
+                                                if "interface" in nh.keys():
+                                                    nh[
+                                                        "interface"
+                                                    ] = normalize_interface(
+                                                        nh["interface"]
+                                                    )
                                                 if nh not in next_hop_list:
                                                     # no match for next hop in have
                                                     commands = self.set_next_hop(
-                                                        want, h2, nh, ro, commands)
+                                                        want,
+                                                        h2,
+                                                        nh,
+                                                        ro,
+                                                        commands,
+                                                    )
                                                     vrf_list.append(
-                                                        want['vrf'])
+                                                        want["vrf"]
+                                                    )
                                     else:
                                         # no match for dest
-                                        if 'next_hops' in ro.keys():
-                                            for nh in ro['next_hops']:
+                                        if "next_hops" in ro.keys():
+                                            for nh in ro["next_hops"]:
                                                 commands = self.set_next_hop(
-                                                    want, h2, nh, ro, commands)
+                                                    want, h2, nh, ro, commands
+                                                )
                         else:
                             # no match for afi
-                            if 'routes' in af.keys():
-                                for ro in af['routes']:
-                                    for nh in ro['next_hops']:
+                            if "routes" in af.keys():
+                                for ro in af["routes"]:
+                                    for nh in ro["next_hops"]:
                                         commands = self.set_next_hop(
-                                            want, af, nh, ro, commands)
+                                            want, af, nh, ro, commands
+                                        )
         else:
             # no match for vrf
-            vrf_list.append(want['vrf'])
-            for af in want['address_families']:
-                for ro in af['routes']:
-                    for nh in ro['next_hops']:
-                        commands = self.set_next_hop(want, af, nh, ro,
-                                                     commands)
+            vrf_list.append(want["vrf"])
+            for af in want["address_families"]:
+                for ro in af["routes"]:
+                    for nh in ro["next_hops"]:
+                        commands = self.set_next_hop(
+                            want, af, nh, ro, commands
+                        )
         return commands
 
     def set_next_hop(self, want, h2, nh, ro, commands):
-        vrf = want['vrf']
-        if h2['afi'] == 'ipv4':
-            com = 'ip route ' + \
-                ro['dest'] + ' ' + \
-                self.add_commands(nh)
+        vrf = want["vrf"]
+        if h2["afi"] == "ipv4":
+            com = "ip route " + ro["dest"] + " " + self.add_commands(nh)
         else:
-            com = 'ipv6 route ' + \
-                ro['dest'] + ' ' + \
-                self.add_commands(nh)
+            com = "ipv6 route " + ro["dest"] + " " + self.add_commands(nh)
         commands.append(com.strip())
-        string = 'vrf context ' + \
-            str(vrf)
+        string = "vrf context " + str(vrf)
         if string not in commands:
             commands.insert(0, string)
         return commands
 
     def add_default_vrf(self, dictionary):
-        '''
+        """
         This method is used to add 'default' vrf to the facts collected as global/default vrf
         is not shown in facts. vrf key exists for all vrfs except global.
-        '''
+        """
         for d in dictionary:
-            if 'vrf' not in d.keys():
-                d.update({'vrf': 'default'})
+            if "vrf" not in d.keys():
+                d.update({"vrf": "default"})
         return dictionary

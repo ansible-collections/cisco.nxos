@@ -26,12 +26,13 @@ The module file for nxos_static_routes
 """
 
 from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
 ANSIBLE_METADATA = {
-    'metadata_version': '1.1',
-    'status': ['preview'],
-    'supported_by': 'network'
+    "metadata_version": "1.1",
+    "status": ["preview"],
+    "supported_by": "network",
 }
 
 DOCUMENTATION = """
@@ -466,8 +467,12 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.static_routes.static_routes import Static_routesArgs
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.static_routes.static_routes import Static_routes
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.static_routes.static_routes import (
+    Static_routesArgs,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.static_routes.static_routes import (
+    Static_routes,
+)
 
 
 def main():
@@ -476,12 +481,13 @@ def main():
 
     :returns: the result form module invocation
     """
-    module = AnsibleModule(argument_spec=Static_routesArgs.argument_spec,
-                           supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=Static_routesArgs.argument_spec, supports_check_mode=True
+    )
 
     result = Static_routes(module).execute_module()
     module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
