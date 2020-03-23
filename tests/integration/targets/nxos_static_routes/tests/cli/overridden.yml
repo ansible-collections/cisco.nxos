@@ -46,13 +46,6 @@
           - "'no ip route 192.0.2.16/28 192.0.2.24 name new_route' in result.commands"
           - "'no ip route 192.0.2.80/28 192.0.2.26 tag 12' in result.commands"
 
-    - name: Gather static_routes post facts
-      cisco.nxos.nxos_facts: *facts
-
-    - assert:
-        that:
-          - "ansible_facts.network_resources.static_routes == result.after"
-
     - name: Idempotence - overridden
       cisco.nxos.nxos_static_routes: *overridden
       register: result

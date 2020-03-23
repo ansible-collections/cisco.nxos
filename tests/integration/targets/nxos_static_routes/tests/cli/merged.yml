@@ -49,17 +49,6 @@
           - "'ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
           - "result.commands | length == 6"
 
-    - name: Gather static_routes facts
-      cisco.nxos.nxos_facts:
-        gather_subset:
-          - "!all"
-          - "!min"
-        gather_network_resources: static_routes
-
-    - assert:
-        that:
-          - "ansible_facts.network_resources.static_routes == result.after"
-
     - name: Idempotence - Merged
       cisco.nxos.nxos_static_routes: *merged
       register: result

@@ -40,17 +40,6 @@
           - "'ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2' in result.commands"
           - "result.commands | length == 4"
 
-    - name: Gather static_routes post facts
-      cisco.nxos.nxos_facts:
-        gather_subset:
-          - "!all"
-          - "!min"
-        gather_network_resources: static_routes
-
-    - assert:
-        that:
-          - "ansible_facts.network_resources.static_routes == result.after"
-
     - name: Idempotence - Replaced
       cisco.nxos.nxos_static_routes: *replaced
       register: result
