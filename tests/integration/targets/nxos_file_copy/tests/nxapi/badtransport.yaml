@@ -11,6 +11,6 @@
 
 - assert:
     that:
-      - result.failed and result.msg is search('Connection type must be <network_cli>')
+      - result.failed and result.msg is search('Connection type must be fully qualified name for network_cli connection type, got {{ ansible_connection }}')
 
 - debug: msg="END nxapi/badtransport.yaml"
