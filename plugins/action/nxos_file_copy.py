@@ -163,7 +163,7 @@ class ActionModule(ActionBase):
         filecontent = to_bytes(filecontent, errors="surrogate_or_strict")
         local_filehash = hashlib.md5(filecontent).hexdigest()
 
-        decoded_rhash = remote_filehash.decode('UTF-8')
+        decoded_rhash = remote_filehash.decode("UTF-8")
 
         if local_filehash == decoded_rhash:
             return True
@@ -357,8 +357,8 @@ class ActionModule(ActionBase):
                 outcome["existing_file_with_same_name"] = True
                 return outcome
             elif index in [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]:
-                decoded_before = session.before.decode ('UTF-8')
-                decoded_after = session.after.decode ('UTF-8')
+                decoded_before = session.before.decode ("UTF-8")
+                decoded_after = session.after.decode ("UTF-8")
                 before = decoded_before.strip().replace(" \x08", "")
                 after = decoded_after.strip().replace(" \x08", "")
                 outcome["error"] = True
