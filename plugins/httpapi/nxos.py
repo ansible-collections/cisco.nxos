@@ -195,12 +195,11 @@ class HttpApi(HttpApiBase):
     # Shims for resource module support
     def get(self, command, output=None, **kwargs):
         # Most parameters are ignored as they are irrelevant for httpapi
-        return self.send_request(
-            data=command,
-            output=output,
-        )
+        return self.send_request(data=command, output=output)
 
-    def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
+    def edit_config(
+        self, candidate=None, commit=True, replace=None, comment=None
+    ):
         resp = list()
         self.check_edit_config_capability(candidate, commit, replace, comment)
 
@@ -221,7 +220,9 @@ class HttpApi(HttpApiBase):
 
         return resp
 
-    def check_edit_config_capability(self, candidate=None, commit=True, replace=None, comment=None):
+    def check_edit_config_capability(
+        self, candidate=None, commit=True, replace=None, comment=None
+    ):
         operations = self.get_device_operations()
 
         if not candidate and not replace:
