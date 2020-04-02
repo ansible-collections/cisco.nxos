@@ -1,21 +1,24 @@
 ---
 - debug:
-    msg: Start nxos_interfaces replaced integration tests connection={{ ansible_connection
-      }}
+    msg: "Start nxos_interfaces replaced integration tests connection={{ ansible_connection }}"
+
+- set_fact:
+    test_int1: "{{ nxos_int1 }}"
 
 - block:
 
-    - set_fact: test_int1="{{ nxos_int1 }}"
-
     - name: setup1
-      ansible.netcommon.cli_config: &id003
-        config: "default interface {{ test_int1 }}\n"
+      cisco.nxos.nxos_config: &id003
+        lines:
+          - "default interface {{ test_int1 }}"
 
     - block:
 
         - name: setup2
-          ansible.netcommon.cli_config:
-            config: "interface {{ test_int1 }}\n  description Ansible setup\n"
+          cisco.nxos.nxos_config:
+            lines:
+              - "interface {{ test_int1 }}"
+              - "  description Test-interface1"
 
         - name: Gather interfaces facts
           cisco.nxos.nxos_facts: &id001
@@ -28,7 +31,6 @@
           register: result
           cisco.nxos.nxos_interfaces: &id002
             config:
-
               - name: '{{ test_int1 }}'
                 description: Configured by Ansible
                 enabled: true
@@ -62,5 +64,5 @@
       always:
 
         - name: teardown
-          ansible.netcommon.cli_config: *id003
+          cisco.nxos.nxos_config: *id003
   when: platform is not search('N3[5KL]|N[56]K|titanium')
