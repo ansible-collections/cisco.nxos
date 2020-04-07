@@ -193,51 +193,18 @@ class HttpApi(HttpApiBase):
         return json.dumps(result)
 
     # Shims for resource module support
-    def get(self, command, output=None, **kwargs):
-        # Most parameters are ignored as they are irrelevant for httpapi
+    def get(self, command, output=None):
+        # This method is ONLY here to support resource modules. Therefore most
+        # arguments are unsupported and not present.
+
         return self.send_request(data=command, output=output)
 
-    def edit_config(
-        self, candidate=None, commit=True, replace=None, comment=None
-    ):
-        resp = list()
-        self.check_edit_config_capability(candidate, commit, replace, comment)
-
-        if replace:
-            device_info = self.get_device_info()
-            if "9K" not in device_info.get("network_os_platform", ""):
-                raise ConnectionError(
-                    message=u"replace is supported only on Nexus 9K devices"
-                )
-            candidate = "config replace {0}".format(replace)
+    def edit_config(self, candidate):
+        # This method is ONLY here to support resource modules. Therefore most
+        # arguments are unsupported and not present.
 
         responses = self.send_request(candidate, output="config")
-        for response in to_list(responses):
-            if response != "{}":
-                resp.append(response)
-        if not resp:
-            resp = [""]
-
-        return resp
-
-    def check_edit_config_capability(
-        self, candidate=None, commit=True, replace=None, comment=None
-    ):
-        operations = self.get_device_operations()
-
-        if not candidate and not replace:
-            raise ValueError(
-                "must provide a candidate or replace to load configuration"
-            )
-
-        if commit not in (True, False):
-            raise ValueError("'commit' must be a bool, got %s" % commit)
-
-        if replace and not operations.get("supports_replace"):
-            raise ValueError("configuration replace is not supported")
-
-        if comment and not operations.get("supports_commit_comment", False):
-            raise ValueError("commit comment is not supported")
+        return [resp for resp in to_list(responses) if resp != "{}"]
 
 
 def handle_response(response):
