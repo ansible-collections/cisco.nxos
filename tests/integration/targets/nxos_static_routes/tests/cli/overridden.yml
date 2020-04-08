@@ -36,7 +36,6 @@
     - assert:
         that:
           - "result.changed == true"
-          - "ansible_facts.network_resources.static_routes == result.before"
           - "'vrf context trial_vrf' in result.commands"
           - "'no ip route 192.0.2.64/28 192.0.2.22 tag 4' in result.commands"
           - "'no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"

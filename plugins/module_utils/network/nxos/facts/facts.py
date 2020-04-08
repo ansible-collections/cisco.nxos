@@ -62,7 +62,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acl_
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acls.acls import (
     AclsFacts,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acls.acls import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.static_routes.static_routes import (
     Static_routesFacts,
 )
 
