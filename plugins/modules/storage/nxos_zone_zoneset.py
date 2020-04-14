@@ -310,6 +310,8 @@ class ShowZone(object):
         output = self.execute_show_zone_vsan_cmd().split("\n")
         for line in output:
             line = " ".join(line.strip().split())
+            if 'init' in line:
+                line = line.replace('init', 'initiator')
             m = re.match(patZone, line)
             if m:
                 zonename = m.group(1).strip()
@@ -500,12 +502,12 @@ def main():
             sw_smart_zoning_bool = False
 
         if shZoneStatusObj.isVsanAbsent():
-            module.fail_json(msg="Vsan " + str(vsan) +
-                             " is not present in the switch. Hence cannot procced.")
+            module.fail_json(msg="Vsan " + str(vsan)
+                             + " is not present in the switch. Hence cannot procced.")
 
         if shZoneStatusObj.isLocked():
-            module.fail_json(msg="zone has acquired lock on the switch for vsan " +
-                             str(vsan) + ". Hence cannot procced.")
+            module.fail_json(msg="zone has acquired lock on the switch for vsan "
+                             + str(vsan) + ". Hence cannot procced.")
 
         # Process zone default zone options
         if op_default_zone is not None:
@@ -521,8 +523,8 @@ def main():
                     messages.append(
                         "default zone configuration changed from permit to deny for vsan " + str(vsan))
             else:
-                messages.append("default zone is already " + op_default_zone +
-                                " ,no change in default zone configuration for vsan " + str(vsan))
+                messages.append("default zone is already " + op_default_zone
+                                + " ,no change in default zone configuration for vsan " + str(vsan))
 
         # Process zone mode options
         if op_mode is not None:
@@ -538,8 +540,8 @@ def main():
                     messages.append(
                         "zone mode configuration changed from enhanced to basic for vsan " + str(vsan))
             else:
-                messages.append("zone mode is already " + op_mode +
-                                " ,no change in zone mode configuration for vsan " + str(vsan))
+                messages.append("zone mode is already " + op_mode
+                                + " ,no change in zone mode configuration for vsan " + str(vsan))
 
         # Process zone smart-zone options
         if op_smart_zoning is not None:
@@ -569,53 +571,22 @@ def main():
                 removeflag = eachzone["remove"]
                 if removeflag:
                     if shZoneObj.isZonePresent(zname):
-                        messages.append(
-                            "zone '"
-                            + zname
-                            + "' is removed from vsan "
-                            + str(vsan)
-                        )
-                        commands_executed.append(
-                            "no zone name " + zname + " vsan " + str(vsan)
-                        )
+                        messages.append("zone '" + zname + "' is removed from vsan " + str(vsan))
+                        commands_executed.append("no zone name " + zname + " vsan " + str(vsan))
                     else:
-                        messages.append(
-                            "zone '"
-                            + zname
-                            + "' is not present in vsan "
-                            + str(vsan)
-                            + " , so nothing to remove"
-                        )
+                        messages.append("zone '" + zname + "' is not present in vsan " + str(vsan) + " , so nothing to remove")
                 else:
                     if zmembers is None:
                         if shZoneObj.isZonePresent(zname):
-                            messages.append(
-                                "zone '"
-                                + zname
-                                + "' is already present in vsan "
-                                + str(vsan)
-                            )
+                            messages.append("zone '" + zname + "' is already present in vsan " + str(vsan))
                         else:
-                            commands_executed.append(
-                                "zone name " + zname + " vsan " + str(vsan)
-                            )
-                            messages.append(
-                                "zone '"
-                                + zname
-                                + "' is created in vsan "
-                                + str(vsan)
-                            )
+                            commands_executed.append("zone name " + zname + " vsan " + str(vsan))
+                            messages.append("zone '" + zname + "' is created in vsan " + str(vsan))
                     else:
                         cmdmemlist = []
                         for eachmem in zmembers:
-                            memtype = getMemType(
-                                supported_choices, eachmem.keys()
-                            )
-                            cmd = (
-                                memtype.replace("_", "-")
-                                + " "
-                                + eachmem[memtype]
-                            )
+                            memtype = getMemType(supported_choices, eachmem.keys())
+                            cmd = (memtype.replace("_", "-") + " " + eachmem[memtype])
                             if op_smart_zoning or sw_smart_zoning_bool:
                                 if eachmem["devtype"] is not None:
                                     cmd = cmd + " " + eachmem["devtype"]
@@ -626,10 +597,7 @@ def main():
                                     ):
                                         cmd = "no member " + cmd
                                         cmdmemlist.append(cmd)
-                                        if (
-                                            op_smart_zoning
-                                            and eachmem["devtype"] is not None
-                                        ):
+                                        if (op_smart_zoning and eachmem["devtype"] is not None):
                                             messages.append(
                                                 "removing zone member '"
                                                 + eachmem[memtype]

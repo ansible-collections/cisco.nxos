@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # Copyright: Ansible Project
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or
+# https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
@@ -34,30 +35,23 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_execute_show_cmd_zoneset_active = patch(
-            module_path + "ShowZonesetActive.execute_show_zoneset_active_cmd"
-        )
+            module_path + "ShowZonesetActive.execute_show_zoneset_active_cmd")
         self.execute_show_cmd_zoneset_active = (
-            self.mock_execute_show_cmd_zoneset_active.start()
-        )
+            self.mock_execute_show_cmd_zoneset_active.start())
 
         self.mock_execute_show_cmd_zoneset = patch(
-            module_path + "ShowZoneset.execute_show_zoneset_cmd"
-        )
+            module_path + "ShowZoneset.execute_show_zoneset_cmd")
         self.execute_show_cmd_zoneset = (
-            self.mock_execute_show_cmd_zoneset.start()
-        )
+            self.mock_execute_show_cmd_zoneset.start())
 
         self.mock_execute_show_cmd_zone = patch(
-            module_path + "ShowZone.execute_show_zone_vsan_cmd"
-        )
+            module_path + "ShowZone.execute_show_zone_vsan_cmd")
         self.execute_show_cmd_zone = self.mock_execute_show_cmd_zone.start()
 
         self.mock_execute_show_cmd_zone_status = patch(
-            module_path + "ShowZoneStatus.execute_show_zone_status_cmd"
-        )
+            module_path + "ShowZoneStatus.execute_show_zone_status_cmd")
         self.execute_show_cmd_zone_status = (
-            self.mock_execute_show_cmd_zone_status.start()
-        )
+            self.mock_execute_show_cmd_zone_status.start())
 
         self.mock_load_config = patch(module_path + "load_config")
         self.load_config = self.mock_load_config.start()
@@ -630,11 +624,16 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         self.execute_show_cmd_zoneset_active.return_value = load_fixture(
             "nxos_zone_zoneset", "shzonesetactive_0.cfg"
         )
-        result = self.execute_module(changed=False, failed=False)
-        m = "zoneset 'zsv221' is already present in vsan 221"
-        m1 = "zoneset 'zsv221' in vsan 221 is already activated"
-        self.assertEqual(result["commands"], [])
-        self.assertEqual(result["messages"], [m, m1])
+        result = self.execute_module(changed=True, failed=False)
+        self.assertEqual(
+            result["commands"],
+            [
+                "terminal dont-ask",
+                "zoneset activate name zsv221 vsan 221",
+                "zone commit vsan 221",
+                "no terminal dont-ask",
+            ],
+        )
 
     def test_zoneset_activate_deactivate_1(self):
         a = dict(
