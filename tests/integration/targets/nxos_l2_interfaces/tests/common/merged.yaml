@@ -2,20 +2,20 @@
 - debug:
     msg: Start nxos_l2_interfaces merged integration tests connection={{ ansible_connection }}
 
-- set_fact: 
+- set_fact:
     test_int1: "{{ nxos_int1 }}"
 
 - name: setup1
   ignore_errors: true
   cisco.nxos.nxos_config: &id003
-    lines: 
+    lines:
       - "default interface {{ test_int1 }}"
 
 - block:
 
     - name: setup2
       cisco.nxos.nxos_config:
-        lines: 
+        lines:
           - "interface {{ test_int1 }}"
           - "  switchport"
 
