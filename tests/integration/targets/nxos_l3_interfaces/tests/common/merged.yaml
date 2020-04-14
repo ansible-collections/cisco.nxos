@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start nxos_l3_interfaces merged integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_l3_interfaces merged integration tests connection={{ ansible_connection }}
 
 - set_fact:
     test_int3: '{{ nxos_int3 }}'
@@ -9,9 +8,12 @@
 
 - name: setup1
   ignore_errors: true
-  ansible.netcommon.cli_config:
-    config: "no system default switchport\ndefault interface {{ test_int3 }}\ninterface\
-      \ {{ test_int3 }}\n  no switchport\n"
+  cisco.nxos.nxos_config:
+    lines:
+      - "no system default switchport"
+      - "default interface {{ test_int3 }}"
+      - "interface {{ test_int3 }}"
+      - "  no switchport"
 
 - name: setup2 cleanup all L3 states on all interfaces
   cisco.nxos.nxos_l3_interfaces:
@@ -68,5 +70,6 @@
 
     - name: teardown
       ignore_errors: true
-      ansible.netcommon.cli_config:
-        config: "no interface {{ subint3 }}\n"
+      cisco.nxos.nxos_config:
+        lines:
+         - "no interface {{ subint3 }}"

@@ -14,3 +14,6 @@
 - include: cli.yaml
   tags:
     - cli
+- include: nxapi.yaml
+  tags:
+    - nxapi
