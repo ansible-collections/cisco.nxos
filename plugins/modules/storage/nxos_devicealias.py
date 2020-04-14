@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # Copyright: Ansible Project
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or
+# https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
@@ -295,21 +296,20 @@ def main():
             if not remove:
                 if pwwn is None:
                     module.fail_json(
-                        msg="This device alias name "
-                        + str(name)
-                        + " which needs to be added, does not have pwwn specified. Please specify a valid pwwn"
+                        msg="This device alias name " +
+                            str(name) + " which needs to be added, does not have pwwn specified. Please specify a valid pwwn"
                     )
                 if not isNameValid(name):
                     module.fail_json(
-                        msg="This pwwn name is invalid : "
-                        + str(name)
-                        + ". Note that name cannot be more than 64 alphanumeric chars, it must start with a letter, and can only contain these characters: " + ', '.join(['\'{}\''.format(c) for c in VALID_DA_CHARS])
+                        msg="This pwwn name is invalid : " +
+                            str(name) + ". Note that name cannot be more than 64 alphanumeric chars, " +
+                            "it must start with a letter, and can only contain these characters: " +
+                        ', '.join(['\'{}\''.format(c) for c in VALID_DA_CHARS])
                     )
                 if not isPwwnValid(pwwn):
                     module.fail_json(
-                        msg="This pwwn is invalid : "
-                        + str(pwwn)
-                        + ". Please check that its a valid pwwn"
+                        msg="This pwwn is invalid : " +
+                            str(pwwn) + ". Please check that its a valid pwwn"
                     )
     if rename is not None:
         for eachdict in rename:
@@ -317,15 +317,16 @@ def main():
             newname = eachdict["new_name"]
             if not isNameValid(oldname):
                 module.fail_json(
-                    msg="This pwwn name is invalid : "
-                    + str(oldname)
-                    + ". Note that name cannot be more than 64 alphanumeric chars, it must start with a letter, and can only contain these characters: " + ', '.join(['\'{}\''.format(c) for c in VALID_DA_CHARS])
+                    msg="This pwwn name is invalid : " +
+                        str(oldname) + ". Note that name cannot be more than 64 alphanumeric chars, " +
+                        "it must start with a letter, and can only contain these characters: " +
+                    ', '.join(['\'{}\''.format(c) for c in VALID_DA_CHARS])
                 )
             if not isNameValid(newname):
                 module.fail_json(
-                    msg="This pwwn name is invalid : "
-                    + str(newname)
-                    + ". Note that name cannot be more than 64 alphanumeric chars, it must start with a letter, and can only contain these characters: " + ', '.join(['\'{}\''.format(c) for c in VALID_DA_CHARS])
+                    msg="This pwwn name is invalid : " + str(newname) + ". Note that name cannot be more than 64 alphanumeric chars, " +
+                    "it must start with a letter, and can only contain these characters: " +
+                        ', '.join(['\'{}\''.format(c) for c in VALID_DA_CHARS])
                 )
 
     # Step 0.1: Check DA status
@@ -343,7 +344,8 @@ def main():
         if distribute:
             # playbook has distribute as True(enabled)
             if d == "disabled":
-                # but switch distribute is disabled(false), so set it to true(enabled)
+                # but switch distribute is disabled(false), so set it to
+                # true(enabled)
                 commands.append("device-alias distribute")
                 messages.append(
                     "device-alias distribute changed from disabled to enabled"
@@ -355,7 +357,8 @@ def main():
         else:
             # playbook has distribute as False(disabled)
             if d == "enabled":
-                # but switch distribute is enabled(true), so set it to false(disabled)
+                # but switch distribute is enabled(true), so set it to
+                # false(disabled)
                 commands.append("no device-alias distribute")
                 messages.append(
                     "device-alias distribute changed from enabled to disabled"
@@ -384,12 +387,10 @@ def main():
                 # but switch mode is enhanced, so set it to basic
                 commands.append("no device-alias mode enhanced")
                 messages.append(
-                    "device-alias mode changed from enhanced to basic"
-                )
+                    "device-alias mode changed from enhanced to basic")
             else:
                 messages.append(
-                    "device-alias mode remains unchanged. current mode is basic"
-                )
+                    "device-alias mode remains unchanged. current mode is basic")
 
         else:
             # playbook has mode as enhanced
@@ -397,12 +398,10 @@ def main():
                 # but switch mode is basic, so set it to enhanced
                 commands.append("device-alias mode enhanced")
                 messages.append(
-                    "device-alias mode changed from basic to enhanced"
-                )
+                    "device-alias mode changed from basic to enhanced")
             else:
                 messages.append(
-                    "device-alias mode remains unchanged. current mode is enhanced"
-                )
+                    "device-alias mode remains unchanged. current mode is enhanced")
 
     if commands:
         if distribute:
@@ -446,34 +445,19 @@ def main():
                     da_remove_list.append(name)
                 else:
                     messages.append(
-                        name
-                        + " - This device alias name is not in switch device-alias database, hence cannot be removed."
-                    )
+                        name + " - This device alias name is not in switch device-alias database, hence cannot be removed.")
             else:
                 if shDADatabaseObj.isNamePwwnPresentInDatabase(name, pwwn):
                     messages.append(
-                        name
-                        + " : "
-                        + pwwn
-                        + " - This device alias name,pwwn is already in switch device-alias database, \
-                        hence nothing to configure"
-                    )
+                        name + " : " + pwwn + " - This device alias name,pwwn is already in switch device-alias database, hence nothing to configure")
                 else:
                     if shDADatabaseObj.isNameInDaDatabase(name):
-                        module.fail_json(
-                            msg=name
-                            + " - This device alias name is already present in switch device-alias database but assigned to another pwwn ("
-                            + shDADatabaseObj.getPwwnByName(name)
-                            + ") hence cannot be added"
-                        )
+                        module.fail_json(msg=name + " - This device alias name is already present in switch device-alias database but assigned to another pwwn (" +
+                                         shDADatabaseObj.getPwwnByName(name) + ") hence cannot be added")
 
                     elif shDADatabaseObj.isPwwnInDaDatabase(pwwn):
-                        module.fail_json(
-                            msg=pwwn
-                            + " - This device alias pwwn is already present in switch device-alias database but assigned to another name ("
-                            + shDADatabaseObj.getNameByPwwn(pwwn)
-                            + ") hence cannot be added"
-                        )
+                        module.fail_json(msg=pwwn + " - This device alias pwwn is already present in switch device-alias database but assigned to another name (" +
+                                         shDADatabaseObj.getNameByPwwn(pwwn) + ") hence cannot be added")
 
                     else:
                         commands.append(
@@ -492,9 +476,8 @@ def main():
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
                     commands = (
-                        ["terminal dont-ask"]
-                        + commands
-                        + ["no terminal dont-ask"]
+                        ["terminal dont-ask"] + commands +
+                        ["no terminal dont-ask"]
                     )
 
         cmds = flatten_list(commands)
@@ -508,13 +491,13 @@ def main():
                 load_config(module, cmds)
                 if len(da_remove_list) != 0:
                     messages.append(
-                        "the required device-alias were removed. "
-                        + ",".join(da_remove_list)
+                        "the required device-alias were removed. " +
+                        ",".join(da_remove_list)
                     )
                 if len(da_add_list) != 0:
                     messages.append(
-                        "the required device-alias were added. "
-                        + ",".join(da_add_list)
+                        "the required device-alias were added. " +
+                        ",".join(da_add_list)
                     )
 
     # Step 5: Process rename
@@ -527,10 +510,8 @@ def main():
                 module.fail_json(
                     changed=False,
                     commands=cmds,
-                    msg=newname
-                    + " - this name is already present in the device-alias database, hence we cannot rename "
-                    + oldname
-                    + " with this one",
+                    msg=newname + " - this name is already present in the device-alias database, hence we cannot rename " +
+                    oldname + " with this one",
                 )
             if shDADatabaseObj.isNameInDaDatabase(oldname):
                 commands.append(
@@ -540,8 +521,7 @@ def main():
                 module.fail_json(
                     changed=False,
                     commands=cmds,
-                    msg=oldname
-                    + " - this name is not present in the device-alias database, hence we cannot rename.",
+                    msg=oldname + " - this name is not present in the device-alias database, hence we cannot rename.",
                 )
 
         if len(commands) != 0:
@@ -554,11 +534,8 @@ def main():
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
-                    commands = (
-                        ["terminal dont-ask"]
-                        + commands
-                        + ["no terminal dont-ask"]
-                    )
+                    commands = (["terminal dont-ask"] +
+                                commands + ["no terminal dont-ask"])
         cmds = flatten_list(commands)
         if cmds:
             commands_to_execute = commands_to_execute + cmds
