@@ -13,18 +13,9 @@ from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
     AnsibleFailJson,
     AnsibleExitJson,
 )
-from ansible_collections.cisco.nxos.plugins.modules import nxos_zone_zoneset
-from ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset import (
-    ShowZonesetActive,
-)
-from ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset import (
-    ShowZoneset,
-)
-from ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset import (
-    ShowZone,
-)
-from ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset import (
-    ShowZoneStatus,
+from ansible_collections.cisco.nxos.plugins.modules.storage import nxos_zone_zoneset
+from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_zone_zoneset import (
+    ShowZonesetActive, ShowZoneset, ShowZone, ShowZoneStatus,
 )
 
 from ..nxos_module import TestNxosModule, load_fixture, set_module_args
@@ -36,7 +27,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
     def setUp(self):
         super(TestNxosZoneZonesetModule, self).setUp()
         module_path = (
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset."
+            "ansible_collections.cisco.nxos.plugins.modules.storage.nxos_zone_zoneset."
         )
 
         self.mock_run_commands = patch(module_path + "run_commands")
@@ -705,3 +696,71 @@ class TestNxosZoneZonesetModule(TestNxosModule):
                 "no terminal dont-ask",
             ],
         )
+
+    def test_bug_zone_remove(self):
+        mem1 = {"pwwn": "21:01:00:1b:32:a1:c0:a8", "remove": True}
+        mem2 = {"pwwn": "50:06:01:6a:47:e4:6e:59", "remove": True}
+        a = dict(
+            zone_zoneset_details=[
+                dict(
+                    vsan=221,
+                    zone=[dict(name="zv221", members=[mem1, mem2])],
+                )
+            ]
+        )
+        set_module_args(a, True)
+        self.execute_show_cmd_zone_status.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzonestatus_4.cfg"
+        )
+        self.execute_show_cmd_zone.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzone_2.cfg"
+        )
+        self.execute_show_cmd_zoneset_active.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzonesetactive_0.cfg"
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "terminal dont-ask",
+                "zone name zv221 vsan 221",
+                "no member pwwn 21:01:00:1b:32:a1:c0:a8",
+                "no member pwwn 50:06:01:6a:47:e4:6e:59",
+                "zone commit vsan 221",
+                "no terminal dont-ask",
+            ],
+        )
+
+    # def test_bug_from_active_zoneset_add(self):
+    #     mem1 = {"pwwn": "10:00:10:94:00:00:00:01"}
+    #     mem2 = {"pwwn": "10:00:10:94:00:00:00:02"}
+    #     a = dict(
+    #         zone_zoneset_details=[
+    #             dict(
+    #                 vsan=221,
+    #                 zone=[dict(name="zoneBNew", members=[mem1, mem2])],
+    #                 zoneset=[dict(name="zsv221New", action="activate")],
+    #             )
+    #         ]
+    #     )
+    #     set_module_args(a, True)
+    #     self.execute_show_cmd_zone_status.return_value = load_fixture(
+    #         "nxos_zone_zoneset", "shzonestatus_4.cfg"
+    #     )
+    #     self.execute_show_cmd_zoneset.return_value = load_fixture(
+    #         "nxos_zone_zoneset", "shzoneset_2.cfg"
+    #     )
+    #     self.execute_show_cmd_zoneset_active.return_value = load_fixture(
+    #         "nxos_zone_zoneset", "shzonesetactive_0.cfg"
+    #     )
+    #     result = self.execute_module(changed=True, failed=False)
+    #     self.assertEqual(
+    #         result["commands"],
+    #         [
+    #             "terminal dont-ask",
+    #             "zoneset name zsv221New vsan 221",
+    #             "zoneset activate name zsv221New vsan 221",
+    #             "zone commit vsan 221",
+    #             "no terminal dont-ask",
+    #         ],
+    #     )

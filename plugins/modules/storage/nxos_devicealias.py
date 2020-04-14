@@ -115,6 +115,8 @@ import string
 
 __metaclass__ = type
 
+VALID_DA_CHARS = ('-', '_', '$', '^')
+
 
 class showDeviceAliasStatus(object):
     """docstring for showDeviceAliasStatus"""
@@ -225,6 +227,9 @@ def isNameValid(name):
         return False
     if len(name) > 64:
         return False
+    for character in name:
+        if not character.isalnum() and character not in VALID_DA_CHARS:
+            return False
     return True
 
 
@@ -292,13 +297,13 @@ def main():
                     module.fail_json(
                         msg="This device alias name "
                         + str(name)
-                        + " which needs to be added, doenst have pwwn specified . Please specify a valid pwwn"
+                        + " which needs to be added, does not have pwwn specified. Please specify a valid pwwn"
                     )
                 if not isNameValid(name):
                     module.fail_json(
                         msg="This pwwn name is invalid : "
                         + str(name)
-                        + ". Note that name cannot be more than 64 chars and it should start with a letter"
+                        + ". Note that name cannot be more than 64 alphanumeric chars, it must start with a letter, and can only contain these characters: " + ', '.join(['\'{}\''.format(c) for c in VALID_DA_CHARS])
                     )
                 if not isPwwnValid(pwwn):
                     module.fail_json(
@@ -314,13 +319,13 @@ def main():
                 module.fail_json(
                     msg="This pwwn name is invalid : "
                     + str(oldname)
-                    + ". Note that name cannot be more than 64 chars and it should start with a letter"
+                    + ". Note that name cannot be more than 64 alphanumeric chars, it must start with a letter, and can only contain these characters: " + ', '.join(['\'{}\''.format(c) for c in VALID_DA_CHARS])
                 )
             if not isNameValid(newname):
                 module.fail_json(
                     msg="This pwwn name is invalid : "
                     + str(newname)
-                    + ". Note that name cannot be more than 64 chars and it should start with a letter"
+                    + ". Note that name cannot be more than 64 alphanumeric chars, it must start with a letter, and can only contain these characters: " + ', '.join(['\'{}\''.format(c) for c in VALID_DA_CHARS])
                 )
 
     # Step 0.1: Check DA status
