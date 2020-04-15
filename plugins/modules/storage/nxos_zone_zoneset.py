@@ -643,8 +643,6 @@ def main():
                                                 + str(vsan)
                                                 + " hence nothing to remove"
                                             )
-                                            module.fail_json(msg=json.dumps(
-                                                shZoneObj.get_zDetails()))
                                 else:
                                     messages.append(
                                         "zone '"
