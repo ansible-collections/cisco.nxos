@@ -102,7 +102,6 @@ __metaclass__ = type
 
 
 class Vsan(object):
-
     def __init__(self, vsanid):
         self.vsanid = vsanid
         self.vsanname = None
@@ -206,9 +205,7 @@ def main():
         vsan=dict(type="list", elements="dict", options=vsan_element_spec)
     )
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()
     messages = list()
     commands_executed = list()
@@ -229,7 +226,9 @@ def main():
 
         if int(vsanid) < 1 or int(vsanid) >= 4095:
             module.fail_json(
-                msg=vsanid + " - This is an invalid vsan. Supported vsan range is 1-4094")
+                msg=vsanid
+                + " - This is an invalid vsan. Supported vsan range is 1-4094"
+            )
 
         if vsanid in dictSwVsanObjs.keys():
             sw_vsanid = vsanid
@@ -246,24 +245,33 @@ def main():
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
-                    str(vsanid) + " is a reserved vsan, hence cannot be removed")
+                    str(vsanid) + " is a reserved vsan, hence cannot be removed"
+                )
                 continue
             if vsanid == sw_vsanid:
                 commands.append("no vsan " + str(vsanid))
                 messages.append("deleting the vsan " + str(vsanid))
             else:
-                messages.append("There is no vsan " + str(vsanid) +
-                                " present in the switch. Hence there is nothing to delete")
+                messages.append(
+                    "There is no vsan "
+                    + str(vsanid)
+                    + " present in the switch. Hence there is nothing to delete"
+                )
             continue
         else:
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
-                    str(vsanid) + " is a reserved vsan, and always present on the switch")
+                    str(vsanid)
+                    + " is a reserved vsan, and always present on the switch"
+                )
             else:
                 if vsanid == sw_vsanid:
-                    messages.append("There is already a vsan " + str(vsanid) +
-                                    " present in the switch. Hence there is nothing to configure")
+                    messages.append(
+                        "There is already a vsan "
+                        + str(vsanid)
+                        + " present in the switch. Hence there is nothing to configure"
+                    )
                 else:
                     commands.append("vsan " + str(vsanid))
                     messages.append("creating vsan " + str(vsanid))
@@ -276,31 +284,42 @@ def main():
                 )
             else:
                 if vsanname == sw_vsanname:
-                    messages.append("There is already a vsan " + str(vsanid) +
-                                    " present in the switch, which has the name " + vsanname +
-                                    " Hence there is nothing to configure")
+                    messages.append(
+                        "There is already a vsan "
+                        + str(vsanid)
+                        + " present in the switch, which has the name "
+                        + vsanname
+                        + " Hence there is nothing to configure"
+                    )
                 else:
-                    commands.append("vsan " + str(vsanid) +
-                                    " name " + vsanname)
-                    messages.append("setting vsan name to " +
-                                    vsanname + " for vsan " + str(vsanid))
+                    commands.append("vsan " + str(vsanid) + " name " + vsanname)
+                    messages.append(
+                        "setting vsan name to " + vsanname + " for vsan " + str(vsanid)
+                    )
 
         if vsansuspend:
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
-                    str(vsanid) + " is a reserved vsan, and cannot be suspended")
+                    str(vsanid) + " is a reserved vsan, and cannot be suspended"
+                )
             else:
                 if sw_vsanstate == "suspended":
-                    messages.append("There is already a vsan " + str(vsanid) +
-                                    " present in the switch, which is in suspended state ")
+                    messages.append(
+                        "There is already a vsan "
+                        + str(vsanid)
+                        + " present in the switch, which is in suspended state "
+                    )
                 else:
                     commands.append("vsan " + str(vsanid) + " suspend")
                     messages.append("suspending the vsan " + str(vsanid))
         else:
             if sw_vsanstate == "active":
-                messages.append("There is already a vsan " + str(vsanid) +
-                                " present in the switch, which is in active state ")
+                messages.append(
+                    "There is already a vsan "
+                    + str(vsanid)
+                    + " present in the switch, which is in active state "
+                )
             else:
                 commands.append("no vsan " + str(vsanid) + " suspend")
                 messages.append("no suspending the vsan " + str(vsanid))
@@ -312,16 +331,29 @@ def main():
                 temp = re.sub(" +", "", each_interface_name)
                 if temp in sw_vsaninterfaces:
                     messages.append(
-                        each_interface_name + " is already present in the vsan " + str(vsanid) + " interface list")
+                        each_interface_name
+                        + " is already present in the vsan "
+                        + str(vsanid)
+                        + " interface list"
+                    )
                 else:
-                    commands.append("vsan " + str(vsanid) +
-                                    " interface " + each_interface_name)
+                    commands.append(
+                        "vsan " + str(vsanid) + " interface " + each_interface_name
+                    )
                     messages.append(
-                        "adding interface " + each_interface_name + " to vsan " + str(vsanid))
+                        "adding interface "
+                        + each_interface_name
+                        + " to vsan "
+                        + str(vsanid)
+                    )
 
     if len(commands) != 0:
-        commands = (["terminal dont-ask"] + ["vsan database"] +
-                    commands + ["no terminal dont-ask"])
+        commands = (
+            ["terminal dont-ask"]
+            + ["vsan database"]
+            + commands
+            + ["no terminal dont-ask"]
+        )
 
     cmds = flatten_list(commands)
     commands_executed = cmds

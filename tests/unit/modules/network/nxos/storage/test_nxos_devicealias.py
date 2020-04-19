@@ -9,12 +9,11 @@ __metaclass__ = type
 import pytest
 
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 from ansible_collections.cisco.nxos.plugins.modules.storage import nxos_devicealias
 from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_devicealias import (
-    showDeviceAliasStatus, showDeviceAliasDatabase,
+    showDeviceAliasStatus,
+    showDeviceAliasDatabase,
 )
 
 from ..nxos_module import TestNxosModule, load_fixture, set_module_args
@@ -215,11 +214,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                 distribute=True,
                 mode="enhanced",
                 da=[
-                    dict(
-                        name="tieHost-2",
-                        pwwn="10:00:00:00:89:a1:01:02",
-                        remove=True,
-                    )
+                    dict(name="tieHost-2", pwwn="10:00:00:00:89:a1:01:02", remove=True,)
                 ],
             ),
             True,
@@ -250,11 +245,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                 distribute=True,
                 mode="enhanced",
                 da=[
-                    dict(
-                        name="somename",
-                        pwwn="10:00:00:00:89:a1:01:02",
-                        remove=True,
-                    )
+                    dict(name="somename", pwwn="10:00:00:00:89:a1:01:02", remove=True,)
                 ],
             ),
             True,
@@ -275,11 +266,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                 distribute=True,
                 mode="enhanced",
                 da=[
-                    dict(
-                        name="somename",
-                        pwwn="10:00:00:00:89:a1:01:02",
-                        remove=True,
-                    )
+                    dict(name="somename", pwwn="10:00:00:00:89:a1:01:02", remove=True,)
                 ],
             ),
             True,
@@ -297,11 +284,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                 distribute=True,
                 mod="enhanced",
                 da=[
-                    dict(
-                        name="somename",
-                        pwwn="10:00:00:00:89:a1:01:02",
-                        remove=True,
-                    )
+                    dict(name="somename", pwwn="10:00:00:00:89:a1:01:02", remove=True,)
                 ],
             ),
             True,
@@ -417,9 +400,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             dict(
                 distribute=True,
                 mode="enhanced",
-                da=[
-                    dict(name="*somename*", pwwn="10:00:00:00:89:a1:01:03"),
-                ],
+                da=[dict(name="*somename*", pwwn="10:00:00:00:89:a1:01:03"),],
             ),
             True,
         )
@@ -440,9 +421,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             dict(
                 distribute=True,
                 mode="enhanced",
-                da=[
-                    dict(name="somename*", pwwn="10:00:00:00:89:a1:01:03"),
-                ],
+                da=[dict(name="somename*", pwwn="10:00:00:00:89:a1:01:03"),],
             ),
             True,
         )
