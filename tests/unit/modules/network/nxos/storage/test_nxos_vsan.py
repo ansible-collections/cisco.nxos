@@ -9,7 +9,9 @@ __metaclass__ = type
 import pytest
 
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
+    AnsibleFailJson,
+)
 from ansible_collections.cisco.nxos.plugins.modules.storage import nxos_vsan
 from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_vsan import (
     GetVsanInfoFromSwitch,
@@ -38,7 +40,9 @@ class TestNxosVsanModule(TestNxosModule):
         self.mock_execute_show_vsanmemcmd = patch(
             module_path + "GetVsanInfoFromSwitch.execute_show_vsan_mem_cmd"
         )
-        self.execute_show_vsanmem_cmd = self.mock_execute_show_vsanmemcmd.start()
+        self.execute_show_vsanmem_cmd = (
+            self.mock_execute_show_vsanmemcmd.start()
+        )
 
         self.mock_load_config = patch(module_path + "load_config")
         self.load_config = self.mock_load_config.start()
@@ -84,7 +88,9 @@ class TestNxosVsanModule(TestNxosModule):
         self.assertEqual(result["commands"], [])
 
     def test_vsan_remove(self):
-        margs = {"vsan": [{"id": 922, "remove": True}, {"id": 923, "remove": True}]}
+        margs = {
+            "vsan": [{"id": 922, "remove": True}, {"id": 923, "remove": True}]
+        }
         set_module_args(margs, True)
         self.execute_show_vsan_cmd.return_value = load_fixture(
             "nxos_vsan", "shvsan.cfg"
@@ -181,7 +187,9 @@ class TestNxosVsanModule(TestNxosModule):
         )
 
     def test_vsan_invalid_vsan(self):
-        margs = {"vsan": [{"id": 4096, "name": "vsan-SAN-925", "suspend": True}]}
+        margs = {
+            "vsan": [{"id": 4096, "name": "vsan-SAN-925", "suspend": True}]
+        }
         set_module_args(margs, True)
         self.execute_show_vsan_cmd.return_value = load_fixture(
             "nxos_vsan", "shvsan.cfg"
@@ -196,7 +204,9 @@ class TestNxosVsanModule(TestNxosModule):
             assert testdata["failed"]
 
     def test_vsan_change_reserved_vsan(self):
-        margs = {"vsan": [{"id": 4094, "name": "vsan-SAN-925", "suspend": True}]}
+        margs = {
+            "vsan": [{"id": 4094, "name": "vsan-SAN-925", "suspend": True}]
+        }
         set_module_args(margs, True)
         self.execute_show_vsan_cmd.return_value = load_fixture(
             "nxos_vsan", "shvsan.cfg"
@@ -210,7 +220,12 @@ class TestNxosVsanModule(TestNxosModule):
 
     def test_vsan_add_int_existing_vsan(self):
         margs = {
-            "vsan": [{"interface": ["fc1/1", "fc1/40", "port-channel 155"], "id": 922,}]
+            "vsan": [
+                {
+                    "interface": ["fc1/1", "fc1/40", "port-channel 155"],
+                    "id": 922,
+                }
+            ]
         }
         set_module_args(margs, True)
         self.execute_show_vsan_cmd.return_value = load_fixture(
@@ -224,7 +239,10 @@ class TestNxosVsanModule(TestNxosModule):
             result["commands"],
             ["terminal dont-ask"]
             + ["vsan database"]
-            + ["vsan 922 interface fc1/40", "vsan 922 interface port-channel 155",]
+            + [
+                "vsan 922 interface fc1/40",
+                "vsan 922 interface port-channel 155",
+            ]
             + ["no terminal dont-ask"],
         )
 

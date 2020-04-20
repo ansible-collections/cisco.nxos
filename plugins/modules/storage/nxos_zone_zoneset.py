@@ -225,7 +225,9 @@ class ShowZonesetActive(object):
         self.parseCmdOutput()
 
     def execute_show_zoneset_active_cmd(self):
-        command = "show zoneset active vsan " + str(self.vsan) + " | grep zoneset"
+        command = (
+            "show zoneset active vsan " + str(self.vsan) + " | grep zoneset"
+        )
         output = execute_show_command(command, self.module)[0]
         return output
 
@@ -441,12 +443,15 @@ def main():
     )
 
     zoneset_member_spec = dict(
-        name=dict(required=True, type="str"), remove=dict(type="bool", default=False),
+        name=dict(required=True, type="str"),
+        remove=dict(type="bool", default=False),
     )
 
     zoneset_spec = dict(
         name=dict(type="str", required=True),
-        members=dict(type="list", elements="dict", options=zoneset_member_spec),
+        members=dict(
+            type="list", elements="dict", options=zoneset_member_spec
+        ),
         remove=dict(type="bool", default=False),
         action=dict(type="str", choices=["activate", "deactivate"]),
     )
@@ -466,7 +471,9 @@ def main():
         )
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     warnings = list()
     messages = list()
@@ -539,13 +546,17 @@ def main():
         if op_mode is not None:
             if op_mode != sw_mode:
                 if op_mode == "enhanced":
-                    commands_executed.append("zone mode enhanced vsan " + str(vsan))
+                    commands_executed.append(
+                        "zone mode enhanced vsan " + str(vsan)
+                    )
                     messages.append(
                         "zone mode configuration changed from basic to enhanced for vsan "
                         + str(vsan)
                     )
                 else:
-                    commands_executed.append("no zone mode enhanced vsan " + str(vsan))
+                    commands_executed.append(
+                        "no zone mode enhanced vsan " + str(vsan)
+                    )
                     messages.append(
                         "zone mode configuration changed from enhanced to basic for vsan "
                         + str(vsan)
@@ -565,12 +576,16 @@ def main():
                     commands_executed.append(
                         "zone smart-zoning enable vsan " + str(vsan)
                     )
-                    messages.append("smart-zoning enabled for vsan " + str(vsan))
+                    messages.append(
+                        "smart-zoning enabled for vsan " + str(vsan)
+                    )
                 else:
                     commands_executed.append(
                         "no zone smart-zoning enable vsan " + str(vsan)
                     )
-                    messages.append("smart-zoning disabled for vsan " + str(vsan))
+                    messages.append(
+                        "smart-zoning disabled for vsan " + str(vsan)
+                    )
             else:
                 messages.append(
                     "smart-zoning is already set to "
@@ -591,7 +606,10 @@ def main():
                 if removeflag:
                     if shZoneObj.isZonePresent(zname):
                         messages.append(
-                            "zone '" + zname + "' is removed from vsan " + str(vsan)
+                            "zone '"
+                            + zname
+                            + "' is removed from vsan "
+                            + str(vsan)
                         )
                         commands_executed.append(
                             "no zone name " + zname + " vsan " + str(vsan)
@@ -618,19 +636,30 @@ def main():
                                 "zone name " + zname + " vsan " + str(vsan)
                             )
                             messages.append(
-                                "zone '" + zname + "' is created in vsan " + str(vsan)
+                                "zone '"
+                                + zname
+                                + "' is created in vsan "
+                                + str(vsan)
                             )
                     else:
                         cmdmemlist = []
                         for eachmem in zmembers:
-                            memtype = getMemType(supported_choices, eachmem.keys())
-                            cmd = memtype.replace("_", "-") + " " + eachmem[memtype]
+                            memtype = getMemType(
+                                supported_choices, eachmem.keys()
+                            )
+                            cmd = (
+                                memtype.replace("_", "-")
+                                + " "
+                                + eachmem[memtype]
+                            )
                             if op_smart_zoning or sw_smart_zoning_bool:
                                 if eachmem["devtype"] is not None:
                                     cmd = cmd + " " + eachmem["devtype"]
                             if eachmem["remove"]:
                                 if shZoneObj.isZonePresent(zname):
-                                    if shZoneObj.isZoneMemberPresent(zname, cmd):
+                                    if shZoneObj.isZoneMemberPresent(
+                                        zname, cmd
+                                    ):
                                         cmd = "no member " + cmd
                                         cmdmemlist.append(cmd)
                                         if (
@@ -770,7 +799,10 @@ def main():
                             + str(vsan)
                         )
                         commands_executed.append(
-                            "no zoneset name " + zsetname + " vsan " + str(vsan)
+                            "no zoneset name "
+                            + zsetname
+                            + " vsan "
+                            + str(vsan)
                         )
                     else:
                         messages.append(
@@ -836,7 +868,10 @@ def main():
                                     )
                         if len(cmdmemlist) != 0:
                             commands_executed.append(
-                                "zoneset name " + zsetname + " vsan " + str(vsan)
+                                "zoneset name "
+                                + zsetname
+                                + " vsan "
+                                + str(vsan)
                             )
                             commands_executed = commands_executed + cmdmemlist
                     else:
@@ -849,7 +884,10 @@ def main():
                             )
                         else:
                             commands_executed.append(
-                                "zoneset name " + zsetname + " vsan " + str(vsan)
+                                "zoneset name "
+                                + zsetname
+                                + " vsan "
+                                + str(vsan)
                             )
                             messages.append(
                                 "zoneset '"
@@ -883,10 +921,16 @@ def main():
                         )
                 elif actionflag == "activate":
                     messages.append(
-                        "activating zoneset '" + zsetname + "' in vsan " + str(vsan)
+                        "activating zoneset '"
+                        + zsetname
+                        + "' in vsan "
+                        + str(vsan)
                     )
                     actcmd.append(
-                        "zoneset activate name " + zsetname + " vsan " + str(vsan)
+                        "zoneset activate name "
+                        + zsetname
+                        + " vsan "
+                        + str(vsan)
                     )
             commands_executed = commands_executed + dactcmd + actcmd
 
@@ -899,7 +943,9 @@ def main():
 
     if commands_executed:
         commands_executed = (
-            ["terminal dont-ask"] + commands_executed + ["no terminal dont-ask"]
+            ["terminal dont-ask"]
+            + commands_executed
+            + ["no terminal dont-ask"]
         )
 
     cmds = flatten_list(commands_executed)

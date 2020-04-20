@@ -270,7 +270,9 @@ def main():
         rename=dict(type="list", elements="dict", options=element_spec_rename),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     warnings = list()
     messages = list()
@@ -390,7 +392,9 @@ def main():
             if m == "enhanced":
                 # but switch mode is enhanced, so set it to basic
                 commands.append("no device-alias mode enhanced")
-                messages.append("device-alias mode changed from enhanced to basic")
+                messages.append(
+                    "device-alias mode changed from enhanced to basic"
+                )
             else:
                 messages.append(
                     "device-alias mode remains unchanged. current mode is basic"
@@ -401,7 +405,9 @@ def main():
             if m == "basic":
                 # but switch mode is basic, so set it to enhanced
                 commands.append("device-alias mode enhanced")
-                messages.append("device-alias mode changed from basic to enhanced")
+                messages.append(
+                    "device-alias mode changed from basic to enhanced"
+                )
             else:
                 messages.append(
                     "device-alias mode remains unchanged. current mode is enhanced"
@@ -410,11 +416,15 @@ def main():
     if commands:
         if distribute:
             commands.append("device-alias commit")
-            commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+            commands = (
+                ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+            )
         else:
             if distribute is None and d == "enabled":
                 commands.append("device-alias commit")
-                commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                commands = (
+                    ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                )
 
     cmds = flatten_list(commands)
 
@@ -474,19 +484,25 @@ def main():
                         )
 
                     else:
-                        commands.append("device-alias name " + name + " pwwn " + pwwn)
+                        commands.append(
+                            "device-alias name " + name + " pwwn " + pwwn
+                        )
                         da_add_list.append(name)
 
         if len(da_add_list) != 0 or len(da_remove_list) != 0:
             commands = ["device-alias database"] + commands
             if distribute:
                 commands.append("device-alias commit")
-                commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                commands = (
+                    ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                )
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
                     commands = (
-                        ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                        ["terminal dont-ask"]
+                        + commands
+                        + ["no terminal dont-ask"]
                     )
 
         cmds = flatten_list(commands)
@@ -505,7 +521,8 @@ def main():
                     )
                 if len(da_add_list) != 0:
                     messages.append(
-                        "the required device-alias were added. " + ",".join(da_add_list)
+                        "the required device-alias were added. "
+                        + ",".join(da_add_list)
                     )
 
     # Step 5: Process rename
@@ -524,7 +541,9 @@ def main():
                     + " with this one",
                 )
             if shDADatabaseObj.isNameInDaDatabase(oldname):
-                commands.append("device-alias rename " + oldname + " " + newname)
+                commands.append(
+                    "device-alias rename " + oldname + " " + newname
+                )
             else:
                 module.fail_json(
                     changed=False,
@@ -537,12 +556,16 @@ def main():
             commands = ["device-alias database"] + commands
             if distribute:
                 commands.append("device-alias commit")
-                commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                commands = (
+                    ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                )
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
                     commands = (
-                        ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                        ["terminal dont-ask"]
+                        + commands
+                        + ["no terminal dont-ask"]
                     )
         cmds = flatten_list(commands)
         if cmds:
