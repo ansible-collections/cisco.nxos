@@ -711,9 +711,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         mem2 = {"pwwn": "50:06:01:6a:47:e4:6e:59", "remove": True}
         a = dict(
             zone_zoneset_details=[
-                dict(
-                    vsan=221, zone=[dict(name="zv221", members=[mem1, mem2])],
-                )
+                dict(vsan=221, zone=[dict(name="zv221", members=[mem1, mem2])])
             ]
         )
         set_module_args(a, True)

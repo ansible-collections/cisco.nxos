@@ -418,7 +418,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             dict(
                 distribute=True,
                 mode="enhanced",
-                da=[dict(name="*somename*", pwwn="10:00:00:00:89:a1:01:03"),],
+                da=[dict(name="*somename*", pwwn="10:00:00:00:89:a1:01:03")],
             ),
             True,
         )
@@ -439,7 +439,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             dict(
                 distribute=True,
                 mode="enhanced",
-                da=[dict(name="somename*", pwwn="10:00:00:00:89:a1:01:03"),],
+                da=[dict(name="somename*", pwwn="10:00:00:00:89:a1:01:03")],
             ),
             True,
         )
