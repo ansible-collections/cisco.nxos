@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # Copyright: Ansible Project
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or
+# https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
@@ -203,6 +204,7 @@ commands:
 
 
 import re
+import json
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
@@ -308,6 +310,8 @@ class ShowZone(object):
         output = self.execute_show_zone_vsan_cmd().split("\n")
         for line in output:
             line = " ".join(line.strip().split())
+            if "init" in line:
+                line = line.replace("init", "initiator")
             m = re.match(patZone, line)
             if m:
                 zonename = m.group(1).strip()
@@ -315,7 +319,8 @@ class ShowZone(object):
                 continue
             else:
                 # For now we support only pwwn and device-alias under zone
-                # Ideally should use 'supported_choices'....but maybe next time.
+                # Ideally should use 'supported_choices'....but maybe next
+                # time.
                 if "pwwn" in line or "device-alias" in line:
                     v = self.zDetails[zonename]
                     v.append(line)
@@ -326,8 +331,14 @@ class ShowZone(object):
 
     def isZoneMemberPresent(self, zname, cmd):
         if zname in self.zDetails.keys():
-            return cmd in self.zDetails[zname]
+            zonememlist = self.zDetails[zname]
+            for eachline in zonememlist:
+                if cmd in eachline:
+                    return True
         return False
+
+    def get_zDetails(self):
+        return self.zDetails
 
 
 class ShowZoneStatus(object):
@@ -909,27 +920,18 @@ def main():
                             + " is not activated, hence cannot deactivate"
                         )
                 elif actionflag == "activate":
-                    if shZonesetActiveObj.isZonesetActive(zsetname):
-                        messages.append(
-                            "zoneset '"
-                            + zsetname
-                            + "' in vsan "
-                            + str(vsan)
-                            + " is already activated"
-                        )
-                    else:
-                        messages.append(
-                            "activating zoneset '"
-                            + zsetname
-                            + "' in vsan "
-                            + str(vsan)
-                        )
-                        actcmd.append(
-                            "zoneset activate name "
-                            + zsetname
-                            + " vsan "
-                            + str(vsan)
-                        )
+                    messages.append(
+                        "activating zoneset '"
+                        + zsetname
+                        + "' in vsan "
+                        + str(vsan)
+                    )
+                    actcmd.append(
+                        "zoneset activate name "
+                        + zsetname
+                        + " vsan "
+                        + str(vsan)
+                    )
             commands_executed = commands_executed + dactcmd + actcmd
 
         if commands_executed:

@@ -12,8 +12,8 @@ from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
     AnsibleFailJson,
 )
-from ansible_collections.cisco.nxos.plugins.modules import nxos_vsan
-from ansible_collections.cisco.nxos.plugins.modules.nxos_vsan import (
+from ansible_collections.cisco.nxos.plugins.modules.storage import nxos_vsan
+from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_vsan import (
     GetVsanInfoFromSwitch,
 )
 
@@ -26,7 +26,7 @@ class TestNxosVsanModule(TestNxosModule):
     def setUp(self):
         super(TestNxosVsanModule, self).setUp()
         module_path = (
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vsan."
+            "ansible_collections.cisco.nxos.plugins.modules.storage.nxos_vsan."
         )
 
         self.mock_run_commands = patch(module_path + "run_commands")

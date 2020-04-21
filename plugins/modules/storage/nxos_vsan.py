@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # Copyright: Ansible Project
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or
+# https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
@@ -334,7 +335,8 @@ def main():
 
         if vsaninterface_list is not None:
             for each_interface_name in vsaninterface_list:
-                # For fcip,port-channel,vfc-port-channel need to remove the extra space to compare
+                # For fcip,port-channel,vfc-port-channel need to remove the
+                # extra space to compare
                 temp = re.sub(" +", "", each_interface_name)
                 if temp in sw_vsaninterfaces:
                     messages.append(

@@ -12,11 +12,11 @@ from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
     AnsibleFailJson,
 )
-from ansible_collections.cisco.nxos.plugins.modules import nxos_devicealias
-from ansible_collections.cisco.nxos.plugins.modules.nxos_devicealias import (
-    showDeviceAliasStatus,
+from ansible_collections.cisco.nxos.plugins.modules.storage import (
+    nxos_devicealias,
 )
-from ansible_collections.cisco.nxos.plugins.modules.nxos_devicealias import (
+from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_devicealias import (
+    showDeviceAliasStatus,
     showDeviceAliasDatabase,
 )
 
@@ -28,9 +28,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
 
     def setUp(self):
         super(TestNxosDeviceAliasModule, self).setUp()
-        module_path = (
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_devicealias."
-        )
+        module_path = "ansible_collections.cisco.nxos.plugins.modules.storage.nxos_devicealias."
 
         self.mock_run_commands = patch(module_path + "run_commands")
         self.run_commands = self.mock_run_commands.start()
@@ -412,3 +410,45 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                 "no terminal dont-ask",
             ],
         )
+
+    def test_da_add_bad(self):
+        # Playbook mode is enhanced , distrbute = true , some new da being added
+        # Switch has mode as enahnced, distrbute = True, switch doesnt have the new da being added
+        set_module_args(
+            dict(
+                distribute=True,
+                mode="enhanced",
+                da=[dict(name="*somename*", pwwn="10:00:00:00:89:a1:01:03")],
+            ),
+            True,
+        )
+        self.execute_show_cmd.return_value = load_fixture(
+            "nxos_devicealias", "shdastatus.cfg"
+        )
+        self.execute_show_cmd_1.return_value = load_fixture(
+            "nxos_devicealias", "shdadatabse.cfg"
+        )
+
+        result = self.execute_module(changed=False, failed=True)
+        assert "it must start with a letter" in str(result["msg"])
+
+    def test_da_add_bad_1(self):
+        # Playbook mode is enhanced , distrbute = true , some new da being added
+        # Switch has mode as enahnced, distrbute = True, switch doesnt have the new da being added
+        set_module_args(
+            dict(
+                distribute=True,
+                mode="enhanced",
+                da=[dict(name="somename*", pwwn="10:00:00:00:89:a1:01:03")],
+            ),
+            True,
+        )
+        self.execute_show_cmd.return_value = load_fixture(
+            "nxos_devicealias", "shdastatus.cfg"
+        )
+        self.execute_show_cmd_1.return_value = load_fixture(
+            "nxos_devicealias", "shdadatabse.cfg"
+        )
+
+        result = self.execute_module(changed=False, failed=True)
+        assert "and can only contain these characters" in str(result["msg"])
