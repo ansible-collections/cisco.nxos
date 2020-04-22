@@ -59,7 +59,7 @@ class HttpApi(HttpApiBase):
         responses = list()
 
         for item in to_list(data):
-            cmd_output = message_kwargs.get("output", "text")
+            cmd_output = message_kwargs.get("output") or "text"
             if isinstance(item, dict):
                 command = item["command"]
                 if "output" in item:
@@ -191,6 +191,20 @@ class HttpApi(HttpApiBase):
         result["network_api"] = "nxapi"
 
         return json.dumps(result)
+
+    # Shims for resource module support
+    def get(self, command, output=None):
+        # This method is ONLY here to support resource modules. Therefore most
+        # arguments are unsupported and not present.
+
+        return self.send_request(data=command, output=output)
+
+    def edit_config(self, candidate):
+        # This method is ONLY here to support resource modules. Therefore most
+        # arguments are unsupported and not present.
+
+        responses = self.send_request(candidate, output="config")
+        return [resp for resp in to_list(responses) if resp != "{}"]
 
 
 def handle_response(response):

@@ -39,6 +39,7 @@ options:
       must be the exact same commands as found in the device running-config.  Be sure
       to note the configuration command syntax as some commands are automatically
       modified by the device config parser.
+    type: list
     aliases:
     - commands
   parents:
