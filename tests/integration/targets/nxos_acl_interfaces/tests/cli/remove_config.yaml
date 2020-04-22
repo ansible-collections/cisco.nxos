@@ -2,10 +2,11 @@
 - name: Remove config
   ansible.netcommon.cli_config:
     config: "no ip access-list ACL1v4\nno ip access-list NewACLv4\nno ip access-list\
-      \ PortACL\nno ipv6 access-list ACL1v6\nno ipv6 access-list ACL1v6\ninterface\
+      \ PortACL\nno ipv6 access-list ACL1v6\nno ipv6 access-list NewACLv6\ninterface\
       \ Ethernet1/2\n  no ipv6 traffic-filter ACL1v6 in\ninterface Ethernet1/5\n\
       \  no ip access-group ACL1v4 out\n  no ip port access-group PortACL in\n \
       \ no ipv6 traffic-filter ACL1v6 in\ninterface Ethernet1/3\n  no ipv6 port\
       \ traffic-filter NewACLv6 in\n  no ip access-group ACL1v4 out\n  no ip port\
       \ access-group PortACL in\ninterface Ethernet1/4\n  no ip access-group NewACLv4\
       \ out\n"
+  ignore_errors: True
