@@ -7,24 +7,24 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible.modules.network.nxos import _nxos_l3_interface
+from ansible_collections.cisco.nxos.plugins.modules import nxos_l3_interface
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosL3InterfaceModule(TestNxosModule):
 
-    module = _nxos_l3_interface
+    module = nxos_l3_interface
 
     def setUp(self):
         super(TestNxosL3InterfaceModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible.modules.network.nxos._nxos_l3_interface.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_l3_interface.load_config"
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible.modules.network.nxos._nxos_l3_interface.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_l3_interface.get_config"
         )
         self.get_config = self.mock_get_config.start()
 

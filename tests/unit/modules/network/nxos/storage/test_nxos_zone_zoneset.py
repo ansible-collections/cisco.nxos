@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # Copyright: Ansible Project
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or
+# https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
@@ -13,17 +14,13 @@ from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
     AnsibleFailJson,
     AnsibleExitJson,
 )
-from ansible_collections.cisco.nxos.plugins.modules import nxos_zone_zoneset
-from ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset import (
+from ansible_collections.cisco.nxos.plugins.modules.storage import (
+    nxos_zone_zoneset,
+)
+from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_zone_zoneset import (
     ShowZonesetActive,
-)
-from ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset import (
     ShowZoneset,
-)
-from ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset import (
     ShowZone,
-)
-from ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset import (
     ShowZoneStatus,
 )
 
@@ -35,9 +32,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
 
     def setUp(self):
         super(TestNxosZoneZonesetModule, self).setUp()
-        module_path = (
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset."
-        )
+        module_path = "ansible_collections.cisco.nxos.plugins.modules.storage.nxos_zone_zoneset."
 
         self.mock_run_commands = patch(module_path + "run_commands")
         self.run_commands = self.mock_run_commands.start()
@@ -639,11 +634,16 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         self.execute_show_cmd_zoneset_active.return_value = load_fixture(
             "nxos_zone_zoneset", "shzonesetactive_0.cfg"
         )
-        result = self.execute_module(changed=False, failed=False)
-        m = "zoneset 'zsv221' is already present in vsan 221"
-        m1 = "zoneset 'zsv221' in vsan 221 is already activated"
-        self.assertEqual(result["commands"], [])
-        self.assertEqual(result["messages"], [m, m1])
+        result = self.execute_module(changed=True, failed=False)
+        self.assertEqual(
+            result["commands"],
+            [
+                "terminal dont-ask",
+                "zoneset activate name zsv221 vsan 221",
+                "zone commit vsan 221",
+                "no terminal dont-ask",
+            ],
+        )
 
     def test_zoneset_activate_deactivate_1(self):
         a = dict(
@@ -702,6 +702,104 @@ class TestNxosZoneZonesetModule(TestNxosModule):
                 "zoneset name zsv221New vsan 221",
                 "zoneset activate name zsv221New vsan 221",
                 "zone commit vsan 221",
+                "no terminal dont-ask",
+            ],
+        )
+
+    def test_bug_zone_remove(self):
+        mem1 = {"pwwn": "21:01:00:1b:32:a1:c0:a8", "remove": True}
+        mem2 = {"pwwn": "50:06:01:6a:47:e4:6e:59", "remove": True}
+        a = dict(
+            zone_zoneset_details=[
+                dict(vsan=221, zone=[dict(name="zv221", members=[mem1, mem2])])
+            ]
+        )
+        set_module_args(a, True)
+        self.execute_show_cmd_zone_status.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzonestatus_4.cfg"
+        )
+        self.execute_show_cmd_zone.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzone_2.cfg"
+        )
+        self.execute_show_cmd_zoneset_active.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzonesetactive_0.cfg"
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "terminal dont-ask",
+                "zone name zv221 vsan 221",
+                "no member pwwn 21:01:00:1b:32:a1:c0:a8",
+                "no member pwwn 50:06:01:6a:47:e4:6e:59",
+                "zone commit vsan 221",
+                "no terminal dont-ask",
+            ],
+        )
+
+    def test_bug_from_active_zoneset_act(self):
+        a = dict(
+            zone_zoneset_details=[
+                dict(
+                    vsan=221,
+                    zoneset=[dict(name="zsv221New", action="activate")],
+                )
+            ]
+        )
+        set_module_args(a, True)
+        self.execute_show_cmd_zone_status.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzonestatus_4.cfg"
+        )
+        self.execute_show_cmd_zoneset.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzoneset_2.cfg"
+        )
+        self.execute_show_cmd_zoneset_active.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzonesetactive_0.cfg"
+        )
+        result = self.execute_module(changed=True, failed=False)
+        self.assertEqual(
+            result["commands"],
+            [
+                "terminal dont-ask",
+                "zoneset name zsv221New vsan 221",
+                "zoneset activate name zsv221New vsan 221",
+                "zone commit vsan 221",
+                "no terminal dont-ask",
+            ],
+        )
+
+    def test_bug_zone_remove_oliver(self):
+        mem1 = {"pwwn": "c0:50:76:09:5b:20:00:64", "remove": True}
+        a = dict(
+            zone_zoneset_details=[
+                dict(
+                    vsan=50,
+                    zone=[
+                        dict(
+                            name="z50_azusant_f0_unity8174_spa1",
+                            members=[mem1],
+                        )
+                    ],
+                )
+            ]
+        )
+        set_module_args(a, True)
+        self.execute_show_cmd_zone_status.return_value = load_fixture(
+            "nxos_zone_zoneset", "show_zone_status_vsan.out"
+        )
+        self.execute_show_cmd_zone.return_value = load_fixture(
+            "nxos_zone_zoneset", "show_zone_vsan.out"
+        )
+        self.execute_show_cmd_zoneset_active.return_value = load_fixture(
+            "nxos_zone_zoneset", "show_zoneset_active_vsan.out"
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "terminal dont-ask",
+                "zone name z50_azusant_f0_unity8174_spa1 vsan 50",
+                "no member pwwn c0:50:76:09:5b:20:00:64",
                 "no terminal dont-ask",
             ],
         )

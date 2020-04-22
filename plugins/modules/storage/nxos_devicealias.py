@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # Copyright: Ansible Project
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# GNU General Public License v3.0+ (see COPYING or
+# https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
 
@@ -115,6 +116,8 @@ import string
 
 __metaclass__ = type
 
+VALID_DA_CHARS = ("-", "_", "$", "^")
+
 
 class showDeviceAliasStatus(object):
     """docstring for showDeviceAliasStatus"""
@@ -225,6 +228,9 @@ def isNameValid(name):
         return False
     if len(name) > 64:
         return False
+    for character in name:
+        if not character.isalnum() and character not in VALID_DA_CHARS:
+            return False
     return True
 
 
@@ -292,13 +298,15 @@ def main():
                     module.fail_json(
                         msg="This device alias name "
                         + str(name)
-                        + " which needs to be added, doenst have pwwn specified . Please specify a valid pwwn"
+                        + " which needs to be added, does not have pwwn specified. Please specify a valid pwwn"
                     )
                 if not isNameValid(name):
                     module.fail_json(
                         msg="This pwwn name is invalid : "
                         + str(name)
-                        + ". Note that name cannot be more than 64 chars and it should start with a letter"
+                        + ". Note that name cannot be more than 64 alphanumeric chars, "
+                        + "it must start with a letter, and can only contain these characters: "
+                        + ", ".join(["'{}'".format(c) for c in VALID_DA_CHARS])
                     )
                 if not isPwwnValid(pwwn):
                     module.fail_json(
@@ -314,13 +322,17 @@ def main():
                 module.fail_json(
                     msg="This pwwn name is invalid : "
                     + str(oldname)
-                    + ". Note that name cannot be more than 64 chars and it should start with a letter"
+                    + ". Note that name cannot be more than 64 alphanumeric chars, "
+                    + "it must start with a letter, and can only contain these characters: "
+                    + ", ".join(["'{}'".format(c) for c in VALID_DA_CHARS])
                 )
             if not isNameValid(newname):
                 module.fail_json(
                     msg="This pwwn name is invalid : "
                     + str(newname)
-                    + ". Note that name cannot be more than 64 chars and it should start with a letter"
+                    + ". Note that name cannot be more than 64 alphanumeric chars, "
+                    + "it must start with a letter, and can only contain these characters: "
+                    + ", ".join(["'{}'".format(c) for c in VALID_DA_CHARS])
                 )
 
     # Step 0.1: Check DA status
@@ -338,7 +350,8 @@ def main():
         if distribute:
             # playbook has distribute as True(enabled)
             if d == "disabled":
-                # but switch distribute is disabled(false), so set it to true(enabled)
+                # but switch distribute is disabled(false), so set it to
+                # true(enabled)
                 commands.append("device-alias distribute")
                 messages.append(
                     "device-alias distribute changed from disabled to enabled"
@@ -350,7 +363,8 @@ def main():
         else:
             # playbook has distribute as False(disabled)
             if d == "enabled":
-                # but switch distribute is enabled(true), so set it to false(disabled)
+                # but switch distribute is enabled(true), so set it to
+                # false(disabled)
                 commands.append("no device-alias distribute")
                 messages.append(
                     "device-alias distribute changed from enabled to disabled"
@@ -450,8 +464,7 @@ def main():
                         name
                         + " : "
                         + pwwn
-                        + " - This device alias name,pwwn is already in switch device-alias database, \
-                        hence nothing to configure"
+                        + " - This device alias name,pwwn is already in switch device-alias database, hence nothing to configure"
                     )
                 else:
                     if shDADatabaseObj.isNameInDaDatabase(name):

@@ -21,23 +21,23 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible.modules.network.nxos import _nxos_interface
+from ansible_collections.cisco.nxos.plugins.modules import nxos_interface
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosInterfaceModule(TestNxosModule):
 
-    module = _nxos_interface
+    module = nxos_interface
 
     def setUp(self):
         super(TestNxosInterfaceModule, self).setUp()
         self.mock_run_commands = patch(
-            "ansible.modules.network.nxos._nxos_interface.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_interface.run_commands"
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible.modules.network.nxos._nxos_interface.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_interface.load_config"
         )
         self.load_config = self.mock_load_config.start()
 
