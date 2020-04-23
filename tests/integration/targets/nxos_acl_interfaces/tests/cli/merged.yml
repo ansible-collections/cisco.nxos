@@ -2,6 +2,8 @@
 - debug:
     msg: Start nxos_acl_interfaces merged integration tests connection = {{ansible_connection}}
 
+- include_tasks: remove_config.yaml
+
 - include_tasks: populate_acl.yaml
 
 - block:
