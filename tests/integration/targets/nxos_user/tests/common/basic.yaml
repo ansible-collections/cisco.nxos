@@ -2,7 +2,7 @@
 - debug: msg="START connection={{ ansible_connection }} nxos_user basic test"
 
 - name: Remove old entries of user
-  cisco.nxos.nxos_user:
+  cisco.nxos.nxos_user: &rem
     aggregate:
 
       - name: ansibletest1
@@ -10,6 +10,10 @@
       - name: ansibletest2
 
       - name: ansibletest3
+
+      - name: ansibletest_failed
+
+      - name: ansibletest_warn
     state: absent
 
 - name: Create user
@@ -42,17 +46,56 @@
     that:
       - result.changed == true
 
+- cisco.nxos.nxos_command:
+    commands: show password strength-check
+  register: pwd
+
+- set_fact:
+    pwdchck: "{{ True if pwd is search('enabled') else False }}"
+
+- name: Enable password check (if disabled by default) for failure test
+  cisco.nxos.nxos_config: &enable
+    lines: password strength-check
+  when: not pwdchck
+
+- name: Attempt to create user with weak password with pwd check enabled (SHOULD FAIL)
+  cisco.nxos.nxos_user:
+    name: ansibletest_failed
+    configured_password: abc
+  register: result
+  ignore_errors: True
+
+- assert:
+    that: 
+      - result.failed == True
+      - result.msg is search('Wrong Password')
+
+- name: Disable password check (will be always enabled at this stage) for warnings test
+  cisco.nxos.nxos_config:
+    lines: no password strength-check
+
+- name: Attempt to create user with weak password without pwd check enabled (SHOULD WARN)
+  cisco.nxos.nxos_user:
+    name: ansibletest_warn
+    configured_password: abc
+  register: result
+
+- assert:
+    that: 
+      - result.changed == True
+      - result.failed == False
+      - '"Minimum recommended length of 8 characters" in result.warnings[1]'
+      - '"Password should contain characters from at least three of the following classes:" in result.warnings[2]'
+      - '"it is WAY too short" in result.warnings[3]'
+      - '"Configuration accepted because password strength check is disabled" in result.warnings[4]'
+
+- name: Enable password check (if that was the default)
+  cisco.nxos.nxos_config: *enable
+  when: pwdchck
+
 - name: tearDown
   register: result
-  cisco.nxos.nxos_user:
-    aggregate:
-
-      - name: ansibletest1
-
-      - name: ansibletest2
-
-      - name: ansibletest3
-    state: absent
+  cisco.nxos.nxos_user: *rem
 
 - assert:
     that:
