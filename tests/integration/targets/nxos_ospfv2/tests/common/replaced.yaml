@@ -1,0 +1,83 @@
+---
+- debug:
+    msg: Start nxos_ospfv2 replaced integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace device configurations of listed OSPF processes with provided configurations
+      cisco.nxos.nxos_ospfv2: &id002
+        config:
+          processes:
+            - process_id: 102
+              router_id: 198.51.100.1
+              areas:
+                - area_id: 0.0.0.100
+                  filter_list:
+                    - route_map: rmap_8
+                      direction: in
+                  ranges:
+                    - not_advertise: true
+                      prefix: 192.0.2.0/24
+                - area_id: 0.0.0.101
+                  stub:
+                    no_summary: True
+              redistribute:
+                - protocol: eigrp
+                  id: 130
+                  route_map: rmap_1
+                - protocol: direct
+                  route_map: ospf102-direct-connect
+              vrfs:
+                - vrf: zone1
+                  router_id: 198.51.100.129
+                  redistribute:
+                    - protocol: bgp
+                      id: 65563
+                      route_map: zone1-bgp-connect
+                  areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: True
+                        no_summary: True
+        state: replaced
+      register: result
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
+            \ == 0 }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
+            \ |length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - "{{ replaced['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
+            \ == 0 }}"
+
+    - name: Replace device configurations of listed OSPF processes with provided configurarions
+        (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_ospfv2: *id002
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Assert that before dict is correctly generated
+      assert:
+        that:
+          - "{{ replaced['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
+            \ == 0 }}"
+  always:
+    - include_tasks: _remove_config.yaml

@@ -51,7 +51,7 @@ options:
       also be used with an initial C(M(!)) to specify that a specific subset should
       not be collected. Valid subsets are 'all', 'bfd_interfaces', 'lag_interfaces',
       'telemetry', 'vlans', 'lacp', 'lacp_interfaces', 'interfaces', 'l3_interfaces',
-      'l2_interfaces', 'lldp_global'.
+      'l2_interfaces', 'lldp_global', 'acls', 'acl_interfaces', 'ospfv2'.
     required: false
 """
 
