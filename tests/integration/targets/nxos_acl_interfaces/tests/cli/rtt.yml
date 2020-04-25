@@ -2,6 +2,10 @@
 - debug:
     msg: Start nxos_acl_interfaces round trip integration tests connection = {{ansible_connection}}
 
+- include_tasks: remove_config.yaml
+
+- include_tasks: populate_acl.yaml
+
 - include_tasks: populate_config.yaml
 
 - block:

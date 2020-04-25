@@ -2,8 +2,6 @@
 - debug:
     msg: Start nxos_acl_interfaces parsed integration tests connection={{ansible_connection}}"
 
-- include_tasks: populate_config.yaml
-
 - block:
 
     - name: Gather acl interfaces facts
@@ -32,6 +30,3 @@
 
     - assert:
         that: result.changed == false
-  always:
-
-    - include_tasks: remove_config.yaml
