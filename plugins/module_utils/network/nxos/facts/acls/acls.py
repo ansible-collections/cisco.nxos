@@ -42,9 +42,12 @@ class AclsFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_device_data(self, connection):
-        return connection.get(
+        data = connection.get(
             "show running-config | section 'ip(v6)* access-list'"
         )
+        if data == "{}":
+            return ""
+        return data
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for acls
