@@ -4,14 +4,19 @@
       }}
 
 - name: setup1
-  ansible.netcommon.cli_config: &id003
-    config: "no vlan 2-100\n"
+  cisco.nxos.nxos_config: &id003
+    lines:
+      - "no vlan 2-100"
 
 - block:
 
     - name: setup
-      ansible.netcommon.cli_config:
-        config: "vlan 5\n  name test-vlan5\nstate suspend\n  vlan 6\n  exit\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "vlan 5"
+          - "  name test-vlan5"
+          - "  state suspend"
+          - "vlan 6"
 
     - name: Gather vlans facts
       cisco.nxos.nxos_facts: &id001
@@ -61,4 +66,4 @@
   always:
 
     - name: teardown
-      ansible.netcommon.cli_config: *id003
+      cisco.nxos.nxos_config: *id003
