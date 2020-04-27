@@ -10,9 +10,11 @@
 - block:
 
     - name: Setup
-      ansible.netcommon.cli_config:
-        config: "interface Ethernet1/2\n  no lldp receive\n  lldp tlv-set management-address\
-          \ 192.168.122.64\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface Ethernet1/2"
+          - "  no lldp receive"
+          - "  lldp tlv-set management-address 192.168.122.64"
 
     - name: Replaced
       register: result

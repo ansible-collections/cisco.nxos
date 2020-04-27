@@ -1,0 +1,7 @@
+---
+- ignore_errors: true
+  cisco.nxos.nxos_config:
+    lines:
+      - "no interface port-channel1"
+      - "no interface port-channel2"
+      - "no interface port-channel12"

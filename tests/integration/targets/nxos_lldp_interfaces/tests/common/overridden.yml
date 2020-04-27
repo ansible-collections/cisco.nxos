@@ -11,9 +11,11 @@
 - block:
 
     - name: Setup
-      ansible.netcommon.cli_config:
-        config: "interface Ethernet1/1\n  no lldp receive\n  lldp tlv-set management-address\
-          \ 12.12.12.12\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface Ethernet1/1"
+          - "  no lldp receive"
+          - "  lldp tlv-set management-address 12.12.12.12"
 
     - name: Gather lldp_interfaces facts
       cisco.nxos.nxos_facts: &id001
