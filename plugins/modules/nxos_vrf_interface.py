@@ -87,6 +87,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     nxos_argument_spec,
+    normalize_interface,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_interface_type,
@@ -195,7 +196,7 @@ def main():
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     vrf = module.params["vrf"]
-    interface = module.params["interface"].lower()
+    interface = normalize_interface(module.params["interface"])
     state = module.params["state"]
 
     device_info = get_capabilities(module)
