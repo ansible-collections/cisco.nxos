@@ -16,6 +16,8 @@
   cisco.nxos.nxos_config:
     lines:
       - no interface port-channel 10
+      - no interface port-channel 11
+      - no interface port-channel 19
 
 - name: setup2
   cisco.nxos.nxos_lag_interfaces: &id002

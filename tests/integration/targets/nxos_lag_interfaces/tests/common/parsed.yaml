@@ -1,0 +1,31 @@
+---
+- debug:
+    msg: START nxos_lag_interfaces parsed integration tests on connection={{ ansible_connection
+      }}
+
+- block:
+    # Interfaces used in the task don't actually exist on the appliance
+    - name: Use parsed state to convert externally supplied config to structured format
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        running_config: |
+          interface port-channel10
+          interface port-channel11
+          interface port-channel12
+          interface Ethernet1/800
+            channel-group 10 mode active
+          interface Ethernet1/801
+            channel-group 10 mode active
+          interface Ethernet1/802
+            channel-group 11 mode passive
+          interface Ethernet1/803
+            channel-group 11 mode passive
+        state: parsed
+    
+    - assert:
+       that: "{{ parsed | symmetric_difference(result['parsed']) |length==0\
+         \ }}"
+
+- debug:
+    msg: END nxos_lag_interfaces parsed integration tests on connection={{ ansible_connection
+      }}

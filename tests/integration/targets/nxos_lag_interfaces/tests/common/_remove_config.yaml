@@ -1,0 +1,10 @@
+- name: Remove config
+  cisco.nxos.nxos_config:
+    lines:
+      - "default interface {{ nxos_int1 }}"
+      - "default interface {{ nxos_int2 }}"
+      - "no interface port-channel10"
+      - "no interface port-channel11"
+      - "no interface port-channel19"
+      - "no feature lacp"
+  ignore_errors: True
