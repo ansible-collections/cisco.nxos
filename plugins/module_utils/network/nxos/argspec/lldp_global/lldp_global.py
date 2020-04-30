@@ -37,6 +37,7 @@ class Lldp_globalArgs(object):  # pylint: disable=R0903
         pass
 
     argument_spec = {
+        "running_config": {"type": "str"},
         "config": {
             "options": {
                 "holdtime": {"type": "int"},
@@ -76,7 +77,14 @@ class Lldp_globalArgs(object):  # pylint: disable=R0903
             "type": "dict",
         },
         "state": {
-            "choices": ["merged", "replaced", "deleted"],
+            "choices": [
+                "merged",
+                "replaced",
+                "deleted",
+                "gathered",
+                "parsed",
+                "rendered",
+            ],
             "default": "merged",
             "type": "str",
         },

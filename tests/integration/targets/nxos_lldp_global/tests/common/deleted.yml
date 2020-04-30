@@ -19,14 +19,20 @@
         state: enabled
 
     - name: Setup
-      ansible.netcommon.cli_config:
-        config: "lldp holdtime 125\nlldp timer 32\nno lldp tlv-select dcbxp\nlldp\
-          \ tlv-select system-name\nno lldp tlv-select system-description\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "lldp holdtime 125"
+          - "lldp timer 32"
+          - "no lldp tlv-select dcbxp"
+          - "lldp tlv-select system-name"
+          - "no lldp tlv-select system-description"
 
     - name: Setup2
       when: cfg_port_id is defined
-      ansible.netcommon.cli_config:
-        config: "lldp portid-subtype 1\nno lldp tlv-select power-management\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "lldp portid-subtype 1"
+          - "no lldp tlv-select power-management"
 
     - name: Gather lldp_global facts
       cisco.nxos.nxos_facts: &id001
