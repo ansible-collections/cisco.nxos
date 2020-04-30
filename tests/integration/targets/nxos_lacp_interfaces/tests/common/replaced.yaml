@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start nxos_lacp_interfaces replaced integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_lacp_interfaces replaced integration tests connection={{ ansible_connection }}
 
 - set_fact:
     mode: delay
@@ -9,15 +8,20 @@
     and image_version is not search ('9.2') and chassis_type is not search('C95')
 
 - name: setup1
-  ansible.netcommon.cli_config: &id003
-    config: "no interface port-channel10\nno feature lacp\n"
+  cisco.nxos.nxos_config: &id003
+    lines:
+      - "no interface port-channel10"
+      - "no feature lacp"
 
 - block:
 
     - name: setup2
-      ansible.netcommon.cli_config:
-        config: "feature lacp\ninterface port-channel10\n  switchport\n  lacp min-links\
-          \ 5\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "feature lacp"
+          - "interface port-channel10"
+          - "switchport"
+          - "  lacp min-links 5"
 
     - name: Gather lacp_interfaces facts
       cisco.nxos.nxos_facts: &id001
@@ -71,4 +75,4 @@
   always:
 
     - name: teardown
-      ansible.netcommon.cli_config: *id003
+      cisco.nxos.nxos_config: *id003
