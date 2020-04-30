@@ -181,53 +181,6 @@ EXAMPLES = """
 # Before state:
 # -----------
 # ip route 192.0.2.16/28 192.0.2.24 name new_route
-# ip route 192.0.2.80/28 192.0.2.26 tag 12
-# vrf context trial_vrf
-# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
-
-- name: Delete routes based on destination
-  nxos_static_routes:
-    config:
-      - address_families:
-          - afi: ipv4
-            routes:
-              - dest: 192.0.2.80/28
-    state: deleted
-
-# After state:
-# -----------
-# ip route 192.0.2.16/28 192.0.2.24 name new_route
-# vrf context trial_vrf
-# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
-
-
-# Before state:
-# -----------
-# ip route 192.0.2.16/28 192.0.2.24 name new_route
-# vrf context trial_vrf
-# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
-
-- name: Delete exact route
-  nxos_static_routes:
-    config:
-      - address_families:
-          - afi: ipv4
-            routes:
-              - dest: 192.0.2.16/28
-                next_hops:
-                  - route_name: new_route
-                    forward_router_address: 192.0.2.24
-    state: deleted
-
-# After state:
-# -----------
-# vrf context trial_vrf
-# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
-
-
-# Before state:
-# -----------
-# ip route 192.0.2.16/28 192.0.2.24 name new_route
 # vrf context trial_vrf
 # ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
 

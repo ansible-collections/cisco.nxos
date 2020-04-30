@@ -373,31 +373,48 @@ class Static_routes(ConfigBase):
                         for w1 in w["address_families"]:
                             if w1["afi"] in afi_list:
                                 o2 = search_obj_in_list(w1["afi"], o1, "afi")
-                                if "routes" in w1.keys():
-                                    for w2 in w1["routes"]:
-                                        o3 = search_obj_in_list(
-                                            w2["dest"], o2["routes"], "dest"
-                                        )
-                                        hops = []
-                                        if "next_hops" in w2.keys():
-                                            for nh in w2["next_hops"]:
-                                                if nh in o3["next_hops"]:
-                                                    hops.append(nh)
-                                        else:
-                                            # if next hops not given
-                                            hops = o3["next_hops"]
+                                state = self._module.params['state']
+                                if state != 'deleted':
+                                    # Deleted scope is till afi only. Part below is for use by overridden state.
+                                    if "routes" in w1.keys():
+                                        for w2 in w1["routes"]:
+                                            o3 = search_obj_in_list(
+                                                w2["dest"], o2["routes"], "dest"
+                                            )
+                                            hops = []
+                                            if "next_hops" in w2.keys():
+                                                for nh in w2["next_hops"]:
+                                                    if nh in o3["next_hops"]:
+                                                        hops.append(nh)
+                                            else:
+                                                # if next hops not given
+                                                hops = o3["next_hops"]
 
+                                            delete_dict = {
+                                                "vrf": obj_in_have["vrf"],
+                                                "address_families": [
+                                                    {
+                                                        "afi": w1["afi"],
+                                                        "routes": [
+                                                            {
+                                                                "dest": w2["dest"],
+                                                                "next_hops": hops,
+                                                            }
+                                                        ],
+                                                    }
+                                                ],
+                                            }
+                                            commands.extend(
+                                                self.del_commands([delete_dict])
+                                            )
+                                    else:
+                                        # case when only afi given for delete
                                         delete_dict = {
                                             "vrf": obj_in_have["vrf"],
                                             "address_families": [
                                                 {
-                                                    "afi": w1["afi"],
-                                                    "routes": [
-                                                        {
-                                                            "dest": w2["dest"],
-                                                            "next_hops": hops,
-                                                        }
-                                                    ],
+                                                    "afi": o2["afi"],
+                                                    "routes": o2["routes"],
                                                 }
                                             ],
                                         }
@@ -405,19 +422,8 @@ class Static_routes(ConfigBase):
                                             self.del_commands([delete_dict])
                                         )
                                 else:
-                                    # case when only afi given for delete
-                                    delete_dict = {
-                                        "vrf": obj_in_have["vrf"],
-                                        "address_families": [
-                                            {
-                                                "afi": o2["afi"],
-                                                "routes": o2["routes"],
-                                            }
-                                        ],
-                                    }
-                                    commands.extend(
-                                        self.del_commands([delete_dict])
-                                    )
+                                    commands.extend(self.del_commands([{'vrf': obj_in_have['vrf'],
+                                                                        'address_families': [o2]}]))
                     else:
                         # only vrf given to delete
                         commands.extend(self.del_commands([obj_in_have]))
