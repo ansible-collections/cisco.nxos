@@ -373,13 +373,15 @@ class Static_routes(ConfigBase):
                         for w1 in w["address_families"]:
                             if w1["afi"] in afi_list:
                                 o2 = search_obj_in_list(w1["afi"], o1, "afi")
-                                state = self._module.params['state']
-                                if state != 'deleted':
+                                state = self._module.params["state"]
+                                if state != "deleted":
                                     # Deleted scope is till afi only. Part below is for use by overridden state.
                                     if "routes" in w1.keys():
                                         for w2 in w1["routes"]:
                                             o3 = search_obj_in_list(
-                                                w2["dest"], o2["routes"], "dest"
+                                                w2["dest"],
+                                                o2["routes"],
+                                                "dest",
                                             )
                                             hops = []
                                             if "next_hops" in w2.keys():
@@ -397,7 +399,9 @@ class Static_routes(ConfigBase):
                                                         "afi": w1["afi"],
                                                         "routes": [
                                                             {
-                                                                "dest": w2["dest"],
+                                                                "dest": w2[
+                                                                    "dest"
+                                                                ],
                                                                 "next_hops": hops,
                                                             }
                                                         ],
@@ -405,7 +409,9 @@ class Static_routes(ConfigBase):
                                                 ],
                                             }
                                             commands.extend(
-                                                self.del_commands([delete_dict])
+                                                self.del_commands(
+                                                    [delete_dict]
+                                                )
                                             )
                                     else:
                                         # case when only afi given for delete
@@ -422,8 +428,16 @@ class Static_routes(ConfigBase):
                                             self.del_commands([delete_dict])
                                         )
                                 else:
-                                    commands.extend(self.del_commands([{'vrf': obj_in_have['vrf'],
-                                                                        'address_families': [o2]}]))
+                                    commands.extend(
+                                        self.del_commands(
+                                            [
+                                                {
+                                                    "vrf": obj_in_have["vrf"],
+                                                    "address_families": [o2],
+                                                }
+                                            ]
+                                        )
+                                    )
                     else:
                         # only vrf given to delete
                         commands.extend(self.del_commands([obj_in_have]))

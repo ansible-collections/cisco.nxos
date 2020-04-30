@@ -39,7 +39,7 @@ DOCUMENTATION = """
 ---
 module: nxos_static_routes
 version_added: "2.10"
-short_description: Configures and manages attributes of static routes on Cisco NX-OS platforms.
+short_description: Static Routes Resource Module.
 description: This module configures and manages the attributes of static routes on Cisco NX-OS platforms.
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
@@ -144,7 +144,7 @@ EXAMPLES = """
 # ip route 192.0.2.26/24 192.0.2.13 tag 12
 
 - name: Delete all routes
-  nxos_static_routes:
+  cisco.nxos.nxos_static_routes:
     state: deleted
 
 # After state:
@@ -162,8 +162,31 @@ EXAMPLES = """
 # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
 # ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
 
+- name: Delete routes based on VRF
+  cisco.nxos.nxos_static_routes:
+    config:
+      - vrf: trial_vrf
+    state: deleted
+
+# After state:
+# -----------
+# ip route 192.0.2.16/28 192.0.2.24 name new_route
+# ip route 192.0.2.80/28 192.0.2.26 tag 12
+# vrf context trial_vrf
+
+
+# Before state:
+# ------------
+#
+# ip route 192.0.2.16/28 192.0.2.24 name new_route
+# ip route 192.0.2.80/28 192.0.2.26 tag 12
+# vrf context trial_vrf
+# ip route 192.0.2.64/28 192.0.2.22 tag 4
+# ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
+# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
+
 - name: Delete routes based on AFI in a VRF
-  nxos_static_routes:
+  cisco.nxos.nxos_static_routes:
     config:
       - vrf: trial_vrf
         address_families:
@@ -192,7 +215,7 @@ EXAMPLES = """
 #
 
 - name: Merge new static route configuration
-  nxos_static_routes:
+  cisco.nxos.nxos_static_routes:
     config:
       - vrf: trial_vrf
         address_families:
@@ -240,7 +263,7 @@ EXAMPLES = """
 # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
 
 - name: Overriden existing static route configuration with new configuration
-  nxos_static_routes: &overridden
+  cisco.nxos.nxos_static_routes:
     config:
       - vrf: trial_vrf
         address_families:
@@ -276,7 +299,7 @@ EXAMPLES = """
 # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
 
 - name: Replaced the existing static configuration of a prefix with new configuration
-  nxos_static_routes:
+  cisco.nxos.nxos_static_routes:
     config:
       - address_families:
           - afi: ipv4
@@ -313,7 +336,7 @@ EXAMPLES = """
 #    ip route 192.0.2.48/28 192.0.2.14 5
 
 - name: Gather the exisitng condiguration
-  nxos_static_routes:
+  cisco.nxos.nxos_static_routes:
     state: gathered
 
 # returns:
@@ -340,7 +363,7 @@ EXAMPLES = """
 # Using rendered:
 
 - name: Render required configuration to be pushed to the device
-  nxos_static_routes:
+  cisco.nxos.nxos_static_routes:
     config:
       - address_families:
           - afi: ipv4
@@ -367,7 +390,7 @@ EXAMPLES = """
 # Using parsed
 
 - name: Parse the config to structured data
-  nxos_static_routes:
+  cisco.nxos.nxos_static_routes:
       running_config: |
         ipv6 route 2002:db8:12::/32 2002:db8:12::1
         vrf context Test
@@ -400,14 +423,14 @@ RETURN = """
 before:
   description: The configuration prior to the model invocation.
   returned: always
-  type: str
+  type: list
   sample: >
     The configuration returned will always be in the same format
      of the parameters above.
 after:
   description: The resulting configuration model invocation.
   returned: when changed
-  type: str
+  type: list
   sample: >
     The configuration returned will always be in the same format
      of the parameters above.

@@ -2,9 +2,9 @@
 - debug:
     msg: "Start nxos_static_routes merged integration tests connection={{ansible_connection}}"
 
-- include_tasks: populate_config.yaml
+- include_tasks: _populate_config.yaml
 
-- include_tasks: remove_config.yaml
+- include_tasks: _remove_config.yaml
 
 - block:
     - name: Merged
@@ -58,4 +58,4 @@
           - "result.changed == false"
 
   always:
-    - include_tasks: remove_config.yaml
+    - include_tasks: _remove_config.yaml

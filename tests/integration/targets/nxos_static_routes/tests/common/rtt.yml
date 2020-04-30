@@ -3,7 +3,7 @@
     msg: "Start nxos_static_routes round trip integration tests on connection={{ ansible_connection }}"
 
 - block:
-    - include_tasks: remove_config.yaml
+    - include_tasks: _remove_config.yaml
 
     - name: Apply the provided configuration(base config)
       cisco.nxos.nxos_static_routes:
@@ -77,4 +77,4 @@
           - " base_config['after'] | symmetric_difference(revert['after']) | length == 0"
 
   always:
-    - include_tasks: remove_config.yaml
+    - include_tasks: _remove_config.yaml

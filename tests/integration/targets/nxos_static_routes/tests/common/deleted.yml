@@ -2,7 +2,7 @@
 - debug:
     msg: "Start nxos_static_routes deleted integration tests connection = {{ ansible_connection }}"
 
-- include_tasks: populate_config.yaml
+- include_tasks: _populate_config.yaml
 
 - block:
     - name: Gather static_routes facts
@@ -27,7 +27,7 @@
           - "'no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
           - "result.commands | length == 3"
 
-    - include_tasks: populate_config.yaml
+    - include_tasks: _populate_config.yaml
 
     - name: Delete routes based on AFI in a VRF
       cisco.nxos.nxos_static_routes:
@@ -46,9 +46,9 @@
           - "'no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
           - "result.commands | length == 3"
 
-    - include_tasks: remove_config.yaml
+    - include_tasks: _remove_config.yaml
 
-    - include_tasks: populate_config.yaml
+    - include_tasks: _populate_config.yaml
 
     - name: Deleted (All routes)
       cisco.nxos.nxos_static_routes: &deleted
@@ -78,4 +78,4 @@
           - "result.changed == false"
 
   always:
-    - include_tasks: remove_config.yaml
+    - include_tasks: _remove_config.yaml

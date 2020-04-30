@@ -2,7 +2,7 @@
 - debug:
     msg: "Start nxos_static_routes gathered tests connection={{ ansible_connection }}"
 
-- include_tasks: populate_config.yaml
+- include_tasks: _populate_config.yaml
 
 - block:
     - name: Gather static_routes facts
@@ -31,4 +31,4 @@
           - "result.changed == false"
 
   always:
-    - include_tasks: remove_config.yaml
+    - include_tasks: _remove_config.yaml
