@@ -1,24 +1,34 @@
 ---
 - debug:
-    msg: Start nxos_l2_interfaces deleted integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_l2_interfaces deleted integration tests connection={{ ansible_connection }}
 
-- set_fact: test_int1="{{ nxos_int1 }}"
-
-- set_fact: test_int2="{{ nxos_int2 }}"
+- set_fact: 
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
 
 - name: setup1
   ignore_errors: true
-  ansible.netcommon.cli_config: &id002
-    config: "default interface {{ test_int1 }}\ndefault interface {{ test_int2 }}\n"
+  cisco.nxos.nxos_config: &id002
+    lines:
+      - "default interface {{ test_int1 }}"
+      - "default interface {{ test_int2 }}"
 
 - block:
 
     - name: setup2
-      ansible.netcommon.cli_config:
-        config: "interface {{ test_int1 }}\n  switchport\n  switchport trunk native\
-          \ vlan 10\ninterface {{ test_int2 }}\n  switchport\n  switchport mode\
-          \ trunk\n  switchport trunk allowed vlan 20\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport trunk native vlan 10"
+        parents: "interface {{ test_int1 }}"
+    
+    - name: setup3
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 20"
+        parents: "interface {{ test_int2 }}"
 
     - name: Gather l2_interfaces facts
       cisco.nxos.nxos_facts:
@@ -57,4 +67,4 @@
 
     - name: teardown
       ignore_errors: true
-      ansible.netcommon.cli_config: *id002
+      cisco.nxos.nxos_config: *id002
