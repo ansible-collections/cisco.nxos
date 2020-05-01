@@ -5,7 +5,6 @@
 - include_tasks: populate_config.yaml
 
 - block:
-
     - name: Deleted (All ACLs)
       cisco.nxos.nxos_acls:
         config:
@@ -14,8 +13,8 @@
     - name: Gather acls facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: acls
 
     - assert:
@@ -28,24 +27,10 @@
       register: result
       cisco.nxos.nxos_acls: &id002
         config:
-
           - afi: ipv4
 
           - afi: ipv6
-            acls:
 
-              - name: ACL1v6
-                aces:
-
-                  - grant: permit
-                    sequence: 10
-                    source:
-                      any: true
-                    destination:
-                      any: true
-                    protocol: sctp
-
-                  - sequence: 20
         state: deleted
 
     - assert:
@@ -53,10 +38,9 @@
           - result.changed==True
           - "'no ip access-list ACL1v4' in result.commands"
           - "'no ip access-list ACL2v4' in result.commands"
-          - "'ipv6 access-list ACL1v6' in result.commands"
-          - "'no 10 permit sctp any any' in result.commands"
-          - "'no 20' in result.commands"
-          - result.commands | length == 5
+          - "'no ipv6 access-list ACL1v6' in result.commands"
+          - "'no ipv6 access-list ACL2v6' in result.commands"
+          - result.commands | length == 4
 
     - name: Gather acls facts
       cisco.nxos.nxos_facts: *id001
@@ -69,5 +53,4 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: remove_config.yaml
