@@ -351,34 +351,6 @@ class TestNxosAclsModule(TestNxosModule):
         commands = ["no ip access-list ACL1v4"]
         self.execute_module(changed=True, commands=commands)
 
-    def test_nxos_acls_deletedace(self):
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="ACL1v6",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=10,
-                                        protocol="sctp",
-                                    )
-                                ],
-                            )
-                        ],
-                    )
-                ],
-                state="deleted",
-            )
-        )
-        commands = ["ipv6 access-list ACL1v6", "no 10 permit sctp any any"]
-        self.execute_module(changed=True, commands=commands)
-
     def test_nxos_acls_deletedall(self):
         set_module_args(dict(config=[], state="deleted"))
         commands = ["no ipv6 access-list ACL1v6", "no ip access-list ACL1v4"]
