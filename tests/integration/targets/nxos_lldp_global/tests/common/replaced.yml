@@ -21,14 +21,18 @@
         state: enabled
 
     - name: Setup
-      ansible.netcommon.cli_config:
-        config: "lldp holdtime 125\nlldp tlv-select system-name\nno lldp tlv-select\
-          \ port-vlan\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "lldp holdtime 125"
+          - "lldp tlv-select system-name"
+          - "no lldp tlv-select port-vlan"
 
     - name: Setup2
       when: port_id is defined
-      ansible.netcommon.cli_config:
-        config: "lldp portid-subtype 1\nno lldp tlv-select power-management\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "lldp portid-subtype 1"
+          - "no lldp tlv-select power-management"
 
     - name: Replaced
       register: result
