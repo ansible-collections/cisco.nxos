@@ -2,7 +2,7 @@
 - debug:
     msg: "Start nxos_static_routes overridden tests connection={{ ansible_connection }}"
 
-- include_tasks: _remove_config.yml
+- include_tasks: _remove_config.yaml
 
 - include_tasks: _populate_config.yaml
 
