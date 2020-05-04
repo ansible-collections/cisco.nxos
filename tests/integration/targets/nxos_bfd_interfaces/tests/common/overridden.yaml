@@ -14,7 +14,7 @@
 
 - name: setup1
   cisco.nxos.nxos_config: &id002
-    lines: 
+    lines:
       - "no feature bfd"
       - "default interface {{ test_int1 }}"
       - "default interface {{ test_int2 }}"

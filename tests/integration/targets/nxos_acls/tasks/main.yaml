@@ -1,7 +1,9 @@
 ---
 - name: Set system defaults for switchports
   cisco.nxos.nxos_config:
-    lines: "no system default switchport\nsystem default switchport shutdown\n"
+    lines:
+      - "no system default switchport"
+      - "system default switchport shutdown"
   connection: ansible.netcommon.network_cli
 
 - include: cli.yaml
