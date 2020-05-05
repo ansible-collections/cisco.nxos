@@ -29,16 +29,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
+ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "network"}
 
 DOCUMENTATION = """
 ---
 module: nxos_static_routes
-version_added: "2.10"
+version_added: "1.0.0"
 short_description: Static Routes Resource Module.
 description: This module configures and manages the attributes of static routes on Cisco NX-OS platforms.
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
