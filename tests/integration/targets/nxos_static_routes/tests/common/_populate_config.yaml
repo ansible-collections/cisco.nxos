@@ -1,0 +1,11 @@
+---
+- name: Populate config
+  cisco.nxos.nxos_config:
+    lines:
+      - "ip route 192.0.2.16/28 192.0.2.24 name new_route"
+      - "ip route 192.0.2.80/28 192.0.2.26 tag 12"
+      - "vrf context trial_vrf"
+      - "  ip route 192.0.2.64/28 192.0.2.22 tag 4"
+      - "  ip route 192.0.2.64/28 192.0.2.23 name merged_route 1"
+      - "interface {{ nxos_int2 }}"
+      - "  no switchport"
