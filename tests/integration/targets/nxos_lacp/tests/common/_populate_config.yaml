@@ -1,0 +1,5 @@
+# The CI NX-OS image doesn't support `lacp system-mac`
+- name: Setup
+  cisco.nxos.nxos_config:
+    lines:
+      - "lacp system-priority 10"

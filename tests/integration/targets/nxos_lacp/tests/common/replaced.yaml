@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start nxos_lacp replaced integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_lacp replaced integration tests connection={{ ansible_connection}}
 
 - name: Enable lacp feature
   cisco.nxos.nxos_feature:
@@ -20,12 +19,12 @@
 - block:
 
     - name: Setup1
-      ansible.netcommon.cli_config:
-        config: lacp system-priority 11
+      cisco.nxos.nxos_config:
+        lines: lacp system-priority 11
 
     - name: Setup2
-      ansible.netcommon.cli_config:
-        config: '{{ mac1|default(omit) }}'
+      cisco.nxos.nxos_config:
+        lines: '{{ mac1|default(omit) }}'
 
     - name: Gather lacp facts
       cisco.nxos.nxos_facts: &id001
@@ -81,8 +80,8 @@
           - result.commands|length == 0
 
     - name: Setup3
-      ansible.netcommon.cli_config:
-        config: '{{ mac1|default(omit) }}'
+      cisco.nxos.nxos_config:
+        lines: '{{ mac1|default(omit) }}'
 
     - name: Replaced
       register: result

@@ -1,0 +1,5 @@
+- name: Remove existing LACP config
+  cisco.nxos.nxos_config:
+    lines:
+      - "no lacp system-priority"
+  ignore_errors: True
