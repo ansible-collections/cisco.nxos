@@ -29,14 +29,11 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
+ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 
 DOCUMENTATION = """module: nxos_acls
-short_description: Manage named IP ACLs on the Cisco NX-OS platform
+version_added: "1.0.0"
+short_description: ACLs resource module.
 description: Manage named IP ACLs on the Cisco NX-OS platform
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
