@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start nxos_lacp merged integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_lacp merged integration tests connection={{ ansible_connection }}
 
 - name: Enable lacp
   cisco.nxos.nxos_feature:

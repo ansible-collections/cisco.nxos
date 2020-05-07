@@ -37,6 +37,7 @@ class LacpArgs(object):
         pass
 
     argument_spec = {
+        "running_config": {"type": "str"},
         "config": {
             "options": {
                 "system": {
@@ -59,7 +60,14 @@ class LacpArgs(object):
             "type": "dict",
         },
         "state": {
-            "choices": ["merged", "replaced", "deleted"],
+            "choices": [
+                "merged",
+                "replaced",
+                "deleted",
+                "gathered",
+                "rendered",
+                "parsed",
+            ],
             "default": "merged",
             "type": "str",
         },

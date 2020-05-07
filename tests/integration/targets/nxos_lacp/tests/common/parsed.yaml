@@ -1,0 +1,18 @@
+---
+- debug:
+    msg: START nxos_lacp parsed integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Use parsed state to convert externally supplied config to structured format
+      register: result
+      cisco.nxos.nxos_lacp:
+        running_config: |
+          lacp system-priority 10
+          lacp system-mac 00c1.4c00.bd15 role secondary
+        state: parsed
+
+    - assert:
+       that: "{{ parsed == result['parsed'] }}"
+
+- debug:
+    msg: END nxos_lacp parsed integration tests on connection={{ ansible_connection }}
