@@ -1,14 +1,16 @@
 
 
-# Cisco NXOS Collection
+# Cisco NX-OS Collection
 [![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.nxos) <!--[![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/vyos)](https://codecov.io/gh/ansible-collections/cisco.nxos)-->
 
-The Ansible Cisco NXOS collection includes a variety of Ansible content to help automate the management of Cisco NXOS network appliances.
+The Ansible Cisco NX-OS collection includes a variety of Ansible content to help automate the management of Cisco NX-OS network appliances.
+
+The Cisco NX-OS connection plugins combined with Cisco NX-OS resource modules aligns the Cisco NX-OS experience with the other core networking platforms supported by Ansible.
 
 This collection has been tested against Cisco NX-OS 7.0(3)I5(1).
 
 ### Supported connections
-The Cisco NXOS collection supports ``network_cli``  and ``httpapi`` connections.
+The Cisco NX-OS collection supports ``network_cli``  and ``httpapi`` connections.
 
 ## Included content
 
@@ -16,7 +18,7 @@ Click the ``Content`` button to see the list of content included in this collect
 
 ## Installing this collection
 
-You can install the Cisco NXOS collection with the Ansible Galaxy CLI:
+You can install the Cisco NX-OS collection with the Ansible Galaxy CLI:
 
     ansible-galaxy collection install cisco.nxos
 
@@ -33,10 +35,10 @@ collections:
 
 This collection includes [network resource modules](https://docs.ansible.com/ansible/latest/network/user_guide/network_resource_modules.html).
 
-### Using modules from the Cisco NXOS collection in your playbooks
+### Using modules from the Cisco NX-OS collection in your playbooks
 
 You can call modules by their Fully Qualified Collection Namespace (FQCN), such as `cisco.nxos.nxos_l2_interfaces`.
-The following example task replaces configuration changes in the existing configuration on a Cisco NXOS network device, using the FQCN:
+The following example task replaces configuration changes in the existing configuration on a Cisco NX-OS network device, using the FQCN:
 
 ```yaml
 ---
@@ -75,12 +77,14 @@ Alternately, you can call modules by their short name if you list the `cisco.nxo
 
 ### See Also:
 
-* [Cisco NXOS Platform Options](https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
+* [Cisco NX-OS Platform Options](https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 * [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
 
-We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Cisco NXOS collection repository](https://github.com/ansible-collections/cisco.nxos).
+Ongoing development efforts and contributions to this collection are solely focused on enhancements to current resource modules, additional resource modules and enhancements to connection plugins.
+
+We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Cisco NX-OS collection repository](https://github.com/ansible-collections/cisco.nxos).
 
 You can also join us on:
 
