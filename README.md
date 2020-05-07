@@ -5,7 +5,7 @@
 
 The Ansible Cisco NXOS collection includes a variety of Ansible content to help automate the management of Cisco NXOS network appliances.
 
-This collection has been tested against Cisco NXOS 7.3.(0)D1(1) on VIRL.
+This collection has been tested against Cisco NX-OS 7.0(3)I5(1).
 
 ### Supported connections
 The Cisco NXOS collection supports ``network_cli``  and ``httpapi`` connections.
@@ -26,7 +26,7 @@ You can also include it in a `requirements.yml` file and install it with `ansibl
 ---
 collections:
   - name: cisco.nxos
-    version: 0.0.1
+    version: 1.0.0
 ```
 ## Using this collection
 
