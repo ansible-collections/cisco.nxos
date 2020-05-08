@@ -37,12 +37,24 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """module: nxos_bfd_interfaces
-short_description: Manages BFD attributes of nxos interfaces.
+short_description: BFD Interfaces Resource Module.
 description: Manages attributes of Bidirectional Forwarding Detection (BFD) on the
   interface.
 author: Chris Van Heuveln (@chrisvanheuveln)
-notes: null
+notes:
+  - Tested against NX-OS 7.0(3)I5(1).
+  - Feature bfd should be enabled for this module.
 options:
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device by executing
+        the command B(show running-config | section '^interface|^feature bfd').
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
+    type: str
+    version_added: "1.0.0"
   config:
     description: The provided configuration
     type: list
@@ -74,20 +86,23 @@ options:
     - replaced
     - overridden
     - deleted
+    - gathered
+    - rendered
+    - parsed
     default: merged
 """
 EXAMPLES = """
 # Using deleted
 
 - name: Configure interfaces
-  nxos_bfd_interfaces:
+  cisco.nxos.nxos_bfd_interfaces:
     state: deleted
 
 
 # Using merged
 
 - name: Configure interfaces
-  nxos_bfd_interfaces:
+  cisco.nxos.nxos_bfd_interfaces:
     config:
       - name: Ethernet1/1
         bfd: enable
@@ -101,7 +116,7 @@ EXAMPLES = """
 # Using overridden
 
 - name: Configure interfaces
-  nxos_bfd_interfaces:
+  cisco.nxos.nxos_bfd_interfaces:
     config:
       - name: Ethernet1/1
         bfd: enable
@@ -115,7 +130,7 @@ EXAMPLES = """
 # Using replaced
 
 - name: Configure interfaces
-  nxos_bfd_interfaces:
+  cisco.nxos.nxos_bfd_interfaces:
     config:
       - name: Ethernet1/1
         bfd: enable
@@ -125,7 +140,104 @@ EXAMPLES = """
         echo: disable
     state: replaced
 
+# Using rendered
 
+- name: Use rendered state to convert task input to device specific commands
+  cisco.nxos.nxos_bfd_interfaces:
+    config:
+      - name: Ethernet1/800
+        bfd: enable
+        echo: enable
+      - name: Ethernet1/801
+        bfd: disable
+        echo: disable
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+
+# rendered:
+#   - "interface Ethernet1/800"
+#   - "bfd"
+#   - "bfd echo"
+#   - "interface Ethernet1/801"
+#   - "no bfd"
+#   - "no bfd echo"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+
+# feature bfd
+# interface Ethernet1/800
+#   no switchport
+#   no bfd
+#   no bfd echo
+# interface Ethernet1/801
+#   no switchport
+#   no bfd
+# interface Ethernet1/802
+#   no switchport
+#   no bfd echo
+# interface mgmt0
+#   ip address dhcp
+#   vrf member management
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_bfd_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+
+# parsed:
+#   - bfd: disable
+#     echo: disable
+#     name: Ethernet1/800
+#   - bfd: disable
+#     echo: enable
+#     name: Ethernet1/801
+#   - bfd: enable
+#     echo: disable
+#     name: Ethernet1/802
+#   - bfd: enable
+#     echo: enable
+#     name: mgmt0
+
+# Using gathered
+
+# Existing device config state
+# -------------------------------
+
+# feature bfd
+# interface Ethernet1/1
+#   no switchport
+#   no bfd
+# interface Ethernet1/2
+#   no switchport
+#   no bfd echo
+# interface mgmt0
+#   ip address dhcp
+#   vrf member management
+
+- name: Gather bfd_interfaces facts from the device using nxos_bfd_interfaces
+  cisco.nxos.nxos_bfd_interfaces:
+    state: gathered
+
+# Task output (redacted)
+# -----------------------
+# gathered:
+# - name: Ethernet1/1
+#   bfd: disable
+#   echo: enable
+# - name: Ethernet1/3
+#   echo: disable
+#   bfd: enable
+# - name: mgmt0
+#   bfd: enable
+#   echo: enable
 """
 RETURN = """
 before:
@@ -165,8 +277,19 @@ def main():
 
     :returns: the result form module invocation
     """
+    required_if = [
+        ("state", "merged", ("config",)),
+        ("state", "replaced", ("config",)),
+        ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
+    ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=Bfd_interfacesArgs.argument_spec,
+        required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
 
