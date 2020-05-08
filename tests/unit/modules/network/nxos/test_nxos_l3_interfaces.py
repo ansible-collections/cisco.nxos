@@ -21,7 +21,10 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import (
+    patch,
+    PropertyMock,
+)
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
     AnsibleFailJson,
 )
@@ -65,24 +68,18 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         )
         self.edit_config = self.mock_edit_config.start()
 
-        self.mock_get_platform_type = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_interfaces.l3_interfaces.L3_interfaces.get_platform_type"
-        )
-        self.get_platform_type = self.mock_get_platform_type.start()
-
     def tearDown(self):
         super(TestNxosL3InterfacesModule, self).tearDown()
         self.mock_FACT_LEGACY_SUBSETS.stop()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
-        self.mock_get_platform_type.stop()
 
     def load_fixtures(self, commands=None, device="N9K"):
         self.mock_FACT_LEGACY_SUBSETS.return_value = dict()
         self.get_resource_connection_config.return_value = None
         self.edit_config.return_value = None
-        self.get_platform_type.return_value = device
+        L3_interfaces.platform = PropertyMock(return_value=device)
 
     # ---------------------------
     # L3_interfaces Test Cases

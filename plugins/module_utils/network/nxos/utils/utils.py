@@ -106,6 +106,8 @@ def get_interface_type(interface):
 def remove_rsvd_interfaces(interfaces):
     """Exclude reserved interfaces from user management
     """
+    if not interfaces:
+        return []
     return [
         i for i in interfaces if get_interface_type(i["name"]) != "management"
     ]
