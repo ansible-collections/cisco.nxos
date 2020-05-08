@@ -1,0 +1,17 @@
+- name: Populate config - 1
+  cisco.nxos.nxos_config:
+    lines:
+      - "interface {{ nxos_int1 }}"
+      - "  no switchport"
+      - "  ip redirects"
+      - "  ip address 192.0.2.100/24"
+
+- name: Populate config - 2
+  cisco.nxos.nxos_config:
+    lines:
+      - "interface {{ nxos_int2 }}"
+      - "  no switchport"
+      - "  no ip redirects"
+      - "  ip unreachables"
+      - "  ip address 203.0.113.10/24"
+      - "  ipv6 address 2001:db8::1/32"

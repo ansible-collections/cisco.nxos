@@ -43,7 +43,7 @@ class L3_interfaces(ConfigBase):
     The nxos_l3_interfaces class
     """
 
-    gather_subset = ["!all", "!min"]
+    gather_subset = ["min"]
 
     gather_network_resources = ["l3_interfaces"]
 
@@ -52,29 +52,25 @@ class L3_interfaces(ConfigBase):
     def __init__(self, module):
         super(L3_interfaces, self).__init__(module)
 
-    def get_l3_interfaces_facts(self):
+    def get_l3_interfaces_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
+        if self.state not in self.ACTION_STATES:
+            self.gather_subset = ["!all", "!min"]
+
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources
+            self.gather_subset, self.gather_network_resources, data=data
         )
+
         l3_interfaces_facts = facts["ansible_network_resources"].get(
             "l3_interfaces"
         )
-        if not l3_interfaces_facts:
-            return []
+        self.platform = facts.get("ansible_net_platform", "")
 
-        self.platform = self.get_platform_type()
         return remove_rsvd_interfaces(l3_interfaces_facts)
-
-    def get_platform_type(self):
-        default, _warnings = Facts(self._module).get_facts(
-            legacy_facts_type=["default"]
-        )
-        return default.get("ansible_net_platform", "")
 
     def edit_config(self, commands):
         return self._connection.edit_config(commands)
@@ -86,22 +82,48 @@ class L3_interfaces(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
 
-        existing_l3_interfaces_facts = self.get_l3_interfaces_facts()
-        commands.extend(self.set_config(existing_l3_interfaces_facts))
-        if commands:
+        if self.state in self.ACTION_STATES:
+            existing_l3_interfaces_facts = self.get_l3_interfaces_facts()
+        else:
+            existing_l3_interfaces_facts = []
+
+        if self.state in self.ACTION_STATES or self.state == "rendered":
+            commands.extend(self.set_config(existing_l3_interfaces_facts))
+
+        if commands and self.state in self.ACTION_STATES:
             if not self._module.check_mode:
                 self.edit_config(commands)
             result["changed"] = True
-        result["commands"] = commands
 
-        changed_l3_interfaces_facts = self.get_l3_interfaces_facts()
+        if self.state in self.ACTION_STATES:
+            result["commands"] = commands
 
-        result["before"] = existing_l3_interfaces_facts
-        if result["changed"]:
-            result["after"] = changed_l3_interfaces_facts
+        if self.state in self.ACTION_STATES or self.state == "gathered":
+            changed_l3_interfaces_facts = self.get_l3_interfaces_facts()
+
+        elif self.state == "rendered":
+            result["rendered"] = commands
+
+        elif self.state == "parsed":
+            running_config = self._module.params["running_config"]
+            if not running_config:
+                self._module.fail_json(
+                    msg="value of running_config parameter must not be empty for state parsed"
+                )
+            result["parsed"] = self.get_l3_interfaces_facts(
+                data=running_config
+            )
+
+        if self.state in self.ACTION_STATES:
+            result["before"] = existing_l3_interfaces_facts
+            if result["changed"]:
+                result["after"] = changed_l3_interfaces_facts
+
+        elif self.state == "gathered":
+            result["gathered"] = changed_l3_interfaces_facts
 
         result["warnings"] = warnings
         return result
@@ -139,19 +161,24 @@ class L3_interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if state in ("overridden", "merged", "replaced") and not want:
+        if (
+            state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
             self._module.fail_json(
-                msg="config is required for state {0}".format(state)
+                msg="value of config parameter must not be empty for state {0}".format(
+                    state
+                )
             )
 
-        commands = list()
+        commands = []
         if state == "overridden":
             commands.extend(self._state_overridden(want, have))
         elif state == "deleted":
             commands.extend(self._state_deleted(want, have))
         else:
             for w in want:
-                if state == "merged":
+                if state in ["merged", "rendered"]:
                     commands.extend(self._state_merged(w, have))
                 elif state == "replaced":
                     commands.extend(self._state_replaced(w, have))
