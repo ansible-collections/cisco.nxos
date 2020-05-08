@@ -1,0 +1,14 @@
+- name: Populate config - 1
+  cisco.nxos.nxos_config:
+    lines:
+      - "feature bfd"
+      - "interface {{ nxos_int1 }}"
+      - "  no switchport"
+      - "  no bfd"
+
+- name: Populate config - 2
+  cisco.nxos.nxos_config:
+    lines:
+      - "interface {{ nxos_int2 }}"
+      - "  no switchport"
+      - "  no bfd echo"

@@ -11,14 +11,19 @@
   when: platform is not search('N5K|N6K')
 
 - name: setup1
-  ansible.netcommon.cli_config: &id002
-    config: "no feature bfd\ndefault interface {{ test_int1 }}\n"
+  cisco.nxos.nxos_config: &id002
+    lines: 
+      - "no feature bfd"
+      - "default interface {{ test_int1 }}"
 
 - block:
 
     - name: setup2
-      ansible.netcommon.cli_config:
-        config: "feature bfd\ninterface {{ test_int1 }}\n  no switchport\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "feature bfd"
+          - "interface {{ test_int1 }}"
+          - "  no switchport"
 
     - name: setup initial bfd state
       cisco.nxos.nxos_bfd_interfaces:
@@ -62,4 +67,4 @@
   always:
 
     - name: teardown
-      ansible.netcommon.cli_config: *id002
+      cisco.nxos.nxos_config: *id002
