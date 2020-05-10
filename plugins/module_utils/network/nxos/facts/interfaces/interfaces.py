@@ -60,7 +60,9 @@ class InterfacesFacts(object):
             data = connection.get(
                 "show running-config all | incl 'system default switchport'"
             )
-            data += connection.get("show running-config | section ^interface")
+            data += "\n" + connection.get(
+                "show running-config | section ^interface"
+            )
 
         # Collect device defaults & per-intf defaults
         self.render_system_defaults(data)
