@@ -1,0 +1,24 @@
+---
+- debug:
+    msg: START nxos_lacp_interfaces gathered integration tests on connection={{ ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+
+    - name: Gather lacp_interfaces facts from the device using nxos_lacp_interfaces
+      register: result
+      cisco.nxos.nxos_lacp_interfaces:
+        state: gathered
+
+    - assert:
+        that: "{{ result['gathered'] | symmetric_difference(gathered)\
+          \ |length == 0 }}"
+  always:
+
+    - include_tasks: _remove_config.yaml
+
+    - debug:
+        msg: END nxos_lacp_interfaces gathered integration tests on connection={{ ansible_connection }}

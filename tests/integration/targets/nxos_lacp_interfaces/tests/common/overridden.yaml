@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start nxos_lacp_interfaces overridden integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_lacp_interfaces overridden integration tests connection={{ ansible_connection }}
 
 - set_fact:
     mode: delay
@@ -9,21 +8,30 @@
     and image_version is not search ('9.2') and chassis_type is not search('C95')
 
 - name: setup1
-  ansible.netcommon.cli_config: &id003
-    config: "no interface port-channel5\nno interface port-channel10\nno interface\
-      \ port-channel11\nno feature lacp\n"
+  cisco.nxos.nxos_config: &id003
+    lines:
+      - "no interface port-channel5"
+      - "no interface port-channel10"
+      - "no interface port-channel11"
+      - "no feature lacp"
 
 - block:
 
     - name: setup2
-      ansible.netcommon.cli_config:
-        config: "feature lacp\ninterface port-channel10\n  lacp min-links 5\ninterface\
-          \ port-channel5\n  lacp max-bundle 10\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "feature lacp"
+          - "interface port-channel10"
+          - "lacp min-links 5"
+          - "interface port-channel5"
+          - "  lacp max-bundle 10"
 
     - name: setup3 - L2 for mode command
       when: mode is defined
-      ansible.netcommon.cli_config:
-        config: "interface port-channel11\n  switchport\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface port-channel11"
+          - "  switchport"
 
     - name: Gather lacp_interfaces facts
       cisco.nxos.nxos_facts: &id001
@@ -79,4 +87,4 @@
   always:
 
     - name: teardown
-      ansible.netcommon.cli_config: *id003
+      cisco.nxos.nxos_config: *id003
