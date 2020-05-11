@@ -1,0 +1,43 @@
+---
+- debug:
+    msg: START nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
+      }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    # Interfaces used here doesn't actually exist on the device
+    - name: Use rendered state to convert task input to device specific commands
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        config:
+          - name: port-channel10
+            members:
+              - member: Ethernet1/800
+                mode: active
+              - member: Ethernet1/801
+          - name: port-channel11
+            members:
+              - member: Ethernet1/802
+                mode: passive
+        state: rendered
+        
+    - assert:
+        that: "{{ rendered | symmetric_difference(result['rendered'])\
+          \ |length==0 }}"
+
+    - name: Gather l2_interfaces facts from the device and assert that its empty
+      register: result
+      cisco.nxos.nxos_lag_interfaces:
+        state: gathered
+
+    - name: Make sure that rendered 
+      assert:
+        that: "{{ result['gathered'] == [] }}"
+  always:
+
+    - include_tasks: _remove_config.yaml
+
+- debug:
+    msg: END nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
+      }}

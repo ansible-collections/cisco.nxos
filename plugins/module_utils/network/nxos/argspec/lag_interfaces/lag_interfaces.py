@@ -37,6 +37,7 @@ class Lag_interfacesArgs(object):
         pass
 
     argument_spec = {
+        "running_config": {"type": "str"},
         "config": {
             "elements": "dict",
             "options": {
@@ -57,7 +58,15 @@ class Lag_interfacesArgs(object):
             "type": "list",
         },
         "state": {
-            "choices": ["merged", "replaced", "overridden", "deleted"],
+            "choices": [
+                "merged",
+                "replaced",
+                "overridden",
+                "deleted",
+                "rendered",
+                "parsed",
+                "gathered",
+            ],
             "default": "merged",
             "type": "str",
         },

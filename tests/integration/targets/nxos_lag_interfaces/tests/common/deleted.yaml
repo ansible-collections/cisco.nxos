@@ -1,33 +1,21 @@
 ---
 - debug:
-    msg: Start nxos_lag_interfaces overridden integration tests connection={{ ansible_connection
+    msg: Start nxos_lag_interfaces deleted integration tests connection={{ ansible_connection
       }}
 
 - set_fact: test_int1="{{ nxos_int1 }}"
 
 - set_fact: test_int2="{{ nxos_int2 }}"
 
-- set_fact: test_int3="{{ nxos_int3 }}"
+- include_tasks: _remove_config.yaml
 
 - name: enable feature lacp
   cisco.nxos.nxos_feature:
     feature: lacp
 
-- name: setup1
-  ignore_errors: true
-  cisco.nxos.nxos_config:
-    lines:
-      - no interface port-channel 10
-      - no interface port-channel 19
-
-- name: setup2
-  cisco.nxos.nxos_lag_interfaces: &id003
-    state: deleted
-
 - block:
 
-    - name: setup3
-      ignore_errors: true
+    - name: Setup2
       loop:
         - interface {{ test_int1 }}
         - interface {{ test_int2 }}
@@ -43,32 +31,26 @@
           - '!min'
         gather_network_resources: lag_interfaces
 
-    - name: Overridden
+    - name: deleted
       register: result
       cisco.nxos.nxos_lag_interfaces: &id002
-        config:
-
-          - name: port-channel19
-            members:
-
-              - member: '{{ test_int3 }}'
-        state: overridden
+        state: deleted
 
     - assert:
         that:
           - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length
             == 0
-          - result.changed == true
 
     - name: Gather LAG interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
     - assert:
         that:
-          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.after)|length
-            == 0
+          # the module should not remove the implicitly created port-channel
+          - result.after|length == 1
+          - result.changed == true
 
-    - name: Idempotence - Overridden
+    - name: Idempotence - deleted
       register: result
       cisco.nxos.nxos_lag_interfaces: *id002
 
@@ -77,9 +59,7 @@
           - result.changed == false
   always:
 
-    - name: Teardown
-      ignore_errors: true
-      cisco.nxos.nxos_lag_interfaces: *id003
+    - include_tasks: _remove_config.yaml
 
     - name: disable feature lacp
       cisco.nxos.nxos_feature:
