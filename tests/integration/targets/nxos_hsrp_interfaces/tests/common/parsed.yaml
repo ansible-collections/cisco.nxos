@@ -1,0 +1,26 @@
+---
+- debug:
+    msg: START nxos_hsrp_interfaces parsed integration tests on connection={{ ansible_connection
+      }}
+
+- block:
+    # Interfaces used in the task don't actually exist on the appliance
+    - name: Use parsed state to convert externally supplied config to structured format
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces:
+        running_config: |
+          interface Ethernet1/800
+            no switchport
+            hsrp bfd
+          interface Ethernet1/801
+            no switchport
+            hsrp bfd
+        state: parsed
+
+    - assert:
+       that: "{{ parsed | symmetric_difference(result['parsed']) |length==0\
+         \ }}"
+
+- debug:
+    msg: END nxos_hsrp_interfaces parsed integration tests on connection={{ ansible_connection
+      }}

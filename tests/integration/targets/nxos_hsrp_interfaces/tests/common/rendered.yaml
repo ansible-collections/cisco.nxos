@@ -1,0 +1,39 @@
+---
+- debug:
+    msg: START nxos_hsrp_interfaces rendered integration tests on connection={{ ansible_connection
+      }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    # Interfaces used here doesn't actually exist on the device
+    - name: Use rendered state to convert task input to device specific commands
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces:
+        config:
+          - name: Ethernet1/800
+            bfd: enable
+          - name: Ethernet1/801
+            bfd: enable
+        state: rendered
+
+    - assert:
+        that: "{{ rendered | symmetric_difference(result['rendered'])\
+          \ |length==0 }}"
+
+    - name: Gather bfd_interfaces facts from the device and assert that its empty
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces:
+        state: gathered
+
+    - name: Make sure that rendered task actually did not make any changes to the
+        device
+      assert:
+        that: "{{ result['gathered'] == [] }}"
+  always:
+
+    - include_tasks: _remove_config.yaml
+
+- debug:
+    msg: END nxos_hsrp_interfaces rendered integration tests on connection={{ ansible_connection
+      }}

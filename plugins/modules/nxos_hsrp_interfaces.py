@@ -37,11 +37,23 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """module: nxos_hsrp_interfaces
-short_description: Manages HSRP attributes of NXOS interfaces.
+short_description: HSRP Interfaces Resouce Module.
 description: Manages Hot Standby Router Protocol (HSRP) interface attributes.
 author: Chris Van Heuveln (@chrisvanheuveln)
-notes: null
+notes:
+  - Tested against NX-OS 7.0(3)I5(1).
+  - Feature bfd should be enabled for this module.
 options:
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device by executing
+        the command B(show running-config | section '^interface').
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
+    type: str
+    version_added: "1.0.0"
   config:
     description: The provided configuration
     type: list
@@ -66,13 +78,16 @@ options:
     - replaced
     - overridden
     - deleted
+    - gathered
+    - rendered
+    - parsed
     default: merged
 """
 EXAMPLES = """
 # Using deleted
 
 - name: Configure hsrp attributes on interfaces
-  nxos_hsrp_interfaces:
+  cisco.nxos.nxos_hsrp_interfaces:
     config:
       - name: Ethernet1/1
       - name: Ethernet1/2
@@ -82,7 +97,7 @@ EXAMPLES = """
 # Using merged
 
 - name: Configure hsrp attributes on interfaces
-  nxos_hsrp_interfaces:
+  cisco.nxos.nxos_hsrp_interfaces:
     config:
       - name: Ethernet1/1
         bfd: enable
@@ -94,7 +109,7 @@ EXAMPLES = """
 # Using overridden
 
 - name: Configure hsrp attributes on interfaces
-  nxos_hsrp_interfaces:
+  cisco.nxos.nxos_hsrp_interfaces:
     config:
       - name: Ethernet1/1
         bfd: enable
@@ -106,7 +121,7 @@ EXAMPLES = """
 # Using replaced
 
 - name: Configure hsrp attributes on interfaces
-  nxos_hsrp_interfaces:
+  cisco.nxos.nxos_hsrp_interfaces:
     config:
       - name: Ethernet1/1
         bfd: enable
@@ -114,6 +129,77 @@ EXAMPLES = """
         bfd: disable
     operation: replaced
 
+# Using rendered
+
+- name: Use rendered state to convert task input to device specific commands
+  cisco.nxos.nxos_hsrp_interfaces:
+    config:
+      - name: Ethernet1/800
+        bfd: enable
+      - name: Ethernet1/801
+        bfd: enable
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+
+# rendered:
+#   - "interface Ethernet1/800"
+#   - "hsrp bfd"
+#   - "interface Ethernet1/801"
+#   - "hsrp bfd"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# interface Ethernet1/800
+#   no switchport
+#   hsrp bfd
+# interface Ethernet1/801
+#   no switchport
+#   hsrp bfd
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_hsrp_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+
+# parsed:
+#   - name: Ethernet1/800
+#     bfd: enable
+#   - name: Ethernet1/801
+#     bfd: enable
+
+# Using gathered
+
+# Existing device config state
+# -------------------------------
+
+interface Ethernet1/1
+  no switchport
+  hsrp bfd
+interface Ethernet1/2
+  no switchport
+  hsrp bfd
+interface Ethernet1/3
+  no switchport
+
+- name: Gather hsrp_interfaces facts from the device using nxos_hsrp_interfaces
+  cisco.nxos.nxos_hsrp_interfaces:
+    state: gathered
+
+# Task output (redacted)
+# -----------------------
+
+# gathered:
+#   - name: Ethernet1/1
+#     bfd: enable
+#   - name: Ethernet1/2
+#     bfd: enable
 
 """
 RETURN = """
@@ -154,8 +240,19 @@ def main():
 
     :returns: the result form module invocation
     """
+    required_if = [
+        ("state", "merged", ("config",)),
+        ("state", "replaced", ("config",)),
+        ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
+    ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=Hsrp_interfacesArgs.argument_spec,
+        required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
 
