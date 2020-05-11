@@ -45,14 +45,14 @@ class Hsrp_interfaces(ConfigBase):
     def __init__(self, module):
         super(Hsrp_interfaces, self).__init__(module)
 
-    def get_hsrp_interfaces_facts(self):
+    def get_hsrp_interfaces_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources
+            self.gather_subset, self.gather_network_resources, data=data
         )
         hsrp_interfaces_facts = facts["ansible_network_resources"].get(
             "hsrp_interfaces", []
@@ -69,21 +69,48 @@ class Hsrp_interfaces(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        warnings = list()
-        cmds = list()
+        warnings = []
+        commands = []
 
-        existing_hsrp_interfaces_facts = self.get_hsrp_interfaces_facts()
-        cmds.extend(self.set_config(existing_hsrp_interfaces_facts))
-        if cmds:
+        if self.state in self.ACTION_STATES:
+            existing_hsrp_interfaces_facts = self.get_hsrp_interfaces_facts()
+        else:
+            existing_hsrp_interfaces_facts = []
+
+        if self.state in self.ACTION_STATES or self.state == "rendered":
+            commands.extend(self.set_config(existing_hsrp_interfaces_facts))
+
+        if commands and self.state in self.ACTION_STATES:
             if not self._module.check_mode:
-                self.edit_config(cmds)
+                self.edit_config(commands)
             result["changed"] = True
-        result["commands"] = cmds
-        changed_hsrp_interfaces_facts = self.get_hsrp_interfaces_facts()
 
-        result["before"] = existing_hsrp_interfaces_facts
-        if result["changed"]:
-            result["after"] = changed_hsrp_interfaces_facts
+        if self.state in self.ACTION_STATES:
+            result["commands"] = commands
+
+        if self.state in self.ACTION_STATES or self.state == "gathered":
+            changed_hsrp_interfaces_facts = self.get_hsrp_interfaces_facts()
+
+        elif self.state == "rendered":
+            result["rendered"] = commands
+
+        elif self.state == "parsed":
+            running_config = self._module.params["running_config"]
+            if not running_config:
+                self._module.fail_json(
+                    msg="value of running_config parameter must not be empty for state parsed"
+                )
+            result["parsed"] = self.get_hsrp_interfaces_facts(
+                data=running_config
+            )
+
+        if self.state in self.ACTION_STATES:
+            result["before"] = existing_hsrp_interfaces_facts
+            if result["changed"]:
+                result["after"] = changed_hsrp_interfaces_facts
+
+        elif self.state == "gathered":
+            result["gathered"] = changed_hsrp_interfaces_facts
 
         result["warnings"] = warnings
         return result
@@ -117,9 +144,14 @@ class Hsrp_interfaces(ConfigBase):
         """
         state = self._module.params["state"]
         # check for 'config' keyword in play
-        if state in ("overridden", "merged", "replaced") and not want:
+        if (
+            state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
             self._module.fail_json(
-                msg="config is required for state {0}".format(state)
+                msg="value of config parameter must not be empty for state {0}".format(
+                    state
+                )
             )
 
         cmds = list()
@@ -129,7 +161,7 @@ class Hsrp_interfaces(ConfigBase):
             cmds.extend(self._state_deleted(want, have))
         else:
             for w in want:
-                if state == "merged":
+                if state in ["merged", "rendered"]:
                     cmds.extend(self._state_merged(flatten_dict(w), have))
                 elif state == "replaced":
                     cmds.extend(self._state_replaced(flatten_dict(w), have))

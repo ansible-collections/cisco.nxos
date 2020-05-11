@@ -3,9 +3,9 @@
     msg: Start nxos_hsrp_interfaces overridden integration tests connection={{ ansible_connection
       }}
 
-- set_fact: test_int1="{{ nxos_int1 }}"
-
-- set_fact: test_int2="{{ nxos_int2 }}"
+- set_fact: 
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
 
 - set_fact:
     bfd_enable: enable
@@ -13,16 +13,22 @@
   when: platform is not search('N35')
 
 - block:
-
-    - name: setup1
-      ansible.netcommon.cli_config: &id002
-        config: "no feature bfd\nno feature hsrp\ndefault interface {{ test_int1\
-          \ }}\ndefault interface {{ test_int2 }}\n"
-
+    - include_tasks: _remove_config.yaml
+    
     - name: setup2
-      ansible.netcommon.cli_config:
-        config: "feature bfd\nfeature hsrp\ninterface {{ test_int1 }}\n  no switchport\n\
-          interface {{ test_int2 }}\n  no switchport\n  hsrp bfd\n"
+      cisco.nxos.nxos_config:
+        lines: 
+          - "feature bfd"
+          - "feature hsrp"
+          - "interface {{ test_int1 }}"  
+          - "  no switchport"
+    
+    - name: setup3
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface {{ test_int2 }}" 
+          - "  no switchport"
+          - "  hsrp bfd"
 
     - name: Overridden
       register: result
@@ -48,7 +54,6 @@
         that:
           - result.changed == false
           - result.commands|length == 0
+  
   always:
-
-    - name: teardown
-      ansible.netcommon.cli_config: *id002
+    - include_tasks: _remove_config.yaml
