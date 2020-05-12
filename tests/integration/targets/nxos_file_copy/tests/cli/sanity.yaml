@@ -86,7 +86,7 @@
         local_file_directory: dir1/dir2/dir3
         remote_scp_server: '{{ inventory_hostname_short }}'
         remote_scp_server_user: '{{ ansible_ssh_user }}'
-        remote_scp_server_password: '{{ ansible_ssh_pass }}'
+        remote_scp_server_password: '{{ ansible_ssh_pass | default(omit) }}'
         local_file: ./{{ test_source_file }}
         remote_file: '{{ test_destination_file }}'
         file_system: 'bootflash:'
@@ -105,7 +105,7 @@
         local_file_directory: dir1/dir2/dir3
         remote_scp_server: '{{ inventory_hostname_short }}'
         remote_scp_server_user: '{{ ansible_ssh_user }}'
-        remote_scp_server_password: '{{ ansible_ssh_pass }}'
+        remote_scp_server_password: '{{ ansible_ssh_pass | default(omit) }}'
 
     - assert: &id006
         that:
