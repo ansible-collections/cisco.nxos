@@ -103,7 +103,14 @@ class InterfacesFacts(object):
         return ansible_facts
 
     def _device_info(self):
-        return self._module._capabilities.get("device_info", {})
+        try:
+            # this needs to be wrapped around a try except block
+            # to make sure that "parsed" doesn't throw a traceback
+            # since we do not connect to a device
+            device_info = self._module._capabilities.get("device_info", {})
+        except AttributeError:
+            device_info = {}
+        return device_info
 
     def render_system_defaults(self, config):
         """Collect user-defined-default states for 'system default switchport' configurations.
