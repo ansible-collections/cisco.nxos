@@ -43,7 +43,7 @@
     local_file_directory: dir1/dir2/dir3
     remote_scp_server: scp_server_gone.example.com
     remote_scp_server_user: '{{ ansible_ssh_user }}'
-    remote_scp_server_password: '{{ ansible_ssh_pass | default(omit) }}'
+    remote_scp_server_password: '{{ ansible_ssh_pass }}'
 
 - assert:
     that:
@@ -68,7 +68,7 @@
     local_file_directory: dir1/dir2/dir3
     remote_scp_server: 192.168.55.55
     remote_scp_server_user: '{{ ansible_ssh_user }}'
-    remote_scp_server_password: '{{ ansible_ssh_pass | default(omit) }}'
+    remote_scp_server_password: '{{ ansible_ssh_pass }}'
 
 - assert:
     that:
@@ -92,7 +92,7 @@
     local_file_directory: dir1/dir2/dir3
     remote_scp_server: '{{ inventory_hostname_short }}'
     remote_scp_server_user: invalid_user_name
-    remote_scp_server_password: '{{ ansible_ssh_pass | default(omit) }}'
+    remote_scp_server_password: '{{ ansible_ssh_pass }}'
 
 - assert:
     that:

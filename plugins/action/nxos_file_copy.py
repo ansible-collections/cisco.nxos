@@ -276,7 +276,7 @@ class ActionModule(ActionBase):
         self.results["failed"] = False
         nxos_hostname = self.play_context.remote_addr
         nxos_username = self.play_context.remote_user
-        nxos_password = self.play_context.password
+        nxos_password = self.play_context.password or ""
         port = self.playvals["connect_ssh_port"]
 
         # Build copy command components that will be used to initiate copy from the nxos device.
