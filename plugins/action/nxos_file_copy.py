@@ -72,7 +72,9 @@ class ActionModule(ActionBase):
         playvals = {}
         # Process key value pairs from playbook task
         for key in argument_spec.keys():
-            playvals[key] = self._task.args.get(key, argument_spec[key].get("default"))
+            playvals[key] = self._task.args.get(
+                key, argument_spec[key].get("default")
+            )
             if playvals[key] is None:
                 continue
 
@@ -118,7 +120,9 @@ class ActionModule(ActionBase):
             ):
                 params = "<remote_scp_server>, <remote_scp_server_user>"
                 raise AnsibleError(
-                    "Playbook parameters {0} must be set together".format(params)
+                    "Playbook parameters {0} must be set together".format(
+                        params
+                    )
                 )
 
         return playvals
@@ -143,14 +147,18 @@ class ActionModule(ActionBase):
     def md5sum_check(self, dst, file_system):
         command = "show file {0}{1} md5sum".format(file_system, dst)
         remote_filehash = self.conn.exec_command(command)
-        remote_filehash = to_bytes(remote_filehash, errors="surrogate_or_strict")
+        remote_filehash = to_bytes(
+            remote_filehash, errors="surrogate_or_strict"
+        )
 
         local_file = self.playvals["local_file"]
         try:
             with open(local_file, "rb") as f:
                 filecontent = f.read()
         except (OSError, IOError) as exc:
-            raise AnsibleError("Error reading the file: {0}".format(to_text(exc)))
+            raise AnsibleError(
+                "Error reading the file: {0}".format(to_text(exc))
+            )
 
         filecontent = to_bytes(filecontent, errors="surrogate_or_strict")
         local_filehash = hashlib.md5(filecontent).hexdigest()
@@ -192,10 +200,14 @@ class ActionModule(ActionBase):
 
         match = re.search(r"No such file or directory", body)
         if match:
-            raise AnsibleError("Invalid nxos filesystem {0}".format(file_system))
+            raise AnsibleError(
+                "Invalid nxos filesystem {0}".format(file_system)
+            )
         else:
             raise AnsibleError(
-                "Unable to determine size of filesystem {0}".format(file_system)
+                "Unable to determine size of filesystem {0}".format(
+                    file_system
+                )
             )
 
     def enough_space(self, file, file_system):
@@ -212,7 +224,9 @@ class ActionModule(ActionBase):
         file_system = self.playvals["file_system"]
 
         if not self.enough_space(local_file, file_system):
-            raise AnsibleError("Could not transfer file. Not enough space on device.")
+            raise AnsibleError(
+                "Could not transfer file. Not enough space on device."
+            )
 
         # frp = full_remote_path, flp = full_local_path
         frp = "{0}{1}".format(file_system, remote_file)
@@ -227,7 +241,9 @@ class ActionModule(ActionBase):
 
     def file_push(self):
         local_file = self.playvals["local_file"]
-        remote_file = self.playvals["remote_file"] or os.path.basename(local_file)
+        remote_file = self.playvals["remote_file"] or os.path.basename(
+            local_file
+        )
         file_system = self.playvals["file_system"]
 
         if not self.local_file_exists(local_file):
@@ -247,7 +263,9 @@ class ActionModule(ActionBase):
 
         if not self.play_context.check_mode and not file_exists:
             self.transfer_file_to_device(remote_file)
-            self.results["transfer_status"] = "Sent: File copied to remote device."
+            self.results[
+                "transfer_status"
+            ] = "Sent: File copied to remote device."
 
         self.results["local_file"] = local_file
         if remote_file is None:
@@ -344,7 +362,9 @@ class ActionModule(ActionBase):
                 before = decoded_before.strip().replace(" \x08", "")
                 after = decoded_after.strip().replace(" \x08", "")
                 outcome["error"] = True
-                outcome["error_data"] = "COMMAND {0} ERROR {1}".format(before, after)
+                outcome["error_data"] = "COMMAND {0} ERROR {1}".format(
+                    before, after
+                )
                 return outcome
             elif index == 14:
                 outcome["copy_complete"] = True
@@ -398,11 +418,18 @@ class ActionModule(ActionBase):
                     outcome["expect_timeout"] = False
                     nxos_session.close()
                     nxos_session = pexpect.spawn(
-                        "ssh " + nxos_username + "@" + nxos_hostname + " -p" + str(port)
+                        "ssh "
+                        + nxos_username
+                        + "@"
+                        + nxos_hostname
+                        + " -p"
+                        + str(port)
                     )
                     continue
                 self.results["failed"] = True
-                outcome["error_data"] = re.sub(nxos_password, "", outcome["error_data"])
+                outcome["error_data"] = re.sub(
+                    nxos_password, "", outcome["error_data"]
+                )
                 self.results["error_data"] = (
                     "Failed to spawn expect session! " + outcome["error_data"]
                 )
@@ -414,7 +441,10 @@ class ActionModule(ActionBase):
             msg = "After {0} attempts, failed to spawn pexpect session to {1}"
             msg += "BEFORE: {2}, AFTER: {3}"
             error_msg = msg.format(
-                connect_attempt, nxos_hostname, nxos_session.before, nxos_session.after,
+                connect_attempt,
+                nxos_hostname,
+                nxos_session.before,
+                nxos_session.after,
             )
             re.sub(nxos_password, "", error_msg)
             nxos_session.close()
@@ -455,13 +485,17 @@ class ActionModule(ActionBase):
         self.results["copy_cmd"] = copy_cmd
         nxos_session.sendline(copy_cmd)
         for copy_attempt in range(6):
-            outcome = process_outcomes(nxos_session, self.playvals["file_pull_timeout"])
+            outcome = process_outcomes(
+                nxos_session, self.playvals["file_pull_timeout"]
+            )
             if outcome["user_response_required"]:
                 nxos_session.sendline("yes")
                 continue
             if outcome["password_prompt_detected"]:
                 if self.playvals.get("remote_scp_server_password"):
-                    nxos_session.sendline(self.playvals["remote_scp_server_password"])
+                    nxos_session.sendline(
+                        self.playvals["remote_scp_server_password"]
+                    )
                 else:
                     err_msg = "Remote scp server {0} requires a password.".format(
                         rserver
@@ -479,7 +513,9 @@ class ActionModule(ActionBase):
                 break
             if outcome["error"] or outcome["expect_timeout"]:
                 self.results["failed"] = True
-                outcome["error_data"] = re.sub(nxos_password, "", outcome["error_data"])
+                outcome["error_data"] = re.sub(
+                    nxos_password, "", outcome["error_data"]
+                )
                 if self.playvals.get("remote_scp_server_password"):
                     outcome["error_data"] = re.sub(
                         self.playvals["remote_scp_server_password"],
@@ -503,7 +539,9 @@ class ActionModule(ActionBase):
             )
             re.sub(nxos_password, "", error_msg)
             if self.playvals.get("remote_scp_server_password"):
-                re.sub(self.playvals["remote_scp_server_password"], "", error_msg)
+                re.sub(
+                    self.playvals["remote_scp_server_password"], "", error_msg
+                )
             nxos_session.close()
             raise AnsibleError(error_msg)
 
@@ -529,7 +567,9 @@ class ActionModule(ActionBase):
             else:
                 dir = ""
             self.results["local_file"] = file_system + dir + "/" + local_file
-            self.results["remote_scp_server"] = self.playvals["remote_scp_server"]
+            self.results["remote_scp_server"] = self.playvals[
+                "remote_scp_server"
+            ]
 
     # This is the main run method for the action plugin to copy files
     def run(self, tmp=None, task_vars=None):
@@ -559,7 +599,9 @@ class ActionModule(ActionBase):
         # Call get_capabilities() to start the connection to the device.
         self.conn.get_capabilities()
 
-        self.socket_timeout = self.conn.get_option("persistent_command_timeout")
+        self.socket_timeout = self.conn.get_option(
+            "persistent_command_timeout"
+        )
 
         # This action plugin support two modes of operation.
         # - file_pull is False - Push files from the ansible controller to nxos switch.
