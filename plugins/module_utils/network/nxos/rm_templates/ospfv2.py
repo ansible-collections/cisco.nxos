@@ -1,6 +1,6 @@
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.common.network_template import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
 

@@ -20,10 +20,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
     Facts,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.common.resource_module import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.common.rm_utils import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     get_from_dict,
 )
 
