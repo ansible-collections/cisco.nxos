@@ -1,9 +1,9 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_file_copy sanity test"
 
-- set_fact: test_source_file="network-integration.cfg"
-
-- set_fact: test_destination_file="test_destination_file"
+- set_fact: 
+    test_source_file: "data.cfg"
+    test_destination_file: "test_destination_file"
 
 - name: Setup - Remove existing file
   ignore_errors: true
@@ -27,7 +27,7 @@
     - name: Copy {{ test_source_file }} file from Ansible controller to bootflash
       register: result
       cisco.nxos.nxos_file_copy: &id001
-        local_file: ./{{ test_source_file }}
+        local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
         file_system: 'bootflash:'
         connect_ssh_port: '{{ ansible_ssh_port }}'
 
@@ -35,8 +35,8 @@
         that:
           - result.changed == true
           - "'bootflash:' in result.file_system"
-          - "'./{{ test_source_file }}' in result.local_file"
-          - "'network-integration.cfg' in result.remote_file"
+          - "'/{{ test_source_file }}' in result.local_file"
+          - "'{{ test_source_file }}' in result.remote_file"
 
           - "'Sent: File copied to remote device.' in result.transfer_status"
 
@@ -57,7 +57,7 @@
         renamed as {{ test_destination_file }}
       register: result
       cisco.nxos.nxos_file_copy: &id003
-        local_file: ./{{ test_source_file }}
+        local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
         remote_file: '{{ test_destination_file }}'
         file_system: 'bootflash:'
         connect_ssh_port: '{{ ansible_ssh_port }}'
@@ -66,7 +66,7 @@
         that:
           - result.changed == true
           - "'bootflash:' in result.file_system"
-          - "'./{{ test_source_file }}' in result.local_file"
+          - "'{{ test_source_file }}' in result.local_file"
           - "'{{ test_destination_file }}' in result.remote_file"
 
           - "'Sent: File copied to remote device.' in result.transfer_status"
@@ -76,7 +76,7 @@
       register: result
       cisco.nxos.nxos_file_copy: *id003
 
-    - name: Verify file_pull true options have no impact when file_true is false
+    - name: Verify file_pull true options have no impact when file_pull is false
       register: result
       cisco.nxos.nxos_file_copy:
         file_pull: false
@@ -85,9 +85,9 @@
         file_pull_kstack: true
         local_file_directory: dir1/dir2/dir3
         remote_scp_server: '{{ inventory_hostname_short }}'
-        remote_scp_server_user: '{{ ansible_ssh_user }}'
-        remote_scp_server_password: '{{ ansible_ssh_pass }}'
-        local_file: ./{{ test_source_file }}
+        remote_scp_server_user: temp_user
+        remote_scp_server_password: '{{ temp_passwd }}'
+        local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
         remote_file: '{{ test_destination_file }}'
         file_system: 'bootflash:'
         connect_ssh_port: '{{ ansible_ssh_port }}'
@@ -103,10 +103,11 @@
         remote_file: /{{ test_destination_file }}
         local_file: '{{ test_destination_file }}_copy'
         local_file_directory: dir1/dir2/dir3
-        remote_scp_server: '{{ inventory_hostname_short }}'
-        remote_scp_server_user: '{{ ansible_ssh_user }}'
-        remote_scp_server_password: '{{ ansible_ssh_pass }}'
-
+        remote_scp_server: '{{ mgmt0_ip }}'
+        remote_scp_server_user: temp_user
+        remote_scp_server_password: "{{ temp_passwd }}"
+        connect_ssh_port: '{{ ansible_ssh_port }}'
+        
     - assert: &id006
         that:
           - result.changed == true
@@ -117,15 +118,15 @@
 
           - "'Received: File copied/pulled to nxos device from remote scp server.'\
             \ in result.transfer_status"
-          - "'{{ inventory_hostname_short }}' in result.remote_scp_server"
+          - "'{{ mgmt0_ip }}' in result.remote_scp_server"
 
     - name: Overwrite the file
       register: result
       cisco.nxos.nxos_file_copy: *id005
 
     - assert: *id006
+  
   always:
-
     - name: Remove file
       ignore_errors: true
       cisco.nxos.nxos_command: *id002
