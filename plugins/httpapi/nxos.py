@@ -117,7 +117,9 @@ class HttpApi(HttpApiBase):
         device_info = {}
 
         device_info["network_os"] = "nxos"
-        reply, platform_reply = self.send_request(["show version", "show inventory"])
+        reply, platform_reply = self.send_request(
+            ["show version", "show inventory"]
+        )
 
         find_os_version = [
             r"\s+system:\s+version\s*(\S+)",
