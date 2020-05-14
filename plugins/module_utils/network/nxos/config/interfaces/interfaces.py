@@ -55,7 +55,7 @@ class Interfaces(ConfigBase):
     def __init__(self, module):
         super(Interfaces, self).__init__(module)
 
-    def get_interfaces_facts(self, get_default_interfaces=False):
+    def get_interfaces_facts(self, get_default_interfaces=False, data=None):
         """ Get the 'facts' (the current configuration)
 
         :get_default_interfaces: boolean - when True include a list of existing-but-default interface names in the facts dict.
@@ -64,7 +64,7 @@ class Interfaces(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources
+            self.gather_subset, self.gather_network_resources, data=data
         )
         interfaces_facts = facts["ansible_network_resources"].get("interfaces")
         interfaces_facts = remove_rsvd_interfaces(interfaces_facts)
@@ -90,32 +90,68 @@ class Interfaces(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
 
-        existing_interfaces_facts = self.get_interfaces_facts(
-            get_default_interfaces=True
-        )
-        default_intf_list = existing_interfaces_facts.pop()
-        commands.extend(
-            self.set_config(existing_interfaces_facts, default_intf_list)
-        )
-        if commands:
+        if self.state in self.ACTION_STATES:
+            existing_interfaces_facts = self.get_interfaces_facts(
+                get_default_interfaces=True
+            )
+        else:
+            existing_interfaces_facts = []
+
+        if self.state in self.ACTION_STATES:
+            default_intf_list = existing_interfaces_facts.pop()
+            commands.extend(
+                self.set_config(existing_interfaces_facts, default_intf_list)
+            )
+
+        if self.state == "rendered":
+            # Hardcode the system defaults for "rendered"
+            # This can be made a configurable option in the future
+            self.intf_defs = {
+                "sysdefs": {
+                    "L2_enabled": False,
+                    "L3_enabled": False,
+                    "mode": "layer3",
+                }
+            }
+            commands.extend(self.set_config(existing_interfaces_facts))
+
+        if commands and self.state in self.ACTION_STATES:
             if not self._module.check_mode:
                 self.edit_config(commands)
             result["changed"] = True
-        result["commands"] = commands
 
-        changed_interfaces_facts = self.get_interfaces_facts()
+        if self.state in self.ACTION_STATES:
+            result["commands"] = commands
 
-        result["before"] = existing_interfaces_facts
-        if result["changed"]:
-            result["after"] = changed_interfaces_facts
+        if self.state in self.ACTION_STATES or self.state == "gathered":
+            changed_interfaces_facts = self.get_interfaces_facts()
+
+        elif self.state == "rendered":
+            result["rendered"] = commands
+
+        elif self.state == "parsed":
+            running_config = self._module.params["running_config"]
+            if not running_config:
+                self._module.fail_json(
+                    msg="value of running_config parameter must not be empty for state parsed"
+                )
+            result["parsed"] = self.get_interfaces_facts(data=running_config)
+
+        if self.state in self.ACTION_STATES:
+            result["before"] = existing_interfaces_facts
+            if result["changed"]:
+                result["after"] = changed_interfaces_facts
+
+        elif self.state == "gathered":
+            result["gathered"] = changed_interfaces_facts
 
         result["warnings"] = warnings
         return result
 
-    def set_config(self, existing_interfaces_facts, default_intf_list):
+    def set_config(self, existing_interfaces_facts, default_intf_list=[]):
         """ Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
@@ -148,9 +184,14 @@ class Interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if state in ("overridden", "merged", "replaced") and not want:
+        if (
+            state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
             self._module.fail_json(
-                msg="config is required for state {0}".format(state)
+                msg="value of config parameter must not be empty for state {0}".format(
+                    state
+                )
             )
 
         commands = list()
@@ -160,7 +201,7 @@ class Interfaces(ConfigBase):
             commands.extend(self._state_deleted(want, have))
         else:
             for w in want:
-                if state == "merged":
+                if state in ["merged", "rendered"]:
                     commands.extend(self._state_merged(w, have))
                 elif state == "replaced":
                     commands.extend(self._state_replaced(w, have))
@@ -277,6 +318,10 @@ class Interfaces(ConfigBase):
     def default_enabled(self, want=None, have=None, action=""):
         # 'enabled' default state depends on the interface type and L2 state.
         # Note that the current default could change when changing L2/L3 modes.
+        if self.state == "rendered":
+            # For "rendered", we always assume that
+            # the default enabled state is False
+            return False
         if want is None:
             want = {}
         if have is None:
@@ -306,7 +351,6 @@ class Interfaces(ConfigBase):
             intf_def_enabled = default_intf_enabled(
                 name=name, sysdefs=sysdefs, mode=want_mode
             )
-
         return intf_def_enabled
 
     def del_attribs(self, obj):

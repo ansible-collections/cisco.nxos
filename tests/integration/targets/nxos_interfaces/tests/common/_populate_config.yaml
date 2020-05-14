@@ -1,0 +1,15 @@
+- name: "Populate config - {{ nxos_int1 }}"
+  cisco.nxos.nxos_config:
+    lines:
+      - "description outbound-intf"
+      - "switchport"
+      - "no shutdown"
+    parents: "interface {{ nxos_int1 }}"
+
+- name: "Populate config - {{ nxos_int2 }}"
+  cisco.nxos.nxos_config:
+    lines:
+      - "description intf-l3"
+      - "no switchport"
+      - "speed 1000"
+    parents: "interface {{ nxos_int2 }}"

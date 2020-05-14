@@ -3,6 +3,7 @@
   find:
     paths: '{{ role_path }}/tests/common'
     patterns: '{{ testcase }}.yaml'
+    use_regex: True
   connection: local
   register: test_cases
 
