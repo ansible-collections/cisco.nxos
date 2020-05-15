@@ -83,6 +83,7 @@ options:
 """
 
 EXAMPLES = """
+
 # Radius Server Basic settings
   - name: "Radius Server Basic settings"
     nxos_aaa_server:
