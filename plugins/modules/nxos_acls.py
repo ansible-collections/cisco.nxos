@@ -601,41 +601,28 @@ EXAMPLES = """
 #   20 deny udp any any
 # ip access-list ACL2v4
 #   10 permit ahp 192.0.2.0 0.0.0.255 any
-# ip access-list ACL1v6
+# ipv6 access-list ACL1v6
 #   10 permit sctp any any
 #   20 remark IPv6 ACL
-# ip access-list ACL2v6
+# ipv6 access-list ACL2v6
 #  10 deny ipv6 any 2001:db8:3000::/36
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
 - name: Delete specific ACLs
   nxos_acls:
     config:
+      - afi: ipv4
+        acls:
+          - name: ACL1v4
+          - name: ACL2v4
       - afi: ipv6
         acls:
           - name: ACL1v6
-            aces:
-              - grant: permit
-                sequence: 10
-                source:
-                  any: true
-                destination:
-                  any: true
-                protocol: sctp
-
-              - sequence: 20
     state: deleted
 
 # After state:
 # ------------
-#
-# ip access-list ACL1v4
-#   10 permit ip any any
-#   20 deny udp any any
-# ip access-list ACL2v4
-#   10 permit ahp 192.0.2.0 0.0.0.255 any
-# ip access-list ACl1v6
-# ip access-list ACL2v6
+# ipv6 access-list ACL2v6
 #  10 deny ipv6 any 2001:db8:3000::/36
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 

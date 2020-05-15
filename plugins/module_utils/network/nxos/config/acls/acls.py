@@ -459,12 +459,12 @@ class Acls(ConfigBase):
                 have_afi = search_obj_in_list(w["afi"], have, "afi")
                 # if want['afi] not in have, ignore
                 if have_afi:
-                    if self._module.params["state"] != "deleted" and w.get(
-                        "acls"
-                    ):
-                        # for overridden and replaced states only as scope of deleted state is until afi.
+                    if w.get("acls"):
                         for acl in w["acls"]:
-                            if "aces" in acl.keys():
+                            if (
+                                "aces" in acl.keys()
+                                and self._module.params["state"] != "deleted"
+                            ):
                                 have_name = search_obj_in_list(
                                     acl["name"], have_afi["acls"], "name"
                                 )
