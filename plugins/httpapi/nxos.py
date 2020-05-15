@@ -59,7 +59,7 @@ class HttpApi(HttpApiBase):
         responses = list()
 
         for item in to_list(data):
-            cmd_output = message_kwargs.get("output", "text")
+            cmd_output = message_kwargs.get("output") or "text"
             if isinstance(item, dict):
                 command = item["command"]
                 if "output" in item:
@@ -108,9 +108,6 @@ class HttpApi(HttpApiBase):
             )
 
         results = handle_response(response_data)
-
-        if self._become:
-            results = results[1:]
         return results
 
     def get_device_info(self):
@@ -120,8 +117,9 @@ class HttpApi(HttpApiBase):
         device_info = {}
 
         device_info["network_os"] = "nxos"
-        reply = self.send_request("show version")
-        platform_reply = self.send_request("show inventory")
+        reply, platform_reply = self.send_request(
+            ["show version", "show inventory"]
+        )
 
         find_os_version = [
             r"\s+system:\s+version\s*(\S+)",
@@ -192,6 +190,20 @@ class HttpApi(HttpApiBase):
 
         return json.dumps(result)
 
+    # Shims for resource module support
+    def get(self, command, output=None):
+        # This method is ONLY here to support resource modules. Therefore most
+        # arguments are unsupported and not present.
+
+        return self.send_request(data=command, output=output)
+
+    def edit_config(self, candidate):
+        # This method is ONLY here to support resource modules. Therefore most
+        # arguments are unsupported and not present.
+
+        responses = self.send_request(candidate, output="config")
+        return [resp for resp in to_list(responses) if resp != "{}"]
+
 
 def handle_response(response):
     results = []
@@ -207,6 +219,8 @@ def handle_response(response):
                     "%s: %s: %s" % (input_data, msg, clierror),
                     code=output["code"],
                 )
+            elif output.get("input") == "enable":
+                continue
             elif "body" in output:
                 result = output["body"]
                 if isinstance(result, dict):

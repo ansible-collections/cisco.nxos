@@ -118,21 +118,6 @@ commands:
   sample:
     - name ansible
     - name ansible password password
-start:
-  description: The time the job started
-  returned: always
-  type: str
-  sample: "2016-11-16 10:38:15.126146"
-end:
-  description: The time the job ended
-  returned: always
-  type: str
-  sample: "2016-11-16 10:38:25.595612"
-delta:
-  description: The time elapsed to perform all operations
-  returned: always
-  type: str
-  sample: "0:00:10.469466"
 """
 from copy import deepcopy
 from functools import partial
@@ -383,7 +368,7 @@ def main():
         supports_check_mode=True,
     )
 
-    result = {"changed": False}
+    result = {"changed": False, "warnings": []}
 
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
@@ -407,7 +392,19 @@ def main():
 
     if commands:
         if not module.check_mode:
-            load_config(module, commands)
+            responses = load_config(module, commands)
+            for resp in responses:
+                if resp.lower().startswith("wrong password"):
+                    module.fail_json(msg=resp)
+                else:
+                    result["warnings"].extend(
+                        [
+                            x[9:]
+                            for x in resp.splitlines()
+                            if x.startswith("WARNING: ")
+                        ]
+                    )
+
         result["changed"] = True
 
     module.exit_json(**result)

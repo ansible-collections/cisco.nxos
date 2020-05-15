@@ -35,8 +35,7 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """module: nxos_lldp_global
-short_description: Configure and manage Link Layer Discovery Protocol(LLDP) attributes
-  on NX-OS platforms.
+short_description: LLDP Global Resource Module
 description: This module configures and manages the Link Layer Discovery Protocol(LLDP)
   attributes on NX-OS platforms.
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
@@ -44,6 +43,16 @@ notes:
 - Tested against NxOS 7.3.(0)D1(1) on VIRL
 - The LLDP feature needs to be enabled before using this module
 options:
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device by executing
+        the command B(show running-config | include lldp).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
+    type: str
+    version_added: "1.0.0"
   config:
     description:
     - A list of link layer discovery configurations
@@ -133,6 +142,9 @@ options:
     - merged
     - replaced
     - deleted
+    - gathered
+    - rendered
+    - parsed
     default: merged
 """
 EXAMPLES = """
@@ -144,7 +156,7 @@ EXAMPLES = """
 # feature lldp
 
 - name: Merge provided configuration with device configuration
-  nxos_lldp_global:
+  cisco.nxos.nxos_lldp_global:
     config:
       timer: 35
       holdtime: 100
@@ -170,7 +182,7 @@ EXAMPLES = """
 # lldp timer 35
 
 - name: Replace device configuration of specific LLDP attributes with provided configuration
-  nxos_lldp_global:
+  cisco.nxos.nxos_lldp_global:
     config:
       timer: 40
       tlv_select:
@@ -200,7 +212,7 @@ EXAMPLES = """
 # lldp reinit 3
 
 - name: Delete LLDP configuration (this will by default remove all lldp configuration)
-  nxos_lldp_global:
+  cisco.nxos.nxos_lldp_global:
     state: deleted
 
 # After state:
@@ -209,7 +221,69 @@ EXAMPLES = """
 # user(config)# show running-config | include lldp
 # feature lldp
 
+# Using rendered
 
+- name: Use rendered state to convert task input to device specific commands
+  cisco.nxos.nxos_lldp_global:
+    config:
+      holdtime: 130
+      port_id: 1
+      reinit: 5
+      tlv_select:
+        dcbxp: yes
+        power_management: yes
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+
+# rendered:
+#   - "lldp tlv-select dcbxp"
+#   - "lldp tlv-select power-management"
+#   - "lldp portid-subtype 1"
+#   - "lldp reinit 5"
+#   - "lldp holdtime 130"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# lldp holdtime 131
+# lldp reinit 7
+# no lldp tlv-select system-name
+# no lldp tlv-select system-description
+
+# Task output (redacted)
+# -----------------------
+
+# parsed:
+#   holdtime: 131
+#   reinit: 7
+#   tlv_select:
+#     system:
+#       description: false
+#       name: false
+
+# Using gathered
+
+# Existing device config state
+# -------------------------------
+# feature lldp
+# lldp holdtime 129
+# lldp reinit 5
+# lldp timer 35
+# no lldp tlv-select system-name
+
+# Task output (redacted)
+# -----------------------
+
+# gathered:
+#   reinit: 5
+#   timer: 35
+#   tlv_select:
+#     system:
+#       name: False
+#   holdtime: 129
 """
 RETURN = """
 before:
@@ -248,8 +322,19 @@ def main():
 
     :returns: the result form module invocation
     """
+    required_if = [
+        ("state", "merged", ("config",)),
+        ("state", "replaced", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
+    ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
-        argument_spec=Lldp_globalArgs.argument_spec, supports_check_mode=True
+        argument_spec=Lldp_globalArgs.argument_spec,
+        required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
+        supports_check_mode=True,
     )
 
     result = Lldp_global(module).execute_module()

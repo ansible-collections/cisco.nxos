@@ -1,8 +1,34 @@
 ---
-- include: cli.yaml
-  tags:
-    - cli
+- name: Fetch mgmt interface information
+  cisco.nxos.nxos_command:
+    commands: show interface mgmt 0 | json
+  register: result
 
-- include: nxapi.yaml
-  tags:
-    - nxapi
+- name: Store mgmt interface IP address
+  set_fact:
+    mgmt0_ip: "{{ result['stdout'][0]['TABLE_interface']['ROW_interface']['eth_ip_addr'] }}"
+
+- name: Generate and store random password for temp user
+  set_fact:
+    temp_passwd: "{{ lookup('password', 'length=15 chars=ascii_letters') }}"
+  delegate_to: localhost
+  no_log: True
+
+- name: Configure temporary user for test
+  cisco.nxos.nxos_user:
+    name: temp_user
+    configured_password: "{{ temp_passwd }}"
+
+- block: 
+    - include: cli.yaml
+      tags:
+        - cli
+
+    - include: nxapi.yaml
+      tags:
+        - nxapi
+  always:
+    - name: Remove temporary user
+      cisco.nxos.nxos_user:
+        name: temp_user
+        state: absent

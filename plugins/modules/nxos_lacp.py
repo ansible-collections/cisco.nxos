@@ -37,8 +37,7 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """module: nxos_lacp
-short_description: Manage Global Link Aggregation Control Protocol (LACP) on Cisco
-  NX-OS devices.
+short_description: LACP Resource Module.
 description: This module manages Global Link Aggregation Control Protocol (LACP) on
   NX-OS devices.
 author: Trishna Guha (@trishnaguha)
@@ -46,6 +45,16 @@ notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL.
 - Feature lacp should be enabled for this module.
 options:
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device by executing
+        the command B(show running-config | include lacp).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
+    type: str
+    version_added: "2.10"
   config:
     description: LACP global options.
     type: dict
@@ -83,6 +92,9 @@ options:
     - merged
     - replaced
     - deleted
+    - gathered
+    - rendered
+    - parsed
     default: merged
 """
 EXAMPLES = """
@@ -93,7 +105,7 @@ EXAMPLES = """
 #
 
 - name: Merge provided configuration with device configuration.
-  nxos_lacp:
+  cisco.nxos.nxos_lacp:
     config:
       system:
         priority: 10
@@ -137,14 +149,73 @@ EXAMPLES = """
 # lacp system-priority 10
 
 - name: Delete global LACP configurations.
-  nxos_lacp:
+  cisco.nxos.nxos_lacp:
     state: deleted
 
 # After state:
 # ------------
 #
 
+# Using rendered
 
+- name: Render platform specific configuration lines (without connecting to the device)
+  cisco.nxos.nxos_lacp:
+    config:
+      system:
+        priority: 10
+        mac:
+          address: 00c1.4c00.bd15
+          role: secondary
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+
+# rendered:
+#   - "lacp system-priority 10"
+#   - "lacp system-mac 00c1.4c00.bd15 role secondary"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# lacp system-priority 10
+# lacp system-mac 00c1.4c00.bd15 role secondary
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_lacp:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+# parsed:
+#  system:
+#    priority: 10
+#    mac:
+#      address: 00c1.4c00.bd15
+#      role: secondary
+
+# Using gathered
+
+# Existing device config state
+# -------------------------------
+# Nexus9000v# show running-config | include lacp
+# lacp system-priority 11
+# lacp system-mac 00c1.4c00.bd15 role primary
+
+- name: Gather lacp facts from the device using nxos_lacp
+  nxos_lacp:
+    state: gathered
+
+# Task output (redacted)
+# -----------------------
+# gathered:
+#  system:
+#    priority: 11
+#    mac:
+#      address: 00c1.4c00.bd15
+#      role: primary
 """
 RETURN = """
 before:
@@ -184,8 +255,19 @@ def main():
 
     :returns: the result form module invocation
     """
+    required_if = [
+        ("state", "merged", ("config",)),
+        ("state", "replaced", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
+    ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
-        argument_spec=LacpArgs.argument_spec, supports_check_mode=True
+        argument_spec=LacpArgs.argument_spec,
+        required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
+        supports_check_mode=True,
     )
 
     result = Lacp(module).execute_module()

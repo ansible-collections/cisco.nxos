@@ -1,0 +1,57 @@
+---
+- debug:
+    msg: Start nxos_hsrp_interfaces deleted integration tests connection={{ ansible_connection
+      }}
+
+- set_fact: 
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
+
+- set_fact:
+    bfd_enable: enable
+    bfd_disable: disable
+  when: platform is not search('N35')
+
+- block:
+    - include_tasks: _remove_config.yaml
+
+    - name: setup2
+      cisco.nxos.nxos_config:
+        lines: 
+          - "feature bfd"
+          - "feature hsrp"
+          - "interface {{ test_int1 }}"  
+          - "  no switchport"
+          - "  hsrp bfd"
+
+    - name: setup3
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface {{ test_int2 }}" 
+          - "  no switchport"
+
+    - name: deleted
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: &id001
+        config:
+          - name: '{{ test_int1 }}'
+            bfd: '{{ bfd_disable|default(omit)}}'
+        state: deleted
+
+    - assert:
+        that:
+          - result.changed == true
+          - "'no hsrp bfd' in result.commands"
+        msg: "Assert failed. 'result.commands': {{ result.commands }}"
+
+    - name: Idempotence - deleted
+      register: result
+      cisco.nxos.nxos_hsrp_interfaces: *id001
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+  
+  always:
+    - include_tasks: _remove_config.yaml

@@ -38,14 +38,23 @@ ANSIBLE_METADATA = {
 
 
 DOCUMENTATION = """module: nxos_lacp_interfaces
-short_description: Manage Link Aggregation Control Protocol (LACP) attributes of interfaces
-  on Cisco NX-OS devices.
+short_description: LACP Interfaces Resource Module.
 description: This module manages Link Aggregation Control Protocol (LACP) attributes
   of NX-OS Interfaces.
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device by executing
+        the command B(show running-config | section ^interface).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
+    type: str
+    version_added: "1.0.0"
   config:
     description: A dictionary of LACP interfaces options.
     type: list
@@ -121,6 +130,9 @@ options:
     - replaced
     - overridden
     - deleted
+    - gathered
+    - rendered
+    - parsed
     default: merged
 """
 EXAMPLES = """
@@ -131,7 +143,7 @@ EXAMPLES = """
 #
 
 - name: Merge provided configuration with device configuration.
-  nxos_lacp_interfaces:
+  cisco.nxos.nxos_lacp_interfaces:
     config:
       - name: Ethernet1/3
         port_priority: 5
@@ -157,7 +169,7 @@ EXAMPLES = """
 #   lacp mode delay
 
 - name: Replace device lacp interfaces configuration with the given configuration.
-  nxos_lacp_interfaces:
+  cisco.nxos.nxos_lacp_interfaces:
     config:
       - name: port-channel11
         links:
@@ -184,7 +196,7 @@ EXAMPLES = """
 #   lacp mode delay
 
 - name: Override device configuration of all LACP interfaces attributes of given interfaces on device with provided configuration.
-  nxos_lacp_interfaces:
+  cisco.nxos.nxos_lacp_interfaces:
     config:
       - name: port-channel11
         links:
@@ -209,14 +221,103 @@ EXAMPLES = """
 #   lacp mode delay
 
 - name: Delete LACP interfaces configurations.
-  nxos_lacp_interfaces:
+  cisco.nxos.nxos_lacp_interfaces:
     state: deleted
 
 # After state:
 # ------------
 #
 
+# Using rendered
 
+- name: Use rendered state to convert task input to device specific commands
+  nxos_lacp_interfaces:
+    config:
+      - name: Ethernet1/800
+        rate: fast
+      - name: Ethernet1/801
+        rate: fast
+        port_priority: 32
+      - name: port-channel10
+        links:
+          max: 15
+          min: 2
+        convergence:
+          graceful: True
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+
+# rendered:
+#  - "interface Ethernet1/800"
+#  - "lacp rate fast"
+#  - "interface Ethernet1/801"
+#  - "lacp port-priority 32"
+#  - "lacp rate fast"
+#  - "interface port-channel10"
+#  - "lacp min-links 2"
+#  - "lacp max-bundle 15"
+#  - "lacp graceful-convergence"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+
+# interface port-channel10
+#   lacp min-links 10
+#   lacp max-bundle 15
+# interface Ethernet1/800
+#   lacp port-priority 100
+#   lacp rate fast
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_lacp_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+
+# parsed:
+#   - name: port-channel10
+#     links:
+#       max: 15
+#       min: 10
+#   - name: Ethernet1/800
+#     port_priority: 100
+#     rate: fast
+
+# Using gathered
+
+# Existing device config state
+# -------------------------------
+# interface Ethernet1/1
+#   lacp port-priority 5
+#   lacp rate fast
+# interface port-channel10
+#   lacp mode delay
+# interface port-channel11
+#   lacp max-bundle 10
+#   lacp min-links 5
+
+- name: Gather lacp_interfaces facts from the device using nxos_lacp_interfaces
+  cisco.nxos.nxos_lacp_interfaces:
+    state: gathered
+
+# Task output (redacted)
+# -----------------------
+# gathered:
+#  - name: Ethernet1/1
+#    port_priority: 5
+#    rate: fast
+#  - name: port-channel10
+#    mode: delay
+#  - name: port-channel11
+#    links:
+#      max: 10
+#      min: 5
 """
 RETURN = """
 before:
@@ -256,8 +357,19 @@ def main():
 
     :returns: the result form module invocation
     """
+    required_if = [
+        ("state", "merged", ("config",)),
+        ("state", "replaced", ("config",)),
+        ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
+    ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=Lacp_interfacesArgs.argument_spec,
+        required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
 

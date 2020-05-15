@@ -37,12 +37,21 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """module: nxos_interfaces
-short_description: Manages interface attributes of NX-OS Interfaces
+short_description: Interfaces Resource Module
 description: This module manages the interface attributes of NX-OS interfaces.
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device by executing
+        the command B(show running-config | section ^interface)
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
+    type: str
   config:
     description: A dictionary of interface options
     type: list
@@ -100,12 +109,17 @@ options:
   state:
     description:
     - The state of the configuration after module completion
+    - The state I(rendered) considers the system default mode for interfaces to be "Layer 3"
+      and the system default state for interfaces to be shutdown.
     type: str
     choices:
     - merged
     - replaced
     - overridden
     - deleted
+    - gathered
+    - rendered
+    - parsed
     default: merged
 """
 EXAMPLES = """
@@ -236,7 +250,98 @@ EXAMPLES = """
 #    description Management interface
 #    ip address dhcp
 
+# Using rendered
 
+- name: Use rendered state to convert task input to device specific commands
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: Ethernet1/1
+        description: outbound-intf
+        mode: layer3
+        speed: 100
+      - name: Ethernet1/2
+        mode: layer2
+        enabled: True
+        duplex: full
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+
+# rendered:
+#   - "interface Ethernet1/1"
+#   - "description outbound-intf"
+#   - "speed 100"
+#   - "interface Ethernet1/2"
+#   - "switchport"
+#   - "duplex full"
+#   - "no shutdown"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# interface Ethernet1/800
+#   description test-1
+#   speed 1000
+#   shutdown
+#   no switchport
+#   duplex half
+# interface Ethernet1/801
+#   description test-2
+#   switchport
+#   no shutdown
+#   mtu 1800
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+#  parsed:
+#    - description: "test-1"
+#      duplex: "half"
+#      enabled: false
+#      mode: "layer3"
+#      name: "Ethernet1/800"
+#      speed: "1000"
+#
+#    - description: "test-2"
+#      enabled: true
+#      mode: "layer2"
+#      mtu: "1800"
+#      name: "Ethernet1/801"
+
+# Using gathered
+
+# Existing device config state
+# -----------------------------
+# interface Ethernet1/1
+#   description outbound-intf
+#   switchport
+#   no shutdown
+# interface Ethernet1/2
+#   description intf-l3
+#   speed 1000
+# interface Ethernet1/3
+# interface Ethernet1/4
+# interface Ethernet1/5
+
+- name: Gather interfaces facts from the device using nxos_interfaces
+  cisco.nxos.nxos_interfaces:
+    state: gathered
+
+# Task output (redacted)
+# -----------------------
+# - name: Ethernet1/1
+#   description: outbound-intf
+#   mode: layer2
+#   enabled: True
+# - name: Ethernet1/2
+#   description: intf-l3
+#   speed: "1000"
 """
 RETURN = """
 before:
@@ -276,8 +381,20 @@ def main():
 
     :returns: the result form module invocation
     """
+    required_if = [
+        ("state", "merged", ("config",)),
+        ("state", "replaced", ("config",)),
+        ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
+    ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
-        argument_spec=InterfacesArgs.argument_spec, supports_check_mode=True
+        argument_spec=InterfacesArgs.argument_spec,
+        required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
+        supports_check_mode=True,
     )
 
     result = Interfaces(module).execute_module()

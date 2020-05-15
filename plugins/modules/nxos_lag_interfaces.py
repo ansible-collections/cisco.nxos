@@ -38,10 +38,22 @@ ANSIBLE_METADATA = {
 
 
 DOCUMENTATION = """module: nxos_lag_interfaces
-short_description: Manages link aggregation groups of NX-OS Interfaces
+short_description: LAG Interfaces Resource Module.
 description: This module manages attributes of link aggregation groups of NX-OS Interfaces.
-author: Trishna Guha (@trishnaguha)
+author:
+  - Trishna Guha (@trishnaguha)
+  - Nilashish Chakraborty (@NilashishC)
 options:
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device by executing
+        the command B(show running-config | section ^interface).
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
+    type: str
+    version_added: "2.10"
   config:
     description: A list of link aggregation group configurations.
     type: list
@@ -82,6 +94,9 @@ options:
     - replaced
     - overridden
     - deleted
+    - gathered
+    - rendered
+    - parsed
     default: merged
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL.
@@ -96,7 +111,7 @@ EXAMPLES = """
 # interface Ethernet1/4
 
 - name: Merge provided configuration with device configuration.
-  nxos_lag_interfaces:
+  cisco.nxos.nxos_lag_interfaces:
     config:
       - name: port-channel99
         members:
@@ -119,7 +134,7 @@ EXAMPLES = """
 #   channel-group 99 mode active
 
 - name: Replace device configuration of specified LAG attributes of given interfaces with provided configuration.
-  nxos_lag_interfaces:
+  cisco.nxos.nxos_lag_interfaces:
     config:
       - name: port-channel10
         members:
@@ -144,7 +159,7 @@ EXAMPLES = """
 #   channel-group 99 mode passive
 
 - name: Override device configuration of all LAG attributes of given interfaces on device with provided configuration.
-  nxos_lag_interfaces:
+  cisco.nxos.nxos_lag_interfaces:
     config:
       - name: port-channel20
         members:
@@ -169,7 +184,7 @@ EXAMPLES = """
 #   channel-group 99 mode active
 
 - name: Delete LAG attributes of given interface (This won't delete the port-channel itself).
-  nxos_lag_interfaces:
+  cisco.nxos.nxos_lag_interfaces:
     config:
       - port-channel: port-channel99
     state: deleted
@@ -184,7 +199,102 @@ EXAMPLES = """
 # interface Ethernet1/4
 #   no channel-group 99
 
+# Using rendered
 
+- name: Use rendered state to convert task input to device specific commands
+  cisco.nxos.nxos_lag_interfaces:
+    config:
+      - name: port-channel10
+        members:
+          - member: Ethernet1/800
+            mode: active
+          - member: Ethernet1/801
+      - name: port-channel11
+        members:
+          - member: Ethernet1/802
+            mode: passive
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+
+# rendered:
+#  - "interface Ethernet1/800"
+#  - "channel-group 10 mode active"
+#  - "interface Ethernet1/801"
+#  - "channel-group 10"
+#  - "interface Ethernet1/802"
+#  - "channel-group 11 mode passive"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+
+# interface port-channel10
+# interface port-channel11
+# interface port-channel12
+# interface Ethernet1/800
+#   channel-group 10 mode active
+# interface Ethernet1/801
+#   channel-group 10 mode active
+# interface Ethernet1/802
+#   channel-group 11 mode passive
+# interface Ethernet1/803
+#   channel-group 11 mode passive
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_lag_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+
+# parsed:
+#  - members:
+#      - member: Ethernet1/800
+#        mode: active
+#      - member: Ethernet1/801
+#        mode: active
+#    name: port-channel10
+#
+#  - members:
+#      - member: Ethernet1/802
+#        mode: passive
+#      - member: Ethernet1/803
+#        mode: passive
+#    name: port-channel11
+#
+#  - name: port-channel12
+
+# Using gathered
+
+# Existing device config state
+# -------------------------------
+# interface port-channel10
+# interface port-channel11
+# interface Ethernet1/1
+#   channel-group 10 mode active
+# interface Ethernet1/2
+#   channel-group 11 mode passive
+#
+
+- name: Gather lag_interfaces facts from the device using nxos_lag_interfaces
+  cisco.nxos.nxos_lag_interfaces:
+    state: gathered
+
+# Task output (redacted)
+# -----------------------
+# gathered:
+#  - name: port-channel10
+#    members:
+#      - member: Ethernet1/1
+#        mode: active
+#  - name: port-channel11
+#    members:
+#      - member: Ethernet1/2
+#        mode: passive
 """
 RETURN = """
 before:
@@ -205,7 +315,13 @@ commands:
   description: The set of commands pushed to the remote device.
   returned: always
   type: list
-  sample: ['command 1', 'command 2', 'command 3']
+  sample:
+    - "interface Ethernet1/800"
+    - "channel-group 10 mode active"
+    - "interface Ethernet1/801"
+    - "channel-group 10"
+    - "interface Ethernet1/802"
+    - "channel-group 11 mode passive"
 """
 
 
@@ -224,8 +340,19 @@ def main():
 
     :returns: the result form module invocation
     """
+    required_if = [
+        ("state", "merged", ("config",)),
+        ("state", "replaced", ("config",)),
+        ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
+    ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
         argument_spec=Lag_interfacesArgs.argument_spec,
+        required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
         supports_check_mode=True,
     )
 

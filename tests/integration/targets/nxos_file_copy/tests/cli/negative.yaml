@@ -1,16 +1,16 @@
 ---
 - debug: msg="START nxos_file_copy negative test"
 
-- set_fact: test_source_file="network-integration.cfg"
-
-- set_fact: test_destination_file="test_destination_file"
+- set_fact: 
+    test_source_file: "data.cfg"
+    test_destination_file: "test_destination_file"
 
 - name: Attempt to copy file to invalid file_system
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
     file_pull: false
-    local_file: ./{{ test_source_file }}
+    local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
     file_system: 'invalid_media_type:'
     connect_ssh_port: '{{ ansible_ssh_port }}'
 
@@ -29,7 +29,7 @@
 
 - assert:
     that:
-      - result is search('Local file ./network-integration.cfg_does_not_exist not
+      - result is search('Local file ./data.cfg_does_not_exist not
         found')
 
 - name: Try and copy file using an invalid remote scp server name
@@ -38,12 +38,13 @@
   cisco.nxos.nxos_file_copy:
     file_pull: true
     file_pull_timeout: 10
-    remote_file: /{{ test_destination_file }}
+    remote_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
     local_file: '{{ test_destination_file }}_copy'
     local_file_directory: dir1/dir2/dir3
     remote_scp_server: scp_server_gone.example.com
     remote_scp_server_user: '{{ ansible_ssh_user }}'
-    remote_scp_server_password: '{{ ansible_ssh_pass }}'
+    remote_scp_server_password: '{{ temp_passwd }}'
+    connect_ssh_port: '{{ ansible_ssh_port }}'
 
 - assert:
     that:
@@ -68,7 +69,8 @@
     local_file_directory: dir1/dir2/dir3
     remote_scp_server: 192.168.55.55
     remote_scp_server_user: '{{ ansible_ssh_user }}'
-    remote_scp_server_password: '{{ ansible_ssh_pass }}'
+    remote_scp_server_password: '{{ temp_passwd }}'
+    connect_ssh_port: '{{ ansible_ssh_port }}'
 
 - assert:
     that:
@@ -90,9 +92,10 @@
     remote_file: /{{ test_destination_file }}
     local_file: '{{ test_destination_file }}_copy'
     local_file_directory: dir1/dir2/dir3
-    remote_scp_server: '{{ inventory_hostname_short }}'
+    remote_scp_server: '{{ mgmt0_ip }}'
     remote_scp_server_user: invalid_user_name
-    remote_scp_server_password: '{{ ansible_ssh_pass }}'
+    remote_scp_server_password: '{{ temp_passwd }}'
+    connect_ssh_port: '{{ ansible_ssh_port }}'
 
 - assert:
     that:
@@ -111,9 +114,10 @@
     remote_file: /{{ test_destination_file }}
     local_file: '{{ test_destination_file }}_copy'
     local_file_directory: dir1/dir2/dir3
-    remote_scp_server: '{{ inventory_hostname_short }}'
+    remote_scp_server: '{{ mgmt0_ip }}'
     remote_scp_server_user: '{{ ansible_ssh_user }}'
     remote_scp_server_password: invalid_password
+    connect_ssh_port: '{{ ansible_ssh_port }}'
 
 - assert:
     that:

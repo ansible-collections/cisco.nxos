@@ -38,6 +38,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
         pass
 
     argument_spec = {
+        "running_config": {"type": "str"},
         "config": {
             "type": "list",
             "elements": "dict",
@@ -47,7 +48,15 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
             },
         },
         "state": {
-            "choices": ["merged", "replaced", "overridden", "deleted"],
+            "choices": [
+                "merged",
+                "replaced",
+                "overridden",
+                "deleted",
+                "rendered",
+                "gathered",
+                "parsed",
+            ],
             "default": "merged",
             "type": "str",
         },

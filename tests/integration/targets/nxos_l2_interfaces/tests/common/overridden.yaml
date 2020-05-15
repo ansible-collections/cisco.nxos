@@ -1,0 +1,79 @@
+---
+- debug:
+    msg: Start nxos_l2_interfaces overridden integration tests connection={{ ansible_connection }}
+
+- set_fact:
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
+
+- name: setup1
+  ignore_errors: true
+  cisco.nxos.nxos_config: &id003
+    lines:
+      - "default interface {{ test_int1 }}"
+      - "default interface {{ test_int2 }}"
+
+- block:
+
+    - name: setup2
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport trunk allowed vlan 11"
+        parents: "interface {{ test_int1 }}"
+
+    - name: setup3
+      cisco.nxos.nxos_config:
+        lines: 
+          - "interface {{ test_int2 }}"
+          - "  switchport"
+
+    - name: Gather l2_interfaces facts
+      cisco.nxos.nxos_facts: &id001
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: l2_interfaces
+
+    - name: Overridden
+      register: result
+      cisco.nxos.nxos_l2_interfaces: &id002
+        config:
+
+          - name: '{{ test_int2 }}'
+            access:
+              vlan: 6
+            trunk:
+              allowed_vlans: 10-12
+        state: overridden
+
+    - assert:
+        that:
+          - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.before) == []
+          - result.changed == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'no switchport trunk allowed vlan' in result.commands"
+          - "'interface {{ test_int2 }}' in result.commands"
+          - "'switchport access vlan 6' in result.commands"
+          - "'switchport trunk allowed vlan 10,11,12' in result.commands"
+
+    - name: Gather l2_interfaces post facts
+      cisco.nxos.nxos_facts: *id001
+
+    - assert:
+        that:
+          - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.after) == []
+
+    - name: Idempotence - Overridden
+      register: result
+      cisco.nxos.nxos_l2_interfaces: *id002
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+  always:
+
+    - name: teardown
+      ignore_errors: true
+      cisco.nxos.nxos_config: *id003

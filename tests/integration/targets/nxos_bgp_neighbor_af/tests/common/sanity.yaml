@@ -200,7 +200,7 @@
         as_override: 'true'
         send_community: standard
         soft_reconfiguration_in: '{{soft_reconfiguration_ina|default(omit)}}'
-        soo: 3:3
+        soo: "3:3"
         next_hop_third_party: true
         state: present
 

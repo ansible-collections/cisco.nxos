@@ -111,7 +111,7 @@ class Lacp_interfacesFacts(object):
             config["links"]["min"] = min_links
         graceful = re.search(r"no lacp graceful-convergence", conf)
         if graceful:
-            config["convergence"]["gracefule"] = False
+            config["convergence"]["graceful"] = False
         vpc = re.search(r"lacp vpc-convergence", conf)
         if vpc:
             config["convergence"]["vpc"] = True

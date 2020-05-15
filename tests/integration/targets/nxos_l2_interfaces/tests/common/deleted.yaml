@@ -1,0 +1,70 @@
+---
+- debug:
+    msg: Start nxos_l2_interfaces deleted integration tests connection={{ ansible_connection }}
+
+- set_fact: 
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
+
+- name: setup1
+  ignore_errors: true
+  cisco.nxos.nxos_config: &id002
+    lines:
+      - "default interface {{ test_int1 }}"
+      - "default interface {{ test_int2 }}"
+
+- block:
+
+    - name: setup2
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport trunk native vlan 10"
+        parents: "interface {{ test_int1 }}"
+    
+    - name: setup3
+      cisco.nxos.nxos_config:
+        lines:
+          - "switchport"
+          - "switchport mode trunk"
+          - "switchport trunk allowed vlan 20"
+        parents: "interface {{ test_int2 }}"
+
+    - name: Gather l2_interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: l2_interfaces
+
+    - name: deleted
+      register: result
+      cisco.nxos.nxos_l2_interfaces: &id001
+        state: deleted
+
+    - assert:
+        that:
+          - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.before)|length
+            == 0
+          - result.after|length == 0
+          - result.changed == true
+          - "'interface {{ test_int1 }}' in result.commands"
+          - "'no switchport trunk native vlan' in result.commands"
+          - "'interface {{ test_int2 }}' in result.commands"
+          - "'no switchport mode' in result.commands"
+          - "'no switchport trunk allowed vlan' in result.commands"
+          - result.commands|length == 5
+
+    - name: Idempotence - deleted
+      register: result
+      cisco.nxos.nxos_l2_interfaces: *id001
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+  always:
+
+    - name: teardown
+      ignore_errors: true
+      cisco.nxos.nxos_config: *id002

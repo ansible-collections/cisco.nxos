@@ -1,0 +1,13 @@
+- name: Populate Config
+  cisco.nxos.nxos_config:
+    lines:
+      - "feature lacp"
+      - "interface {{ nxos_int1 }}"
+      - "  lacp port-priority 5"
+      - "  lacp rate fast"
+      - "interface port-channel10"
+      - "  switchport"
+      - "  lacp mode delay"
+      - "interface port-channel11"
+      - "  lacp max-bundle 10"
+      - "  lacp min-links 5"

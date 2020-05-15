@@ -37,6 +37,7 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
         pass
 
     argument_spec = {
+        "running_config": {"type": "str"},
         "config": {
             "elements": "dict",
             "options": {
@@ -57,7 +58,15 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
             "type": "list",
         },
         "state": {
-            "choices": ["merged", "replaced", "overridden", "deleted"],
+            "choices": [
+                "merged",
+                "replaced",
+                "overridden",
+                "deleted",
+                "rendered",
+                "parsed",
+                "gathered",
+            ],
             "default": "merged",
             "type": "str",
         },

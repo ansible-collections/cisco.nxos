@@ -1,0 +1,86 @@
+---
+- debug:
+    msg: Start nxos_lag_interfaces replaced integration tests connection={{ ansible_connection
+      }}
+
+- set_fact: test_int1="{{ nxos_int1 }}"
+
+- set_fact: test_int2="{{ nxos_int2 }}"
+
+- name: enable feature lacp
+  cisco.nxos.nxos_feature:
+    feature: lacp
+
+- name: setup1
+  ignore_errors: true
+  cisco.nxos.nxos_config:
+    lines:
+      - no interface port-channel 10
+      - no interface port-channel 11
+      - no interface port-channel 19
+
+- name: setup2
+  cisco.nxos.nxos_lag_interfaces: &id003
+    state: deleted
+
+- block:
+
+    - name: setup3
+      ignore_errors: true
+      loop:
+        - interface {{ test_int1 }}
+        - interface {{ test_int2 }}
+      cisco.nxos.nxos_config:
+        lines:
+          - channel-group 10
+        parents: '{{ item }}'
+
+    - name: Gather LAG interfaces facts
+      cisco.nxos.nxos_facts: &id001
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: lag_interfaces
+
+    - name: Replaced
+      register: result
+      cisco.nxos.nxos_lag_interfaces: &id002
+        config:
+
+          - name: port-channel11
+            members:
+
+              - member: '{{ test_int2 }}'
+                mode: active
+        state: replaced
+
+    - assert:
+        that:
+          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length
+            == 0
+
+    - name: Gather LAG interfaces post facts
+      cisco.nxos.nxos_facts: *id001
+
+    - assert:
+        that:
+          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.after)|length
+            == 0
+
+    - name: Idempotence - Replaced
+      register: result
+      cisco.nxos.nxos_lag_interfaces: *id002
+
+    - assert:
+        that:
+          - result.changed == false
+  always:
+
+    - name: teardown1
+      ignore_errors: true
+      cisco.nxos.nxos_lag_interfaces: *id003
+
+    - name: disable feature lacp
+      cisco.nxos.nxos_feature:
+        feature: lacp
+        state: disabled

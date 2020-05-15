@@ -37,12 +37,22 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = """module: nxos_l3_interfaces
-short_description: Manages Layer-3 Interfaces attributes of NX-OS Interfaces
+short_description: L3 Interfaces Resource Module.
 description: This module manages Layer-3 interfaces attributes of NX-OS Interfaces.
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device by executing
+        the command B(show running-config | section '^interface').
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
+    type: str
+    version_added: "1.0.0"
   config:
     description: A dictionary of Layer-3 interface options
     type: list
@@ -110,6 +120,9 @@ options:
     - replaced
     - overridden
     - deleted
+    - gathered
+    - rendered
+    - parsed
     default: merged
 """
 EXAMPLES = """
@@ -121,7 +134,7 @@ EXAMPLES = """
 # interface Ethernet1/6
 
 - name: Merge provided configuration with device configuration.
-  nxos_l3_interfaces:
+  cisco.nxos.nxos_l3_interfaces:
     config:
       - name: Ethernet1/6
         ipv4:
@@ -163,7 +176,7 @@ EXAMPLES = """
 #   ipv6 address "fd5d:12c9:2201:1::1/64"
 
 - name: Replace device configuration of specified L3 interfaces with provided configuration.
-  nxos_l3_interfaces:
+  cisco.nxos.nxos_l3_interfaces:
     config:
       - name: Ethernet1/6
         ipv4: 192.168.22.3/24
@@ -187,7 +200,7 @@ EXAMPLES = """
 #   ipv6 address "fd5d:12c9:2201:1::1/64"
 
 - name: Override device configuration of all L3 interfaces on device with provided configuration.
-  nxos_l3_interfaces:
+  cisco.nxos.nxos_l3_interfaces:
     config:
       - name: Ethernet1/2
         ipv4: 192.168.22.3/4
@@ -212,7 +225,7 @@ EXAMPLES = """
 #   ipv6 address "fd5d:12c9:2201:1::1/64"
 
 - name: Delete L3 attributes of given interfaces (This won't delete the interface itself).
-  nxos_l3_interfaces:
+  cisco.nxos.nxos_l3_interfaces:
     config:
       - name: Ethernet1/6
       - name: Ethernet1/2
@@ -224,7 +237,102 @@ EXAMPLES = """
 # interface Ethernet1/6
 # interface Ethernet1/2
 
+# Using rendered
 
+- name: Use rendered state to convert task input to device specific commands
+  cisco.nxos.nxos_l3_interfaces:
+    config:
+      - name: Ethernet1/800
+        ipv4:
+          - address: 192.168.1.100/24
+            tag: 5
+          - address: 10.1.1.1/24
+            secondary: True
+            tag: 10
+      - name: Ethernet1/800
+        ipv6:
+          - address: fd5d:12c9:2201:2::1/64
+            tag: 6
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+
+# rendered:
+#   - "interface Ethernet1/800"
+#   - "ip address 192.168.1.100/24 tag 5"
+#   - "ip address 10.1.1.1/24 secondary tag 10"
+#   - "interface Ethernet1/800"
+#   - "ipv6 address fd5d:12c9:2201:2::1/64 tag 6"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# interface Ethernet1/800
+#   ip address 192.168.1.100/24 tag 5
+#   ip address 10.1.1.1/24 secondary tag 10
+#   no ip redirects
+# interface Ethernet1/801
+#   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
+#   ip unreachables
+# interface mgmt0
+#   ip address dhcp
+#   vrf member management
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_l3_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+
+# parsed:
+#   - name: Ethernet1/800
+#     ipv4:
+#       - address: 192.168.1.100/24
+#         tag: 5
+#       - address: 10.1.1.1/24
+#         secondary: True
+#         tag: 10
+#     redirects: False
+#   - name: Ethernet1/801
+#     ipv6:
+#      - address: fd5d:12c9:2201:2::1/64
+#        tag: 6
+#     unreachables: True
+
+# Using gathered
+
+# Existing device config state
+# -------------------------------
+# interface Ethernet1/1
+#   ip address 192.0.2.100/24
+# interface Ethernet1/2
+#   no ip redirects
+#   ip address 203.0.113.10/24
+#   ip unreachables
+#   ipv6 address 2001:db8::1/32
+
+- name: Gather l3_interfaces facts from the device using nxos_l3_interfaces
+  cisco.nxos.nxos_l3_interfaces:
+    state: gathered
+
+# Task output (redacted)
+# -----------------------
+
+# gathered:
+#   - name: Ethernet1/1
+#     ipv4:
+#       - address: 192.0.2.100/24
+#   - name: Ethernet1/2
+#     ipv4:
+#       - address: 203.0.113.10/24
+#     ipv6:
+#       - address: 2001:db8::1/32
+#     redirects: False
+#     unreachables: True
 """
 RETURN = """
 before:
@@ -264,8 +372,20 @@ def main():
 
     :returns: the result form module invocation
     """
+    required_if = [
+        ("state", "merged", ("config",)),
+        ("state", "replaced", ("config",)),
+        ("state", "overridden", ("config",)),
+        ("state", "rendered", ("config",)),
+        ("state", "parsed", ("running_config",)),
+    ]
+    mutually_exclusive = [("config", "running_config")]
+
     module = AnsibleModule(
-        argument_spec=L3_interfacesArgs.argument_spec, supports_check_mode=True
+        argument_spec=L3_interfacesArgs.argument_spec,
+        required_if=required_if,
+        mutually_exclusive=mutually_exclusive,
+        supports_check_mode=True,
     )
 
     result = L3_interfaces(module).execute_module()

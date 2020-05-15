@@ -1,0 +1,8 @@
+- name: Cleanup
+  ignore_errors: true
+  cisco.nxos.nxos_config:
+    lines: 
+      - "default interface {{ nxos_int1 }}"
+      - "default interface {{ nxos_int2 }}"
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
