@@ -108,9 +108,6 @@ class HttpApi(HttpApiBase):
             )
 
         results = handle_response(response_data)
-
-        if self._become:
-            results = results[1:]
         return results
 
     def get_device_info(self):
@@ -120,8 +117,9 @@ class HttpApi(HttpApiBase):
         device_info = {}
 
         device_info["network_os"] = "nxos"
-        reply = self.send_request("show version")
-        platform_reply = self.send_request("show inventory")
+        reply, platform_reply = self.send_request(
+            ["show version", "show inventory"]
+        )
 
         find_os_version = [
             r"\s+system:\s+version\s*(\S+)",
@@ -221,6 +219,8 @@ def handle_response(response):
                     "%s: %s: %s" % (input_data, msg, clierror),
                     code=output["code"],
                 )
+            elif output.get("input") == "enable":
+                continue
             elif "body" in output:
                 result = output["body"]
                 if isinstance(result, dict):
