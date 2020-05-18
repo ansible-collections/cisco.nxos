@@ -38,6 +38,7 @@ class VlansArgs(object):
         pass
 
     argument_spec = {
+        "running_config": {"type": "str"},
         "config": {
             "elements": "dict",
             "options": {
@@ -51,7 +52,15 @@ class VlansArgs(object):
             "type": "list",
         },
         "state": {
-            "choices": ["merged", "replaced", "overridden", "deleted"],
+            "choices": [
+                "merged",
+                "replaced",
+                "overridden",
+                "deleted",
+                "rendered",
+                "gathered",
+                "parsed",
+            ],
             "default": "merged",
             "type": "str",
         },

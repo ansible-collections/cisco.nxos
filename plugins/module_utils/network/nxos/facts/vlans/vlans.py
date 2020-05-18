@@ -77,9 +77,12 @@ class VlansFacts(object):
             run_cfg_output = self.get_device_data(
                 connection, "show running-config | section ^vlan"
             )
+        else:
+            running_config = data.split("\n\n")
+            structured, run_cfg_output = running_config[0], running_config[1]
 
-            # Create a single dictionary from all data sources
-            data = self.normalize_table_data(structured, run_cfg_output)
+        # Create a single dictionary from all data sources
+        data = self.normalize_table_data(structured, run_cfg_output)
 
         for vlan in data:
             obj = self.render_config(self.generated_spec, vlan)

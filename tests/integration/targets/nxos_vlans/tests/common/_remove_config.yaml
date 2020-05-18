@@ -1,0 +1,6 @@
+- name: Remove Config
+  cisco.nxos.nxos_config:
+    lines:
+      - "no vlan 2-100"
+      - "no feature vn-segment-vlan-based"
+  ignore_errors: True
