@@ -1,6 +1,7 @@
 - name: Populate config
   cisco.nxos.nxos_config:
     lines:
+      - "feature vn-segment-vlan-based"
       - "vlan 5"
       - "name vlan5"
       - "state suspend"
