@@ -38,12 +38,22 @@ ANSIBLE_METADATA = {
 
 
 DOCUMENTATION = """module: nxos_vlans
-short_description: Create VLAN and manage VLAN configurations on NX-OS Interfaces
-description: This module creates and manages VLAN configurations on Cisco NX-OS Interfaces.
+short_description: VLANs Resource Module.
+description: This module creates and manages VLAN configurations on Cisco NX-OS.
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the NX-OS device by executing
+        the commands B(show vlans | json-pretty) and B(show running-config | section ^vlan) in
+        order and delimited by a line.
+      - The state I(parsed) reads the configuration from C(running_config) option and transforms
+        it into Ansible structured data as per the resource module's argspec and the value is then
+        returned in the I(parsed) key within the result.
+    type: str
   config:
     description: A dictionary of Vlan options
     type: list
@@ -89,6 +99,9 @@ options:
     - replaced
     - overridden
     - deleted
+    - gathered
+    - rendered
+    - parsed
     default: merged
 """
 EXAMPLES = """
@@ -203,7 +216,177 @@ EXAMPLES = """
 # ------------
 # vlan 1
 
+# Using rendered
 
+- name: Use rendered state to convert task input to device specific commands
+  cisco.nxos.nxos_vlans:
+    config:
+      - vlan_id: 5
+        name: vlan5
+        mapped_vni: 100
+
+      - vlan_id: 6
+        name: vlan6
+        state: suspend
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+
+# rendered:
+#   - vlan 5
+#   - name vlan5
+#   - vn-segment 100
+#   - vlan 6
+#   - name vlan6
+#   - state suspend
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# {
+#     "TABLE_vlanbrief": {
+#        "ROW_vlanbrief": [
+#            {
+#                "vlanshowbr-vlanid": "1",
+#                "vlanshowbr-vlanid-utf": "1",
+#                "vlanshowbr-vlanname": "default",
+#                "vlanshowbr-vlanstate": "active",
+#                "vlanshowbr-shutstate": "noshutdown"
+#            },
+#            {
+#                "vlanshowbr-vlanid": "5",
+#                "vlanshowbr-vlanid-utf": "5",
+#                "vlanshowbr-vlanname": "vlan5",
+#                "vlanshowbr-vlanstate": "suspend",
+#                "vlanshowbr-shutstate": "noshutdown"
+#            },
+#            {
+#                "vlanshowbr-vlanid": "6",
+#                "vlanshowbr-vlanid-utf": "6",
+#                "vlanshowbr-vlanname": "VLAN0006",
+#                "vlanshowbr-vlanstate": "active",
+#                "vlanshowbr-shutstate": "noshutdown"
+#            },
+#            {
+#                "vlanshowbr-vlanid": "7",
+#                "vlanshowbr-vlanid-utf": "7",
+#                "vlanshowbr-vlanname": "vlan7",
+#                "vlanshowbr-vlanstate": "active",
+#                "vlanshowbr-shutstate": "noshutdown"
+#            }
+#        ]
+#    },
+#    "TABLE_mtuinfo": {
+#        "ROW_mtuinfo": [
+#            {
+#                "vlanshowinfo-vlanid": "1",
+#                "vlanshowinfo-media-type": "enet",
+#                "vlanshowinfo-vlanmode": "ce-vlan"
+#            },
+#            {
+#                "vlanshowinfo-vlanid": "5",
+#                "vlanshowinfo-media-type": "enet",
+#                "vlanshowinfo-vlanmode": "ce-vlan"
+#            },
+#            {
+#                "vlanshowinfo-vlanid": "6",
+#                "vlanshowinfo-media-type": "enet",
+#                "vlanshowinfo-vlanmode": "ce-vlan"
+#            },
+#            {
+#                "vlanshowinfo-vlanid": "7",
+#                "vlanshowinfo-media-type": "enet",
+#                "vlanshowinfo-vlanmode": "ce-vlan"
+#             }
+#        ]
+#    }
+# }
+#
+# vlan 1,5-7
+# vlan 5
+#   state suspend
+#   name vlan5
+# vlan 7
+#   name vlan7
+#   vn-segment 100
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_vlans:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+
+# parsed:
+#   - vlan_id: 5
+#     enabled: True
+#     mode: "ce"
+#     name: "vlan5"
+#     state: suspend
+#
+#   - vlan_id: 6
+#     enabled: True
+#     mode: "ce"
+#     state: active
+#
+#   - vlan_id: 7
+#     enabled: True
+#     mode: "ce"
+#     name: "vlan7"
+#     state: active
+#     mapped_vni: 100
+
+# Using gathered
+
+# Existing device config state
+# -------------------------------
+# nxos-9k# show vlan | json
+# {"TABLE_vlanbrief": {"ROW_vlanbrief": [{"vlanshowbr-vlanid": "1", "vlanshowbr-vlanid-utf": "1", "vlanshowbr-vlanname": "default", "vlanshowbr-vlanstate
+# ": "active", "vlanshowbr-shutstate": "noshutdown"}, {"vlanshowbr-vlanid": "5", "vlanshowbr-vlanid-utf": "5", "vlanshowbr-vlanname": "vlan5", "vlanshowb
+# r-vlanstate": "suspend", "vlanshowbr-shutstate": "noshutdown"}, {"vlanshowbr-vlanid": "6", "vlanshowbr-vlanid-utf": "6", "vlanshowbr-vlanname": "VLAN00
+# 06", "vlanshowbr-vlanstate": "active", "vlanshowbr-shutstate": "noshutdown"}, {"vlanshowbr-vlanid": "7", "vlanshowbr-vlanid-utf": "7", "vlanshowbr-vlan
+# name": "vlan7", "vlanshowbr-vlanstate": "active", "vlanshowbr-shutstate": "shutdown"}]}, "TABLE_mtuinfo": {"ROW_mtuinfo": [{"vlanshowinfo-vlanid": "1",
+# "vlanshowinfo-media-type": "enet", "vlanshowinfo-vlanmode": "ce-vlan"}, {"vlanshowinfo-vlanid": "5", "vlanshowinfo-media-type": "enet", "vlanshowinfo-
+# vlanmode": "ce-vlan"}, {"vlanshowinfo-vlanid": "6", "vlanshowinfo-media-type": "enet", "vlanshowinfo-vlanmode": "ce-vlan"}, {"vlanshowinfo-vlanid": "7"
+# , "vlanshowinfo-media-type": "enet", "vlanshowinfo-vlanmode": "ce-vlan"}]}}
+#
+# nxos-9k#  show running-config | section ^vlan
+# vlan 1,5-7
+# vlan 5
+#   state suspend
+#   name vlan5
+# vlan 7
+#   shutdown
+#   name vlan7
+#   vn-segment 190
+
+- name: Gather vlans facts from the device using nxos_vlans
+  cisco.nxos.nxos_vlans:
+    state: gathered
+
+# Task output (redacted)
+# -----------------------
+# gathered:
+#   - vlan_id: 5
+#     enabled: True
+#     mode: "ce"
+#     name: "vlan5"
+#     state: suspend
+#
+#   - vlan_id: 6
+#     enabled: True
+#     mode: "ce"
+#     state: active
+#
+#   - vlan_id: 7
+#     enabled: False
+#     mode: "ce"
+#     name: "vlan7"
+#     state: active
+#     mapped_vni: 190
 """
 RETURN = """
 before:
