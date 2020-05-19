@@ -1,21 +1,24 @@
 ---
 - debug:
-    msg: Start nxos_l3_interfaces overridden integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_l3_interfaces overridden integration tests connection={{ ansible_connection }}
 
-- set_fact: test_int1="{{ nxos_int1 }}"
-
-- set_fact: test_int2="{{ nxos_int2 }}"
-
-- set_fact: test_int3="{{ nxos_int3 }}"
+- set_fact:
+    test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
+    test_int3: "{{ nxos_int3 }}"
 
 - name: setup1
   ignore_errors: true
-  ansible.netcommon.cli_config: &id003
-    config: "no system default switchport\ndefault interface {{ test_int1 }}\ndefault\
-      \ interface {{ test_int2 }}\ndefault interface {{ test_int3 }}\ninterface\
-      \ {{ test_int1 }}\n  no switchport\ninterface {{ test_int2 }}\n  no switchport\n\
-      interface {{ test_int3 }}\n  no switchport\n"
+  cisco.nxos.nxos_config: &id003
+    lines:
+      - "no system default switchport"
+      - "default interface {{ item }}"
+      - "interface {{ item }}"
+      - "  no switchport"
+  loop:
+    - "{{ test_int1 }}"
+    - "{{ test_int2 }}"
+    - "{{ test_int3 }}"
 
 - name: setup2 cleanup all L3 states on all interfaces
   cisco.nxos.nxos_l3_interfaces:
@@ -24,9 +27,12 @@
 - block:
 
     - name: setup3
-      ansible.netcommon.cli_config:
-        config: "interface {{ test_int1 }}\n  ip address 192.168.10.2/24 tag 5\n\
-          interface {{ test_int2 }}\n  ip address 10.1.1.1/24\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface {{ test_int1 }}"
+          - "  ip address 192.168.10.2/24 tag 5"
+          - "interface {{ test_int2 }}"
+          - "  ip address 10.1.1.1/24"
 
     - name: Gather l3_interfaces facts
       cisco.nxos.nxos_facts: &id001
@@ -79,4 +85,8 @@
 
     - name: teardown
       ignore_errors: true
-      ansible.netcommon.cli_config: *id003
+      cisco.nxos.nxos_config: *id003
+      loop:
+        - "{{ test_int1 }}"
+        - "{{ test_int2 }}"
+        - "{{ test_int3 }}"

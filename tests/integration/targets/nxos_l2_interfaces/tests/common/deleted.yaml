@@ -2,7 +2,7 @@
 - debug:
     msg: Start nxos_l2_interfaces deleted integration tests connection={{ ansible_connection }}
 
-- set_fact: 
+- set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
@@ -21,7 +21,7 @@
           - "switchport"
           - "switchport trunk native vlan 10"
         parents: "interface {{ test_int1 }}"
-    
+
     - name: setup3
       cisco.nxos.nxos_config:
         lines:

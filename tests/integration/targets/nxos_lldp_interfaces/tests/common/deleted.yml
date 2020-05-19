@@ -11,10 +11,16 @@
 - block:
 
     - name: Setup
-      ansible.netcommon.cli_config:
-        config: "interface Ethernet1/1\n  lldp receive\n  no lldp transmit\ninterface\
-          \ Ethernet1/2\n  no lldp receive\n  lldp tlv-set vlan 12\ninterface Ethernet1/3\n\
-          \  lldp tlv-set management-address 192.0.2.12\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface Ethernet1/1"
+          - "  lldp receive"
+          - "  no lldp transmit"
+          - "interface Ethernet1/2"
+          - "  no lldp receive"
+          - "  lldp tlv-set vlan 12"
+          - "interface Ethernet1/3"
+          - "  lldp tlv-set management-address 192.0.2.12"
 
     - name: Delete on single interface
       register: result
