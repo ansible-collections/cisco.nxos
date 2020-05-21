@@ -10,3 +10,7 @@
 - include: cli.yaml
   tags: cli
   when: run_test
+
+- include: nxapi.yaml
+  tags: nxapi
+  when: run_test

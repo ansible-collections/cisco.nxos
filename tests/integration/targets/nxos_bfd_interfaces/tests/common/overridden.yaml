@@ -14,7 +14,7 @@
 
 - name: setup1
   cisco.nxos.nxos_config: &id002
-    lines: 
+    lines:
       - "no feature bfd"
       - "default interface {{ test_int1 }}"
       - "default interface {{ test_int2 }}"
@@ -25,14 +25,15 @@
       cisco.nxos.nxos_config:
         lines:
           - "feature bfd"
-          - "interface {{ test_int1 }}"
-          - "  no switchport"
-    
+
     - name: setup3
       cisco.nxos.nxos_config:
         lines:
-          - "interface {{ test_int2 }}"
-          - "  no switchport"
+          - "no switchport"
+        parents: "interface {{ item }}"
+      loop:
+        - "{{ test_int1 }}"
+        - "{{ test_int2 }}"
 
     - name: setup initial bfd state
       cisco.nxos.nxos_bfd_interfaces:

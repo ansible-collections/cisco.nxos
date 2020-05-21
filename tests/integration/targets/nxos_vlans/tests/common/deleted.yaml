@@ -4,8 +4,11 @@
       }}
 
 - name: setup
-  ansible.netcommon.cli_config:
-    config: "no vlan 2-100\nvlan 5\nvlan 6\n"
+  cisco.nxos.nxos_config:
+    lines:
+      - "no vlan 2-100"
+      - "vlan 5"
+      - "vlan 6"
 
 - block:
 
@@ -42,5 +45,7 @@
   always:
 
     - name: teardown
-      ansible.netcommon.cli_config:
-        config: "no vlan 5\nno vlan 6\n"
+      cisco.nxos.nxos_config:
+        lines:
+          - "no vlan 5"
+          - "no vlan 6"
