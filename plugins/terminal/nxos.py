@@ -67,7 +67,7 @@ class TerminalModule(TerminalBase):
     ]
 
     def on_become(self, passwd=None):
-        if self._get_prompt().endswith(b"enable#"):
+        if self._get_prompt().strip().endswith(b"enable#"):
             return
 
         out = self._exec_cli_command("show privilege")
