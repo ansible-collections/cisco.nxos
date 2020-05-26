@@ -220,10 +220,12 @@ EXAMPLES = """# Using merged
 #   ip port access-group PortACL in
 #   ipv6 port traffic-filter NewACLv6 in
 
-# Using deleted
+# Using deleted to remove ACL config from specified interfaces
 
 # Before state:
 # -------------
+# interface Ethernet1/1
+#   ip access-group ACL2v4 in
 # interface Ethernet1/2
 #   ipv6 traffic-filter ACL1v6 in
 # interface Ethernet1/5
@@ -235,24 +237,38 @@ EXAMPLES = """# Using merged
   nxos_acl_interfaces:
     config:
       - name: Ethernet1/5
-        access_groups:
-          - afi: ipv6
-
-          - afi: ipv4
-            acls:
-              - name: ACL1v4
-                direction: out
-
       - name: Ethernet1/2
     state: deleted
 
 # After state:
 # -------------
+# interface Ethernet1/1
+#   ip access-group ACL2v4 in
 # interface Ethernet1/2
+# interface Ethernet1/5
+
+# Using deleted to remove ACL config from all interfaces
+
+# Before state:
+# -------------
+# interface Ethernet1/1
+#   ip access-group ACL2v4 in
+# interface Ethernet1/2
+#   ipv6 traffic-filter ACL1v6 in
 # interface Ethernet1/5
 #   ip port access-group PortACL in
 #   ip access-group ACL1v4 out
 #   ipv6 traffic-filter ACL1v6 in
+
+- name: Delete ACL configuration from all interfaces
+  nxos_acl_interfaces:
+    state: deleted
+
+# After state:
+# -------------
+# interface Ethernet1/1
+# interface Ethernet1/2
+# interface Ethernet1/5
 
 # Using parsed
 
