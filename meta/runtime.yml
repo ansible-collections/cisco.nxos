@@ -78,10 +78,6 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     feature:
       redirect: cisco.nxos.nxos
-    nxos_file_copy:
-      redirect: cisco.nxos.nxos
-    file_copy:
-      redirect: cisco.nxos.nxos
     nxos_gir:
       redirect: cisco.nxos.nxos
     gir:
