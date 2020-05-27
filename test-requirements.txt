@@ -3,3 +3,4 @@ flake8
 pexpect
 yamllint
 pytest-xdist
+coverage==4.5.4
