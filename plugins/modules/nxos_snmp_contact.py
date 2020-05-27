@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_snmp_contact
+DOCUMENTATION = """
+module: nxos_snmp_contact
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages SNMP contact info.
 description:
 - Manages SNMP contact information.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -52,7 +48,7 @@ options:
 
 EXAMPLES = """
 # ensure snmp contact is configured
-- nxos_snmp_contact:
+- cisco.nxos.nxos_snmp_contact:
     contact: Test
     state: present
 """

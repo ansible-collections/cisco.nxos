@@ -30,30 +30,26 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_hsrp_interfaces
-short_description: HSRP Interfaces Resouce Module.
+DOCUMENTATION = """
+module: nxos_hsrp_interfaces
+short_description: HSRP interfaces resource module
 description: Manages Hot Standby Router Protocol (HSRP) interface attributes.
+version_added: 1.0.0
 author: Chris Van Heuveln (@chrisvanheuveln)
 notes:
-  - Tested against NX-OS 7.0(3)I5(1).
-  - Feature bfd should be enabled for this module.
+- Tested against NX-OS 7.0(3)I5(1).
+- Feature bfd should be enabled for this module.
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the command B(show running-config | section '^interface').
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | section '^interface').
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
-    version_added: "1.0.0"
   config:
     description: The provided configuration
     type: list
@@ -82,6 +78,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using deleted
@@ -89,8 +86,8 @@ EXAMPLES = """
 - name: Configure hsrp attributes on interfaces
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-      - name: Ethernet1/1
-      - name: Ethernet1/2
+    - name: Ethernet1/1
+    - name: Ethernet1/2
     operation: deleted
 
 
@@ -99,10 +96,10 @@ EXAMPLES = """
 - name: Configure hsrp attributes on interfaces
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-      - name: Ethernet1/1
-        bfd: enable
-      - name: Ethernet1/2
-        bfd: disable
+    - name: Ethernet1/1
+      bfd: enable
+    - name: Ethernet1/2
+      bfd: disable
     operation: merged
 
 
@@ -111,10 +108,10 @@ EXAMPLES = """
 - name: Configure hsrp attributes on interfaces
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-      - name: Ethernet1/1
-        bfd: enable
-      - name: Ethernet1/2
-        bfd: disable
+    - name: Ethernet1/1
+      bfd: enable
+    - name: Ethernet1/2
+      bfd: disable
     operation: overridden
 
 
@@ -123,10 +120,10 @@ EXAMPLES = """
 - name: Configure hsrp attributes on interfaces
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-      - name: Ethernet1/1
-        bfd: enable
-      - name: Ethernet1/2
-        bfd: disable
+    - name: Ethernet1/1
+      bfd: enable
+    - name: Ethernet1/2
+      bfd: disable
     operation: replaced
 
 # Using rendered
@@ -134,10 +131,10 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-      - name: Ethernet1/800
-        bfd: enable
-      - name: Ethernet1/801
-        bfd: enable
+    - name: Ethernet1/800
+      bfd: enable
+    - name: Ethernet1/801
+      bfd: enable
     state: rendered
 
 # Task Output (redacted)
@@ -179,14 +176,14 @@ EXAMPLES = """
 # Existing device config state
 # -------------------------------
 
-interface Ethernet1/1
-  no switchport
-  hsrp bfd
-interface Ethernet1/2
-  no switchport
-  hsrp bfd
-interface Ethernet1/3
-  no switchport
+# interface Ethernet1/1
+#   no switchport
+#   hsrp bfd
+# interface Ethernet1/2
+#   no switchport
+#   hsrp bfd
+# interface Ethernet1/3
+#   no switchport
 
 - name: Gather hsrp_interfaces facts from the device using nxos_hsrp_interfaces
   cisco.nxos.nxos_hsrp_interfaces:

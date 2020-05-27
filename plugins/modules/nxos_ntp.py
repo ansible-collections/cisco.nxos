@@ -7,19 +7,14 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
-DOCUMENTATION = """module: nxos_ntp
+DOCUMENTATION = """
+module: nxos_ntp
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages core NTP configuration.
 description:
 - Manages core NTP configuration.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 options:
@@ -61,13 +56,13 @@ options:
 
 EXAMPLES = """
 # Set NTP Server with parameters
-- nxos_ntp:
+- cisco.nxos.nxos_ntp:
     server: 1.2.3.4
     key_id: 32
     prefer: enabled
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 """
 
 RETURN = """

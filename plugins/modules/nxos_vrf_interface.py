@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_vrf_interface
+DOCUMENTATION = """
+module: nxos_vrf_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages interface specific VRF configuration.
 description:
 - Manages interface specific VRF configuration.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -59,13 +55,13 @@ options:
 
 EXAMPLES = """
 - name: Ensure vrf ntc exists on Eth1/1
-  nxos_vrf_interface:
+  cisco.nxos.nxos_vrf_interface:
     vrf: ntc
     interface: Ethernet1/1
     state: present
 
 - name: Ensure ntc VRF does not exist on Eth1/1
-  nxos_vrf_interface:
+  cisco.nxos.nxos_vrf_interface:
     vrf: ntc
     interface: Ethernet1/1
     state: absent

@@ -16,14 +16,9 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_user
+DOCUMENTATION = """
+module: nxos_user
 extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
@@ -33,6 +28,7 @@ description:
   Cisco Nexus devices.  It allows playbooks to manage either individual usernames
   or the collection of usernames in the current running config.  It also supports
   purging usernames from the configuration that are not explicitly defined.
+version_added: 1.0.0
 options:
   aggregate:
     description:
@@ -78,7 +74,7 @@ options:
       absolute.  It will remove any previously configured usernames on the device
       with the exception of the `admin` user which cannot be deleted per nxos constraints.
     type: bool
-    default: 'no'
+    default: no
   state:
     description:
     - The C(state) argument configures the state of the username definition as it
@@ -93,19 +89,19 @@ options:
 
 EXAMPLES = """
 - name: create a new user
-  nxos_user:
+  cisco.nxos.nxos_user:
     name: ansible
     sshkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     state: present
 
 - name: remove all users except admin
-  nxos_user:
+  cisco.nxos.nxos_user:
     purge: yes
 
 - name: set multiple users role
   aggregate:
-    - name: netop
-    - name: netend
+  - name: netop
+  - name: netend
   role: network-operator
   state: present
 """

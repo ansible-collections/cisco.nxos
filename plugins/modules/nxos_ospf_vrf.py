@@ -16,18 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_ospf_vrf
+DOCUMENTATION = """
+module: nxos_ospf_vrf
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages a VRF for an OSPF router.
 description:
 - Manages a VRF for an OSPF router.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -108,7 +105,7 @@ options:
 """
 
 EXAMPLES = """
-- nxos_ospf_vrf:
+- cisco.nxos.nxos_ospf_vrf:
     ospf: 1
     timer_throttle_spf_start: 50
     timer_throttle_spf_hold: 1000

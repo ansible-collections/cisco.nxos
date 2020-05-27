@@ -9,18 +9,14 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["deprecated"],
-    "supported_by": "network",
-}
-
-DOCUMENTATION = """module: nxos_l2_interface
+DOCUMENTATION = """
+module: nxos_l2_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manage Layer-2 interface on Cisco NXOS devices.
+short_description: (deprecated) Manage Layer-2 interface on Cisco NXOS devices.
 description:
 - This module provides declarative management of Layer-2 interface on Cisco NXOS devices.
+version_added: 1.0.0
 deprecated:
   removed_in: '2.13'
   alternative: nxos_l2_interfaces
@@ -71,47 +67,49 @@ options:
     - present
     - absent
     - unconfigured
+
 """
 
 EXAMPLES = """
 - name: Ensure Eth1/5 is in its default l2 interface state
-  nxos_l2_interface:
+  cisco.nxos.nxos_l2_interface:
     name: Ethernet1/5
     state: unconfigured
 
 - name: Ensure Eth1/5 is configured for access vlan 20
-  nxos_l2_interface:
+  cisco.nxos.nxos_l2_interface:
     name: Ethernet1/5
     mode: access
     access_vlan: 20
 
 - name: Ensure Eth1/5 only has vlans 5-10 as trunk vlans
-  nxos_l2_interface:
+  cisco.nxos.nxos_l2_interface:
     name: Ethernet1/5
     mode: trunk
     native_vlan: 10
     trunk_vlans: 5-10
 
-- name: Ensure eth1/5 is a trunk port and ensure 2-50 are being tagged (doesn't mean others aren't also being tagged)
-  nxos_l2_interface:
+- name: Ensure eth1/5 is a trunk port and ensure 2-50 are being tagged (doesn't mean
+    others aren't also being tagged)
+  cisco.nxos.nxos_l2_interface:
     name: Ethernet1/5
     mode: trunk
     native_vlan: 10
     trunk_vlans: 2-50
 
 - name: Ensure these VLANs are not being tagged on the trunk
-  nxos_l2_interface:
+  cisco.nxos.nxos_l2_interface:
     name: Ethernet1/5
     mode: trunk
     trunk_vlans: 51-4094
     state: absent
 
--  name: Aggregate Configure interfaces for access_vlan with aggregate
-   nxos_l2_interface:
-     aggregate:
-       - { name: "Ethernet1/2", access_vlan: 6 }
-       - { name: "Ethernet1/7", access_vlan: 15 }
-     mode: access
+- name: Aggregate Configure interfaces for access_vlan with aggregate
+  cisco.nxos.nxos_l2_interface:
+    aggregate:
+    - {name: Ethernet1/2, access_vlan: 6}
+    - {name: Ethernet1/7, access_vlan: 15}
+    mode: access
 """
 
 RETURN = """

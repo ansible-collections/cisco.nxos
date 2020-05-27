@@ -30,29 +30,25 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_l2_interfaces
-short_description: L2 Interfaces Resource Module.
+DOCUMENTATION = """
+module: nxos_l2_interfaces
+short_description: L2 interfaces resource module
 description: This module manages Layer-2 interfaces attributes of NX-OS Interfaces.
+version_added: 1.0.0
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the command B(show running-config | section ^interface).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | section ^interface).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
-    version_added: "1.0.0"
   config:
     description: A dictionary of Layer-2 interface options
     type: list
@@ -93,7 +89,6 @@ options:
         - Access mode is not shown in interface facts, so idempotency will not be
           maintained for switchport mode access and every time the output will come
           as changed=True.
-        version_added: '2.10'
         type: str
         choices:
         - access
@@ -111,6 +106,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using merged
@@ -129,13 +125,13 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration.
   cisco.nxos.nxos_l2_interfaces:
     config:
-      - name: Ethernet1/1
-        trunk:
-          native_vlan: 10
-          allowed_vlans: 2,4,15
-      - name: Ethernet1/2
-        access:
-          vlan: 30
+    - name: Ethernet1/1
+      trunk:
+        native_vlan: 10
+        allowed_vlans: 2,4,15
+    - name: Ethernet1/2
+      access:
+        vlan: 30
     state: merged
 
 # After state:
@@ -167,10 +163,10 @@ EXAMPLES = """
 - name: Replace device configuration of specified L2 interfaces with provided configuration.
   cisco.nxos.nxos_l2_interfaces:
     config:
-      - name: Ethernet1/1
-        trunk:
-          native_vlan: 20
-          allowed_vlans: 5-10, 15
+    - name: Ethernet1/1
+      trunk:
+        native_vlan: 20
+        allowed_vlans: 5-10, 15
     state: replaced
 
 # After state:
@@ -200,12 +196,13 @@ EXAMPLES = """
 #   ip address dhcp
 #   ipv6 address auto-config
 
-- name: Override device configuration of all L2 interfaces on device with provided configuration.
+- name: Override device configuration of all L2 interfaces on device with provided
+    configuration.
   cisco.nxos.nxos_l2_interfaces:
     config:
-      - name: Ethernet1/2
-        access:
-          vlan: 30
+    - name: Ethernet1/2
+      access:
+        vlan: 30
     state: overridden
 
 # After state:
@@ -232,11 +229,12 @@ EXAMPLES = """
 #   ip address dhcp
 #   ipv6 address auto-config
 
-- name: Delete L2 attributes of given interfaces (Note This won't delete the interface itself).
+- name: Delete L2 attributes of given interfaces (Note This won't delete the interface
+    itself).
   cisco.nxos.nxos_l2_interfaces:
     config:
-      - name: Ethernet1/1
-      - name: Ethernet1/2
+    - name: Ethernet1/1
+    - name: Ethernet1/2
     state: deleted
 
 # After state:
@@ -253,17 +251,17 @@ EXAMPLES = """
 - name: Render platform specific configuration lines (without connecting to the device)
   cisco.nxos.nxos_l2_interfaces:
     config:
-      - name: Ethernet1/1
-        trunk:
-          native_vlan: 10
-          allowed_vlans: 2,4,15
-      - name: Ethernet1/2
-        access:
-          vlan: 30
-      - name: Ethernet1/3
-        trunk:
-          native_vlan: 20
-          allowed_vlans: 5-10, 15
+    - name: Ethernet1/1
+      trunk:
+        native_vlan: 10
+        allowed_vlans: 2,4,15
+    - name: Ethernet1/2
+      access:
+        vlan: 30
+    - name: Ethernet1/3
+      trunk:
+        native_vlan: 20
+        allowed_vlans: 5-10, 15
     state: rendered
 
 # Task Output (redacted)

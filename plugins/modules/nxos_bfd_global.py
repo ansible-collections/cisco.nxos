@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_bfd_global
+DOCUMENTATION = """
+module: nxos_bfd_global
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Bidirectional Forwarding Detection (BFD) global-level configuration
 description:
 - Manages Bidirectional Forwarding Detection (BFD) global-level configuration.
+version_added: 1.0.0
 author:
 - Chris Van Heuveln (@chrisvanheuveln)
 notes:
@@ -116,7 +112,7 @@ options:
     type: int
 """
 EXAMPLES = """
-- nxos_bfd_global:
+- cisco.nxos.nxos_bfd_global:
     echo_interface: Ethernet1/2
     echo_rx_interval: 50
     interval:

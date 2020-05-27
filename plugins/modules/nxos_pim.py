@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_pim
+DOCUMENTATION = """
+module: nxos_pim
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages configuration of a PIM instance.
 description:
 - Manages configuration of a Protocol Independent Multicast (PIM) instance.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 options:
   bfd:
@@ -50,16 +46,16 @@ options:
 """
 EXAMPLES = """
 - name: Configure ssm_range, enable bfd
-  nxos_pim:
+  cisco.nxos.nxos_pim:
     bfd: enable
-    ssm_range: "224.0.0.0/8"
+    ssm_range: 224.0.0.0/8
 
 - name: Set to default
-  nxos_pim:
+  cisco.nxos.nxos_pim:
     ssm_range: default
 
 - name: Remove all ssm group ranges
-  nxos_pim:
+  cisco.nxos.nxos_pim:
     ssm_range: none
 """
 

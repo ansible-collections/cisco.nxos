@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_vrf
+DOCUMENTATION = """
+module: nxos_vrf
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages global VRF configuration.
 description:
 - This module provides declarative management of VRFs on CISCO NXOS network devices.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -79,7 +75,7 @@ options:
     description:
     - Purge VRFs not defined in the I(aggregate) parameter.
     type: bool
-    default: 'no'
+    default: no
   state:
     description:
     - Manages desired state of the resource.
@@ -99,54 +95,54 @@ options:
 
 EXAMPLES = """
 - name: Ensure ntc VRF exists on switch
-  nxos_vrf:
+  cisco.nxos.nxos_vrf:
     name: ntc
     description: testing
     state: present
 
 - name: Aggregate definition of VRFs
-  nxos_vrf:
+  cisco.nxos.nxos_vrf:
     aggregate:
-      - { name: test1, description: Testing, admin_state: down }
-      - { name: test2, interfaces: Ethernet1/2 }
+    - {name: test1, description: Testing, admin_state: down}
+    - {name: test2, interfaces: Ethernet1/2}
 
 - name: Aggregate definitions of VRFs with Purge
-  nxos_vrf:
+  cisco.nxos.nxos_vrf:
     aggregate:
-      - { name: ntc1, description: purge test1 }
-      - { name: ntc2, description: purge test2 }
+    - {name: ntc1, description: purge test1}
+    - {name: ntc2, description: purge test2}
     state: present
     purge: yes
 
 - name: Delete VRFs exist on switch
-  nxos_vrf:
+  cisco.nxos.nxos_vrf:
     aggregate:
-      - { name: ntc1 }
-      - { name: ntc2 }
+    - {name: ntc1}
+    - {name: ntc2}
     state: absent
 
 - name: Assign interfaces to VRF declaratively
-  nxos_vrf:
+  cisco.nxos.nxos_vrf:
     name: test1
     interfaces:
-      - Ethernet2/3
-      - Ethernet2/5
+    - Ethernet2/3
+    - Ethernet2/5
 
 - name: Check interfaces assigned to VRF
-  nxos_vrf:
+  cisco.nxos.nxos_vrf:
     name: test1
     associated_interfaces:
-      - Ethernet2/3
-      - Ethernet2/5
+    - Ethernet2/3
+    - Ethernet2/5
 
 - name: Ensure VRF is tagged with interface Ethernet2/5 only (Removes from Ethernet2/3)
-  nxos_vrf:
+  cisco.nxos.nxos_vrf:
     name: test1
     interfaces:
-      - Ethernet2/5
+    - Ethernet2/5
 
 - name: Delete VRF
-  nxos_vrf:
+  cisco.nxos.nxos_vrf:
     name: ntc
     state: absent
 """

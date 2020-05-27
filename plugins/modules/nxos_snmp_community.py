@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_snmp_community
+DOCUMENTATION = """
+module: nxos_snmp_community
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages SNMP community configs.
 description:
 - Manages SNMP community configuration.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -62,7 +58,7 @@ options:
 
 EXAMPLES = """
 # ensure snmp community is configured
-- nxos_snmp_community:
+- cisco.nxos.nxos_snmp_community:
     community: TESTING7
     group: network-operator
     state: present

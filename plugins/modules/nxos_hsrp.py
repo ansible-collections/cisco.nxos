@@ -2,18 +2,15 @@
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = r"""module: nxos_hsrp
+DOCUMENTATION = """
+module: nxos_hsrp
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages HSRP configuration on NX-OS switches.
 description:
 - Manages HSRP configuration on NX-OS switches.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -75,18 +72,17 @@ options:
     default: present
 """
 
-EXAMPLES = r"""
+EXAMPLES = """
 - name: Ensure HSRP is configured with following params on a SVI
-  nxos_hsrp:
+  cisco.nxos.nxos_hsrp:
     group: 10
     vip: 10.1.1.1
     priority: 150
     interface: vlan10
     preempt: enabled
 
-- name: Ensure HSRP is configured with following params on a SVI
-        with clear text authentication
-  nxos_hsrp:
+- name: Ensure HSRP is configured with following params on a SVI with clear text authentication
+  cisco.nxos.nxos_hsrp:
     group: 10
     vip: 10.1.1.1
     priority: 150
@@ -95,30 +91,30 @@ EXAMPLES = r"""
     auth_type: text
     auth_string: CISCO
 
-- name: Ensure HSRP is configured with md5 authentication and clear
-        authentication string
-  nxos_hsrp:
+- name: Ensure HSRP is configured with md5 authentication and clear authentication
+    string
+  cisco.nxos.nxos_hsrp:
     group: 10
     vip: 10.1.1.1
     priority: 150
     interface: vlan10
     preempt: enabled
     auth_type: md5
-    auth_string: "0 1234"
+    auth_string: 0 1234
 
-- name: Ensure HSRP is configured with md5 authentication and hidden
-        authentication string
-  nxos_hsrp:
+- name: Ensure HSRP is configured with md5 authentication and hidden authentication
+    string
+  cisco.nxos.nxos_hsrp:
     group: 10
     vip: 10.1.1.1
     priority: 150
     interface: vlan10
     preempt: enabled
     auth_type: md5
-    auth_string: "7 1234"
+    auth_string: 7 1234
 
 - name: Remove HSRP config for given interface, group, and VIP
-  nxos_hsrp:
+  cisco.nxos.nxos_hsrp:
     group: 10
     interface: vlan10
     vip: 10.1.1.1

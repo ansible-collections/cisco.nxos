@@ -16,14 +16,9 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_system
+DOCUMENTATION = """
+module: nxos_system
 extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
@@ -32,6 +27,7 @@ description:
 - This module provides declarative management of node system attributes on Cisco NXOS
   devices.  It provides an option to configure host system parameters or remove those
   parameters from the device active configuration.
+version_added: 1.0.0
 options:
   hostname:
     description:
@@ -76,25 +72,25 @@ options:
 
 EXAMPLES = """
 - name: configure hostname and domain-name
-  nxos_system:
+  cisco.nxos.nxos_system:
     hostname: nxos01
     domain_name: test.example.com
 
 - name: remove configuration
-  nxos_system:
+  cisco.nxos.nxos_system:
     state: absent
 
 - name: configure name servers
-  nxos_system:
+  cisco.nxos.nxos_system:
     name_servers:
-      - 8.8.8.8
-      - 8.8.4.4
+    - 8.8.8.8
+    - 8.8.4.4
 
 - name: configure name servers with VRF support
-  nxos_system:
+  cisco.nxos.nxos_system:
     name_servers:
-      - { server: 8.8.8.8, vrf: mgmt }
-      - { server: 8.8.4.4, vrf: mgmt }
+    - {server: 8.8.8.8, vrf: mgmt}
+    - {server: 8.8.4.4, vrf: mgmt}
 """
 
 RETURN = """

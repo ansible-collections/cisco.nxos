@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_reboot
+DOCUMENTATION = """
+module: nxos_reboot
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Reboot a network device.
 description:
 - Reboot a network device.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -45,7 +41,7 @@ options:
 """
 
 EXAMPLES = """
-- nxos_reboot:
+- cisco.nxos.nxos_reboot:
     confirm: true
 """
 

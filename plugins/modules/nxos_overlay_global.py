@@ -16,18 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_overlay_global
+DOCUMENTATION = """
+module: nxos_overlay_global
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Configures anycast gateway MAC of the switch.
 description:
 - Configures anycast gateway MAC of the switch.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -42,8 +39,8 @@ options:
 """
 
 EXAMPLES = """
-- nxos_overlay_global:
-    anycast_gateway_mac: "b.b.b"
+- cisco.nxos.nxos_overlay_global:
+    anycast_gateway_mac: b.b.b
 """
 
 RETURN = """

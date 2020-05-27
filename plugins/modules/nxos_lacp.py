@@ -30,16 +30,13 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_lacp
-short_description: LACP Resource Module.
+DOCUMENTATION = """
+module: nxos_lacp
+short_description: LACP resource module
 description: This module manages Global Link Aggregation Control Protocol (LACP) on
   NX-OS devices.
+version_added: 1.0.0
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL.
@@ -47,14 +44,13 @@ notes:
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the command B(show running-config | include lacp).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | include lacp).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
-    version_added: "2.10"
   config:
     description: LACP global options.
     type: dict
@@ -96,6 +92,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using merged
@@ -128,7 +125,7 @@ EXAMPLES = """
 # lacp system-priority 10
 
 - name: Replace device global lacp configuration with the given configuration.
-  nxos_lacp:
+  cisco.nxos.nxos_lacp:
     config:
       system:
         mac:
@@ -205,7 +202,7 @@ EXAMPLES = """
 # lacp system-mac 00c1.4c00.bd15 role primary
 
 - name: Gather lacp facts from the device using nxos_lacp
-  nxos_lacp:
+  cisco.nxos.nxos_lacp:
     state: gathered
 
 # Task output (redacted)

@@ -16,20 +16,16 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_vxlan_vtep
+DOCUMENTATION = """
+module: nxos_vxlan_vtep
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages VXLAN Network Virtualization Endpoint (NVE).
 description:
 - Manages VXLAN Network Virtualization Endpoint (NVE) overlay interface that terminates
   VXLAN tunnels.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -86,7 +82,7 @@ options:
     - absent
 """
 EXAMPLES = """
-- nxos_vxlan_vtep:
+- cisco.nxos.nxos_vxlan_vtep:
     interface: nve1
     description: default
     host_reachability: default

@@ -85,6 +85,11 @@ class Acl_interfaces(ConfigBase):
             result["rendered"] = self.set_config({})
             # no need to fetch facts for rendered
         elif self.state == "parsed":
+            running_config = self._module.params["running_config"]
+            if not running_config:
+                self._module.fail_json(
+                    msg="value of running_config parameter must not be empty for state parsed"
+                )
             result["parsed"] = self.set_config({})
             # no need to fetch facts for parsed
         else:
@@ -134,6 +139,16 @@ class Acl_interfaces(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
+        if (
+            self.state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
+            self._module.fail_json(
+                msg="value of config parameter must not be empty for state {0}".format(
+                    self.state
+                )
+            )
+
         commands = []
         if self.state == "overridden":
             commands = self._state_overridden(want, have)

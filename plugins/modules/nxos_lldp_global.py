@@ -28,16 +28,13 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_lldp_global
-short_description: LLDP Global Resource Module
+DOCUMENTATION = """
+module: nxos_lldp_global
+short_description: LLDP resource module
 description: This module configures and manages the Link Layer Discovery Protocol(LLDP)
   attributes on NX-OS platforms.
+version_added: 1.0.0
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
 - Tested against NxOS 7.3.(0)D1(1) on VIRL
@@ -45,14 +42,13 @@ notes:
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the command B(show running-config | include lldp).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | include lldp).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
-    version_added: "1.0.0"
   config:
     description:
     - A list of link layer discovery configurations
@@ -146,6 +142,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using merged

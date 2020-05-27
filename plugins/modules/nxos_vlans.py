@@ -30,29 +30,25 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_vlans
-short_description: VLANs Resource Module.
+DOCUMENTATION = """
+module: nxos_vlans
+short_description: VLANs resource module
 description: This module creates and manages VLAN configurations on Cisco NX-OS.
+version_added: 1.0.0
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the commands B(show vlans | json-pretty) and B(show running-config | section ^vlan) in
-        order and delimited by a line.
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the commands B(show vlans | json-pretty) and B(show running-config
+      | section ^vlan) in order and delimited by a line.
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
   config:
     description: A dictionary of Vlan options
@@ -103,6 +99,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using merged
@@ -112,12 +109,12 @@ EXAMPLES = """
 # vlan 1
 
 - name: Merge provided configuration with device configuration.
-  nxos_vlans:
+  cisco.nxos.nxos_vlans:
     config:
-      - vlan_id: 5
-        name: test-vlan5
-      - vlan_id: 10
-        enabled: False
+    - vlan_id: 5
+      name: test-vlan5
+    - vlan_id: 10
+      enabled: false
     state: merged
 
 # After state:
@@ -142,13 +139,13 @@ EXAMPLES = """
 #   shutdown
 
 - name: Replace device configuration of specified vlan with provided configuration.
-  nxos_vlans:
+  cisco.nxos.nxos_vlans:
     config:
-      - vlan_id: 5
-        name: test-vlan
-        enabled: False
-      - vlan_id: 10
-        enabled: False
+    - vlan_id: 5
+      name: test-vlan
+      enabled: false
+    - vlan_id: 10
+      enabled: false
     state: replaced
 
 # After state:
@@ -177,12 +174,12 @@ EXAMPLES = """
 #   shutdown
 
 - name: Override device configuration of all vlans with provided configuration.
-  nxos_vlans:
+  cisco.nxos.nxos_vlans:
     config:
-      - vlan_id: 5
-        name: test-vlan
-      - vlan_id: 10
-        state: active
+    - vlan_id: 5
+      name: test-vlan
+    - vlan_id: 10
+      state: active
     state: overridden
 
 # After state:
@@ -206,10 +203,10 @@ EXAMPLES = """
 # vlan 10
 
 - name: Delete vlans.
-  nxos_vlans:
+  cisco.nxos.nxos_vlans:
     config:
-      - vlan_id: 5
-      - vlan_id: 10
+    - vlan_id: 5
+    - vlan_id: 10
     state: deleted
 
 # After state:
@@ -221,13 +218,13 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_vlans:
     config:
-      - vlan_id: 5
-        name: vlan5
-        mapped_vni: 100
+    - vlan_id: 5
+      name: vlan5
+      mapped_vni: 100
 
-      - vlan_id: 6
-        name: vlan6
-        state: suspend
+    - vlan_id: 6
+      name: vlan6
+      state: suspend
     state: rendered
 
 # Task Output (redacted)

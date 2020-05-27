@@ -16,18 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_evpn_global
+DOCUMENTATION = """
+module: nxos_evpn_global
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Handles the EVPN control plane for VXLAN.
 description:
 - Handles the EVPN control plane for VXLAN.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - This module is not supported on Nexus 3000 series of switches.
@@ -40,7 +37,7 @@ options:
 """
 
 EXAMPLES = """
-- nxos_evpn_global:
+- cisco.nxos.nxos_evpn_global:
     nv_overlay_evpn: true
 """
 

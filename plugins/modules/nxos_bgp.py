@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_bgp
+DOCUMENTATION = """
+module: nxos_bgp
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages BGP configuration.
 description:
 - Manages BGP configurations on NX-OS switches.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -226,11 +222,11 @@ options:
 
 EXAMPLES = """
 - name: Configure a simple ASN
-  nxos_bgp:
-      asn: 65535
-      vrf: test
-      router_id: 192.0.2.1
-      state: present
+  cisco.nxos.nxos_bgp:
+    asn: 65535
+    vrf: test
+    router_id: 192.0.2.1
+    state: present
 """
 
 RETURN = """

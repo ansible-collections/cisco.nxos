@@ -17,19 +17,14 @@
 #
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
-DOCUMENTATION = """module: nxos_aaa_server_host
+DOCUMENTATION = """
+module: nxos_aaa_server_host
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages AAA server host-specific configuration.
 description:
 - Manages AAA server host-specific configuration.
+version_added: 1.0.0
 author: Jason Edelman (@jedelman8)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -80,31 +75,31 @@ options:
 """
 EXAMPLES = """
 # Radius Server Host Basic settings
-  - name: "Radius Server Host Basic settings"
-    nxos_aaa_server_host:
-        state: present
-        server_type: radius
-        address: 1.2.3.4
-        acct_port: 2084
-        host_timeout: 10
+- name: Radius Server Host Basic settings
+  cisco.nxos.nxos_aaa_server_host:
+    state: present
+    server_type: radius
+    address: 1.2.3.4
+    acct_port: 2084
+    host_timeout: 10
 
 # Radius Server Host Key Configuration
-  - name: "Radius Server Host Key Configuration"
-    nxos_aaa_server_host:
-        state: present
-        server_type: radius
-        address: 1.2.3.4
-        key: hello
-        encrypt_type: 7
+- name: Radius Server Host Key Configuration
+  cisco.nxos.nxos_aaa_server_host:
+    state: present
+    server_type: radius
+    address: 1.2.3.4
+    key: hello
+    encrypt_type: 7
 
 # TACACS Server Host Configuration
-  - name: "Tacacs Server Host Configuration"
-    nxos_aaa_server_host:
-        state: present
-        server_type: tacacs
-        tacacs_port: 89
-        host_timeout: 10
-        address: 5.6.7.8
+- name: Tacacs Server Host Configuration
+  cisco.nxos.nxos_aaa_server_host:
+    state: present
+    server_type: tacacs
+    tacacs_port: 89
+    host_timeout: 10
+    address: 5.6.7.8
 
 """
 

@@ -30,31 +30,28 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_bfd_interfaces
-short_description: BFD Interfaces Resource Module.
+DOCUMENTATION = """
+module: nxos_bfd_interfaces
+short_description: BFD interfaces resource module
 description: Manages attributes of Bidirectional Forwarding Detection (BFD) on the
   interface.
+version_added: 1.0.0
 author: Chris Van Heuveln (@chrisvanheuveln)
 notes:
-  - Tested against NX-OS 7.0(3)I5(1).
-  - Feature bfd should be enabled for this module.
+- Tested against NX-OS 7.0(3)I5(1).
+- Feature bfd should be enabled for this module.
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the command B(show running-config | section '^interface|^feature bfd').
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | section '^interface|^feature
+      bfd').
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
-    version_added: "1.0.0"
   config:
     description: The provided configuration
     type: list
@@ -90,6 +87,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using deleted
@@ -104,12 +102,12 @@ EXAMPLES = """
 - name: Configure interfaces
   cisco.nxos.nxos_bfd_interfaces:
     config:
-      - name: Ethernet1/1
-        bfd: enable
-        echo: enable
-      - name: Ethernet1/2
-        bfd: disable
-        echo: disable
+    - name: Ethernet1/1
+      bfd: enable
+      echo: enable
+    - name: Ethernet1/2
+      bfd: disable
+      echo: disable
     state: merged
 
 
@@ -118,12 +116,12 @@ EXAMPLES = """
 - name: Configure interfaces
   cisco.nxos.nxos_bfd_interfaces:
     config:
-      - name: Ethernet1/1
-        bfd: enable
-        echo: enable
-      - name: Ethernet1/2
-        bfd: disable
-        echo: disable
+    - name: Ethernet1/1
+      bfd: enable
+      echo: enable
+    - name: Ethernet1/2
+      bfd: disable
+      echo: disable
     state: overridden
 
 
@@ -132,12 +130,12 @@ EXAMPLES = """
 - name: Configure interfaces
   cisco.nxos.nxos_bfd_interfaces:
     config:
-      - name: Ethernet1/1
-        bfd: enable
-        echo: enable
-      - name: Ethernet1/2
-        bfd: disable
-        echo: disable
+    - name: Ethernet1/1
+      bfd: enable
+      echo: enable
+    - name: Ethernet1/2
+      bfd: disable
+      echo: disable
     state: replaced
 
 # Using rendered
@@ -145,12 +143,12 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_bfd_interfaces:
     config:
-      - name: Ethernet1/800
-        bfd: enable
-        echo: enable
-      - name: Ethernet1/801
-        bfd: disable
-        echo: disable
+    - name: Ethernet1/800
+      bfd: enable
+      echo: enable
+    - name: Ethernet1/801
+      bfd: disable
+      echo: disable
     state: rendered
 
 # Task Output (redacted)

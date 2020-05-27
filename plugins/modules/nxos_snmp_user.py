@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_snmp_user
+DOCUMENTATION = """
+module: nxos_snmp_user
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages SNMP users for monitoring.
 description:
 - Manages SNMP user configuration.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 notes:
@@ -73,7 +69,7 @@ options:
 """
 
 EXAMPLES = """
-- nxos_snmp_user:
+- cisco.nxos.nxos_snmp_user:
     user: ntc
     group: network-operator
     authentication: md5

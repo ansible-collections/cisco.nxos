@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_ntp_options
+DOCUMENTATION = """
+module: nxos_ntp_options
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages NTP options.
 description:
 - Manages NTP options, e.g. authoritative server and logging.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 notes:
@@ -58,13 +54,13 @@ options:
 """
 EXAMPLES = """
 # Basic NTP options configuration
-- nxos_ntp_options:
+- cisco.nxos.nxos_ntp_options:
     master: true
     stratum: 12
     logging: false
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 """
 
 RETURN = """
