@@ -88,8 +88,10 @@ class HttpApi(HttpApiBase):
 
     def _run_queue(self, queue, output):
         if self._become:
-            self.connection.queue_message("vvvv", "firing event: on_become")
-            queue.insert(0, "enable")
+            self.connection.queue_message(
+                "warning",
+                "become has no effect over httpapi. Use network_cli if privilege escalation is required",
+            )
 
         request = request_builder(queue, output)
         headers = {"Content-Type": "application/json"}
@@ -219,8 +221,6 @@ def handle_response(response):
                     "%s: %s: %s" % (input_data, msg, clierror),
                     code=output["code"],
                 )
-            elif output.get("input") == "enable":
-                continue
             elif "body" in output:
                 result = output["body"]
                 if isinstance(result, dict):
