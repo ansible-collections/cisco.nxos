@@ -1,0 +1,77 @@
+---
+- debug:
+    msg: START nxos_interfaces round trip integration tests on connection={{ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            description: TEST-INTF-1
+            speed: 100
+
+          - name: "{{ nxos_int2 }}"
+            description: TEST-INTF-2
+            mode: layer2
+
+          - name: "{{ nxos_int3 }}"
+            description: TEST-INTF-3
+            mtu: 9216
+        state: merged
+      tags: base_config
+
+    - name: Gather interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - interfaces
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            description: WRONG-TEST-INTF-1
+            speed: 1000
+
+          - name: "{{ nxos_int2 }}"
+            description: WRONG-TEST-INTF-2
+
+          - name: "{{ nxos_int3 }}"
+            description: WRONG-TEST-INTF-3
+            enabled: False
+        state: overridden
+
+    - assert:
+        that:
+        - '"interface Ethernet1/1" in result.commands'
+        - '"description WRONG-TEST-INTF-1" in result.commands'
+        - '"speed 1000" in result.commands'
+        - '"interface Ethernet1/2" in result.commands'
+        - '"no switchport" in result.commands'
+        - '"description WRONG-TEST-INTF-2" in result.commands'
+        - '"interface Ethernet1/3" in result.commands'
+        - '"no mtu" in result.commands'
+        - '"description WRONG-TEST-INTF-3" in result.commands'
+        - result.commands|length == 9
+        - result.changed == true
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.nxos.nxos_interfaces:
+        config: "{{ ansible_facts['network_resources']['interfaces'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - "{{ base_config['after'] == revert['after'] }}"
+  always:
+    - include_tasks: _remove_config.yaml
+
+- debug:
+    msg: END nxos_interfaces round trip integration tests on connection={{ansible_connection }}

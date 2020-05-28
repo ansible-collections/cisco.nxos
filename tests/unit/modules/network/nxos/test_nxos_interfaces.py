@@ -67,10 +67,16 @@ class TestNxosInterfacesModule(TestNxosModule):
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.edit_config"
         )
         self.edit_config = self.mock_edit_config.start()
-        self.mock__device_info = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.interfaces.interfaces.InterfacesFacts._device_info"
+
+        self.mock_get_system_defaults = patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.get_system_defaults"
         )
-        self._device_info = self.mock__device_info.start()
+        self.get_system_defaults = self.mock_get_system_defaults.start()
+
+        self.mock_get_platform = patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.get_platform"
+        )
+        self.get_platform = self.mock_get_platform.start()
 
     def tearDown(self):
         super(TestNxosInterfacesModule, self).tearDown()
@@ -78,7 +84,8 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
-        self.mock__device_info.stop()
+        self.mock_get_system_defaults.stop()
+        self.mock_get_platform.stop()
 
     def load_fixtures(self, commands=None, device=""):
         self.mock_FACT_LEGACY_SUBSETS.return_value = dict()
@@ -86,17 +93,10 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.edit_config.return_value = None
         if device == "legacy":
             # call execute_module() with device='legacy' to use this codepath
-            self._device_info.return_value = {
-                "network_os_platform": "N3K-Cxxx"
-            }
+            self.get_platform.return_value = "N3K-Cxxx"
         else:
-            self._device_info.return_value = {
-                "network_os_platform": "N9K-Cxxx"
-            }
+            self.get_platform.return_value = "N9K-Cxxx"
 
-    SHOW_RUN_SYSDEF = (
-        "show running-config all | incl 'system default switchport'"
-    )
     SHOW_RUN_INTF = "show running-config | section ^interface"
 
     def test_1(self):
@@ -133,9 +133,10 @@ class TestNxosInterfacesModule(TestNxosModule):
         """
         )
         self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_SYSDEF: sysdefs,
-            self.SHOW_RUN_INTF: intf,
+            self.SHOW_RUN_INTF: intf
         }
+        self.get_system_defaults.return_value = sysdefs
+
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", description="ansible", mode="layer3"),
@@ -248,6 +249,8 @@ class TestNxosInterfacesModule(TestNxosModule):
             "description test-sub-intf",
             "interface loopback1",
             "description test-loopback",
+            "interface mgmt0",
+            "no description",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook, ignore_provider_arg)
@@ -290,9 +293,10 @@ class TestNxosInterfacesModule(TestNxosModule):
         """
         )
         self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_SYSDEF: sysdefs,
-            self.SHOW_RUN_INTF: intf,
+            self.SHOW_RUN_INTF: intf
         }
+        self.get_system_defaults.return_value = sysdefs
+
         playbook = dict(
             config=[
                 # Set non-default states on existing objs
@@ -428,9 +432,10 @@ class TestNxosInterfacesModule(TestNxosModule):
         """
         )
         self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_SYSDEF: sysdefs,
-            self.SHOW_RUN_INTF: intf,
+            self.SHOW_RUN_INTF: intf
         }
+        self.get_system_defaults.return_value = sysdefs
+
         playbook = dict(
             config=[
                 # Set non-default states on existing objs
@@ -575,9 +580,10 @@ class TestNxosInterfacesModule(TestNxosModule):
         """
         )
         self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_SYSDEF: sysdefs,
-            self.SHOW_RUN_INTF: intf,
+            self.SHOW_RUN_INTF: intf
         }
+        self.get_system_defaults.return_value = sysdefs
+
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", mode="layer3"),
@@ -610,9 +616,10 @@ class TestNxosInterfacesModule(TestNxosModule):
         """
         )
         self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_SYSDEF: sysdefs,
-            self.SHOW_RUN_INTF: intf,
+            self.SHOW_RUN_INTF: intf
         }
+        self.get_system_defaults.return_value = sysdefs
+
         playbook = dict()
         deleted = [
             "interface Ethernet1/1",
