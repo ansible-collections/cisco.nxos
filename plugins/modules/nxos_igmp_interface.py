@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_igmp_interface
+DOCUMENTATION = """
+module: nxos_igmp_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages IGMP interface configuration.
 description:
 - Manages IGMP interface configuration settings.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -135,12 +131,12 @@ options:
     - default
 """
 EXAMPLES = """
-- nxos_igmp_interface:
+- cisco.nxos.nxos_igmp_interface:
     interface: ethernet1/32
     startup_query_interval: 30
     oif_ps:
-      - { 'prefix': '238.2.2.6' }
-      - { 'source': '192.168.0.1', 'prefix': '238.2.2.5'}
+    - {prefix: 238.2.2.6}
+    - {source: 192.168.0.1, prefix: 238.2.2.5}
     state: present
 """
 RETURN = """

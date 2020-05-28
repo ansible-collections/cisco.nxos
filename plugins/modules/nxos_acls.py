@@ -29,12 +29,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {"metadata_version": "1.1", "supported_by": "Ansible"}
 
-DOCUMENTATION = """module: nxos_acls
-version_added: "1.0.0"
-short_description: ACLs resource module.
+DOCUMENTATION = """
+module: nxos_acls
+short_description: ACLs resource module
 description: Manage named IP ACLs on the Cisco NX-OS platform
+version_added: 1.0.0
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
 - Tested against NX-OS 7.3.(0)D1(1) on VIRL
@@ -42,12 +42,15 @@ notes:
   is expected to provide sequence numbers for the access control entries to preserve
   idempotency. If no sequence number is given, the rule will be added as a new rule
   by the device.
-- To parse configuration text, provide the output of show running-config | section
-  access-list or a mocked up config
 options:
   running_config:
     description:
-    - Parse given commands into structured format. Required if I(state=parsed).
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | section 'ip(v6)* access-list).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
   config:
     description: A dictionary of ACL options.
@@ -395,6 +398,7 @@ options:
     - replaced
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using merged
@@ -404,38 +408,38 @@ EXAMPLES = """
 #
 
 - name: Merge new ACLs configuration
-  nxos_acls:
+  cisco.nxos.nxos_acls:
     config:
-      - afi: ipv4
-        acls:
-          - name: ACL1v4
-            aces:
-              - grant: deny
-                destination:
-                  address: 192.0.2.64
-                  wildcard_bits: 0.0.0.255
-                source:
-                  any: true
-                  port_protocol:
-                    lt: 55
-                protocol: tcp
-                protocol_options:
-                  tcp:
-                    ack: true
-                    fin: true
-                sequence: 50
+    - afi: ipv4
+      acls:
+      - name: ACL1v4
+        aces:
+        - grant: deny
+          destination:
+            address: 192.0.2.64
+            wildcard_bits: 0.0.0.255
+          source:
+            any: true
+            port_protocol:
+              lt: 55
+          protocol: tcp
+          protocol_options:
+            tcp:
+              ack: true
+              fin: true
+          sequence: 50
 
-      - afi: ipv6
-        acls:
-          - name: ACL1v6
-            aces:
-              - grant: permit
-                sequence: 10
-                source:
-                  any: true
-                destination:
-                  prefix: 2001:db8:12::/32
-                protocol: sctp
+    - afi: ipv6
+      acls:
+      - name: ACL1v6
+        aces:
+        - grant: permit
+          sequence: 10
+          source:
+            any: true
+          destination:
+            prefix: 2001:db8:12::/32
+          protocol: sctp
     state: merged
 
 # After state:
@@ -464,24 +468,24 @@ EXAMPLES = """
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
 - name: Replace existing ACL configuration with provided configuration
-  nxos_acls:
+  cisco.nxos.nxos_acls:
     config:
-      - afi: ipv4
-      - afi: ipv6
-        acls:
-          - name: ACL1v6
-            aces:
-              - sequence: 20
-                grant: permit
-                source:
-                  any: true
-                destination:
-                  any: true
-                protocol: pip
+    - afi: ipv4
+    - afi: ipv6
+      acls:
+      - name: ACL1v6
+        aces:
+        - sequence: 20
+          grant: permit
+          source:
+            any: true
+          destination:
+            any: true
+          protocol: pip
 
-              - remark: Replaced ACE
+        - remark: Replaced ACE
 
-          - name: ACL2v6
+      - name: ACL2v6
     state: replaced
 
 # After state:
@@ -510,20 +514,20 @@ EXAMPLES = """
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
 - name: Override existing configuration with provided configuration
-  nxos_acls:
+  cisco.nxos.nxos_acls:
     config:
-      - afi: ipv4
-        acls:
-          - name: NewACL
-            aces:
-              - grant: deny
-                source:
-                  address: 192.0.2.0
-                  wildcard_bits: 0.0.255.255
-                destination:
-                  any: true
-                protocol: eigrp
-              - remark: Example for overridden state
+    - afi: ipv4
+      acls:
+      - name: NewACL
+        aces:
+        - grant: deny
+          source:
+            address: 192.0.2.0
+            wildcard_bits: 0.0.255.255
+          destination:
+            any: true
+          protocol: eigrp
+        - remark: Example for overridden state
     state: overridden
 
 # After state:
@@ -551,7 +555,7 @@ EXAMPLES = """
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
 - name: Delete all ACLs
-  nxos_acls:
+  cisco.nxos.nxos_acls:
     config:
     state: deleted
 
@@ -576,9 +580,9 @@ EXAMPLES = """
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
 - name: Delete all ACLs in given AFI
-  nxos_acls:
+  cisco.nxos.nxos_acls:
     config:
-      - afi: ipv4
+    - afi: ipv4
     state: deleted
 
 # After state:
@@ -609,15 +613,15 @@ EXAMPLES = """
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
 - name: Delete specific ACLs
-  nxos_acls:
+  cisco.nxos.nxos_acls:
     config:
-      - afi: ipv4
-        acls:
-          - name: ACL1v4
-          - name: ACL2v4
-      - afi: ipv6
-        acls:
-          - name: ACL1v6
+    - afi: ipv4
+      acls:
+      - name: ACL1v4
+      - name: ACL2v4
+    - afi: ipv6
+      acls:
+      - name: ACL1v6
     state: deleted
 
 # After state:
@@ -629,7 +633,7 @@ EXAMPLES = """
 # Using parsed
 
 - name: Parse given config to structured data
-  nxos_acls:
+  cisco.nxos.nxos_acls:
     running_config: |
       ip access-list ACL1v4
         50 deny tcp any lt 55 192.0.2.64 0.0.0.255 ack fin
@@ -682,7 +686,7 @@ EXAMPLES = """
 #  10 permit sctp any any
 
 - name: Gather existing configuration
-  nxos_acls:
+  cisco.nxos.nxos_acls:
     state: gathered
 
 # returns:
@@ -722,38 +726,38 @@ EXAMPLES = """
 # Using rendered
 
 - name: Render required configuration to be pushed to the device
-  nxos_acls:
+  cisco.nxos.nxos_acls:
     config:
-      - afi: ipv4
-        acls:
-          - name: ACL1v4
-            aces:
-              - grant: deny
-                destination:
-                  address: 192.0.2.64
-                  wildcard_bits: 0.0.0.255
-                source:
-                  any: true
-                  port_protocol:
-                    lt: 55
-                protocol: tcp
-                protocol_options:
-                  tcp:
-                    ack: true
-                    fin: true
-                sequence: 50
+    - afi: ipv4
+      acls:
+      - name: ACL1v4
+        aces:
+        - grant: deny
+          destination:
+            address: 192.0.2.64
+            wildcard_bits: 0.0.0.255
+          source:
+            any: true
+            port_protocol:
+              lt: 55
+          protocol: tcp
+          protocol_options:
+            tcp:
+              ack: true
+              fin: true
+          sequence: 50
 
-      - afi: ipv6
-        acls:
-          - name: ACL1v6
-            aces:
-              - grant: permit
-                sequence: 10
-                source:
-                  any: true
-                destination:
-                  prefix: 2001:db8:12::/32
-                protocol: sctp
+    - afi: ipv6
+      acls:
+      - name: ACL1v6
+        aces:
+        - grant: permit
+          sequence: 10
+          source:
+            any: true
+          destination:
+            prefix: 2001:db8:12::/32
+          protocol: sctp
     state: rendered
 
 # returns:

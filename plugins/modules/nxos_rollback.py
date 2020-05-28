@@ -16,20 +16,16 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_rollback
+DOCUMENTATION = """
+module: nxos_rollback
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Set a checkpoint or rollback to a checkpoint.
 description:
 - This module offers the ability to set a configuration checkpoint file or rollback
   to a configuration checkpoint file on Cisco NXOS switches.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -46,16 +42,16 @@ options:
 """
 
 EXAMPLES = """
-- nxos_rollback:
+- cisco.nxos.nxos_rollback:
     checkpoint_file: backup.cfg
-    username: "{{ un }}"
-    password: "{{ pwd }}"
-    host: "{{ inventory_hostname }}"
-- nxos_rollback:
+    username: '{{ un }}'
+    password: '{{ pwd }}'
+    host: '{{ inventory_hostname }}'
+- cisco.nxos.nxos_rollback:
     rollback_to: backup.cfg
-    username: "{{ un }}"
-    password: "{{ pwd }}"
-    host: "{{ inventory_hostname }}"
+    username: '{{ un }}'
+    password: '{{ pwd }}'
+    host: '{{ inventory_hostname }}'
 """
 
 RETURN = """

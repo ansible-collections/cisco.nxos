@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_igmp_snooping
+DOCUMENTATION = """
+module: nxos_igmp_snooping
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages IGMP snooping global configuration.
 description:
 - Manages IGMP snooping global configuration.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -68,17 +64,17 @@ options:
 
 EXAMPLES = """
 # ensure igmp snooping params supported in this module are in there default state
-- nxos_igmp_snooping:
+- cisco.nxos.nxos_igmp_snooping:
     state: default
 
 # ensure following igmp snooping params are in the desired state
-- nxos_igmp_snooping:
-   group_timeout: never
-   snooping: true
-   link_local_grp_supp: false
-   optimize_mcast_flood: false
-   report_supp: true
-   v3_report_supp: true
+- cisco.nxos.nxos_igmp_snooping:
+    group_timeout: never
+    snooping: true
+    link_local_grp_supp: false
+    optimize_mcast_flood: false
+    report_supp: true
+    v3_report_supp: true
 """
 
 RETURN = """

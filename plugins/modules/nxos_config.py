@@ -16,14 +16,9 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_config
+DOCUMENTATION = """
+module: nxos_config
 extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
@@ -32,6 +27,7 @@ description:
 - Cisco NXOS configurations use a simple block indent file syntax for segmenting configuration
   into sections.  This module provides an implementation for working with NXOS configuration
   sections in a deterministic way.  This module works with either CLI or NXAPI transports.
+version_added: 1.0.0
 options:
   lines:
     description:
@@ -109,7 +105,7 @@ options:
       playbook root directory or role root directory, if playbook is part of an ansible
       role. If the directory does not exist, it is created.
     type: bool
-    default: 'no'
+    default: no
   running_config:
     description:
     - The module, by default, will connect to the remote device and retrieve the current
@@ -126,7 +122,7 @@ options:
       the running-config is append with the all keyword.  When the value is set to
       false, the command is issued without the all keyword
     type: bool
-    default: 'no'
+    default: no
   save_when:
     description:
     - When changes are made to the device running-configuration, the changes are not
@@ -203,53 +199,52 @@ notes:
 """
 
 EXAMPLES = """
----
 - name: configure top level configuration and save it
-  nxos_config:
+  cisco.nxos.nxos_config:
     lines: hostname {{ inventory_hostname }}
     save_when: modified
 
 - name: diff the running-config against a provided config
-  nxos_config:
+  cisco.nxos.nxos_config:
     diff_against: intended
     intended_config: "{{ lookup('file', 'master.cfg') }}"
 
-- nxos_config:
+- cisco.nxos.nxos_config:
     lines:
-      - 10 permit ip 192.0.2.1/32 any log
-      - 20 permit ip 192.0.2.2/32 any log
-      - 30 permit ip 192.0.2.3/32 any log
-      - 40 permit ip 192.0.2.4/32 any log
-      - 50 permit ip 192.0.2.5/32 any log
+    - 10 permit ip 192.0.2.1/32 any log
+    - 20 permit ip 192.0.2.2/32 any log
+    - 30 permit ip 192.0.2.3/32 any log
+    - 40 permit ip 192.0.2.4/32 any log
+    - 50 permit ip 192.0.2.5/32 any log
     parents: ip access-list test
     before: no ip access-list test
     match: exact
 
-- nxos_config:
+- cisco.nxos.nxos_config:
     lines:
-      - 10 permit ip 192.0.2.1/32 any log
-      - 20 permit ip 192.0.2.2/32 any log
-      - 30 permit ip 192.0.2.3/32 any log
-      - 40 permit ip 192.0.2.4/32 any log
+    - 10 permit ip 192.0.2.1/32 any log
+    - 20 permit ip 192.0.2.2/32 any log
+    - 30 permit ip 192.0.2.3/32 any log
+    - 40 permit ip 192.0.2.4/32 any log
     parents: ip access-list test
     before: no ip access-list test
     replace: block
 
 - name: replace config with flat file
-  nxos_config:
+  cisco.nxos.nxos_config:
     replace_src: config.txt
     replace: config
 
 - name: for idempotency, use full-form commands
-  nxos_config:
+  cisco.nxos.nxos_config:
     lines:
       # - shut
-      - shutdown
+    - shutdown
     # parents: int eth1/1
     parents: interface Ethernet1/1
 
 - name: configurable backup path
-  nxos_config:
+  cisco.nxos.nxos_config:
     backup: yes
     backup_options:
       filename: backup.cfg

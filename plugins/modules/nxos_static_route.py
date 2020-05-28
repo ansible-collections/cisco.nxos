@@ -15,19 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
 
-DOCUMENTATION = """module: nxos_static_route
+DOCUMENTATION = """
+module: nxos_static_route
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages static route configuration
+short_description: (deprecated) Manages static route configuration
 description:
 - Manages static route configuration
+version_added: 1.0.0
+deprecated:
+  removed_in: '2.13'
+  alternative: nxos_static_routes
+  why: Updated modules released with more functionality
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -74,12 +75,13 @@ options:
     - present
     - absent
     default: present
+
 """
 
 EXAMPLES = """
-- nxos_static_route:
-    prefix: "192.168.20.64/24"
-    next_hop: "192.0.2.3"
+- cisco.nxos.nxos_static_route:
+    prefix: 192.168.20.64/24
+    next_hop: 192.0.2.3
     route_name: testing
     pref: 100
 """

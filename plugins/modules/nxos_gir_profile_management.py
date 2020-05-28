@@ -16,20 +16,16 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_gir_profile_management
+DOCUMENTATION = """
+module: nxos_gir_profile_management
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Create a maintenance-mode or normal-mode profile for GIR.
 description:
 - Manage a maintenance-mode or normal-mode profile with configuration commands that
   can be applied during graceful removal or graceful insertion.
+version_added: 1.0.0
 author:
 - Gabriele Gerbino (@GGabriele)
 notes:
@@ -57,14 +53,14 @@ options:
 
 EXAMPLES = """
 # Create a maintenance-mode profile
-- nxos_gir_profile_management:
+- cisco.nxos.nxos_gir_profile_management:
     mode: maintenance
     commands:
-      - router eigrp 11
-      - isolate
+    - router eigrp 11
+    - isolate
 
 # Remove the maintenance-mode profile
-- nxos_gir_profile_management:
+- cisco.nxos.nxos_gir_profile_management:
     mode: maintenance
     state: absent
 """

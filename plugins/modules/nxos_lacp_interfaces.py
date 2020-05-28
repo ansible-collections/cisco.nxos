@@ -30,31 +30,26 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_lacp_interfaces
-short_description: LACP Interfaces Resource Module.
+DOCUMENTATION = """
+module: nxos_lacp_interfaces
+short_description: LACP interfaces resource module
 description: This module manages Link Aggregation Control Protocol (LACP) attributes
   of NX-OS Interfaces.
+version_added: 1.0.0
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the command B(show running-config | section ^interface).
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | section ^interface).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
-    version_added: "1.0.0"
   config:
     description: A dictionary of LACP interfaces options.
     type: list
@@ -134,6 +129,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using merged
@@ -145,9 +141,9 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration.
   cisco.nxos.nxos_lacp_interfaces:
     config:
-      - name: Ethernet1/3
-        port_priority: 5
-        rate: fast
+    - name: Ethernet1/3
+      port_priority: 5
+      rate: fast
     state: merged
 
 # After state:
@@ -171,9 +167,9 @@ EXAMPLES = """
 - name: Replace device lacp interfaces configuration with the given configuration.
   cisco.nxos.nxos_lacp_interfaces:
     config:
-      - name: port-channel11
-        links:
-          min: 4
+    - name: port-channel11
+      links:
+        min: 4
     state: replaced
 
 # After state:
@@ -195,12 +191,13 @@ EXAMPLES = """
 # interface port-channel11
 #   lacp mode delay
 
-- name: Override device configuration of all LACP interfaces attributes of given interfaces on device with provided configuration.
+- name: Override device configuration of all LACP interfaces attributes of given interfaces
+    on device with provided configuration.
   cisco.nxos.nxos_lacp_interfaces:
     config:
-      - name: port-channel11
-        links:
-          min: 4
+    - name: port-channel11
+      links:
+        min: 4
     state: overridden
 
 # After state:
@@ -231,19 +228,19 @@ EXAMPLES = """
 # Using rendered
 
 - name: Use rendered state to convert task input to device specific commands
-  nxos_lacp_interfaces:
+  cisco.nxos.nxos_lacp_interfaces:
     config:
-      - name: Ethernet1/800
-        rate: fast
-      - name: Ethernet1/801
-        rate: fast
-        port_priority: 32
-      - name: port-channel10
-        links:
-          max: 15
-          min: 2
-        convergence:
-          graceful: True
+    - name: Ethernet1/800
+      rate: fast
+    - name: Ethernet1/801
+      rate: fast
+      port_priority: 32
+    - name: port-channel10
+      links:
+        max: 15
+        min: 2
+      convergence:
+        graceful: true
     state: rendered
 
 # Task Output (redacted)

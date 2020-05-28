@@ -16,14 +16,9 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "community",
-}
 
-
-DOCUMENTATION = """module: nxos_ping
+DOCUMENTATION = """
+module: nxos_ping
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Tests reachability using ping from Nexus switch.
@@ -32,6 +27,7 @@ description:
 - For a general purpose network module, see the M(net_ping) module.
 - For Windows targets, use the M(win_ping) module instead.
 - For targets running Python, use the M(ping) module instead.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -65,20 +61,20 @@ notes:
 
 EXAMPLES = """
 - name: Test reachability to 8.8.8.8 using mgmt vrf
-  nxos_ping:
+  cisco.nxos.nxos_ping:
     dest: 8.8.8.8
     vrf: management
     host: 68.170.147.165
 
 - name: Test reachability to a few different public IPs using mgmt vrf
-  nxos_ping:
+  cisco.nxos.nxos_ping:
     dest: nxos_ping
     vrf: management
     host: 68.170.147.165
   with_items:
-    - 8.8.8.8
-    - 4.4.4.4
-    - 198.6.1.4
+  - 8.8.8.8
+  - 4.4.4.4
+  - 198.6.1.4
 """
 
 RETURN = """

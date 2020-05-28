@@ -7,18 +7,15 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["deprecated"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_interface
+DOCUMENTATION = """
+module: nxos_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages physical attributes of interfaces.
+short_description: (deprecated) Manages physical attributes of interfaces.
 description:
 - Manages physical attributes of interfaces of NX-OS switches.
+version_added: 1.0.0
 deprecated:
   removed_in: '2.13'
   alternative: nxos_interfaces
@@ -128,70 +125,71 @@ options:
     - Time in seconds to wait before checking for the operational state on remote
       device. This wait is applicable for operational state arguments.
     default: 10
+
 """
 
 EXAMPLES = """
 - name: Ensure an interface is a Layer 3 port and that it has the proper description
-  nxos_interface:
+  cisco.nxos.nxos_interface:
     name: Ethernet1/1
-    description: 'Configured by Ansible'
+    description: Configured by Ansible
     mode: layer3
 
 - name: Admin down an interface
-  nxos_interface:
+  cisco.nxos.nxos_interface:
     name: Ethernet2/1
     admin_state: down
 
 - name: Remove all loopback interfaces
-  nxos_interface:
+  cisco.nxos.nxos_interface:
     name: loopback
     state: absent
 
 - name: Remove all logical interfaces
-  nxos_interface:
-    interface_type: "{{ item }} "
+  cisco.nxos.nxos_interface:
+    interface_type: '{{ item }} '
     state: absent
   loop:
-    - loopback
-    - portchannel
-    - svi
-    - nve
+  - loopback
+  - portchannel
+  - svi
+  - nve
 
 - name: Admin up all loopback interfaces
-  nxos_interface:
+  cisco.nxos.nxos_interface:
     name: loopback 0-1023
     admin_state: up
 
 - name: Admin down all loopback interfaces
-  nxos_interface:
+  cisco.nxos.nxos_interface:
     name: loopback 0-1023
     admin_state: down
 
 - name: Check neighbors intent arguments
-  nxos_interface:
+  cisco.nxos.nxos_interface:
     name: Ethernet2/3
     neighbors:
     - port: Ethernet2/3
       host: abc.mycompany.com
 
 - name: Add interface using aggregate
-  nxos_interface:
+  cisco.nxos.nxos_interface:
     aggregate:
-    - { name: Ethernet0/1, mtu: 256, description: test-interface-1 }
-    - { name: Ethernet0/2, mtu: 516, description: test-interface-2 }
+    - {name: Ethernet0/1, mtu: 256, description: test-interface-1}
+    - {name: Ethernet0/2, mtu: 516, description: test-interface-2}
     duplex: full
     speed: 100
     state: present
 
 - name: Delete interface using aggregate
-  nxos_interface:
+  cisco.nxos.nxos_interface:
     aggregate:
     - name: Loopback9
     - name: Loopback10
     state: absent
 
 - name: Check intent arguments
-  nxos_interface:
+  cisco.nxos.nxos_interface:
     name: Ethernet0/2
     state: up
     tx_rate: ge(0)

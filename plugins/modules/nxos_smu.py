@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_smu
+DOCUMENTATION = """
+module: nxos_smu
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Perform SMUs on Cisco NX-OS devices.
 description:
 - Perform software maintenance upgrades (SMUs) on Cisco NX-OS devices.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -46,8 +42,8 @@ options:
 """
 
 EXAMPLES = """
-- nxos_smu:
-    pkg: "nxos.CSCuz65185-n9k_EOR-1.0.0-7.0.3.I2.2d.lib32_n9000.rpm"
+- cisco.nxos.nxos_smu:
+    pkg: nxos.CSCuz65185-n9k_EOR-1.0.0-7.0.3.I2.2d.lib32_n9000.rpm
 """
 
 RETURN = """

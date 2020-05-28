@@ -16,14 +16,9 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_facts
+DOCUMENTATION = """
+module: nxos_facts
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Gets facts about NX-OS switches
@@ -33,6 +28,7 @@ description:
   all of the base network fact keys with C(ansible_net_<fact>).  The facts module
   will always collect a base set of facts from the device and can enable or disable
   collection of additional facts.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -61,29 +57,29 @@ options:
 
 EXAMPLES = """
 - name: Gather all legacy facts
-  nxos_facts:
+  cisco.nxos.nxos_facts:
     gather_subset: all
 - name: Gather only the config and default facts
-  nxos_facts:
+  cisco.nxos.nxos_facts:
     gather_subset:
-      - config
+    - config
 - name: Do not gather hardware facts
-  nxos_facts:
+  cisco.nxos.nxos_facts:
     gather_subset:
-      - "!hardware"
+    - '!hardware'
 - name: Gather legacy and resource facts
-  nxos_facts:
+  cisco.nxos.nxos_facts:
     gather_subset: all
     gather_network_resources: all
 - name: Gather only the interfaces resource facts and no legacy facts
-  nxos_facts:
+  cisco.nxos.nxos_facts:
     gather_subset:
-      - '!all'
-      - '!min'
+    - '!all'
+    - '!min'
     gather_network_resources:
-      - interfaces
+    - interfaces
 - name: Gather interfaces resource and minimal legacy facts
-  nxos_facts:
+  cisco.nxos.nxos_facts:
     gather_subset: min
     gather_network_resources: interfaces
 """

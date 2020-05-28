@@ -30,27 +30,24 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_interfaces
-short_description: Interfaces Resource Module
+DOCUMENTATION = """
+module: nxos_interfaces
+short_description: Interfaces resource module
 description: This module manages the interface attributes of NX-OS interfaces.
+version_added: 1.0.0
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the command B(show running-config | section ^interface)
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | section ^interface)
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
   config:
     description: A dictionary of interface options
@@ -109,8 +106,8 @@ options:
   state:
     description:
     - The state of the configuration after module completion
-    - The state I(rendered) considers the system default mode for interfaces to be "Layer 3"
-      and the system default state for interfaces to be shutdown.
+    - The state I(rendered) considers the system default mode for interfaces to be
+      "Layer 3" and the system default state for interfaces to be shutdown.
     type: str
     choices:
     - merged
@@ -121,6 +118,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using merged
@@ -133,14 +131,14 @@ EXAMPLES = """
 #   mtu 1800
 
 - name: Merge provided configuration with device configuration
-  nxos_interfaces:
+  cisco.nxos.nxos_interfaces:
     config:
-      - name: Ethernet1/1
-        description: 'Configured by Ansible'
-        enabled: True
-      - name: Ethernet1/2
-        description: 'Configured by Ansible Network'
-        enabled: False
+    - name: Ethernet1/1
+      description: Configured by Ansible
+      enabled: true
+    - name: Ethernet1/2
+      description: Configured by Ansible Network
+      enabled: false
     state: merged
 
 # After state:
@@ -165,16 +163,16 @@ EXAMPLES = """
 # interface Ethernet1/2
 
 - name: Replaces device configuration of listed interfaces with provided configuration
-  nxos_interfaces:
+  cisco.nxos.nxos_interfaces:
     config:
-      - name: Ethernet1/1
-        description: 'Configured by Ansible'
-        enabled: True
-        mtu: 2000
-      - name: Ethernet1/2
-        description: 'Configured by Ansible Network'
-        enabled: False
-        mode: layer2
+    - name: Ethernet1/1
+      description: Configured by Ansible
+      enabled: true
+      mtu: 2000
+    - name: Ethernet1/2
+      description: Configured by Ansible Network
+      enabled: false
+      mode: layer2
     state: replaced
 
 # After state:
@@ -203,13 +201,13 @@ EXAMPLES = """
 #    ip address dhcp
 
 - name: Override device configuration of all interfaces with provided configuration
-  nxos_interfaces:
+  cisco.nxos.nxos_interfaces:
     config:
-      - name: Ethernet1/1
-        enabled: True
-      - name: Ethernet1/2
-        description: 'Configured by Ansible Network'
-        enabled: False
+    - name: Ethernet1/1
+      enabled: true
+    - name: Ethernet1/2
+      description: Configured by Ansible Network
+      enabled: false
     state: overridden
 
 # After state:
@@ -236,9 +234,9 @@ EXAMPLES = """
 #    ip address dhcp
 
 - name: Delete or return interface parameters to default settings
-  nxos_interfaces:
+  cisco.nxos.nxos_interfaces:
     config:
-      - name: Ethernet1/1
+    - name: Ethernet1/1
     state: deleted
 
 # After state:
@@ -255,14 +253,14 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_interfaces:
     config:
-      - name: Ethernet1/1
-        description: outbound-intf
-        mode: layer3
-        speed: 100
-      - name: Ethernet1/2
-        mode: layer2
-        enabled: True
-        duplex: full
+    - name: Ethernet1/1
+      description: outbound-intf
+      mode: layer3
+      speed: 100
+    - name: Ethernet1/2
+      mode: layer2
+      enabled: true
+      duplex: full
     state: rendered
 
 # Task Output (redacted)

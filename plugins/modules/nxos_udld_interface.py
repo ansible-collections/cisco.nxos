@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_udld_interface
+DOCUMENTATION = """
+module: nxos_udld_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages UDLD interface configuration params.
 description:
 - Manages UDLD interface configuration params.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 notes:
@@ -58,30 +54,30 @@ options:
 """
 EXAMPLES = """
 # ensure Ethernet1/1 is configured to be in aggressive mode
-- nxos_udld_interface:
+- cisco.nxos.nxos_udld_interface:
     interface: Ethernet1/1
     mode: aggressive
     state: present
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 
 # Remove the aggressive config only if it's currently in aggressive mode and then disable udld (switch default)
-- nxos_udld_interface:
+- cisco.nxos.nxos_udld_interface:
     interface: Ethernet1/1
     mode: aggressive
     state: absent
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 
 # ensure Ethernet1/1 has aggressive mode enabled
-- nxos_udld_interface:
+- cisco.nxos.nxos_udld_interface:
     interface: Ethernet1/1
     mode: enabled
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 """
 
 RETURN = """

@@ -16,18 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_ospf
+DOCUMENTATION = """
+module: nxos_ospf
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages configuration of an ospf instance.
 description:
 - Manages configuration of an ospf instance.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 options:
   ospf:
@@ -45,7 +42,7 @@ options:
 """
 
 EXAMPLES = """
-- nxos_ospf:
+- cisco.nxos.nxos_ospf:
     ospf: 1
     state: present
 """

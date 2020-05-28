@@ -16,18 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_vrf_af
+DOCUMENTATION = """
+module: nxos_vrf_af
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages VRF AF.
 description:
 - Manages VRF AF
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -91,60 +88,60 @@ options:
 """
 
 EXAMPLES = """
-- nxos_vrf_af:
+- cisco.nxos.nxos_vrf_af:
     vrf: ntc
     afi: ipv4
-    route_target_both_auto_evpn: True
+    route_target_both_auto_evpn: true
     state: present
 
-- nxos_vrf_af:
+- cisco.nxos.nxos_vrf_af:
     vrf: ntc
     afi: ipv4
     route_targets:
-      - rt: '65000:1000'
-        direction: import
-      - rt: '65001:1000'
-        direction: import
+    - rt: 65000:1000
+      direction: import
+    - rt: 65001:1000
+      direction: import
 
-- nxos_vrf_af:
+- cisco.nxos.nxos_vrf_af:
     vrf: ntc
     afi: ipv4
     route_targets:
-      - rt: '65000:1000'
-        direction: import
-      - rt: '65001:1000'
-        state: absent
+    - rt: 65000:1000
+      direction: import
+    - rt: 65001:1000
+      state: absent
 
-- nxos_vrf_af:
+- cisco.nxos.nxos_vrf_af:
     vrf: ntc
     afi: ipv4
     route_targets:
-      - rt: '65000:1000'
-        direction: export
-      - rt: '65001:1000'
-        direction: export
+    - rt: 65000:1000
+      direction: export
+    - rt: 65001:1000
+      direction: export
 
-- nxos_vrf_af:
+- cisco.nxos.nxos_vrf_af:
     vrf: ntc
     afi: ipv4
     route_targets:
-      - rt: '65000:1000'
-        direction: export
-        state: absent
+    - rt: 65000:1000
+      direction: export
+      state: absent
 
-- nxos_vrf_af:
+- cisco.nxos.nxos_vrf_af:
     vrf: ntc
     afi: ipv4
     route_targets:
-      - rt: '65000:1000'
-        direction: both
-        state: present
-      - rt: '65001:1000'
-        direction: import
-        state: present
-      - rt: '65002:1000'
-        direction: both
-        state: absent
+    - rt: 65000:1000
+      direction: both
+      state: present
+    - rt: 65001:1000
+      direction: import
+      state: present
+    - rt: 65002:1000
+      direction: both
+      state: absent
 """
 
 RETURN = """

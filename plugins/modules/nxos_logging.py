@@ -5,17 +5,13 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-DOCUMENTATION = """module: nxos_logging
+DOCUMENTATION = """
+module: nxos_logging
 author: Trishna Guha (@trishnaguha)
 short_description: Manage logging on network devices
 description:
 - This module provides declarative management of logging on Cisco NX-OS devices.
+version_added: 1.0.0
 options:
   dest:
     description:
@@ -104,39 +100,39 @@ extends_documentation_fragment:
 
 EXAMPLES = """
 - name: configure console logging with level
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     dest: console
     level: 2
     state: present
 - name: remove console logging configuration
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     dest: console
     level: 2
     state: absent
 - name: configure file logging with level
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     dest: logfile
     name: testfile
     dest_level: 3
     state: present
 - name: Configure logging logfile with size
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     dest: logfile
     name: testfile
     dest_level: 3
     file_size: 16384
 - name: configure facility level logging
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     facility: daemon
     facility_level: 0
     state: present
 - name: remove facility level logging
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     facility: daemon
     facility_level: 0
     state: absent
 - name: Configure Remote Logging
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     dest: server
     remote_server: test-syslogserver.com
     facility: auth
@@ -144,35 +140,35 @@ EXAMPLES = """
     use_vrf: management
     state: present
 - name: Configure Source Interface for Logging
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     interface: mgmt0
     state: present
 - name: Purge nxos_logging configuration not managed by this playbook
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     purge: true
 - name: Configure logging timestamp
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     timestamp: milliseconds
     state: present
 - name: Configure logging facility ethpm link status
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     facility: ethpm
     facility_link_status: link-up-notif
     state: present
 - name: Configure logging message ethernet description
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     interface_message: add-interface-description
     state: present
 - name: Configure logging event link enable
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     event: link-enable
     state: present
 - name: Configure logging using aggregate
-  nxos_logging:
+  cisco.nxos.nxos_logging:
     aggregate:
-      - { dest: console, dest_level: 2 }
-      - { dest: logfile, dest_level: 2, name: testfile }
-      - { facility: daemon, facility_level: 0 }
+    - {dest: console, dest_level: 2}
+    - {dest: logfile, dest_level: 2, name: testfile}
+    - {facility: daemon, facility_level: 0}
     state: present
 """
 

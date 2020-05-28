@@ -9,19 +9,18 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
-DOCUMENTATION = """module: nxos_lldp
+DOCUMENTATION = """
+module: nxos_lldp
 author: Ganesh Nalawade (@ganeshrn)
-short_description: Manage LLDP configuration on Cisco NXOS network devices.
+short_description: (deprecated) Manage LLDP configuration on Cisco NXOS network devices.
 description:
 - This module provides declarative management of LLDP service on Cisco NXOS network
   devices.
+version_added: 1.0.0
+deprecated:
+  removed_in: '2.13'
+  alternative: nxos_lldp_global
+  why: Updated modules released with more functionality
 notes:
 - Tested against NXOSv 7.0(3)I5(1).
 options:
@@ -35,15 +34,16 @@ options:
     - absent
 extends_documentation_fragment:
 - cisco.nxos.nxos
+
 """
 
 EXAMPLES = """
 - name: Enable LLDP service
-  nxos_lldp:
+  cisco.nxos.nxos_lldp:
     state: present
 
 - name: Disable LLDP service
-  nxos_lldp:
+  cisco.nxos.nxos_lldp:
     state: absent
 """
 

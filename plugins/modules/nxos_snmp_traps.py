@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_snmp_traps
+DOCUMENTATION = """
+module: nxos_snmp_traps
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages SNMP traps.
 description:
 - Manages SNMP traps configurations.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 notes:
@@ -84,12 +80,12 @@ options:
 
 EXAMPLES = """
 # ensure lldp trap configured
-- nxos_snmp_traps:
+- cisco.nxos.nxos_snmp_traps:
     group: lldp
     state: enabled
 
 # ensure lldp trap is not configured
-- nxos_snmp_traps:
+- cisco.nxos.nxos_snmp_traps:
     group: lldp
     state: disabled
 """

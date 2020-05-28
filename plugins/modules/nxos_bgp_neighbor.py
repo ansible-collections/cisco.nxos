@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_bgp_neighbor
+DOCUMENTATION = """
+module: nxos_bgp_neighbor
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages BGP neighbors configurations.
 description:
 - Manages BGP neighbors configurations on NX-OS switches.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -160,13 +156,13 @@ options:
 """
 EXAMPLES = """
 # create a new neighbor
-- nxos_bgp_neighbor:
+- cisco.nxos.nxos_bgp_neighbor:
     asn: 65535
     neighbor: 192.0.2.3
     local_as: 20
     remote_as: 30
     bfd: enable
-    description: "just a description"
+    description: just a description
     update_source: Ethernet1/3
     state: present
 """

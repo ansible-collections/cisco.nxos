@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_vtp_password
+DOCUMENTATION = """
+module: nxos_vtp_password
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages VTP password configuration.
 description:
 - Manages VTP password configuration.
+version_added: 1.0.0
 author:
 - Gabriele Gerbino (@GGabriele)
 notes:
@@ -57,18 +53,18 @@ options:
 
 EXAMPLES = """
 # ENSURE VTP PASSWORD IS SET
-- nxos_vtp_password:
+- cisco.nxos.nxos_vtp_password:
     state: present
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 
 # ENSURE VTP PASSWORD IS REMOVED
-- nxos_vtp_password:
+- cisco.nxos.nxos_vtp_password:
     state: absent
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 """
 
 RETURN = """

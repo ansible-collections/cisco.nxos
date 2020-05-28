@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_ntp_auth
+DOCUMENTATION = """
+module: nxos_ntp_auth
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages NTP authentication.
 description:
 - Manages NTP authentication.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 notes:
@@ -62,8 +58,8 @@ options:
     description:
     - Turns NTP authentication on or off.
     choices:
-    - 'on'
-    - 'off'
+    - on
+    - off
   state:
     description:
     - Manage the state of the resource.
@@ -75,7 +71,7 @@ options:
 
 EXAMPLES = """
 # Basic NTP authentication configuration
-- nxos_ntp_auth:
+- cisco.nxos.nxos_ntp_auth:
     key_id: 32
     md5string: hello
     auth_type: text

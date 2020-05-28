@@ -9,19 +9,15 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["deprecated"],
-    "supported_by": "network",
-}
-
-DOCUMENTATION = """module: nxos_linkagg
+DOCUMENTATION = """
+module: nxos_linkagg
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manage link aggregation groups on Cisco NXOS devices.
+short_description: (deprecated) Manage link aggregation groups on Cisco NXOS devices.
 description:
 - This module provides declarative management of link aggregation groups on Cisco
   NXOS devices.
+version_added: 1.0.0
 deprecated:
   removed_in: '2.13'
   alternative: nxos_lag_interfaces
@@ -46,9 +42,9 @@ options:
     - Mode for the link aggregation group.
     choices:
     - active
-    - 'on'
+    - on
     - passive
-    default: 'on'
+    default: on
     type: str
   min_links:
     description:
@@ -64,7 +60,7 @@ options:
     - When true it forces link aggregation group members to match what is declared
       in the members param. This can be used to remove members.
     type: bool
-    default: 'no'
+    default: no
   aggregate:
     description: List of link aggregation definitions.
     type: list
@@ -80,48 +76,49 @@ options:
     description:
     - Purge links not defined in the I(aggregate) parameter.
     type: bool
-    default: 'no'
+    default: no
+
 """
 
 EXAMPLES = """
 - name: create link aggregation group
-  nxos_linkagg:
+  cisco.nxos.nxos_linkagg:
     group: 99
     state: present
 
 - name: delete link aggregation group
-  nxos_linkagg:
+  cisco.nxos.nxos_linkagg:
     group: 99
     state: absent
 
 - name: set link aggregation group to members
-  nxos_linkagg:
+  cisco.nxos.nxos_linkagg:
     group: 10
     min_links: 3
     mode: active
     members:
-      - Ethernet1/2
-      - Ethernet1/4
+    - Ethernet1/2
+    - Ethernet1/4
 
 - name: remove link aggregation group from Ethernet1/2
-  nxos_linkagg:
+  cisco.nxos.nxos_linkagg:
     group: 10
     min_links: 3
     mode: active
     members:
-      - Ethernet1/4
+    - Ethernet1/4
 
 - name: Create aggregate of linkagg definitions
-  nxos_linkagg:
+  cisco.nxos.nxos_linkagg:
     aggregate:
-      - { group: 3 }
-      - { group: 100, min_links: 3 }
+    - {group: 3}
+    - {group: 100, min_links: 3}
 
 - name: Remove aggregate of linkagg definitions
-  nxos_linkagg:
+  cisco.nxos.nxos_linkagg:
     aggregate:
-      - { group: 3 }
-      - { group: 100, min_links: 3 }
+    - {group: 3}
+    - {group: 100, min_links: 3}
     state: absent
 """
 

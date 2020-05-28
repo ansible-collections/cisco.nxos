@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_igmp
+DOCUMENTATION = """
+module: nxos_igmp
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages IGMP global configuration.
 description:
 - Manages IGMP global configuration configuration settings.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -62,16 +58,16 @@ options:
 """
 EXAMPLES = """
 - name: Default igmp global params (all params except restart)
-  nxos_igmp:
+  cisco.nxos.nxos_igmp:
     state: default
 
 - name: Ensure the following igmp global config exists on the device
-  nxos_igmp:
+  cisco.nxos.nxos_igmp:
     flush_routes: true
     enforce_rtr_alert: true
 
 - name: Restart the igmp process
-  nxos_igmp:
+  cisco.nxos.nxos_igmp:
     restart: true
 """
 

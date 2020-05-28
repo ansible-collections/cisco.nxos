@@ -30,29 +30,25 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_l3_interfaces
-short_description: L3 Interfaces Resource Module.
+DOCUMENTATION = """
+module: nxos_l3_interfaces
+short_description: L3 interfaces resource module
 description: This module manages Layer-3 interfaces attributes of NX-OS Interfaces.
+version_added: 1.0.0
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the command B(show running-config | section '^interface').
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | section '^interface').
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
-    version_added: "1.0.0"
   config:
     description: A dictionary of Layer-3 interface options
     type: list
@@ -67,7 +63,6 @@ options:
         description:
         - Configures IEEE 802.1Q VLAN encapsulation on a subinterface.
         type: int
-        version_added: 2.1
       ipv4:
         description:
         - IPv4 address and attributes of the L3 interface.
@@ -105,12 +100,10 @@ options:
         description:
         - Enables/disables ip redirects
         type: bool
-        version_added: 2.1
       unreachables:
         description:
         - Enables/disables ip redirects
         type: bool
-        version_added: 2.1
   state:
     description:
     - The state of the configuration after module completion.
@@ -124,6 +117,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using merged
@@ -136,20 +130,20 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration.
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - name: Ethernet1/6
-        ipv4:
-          - address: 192.168.1.1/24
-            tag: 5
-          - address: 10.1.1.1/24
-            secondary: True
-            tag: 10
-        ipv6:
-          - address: fd5d:12c9:2201:2::1/64
-            tag: 6
-      - name: Ethernet1/7.42
-        dot1q: 42
-        redirects: False
-        unreachables: False
+    - name: Ethernet1/6
+      ipv4:
+      - address: 192.168.1.1/24
+        tag: 5
+      - address: 10.1.1.1/24
+        secondary: true
+        tag: 10
+      ipv6:
+      - address: fd5d:12c9:2201:2::1/64
+        tag: 6
+    - name: Ethernet1/7.42
+      dot1q: 42
+      redirects: false
+      unreachables: false
     state: merged
 
 # After state:
@@ -178,8 +172,8 @@ EXAMPLES = """
 - name: Replace device configuration of specified L3 interfaces with provided configuration.
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - name: Ethernet1/6
-        ipv4: 192.168.22.3/24
+    - name: Ethernet1/6
+      ipv4: 192.168.22.3/24
     state: replaced
 
 # After state:
@@ -199,11 +193,12 @@ EXAMPLES = """
 # interface Ethernet1/6
 #   ipv6 address "fd5d:12c9:2201:1::1/64"
 
-- name: Override device configuration of all L3 interfaces on device with provided configuration.
+- name: Override device configuration of all L3 interfaces on device with provided
+    configuration.
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - name: Ethernet1/2
-        ipv4: 192.168.22.3/4
+    - name: Ethernet1/2
+      ipv4: 192.168.22.3/4
     state: overridden
 
 # After state:
@@ -224,11 +219,12 @@ EXAMPLES = """
 # interface Ethernet1/2
 #   ipv6 address "fd5d:12c9:2201:1::1/64"
 
-- name: Delete L3 attributes of given interfaces (This won't delete the interface itself).
+- name: Delete L3 attributes of given interfaces (This won't delete the interface
+    itself).
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - name: Ethernet1/6
-      - name: Ethernet1/2
+    - name: Ethernet1/6
+    - name: Ethernet1/2
     state: deleted
 
 # After state:
@@ -242,17 +238,17 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_l3_interfaces:
     config:
-      - name: Ethernet1/800
-        ipv4:
-          - address: 192.168.1.100/24
-            tag: 5
-          - address: 10.1.1.1/24
-            secondary: True
-            tag: 10
-      - name: Ethernet1/800
-        ipv6:
-          - address: fd5d:12c9:2201:2::1/64
-            tag: 6
+    - name: Ethernet1/800
+      ipv4:
+      - address: 192.168.1.100/24
+        tag: 5
+      - address: 10.1.1.1/24
+        secondary: true
+        tag: 10
+    - name: Ethernet1/800
+      ipv6:
+      - address: fd5d:12c9:2201:2::1/64
+        tag: 6
     state: rendered
 
 # Task Output (redacted)

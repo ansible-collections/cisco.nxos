@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_bgp_neighbor_af
+DOCUMENTATION = """
+module: nxos_bgp_neighbor_af
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages BGP address-family's neighbors configuration.
 description:
 - Manages BGP address-family's neighbors configurations on NX-OS switches.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -213,9 +209,9 @@ options:
 """
 EXAMPLES = """
 - name: configure RR client
-  nxos_bgp_neighbor_af:
+  cisco.nxos.nxos_bgp_neighbor_af:
     asn: 65535
-    neighbor: '192.0.2.3'
+    neighbor: 192.0.2.3
     afi: ipv4
     safi: unicast
     route_reflector_client: true

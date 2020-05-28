@@ -16,14 +16,9 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_nxapi
+DOCUMENTATION = """
+module: nxos_nxapi
 extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
@@ -32,6 +27,7 @@ description:
 - Configures the NXAPI feature on devices running Cisco NXOS.  The NXAPI feature is
   absent from the configuration by default.  Since this module manages the NXAPI feature
   it only supports the use of the C(Cli) transport.
+version_added: 1.0.0
 options:
   http_port:
     description:
@@ -128,18 +124,18 @@ options:
 
 EXAMPLES = """
 - name: Enable NXAPI access with default configuration
-  nxos_nxapi:
+  cisco.nxos.nxos_nxapi:
     state: present
 
 - name: Enable NXAPI with no HTTP, HTTPS at port 9443 and sandbox disabled
-  nxos_nxapi:
+  cisco.nxos.nxos_nxapi:
     enable_http: false
     https_port: 9443
     https: yes
     enable_sandbox: no
 
 - name: remove NXAPI configuration
-  nxos_nxapi:
+  cisco.nxos.nxos_nxapi:
     state: absent
 """
 
