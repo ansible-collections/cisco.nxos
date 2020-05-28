@@ -62,6 +62,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     config:
       redirect: cisco.nxos.nxos
+    nxos_devicealias:
+      redirect: cisco.nxos.nxos
+    devicealias:
+      redirect: cisco.nxos.nxos
     nxos_evpn_global:
       redirect: cisco.nxos.nxos
     evpn_global:
@@ -318,6 +322,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     vrrp:
       redirect: cisco.nxos.nxos
+    nxos_vsan:
+      redirect: cisco.nxos.nxos
+    vsan:
+      redirect: cisco.nxos.nxos
     nxos_vtp_domain:
       redirect: cisco.nxos.nxos
     vtp_domain:
@@ -337,6 +345,10 @@ plugin_routing:
     nxos_vxlan_vtep_vni:
       redirect: cisco.nxos.nxos
     vxlan_vtep_vni:
+      redirect: cisco.nxos.nxos
+    nxos_zone_zoneset:
+      redirect: cisco.nxos.nxos
+    zone_zoneset:
       redirect: cisco.nxos.nxos
   modules:
     aaa_server:
@@ -369,6 +381,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_command
     config:
       redirect: cisco.nxos.nxos_config
+    devicealias:
+      redirect: cisco.nxos.nxos_devicealias
     evpn_global:
       redirect: cisco.nxos.nxos_evpn_global
     evpn_vni:
@@ -536,6 +550,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_vrf_interface
     vrrp:
       redirect: cisco.nxos.nxos_vrrp
+    vsan:
+      redirect: cisco.nxos.nxos_vsan
     vtp_domain:
       redirect: cisco.nxos.nxos_vtp_domain
     vtp_password:
@@ -546,3 +562,5 @@ plugin_routing:
       redirect: cisco.nxos.nxos_vxlan_vtep
     vxlan_vtep_vni:
       redirect: cisco.nxos.nxos_vxlan_vtep_vni
+    zone_zoneset:
+      redirect: cisco.nxos.nxos_zone_zoneset
