@@ -41,6 +41,14 @@ class Ospfv2Facts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get(
+            "show running-config | section '^router ospf .*'"
+        )
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for interfaces
         :param connection: the device connection
@@ -50,9 +58,7 @@ class Ospfv2Facts(object):
         :returns: facts
         """
         if not data:
-            data = connection.get(
-                "show running-config | section '^router ospf .*'"
-            )
+            data = self.get_config(connection)
 
         ipv4 = {"processes": []}
         for section in data.split("router "):

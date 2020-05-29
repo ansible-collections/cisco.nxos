@@ -11,6 +11,7 @@ necessary to bring the current configuration to it's desired end-state is
 created
 """
 from copy import deepcopy
+from ansible.module_utils.six import iteritems
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospfv2 import (
     Ospfv2Template,
 )
@@ -108,16 +109,18 @@ class Ospfv2(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
+            haved = {
+                k: v for k, v in iteritems(haved) if k in wantd or not wantd
+            }
             wantd = {}
 
         # if state is overridden, first remove processes that are in have but not in want
         if self.state in ["overridden", "deleted"]:
-            for k, have in haved.items():
+            for k, have in iteritems(haved):
                 if k not in wantd:
                     self.addcmd(have, "process_id", True)
 
-        for k, want in wantd.items():
+        for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -142,9 +145,9 @@ class Ospfv2(ResourceModule):
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
         hareas = have.get("areas", {})
-        for name, entry in wareas.items():
+        for name, entry in iteritems(wareas):
             self._area_compare(want=entry, have=hareas.pop(name, {}))
-        for name, entry in hareas.items():
+        for name, entry in iteritems(hareas):
             self._area_compare(want={}, have=entry)
 
     def _area_compare(self, want, have):
@@ -162,7 +165,7 @@ class Ospfv2(ResourceModule):
         for attrib in ["filter_list", "ranges"]:
             wdict = want.get(attrib, {})
             hdict = have.get(attrib, {})
-            for key, entry in wdict.items():
+            for key, entry in iteritems(wdict):
                 if entry != hdict.pop(key, {}):
                     entry["area_id"] = want["area_id"]
                     self.addcmd(entry, "area.{0}".format(attrib), False)
@@ -180,7 +183,7 @@ class Ospfv2(ResourceModule):
             wdict = get_from_dict(want, attrib) or {}
             hdict = get_from_dict(have, attrib) or {}
 
-            for key, entry in wdict.items():
+            for key, entry in iteritems(wdict):
                 if entry != hdict.pop(key, {}):
                     self.addcmd(entry, attrib, False)
             # remove remaining items in have for replaced
@@ -190,14 +193,14 @@ class Ospfv2(ResourceModule):
     def _vrfs_compare(self, want, have):
         wvrfs = want.get("vrfs", {})
         hvrfs = have.get("vrfs", {})
-        for name, entry in wvrfs.items():
+        for name, entry in iteritems(wvrfs):
             self._compare(want=entry, have=hvrfs.pop(name, {}))
         # remove remaining items in have for replaced
-        for name, entry in hvrfs.items():
+        for name, entry in iteritems(hvrfs):
             self.addcmd(entry, "vrf", True)
 
     def _ospf_list_to_dict(self, entry):
-        for _pid, proc in entry.items():
+        for _pid, proc in iteritems(entry):
             for area in proc.get("areas", []):
                 area["ranges"] = {
                     entry["prefix"]: entry for entry in area.get("ranges", [])

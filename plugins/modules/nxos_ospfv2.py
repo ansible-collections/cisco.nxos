@@ -39,13 +39,13 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: nxos_ospfv2
-version_added: "2.10"
+version_added: "1.0.0"
 short_description: OSPFv2 resource module.
 description:
   - This module manages OSPFv2 configuration on devices running Cisco NX-OS.
 notes:
-- Tested against NX-OS 7.0(3)I7(3).
-- This module works with connection C(network_cli).
+- Tested against NX-OS 7.0(3)I5(1).
+- This module works with connection C(network_cli) and C(httpapi).
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:
