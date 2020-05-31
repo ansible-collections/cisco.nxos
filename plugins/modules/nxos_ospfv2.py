@@ -1070,6 +1070,83 @@ EXAMPLES = """
                 unit: Gbps
     state: merged
 
+# Task output
+# -------------
+# before: {}
+#
+# commands:
+#  - router ospf 102
+#  - router-id 198.51.100.1
+#  - redistribute eigrp 120 route-map rmap_1
+#  - redistribute direct route-map ospf102-direct-connect
+#  - area 0.0.0.100 filter-list route-map rmap_1 in
+#  - area 0.0.0.100 filter-list route-map rmap_2 out
+#  - area 0.0.0.100 range 198.51.100.64/27 not-advertise
+#  - area 0.0.0.100 range 198.51.100.96/27 cost 120
+#  - area 0.0.0.101 authentication message-digest
+#  - vrf zone1
+#  - router-id 198.51.100.129
+#  - summary-address 198.51.100.128/27 tag 121
+#  - summary-address 198.51.100.160/27
+#  - redistribute static route-map zone1-static-connect
+#  - area 0.0.0.102 nssa no-summary default-information-originate
+#  - area 0.0.0.103 nssa no-summary
+#  - area 0.0.0.103 nssa translate type7 always
+#  - vrf zone2
+#  - auto-cost reference-bandwidth 45 Gbps
+#  - router ospf 100
+#  - router-id 203.0.113.20
+#
+# after:
+#    processes:
+#    - process_id: '100'
+#      router_id: 203.0.113.20
+#    - areas:
+#      - area_id: 0.0.0.100
+#        filter_list:
+#        - direction: out
+#          route_map: rmap_2
+#        - direction: in
+#          route_map: rmap_1
+#        ranges:
+#        - not_advertise: true
+#          prefix: 198.51.100.64/27
+#        - cost: 120
+#          prefix: 198.51.100.96/27
+#      - area_id: 0.0.0.101
+#        authentication:
+#          message_digest: true
+#      process_id: '102'
+#      redistribute:
+#      - protocol: direct
+#        route_map: ospf102-direct-connect
+#      - id: '120'
+#        protocol: eigrp
+#        route_map: rmap_1
+#      router_id: 198.51.100.1
+#      vrfs:
+#      - areas:
+#        - area_id: 0.0.0.102
+#          nssa:
+#            default_information_originate: true
+#            no_summary: true
+#        - area_id: 0.0.0.103
+#          nssa:
+#            no_summary: true
+#            translate:
+#              type7:
+#                always: true
+#        redistribute:
+#        - protocol: static
+#          route_map: zone1-static-connect
+#        router_id: 198.51.100.129
+#        vrf: zone1
+#      - auto_cost:
+#          reference_bandwidth: 45
+#          unit: Gbps
+#        vrf: zone2
+#
+
 # After state:
 # ------------
 # nxos-9k-rdo# sh running-config | section "^router ospf .*"
@@ -1159,6 +1236,111 @@ EXAMPLES = """
                     no_summary: True
     state: replaced
 
+# Task output
+# -------------
+# before:
+#    processes:
+#    - process_id: '100'
+#      router_id: 203.0.113.20
+#    - areas:
+#      - area_id: 0.0.0.100
+#        filter_list:
+#        - direction: out
+#          route_map: rmap_2
+#        - direction: in
+#          route_map: rmap_1
+#        ranges:
+#        - not_advertise: true
+#          prefix: 198.51.100.64/27
+#        - cost: 120
+#          prefix: 198.51.100.96/27
+#      - area_id: 0.0.0.101
+#        authentication:
+#          message_digest: true
+#      process_id: '102'
+#      redistribute:
+#      - protocol: direct
+#        route_map: ospf102-direct-connect
+#      - id: '120'
+#        protocol: eigrp
+#        route_map: rmap_1
+#      router_id: 198.51.100.1
+#      vrfs:
+#      - areas:
+#        - area_id: 0.0.0.102
+#          nssa:
+#            default_information_originate: true
+#            no_summary: true
+#        - area_id: 0.0.0.103
+#          nssa:
+#            no_summary: true
+#            translate:
+#              type7:
+#                always: true
+#        redistribute:
+#        - protocol: static
+#          route_map: zone1-static-connect
+#        router_id: 198.51.100.129
+#        vrf: zone1
+#      - auto_cost:
+#          reference_bandwidth: 45
+#          unit: Gbps
+#        vrf: zone2
+#
+#  commands:
+#  - router ospf 102
+#  - redistribute eigrp 130 route-map rmap_1
+#  - no redistribute eigrp 120 route-map rmap_1
+#  - area 0.0.0.100 filter-list route-map rmap_8 in
+#  - no area 0.0.0.100 filter-list route-map rmap_2 out
+#  - no area 0.0.0.100 range 198.51.100.96/27
+#  - no area 0.0.0.101 authentication
+#  - area 0.0.0.101 stub no-summary
+#  - vrf zone1
+#  - no summary-address 198.51.100.128/27 tag 121
+#  - no summary-address 198.51.100.160/27
+#  - redistribute bgp 65563 route-map zone1-bgp-connect
+#  - no redistribute static route-map zone1-static-connect
+#  - no area 0.0.0.103 nssa
+#  - no area 0.0.0.103 nssa translate type7 always
+#  - no vrf zone2
+#
+# after:
+#    processes:
+#    - process_id: '100'
+#      router_id: 203.0.113.20
+#    - areas:
+#      - area_id: 0.0.0.101
+#        stub:
+#          no_summary: true
+#      - area_id: 0.0.0.100
+#        filter_list:
+#        - direction: in
+#          route_map: rmap_8
+#        ranges:
+#        - not_advertise: true
+#          prefix: 198.51.100.64/27
+#      process_id: '102'
+#      redistribute:
+#      - protocol: direct
+#        route_map: ospf102-direct-connect
+#      - id: '130'
+#        protocol: eigrp
+#        route_map: rmap_1
+#      router_id: 198.51.100.1
+#      vrfs:
+#      - areas:
+#        - area_id: 0.0.0.102
+#          nssa:
+#            default_information_originate: true
+#            no_summary: true
+#        redistribute:
+#        - id: '65563'
+#          protocol: bgp
+#          route_map: zone1-bgp-connect
+#        router_id: 198.51.100.129
+#        vrf: zone1
+
 # After state:
 # ------------
 # nxos-9k-rdo# sh running-config | section "^router ospf .*"
@@ -1214,6 +1396,81 @@ EXAMPLES = """
           shutdown: True
     state: overridden
 
+# Task output
+# -------------
+# before:
+#    processes:
+#    - process_id: '100'
+#      router_id: 203.0.113.20
+#    - areas:
+#      - area_id: 0.0.0.100
+#        filter_list:
+#        - direction: out
+#          route_map: rmap_2
+#        - direction: in
+#          route_map: rmap_1
+#        ranges:
+#        - not_advertise: true
+#          prefix: 198.51.100.64/27
+#        - cost: 120
+#          prefix: 198.51.100.96/27
+#      - area_id: 0.0.0.101
+#        authentication:
+#          message_digest: true
+#      process_id: '102'
+#      redistribute:
+#      - protocol: direct
+#        route_map: ospf102-direct-connect
+#      - id: '120'
+#        protocol: eigrp
+#        route_map: rmap_1
+#      router_id: 198.51.100.1
+#      vrfs:
+#      - areas:
+#        - area_id: 0.0.0.102
+#          nssa:
+#            default_information_originate: true
+#            no_summary: true
+#        - area_id: 0.0.0.103
+#          nssa:
+#            no_summary: true
+#            translate:
+#              type7:
+#                always: true
+#        redistribute:
+#        - protocol: static
+#          route_map: zone1-static-connect
+#        router_id: 198.51.100.129
+#        vrf: zone1
+#      - auto_cost:
+#          reference_bandwidth: 45
+#          unit: Gbps
+#        vrf: zone2
+#
+# commands:
+#  - no router ospf 100
+#  - router ospf 104
+#  - router-id 203.0.113.20
+#  - router ospf 102
+#  - shutdown
+#  - no redistribute direct route-map ospf102-direct-connect
+#  - no redistribute eigrp 120 route-map rmap_1
+#  - no area 0.0.0.100 filter-list route-map rmap_2 out
+#  - no area 0.0.0.100 filter-list route-map rmap_1 in
+#  - no area 0.0.0.100 range 198.51.100.64/27
+#  - no area 0.0.0.100 range 198.51.100.96/27
+#  - no area 0.0.0.101 authentication
+#  - no vrf zone1
+#  - no vrf zone2
+#
+# after:
+#    processes:
+#    - process_id: '102'
+#      router_id: 198.51.100.1
+#      shutdown: true
+#    - process_id: '104'
+#      router_id: 203.0.113.20
+
 # After state:
 # ------------
 # nxos-9k-rdo# sh running-config | section "^router ospf .*"
@@ -1257,6 +1514,65 @@ EXAMPLES = """
         - process_id: 102
     state: deleted
 
+# Task output
+# -------------
+# before:
+#    processes:
+#    - process_id: '100'
+#      router_id: 203.0.113.20
+#    - areas:
+#      - area_id: 0.0.0.100
+#        filter_list:
+#        - direction: out
+#          route_map: rmap_2
+#        - direction: in
+#          route_map: rmap_1
+#        ranges:
+#        - not_advertise: true
+#          prefix: 198.51.100.64/27
+#        - cost: 120
+#          prefix: 198.51.100.96/27
+#      - area_id: 0.0.0.101
+#        authentication:
+#          message_digest: true
+#      process_id: '102'
+#      redistribute:
+#      - protocol: direct
+#        route_map: ospf102-direct-connect
+#      - id: '120'
+#        protocol: eigrp
+#        route_map: rmap_1
+#      router_id: 198.51.100.1
+#      vrfs:
+#      - areas:
+#        - area_id: 0.0.0.102
+#          nssa:
+#            default_information_originate: true
+#            no_summary: true
+#        - area_id: 0.0.0.103
+#          nssa:
+#            no_summary: true
+#            translate:
+#              type7:
+#                always: true
+#        redistribute:
+#        - protocol: static
+#          route_map: zone1-static-connect
+#        router_id: 198.51.100.129
+#        vrf: zone1
+#      - auto_cost:
+#          reference_bandwidth: 45
+#          unit: Gbps
+#        vrf: zone2
+#
+# commands:
+#  - no router ospf 102
+#
+# after:
+#   processes:
+#   - process_id: '100'
+#     router_id: 203.0.113.20
+
 # After state:
 # ------------
 # nxos-9k-rdo# sh running-config | section "^router ospf .*"
@@ -1293,6 +1609,63 @@ EXAMPLES = """
 - name: Delete all OSPF processes from the device
   cisco.nxos.nxos_ospfv2:
     state: deleted
+
+# Task output
+# -------------
+# before:
+#    processes:
+#    - process_id: '100'
+#      router_id: 203.0.113.20
+#    - areas:
+#      - area_id: 0.0.0.100
+#        filter_list:
+#        - direction: out
+#          route_map: rmap_2
+#        - direction: in
+#          route_map: rmap_1
+#        ranges:
+#        - not_advertise: true
+#          prefix: 198.51.100.64/27
+#        - cost: 120
+#          prefix: 198.51.100.96/27
+#      - area_id: 0.0.0.101
+#        authentication:
+#          message_digest: true
+#      process_id: '102'
+#      redistribute:
+#      - protocol: direct
+#        route_map: ospf102-direct-connect
+#      - id: '120'
+#        protocol: eigrp
+#        route_map: rmap_1
+#      router_id: 198.51.100.1
+#      vrfs:
+#      - areas:
+#        - area_id: 0.0.0.102
+#          nssa:
+#            default_information_originate: true
+#            no_summary: true
+#        - area_id: 0.0.0.103
+#          nssa:
+#            no_summary: true
+#            translate:
+#              type7:
+#                always: true
+#        redistribute:
+#        - protocol: static
+#          route_map: zone1-static-connect
+#        router_id: 198.51.100.129
+#        vrf: zone1
+#      - auto_cost:
+#          reference_bandwidth: 45
+#          unit: Gbps
+#        vrf: zone2
+#
+# commands:
+#  - no router ospf 100
+#  - no router ospf 102
+#
+#  after: {}
 
 # After state:
 # ------------

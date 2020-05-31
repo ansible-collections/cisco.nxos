@@ -26,6 +26,10 @@ description:
 - Manages configuration of an ospf instance.
 version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
+deprecated:
+  removed_in: '2.13'
+  alternative: nxos_ospfv2
+  why: Updated modules released with more functionality.
 options:
   ospf:
     description:
