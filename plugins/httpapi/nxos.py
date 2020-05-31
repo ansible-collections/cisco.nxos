@@ -6,14 +6,13 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
----
 author: Ansible Networking Team
 httpapi: nxos
 short_description: Use NX-API to run command on nxos platform
 description:
-  - This eos plugin provides low level abstraction api's for
-    sending and receiving CLI commands with nxos network devices.
-version_added: "2.6"
+- This eos plugin provides low level abstraction api's for sending and receiving CLI
+  commands with nxos network devices.
+version_added: 1.0.0
 """
 
 import json

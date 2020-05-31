@@ -6,11 +6,12 @@
 from __future__ import absolute_import, division, print_function
 
 
-DOCUMENTATION = """module: nxos_vsan
+DOCUMENTATION = """
+module: nxos_vsan
 short_description: Configuration of vsan.
-version_added: 1.0.0
 description:
 - Configuration of vsan for Cisco MDS NXOS.
+version_added: 1.0.0
 author:
 - Suhas Bharadwaj (@srbharadwaj) (subharad@cisco.com)
 notes:

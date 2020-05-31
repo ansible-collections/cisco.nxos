@@ -30,19 +30,13 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
 DOCUMENTATION = """
----
 module: nxos_ospfv2
-version_added: "1.0.0"
 short_description: OSPFv2 resource module.
 description:
-  - This module manages OSPFv2 configuration on devices running Cisco NX-OS.
+- This module manages OSPFv2 configuration on devices running Cisco NX-OS.
+version_added: 1.0.0
 notes:
 - Tested against NX-OS 7.0(3)I5(1).
 - This module works with connection C(network_cli) and C(httpapi).
@@ -50,12 +44,12 @@ author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:
     description:
-      - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the NX-OS device by executing
-        the command B(show running-config | section "^router ospf .*").
-      - The state I(parsed) reads the configuration from C(running_config) option and transforms
-        it into Ansible structured data as per the resource module's argspec and the value is then
-        returned in the I(parsed) key within the result.
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | section "^router ospf .*").
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
   config:
     description: A list of OSPF process configuration.
@@ -63,938 +57,940 @@ options:
     suboptions:
       processes:
         description:
-          - A list of OSPF instances' configurations.
+        - A list of OSPF instances' configurations.
         type: list
         elements: dict
         suboptions:
           areas:
             description:
-              - Configure properties of OSPF Areas.
+            - Configure properties of OSPF Areas.
             type: list
             elements: dict
             suboptions:
               area_id:
                 description:
-                  - The Area ID as an integer or IP Address.
+                - The Area ID as an integer or IP Address.
                 type: str
-                required: True
+                required: true
               authentication:
                 description:
-                  - Authentication settings for the Area.
+                - Authentication settings for the Area.
                 type: dict
                 suboptions:
                   set:
                     description:
-                      - Set authentication for the area.
+                    - Set authentication for the area.
                     type: bool
                   message_digest:
                     description:
-                      - Use message-digest authentication.
+                    - Use message-digest authentication.
                     type: bool
               default_cost:
                 description:
-                  - Specify the default cost for default summary LSA.
+                - Specify the default cost for default summary LSA.
                 type: int
               filter_list:
                 description:
-                  - Filter prefixes between OSPF areas.
+                - Filter prefixes between OSPF areas.
                 type: list
                 elements: dict
                 suboptions:
                   route_map:
                     description:
-                      - The Route-map name.
+                    - The Route-map name.
                     type: str
-                    required: True
+                    required: true
                   direction:
                     description:
-                      - The direction to apply the route map.
+                    - The direction to apply the route map.
                     type: str
-                    choices: ['in', 'out']
-                    required: True
+                    choices: [in, out]
+                    required: true
               nssa:
                 description:
-                  - NSSA settings for the area.
+                - NSSA settings for the area.
                 type: dict
                 suboptions:
                   set:
                     description:
-                      - Configure area as NSSA.
+                    - Configure area as NSSA.
                     type: bool
                   default_information_originate:
                     description:
-                      - Originate Type-7 default LSA into NSSA area.
+                    - Originate Type-7 default LSA into NSSA area.
                     type: bool
                   no_redistribution:
                     description:
-                      - Do not send redistributed LSAs into NSSA area.
+                    - Do not send redistributed LSAs into NSSA area.
                     type: bool
                   no_summary:
                     description:
-                      - Do not send summary LSAs into NSSA area.
+                    - Do not send summary LSAs into NSSA area.
                     type: bool
                   translate:
                     description:
-                      - Translate LSA.
+                    - Translate LSA.
                     type: dict
                     suboptions:
                       type7:
                         description:
-                          - Translate from Type 7 to Type 5.
+                        - Translate from Type 7 to Type 5.
                         type: dict
                         suboptions:
                           always:
                             description:
-                              - Always translate LSAs
+                            - Always translate LSAs
                             type: bool
                           never:
                             description:
-                              - Never translate LSAs
+                            - Never translate LSAs
                             type: bool
                           supress_fa:
                             description:
-                              - Suppress forwarding address in translated LSAs.
+                            - Suppress forwarding address in translated LSAs.
                             type: bool
               ranges:
                 description:
-                  - Configure an address range for the area.
+                - Configure an address range for the area.
                 type: list
                 elements: dict
                 suboptions:
                   prefix:
                     description:
-                      - IP in Prefix format (x.x.x.x/len)
+                    - IP in Prefix format (x.x.x.x/len)
                     type: str
-                    range: True
+                    range: true
                   cost:
                     description:
-                      - Cost to use for the range.
+                    - Cost to use for the range.
                     type: int
                   not_advertise:
                     description:
-                      - Suppress advertising the specified range.
+                    - Suppress advertising the specified range.
                     type: bool
               stub:
                 description:
-                  - Settings for configuring the area as a stub.
+                - Settings for configuring the area as a stub.
                 type: dict
                 suboptions:
                   set:
                     description:
-                      - Configure the area as a stub.
+                    - Configure the area as a stub.
                     type: bool
                   no_summary:
                     description:
-                      - Prevent ABR from sending summary LSAs into stub area.
+                    - Prevent ABR from sending summary LSAs into stub area.
                     type: bool
           auto_cost:
             description:
-              - Calculate OSPF cost according to bandwidth.
+            - Calculate OSPF cost according to bandwidth.
             type: dict
             suboptions:
               reference_bandwidth:
                 description:
-                  - Reference bandwidth used to assign OSPF cost.
+                - Reference bandwidth used to assign OSPF cost.
                 type: int
-                required: True
+                required: true
               unit:
                 description:
-                  - Specify in which unit the reference bandwidth is specified.
+                - Specify in which unit the reference bandwidth is specified.
                 type: str
-                required: True
-                choices: ['Gbps', 'Mbps']
+                required: true
+                choices: [Gbps, Mbps]
           bfd:
             description:
-              - Enable BFD on all OSPF interfaces.
+            - Enable BFD on all OSPF interfaces.
             type: bool
           default_information:
             description:
-              - Control distribution of default routes.
+            - Control distribution of default routes.
             type: dict
             suboptions:
               originate:
                 description:
-                  - Distribute a default route.
+                - Distribute a default route.
                 type: dict
                 suboptions:
                   set:
                     description:
-                      - Enable distribution of default route.
+                    - Enable distribution of default route.
                     type: bool
                   always:
                     description:
-                      - Always advertise a default route.
+                    - Always advertise a default route.
                     type: bool
                   route_map:
                     description:
-                      - Policy to control distribution of default routes
+                    - Policy to control distribution of default routes
                     type: str
           default_metric:
             description:
-              - Specify default metric for redistributed routes.
+            - Specify default metric for redistributed routes.
             type: int
           distance:
             description:
-              - Configure the OSPF administrative distance.
+            - Configure the OSPF administrative distance.
             type: int
           flush_routes:
             description:
-              - Flush routes on a non-graceful controlled restart.
+            - Flush routes on a non-graceful controlled restart.
             type: bool
           graceful_restart:
             description:
-              - Configure graceful restart.
+            - Configure graceful restart.
             type: dict
             suboptions:
               set:
                 description:
-                  - Enable graceful-restart.
+                - Enable graceful-restart.
                 type: bool
               grace_period:
                 description:
-                  - Configure maximum interval to restart gracefully.
+                - Configure maximum interval to restart gracefully.
                 type: int
               helper_disable:
                 description:
-                  - Enable/Disable helper mode.
+                - Enable/Disable helper mode.
                 type: bool
           isolate:
             description:
-              - Isolate this router from OSPF perspective.
+            - Isolate this router from OSPF perspective.
             type: bool
           log_adjacency_changes:
             description:
-              - Log changes in adjacency state.
+            - Log changes in adjacency state.
             type: dict
             suboptions:
               log:
                 description:
-                  - Enable/disable logging changes in adjacency state.
+                - Enable/disable logging changes in adjacency state.
                 type: bool
               detail:
                 description:
-                  - Notify all state changes.
+                - Notify all state changes.
                 type: bool
           max_lsa:
             description:
-              - Feature to limit the number of non-self-originated LSAs.
+            - Feature to limit the number of non-self-originated LSAs.
             type: dict
             suboptions:
               max_non_self_generated_lsa:
                 description:
-                  - Set the maximum number of non self-generated LSAs.
+                - Set the maximum number of non self-generated LSAs.
                 type: int
-                required: True
+                required: true
               threshold:
                 description:
-                  - Threshold value (%) at which to generate a warning message.
+                - Threshold value (%) at which to generate a warning message.
                 type: int
               ignore_count:
                 description:
-                  - Set count on how many times adjacencies can be suppressed.
+                - Set count on how many times adjacencies can be suppressed.
                 type: int
               ignore_time:
                 description:
-                  - Set time during which all adjacencies are suppressed.
+                - Set time during which all adjacencies are suppressed.
                 type: int
               reset_time:
                 description:
-                  - Set number of minutes after which ignore-count is reset to zero.
+                - Set number of minutes after which ignore-count is reset to zero.
                 type: int
               warning_only:
                 description:
-                  - Log a warning message when limit is exceeded.
+                - Log a warning message when limit is exceeded.
                 type: bool
           max_metric:
             description:
-              - Maximize the cost metric.
+            - Maximize the cost metric.
             type: dict
             suboptions:
               router_lsa:
                 description:
-                  - Router LSA configuration.
+                - Router LSA configuration.
                 type: dict
                 suboptions:
                   set:
                     description:
-                      - Set router-lsa attribute.
+                    - Set router-lsa attribute.
                     type: bool
                   external_lsa:
                     description:
-                      - External LSA configuration.
+                    - External LSA configuration.
                     type: dict
                     suboptions:
                       set:
                         description:
-                          - Set external-lsa attribute.
+                        - Set external-lsa attribute.
                         type: bool
                       max_metric_value:
                         description:
-                          - Set max metric value for external LSAs.
+                        - Set max metric value for external LSAs.
                         type: int
                   include_stub:
                     description:
-                      - Advertise Max metric for Stub links as well.
+                    - Advertise Max metric for Stub links as well.
                     type: bool
                   on_startup:
                     description:
-                      - Effective only at startup.
+                    - Effective only at startup.
                     type: dict
                     suboptions:
                       set:
                         description:
-                          - Set on-startup attribute.
+                        - Set on-startup attribute.
                         type: bool
                       wait_period:
                         description:
-                          - Wait period in seconds after startup.
+                        - Wait period in seconds after startup.
                         type: int
                       wait_for_bgp_asn:
                         description:
-                          - ASN of BGP to wait for.
+                        - ASN of BGP to wait for.
                         type: int
                   summary_lsa:
                     description:
-                      - Summary LSAs configuration.
+                    - Summary LSAs configuration.
                     type: dict
                     suboptions:
                       set:
                         description:
-                          - Set summary-lsa attribute.
+                        - Set summary-lsa attribute.
                         type: bool
                       max_metric_value:
                         description:
-                          - Max metric value for summary LSAs.
+                        - Max metric value for summary LSAs.
                         type: int
           maximum_paths:
             description:
-              - Maximum paths per destination.
+            - Maximum paths per destination.
             type: int
           mpls:
             description:
-              - OSPF MPLS configuration settings.
+            - OSPF MPLS configuration settings.
             type: dict
             suboptions:
               traffic_eng:
                 description:
-                  - OSPF MPLS Traffic Engineering commands.
+                - OSPF MPLS Traffic Engineering commands.
                 type: dict
                 suboptions:
                   areas:
                     description:
-                      - List of Area IDs.
+                    - List of Area IDs.
                     type: list
                     elements: dict
                     suboptions:
                       area_id:
                         description:
-                          - Area Id as an integer or ip address.
+                        - Area Id as an integer or ip address.
                       type: str
                   multicast_intact:
                     description:
-                      - MPLS TE multicast support.
+                    - MPLS TE multicast support.
                     type: bool
                   router_id:
                     description:
-                      - Router ID associated with TE.
+                    - Router ID associated with TE.
                     type: str
           name_lookup:
             description:
-              - Display OSPF router ids as DNS names.
+            - Display OSPF router ids as DNS names.
             type: bool
           passive_interface:
             description:
-              - Suppress routing updates on the interface.
+            - Suppress routing updates on the interface.
             type: dict
             suboptions:
               default:
                 description:
-                  - Interfaces passive by default.
+                - Interfaces passive by default.
                 type: bool
           process_id:
             description:
-              - The OSPF process tag.
+            - The OSPF process tag.
             type: str
-            required: True
+            required: true
           redistribute:
             description:
-              - Redistribute information from another routing protocol.
+            - Redistribute information from another routing protocol.
             type: list
             elements: dict
             suboptions:
               protocol:
                 description:
-                  - The name of the protocol.
+                - The name of the protocol.
                 type: str
-                choices: ['bgp', 'direct', 'eigrp', 'isis', 'lisp', 'ospf', 'rip', 'static']
-                required: True
+                choices: [bgp, direct, eigrp, isis, lisp, ospf, rip, static]
+                required: true
               id:
                 description:
-                  - The identifier for the protocol specified.
+                - The identifier for the protocol specified.
                 type: str
               route_map:
                 description:
-                  - The route map policy to constrain redistribution.
+                - The route map policy to constrain redistribution.
                 type: str
-                required: True
+                required: true
           rfc1583compatibility:
             description:
-              - Configure 1583 compatibility for external path preferences.
+            - Configure 1583 compatibility for external path preferences.
             type: bool
           router_id:
             description:
-              - Set OSPF process router-id.
+            - Set OSPF process router-id.
             type: str
           shutdown:
             description:
-              - Shutdown the OSPF protocol instance.
+            - Shutdown the OSPF protocol instance.
             type: bool
           summary_address:
             description:
-              - Configure route summarization for redistribution.
+            - Configure route summarization for redistribution.
             type: list
             elements: dict
             suboptions:
               prefix:
                 description:
-                  -  IP prefix in format x.x.x.x/ml.
+                - IP prefix in format x.x.x.x/ml.
                 type: str
-                required: True
+                required: true
               not_advertise:
                 description:
-                  - Supress advertising the specified summary.
+                - Supress advertising the specified summary.
                 type: bool
               tag:
                 description:
-                  - A 32-bit tag value.
+                - A 32-bit tag value.
                 type: int
           table_map:
             description:
-              - Policy for filtering/modifying OSPF routes before sending them to RIB.
+            - Policy for filtering/modifying OSPF routes before sending them to RIB.
             type: dict
             suboptions:
               name:
                 description:
-                  - The Route Map name.
+                - The Route Map name.
                 type: str
-                required: True
+                required: true
               filter:
                 description:
-                  - Block the OSPF routes from being sent to RIB.
+                - Block the OSPF routes from being sent to RIB.
                 type: bool
           timers:
             description:
-              - Configure timer related constants.
+            - Configure timer related constants.
             type: dict
             suboptions:
               lsa_arrival:
                 description:
-                  - Mimimum interval between arrival of a LSA.
+                - Mimimum interval between arrival of a LSA.
                 type: int
               lsa_group_pacing:
                 description:
-                  - LSA group refresh/maxage interval.
+                - LSA group refresh/maxage interval.
                 type: int
               throttle:
                 description:
-                  - Configure throttle related constants.
+                - Configure throttle related constants.
                 type: dict
                 suboptions:
                   lsa:
                     description:
-                      - Set rate-limiting for LSA generation.
+                    - Set rate-limiting for LSA generation.
                     type: dict
                     suboptions:
                       start_interval:
                         description:
-                          - The start interval.
+                        - The start interval.
                         type: int
                       hold_interval:
                         description:
-                          - The hold interval.
+                        - The hold interval.
                         type: int
                       max_interval:
                         description:
-                          - The max interval.
+                        - The max interval.
                         type: int
                   spf:
                     description:
-                      - Set OSPF SPF timers.
+                    - Set OSPF SPF timers.
                     type: dict
                     suboptions:
                       initial_spf_delay:
                         description:
-                          - Initial SPF schedule delay in milliseconds.
+                        - Initial SPF schedule delay in milliseconds.
                         type: int
                       min_hold_time:
                         description:
-                          - Minimum hold time between SPF calculations.
+                        - Minimum hold time between SPF calculations.
                         type: int
                       max_wait_time:
                         description:
-                          - Maximum wait time between SPF calculations.
+                        - Maximum wait time between SPF calculations.
                         type: int
           vrfs:
             description:
-              - Configure VRF specific OSPF settings.
+            - Configure VRF specific OSPF settings.
             type: list
             elements: dict
             suboptions:
               areas:
                 description:
-                  - Configure properties of OSPF Areas.
+                - Configure properties of OSPF Areas.
                 type: list
                 elements: dict
                 suboptions:
                   area_id:
                     description:
-                      - The Area ID as an integer or IP Address.
+                    - The Area ID as an integer or IP Address.
                     type: str
-                    required: True
+                    required: true
                   authentication:
                     description:
-                      - Authentication settings for the Area.
+                    - Authentication settings for the Area.
                     type: dict
                     suboptions:
                       set:
                         description:
-                          - Set authentication for the area.
+                        - Set authentication for the area.
                         type: bool
                       message_digest:
                         description:
-                          - Use message-digest authentication.
+                        - Use message-digest authentication.
                         type: bool
                   default_cost:
                     description:
-                      - Specify the default cost for default summary LSA.
+                    - Specify the default cost for default summary LSA.
                     type: int
                   filter_list:
                     description:
-                      - Filter prefixes between OSPF areas.
+                    - Filter prefixes between OSPF areas.
                     type: list
                     elements: dict
                     suboptions:
                       route_map:
                         description:
-                          - The Route-map name.
+                        - The Route-map name.
                         type: str
-                        required: True
+                        required: true
                       direction:
                         description:
-                          - The direction to apply the route map.
+                        - The direction to apply the route map.
                         type: str
-                        choices: ['in', 'out']
-                        required: True
+                        choices: [in, out]
+                        required: true
                   nssa:
                     description:
-                      - NSSA settings for the area.
+                    - NSSA settings for the area.
                     type: dict
                     suboptions:
                       set:
                         description:
-                          - Configure area as NSSA.
+                        - Configure area as NSSA.
                         type: bool
                       default_information_originate:
                         description:
-                          - Originate Type-7 default LSA into NSSA area.
+                        - Originate Type-7 default LSA into NSSA area.
                         type: bool
                       no_redistribution:
                         description:
-                          - Do not send redistributed LSAs into NSSA area.
+                        - Do not send redistributed LSAs into NSSA area.
                         type: bool
                       no_summary:
                         description:
-                          - Do not send summary LSAs into NSSA area.
+                        - Do not send summary LSAs into NSSA area.
                         type: bool
                       translate:
                         description:
-                          - Translate LSA.
+                        - Translate LSA.
                         type: dict
                         suboptions:
                           type7:
                             description:
-                              - Translate from Type 7 to Type 5.
+                            - Translate from Type 7 to Type 5.
                             type: dict
                             suboptions:
                               always:
                                 description:
-                                  - Always translate LSAs
+                                - Always translate LSAs
                                 type: bool
                               never:
                                 description:
-                                  - Never translate LSAs
+                                - Never translate LSAs
                                 type: bool
                               supress_fa:
                                 description:
-                                  - Suppress forwarding address in translated LSAs.
+                                - Suppress forwarding address in translated LSAs.
                                 type: bool
                   ranges:
                     description:
-                      - Configure an address range for the area.
+                    - Configure an address range for the area.
                     type: list
                     elements: dict
                     suboptions:
                       prefix:
                         description:
-                          - IP in Prefix format (x.x.x.x/len)
+                        - IP in Prefix format (x.x.x.x/len)
                         type: str
-                        range: True
+                        range: true
                       cost:
                         description:
-                          - Cost to use for the range.
+                        - Cost to use for the range.
                         type: int
                       not_advertise:
                         description:
-                          - Suppress advertising the specified range.
+                        - Suppress advertising the specified range.
                         type: bool
                   stub:
                     description:
-                      - Settings for configuring the area as a stub.
+                    - Settings for configuring the area as a stub.
                     type: dict
                     suboptions:
                       set:
                         description:
-                          - Configure the area as a stub.
+                        - Configure the area as a stub.
                         type: bool
                       no_summary:
                         description:
-                          - Prevent ABR from sending summary LSAs into stub area.
+                        - Prevent ABR from sending summary LSAs into stub area.
                         type: bool
               auto_cost:
                 description:
-                  - Calculate OSPF cost according to bandwidth.
+                - Calculate OSPF cost according to bandwidth.
                 type: dict
                 suboptions:
                   reference_bandwidth:
                     description:
-                      - Reference bandwidth used to assign OSPF cost.
+                    - Reference bandwidth used to assign OSPF cost.
                     type: int
-                    required: True
+                    required: true
                   unit:
                     description:
-                      - Specify in which unit the reference bandwidth is specified.
+                    - Specify in which unit the reference bandwidth is specified.
                     type: str
-                    choices: ['Gbps', 'Mbps']
+                    choices: [Gbps, Mbps]
               bfd:
                 description:
-                  - Enable BFD on all OSPF interfaces.
+                - Enable BFD on all OSPF interfaces.
                 type: bool
               default_information:
                 description:
-                  - Control distribution of default routes.
+                - Control distribution of default routes.
                 type: dict
                 suboptions:
                   originate:
                     description:
-                      - Distribute a default route.
+                    - Distribute a default route.
                     type: dict
                     suboptions:
                       set:
                         description:
-                          - Enable distribution of default route.
+                        - Enable distribution of default route.
                         type: bool
                       always:
                         description:
-                          - Always advertise a default route.
+                        - Always advertise a default route.
                         type: bool
                       route_map:
                         description:
-                          - Policy to control distribution of default routes
+                        - Policy to control distribution of default routes
                         type: str
               default_metric:
                 description:
-                  - Specify default metric for redistributed routes.
+                - Specify default metric for redistributed routes.
                 type: str
               distance:
                 description:
-                  - Configure the OSPF administrative distance.
+                - Configure the OSPF administrative distance.
                 type: int
               down_bit_ignore:
                 description:
-                  - Configure a PE router to ignore the DN bit for network summary, external and NSSA external LSA.
+                - Configure a PE router to ignore the DN bit for network summary,
+                  external and NSSA external LSA.
                 type: bool
               capability:
                 description:
-                  - OSPF capability settings.
+                - OSPF capability settings.
                 type: dict
                 suboptions:
                   vrf_lite:
                     description:
-                      - Enable VRF-lite capability settings.
+                    - Enable VRF-lite capability settings.
                     type: dict
                     suboptions:
                       set:
                         description:
-                          - Enable VRF-lite support.
+                        - Enable VRF-lite support.
                         type: bool
                       evpn:
                         description:
-                          - Ethernet VPN.
+                        - Ethernet VPN.
                         type: bool
               graceful_restart:
                 description:
-                  - Configure graceful restart.
+                - Configure graceful restart.
                 type: dict
                 suboptions:
                   set:
                     description:
-                      - Enable graceful-restart.
+                    - Enable graceful-restart.
                     type: bool
                   grace_period:
                     description:
-                      - Configure maximum interval to restart gracefully.
+                    - Configure maximum interval to restart gracefully.
                     type: int
                   helper_disable:
                     description:
-                      - Enable/Disable helper mode.
+                    - Enable/Disable helper mode.
                     type: bool
               log_adjacency_changes:
                 description:
-                  - Log changes in adjacency state.
+                - Log changes in adjacency state.
                 type: dict
                 suboptions:
                   log:
                     description:
-                      - Enable/disable logging changes in adjacency state.
+                    - Enable/disable logging changes in adjacency state.
                     type: bool
                   detail:
                     description:
-                      - Notify all state changes.
+                    - Notify all state changes.
                     type: bool
               max_lsa:
                 description:
-                  - Feature to limit the number of non-self-originated LSAs.
+                - Feature to limit the number of non-self-originated LSAs.
                 type: dict
                 suboptions:
                   max_non_self_generated_lsa:
                     description:
-                      - Set the maximum number of non self-generated LSAs.
+                    - Set the maximum number of non self-generated LSAs.
                     type: int
-                    required: True
+                    required: true
                   threshold:
                     description:
-                      - Threshold value (%) at which to generate a warning message.
+                    - Threshold value (%) at which to generate a warning message.
                     type: int
                   ignore_count:
                     description:
-                      - Set count on how many times adjacencies can be suppressed.
+                    - Set count on how many times adjacencies can be suppressed.
                     type: int
                   ignore_time:
                     description:
-                      - Set time during which all adjacencies are suppressed.
+                    - Set time during which all adjacencies are suppressed.
                     type: int
                   reset_time:
                     description:
-                      - Set number of minutes after which ignore-count is reset to zero.
+                    - Set number of minutes after which ignore-count is reset to zero.
                     type: int
                   warning_only:
                     description:
-                      - Log a warning message when limit is exceeded.
+                    - Log a warning message when limit is exceeded.
                     type: bool
               max_metric:
                 description:
-                  - Maximize the cost metric.
+                - Maximize the cost metric.
                 type: dict
                 suboptions:
                   router_lsa:
                     description:
-                      - Router LSA configuration.
+                    - Router LSA configuration.
                     type: dict
                     suboptions:
                       set:
                         description:
-                          - Set router-lsa attribute.
+                        - Set router-lsa attribute.
                         type: bool
                       external_lsa:
                         description:
-                          - External LSA configuration.
+                        - External LSA configuration.
                         type: dict
                         suboptions:
                           set:
                             description:
-                              - Set external-lsa attribute.
+                            - Set external-lsa attribute.
                             type: bool
                           max_metric_value:
                             description:
-                              - Set max metric value for external LSAs.
+                            - Set max metric value for external LSAs.
                             type: int
                       include_stub:
                         description:
-                          - Advertise Max metric for Stub links as well.
+                        - Advertise Max metric for Stub links as well.
                         type: bool
                       on_startup:
                         description:
-                          - Effective only at startup.
+                        - Effective only at startup.
                         type: dict
                         suboptions:
                           set:
                             description:
-                              - Set on-startup attribute.
+                            - Set on-startup attribute.
                             type: bool
                           wait_period:
                             description:
-                              - Wait period in seconds after startup.
+                            - Wait period in seconds after startup.
                             type: int
                           wait_for_bgp_asn:
                             description:
-                              - ASN of BGP to wait for.
+                            - ASN of BGP to wait for.
                             type: int
                       summary_lsa:
                         description:
-                          - Summary LSAs configuration.
+                        - Summary LSAs configuration.
                         type: dict
                         suboptions:
                           set:
                             description:
-                              - Set summary-lsa attribute.
+                            - Set summary-lsa attribute.
                             type: bool
                           max_metric_value:
                             description:
-                              - Max metric value for summary LSAs.
+                            - Max metric value for summary LSAs.
                             type: int
               maximum_paths:
                 description:
-                  - Maximum paths per destination.
+                - Maximum paths per destination.
                 type: int
               name_lookup:
                 description:
-                  - Display OSPF router ids as DNS names.
+                - Display OSPF router ids as DNS names.
                 type: bool
               passive_interface:
                 description:
-                  - Suppress routing updates on the interface.
+                - Suppress routing updates on the interface.
                 type: dict
                 suboptions:
                   default:
                     description:
-                      - Interfaces passive by default.
+                    - Interfaces passive by default.
                     type: bool
               redistribute:
                 description:
-                  - Redistribute information from another routing protocol.
+                - Redistribute information from another routing protocol.
                 type: list
                 elements: dict
                 suboptions:
                   protocol:
                     description:
-                      - The name of the protocol.
+                    - The name of the protocol.
                     type: str
-                    choices: ['bgp', 'direct', 'eigrp', 'isis', 'lisp', 'ospf', 'rip', 'static']
-                    required: True
+                    choices: [bgp, direct, eigrp, isis, lisp, ospf, rip, static]
+                    required: true
                   id:
                     description:
-                      - The identifier for the protocol specified.
+                    - The identifier for the protocol specified.
                     type: str
                   route_map:
                     description:
-                      - The route map policy to constrain redistribution.
+                    - The route map policy to constrain redistribution.
                     type: str
-                    required: True
+                    required: true
               rfc1583compatibility:
                 description:
-                  - Configure 1583 compatibility for external path preferences.
+                - Configure 1583 compatibility for external path preferences.
                 type: bool
               router_id:
                 description:
-                  - Set OSPF process router-id.
+                - Set OSPF process router-id.
                 type: str
               shutdown:
                 description:
-                  - Shutdown the OSPF protocol instance.
+                - Shutdown the OSPF protocol instance.
                 type: bool
               summary_address:
                 description:
-                  - Configure route summarization for redistribution.
+                - Configure route summarization for redistribution.
                 type: list
                 elements: dict
                 suboptions:
                   prefix:
                     description:
-                      -  IP prefix in format x.x.x.x/ml.
+                    - IP prefix in format x.x.x.x/ml.
                     type: str
-                    required: True
+                    required: true
                   not_advertise:
                     description:
-                      - Supress advertising the specified summary.
+                    - Supress advertising the specified summary.
                     type: bool
                   tag:
                     description:
-                      - A 32-bit tag value.
+                    - A 32-bit tag value.
                     type: int
               table_map:
                 description:
-                  - Policy for filtering/modifying OSPF routes before sending them to RIB.
+                - Policy for filtering/modifying OSPF routes before sending them to
+                  RIB.
                 type: dict
                 suboptions:
                   name:
                     description:
-                      - The Route Map name.
+                    - The Route Map name.
                     type: str
-                    required: True
+                    required: true
                   filter:
                     description:
-                      - Block the OSPF routes from being sent to RIB.
+                    - Block the OSPF routes from being sent to RIB.
                     type: bool
               timers:
                 description:
-                  - Configure timer related constants.
+                - Configure timer related constants.
                 type: dict
                 suboptions:
                   lsa_arrival:
                     description:
-                      - Mimimum interval between arrival of a LSA.
+                    - Mimimum interval between arrival of a LSA.
                     type: int
                   lsa_group_pacing:
                     description:
-                      - LSA group refresh/maxage interval.
+                    - LSA group refresh/maxage interval.
                     type: int
                   throttle:
                     description:
-                      - Configure throttle related constants.
+                    - Configure throttle related constants.
                     type: dict
                     suboptions:
                       lsa:
                         description:
-                          - Set rate-limiting for LSA generation.
+                        - Set rate-limiting for LSA generation.
                         type: dict
                         suboptions:
                           start_interval:
                             description:
-                              - The start interval.
+                            - The start interval.
                             type: int
                           hold_interval:
                             description:
-                              - The hold interval.
+                            - The hold interval.
                             type: int
                           max_interval:
                             description:
-                              - The max interval.
+                            - The max interval.
                             type: int
                       spf:
                         description:
-                          - Set OSPF SPF timers.
+                        - Set OSPF SPF timers.
                         type: dict
                         suboptions:
                           initial_spf_delay:
                             description:
-                              - Initial SPF schedule delay in milliseconds.
+                            - Initial SPF schedule delay in milliseconds.
                             type: int
                           min_hold_time:
                             description:
-                              - Minimum hold time between SPF calculations.
+                            - Minimum hold time between SPF calculations.
                             type: int
                           max_wait_time:
                             description:
-                              - Maximum wait time between SPF calculations.
+                            - Maximum wait time between SPF calculations.
                             type: int
               vrf:
                 description:
-                  - Name/Identifier of the VRF.
+                - Name/Identifier of the VRF.
                 type: str
-                required: True
+                required: true
   state:
     description:
-      - The state the configuration should be left in.
+    - The state the configuration should be left in.
     type: str
     choices:
     - merged
