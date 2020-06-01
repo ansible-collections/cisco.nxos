@@ -260,7 +260,12 @@ class Interfaces(FactsBase):
 
     def populate_structured_interfaces(self, data):
         interfaces = dict()
-        for item in data["TABLE_interface"]["ROW_interface"]:
+        data = data["TABLE_interface"]["ROW_interface"]
+
+        if isinstance(data, dict):
+            data = [data]
+
+        for item in data:
             name = item["interface"]
 
             intf = dict()
@@ -644,8 +649,12 @@ class Legacy(FactsBase):
 
     def parse_structured_interfaces(self, data):
         objects = list()
-        for item in data["TABLE_interface"]["ROW_interface"]:
-            objects.append(item["interface"])
+        data = data["TABLE_interface"]["ROW_interface"]
+        if isinstance(data, dict):
+            objects.append(data["interface"])
+        elif isinstance(data, list):
+            for item in data:
+                objects.append(item["interface"])
         return objects
 
     def parse_structured_vlans(self, data):
