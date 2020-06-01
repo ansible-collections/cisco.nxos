@@ -6,11 +6,12 @@
 from __future__ import absolute_import, division, print_function
 
 
-DOCUMENTATION = """module: nxos_devicealias
+DOCUMENTATION = """
+module: nxos_devicealias
 short_description: Configuration of device alias.
-version_added: 1.0.0
 description:
 - Configuration of device alias for Cisco MDS NXOS.
+version_added: 1.0.0
 author:
 - Suhas Bharadwaj (@srbharadwaj) (subharad@cisco.com)
 notes:

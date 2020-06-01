@@ -1,0 +1,9 @@
+- name: Remove pre-existing OSPF processes
+  cisco.nxos.nxos_config:
+    lines: 
+      - no router ospf 100 
+      - no router ospf 102 
+      - no router ospf 104
+  ignore_errors: True
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

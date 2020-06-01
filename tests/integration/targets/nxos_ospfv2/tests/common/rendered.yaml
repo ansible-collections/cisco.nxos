@@ -1,0 +1,66 @@
+---
+- debug:
+    msg: START nxos_ospfv2 rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_ospfv2:
+    config:
+      processes:
+        - process_id: 100
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
+          areas:
+            - area_id: 0.0.0.100
+              filter_list:
+                - route_map: rmap_1
+                  direction: in
+                - route_map: rmap_2
+                  direction: out
+              ranges:
+                - prefix: 192.0.2.0/24
+                  not_advertise: True
+                - prefix: 203.0.113.0/24
+                  cost: 120
+            - area_id: 0.0.0.101
+              authentication:
+                message_digest: True
+          redistribute:
+            - protocol: eigrp
+              id: 120
+              route_map: rmap_1
+            - protocol: direct
+              route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              redistribute:
+                - protocol: static
+                  route_map: zone1-static-connect
+              summary_address:
+                - prefix: 203.0.113.64/26
+                  tag: 121
+                - prefix: 192.0.2.128/25
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: True
+                    no_summary: True
+                - area_id: 0.0.0.103
+                  nssa:
+                    no_summary: True
+                    translate:
+                      type7:
+                        always: True
+            - vrf: zone2
+              auto_cost:
+                reference_bandwidth: 45
+                unit: Gbps
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  assert:
+    that:
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
+        \ == 0 }}"
