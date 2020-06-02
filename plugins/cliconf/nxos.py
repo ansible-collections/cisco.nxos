@@ -51,6 +51,7 @@ class Cliconf(CliconfBase):
     def __init__(self, *args, **kwargs):
         self._module_context = {}
         super(Cliconf, self).__init__(*args, **kwargs)
+        self.device_info = self.get_device_info()
 
     def read_module_context(self, module_key):
         if self._module_context.get(module_key):
@@ -363,7 +364,12 @@ class Cliconf(CliconfBase):
             )
 
         if output == "json" and not command.endswith("| json"):
-            cmd = "%s | json" % command
+            model = self.device_info.get("network_os_model", "")
+            platform = self.device_info.get("network_os_platform", "")
+            if platform.startswith("DS-") and "MDS" in model:
+                cmd = "%s | json native" % command
+            else:
+                cmd = "%s | json" % command
         elif output == "text" and command.endswith("| json"):
             cmd = command.rsplit("|", 1)[0]
         else:
