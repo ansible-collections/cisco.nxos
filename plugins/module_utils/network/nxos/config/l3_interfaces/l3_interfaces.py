@@ -70,7 +70,7 @@ class L3_interfaces(ConfigBase):
         )
         self.platform = facts.get("ansible_net_platform", "")
 
-        return remove_rsvd_interfaces(l3_interfaces_facts)
+        return l3_interfaces_facts
 
     def edit_config(self, commands):
         return self._connection.edit_config(commands)
@@ -141,10 +141,6 @@ class L3_interfaces(ConfigBase):
         if config:
             for w in config:
                 w.update({"name": normalize_interface(w["name"])})
-                if get_interface_type(w["name"]) == "management":
-                    self._module.fail_json(
-                        msg="The 'management' interface is not allowed to be managed by this module"
-                    )
                 want.append(remove_empties(w))
         have = deepcopy(existing_l3_interfaces_facts)
         self.init_check_existing(have)
@@ -237,7 +233,6 @@ class L3_interfaces(ConfigBase):
         """
         # overridden behavior is the same as replaced except for scope.
         cmds = []
-        existing_vlans = []
         for i in have:
             obj_in_want = search_obj_in_list(i["name"], want, "name")
             if obj_in_want:

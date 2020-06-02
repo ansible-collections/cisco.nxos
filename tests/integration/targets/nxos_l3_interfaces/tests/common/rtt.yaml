@@ -1,0 +1,89 @@
+---
+- debug:
+    msg: START nxos_l3_interfaces round trip integration tests on connection={{ ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: Prepare interfaces (switch to L3)
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            mode: layer3
+          - name: "{{ nxos_int2 }}"
+            mode: layer3
+          - name: "{{ nxos_int3 }}"
+            mode: layer3
+        state: merged
+
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.nxos.nxos_l3_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            ipv4:
+              - address: 192.0.2.49/28
+                tag: 5
+              - address: 198.51.100.65/27
+                secondary: true
+                tag: 10
+            ipv6:
+              - address: 2001:db8:2000::1/32
+                tag: 6
+          - name: "{{ nxos_int2 }}"
+            ipv4: 
+              - address: 192.0.2.81/28
+        state: merged
+      tags: base_config
+
+    - name: Gather interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - l3_interfaces
+    
+    - name: Set reserved interface IP config and config to revert
+      set_fact:
+        mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
+        config_to_revert:
+          - name: "{{ nxos_int1 }}"
+            ipv4: 
+              - address: 203.0.113.67/26
+          - name: "{{ nxos_int2 }}"
+            ipv4:
+              - address: 198.51.100.10/24
+                tag: 7
+              - address: 198.51.100.130/25
+                secondary: true
+                tag: 11
+          - name: "{{ nxos_int3 }}"
+            ipv6:
+              - address: 2001:db8::20/32
+                tag: 6
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.nxos.nxos_l3_interfaces:
+        config: "{{ config_to_revert + mgmt }}"
+        state: overridden
+
+    - assert:
+        that:
+        - result.changed == true
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.nxos.nxos_l3_interfaces:
+        config: "{{ ansible_facts['network_resources']['l3_interfaces'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - base_config['after'] == revert['after']
+  always:
+    - include_tasks: _remove_config.yaml
+
+- debug:
+    msg: END nxos_l3_interfaces round trip integration tests on connection={{ ansible_connection }}

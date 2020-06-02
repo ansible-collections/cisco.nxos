@@ -4,6 +4,11 @@
 
 - include_tasks: _remove_config.yaml
 
+- name: Gather pre-facts
+  cisco.nxos.nxos_facts:
+    gather_subset: ['!all', '!min']
+    gather_network_resources: l2_interfaces
+
 - block:
     - name: Use rendered state to convert task input to device specific commands
       register: result
@@ -34,7 +39,7 @@
     - name: Make sure that rendered task actually did not make any changes to the
         device
       assert:
-        that: "{{ result['gathered'] == [] }}"
+        that: "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.l2_interfaces) == [] }}"
   always:
 
     - include_tasks: _remove_config.yaml
