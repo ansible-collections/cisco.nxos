@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_snmp_location
+DOCUMENTATION = """
+module: nxos_snmp_location
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages SNMP location information.
 description:
 - Manages SNMP location configuration.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -51,12 +47,12 @@ options:
 
 EXAMPLES = """
 # ensure snmp location is configured
-- nxos_snmp_location:
+- cisco.nxos.nxos_snmp_location:
     location: Test
     state: present
 
 # ensure snmp location is not configured
-- nxos_snmp_location:
+- cisco.nxos.nxos_snmp_location:
     location: Test
     state: absent
 """

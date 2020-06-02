@@ -16,19 +16,19 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_acl_interface
+DOCUMENTATION = """
+module: nxos_acl_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages applying ACLs to interfaces.
+short_description: (deprecated) Manages applying ACLs to interfaces.
 description:
 - Manages applying ACLs to interfaces.
+version_added: 1.0.0
+deprecated:
+  removed_in: '2.13'
+  alternative: nxos_acl_interfaces
+  why: Updated modules released with more functionality
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -56,11 +56,12 @@ options:
     choices:
     - present
     - absent
+
 """
 
 EXAMPLES = """
 - name: apply egress acl to ethernet1/41
-  nxos_acl_interface:
+  cisco.nxos.nxos_acl_interface:
     name: ANSIBLE
     interface: ethernet1/41
     direction: egress

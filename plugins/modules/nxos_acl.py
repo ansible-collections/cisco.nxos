@@ -16,22 +16,22 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_acl
+DOCUMENTATION = """
+module: nxos_acl
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages access list entries for ACLs.
+short_description: (deprecated) Manages access list entries for ACLs.
 description:
 - Manages access list entries for ACLs.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
+deprecated:
+  removed_in: '2.13'
+  alternative: nxos_acls
+  why: Updated modules released with more functionality
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - C(state=absent) removes the ACE if it exists.
@@ -196,11 +196,12 @@ options:
     - present
     - absent
     - delete_acl
+
 """
 
 EXAMPLES = """
 # configure ACL ANSIBLE
-- nxos_acl:
+- cisco.nxos.nxos_acl:
     name: ANSIBLE
     seq: 10
     action: permit

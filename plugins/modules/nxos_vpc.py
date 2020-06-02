@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_vpc
+DOCUMENTATION = """
+module: nxos_vpc
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages global VPC configuration
 description:
 - Manages global VPC configuration
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -62,8 +58,8 @@ options:
     description:
     - VRF used for peer keepalive link
     - The VRF must exist on the device before using pkl_vrf.
-    - '(Note) ''default'' is an overloaded term: Default vrf context for pkl_vrf is
-      ''management''; ''pkl_vrf: default'' refers to the literal ''default'' rib.'
+    - "(Note) 'default' is an overloaded term: Default vrf context for pkl_vrf is
+      'management'; 'pkl_vrf: default' refers to the literal 'default' rib."
     default: management
   peer_gw:
     description:
@@ -105,7 +101,7 @@ options:
 
 EXAMPLES = """
 - name: configure a simple asn
-  nxos_vpc:
+  cisco.nxos.nxos_vpc:
     domain: 100
     role_priority: 1000
     system_priority: 2000
@@ -115,7 +111,7 @@ EXAMPLES = """
     auto_recovery: true
 
 - name: configure
-  nxos_vpc:
+  cisco.nxos.nxos_vpc:
     domain: 100
     role_priority: 32667
     system_priority: 2000
@@ -125,7 +121,7 @@ EXAMPLES = """
     auto_recovery: true
 
 - name: Configure VPC with delay restore and existing keepalive VRF
-  nxos_vpc:
+  cisco.nxos.nxos_vpc:
     domain: 10
     role_priority: 28672
     system_priority: 2000

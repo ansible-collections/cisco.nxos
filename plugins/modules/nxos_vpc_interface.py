@@ -16,18 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_vpc_interface
+DOCUMENTATION = """
+module: nxos_vpc_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages interface VPC configuration
 description:
 - Manages interface VPC configuration
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -61,7 +58,7 @@ options:
 """
 
 EXAMPLES = """
-- nxos_vpc_interface:
+- cisco.nxos.nxos_vpc_interface:
     portchannel: 10
     vpc: 100
 """

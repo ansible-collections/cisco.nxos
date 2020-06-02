@@ -17,19 +17,14 @@
 #
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
-DOCUMENTATION = """module: nxos_vrrp
+DOCUMENTATION = """
+module: nxos_vrrp
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages VRRP configuration on NX-OS switches.
 description:
 - Manages VRRP configuration on NX-OS switches.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -62,7 +57,7 @@ options:
     description:
     - Enable/Disable preempt.
     type: bool
-    default: 'yes'
+    default: yes
   vip:
     description:
     - VRRP virtual IP address or 'default' keyword
@@ -88,21 +83,20 @@ options:
 
 EXAMPLES = """
 - name: Ensure vrrp group 100 and vip 10.1.100.1 is on vlan10
-  nxos_vrrp:
+  cisco.nxos.nxos_vrrp:
     interface: vlan10
     group: 100
     vip: 10.1.100.1
 
 - name: Ensure removal of the vrrp group config
-  # vip is required to ensure the user knows what they are removing
-  nxos_vrrp:
+  cisco.nxos.nxos_vrrp:
     interface: vlan10
     group: 100
     vip: 10.1.100.1
     state: absent
 
 - name: Re-config with more params
-  nxos_vrrp:
+  cisco.nxos.nxos_vrrp:
     interface: vlan10
     group: 100
     vip: 10.1.100.1

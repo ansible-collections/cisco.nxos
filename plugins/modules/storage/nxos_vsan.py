@@ -5,17 +5,13 @@
 
 from __future__ import absolute_import, division, print_function
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_vsan
+DOCUMENTATION = """
+module: nxos_vsan
 short_description: Configuration of vsan.
 description:
 - Configuration of vsan for Cisco MDS NXOS.
+version_added: 1.0.0
 author:
 - Suhas Bharadwaj (@srbharadwaj) (subharad@cisco.com)
 notes:
@@ -55,7 +51,7 @@ EXAMPLES = """
 ---
 -
   name: "Test that vsan module works"
-  nxos_vsan:
+  cisco.nxos.nxos_vsan:
     vsan:
       - id: 922
         interface:

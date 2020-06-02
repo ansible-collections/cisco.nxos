@@ -16,13 +16,9 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_file_copy
+DOCUMENTATION = """
+module: nxos_file_copy
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Copy a file to a remote NXOS device.
@@ -32,6 +28,7 @@ description:
   the device or (2) pulled from a remote SCP file server to the device.  File copies
   are initiated from the NXOS device to the remote SCP server.  This module only supports
   the use of connection C(network_cli) or C(Cli) transport with connection C(local).
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -130,22 +127,22 @@ options:
 
 EXAMPLES = """
 # File copy from ansible controller to nxos device
-  - name: "copy from server to device"
-    nxos_file_copy:
-      local_file: "./test_file.txt"
-      remote_file: "test_file.txt"
+- name: copy from server to device
+  cisco.nxos.nxos_file_copy:
+    local_file: ./test_file.txt
+    remote_file: test_file.txt
 
 # Initiate file copy from the nxos device to transfer file from an SCP server back to the nxos device
-  - name: "initiate file copy from device"
-    nxos_file_copy:
-      file_pull: True
-      local_file: "xyz"
-      local_file_directory: "dir1/dir2/dir3"
-      remote_file: "/mydir/abc"
-      remote_scp_server: "192.168.0.1"
-      remote_scp_server_user: "myUser"
-      remote_scp_server_password: "myPassword"
-      vrf: "management"
+- name: initiate file copy from device
+  cisco.nxos.nxos_file_copy:
+    file_pull: true
+    local_file: xyz
+    local_file_directory: dir1/dir2/dir3
+    remote_file: /mydir/abc
+    remote_scp_server: 192.168.0.1
+    remote_scp_server_user: myUser
+    remote_scp_server_password: myPassword
+    vrf: management
 """
 
 RETURN = """

@@ -25,8 +25,8 @@
     - name: setup3
       cisco.nxos.nxos_config:
         lines: 
-          - "interface {{ test_int2 }}"
-          - "  switchport"
+          - "switchport"
+        parents: "interface {{ test_int2 }}"
 
     - name: Gather l2_interfaces facts
       cisco.nxos.nxos_facts: &id001

@@ -9,19 +9,14 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["deprecated"],
-    "supported_by": "network",
-}
-
-
-DOCUMENTATION = """module: nxos_l3_interface
+DOCUMENTATION = """
+module: nxos_l3_interface
 author: Trishna Guha (@trishnaguha)
-short_description: Manage L3 interfaces on Cisco NXOS network devices
+short_description: (deprecated) Manage L3 interfaces on Cisco NXOS network devices
 description:
 - This module provides declarative management of L3 interfaces on Cisco NXOS network
   devices.
+version_added: 1.0.0
 deprecated:
   removed_in: '2.13'
   alternative: nxos_l3_interfaces
@@ -49,30 +44,31 @@ options:
     - absent
 extends_documentation_fragment:
 - cisco.nxos.nxos
+
 """
 
 EXAMPLES = """
 - name: Set interface IPv4 address
-  nxos_l3_interface:
+  cisco.nxos.nxos_l3_interface:
     name: Ethernet2/3
     ipv4: 192.168.0.1/24
 
 - name: Remove interface IPv4 address
-  nxos_l3_interface:
+  cisco.nxos.nxos_l3_interface:
     name: Ethernet2/3
     state: absent
 
 - name: Set IP addresses on aggregate
-  nxos_l3_interface:
+  cisco.nxos.nxos_l3_interface:
     aggregate:
-      - { name: Ethernet2/1, ipv4: 192.168.2.10/24 }
-      - { name: Ethernet2/5, ipv4: 192.168.3.10/24, ipv6: "fd5d:12c9:2201:1::1/64" }
+    - {name: Ethernet2/1, ipv4: 192.168.2.10/24}
+    - {name: Ethernet2/5, ipv4: 192.168.3.10/24, ipv6: fd5d:12c9:2201:1::1/64}
 
 - name: Remove IP addresses on aggregate
-  nxos_l3_interface:
+  cisco.nxos.nxos_l3_interface:
     aggregate:
-      - { name: Ethernet2/1, ipv4: 192.168.2.10/24 }
-      - { name: Ethernet2/5, ipv4: 192.168.3.10/24, ipv6: "fd5d:12c9:2201:1::1/64" }
+    - {name: Ethernet2/1, ipv4: 192.168.2.10/24}
+    - {name: Ethernet2/5, ipv4: 192.168.3.10/24, ipv6: fd5d:12c9:2201:1::1/64}
     state: absent
 """
 

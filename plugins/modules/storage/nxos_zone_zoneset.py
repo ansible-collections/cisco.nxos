@@ -5,17 +5,13 @@
 
 from __future__ import absolute_import, division, print_function
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_zone_zoneset
+DOCUMENTATION = """
+module: nxos_zone_zoneset
 short_description: Configuration of zone/zoneset.
 description:
 - Configuration of zone/zoneset for Cisco MDS NXOS.
+version_added: 1.0.0
 author:
 - Suhas Bharadwaj (@srbharadwaj) (subharad@cisco.com)
 notes:
@@ -135,7 +131,7 @@ EXAMPLES = """
 ---
 -
   name: 'Test that zone/zoneset module works'
-  nxos_zone_zoneset:
+  cisco.nxos.nxos_zone_zoneset:
     zone_zoneset_details:
       - mode: enhanced
         vsan: 22

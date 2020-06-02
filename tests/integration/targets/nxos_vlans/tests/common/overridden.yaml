@@ -1,0 +1,69 @@
+---
+- debug:
+    msg: Start nxos_vlans overridden integration tests connection={{ ansible_connection
+      }}
+
+- name: setup1
+  cisco.nxos.nxos_config: &id003
+    lines:
+      - "no vlan 2-100"
+
+- block:
+
+    - name: setup
+      cisco.nxos.nxos_config:
+        lines:
+          - "vlan 5"
+          - "  name test-vlan5"
+          - "  state suspend"
+          - "vlan 6"
+
+    - name: Gather vlans facts
+      cisco.nxos.nxos_facts: &id001
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources: vlans
+
+    - name: Overridden
+      register: result
+      cisco.nxos.nxos_vlans: &id002
+        config:
+
+          - vlan_id: 9
+            name: test-vlan9
+            enabled: false
+        state: overridden
+
+    - assert:
+        that:
+          - result.before|length == (ansible_facts.network_resources.vlans|length
+            - 1)
+          - result.changed == true
+          - "'no vlan 5' in result.commands"
+          - "'no vlan 6' in result.commands"
+          - "'vlan 9' in result.commands"
+          - "'name test-vlan9' in result.commands"
+          - "'shutdown' in result.commands"
+          - result.commands|length == 5
+
+    - name: Gather vlans post facts
+      cisco.nxos.nxos_facts: *id001
+
+    - assert:
+        that:
+          - result.after|length == (ansible_facts.network_resources.vlans|length
+            - 1)
+
+    - name: Idempotence - Overridden
+      register: result
+      cisco.nxos.nxos_vlans: *id002
+
+    - assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+  always:
+
+    - name: teardown
+      cisco.nxos.nxos_config: *id003

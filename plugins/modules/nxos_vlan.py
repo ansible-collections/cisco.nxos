@@ -20,18 +20,15 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["deprecated"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_vlan
+DOCUMENTATION = """
+module: nxos_vlan
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages VLAN resources and attributes.
+short_description: (deprecated) Manages VLAN resources and attributes.
 description:
 - Manages VLAN configurations on NX-OS switches.
+version_added: 1.0.0
 deprecated:
   removed_in: '2.13'
   alternative: nxos_vlans
@@ -109,60 +106,61 @@ options:
       used without aggregate as well.
     - Removal of Vlan 1 is not allowed and will be ignored by purge.
     type: bool
-    default: 'no'
+    default: no
   delay:
     description:
     - Time in seconds to wait before checking for the operational state on remote
       device. This wait is applicable for operational state arguments.
     default: 10
     type: int
+
 """
 
 EXAMPLES = """
 - name: Ensure a range of VLANs are not present on the switch
-  nxos_vlan:
-    vlan_range: "2-10,20,50,55-60,100-150"
+  cisco.nxos.nxos_vlan:
+    vlan_range: 2-10,20,50,55-60,100-150
     state: absent
 
 - name: Ensure VLAN 50 exists with the name WEB and is in the shutdown state
-  nxos_vlan:
+  cisco.nxos.nxos_vlan:
     vlan_id: 50
     admin_state: down
     name: WEB
 
 - name: Ensure VLAN is NOT on the device
-  nxos_vlan:
+  cisco.nxos.nxos_vlan:
     vlan_id: 50
     state: absent
 
 - name: Add interfaces to VLAN and check intent (config + intent)
-  nxos_vlan:
+  cisco.nxos.nxos_vlan:
     vlan_id: 100
     interfaces:
-      - Ethernet2/1
-      - Ethernet2/5
+    - Ethernet2/1
+    - Ethernet2/5
     associated_interfaces:
-      - Ethernet2/1
-      - Ethernet2/5
+    - Ethernet2/1
+    - Ethernet2/5
 
 - name: Check interfaces assigned to VLAN
-  nxos_vlan:
+  cisco.nxos.nxos_vlan:
     vlan_id: 100
     associated_interfaces:
-      - Ethernet2/1
-      - Ethernet2/5
+    - Ethernet2/1
+    - Ethernet2/5
 
 - name: Create aggregate of vlans
-  nxos_vlan:
+  cisco.nxos.nxos_vlan:
     aggregate:
-      - { vlan_id: 4000, mode: ce }
-      - { vlan_id: 4001, name: vlan-4001 }
+    - {vlan_id: 4000, mode: ce}
+    - {vlan_id: 4001, name: vlan-4001}
 
 - name: purge vlans - removes all other vlans except the ones mentioned in aggregate)
-  nxos_vlan:
+  cisco.nxos.nxos_vlan:
     aggregate:
-      - vlan_id: 1
-      - vlan_id: 4001
+    - vlan_id: 1
+    - vlan_id: 4001
     purge: yes
 
 """

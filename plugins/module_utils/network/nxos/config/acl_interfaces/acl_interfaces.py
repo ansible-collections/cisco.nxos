@@ -76,21 +76,26 @@ class Acl_interfaces(ConfigBase):
         result = {"changed": False}
         warnings = list()
         commands = list()
-        state = self._module.params["state"]
+        self.state = self._module.params["state"]
         action_states = ["merged", "replaced", "deleted", "overridden"]
 
-        if state == "gathered":
+        if self.state == "gathered":
             result["gathered"] = self.get_acl_interfaces_facts()
-        elif state == "rendered":
+        elif self.state == "rendered":
             result["rendered"] = self.set_config({})
             # no need to fetch facts for rendered
-        elif state == "parsed":
+        elif self.state == "parsed":
+            running_config = self._module.params["running_config"]
+            if not running_config:
+                self._module.fail_json(
+                    msg="value of running_config parameter must not be empty for state parsed"
+                )
             result["parsed"] = self.set_config({})
             # no need to fetch facts for parsed
         else:
             existing_acl_interfaces_facts = self.get_acl_interfaces_facts()
             commands.extend(self.set_config(existing_acl_interfaces_facts))
-            if commands and state in action_states:
+            if commands and self.state in action_states:
                 if not self._module.check_mode:
                     self._connection.edit_config(commands)
                 result["changed"] = True
@@ -134,22 +139,31 @@ class Acl_interfaces(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        state = self._module.params["state"]
+        if (
+            self.state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
+            self._module.fail_json(
+                msg="value of config parameter must not be empty for state {0}".format(
+                    self.state
+                )
+            )
+
         commands = []
-        if state == "overridden":
+        if self.state == "overridden":
             commands = self._state_overridden(want, have)
-        elif state == "deleted":
+        elif self.state == "deleted":
             commands = self._state_deleted(want, have)
-        elif state == "rendered":
+        elif self.state == "rendered":
             commands = self._state_rendered(want)
-        elif state == "parsed":
+        elif self.state == "parsed":
             want = self._module.params["running_config"]
             commands = self._state_parsed(want)
         else:
             for w in want:
-                if state == "merged":
+                if self.state == "merged":
                     commands.extend(self._state_merged(w, have))
-                elif state == "replaced":
+                elif self.state == "replaced":
                     commands.extend(self._state_replaced(w, have))
         return commands
 
@@ -320,8 +334,15 @@ class Acl_interfaces(ConfigBase):
         """
         commands = []
         if main_want:
-            for want in main_want:
-                commands.extend(self.set_commands(want, have, deleted=True))
+            if self.state == "deleted":
+                for w in main_want:
+                    h = search_obj_in_list(w["name"], have, "name") or {}
+                    commands.extend(self.set_commands(h, have, deleted=True))
+            else:
+                for want in main_want:
+                    commands.extend(
+                        self.set_commands(want, have, deleted=True)
+                    )
         else:
             for h in have:
                 commands.extend(self.set_commands(h, have, deleted=True))

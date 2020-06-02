@@ -19,18 +19,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_banner
+DOCUMENTATION = """
+module: nxos_banner
 author: Trishna Guha (@trishnaguha)
 short_description: Manage multiline banners on Cisco NXOS devices
 description:
 - This will configure both exec and motd banners on remote devices running Cisco NXOS.
   It allows playbooks to add or remove banner text from the active running configuration.
+version_added: 1.0.0
 options:
   banner:
     description:
@@ -57,7 +54,7 @@ extends_documentation_fragment:
 
 EXAMPLES = """
 - name: configure the exec banner
-  nxos_banner:
+  cisco.nxos.nxos_banner:
     banner: exec
     text: |
       this is my exec banner
@@ -65,12 +62,12 @@ EXAMPLES = """
       string
     state: present
 - name: remove the motd banner
-  nxos_banner:
+  cisco.nxos.nxos_banner:
     banner: motd
     state: absent
 - name: Configure banner from file
-  nxos_banner:
-    banner:  motd
+  cisco.nxos.nxos_banner:
+    banner: motd
     text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}"
     state: present
 """

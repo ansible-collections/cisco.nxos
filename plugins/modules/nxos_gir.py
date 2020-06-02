@@ -16,14 +16,9 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_gir
+DOCUMENTATION = """
+module: nxos_gir
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Trigger a graceful removal or insertion (GIR) of the switch.
@@ -31,6 +26,7 @@ description:
 - Trigger a graceful removal or insertion (GIR) of the switch.
 - GIR processing may take more than 2 minutes. Timeout settings are automatically
   extended to 200s when user timeout settings are insufficient.
+version_added: 1.0.0
 author:
 - Gabriele Gerbino (@GGabriele)
 notes:
@@ -96,52 +92,52 @@ options:
 
 EXAMPLES = """
 # Trigger system maintenance mode
-- nxos_gir:
+- cisco.nxos.nxos_gir:
     system_mode_maintenance: true
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 # Trigger system normal mode
-- nxos_gir:
+- cisco.nxos.nxos_gir:
     system_mode_maintenance: false
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 # Configure on-reload reset-reason for maintenance mode
-- nxos_gir:
+- cisco.nxos.nxos_gir:
     system_mode_maintenance_on_reload_reset_reason: manual_reload
     state: present
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 # Add on-reload reset-reason for maintenance mode
-- nxos_gir:
+- cisco.nxos.nxos_gir:
     system_mode_maintenance_on_reload_reset_reason: hw_error
     state: present
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 # Remove on-reload reset-reason for maintenance mode
-- nxos_gir:
+- cisco.nxos.nxos_gir:
     system_mode_maintenance_on_reload_reset_reason: manual_reload
     state: absent
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 # Set timeout for maintenance mode
-- nxos_gir:
+- cisco.nxos.nxos_gir:
     system_mode_maintenance_timeout: 30
     state: present
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 # Remove timeout for maintenance mode
-- nxos_gir:
+- cisco.nxos.nxos_gir:
     system_mode_maintenance_timeout: 30
     state: absent
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 """
 
 RETURN = """

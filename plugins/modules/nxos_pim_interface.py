@@ -3,18 +3,15 @@
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = r"""module: nxos_pim_interface
+DOCUMENTATION = """
+module: nxos_pim_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages PIM interface configuration.
 description:
 - Manages PIM interface configuration settings.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 notes:
@@ -109,21 +106,22 @@ options:
     - default
     default: present
 """
-EXAMPLES = r"""
+EXAMPLES = """
 - name: Ensure PIM is not running on the interface
-  nxos_pim_interface:
+  cisco.nxos.nxos_pim_interface:
     interface: eth1/33
     state: absent
 
-- name: Ensure the interface has pim-sm enabled with the appropriate priority and hello interval
-  nxos_pim_interface:
+- name: Ensure the interface has pim-sm enabled with the appropriate priority and
+    hello interval
+  cisco.nxos.nxos_pim_interface:
     interface: eth1/33
     dr_prio: 10
     hello_interval: 40
     state: present
 
 - name: Ensure join-prune policies exist
-  nxos_pim_interface:
+  cisco.nxos.nxos_pim_interface:
     interface: eth1/33
     jp_policy_in: JPIN
     jp_policy_out: JPOUT
@@ -131,12 +129,12 @@ EXAMPLES = r"""
     jp_type_out: routemap
 
 - name: disable bfd on the interface
-  nxos_pim_interface:
+  cisco.nxos.nxos_pim_interface:
     interface: eth1/33
     bfd: disable
 
 - name: Ensure defaults are in place
-  nxos_pim_interface:
+  cisco.nxos.nxos_pim_interface:
     interface: eth1/33
     state: default
 """

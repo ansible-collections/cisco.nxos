@@ -1,0 +1,27 @@
+---
+- name: Enable OSPF feature
+  cisco.nxos.nxos_feature:
+    feature: ospf
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+
+- block:
+
+    - include: cli.yaml
+      tags:
+        - cli.yaml
+
+    - include: nxapi.yaml
+      tags:
+        - nxapi
+
+  always:
+    - name: Disable OSPF feature
+      cisco.nxos.nxos_feature:
+        feature: ospf
+        state: disabled
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+
+
+

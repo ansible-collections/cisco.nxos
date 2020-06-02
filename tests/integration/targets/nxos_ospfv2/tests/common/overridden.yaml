@@ -1,0 +1,57 @@
+---
+- debug:
+    msg: Start nxos_ospfv2 overridden integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Overridde all OSPF configuration with provided configuration
+      cisco.nxos.nxos_ospfv2: &id003
+        config:
+          processes:
+            - process_id: 104
+              router_id: 203.0.113.20
+            - process_id: 102
+              router_id: 198.51.100.1
+              shutdown: True
+        state: overridden
+      register: result
+    
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
+            \ == 0 }}"
+    
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
+            \ |length == 0 }}"
+    
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - "{{ overridden['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
+            \ == 0 }}"
+
+    - name: Overridde all OSPF configuration with provided configuration
+        (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_ospfv2: *id003
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Assert that before dict is correctly generated
+      assert:
+        that:
+          - "{{ overridden['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
+            \ == 0 }}"
+  always:
+    - include_tasks: _remove_config.yaml

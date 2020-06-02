@@ -16,20 +16,16 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_pim_rp_address
+DOCUMENTATION = """
+module: nxos_pim_rp_address
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages configuration of an PIM static RP address instance.
 description:
 - Manages configuration of an Protocol Independent Multicast (PIM) static rendezvous
   point (RP) address instance.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -64,8 +60,8 @@ options:
     - default
 """
 EXAMPLES = """
-- nxos_pim_rp_address:
-    rp_address: "10.1.1.20"
+- cisco.nxos.nxos_pim_rp_address:
+    rp_address: 10.1.1.20
     state: present
 """
 

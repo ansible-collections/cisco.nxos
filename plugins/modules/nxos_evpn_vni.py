@@ -16,20 +16,16 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_evpn_vni
+DOCUMENTATION = """
+module: nxos_evpn_vni
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages Cisco EVPN VXLAN Network Identifier (VNI).
 description:
 - Manages Cisco Ethernet Virtual Private Network (EVPN) VXLAN Network Identifier (VNI)
   configurations of a Nexus device.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -76,12 +72,12 @@ options:
 
 EXAMPLES = """
 - name: vni configuration
-  nxos_evpn_vni:
+  cisco.nxos.nxos_evpn_vni:
     vni: 6000
-    route_distinguisher: "60:10"
+    route_distinguisher: 60:10
     route_target_import:
-      - "5000:10"
-      - "4100:100"
+    - 5000:10
+    - 4100:100
     route_target_export: auto
     route_target_both: default
 """

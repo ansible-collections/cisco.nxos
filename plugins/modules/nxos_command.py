@@ -7,14 +7,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
-DOCUMENTATION = """module: nxos_command
+DOCUMENTATION = """
+module: nxos_command
 extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
@@ -23,6 +17,7 @@ description:
 - Sends an arbitrary command to an NXOS node and returns the results read from the
   device.  This module includes an argument that will cause the module to wait for
   a specific condition before returning or timing out if the condition is not met.
+version_added: 1.0.0
 options:
   commands:
     description:
@@ -65,44 +60,43 @@ options:
 """
 
 EXAMPLES = """
----
 - name: run show version on remote devices
-  nxos_command:
+  cisco.nxos.nxos_command:
     commands: show version
 
 - name: run show version and check to see if output contains Cisco
-  nxos_command:
+  cisco.nxos.nxos_command:
     commands: show version
     wait_for: result[0] contains Cisco
 
 - name: run multiple commands on remote nodes
-  nxos_command:
+  cisco.nxos.nxos_command:
     commands:
-      - show version
-      - show interfaces
+    - show version
+    - show interfaces
 
 - name: run multiple commands and evaluate the output
-  nxos_command:
+  cisco.nxos.nxos_command:
     commands:
-      - show version
-      - show interfaces
+    - show version
+    - show interfaces
     wait_for:
-      - result[0] contains Cisco
-      - result[1] contains loopback0
+    - result[0] contains Cisco
+    - result[1] contains loopback0
 
 - name: run commands and specify the output format
-  nxos_command:
+  cisco.nxos.nxos_command:
     commands:
-      - command: show version
-        output: json
+    - command: show version
+      output: json
 
 - name: run commands that require answering a prompt
-  nxos_command:
+  cisco.nxos.nxos_command:
     commands:
-      - configure terminal
-      - command: 'no feature npv'
-        prompt: 'Do you want to continue'
-        answer: 'y'
+    - configure terminal
+    - command: no feature npv
+      prompt: Do you want to continue
+      answer: y
 
 """
 

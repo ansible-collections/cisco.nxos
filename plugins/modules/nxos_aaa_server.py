@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_aaa_server
+DOCUMENTATION = """
+module: nxos_aaa_server
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages AAA server global configuration.
 description:
 - Manages AAA server global configuration
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 notes:
@@ -84,26 +80,26 @@ options:
 
 EXAMPLES = """
 # Radius Server Basic settings
-  - name: "Radius Server Basic settings"
-    nxos_aaa_server:
-        server_type: radius
-        server_timeout: 9
-        deadtime: 20
-        directed_request: enabled
+- name: Radius Server Basic settings
+  cisco.nxos.nxos_aaa_server:
+    server_type: radius
+    server_timeout: 9
+    deadtime: 20
+    directed_request: enabled
 
 # Tacacs Server Basic settings
-  - name: "Tacacs Server Basic settings"
-    nxos_aaa_server:
-        server_type: tacacs
-        server_timeout: 8
-        deadtime: 19
-        directed_request: disabled
+- name: Tacacs Server Basic settings
+  cisco.nxos.nxos_aaa_server:
+    server_type: tacacs
+    server_timeout: 8
+    deadtime: 19
+    directed_request: disabled
 
 # Setting Global Key
-  - name: "AAA Server Global Key"
-    nxos_aaa_server:
-        server_type: radius
-        global_key: test_key
+- name: AAA Server Global Key
+  cisco.nxos.nxos_aaa_server:
+    server_type: radius
+    global_key: test_key
 """
 
 RETURN = """

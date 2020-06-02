@@ -16,20 +16,16 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_install_os
+DOCUMENTATION = """
+module: nxos_install_os
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Set boot options like boot, kickstart image and issu.
 description:
 - Install an operating system by setting the boot options like boot image and kickstart
   image and optionally select to install using ISSU (In Server Software Upgrade).
+version_added: 1.0.0
 notes:
 - Tested against the following platforms and images - N9k 7.0(3)I4(6), 7.0(3)I5(3),
   7.0(3)I6(1), 7.0(3)I7(1), 7.0(3)F2(2), 7.0(3)F3(2) - N3k 6.0(2)A8(6), 6.0(2)A8(8),
@@ -67,15 +63,15 @@ options:
     choices:
     - required
     - desired
-    - 'yes'
-    - 'no'
-    default: 'no'
+    - yes
+    - no
+    default: no
 """
 
 EXAMPLES = """
 - name: Install OS on N9k
   check_mode: no
-  nxos_install_os:
+  cisco.nxos.nxos_install_os:
     system_image_file: nxos.7.0.3.I6.1.bin
     issu: desired
 
@@ -85,12 +81,12 @@ EXAMPLES = """
     state: started
     timeout: 500
     delay: 60
-    host: "{{ inventory_hostname }}"
+    host: '{{ inventory_hostname }}'
 
 - name: Check installed OS for newly installed version
   nxos_command:
-    commands: ['show version | json']
-    provider: "{{ connection }}"
+    commands: [show version | json]
+    provider: '{{ connection }}'
   register: output
 - assert:
     that:

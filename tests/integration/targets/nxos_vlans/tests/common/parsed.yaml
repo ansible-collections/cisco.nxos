@@ -1,0 +1,19 @@
+---
+- debug:
+    msg: START nxos_vlans parsed integration tests on connection={{ ansible_connection
+      }}
+
+- block:
+    - name: Use parsed state to convert externally supplied config to structured format
+      register: result
+      cisco.nxos.nxos_vlans:
+        running_config: "{{ lookup('file', '{{ role_path }}/fixtures/parsed.cfg') }}"
+        state: parsed
+
+    - assert:
+       that: "{{ parsed | symmetric_difference(result['parsed']) |length==0\
+         \ }}"
+
+- debug:
+    msg: END nxos_vlans parsed integration tests on connection={{ ansible_connection
+      }}

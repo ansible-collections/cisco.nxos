@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_udld
+DOCUMENTATION = """
+module: nxos_udld
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages UDLD global configuration params.
 description:
 - Manages UDLD global configuration params.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 notes:
@@ -49,7 +45,7 @@ options:
     - Ability to reset all ports shut down by UDLD. 'state' parameter cannot be 'absent'
       when this is present.
     type: bool
-    default: 'no'
+    default: no
   state:
     description:
     - Manage the state of the resource. When set to 'absent', aggressive and msg_time
@@ -61,20 +57,20 @@ options:
 """
 EXAMPLES = """
 # ensure udld aggressive mode is globally disabled and se global message interval is 20
-- nxos_udld:
+- cisco.nxos.nxos_udld:
     aggressive: disabled
     msg_time: 20
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 
 # Ensure agg mode is globally enabled and msg time is 15
-- nxos_udld:
+- cisco.nxos.nxos_udld:
     aggressive: enabled
     msg_time: 15
-    host: "{{ inventory_hostname }}"
-    username: "{{ un }}"
-    password: "{{ pwd }}"
+    host: '{{ inventory_hostname }}'
+    username: '{{ un }}'
+    password: '{{ pwd }}'
 """
 
 RETURN = """

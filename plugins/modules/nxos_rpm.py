@@ -16,20 +16,16 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_rpm
+DOCUMENTATION = """
+module: nxos_rpm
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Install patch or feature rpms on Cisco NX-OS devices.
 description:
 - Install software maintenance upgrade (smu) RPMS and 3rd party RPMS on Cisco NX-OS
   devices.
+version_added: 1.0.0
 author: Sai Chintalapudi (@saichint)
 notes:
 - Tested against NXOSv 7.0(3)I2(5), 7.0(3)I4(6), 7.0(3)I5(3), 7.0(3)I6(1), 7.0(3)I7(3)
@@ -62,8 +58,8 @@ options:
 """
 
 EXAMPLES = """
-- nxos_rpm:
-    pkg: "nxos.sample-n9k_ALL-1.0.0-7.0.3.I7.3.lib32_n9000.rpm"
+- cisco.nxos.nxos_rpm:
+    pkg: nxos.sample-n9k_ALL-1.0.0-7.0.3.I7.3.lib32_n9000.rpm
 """
 
 RETURN = """

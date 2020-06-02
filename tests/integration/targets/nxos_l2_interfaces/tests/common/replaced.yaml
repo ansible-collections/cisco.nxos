@@ -1,7 +1,6 @@
 ---
 - debug:
-    msg: Start nxos_l2_interfaces replaced integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_l2_interfaces replaced integration tests connection={{ ansible_connection }}
 
 - set_fact:
     test_int1: "{{ nxos_int1 }}"
@@ -10,19 +9,18 @@
 - name: setup1
   ignore_errors: true
   cisco.nxos.nxos_config: &id003
-    lines: 
+    lines:
       - "default interface {{ test_int1 }}"
       - "default interface {{ test_int2 }}"
 
 - block:
-
     - name: setup2
       cisco.nxos.nxos_config:
         lines:
           - "switchport"
           - "switchport access vlan 5"
         parents: "interface {{ test_int1 }}"
-    
+
     - name: setup3
       cisco.nxos.nxos_config:
         lines:

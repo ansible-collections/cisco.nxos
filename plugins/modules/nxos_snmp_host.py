@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_snmp_host
+DOCUMENTATION = """
+module: nxos_snmp_host
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages SNMP host configuration.
 description:
 - Manages SNMP host configuration parameters.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -93,7 +89,7 @@ options:
 
 EXAMPLES = """
 # ensure snmp host is configured
-- nxos_snmp_host:
+- cisco.nxos.nxos_snmp_host:
     snmp_host: 192.0.2.3
     community: TESTING
     state: present

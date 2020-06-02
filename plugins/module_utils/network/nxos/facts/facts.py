@@ -8,7 +8,6 @@ The facts class for nxos
 this file validates each subset of facts and selectively
 calls the appropriate facts gathering function
 """
-
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts import (
     FactsBase,
 )
@@ -66,6 +65,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.stat
     Static_routesFacts,
 )
 
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv2.ospfv2 import (
+    Ospfv2Facts,
+)
 
 FACT_LEGACY_SUBSETS = dict(
     default=Default,
@@ -91,6 +93,7 @@ FACT_RESOURCE_SUBSETS = dict(
     acl_interfaces=Acl_interfacesFacts,
     acls=AclsFacts,
     static_routes=Static_routesFacts,
+    ospfv2=Ospfv2Facts,
 )
 
 

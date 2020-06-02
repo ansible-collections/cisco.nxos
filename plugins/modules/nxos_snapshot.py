@@ -4,20 +4,15 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
-
-
-DOCUMENTATION = """module: nxos_snapshot
+DOCUMENTATION = """
+module: nxos_snapshot
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manage snapshots of the running states of selected features.
 description:
 - Create snapshots of the running states of selected features, add new show commands
   for snapshot creation, delete and compare existing snapshots.
+version_added: 1.0.0
 author:
 - Gabriele Gerbino (@GGabriele)
 notes:
@@ -80,7 +75,7 @@ options:
     description:
     - Specify to locally store a new created snapshot, to be used when C(action=create).
     type: bool
-    default: 'no'
+    default: no
   path:
     description:
     - Specify the path of the file where new created snapshot or snapshots comparison
@@ -91,7 +86,7 @@ options:
 
 EXAMPLES = """
 # Create a snapshot and store it locally
-- nxos_snapshot:
+- cisco.nxos.nxos_snapshot:
     action: create
     snapshot_name: test_snapshot
     description: Done with Ansible
@@ -99,29 +94,29 @@ EXAMPLES = """
     path: /home/user/snapshots/
 
 # Delete a snapshot
-- nxos_snapshot:
+- cisco.nxos.nxos_snapshot:
     action: delete
     snapshot_name: test_snapshot
 
 # Delete all existing snapshots
-- nxos_snapshot:
+- cisco.nxos.nxos_snapshot:
     action: delete_all
 
 # Add a show command for snapshots creation
-- nxos_snapshot:
+- cisco.nxos.nxos_snapshot:
     section: myshow
     show_command: show ip interface brief
     row_id: ROW_intf
     element_key1: intf-name
 
 # Compare two snapshots
-- nxos_snapshot:
+- cisco.nxos.nxos_snapshot:
     action: compare
     snapshot1: pre_snapshot
     snapshot2: post_snapshot
     comparison_results_file: compare_snapshots.txt
     compare_option: summary
-    path: '../snapshot_reports/'
+    path: ../snapshot_reports/
 """
 
 RETURN = """

@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_interface_ospf
+DOCUMENTATION = """
+module: nxos_interface_ospf
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages configuration of an OSPF interface instance.
 description:
 - Manages configuration of an OSPF interface instance.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -123,14 +119,14 @@ options:
     - absent
 """
 EXAMPLES = """
-- nxos_interface_ospf:
+- cisco.nxos.nxos_interface_ospf:
     interface: ethernet1/32
     ospf: 1
     area: 1
     bfd: disable
     cost: default
 
-- nxos_interface_ospf:
+- cisco.nxos.nxos_interface_ospf:
     interface: loopback0
     ospf: prod
     area: 0.0.0.0

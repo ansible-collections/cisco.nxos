@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_bgp_af
+DOCUMENTATION = """
+module: nxos_bgp_af
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages BGP Address-family configuration.
 description:
 - Manages BGP Address-family configurations on NX-OS switches.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -191,7 +187,7 @@ options:
 """
 EXAMPLES = """
 # configure a simple address-family
-- nxos_bgp_af:
+- cisco.nxos.nxos_bgp_af:
     asn: 65535
     vrf: TESTING
     afi: ipv4

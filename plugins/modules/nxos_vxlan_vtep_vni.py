@@ -16,19 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_vxlan_vtep_vni
+DOCUMENTATION = """
+module: nxos_vxlan_vtep_vni
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Creates a Virtual Network Identifier member (VNI)
 description:
 - Creates a Virtual Network Identifier member (VNI) for an NVE overlay interface.
+version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -81,7 +77,7 @@ options:
     - absent
 """
 EXAMPLES = """
-- nxos_vxlan_vtep_vni:
+- cisco.nxos.nxos_vxlan_vtep_vni:
     interface: nve1
     vni: 6000
     ingress_replication: default

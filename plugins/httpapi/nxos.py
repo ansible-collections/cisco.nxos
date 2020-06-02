@@ -6,14 +6,13 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
----
 author: Ansible Networking Team
 httpapi: nxos
 short_description: Use NX-API to run command on nxos platform
 description:
-  - This eos plugin provides low level abstraction api's for
-    sending and receiving CLI commands with nxos network devices.
-version_added: "2.6"
+- This eos plugin provides low level abstraction api's for sending and receiving CLI
+  commands with nxos network devices.
+version_added: 1.0.0
 """
 
 import json
@@ -88,8 +87,10 @@ class HttpApi(HttpApiBase):
 
     def _run_queue(self, queue, output):
         if self._become:
-            self.connection.queue_message("vvvv", "firing event: on_become")
-            queue.insert(0, "enable")
+            self.connection.queue_message(
+                "warning",
+                "become has no effect over httpapi. Use network_cli if privilege escalation is required",
+            )
 
         request = request_builder(queue, output)
         headers = {"Content-Type": "application/json"}
@@ -219,8 +220,6 @@ def handle_response(response):
                     "%s: %s: %s" % (input_data, msg, clierror),
                     code=output["code"],
                 )
-            elif output.get("input") == "enable":
-                continue
             elif "body" in output:
                 result = output["body"]
                 if isinstance(result, dict):

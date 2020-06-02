@@ -5,17 +5,13 @@
 
 from __future__ import absolute_import, division, print_function
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-
-DOCUMENTATION = """module: nxos_devicealias
+DOCUMENTATION = """
+module: nxos_devicealias
 short_description: Configuration of device alias.
 description:
 - Configuration of device alias for Cisco MDS NXOS.
+version_added: 1.0.0
 author:
 - Suhas Bharadwaj (@srbharadwaj) (subharad@cisco.com)
 notes:
@@ -72,7 +68,7 @@ options:
 EXAMPLES = """
 ---
 - name: 'Test that device alias module works'
-  nxos_devicealias:
+  cisco.nxos.nxos_devicealias:
     da:
       - name: test1_add
         pwwn: '56:2:22:11:22:88:11:67'

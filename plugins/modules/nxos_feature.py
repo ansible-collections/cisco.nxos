@@ -16,18 +16,15 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_feature
+DOCUMENTATION = """
+module: nxos_feature
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manage features in NX-OS switches.
 description:
 - Offers ability to enable and disable features in NX-OS.
+version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -48,17 +45,17 @@ options:
 
 EXAMPLES = """
 - name: Ensure lacp is enabled
-  nxos_feature:
+  cisco.nxos.nxos_feature:
     feature: lacp
     state: enabled
 
 - name: Ensure ospf is disabled
-  nxos_feature:
+  cisco.nxos.nxos_feature:
     feature: ospf
     state: disabled
 
 - name: Ensure vpc is enabled
-  nxos_feature:
+  cisco.nxos.nxos_feature:
     feature: vpc
     state: enabled
 """

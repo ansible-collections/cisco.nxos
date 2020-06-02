@@ -30,15 +30,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_telemetry
-short_description: Telemetry Monitoring Service (TMS) configuration
+DOCUMENTATION = """
+module: nxos_telemetry
+short_description: TELEMETRY resource module
 description: Manages Telemetry Monitoring Service (TMS) configuration
+version_added: 1.0.0
 author: Mike Wiebe (@mikewiebe)
 notes:
 - Supported on N9k Version 7.0(3)I7(5) and later.
@@ -197,13 +194,14 @@ options:
     - replaced
     - deleted
     default: merged
+
 """
 EXAMPLES = """
 # Using deleted
 # This action will delete all telemetry configuration on the device
 
 - name: Delete Telemetry Configuration
-  nxos_telemetry:
+  cisco.nxos.nxos_telemetry:
     state: deleted
 
 
@@ -212,7 +210,7 @@ EXAMPLES = """
 # telemetry configuration that is already on the device.
 
 - name: Merge Telemetry Configuration
-  nxos_telemetry:
+  cisco.nxos.nxos_telemetry:
     config:
       certificate:
         key: /bootflash/server.key
@@ -221,41 +219,41 @@ EXAMPLES = """
       source_interface: Ethernet1/1
       vrf: management
       destination_groups:
-        - id: 2
-          destination:
-            ip: 192.168.0.2
-            port: 50001
-            protocol: gPRC
-            encoding: GPB
-        - id: 55
-          destination:
-            ip: 192.168.0.55
-            port: 60001
-            protocol: gPRC
-            encoding: GPB
+      - id: 2
+        destination:
+          ip: 192.168.0.2
+          port: 50001
+          protocol: gPRC
+          encoding: GPB
+      - id: 55
+        destination:
+          ip: 192.168.0.55
+          port: 60001
+          protocol: gPRC
+          encoding: GPB
       sensor_groups:
-        - id: 1
-          data_source: NX-API
-          path:
-            name: '"show lldp neighbors detail"'
-            depth: 0
-        - id: 55
-          data_source: DME
-          path:
-            name: 'sys/ch'
-            depth: unbounded
-            filter_condition: 'ne(eqptFt.operSt,"ok")'
+      - id: 1
+        data_source: NX-API
+        path:
+          name: '"show lldp neighbors detail"'
+          depth: 0
+      - id: 55
+        data_source: DME
+        path:
+          name: sys/ch
+          depth: unbounded
+          filter_condition: ne(eqptFt.operSt,"ok")
       subscriptions:
-        - id: 5
-          destination_group: 55
-          sensor_group:
-            id: 1
-            sample_interval: 1000
-        - id: 6
-          destination_group: 2
-          sensor_group:
-            id: 55
-            sample_interval: 2000
+      - id: 5
+        destination_group: 55
+        sensor_group:
+          id: 1
+          sample_interval: 1000
+      - id: 6
+        destination_group: 2
+        sensor_group:
+          id: 55
+          sample_interval: 2000
     state: merged
 
 
@@ -264,7 +262,7 @@ EXAMPLES = """
 # telemetry configuration defined in the playbook.
 
 - name: Override Telemetry Configuration
-  nxos_telemetry:
+  cisco.nxos.nxos_telemetry:
     config:
       certificate:
         key: /bootflash/server.key
@@ -273,15 +271,15 @@ EXAMPLES = """
       source_interface: Ethernet1/1
       vrf: management
       destination_groups:
-        - id: 2
-          destination:
-            ip: 192.168.0.2
-            port: 50001
-            protocol: gPRC
-            encoding: GPB
+      - id: 2
+        destination:
+          ip: 192.168.0.2
+          port: 50001
+          protocol: gPRC
+          encoding: GPB
       subscriptions:
-        - id: 5
-          destination_group: 55
+      - id: 5
+        destination_group: 55
     state: replaced
 
 

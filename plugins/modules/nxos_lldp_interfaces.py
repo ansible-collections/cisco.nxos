@@ -29,17 +29,13 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.1",
-    "status": ["preview"],
-    "supported_by": "network",
-}
 
-DOCUMENTATION = """module: nxos_lldp_interfaces
-short_description: Manages interfaces' configuration for Link Layer Discovery Protocol
-  (LLDP) on NX-OS platforms.
+DOCUMENTATION = """
+module: nxos_lldp_interfaces
+short_description: LLDP interfaces resource module
 description: This module manages interfaces' configuration for Link Layer Discovery
   Protocol (LLDP) on NX-OS platforms.
+version_added: 1.0.0
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
@@ -47,7 +43,12 @@ notes:
 options:
   running_config:
     description:
-    - Used to parse given commands into structured format, only in parsed state
+    - This option is used only with state I(parsed).
+    - The value of this option should be the output received from the NX-OS device
+      by executing the command B(show running-config | section ^interface).
+    - The state I(parsed) reads the configuration from C(running_config) option and
+      transforms it into Ansible structured data as per the resource module's argspec
+      and the value is then returned in the I(parsed) key within the result.
     type: str
   config:
     description:
@@ -96,6 +97,7 @@ options:
     - rendered
     - parsed
     default: merged
+
 """
 EXAMPLES = """
 # Using merged
@@ -104,15 +106,15 @@ EXAMPLES = """
 # -------------
 #
 
-- name : Merge provided configuration with device configuration
-  nxos_lldp_interfaces:
+- name: Merge provided configuration with device configuration
+  cisco.nxos.nxos_lldp_interfaces:
     config:
-        - name : Ethernet1/4
-          receive: false
-          transmit: true
-          tlv_set:
-            management_address: 192.168.122.64
-          vlan: 12
+    - name: Ethernet1/4
+      receive: false
+      transmit: true
+      tlv_set:
+        management_address: 192.168.122.64
+      vlan: 12
     state: merged
 
 # After state:
@@ -137,12 +139,12 @@ EXAMPLES = """
 #   lldp tlv-set vlan 10
 
 - name: Replace LLDP configuration on interfaces with given configuration
-  nxos_lldp_interfaces:
+  cisco.nxos.nxos_lldp_interfaces:
     config:
-        - name: Ethernet1/4
-          transmit: no
-          tlv_set:
-            vlan: 2
+    - name: Ethernet1/4
+      transmit: no
+      tlv_set:
+        vlan: 2
     state: replaced
 
 
@@ -170,12 +172,12 @@ EXAMPLES = """
 #   lldp tlv-set vlan 10
 
 - name: Override LLDP configuration on all interfaces with given configuration
-  nxos_lldp_interfaces:
+  cisco.nxos.nxos_lldp_interfaces:
     config:
-        - name: Ethernet1/7
-          receive: no
-          tlv_set:
-            vlan: 12
+    - name: Ethernet1/7
+      receive: no
+      tlv_set:
+        vlan: 12
     state: overridden
 
 
@@ -199,7 +201,7 @@ EXAMPLES = """
 #   no lldp receive
 
 - name: Delete LLDP interfaces configuration
-  nxos_lldp_interfaces:
+  cisco.nxos.nxos_lldp_interfaces:
     state: deleted
 
 # After state:
