@@ -116,12 +116,6 @@ class ActionModule(ActionNetworkModule):
                     % self._play_context.connection
                 )
                 del self._task.args["provider"]
-            if self._task.args.get("transport"):
-                display.warning(
-                    "transport is unnecessary when using %s and will be ignored"
-                    % self._play_context.connection
-                )
-                del self._task.args["transport"]
 
             if module_name == "nxos_gir":
                 conn = Connection(self._connection.socket_path)
