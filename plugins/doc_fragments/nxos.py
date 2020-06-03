@@ -12,7 +12,8 @@ class ModuleDocFragment(object):
     description:
     - B(Deprecated)
     - 'Starting with Ansible 2.5 we recommend using C(connection: network_cli).'
-    - This option is only required if you are using NX-API.
+    - 'Starting with Ansible 2.6 we recommend using C(connection: httpapi) for NX-API.'
+    - This option will be removed in a release after 2022-06-01.
     - For more information please see the L(NXOS Platform Options guide, ../network/user_guide/platform_nxos.html).
     - HORIZONTALLINE
     - A dict object containing connection details.
