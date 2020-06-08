@@ -198,6 +198,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     ospf_vrf:
       redirect: cisco.nxos.nxos
+    nxos_ospfv2:
+      redirect: cisco.nxos.nxos
+    ospfv2:
+      redirect: cisco.nxos.nxos
     nxos_overlay_global:
       redirect: cisco.nxos.nxos
     overlay_global:
@@ -357,8 +361,22 @@ plugin_routing:
       redirect: cisco.nxos.nxos_aaa_server_host
     acl:
       redirect: cisco.nxos.nxos_acl
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
+    nxos_acl:
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     acl_interface:
       redirect: cisco.nxos.nxos_acl_interface
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
+    nxos_acl_interface:
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     acl_interfaces:
       redirect: cisco.nxos.nxos_acl_interfaces
     acls:
@@ -412,12 +430,12 @@ plugin_routing:
     interface:
       redirect: cisco.nxos.nxos_interface
       deprecation:
-        warning_text: cisco.nxos.interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     nxos_interface:
       deprecation:
-        warning_text: cisco.nxos.nxos_interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     interface_ospf:
       redirect: cisco.nxos.nxos_interface_ospf
     interfaces:
@@ -425,25 +443,23 @@ plugin_routing:
     l2_interface:
       redirect: cisco.nxos.nxos_l2_interface
       deprecation:
-        warning_text: cisco.nxos.l2_interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     nxos_l2_interface:
       deprecation:
-        warning_text: cisco.nxos.nxos_l2_interface has been deprecated and will be
-          removed in a release after 2022-6-01. See the plugin documentation for more
-          details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     l2_interfaces:
       redirect: cisco.nxos.nxos_l2_interfaces
     l3_interface:
       redirect: cisco.nxos.nxos_l3_interface
       deprecation:
-        warning_text: cisco.nxos.l3_interface has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     nxos_l3_interface:
       deprecation:
-        warning_text: cisco.nxos.nxos_l3_interface has been deprecated and will be
-          removed in a release after 2022-6-01. See the plugin documentation for more
-          details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     l3_interfaces:
       redirect: cisco.nxos.nxos_l3_interfaces
     lacp:
@@ -455,14 +471,21 @@ plugin_routing:
     linkagg:
       redirect: cisco.nxos.nxos_linkagg
       deprecation:
-        warning_text: cisco.nxos.linkagg has been deprecated and will be removed in
-          a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     nxos_linkagg:
       deprecation:
-        warning_text: cisco.nxos.nxos_linkagg has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     lldp:
       redirect: cisco.nxos.nxos_lldp
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
+    nxos_lldp:
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     lldp_global:
       redirect: cisco.nxos.nxos_lldp_global
     lldp_interfaces:
@@ -479,8 +502,17 @@ plugin_routing:
       redirect: cisco.nxos.nxos_nxapi
     ospf:
       redirect: cisco.nxos.nxos_ospf
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
+    nxos_ospf:
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     ospf_vrf:
       redirect: cisco.nxos.nxos_ospf_vrf
+    ospfv2:
+      redirect: cisco.nxos.nxos_ospfv2
     overlay_global:
       redirect: cisco.nxos.nxos_overlay_global
     pim:
@@ -515,6 +547,13 @@ plugin_routing:
       redirect: cisco.nxos.nxos_snmp_user
     static_route:
       redirect: cisco.nxos.nxos_static_route
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
+    nxos_static_route:
+      deprecation:
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     static_routes:
       redirect: cisco.nxos.nxos_static_routes
     system:
@@ -530,12 +569,12 @@ plugin_routing:
     vlan:
       redirect: cisco.nxos.nxos_vlan
       deprecation:
-        warning_text: cisco.nxos.vlan has been deprecated and will be removed in a
-          release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     nxos_vlan:
       deprecation:
-        warning_text: cisco.nxos.nxos_vlan has been deprecated and will be removed
-          in a release after 2022-6-01. See the plugin documentation for more details
+        removal_date: '2022-06-01'
+        warning_text: See the plugin documentation for more details
     vlans:
       redirect: cisco.nxos.nxos_vlans
     vpc:
