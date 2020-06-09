@@ -50,8 +50,8 @@ from ansible.plugins.cliconf import CliconfBase, enable_mode
 class Cliconf(CliconfBase):
     def __init__(self, *args, **kwargs):
         self._module_context = {}
+        self._device_info = {}
         super(Cliconf, self).__init__(*args, **kwargs)
-        self.device_info = self.get_device_info()
 
     def read_module_context(self, module_key):
         if self._module_context.get(module_key):
@@ -65,65 +65,68 @@ class Cliconf(CliconfBase):
         return None
 
     def get_device_info(self):
-        device_info = {}
+        if not self._device_info:
+            device_info = {}
 
-        device_info["network_os"] = "nxos"
-        reply = self.get("show version")
-        platform_reply = self.get("show inventory")
+            device_info["network_os"] = "nxos"
+            reply = self.get("show version")
+            platform_reply = self.get("show inventory")
 
-        match_sys_ver = re.search(r"\s+system:\s+version\s*(\S+)", reply, re.M)
-        if match_sys_ver:
-            device_info["network_os_version"] = match_sys_ver.group(1)
-        else:
-            match_kick_ver = re.search(
-                r"\s+kickstart:\s+version\s*(\S+)", reply, re.M
-            )
-            if match_kick_ver:
-                device_info["network_os_version"] = match_kick_ver.group(1)
-
-        if "network_os_version" not in device_info:
-            match_sys_ver = re.search(
-                r"\s+NXOS:\s+version\s*(\S+)", reply, re.M
-            )
+            match_sys_ver = re.search(r"\s+system:\s+version\s*(\S+)", reply, re.M)
             if match_sys_ver:
                 device_info["network_os_version"] = match_sys_ver.group(1)
+            else:
+                match_kick_ver = re.search(
+                    r"\s+kickstart:\s+version\s*(\S+)", reply, re.M
+                )
+                if match_kick_ver:
+                    device_info["network_os_version"] = match_kick_ver.group(1)
 
-        match_chassis_id = re.search(r"Hardware\n\s+cisco(.+)$", reply, re.M)
-        if match_chassis_id:
-            device_info["network_os_model"] = match_chassis_id.group(1).strip()
+            if "network_os_version" not in device_info:
+                match_sys_ver = re.search(
+                    r"\s+NXOS:\s+version\s*(\S+)", reply, re.M
+                )
+                if match_sys_ver:
+                    device_info["network_os_version"] = match_sys_ver.group(1)
 
-        match_host_name = re.search(r"\s+Device name:\s*(\S+)", reply, re.M)
-        if match_host_name:
-            device_info["network_os_hostname"] = match_host_name.group(1)
+            match_chassis_id = re.search(r"Hardware\n\s+cisco(.+)$", reply, re.M)
+            if match_chassis_id:
+                device_info["network_os_model"] = match_chassis_id.group(1).strip()
 
-        match_isan_file_name = re.search(
-            r"\s+system image file is:\s*(\S+)", reply, re.M
-        )
-        if match_isan_file_name:
-            device_info["network_os_image"] = match_isan_file_name.group(1)
-        else:
-            match_kick_file_name = re.search(
-                r"\s+kickstart image file is:\s*(\S+)", reply, re.M
-            )
-            if match_kick_file_name:
-                device_info["network_os_image"] = match_kick_file_name.group(1)
+            match_host_name = re.search(r"\s+Device name:\s*(\S+)", reply, re.M)
+            if match_host_name:
+                device_info["network_os_hostname"] = match_host_name.group(1)
 
-        if "network_os_image" not in device_info:
             match_isan_file_name = re.search(
-                r"\s+NXOS image file is:\s*(\S+)", reply, re.M
+                r"\s+system image file is:\s*(\S+)", reply, re.M
             )
             if match_isan_file_name:
                 device_info["network_os_image"] = match_isan_file_name.group(1)
+            else:
+                match_kick_file_name = re.search(
+                    r"\s+kickstart image file is:\s*(\S+)", reply, re.M
+                )
+                if match_kick_file_name:
+                    device_info["network_os_image"] = match_kick_file_name.group(1)
 
-        match_os_platform = re.search(
-            r'NAME: "Chassis",\s*DESCR:.*\n' r"PID:\s*(\S+)",
-            platform_reply,
-            re.M,
-        )
-        if match_os_platform:
-            device_info["network_os_platform"] = match_os_platform.group(1)
+            if "network_os_image" not in device_info:
+                match_isan_file_name = re.search(
+                    r"\s+NXOS image file is:\s*(\S+)", reply, re.M
+                )
+                if match_isan_file_name:
+                    device_info["network_os_image"] = match_isan_file_name.group(1)
 
-        return device_info
+            match_os_platform = re.search(
+                r'NAME: "Chassis",\s*DESCR:.*\n' r"PID:\s*(\S+)",
+                platform_reply,
+                re.M,
+            )
+            if match_os_platform:
+                device_info["network_os_platform"] = match_os_platform.group(1)
+
+            self._device_info = device_info
+
+        return self._device_info
 
     def get_diff(
         self,
@@ -364,8 +367,9 @@ class Cliconf(CliconfBase):
             )
 
         if output == "json" and not command.endswith("| json"):
-            model = self.device_info.get("network_os_model", "")
-            platform = self.device_info.get("network_os_platform", "")
+            device_info = self.get_device_info()
+            model = device_info.get("network_os_model", "")
+            platform = device_info.get("network_os_platform", "")
             if platform.startswith("DS-") and "MDS" in model:
                 cmd = "%s | json native" % command
             else:
