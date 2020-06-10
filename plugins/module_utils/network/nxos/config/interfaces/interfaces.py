@@ -46,7 +46,7 @@ class Interfaces(ConfigBase):
     The nxos_interfaces class
     """
 
-    gather_subset = ["!all", "!min"]
+    gather_subset = ["min"]
 
     gather_network_resources = ["interfaces"]
 
@@ -55,27 +55,35 @@ class Interfaces(ConfigBase):
     def __init__(self, module):
         super(Interfaces, self).__init__(module)
 
-    def get_interfaces_facts(self, get_default_interfaces=False, data=None):
+    def get_interfaces_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
 
-        :get_default_interfaces: boolean - when True include a list of existing-but-default interface names in the facts dict.
-          - The defaults list is primarily used to detect non-existent virtual interfaces.
+        :data: Mocked running-config data for state `parsed`
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
-        facts, _warnings = Facts(self._module).get_facts(
+        self.facts, _warnings = Facts(self._module).get_facts(
             self.gather_subset, self.gather_network_resources, data=data
         )
-        interfaces_facts = facts["ansible_network_resources"].get("interfaces")
-        interfaces_facts = remove_rsvd_interfaces(interfaces_facts)
-        if get_default_interfaces:
-            default_interfaces = facts["ansible_network_resources"].get(
-                "default_interfaces", []
-            )
-            interfaces_facts.append(default_interfaces)
+        interfaces_facts = self.facts["ansible_network_resources"].get(
+            "interfaces"
+        )
 
-        self.intf_defs = facts.get("intf_defs", {})
         return interfaces_facts
+
+    def get_platform(self):
+        """Wrapper method for getting platform info
+        This method exists solely to allow the unit test framework to mock calls.
+        """
+        return self.facts.get("ansible_net_platform", "")
+
+    def get_system_defaults(self):
+        """Wrapper method for `_connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return self._connection.get(
+            "show running-config all | incl 'system default switchport'"
+        )
 
     def edit_config(self, commands):
         """Wrapper method for `_connection.edit_config()`
@@ -94,17 +102,15 @@ class Interfaces(ConfigBase):
         warnings = []
 
         if self.state in self.ACTION_STATES:
-            existing_interfaces_facts = self.get_interfaces_facts(
-                get_default_interfaces=True
-            )
+            existing_interfaces_facts = self.get_interfaces_facts()
         else:
             existing_interfaces_facts = []
 
         if self.state in self.ACTION_STATES:
-            default_intf_list = existing_interfaces_facts.pop()
-            commands.extend(
-                self.set_config(existing_interfaces_facts, default_intf_list)
+            self.intf_defs = self.render_interface_defaults(
+                self.get_system_defaults(), existing_interfaces_facts
             )
+            commands.extend(self.set_config(existing_interfaces_facts))
 
         if self.state == "rendered":
             # Hardcode the system defaults for "rendered"
@@ -151,7 +157,7 @@ class Interfaces(ConfigBase):
         result["warnings"] = warnings
         return result
 
-    def set_config(self, existing_interfaces_facts, default_intf_list=[]):
+    def set_config(self, existing_interfaces_facts):
         """ Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
@@ -166,11 +172,6 @@ class Interfaces(ConfigBase):
                 w.update({"name": normalize_interface(w["name"])})
                 want.append(remove_empties(w))
         have = deepcopy(existing_interfaces_facts)
-        for i in want:
-            # 'have' does not include objects from the default_interfaces list.
-            # Add any 'want' names from default_interfaces to the 'have' list.
-            if i["name"] in default_intf_list:
-                have.append({"name": i["name"]})
         resp = self.set_state(want, have)
         return to_list(resp)
 
@@ -450,3 +451,48 @@ class Interfaces(ConfigBase):
             diff = self.diff_of_dicts(w, obj_in_have)
             commands = self.add_commands(diff, obj_in_have)
         return commands
+
+    def render_interface_defaults(self, config, intfs):
+        """Collect user-defined-default states for 'system default switchport'
+        configurations. These configurations determine default L2/L3 modes
+        and enabled/shutdown states. The default values for user-defined-default
+        configurations may be different for legacy platforms.
+        Notes:
+        - L3 enabled default state is False on N9K,N7K but True for N3K,N6K
+        - Changing L2-L3 modes may change the default enabled value.
+        - '(no) system default switchport shutdown' only applies to L2 interfaces.
+        Run through the gathered interfaces and tag their default enabled state.
+        """
+        intf_defs = {}
+        L3_enabled = (
+            True if re.search("N[356]K", self.get_platform()) else False
+        )
+        intf_defs = {
+            "sysdefs": {
+                "mode": None,
+                "L2_enabled": None,
+                "L3_enabled": L3_enabled,
+            }
+        }
+        pat = "(no )*system default switchport$"
+        m = re.search(pat, config, re.MULTILINE)
+        if m:
+            intf_defs["sysdefs"]["mode"] = (
+                "layer3" if "no " in m.groups() else "layer2"
+            )
+
+        pat = "(no )*system default switchport shutdown$"
+        m = re.search(pat, config, re.MULTILINE)
+        if m:
+            intf_defs["sysdefs"]["L2_enabled"] = (
+                True if "no " in m.groups() else False
+            )
+
+        for item in intfs:
+            intf_defs[item["name"]] = default_intf_enabled(
+                name=item["name"],
+                sysdefs=intf_defs["sysdefs"],
+                mode=item.get("mode"),
+            )
+
+        return intf_defs

@@ -14,11 +14,11 @@
         state: gathered
 
     - assert:
-        that: "{{ result['gathered'] | symmetric_difference(gathered)\
+        that: "{{ result['gathered'][:2] | symmetric_difference(gathered)\
           \ |length == 0 }}"
   always:
 
     - include_tasks: _remove_config.yaml
 
     - debug:
-        msg: END nxos_l2_interfaces gathered integration tests on connection={{ ansible_connection }}
+        msg: END nxos_interfaces gathered integration tests on connection={{ ansible_connection }}
