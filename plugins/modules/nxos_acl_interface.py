@@ -21,14 +21,15 @@ DOCUMENTATION = """
 module: nxos_acl_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: (deprecated) Manages applying ACLs to interfaces.
+short_description: (deprecated, removed after 2022-06-01) Manages applying
+  ACLs to interfaces.
 description:
 - Manages applying ACLs to interfaces.
 version_added: 1.0.0
 deprecated:
-  removed_in: '2.13'
   alternative: nxos_acl_interfaces
   why: Updated modules released with more functionality
+  removed_at_date: '2022-06-01'
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
@@ -56,6 +57,7 @@ options:
     choices:
     - present
     - absent
+
 
 """
 

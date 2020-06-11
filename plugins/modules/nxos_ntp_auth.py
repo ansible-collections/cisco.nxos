@@ -58,8 +58,8 @@ options:
     description:
     - Turns NTP authentication on or off.
     choices:
-    - on
-    - off
+    - "on"
+    - "off"
   state:
     description:
     - Manage the state of the resource.

@@ -413,7 +413,9 @@ def main():
     )
     warning_msg += "Default behavior is changing to configure 'https port 443'"
     warning_msg += " when params 'http, http_port, https, https_port' are not set in the playbook"
-    module.deprecate(msg=warning_msg, version="2.11")
+    module.deprecate(
+        msg=warning_msg, date="2022-06-01", collection_name="cisco.nxos"
+    )
 
     capabilities = get_capabilities(module)
 

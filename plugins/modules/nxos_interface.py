@@ -12,14 +12,15 @@ DOCUMENTATION = """
 module: nxos_interface
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: (deprecated) Manages physical attributes of interfaces.
+short_description: (deprecated, removed after 2022-06-01) Manages physical
+  attributes of interfaces.
 description:
 - Manages physical attributes of interfaces of NX-OS switches.
 version_added: 1.0.0
 deprecated:
-  removed_in: '2.13'
   alternative: nxos_interfaces
   why: Updated modules released with more functionality
+  removed_at_date: '2022-06-01'
 author:
 - Jason Edelman (@jedelman8)
 - Trishna Guha (@trishnaguha)
@@ -125,6 +126,7 @@ options:
     - Time in seconds to wait before checking for the operational state on remote
       device. This wait is applicable for operational state arguments.
     default: 10
+
 
 """
 

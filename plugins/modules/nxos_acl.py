@@ -21,7 +21,8 @@ DOCUMENTATION = """
 module: nxos_acl
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: (deprecated) Manages access list entries for ACLs.
+short_description: (deprecated, removed after 2022-06-01) Manages access
+  list entries for ACLs.
 description:
 - Manages access list entries for ACLs.
 version_added: 1.0.0
@@ -29,9 +30,9 @@ author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
 deprecated:
-  removed_in: '2.13'
   alternative: nxos_acls
   why: Updated modules released with more functionality
+  removed_at_date: '2022-06-01'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - C(state=absent) removes the ACE if it exists.
@@ -196,6 +197,7 @@ options:
     - present
     - absent
     - delete_acl
+
 
 """
 

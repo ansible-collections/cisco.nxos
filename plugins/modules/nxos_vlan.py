@@ -25,14 +25,15 @@ DOCUMENTATION = """
 module: nxos_vlan
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: (deprecated) Manages VLAN resources and attributes.
+short_description: (deprecated, removed after 2022-06-01) Manages VLAN
+  resources and attributes.
 description:
 - Manages VLAN configurations on NX-OS switches.
 version_added: 1.0.0
 deprecated:
-  removed_in: '2.13'
   alternative: nxos_vlans
   why: Updated modules released with more functionality
+  removed_at_date: '2022-06-01'
 author: Jason Edelman (@jedelman8)
 options:
   vlan_id:
@@ -100,6 +101,7 @@ options:
   aggregate:
     description: List of VLANs definitions.
     type: list
+    elements: dict
   purge:
     description:
     - Purge VLANs not defined in the I(aggregate) parameter. This parameter can be
@@ -113,6 +115,7 @@ options:
       device. This wait is applicable for operational state arguments.
     default: 10
     type: int
+
 
 """
 
@@ -656,7 +659,7 @@ def map_config_to_obj(module):
                             v = match.group(1)
                             pos1 = splitted_line.index(v)
                             pos2 = pos1 + 1
-                            vlaninfo = "".join(splitted_line[pos1 : pos2 + 1])
+                            vlaninfo = "".join(splitted_line[pos1: pos2 + 1])
                             vlans.append(vlaninfo)
 
             if vlans:
