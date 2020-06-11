@@ -72,7 +72,9 @@ class Cliconf(CliconfBase):
             reply = self.get("show version")
             platform_reply = self.get("show inventory")
 
-            match_sys_ver = re.search(r"\s+system:\s+version\s*(\S+)", reply, re.M)
+            match_sys_ver = re.search(
+                r"\s+system:\s+version\s*(\S+)", reply, re.M
+            )
             if match_sys_ver:
                 device_info["network_os_version"] = match_sys_ver.group(1)
             else:
@@ -89,11 +91,17 @@ class Cliconf(CliconfBase):
                 if match_sys_ver:
                     device_info["network_os_version"] = match_sys_ver.group(1)
 
-            match_chassis_id = re.search(r"Hardware\n\s+cisco(.+)$", reply, re.M)
+            match_chassis_id = re.search(
+                r"Hardware\n\s+cisco(.+)$", reply, re.M
+            )
             if match_chassis_id:
-                device_info["network_os_model"] = match_chassis_id.group(1).strip()
+                device_info["network_os_model"] = match_chassis_id.group(
+                    1
+                ).strip()
 
-            match_host_name = re.search(r"\s+Device name:\s*(\S+)", reply, re.M)
+            match_host_name = re.search(
+                r"\s+Device name:\s*(\S+)", reply, re.M
+            )
             if match_host_name:
                 device_info["network_os_hostname"] = match_host_name.group(1)
 
@@ -107,14 +115,18 @@ class Cliconf(CliconfBase):
                     r"\s+kickstart image file is:\s*(\S+)", reply, re.M
                 )
                 if match_kick_file_name:
-                    device_info["network_os_image"] = match_kick_file_name.group(1)
+                    device_info[
+                        "network_os_image"
+                    ] = match_kick_file_name.group(1)
 
             if "network_os_image" not in device_info:
                 match_isan_file_name = re.search(
                     r"\s+NXOS image file is:\s*(\S+)", reply, re.M
                 )
                 if match_isan_file_name:
-                    device_info["network_os_image"] = match_isan_file_name.group(1)
+                    device_info[
+                        "network_os_image"
+                    ] = match_isan_file_name.group(1)
 
             match_os_platform = re.search(
                 r'NAME: "Chassis",\s*DESCR:.*\n' r"PID:\s*(\S+)",
