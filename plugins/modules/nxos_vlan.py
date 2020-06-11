@@ -659,7 +659,9 @@ def map_config_to_obj(module):
                             v = match.group(1)
                             pos1 = splitted_line.index(v)
                             pos2 = pos1 + 1
+                            # fmt: off
                             vlaninfo = "".join(splitted_line[pos1: pos2 + 1])
+                            # fmt: on
                             vlans.append(vlaninfo)
 
             if vlans:
