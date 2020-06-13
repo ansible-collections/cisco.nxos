@@ -362,7 +362,7 @@ class ShowZoneStatus(object):
 
         patfordefzone = "VSAN: " + str(self.vsan) + r" default-zone:\s+(\S+).*"
         patformode = r".*mode:\s+(\S+).*"
-        patforsession = r".*session:\s+(\S+).*"
+        patforsession = r"^session:\s+(\S+).*"
         patforsz = r".*smart-zoning:\s+(\S+).*"
         for line in output:
             if "is not configured" in line:
