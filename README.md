@@ -17,14 +17,11 @@ The Cisco NX-OS collection supports ``network_cli``  and ``httpapi`` connections
 ## Cliconf plugins
 Name | Description
 --- | ---
-[cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/master/docs/cisco.nxos.nxos.rst)|Use nxos cliconf to run command on Cisco NX-OS platform
+[cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/master/docs/cisco.nxos.nxos_cliconf.rst)|Use nxos cliconf to run command on Cisco NX-OS platform
 ## Httpapi plugins
 Name | Description
 --- | ---
-[cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/master/docs/cisco.nxos.nxos.rst)|Use NX-API to run command on nxos platform
-## Terminal plugins
-Name | Description
---- | ---
+[cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/master/docs/cisco.nxos.nxos_httpapi.rst)|Use NX-API to run command on nxos platform
 ## Modules
 Name | Description
 --- | ---

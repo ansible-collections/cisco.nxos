@@ -8,10 +8,10 @@ __metaclass__ = type
 DOCUMENTATION = """
 author: Ansible Networking Team
 httpapi: nxos
-short_description: Use NX-API to run command on nxos platform
+short_description: Use NX-API to run commands on Cisco NX-OS platform
 description:
-- This eos plugin provides low level abstraction api's for sending and receiving CLI
-  commands with nxos network devices.
+- This plugin provides low level abstraction APIs for sending and receiving
+  commands using NX-API with devices running Cisco NX-OS.
 version_added: 1.0.0
 """
 

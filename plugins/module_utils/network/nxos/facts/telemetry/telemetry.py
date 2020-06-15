@@ -3,6 +3,7 @@
 # Copyright 2019 Cisco and/or its affiliates.
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# pylint: skip-file
 """
 The nxos telemetry fact class
 It is in this file the configuration is collected from the device

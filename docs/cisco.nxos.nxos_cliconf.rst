@@ -1,12 +1,12 @@
 
-.. _cisco.nxos.nxos_httpapi:
+.. _cisco.nxos.nxos_cliconf:
 
 
 ***************
 cisco.nxos.nxos
 ***************
 
-**Use NX-API to run command on nxos platform**
+**Use NX-OS cliconf to run commands on Cisco NX-OS platform**
 
 
 Version added: 1.0.0
@@ -18,7 +18,8 @@ Version added: 1.0.0
 
 Synopsis
 --------
-- This eos plugin provides low level abstraction api's for sending and receiving CLI commands with nxos network devices.
+- This nxos plugin provides low level abstraction apis for sending and receiving CLI
+  commands from Cisco NX-OS network devices.
 
 
 

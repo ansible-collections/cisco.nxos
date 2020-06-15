@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# pylint: skip-file
 
 # (c) 2017, Ansible by Red Hat, inc
 #

@@ -71,4 +71,3 @@
          - "no interface {{ subint3 }}"
     
     - include_tasks: _remove_config.yaml
-
