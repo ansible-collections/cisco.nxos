@@ -61,10 +61,10 @@ options:
       back to disruptive upgrade if needed.
     - Selecting 'no' means do not use ISSU. Forced disruptive.
     choices:
-    - required
-    - desired
-    - yes
-    - no
+    - "required"
+    - "desired"
+    - "yes"
+    - "no"
     default: no
 """
 

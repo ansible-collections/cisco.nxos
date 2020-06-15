@@ -21,15 +21,16 @@ DOCUMENTATION = """
 module: nxos_ospf
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: (deprecated) Manages configuration of an ospf instance.
+short_description: (deprecated, removed after 2022-06-01) Manages configuration
+  of an ospf instance.
 description:
 - Manages configuration of an ospf instance.
 version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 deprecated:
-  removed_in: '2.13'
   alternative: nxos_ospfv2
   why: Updated modules released with more functionality.
+  removed_at_date: '2022-06-01'
 options:
   ospf:
     description:
@@ -43,6 +44,7 @@ options:
     choices:
     - present
     - absent
+
 """
 
 EXAMPLES = """

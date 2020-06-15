@@ -33,7 +33,7 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ospfv2
-short_description: OSPFv2 resource module.
+short_description: OSPFv2 resource module
 description:
 - This module manages OSPFv2 configuration on devices running Cisco NX-OS.
 version_added: 1.0.0
@@ -159,7 +159,7 @@ options:
                     description:
                     - IP in Prefix format (x.x.x.x/len)
                     type: str
-                    range: true
+                    required: true
                   cost:
                     description:
                     - Cost to use for the range.
@@ -383,7 +383,7 @@ options:
                       area_id:
                         description:
                         - Area Id as an integer or ip address.
-                      type: str
+                        type: str
                   multicast_intact:
                     description:
                     - MPLS TE multicast support.
@@ -632,7 +632,7 @@ options:
                         description:
                         - IP in Prefix format (x.x.x.x/len)
                         type: str
-                        range: true
+                        required: true
                       cost:
                         description:
                         - Cost to use for the range.
@@ -668,6 +668,7 @@ options:
                     description:
                     - Specify in which unit the reference bandwidth is specified.
                     type: str
+                    required: True
                     choices: [Gbps, Mbps]
               bfd:
                 description:
@@ -698,7 +699,7 @@ options:
               default_metric:
                 description:
                 - Specify default metric for redistributed routes.
-                type: str
+                type: int
               distance:
                 description:
                 - Configure the OSPF administrative distance.
@@ -1001,6 +1002,7 @@ options:
     - parsed
     - rendered
     default: merged
+
 """
 EXAMPLES = """
 # Using merged
@@ -1014,56 +1016,56 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-        - process_id: 100
-          router_id: 203.0.113.20
-        - process_id: 102
-          router_id: 198.51.100.1
-          areas:
-            - area_id: 0.0.0.100
-              filter_list:
-                - route_map: rmap_1
-                  direction: in
-                - route_map: rmap_2
-                  direction: out
-              ranges:
-                - prefix: 198.51.100.64/27
-                  not_advertise: True
-                - prefix: 198.51.100.96/27
-                  cost: 120
-            - area_id: 0.0.0.101
-              authentication:
-                message_digest: True
+      - process_id: 100
+        router_id: 203.0.113.20
+      - process_id: 102
+        router_id: 198.51.100.1
+        areas:
+        - area_id: 0.0.0.100
+          filter_list:
+          - route_map: rmap_1
+            direction: in
+          - route_map: rmap_2
+            direction: out
+          ranges:
+          - prefix: 198.51.100.64/27
+            not_advertise: true
+          - prefix: 198.51.100.96/27
+            cost: 120
+        - area_id: 0.0.0.101
+          authentication:
+            message_digest: true
+        redistribute:
+        - protocol: eigrp
+          id: 120
+          route_map: rmap_1
+        - protocol: direct
+          route_map: ospf102-direct-connect
+        vrfs:
+        - vrf: zone1
+          router_id: 198.51.100.129
           redistribute:
-            - protocol: eigrp
-              id: 120
-              route_map: rmap_1
-            - protocol: direct
-              route_map: ospf102-direct-connect
-          vrfs:
-            - vrf: zone1
-              router_id: 198.51.100.129
-              redistribute:
-                - protocol: static
-                  route_map: zone1-static-connect
-              summary_address:
-                - prefix: 198.51.100.128/27
-                  tag: 121
-                - prefix: 198.51.100.160/27
-              areas:
-                - area_id: 0.0.0.102
-                  nssa:
-                    default_information_originate: True
-                    no_summary: True
-                - area_id: 0.0.0.103
-                  nssa:
-                    no_summary: True
-                    translate:
-                      type7:
-                        always: True
-            - vrf: zone2
-              auto_cost:
-                reference_bandwidth: 45
-                unit: Gbps
+          - protocol: static
+            route_map: zone1-static-connect
+          summary_address:
+          - prefix: 198.51.100.128/27
+            tag: 121
+          - prefix: 198.51.100.160/27
+          areas:
+          - area_id: 0.0.0.102
+            nssa:
+              default_information_originate: true
+              no_summary: true
+          - area_id: 0.0.0.103
+            nssa:
+              no_summary: true
+              translate:
+                type7:
+                  always: true
+        - vrf: zone2
+          auto_cost:
+            reference_bandwidth: 45
+            unit: Gbps
     state: merged
 
 # Task output
@@ -1095,7 +1097,7 @@ EXAMPLES = """
 #
 # after:
 #    processes:
-#    - process_id: '100'
+#    - process_id: "100"
 #      router_id: 203.0.113.20
 #    - areas:
 #      - area_id: 0.0.0.100
@@ -1112,11 +1114,11 @@ EXAMPLES = """
 #      - area_id: 0.0.0.101
 #        authentication:
 #          message_digest: true
-#      process_id: '102'
+#      process_id: "102"
 #      redistribute:
 #      - protocol: direct
 #        route_map: ospf102-direct-connect
-#      - id: '120'
+#      - id: "120"
 #        protocol: eigrp
 #        route_map: rmap_1
 #      router_id: 198.51.100.1
@@ -1199,44 +1201,44 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-        - process_id: 102
-          router_id: 198.51.100.1
-          areas:
-            - area_id: 0.0.0.100
-              filter_list:
-                - route_map: rmap_8
-                  direction: in
-              ranges:
-                - prefix: 198.51.100.64/27
-                  not_advertise: True
-            - area_id: 0.0.0.101
-              stub:
-                no_summary: True
+      - process_id: 102
+        router_id: 198.51.100.1
+        areas:
+        - area_id: 0.0.0.100
+          filter_list:
+          - route_map: rmap_8
+            direction: in
+          ranges:
+          - prefix: 198.51.100.64/27
+            not_advertise: true
+        - area_id: 0.0.0.101
+          stub:
+            no_summary: true
+        redistribute:
+        - protocol: eigrp
+          id: 130
+          route_map: rmap_1
+        - protocol: direct
+          route_map: ospf102-direct-connect
+        vrfs:
+        - vrf: zone1
+          router_id: 198.51.100.129
           redistribute:
-            - protocol: eigrp
-              id: 130
-              route_map: rmap_1
-            - protocol: direct
-              route_map: ospf102-direct-connect
-          vrfs:
-            - vrf: zone1
-              router_id: 198.51.100.129
-              redistribute:
-                - protocol: bgp
-                  id: 65563
-                  route_map: zone1-bgp-connect
-              areas:
-                - area_id: 0.0.0.102
-                  nssa:
-                    default_information_originate: True
-                    no_summary: True
+          - protocol: bgp
+            id: 65563
+            route_map: zone1-bgp-connect
+          areas:
+          - area_id: 0.0.0.102
+            nssa:
+              default_information_originate: true
+              no_summary: true
     state: replaced
 
 # Task output
 # -------------
 # before:
 #    processes:
-#    - process_id: '100'
+#    - process_id: "100"
 #      router_id: 203.0.113.20
 #    - areas:
 #      - area_id: 0.0.0.100
@@ -1253,11 +1255,11 @@ EXAMPLES = """
 #      - area_id: 0.0.0.101
 #        authentication:
 #          message_digest: true
-#      process_id: '102'
+#      process_id: "102"
 #      redistribute:
 #      - protocol: direct
 #        route_map: ospf102-direct-connect
-#      - id: '120'
+#      - id: "120"
 #        protocol: eigrp
 #        route_map: rmap_1
 #      router_id: 198.51.100.1
@@ -1303,7 +1305,7 @@ EXAMPLES = """
 #
 # after:
 #    processes:
-#    - process_id: '100'
+#    - process_id: "100"
 #      router_id: 203.0.113.20
 #    - areas:
 #      - area_id: 0.0.0.101
@@ -1316,11 +1318,11 @@ EXAMPLES = """
 #        ranges:
 #        - not_advertise: true
 #          prefix: 198.51.100.64/27
-#      process_id: '102'
+#      process_id: "102"
 #      redistribute:
 #      - protocol: direct
 #        route_map: ospf102-direct-connect
-#      - id: '130'
+#      - id: "130"
 #        protocol: eigrp
 #        route_map: rmap_1
 #      router_id: 198.51.100.1
@@ -1331,7 +1333,7 @@ EXAMPLES = """
 #            default_information_originate: true
 #            no_summary: true
 #        redistribute:
-#        - id: '65563'
+#        - id: "65563"
 #          protocol: bgp
 #          route_map: zone1-bgp-connect
 #        router_id: 198.51.100.129
@@ -1385,18 +1387,18 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-        - process_id: 104
-          router_id: 203.0.113.20
-        - process_id: 102
-          router_id: 198.51.100.1
-          shutdown: True
+      - process_id: 104
+        router_id: 203.0.113.20
+      - process_id: 102
+        router_id: 198.51.100.1
+        shutdown: true
     state: overridden
 
 # Task output
 # -------------
 # before:
 #    processes:
-#    - process_id: '100'
+#    - process_id: "100"
 #      router_id: 203.0.113.20
 #    - areas:
 #      - area_id: 0.0.0.100
@@ -1413,11 +1415,11 @@ EXAMPLES = """
 #      - area_id: 0.0.0.101
 #        authentication:
 #          message_digest: true
-#      process_id: '102'
+#      process_id: "102"
 #      redistribute:
 #      - protocol: direct
 #        route_map: ospf102-direct-connect
-#      - id: '120'
+#      - id: "120"
 #        protocol: eigrp
 #        route_map: rmap_1
 #      router_id: 198.51.100.1
@@ -1461,10 +1463,10 @@ EXAMPLES = """
 #
 # after:
 #    processes:
-#    - process_id: '102'
+#    - process_id: "102"
 #      router_id: 198.51.100.1
 #      shutdown: true
-#    - process_id: '104'
+#    - process_id: "104"
 #      router_id: 203.0.113.20
 
 # After state:
@@ -1507,14 +1509,14 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-        - process_id: 102
+      - process_id: 102
     state: deleted
 
 # Task output
 # -------------
 # before:
 #    processes:
-#    - process_id: '100'
+#    - process_id: "100"
 #      router_id: 203.0.113.20
 #    - areas:
 #      - area_id: 0.0.0.100
@@ -1531,11 +1533,11 @@ EXAMPLES = """
 #      - area_id: 0.0.0.101
 #        authentication:
 #          message_digest: true
-#      process_id: '102'
+#      process_id: "102"
 #      redistribute:
 #      - protocol: direct
 #        route_map: ospf102-direct-connect
-#      - id: '120'
+#      - id: "120"
 #        protocol: eigrp
 #        route_map: rmap_1
 #      router_id: 198.51.100.1
@@ -1566,7 +1568,7 @@ EXAMPLES = """
 #
 # after:
 #   processes:
-#   - process_id: '100'
+#   - process_id: "100"
 #     router_id: 203.0.113.20
 
 # After state:
@@ -1610,7 +1612,7 @@ EXAMPLES = """
 # -------------
 # before:
 #    processes:
-#    - process_id: '100'
+#    - process_id: "100"
 #      router_id: 203.0.113.20
 #    - areas:
 #      - area_id: 0.0.0.100
@@ -1627,11 +1629,11 @@ EXAMPLES = """
 #      - area_id: 0.0.0.101
 #        authentication:
 #          message_digest: true
-#      process_id: '102'
+#      process_id: "102"
 #      redistribute:
 #      - protocol: direct
 #        route_map: ospf102-direct-connect
-#      - id: '120'
+#      - id: "120"
 #        protocol: eigrp
 #        route_map: rmap_1
 #      router_id: 198.51.100.1
@@ -1674,56 +1676,56 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-        - process_id: 100
-          router_id: 203.0.113.20
-        - process_id: 102
-          router_id: 198.51.100.1
-          areas:
-            - area_id: 0.0.0.100
-              filter_list:
-                - route_map: rmap_1
-                  direction: in
-                - route_map: rmap_2
-                  direction: out
-              ranges:
-                - prefix: 198.51.100.64/27
-                  not_advertise: True
-                - prefix: 198.51.100.96/27
-                  cost: 120
-            - area_id: 0.0.0.101
-              authentication:
-                message_digest: True
+      - process_id: 100
+        router_id: 203.0.113.20
+      - process_id: 102
+        router_id: 198.51.100.1
+        areas:
+        - area_id: 0.0.0.100
+          filter_list:
+          - route_map: rmap_1
+            direction: in
+          - route_map: rmap_2
+            direction: out
+          ranges:
+          - prefix: 198.51.100.64/27
+            not_advertise: true
+          - prefix: 198.51.100.96/27
+            cost: 120
+        - area_id: 0.0.0.101
+          authentication:
+            message_digest: true
+        redistribute:
+        - protocol: eigrp
+          id: 120
+          route_map: rmap_1
+        - protocol: direct
+          route_map: ospf102-direct-connect
+        vrfs:
+        - vrf: zone1
+          router_id: 198.51.100.129
           redistribute:
-            - protocol: eigrp
-              id: 120
-              route_map: rmap_1
-            - protocol: direct
-              route_map: ospf102-direct-connect
-          vrfs:
-            - vrf: zone1
-              router_id: 198.51.100.129
-              redistribute:
-                - protocol: static
-                  route_map: zone1-static-connect
-              summary_address:
-                - prefix: 198.51.100.128/27
-                  tag: 121
-                - prefix: 198.51.100.160/27
-              areas:
-                - area_id: 0.0.0.102
-                  nssa:
-                    default_information_originate: True
-                    no_summary: True
-                - area_id: 0.0.0.103
-                  nssa:
-                    no_summary: True
-                    translate:
-                      type7:
-                        always: True
-            - vrf: zone2
-              auto_cost:
-                reference_bandwidth: 45
-                unit: Gbps
+          - protocol: static
+            route_map: zone1-static-connect
+          summary_address:
+          - prefix: 198.51.100.128/27
+            tag: 121
+          - prefix: 198.51.100.160/27
+          areas:
+          - area_id: 0.0.0.102
+            nssa:
+              default_information_originate: true
+              no_summary: true
+          - area_id: 0.0.0.103
+            nssa:
+              no_summary: true
+              translate:
+                type7:
+                  always: true
+        - vrf: zone2
+          auto_cost:
+            reference_bandwidth: 45
+            unit: Gbps
     state: rendered
 
 # Task Output (redacted)
@@ -1794,7 +1796,7 @@ EXAMPLES = """
 # -----------------------
 # parsed:
 #   processes:
-#   - process_id: '100'
+#   - process_id: "100"
 #     areas:
 #       - area_id: 0.0.0.101
 #         nssa:
@@ -1819,7 +1821,7 @@ EXAMPLES = """
 #     redistribute:
 #       - protocol: direct
 #         route_map: ospf-direct-connect
-#       - id: '120'
+#       - id: "120"
 #         protocol: eigrp
 #         route_map: rmap_1
 #     router_id: 192.0.100.1
@@ -1848,7 +1850,7 @@ EXAMPLES = """
 #             evpn: true
 #         down_bit_ignore: true
 #         shutdown: true
-#   - process_id: '102'
+#   - process_id: "102"
 #     router_id: 198.54.100.1
 #     shutdown: true
 #     vrfs:
@@ -1869,7 +1871,7 @@ EXAMPLES = """
 # -----------------------
 #  gathered:
 #    processes:
-#      - process_id: '102'
+#      - process_id: "102"
 #        areas:
 #          - area_id: 0.0.0.101
 #            stub:
@@ -1884,7 +1886,7 @@ EXAMPLES = """
 #        redistribute:
 #          - protocol: direct
 #            route_map: ospf102-direct-connect
-#          - id: '130'
+#          - id: "130"
 #            protocol: eigrp
 #            route_map: rmap_1
 #        router_id: 198.51.100.1
@@ -1896,7 +1898,7 @@ EXAMPLES = """
 #                  default_information_originate: true
 #                  no_summary: true
 #            redistribute:
-#             - id: '65563'
+#             - id: "65563"
 #               protocol: bgp
 #               route_map: zone1-bgp-connect
 #            router_id: 198.51.100.129

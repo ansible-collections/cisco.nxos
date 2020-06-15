@@ -1,8 +1,12 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 """
 The nxos_ospfv2 class
 It is in this file where the current configuration (as dict)
@@ -47,7 +51,6 @@ class Ospfv2(ResourceModule):
             "auto_cost",
             "graceful_restart.set",
             "graceful_restart.helper_disable",
-            "graceful_restart.planned_only",
             "isolate",
             "log_adjacency_changes",
             "max_lsa",

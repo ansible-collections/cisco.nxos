@@ -100,7 +100,10 @@ nxos_provider_spec = {
 }
 nxos_argument_spec = {
     "provider": dict(
-        type="dict", options=nxos_provider_spec, removed_in_version=2.14
+        type="dict",
+        options=nxos_provider_spec,
+        removed_at_date="2022-06-01",
+        removed_from_collection="cisco.nxos",
     )
 }
 

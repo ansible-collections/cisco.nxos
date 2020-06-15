@@ -157,7 +157,9 @@ def normalize_mac(proposed_mac, module):
         )
 
     joined_mac = "".join(splitted_mac)
-    mac = [joined_mac[i : i + 4] for i in range(0, len(joined_mac), 4)]
+    # fmt: off
+    mac = [joined_mac[i: i + 4] for i in range(0, len(joined_mac), 4)]
+    # fmt: on
     return ".".join(mac).upper()
 
 

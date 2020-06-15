@@ -1,3 +1,7 @@
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 import re
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
@@ -200,7 +204,7 @@ def _tmplt_capability_vrf_lite(proc):
 
 
 class Ospfv2Template(NetworkTemplate):
-    def __init__(self, lines=[]):
+    def __init__(self, lines=None):
         super(Ospfv2Template, self).__init__(lines=lines, tmplt=self)
 
     # fmt: off
@@ -351,26 +355,6 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "graceful_restart.planned_only",
-            "getval": re.compile(
-                r"""
-                \s+graceful-restart
-                \s(?P<planned_only>planned-only)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "graceful-restart planned-only",
-            "result": {
-                "vrfs": {
-                    '{{ "vrf_" + vrf|d() }}': {
-                        "graceful_restart": {
-                            "planned_only": "{{ not not planned_only }}"
-                        }
-                    }
-                }
-            },
-        },
-        {
             "name": "graceful_restart.helper_disable",
             "getval": re.compile(
                 r"""
@@ -385,6 +369,27 @@ class Ospfv2Template(NetworkTemplate):
                     '{{ "vrf_" + vrf|d() }}': {
                         "graceful_restart": {
                             "helper_disable": "{{ not not helper_disable }}",
+                        }
+                    }
+                }
+            },
+        },
+        {
+            "name": "graceful_restart.grace_period",
+            "getval": re.compile(
+                r"""
+                \s+graceful-restart
+                \s+grace-period
+                \s+(?P<grace_period>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "graceful-restart helper-disable",
+            "result": {
+                "vrfs": {
+                    '{{ "vrf_" + vrf|d() }}': {
+                        "graceful_restart": {
+                            "grace_period": "{{ grace_period }}",
                         }
                     }
                 }
@@ -816,6 +821,7 @@ class Ospfv2Template(NetworkTemplate):
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
                                 "authentication": {
+                                    "set": "{{ True if auth is defined and md is undefined }}",
                                     "message_digest": "{{ True if md is defined else False }}"
                                 },
                             }

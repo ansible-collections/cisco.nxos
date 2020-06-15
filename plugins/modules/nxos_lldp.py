@@ -12,15 +12,16 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: nxos_lldp
 author: Ganesh Nalawade (@ganeshrn)
-short_description: (deprecated) Manage LLDP configuration on Cisco NXOS network devices.
+short_description: (deprecated, removed after 2022-06-01) Manage LLDP
+  configuration on Cisco NXOS network devices.
 description:
 - This module provides declarative management of LLDP service on Cisco NXOS network
   devices.
 version_added: 1.0.0
 deprecated:
-  removed_in: '2.13'
   alternative: nxos_lldp_global
   why: Updated modules released with more functionality
+  removed_at_date: '2022-06-01'
 notes:
 - Tested against NXOSv 7.0(3)I5(1).
 options:
@@ -34,6 +35,7 @@ options:
     - absent
 extends_documentation_fragment:
 - cisco.nxos.nxos
+
 
 """
 

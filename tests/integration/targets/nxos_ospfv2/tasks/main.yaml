@@ -22,6 +22,3 @@
         state: disabled
       vars:
         ansible_connection: ansible.netcommon.network_cli
-
-
-

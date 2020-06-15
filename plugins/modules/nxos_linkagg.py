@@ -13,15 +13,16 @@ DOCUMENTATION = """
 module: nxos_linkagg
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: (deprecated) Manage link aggregation groups on Cisco NXOS devices.
+short_description: (deprecated, removed after 2022-06-01) Manage link
+  aggregation groups on Cisco NXOS devices.
 description:
 - This module provides declarative management of link aggregation groups on Cisco
   NXOS devices.
 version_added: 1.0.0
 deprecated:
-  removed_in: '2.13'
   alternative: nxos_lag_interfaces
   why: Updated modules released with more functionality.
+  removed_at_date: '2022-06-01'
 author:
 - Trishna Guha (@trishnaguha)
 notes:
@@ -77,6 +78,7 @@ options:
     - Purge links not defined in the I(aggregate) parameter.
     type: bool
     default: no
+
 
 """
 

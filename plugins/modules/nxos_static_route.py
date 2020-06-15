@@ -21,14 +21,15 @@ DOCUMENTATION = """
 module: nxos_static_route
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: (deprecated) Manages static route configuration
+short_description: (deprecated, removed after 2022-06-01) Manages static
+  route configuration
 description:
 - Manages static route configuration
 version_added: 1.0.0
 deprecated:
-  removed_in: '2.13'
   alternative: nxos_static_routes
   why: Updated modules released with more functionality
+  removed_at_date: '2022-06-01'
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
@@ -75,6 +76,7 @@ options:
     - present
     - absent
     default: present
+
 
 """
 

@@ -22,6 +22,10 @@
 #
 #############################################
 
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
+
 """
 The arg spec for the nxos_ospfv2 module
 """
@@ -57,7 +61,8 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                 "area_id": {"type": "str", "required": True},
                                 "authentication": {
                                     "options": {
-                                        "message_digest": {"type": "bool"}
+                                        "set": {"type": "bool"},
+                                        "message_digest": {"type": "bool"},
                                     },
                                     "type": "dict",
                                 },
@@ -141,8 +146,8 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                 "unit": {
                                     "choices": ["Gbps", "Mbps"],
                                     "type": "str",
+                                    "required": True,
                                 },
-                                "required": True,
                             },
                             "type": "dict",
                         },
@@ -160,12 +165,12 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                             },
                             "type": "dict",
                         },
-                        "default_metric": {"type": "str"},
+                        "default_metric": {"type": "int"},
                         "distance": {"type": "int"},
                         "flush_routes": {"type": "bool"},
                         "graceful_restart": {
                             "options": {
-                                "planned_only": {"type": "bool"},
+                                "grace_period": {"type": "int"},
                                 "helper_disable": {"type": "bool"},
                                 "set": {"type": "bool"},
                             },
@@ -357,12 +362,16 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                     ],
                                     "elements": "dict",
                                     "options": {
-                                        "area_id": {"type": "str"},
+                                        "area_id": {
+                                            "type": "str",
+                                            "required": True,
+                                        },
                                         "authentication": {
                                             "options": {
+                                                "set": {"type": "bool"},
                                                 "message_digest": {
                                                     "type": "bool"
-                                                }
+                                                },
                                             },
                                             "type": "dict",
                                         },
@@ -489,7 +498,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                 "down_bit_ignore": {"type": "bool"},
                                 "graceful_restart": {
                                     "options": {
-                                        "planned_only": {"type": "boot"},
+                                        "grace_period": {"type": "int"},
                                         "helper_disable": {"type": "bool"},
                                         "set": {"type": "bool"},
                                     },

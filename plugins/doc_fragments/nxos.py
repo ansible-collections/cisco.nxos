@@ -58,7 +58,6 @@ class ModuleDocFragment(object):
           used instead.
         type: bool
         default: false
-        version_added: 2.5.3
       auth_pass:
         description:
         - Specifies the password to use if required to enter privileged mode on the
@@ -66,7 +65,6 @@ class ModuleDocFragment(object):
           If the value is not specified in the task, the value of environment variable
           C(ANSIBLE_NET_AUTH_PASS) will be used instead.
         type: str
-        version_added: 2.5.3
       timeout:
         description:
         - Specifies the timeout in seconds for communicating with the network device
@@ -75,7 +73,6 @@ class ModuleDocFragment(object):
           return on long-running commands (sh mac, sh bgp, etc).
         type: int
         default: 10
-        version_added: '2.3'
       ssh_keyfile:
         description:
         - Specifies the SSH key to use to authenticate the connection to the remote
@@ -113,7 +110,6 @@ class ModuleDocFragment(object):
           be ignored.
         type: bool
         default: true
-        version_added: '2.5'
 notes:
 - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide
   <nxos_platform_options>`
