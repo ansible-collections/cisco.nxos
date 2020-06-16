@@ -1,0 +1,74 @@
+---
+- debug:
+    msg: START nxos_l2_interfaces round trip integration tests on connection={{ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: Prepare interfaces (switch to L2)
+      cisco.nxos.nxos_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            mode: layer2
+          - name: "{{ nxos_int2 }}"
+            mode: layer2
+          - name: "{{ nxos_int3 }}"
+            mode: layer2
+        state: merged
+
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            trunk:
+              native_vlan: 10
+              allowed_vlans: 2,4,15
+          - name: "{{ nxos_int2 }}"
+            access:
+              vlan: 30
+        state: merged
+      tags: base_config
+
+    - name: Gather interfaces facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - l2_interfaces
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.nxos.nxos_l2_interfaces:
+        config:
+          - name: "{{ nxos_int1 }}"
+            trunk:
+              native_vlan: 20
+          - name: "{{ nxos_int2 }}"
+            access:
+              vlan: 31
+          - name: "{{ nxos_int3 }}"
+            trunk:
+              native_vlan: 20
+              allowed_vlans: 5-10, 15
+        state: overridden
+
+    - assert:
+        that:
+        - result.changed == true
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.nxos.nxos_l2_interfaces:
+        config: "{{ ansible_facts['network_resources']['l2_interfaces'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - "{{ base_config['after'] == revert['after'] }}"
+  always:
+    - include_tasks: _remove_config.yaml
+
+- debug:
+    msg: END nxos_l2_interfaces round trip integration tests on connection={{ansible_connection }}

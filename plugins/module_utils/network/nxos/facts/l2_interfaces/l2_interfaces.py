@@ -61,7 +61,7 @@ class L2_interfacesFacts(object):
             conf = conf.strip()
             if conf:
                 obj = self.render_config(self.generated_spec, conf)
-                if obj and len(obj.keys()) > 1:
+                if obj:
                     objs.append(obj)
 
         ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)

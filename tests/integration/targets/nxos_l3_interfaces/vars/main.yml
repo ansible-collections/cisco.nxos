@@ -31,3 +31,6 @@ parsed:
       - address: fd5d:12c9:2201:2::1/64
         tag: 6
     unreachables: True
+  - name: mgmt0
+    ipv4:
+      - address: dhcp

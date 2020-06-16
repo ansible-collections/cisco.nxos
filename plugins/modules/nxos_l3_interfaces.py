@@ -107,6 +107,10 @@ options:
   state:
     description:
     - The state of the configuration after module completion.
+    - The state I(overridden) would override the IP address configuration
+      of all interfaces on the device with the provided configuration in
+      the task. Use caution with this state as you may loose access to the
+      device.
     type: str
     choices:
     - merged
@@ -173,7 +177,8 @@ EXAMPLES = """
   cisco.nxos.nxos_l3_interfaces:
     config:
     - name: Ethernet1/6
-      ipv4: 192.168.22.3/24
+      ipv4:
+        - address: 192.168.22.3/24
     state: replaced
 
 # After state:

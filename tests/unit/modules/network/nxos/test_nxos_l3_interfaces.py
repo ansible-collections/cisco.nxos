@@ -98,18 +98,6 @@ class TestNxosL3InterfacesModule(TestNxosModule):
 
     SHOW_CMD = "show running-config | section ^interface"
 
-    def test_1(self):
-        # Verify raise when playbook specifies mgmt0
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: ""}
-        playbook = dict(config=[dict(name="mgmt0")])
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(
-            {
-                "failed": True,
-                "msg": "The 'mgmt0' interface is not allowed to be managed by this module",
-            }
-        )
-
     def test_2(self):
         # basic tests
         existing = dedent(
@@ -129,6 +117,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         }
         playbook = dict(
             config=[
+                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
                 dict(name="Ethernet1/1", ipv4=[{"address": "192.168.1.1/24"}]),
                 dict(name="Ethernet1/2"),
                 # Eth1/3 not present! Thus overridden should set Eth1/3 to defaults;
@@ -138,6 +127,8 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         # Expected result commands for each 'state'
         merged = ["interface Ethernet1/1", "ip address 192.168.1.1/24"]
         deleted = [
+            "interface mgmt0",
+            "no ip address",
             "interface Ethernet1/1",
             "no ip address",
             "interface Ethernet1/2",
@@ -198,6 +189,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         }
         playbook = dict(
             config=[
+                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
                 dict(
                     name="Ethernet1/1.41",
                     dot1q=41,
@@ -222,6 +214,8 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             "ipv6 address 10::2/128",
         ]
         deleted = [
+            "interface mgmt0",
+            "no ip address",
             "interface Ethernet1/1.41",
             "no encapsulation dot1q",
             "no ip address",
@@ -302,6 +296,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         }
         playbook = dict(
             config=[
+                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
                 dict(
                     name="Ethernet1/1",
                     ipv4=[
@@ -358,6 +353,8 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             "ip address 10.41.41.41/24 secondary",
         ]
         deleted = [
+            "interface mgmt0",
+            "no ip address",
             "interface Ethernet1/1",
             "no ip address",
             "interface Ethernet1/2",
@@ -694,8 +691,6 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         # 'ip redirects' has platform-specific behaviors
         existing = dedent(
             """\
-          interface mgmt0
-            ip address 10.0.0.254/24
           interface Ethernet1/3
             ip address 10.13.13.13/24
           interface Ethernet1/5

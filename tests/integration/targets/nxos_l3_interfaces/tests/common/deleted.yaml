@@ -6,6 +6,8 @@
     test_int3: '{{ nxos_int3 }}'
     subint3: '{{ nxos_int3 }}.42'
 
+- include_tasks: _remove_config.yaml
+
 - name: setup1
   ignore_errors: true
   cisco.nxos.nxos_config:
@@ -14,10 +16,6 @@
       - "default interface {{ test_int3 }}"
       - "interface {{ test_int3 }}"
       - "  no switchport"
-
-- name: setup2 cleanup all L3 states on all interfaces
-  cisco.nxos.nxos_l3_interfaces:
-    state: deleted
 
 - block:
 
@@ -40,13 +38,13 @@
     - name: deleted
       register: result
       cisco.nxos.nxos_l3_interfaces: &id001
+        config:
+          - name: "{{ subint3 }}"
         state: deleted
 
     - assert:
         that:
-          - result.before|length == (ansible_facts.network_resources.l3_interfaces|length|int
-            - rsvd_intf_len|int)
-          - result.after|length == 0
+          - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
           - "'interface {{ subint3 }}' in result.commands"
           - "'no encapsulation dot1q' in result.commands"

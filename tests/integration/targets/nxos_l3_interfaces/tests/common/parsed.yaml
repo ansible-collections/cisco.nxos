@@ -1,6 +1,6 @@
 ---
 - debug:
-    msg: START nxo_l3_interfaces parsed integration tests on connection={{ ansible_connection
+    msg: START nxos_l3_interfaces parsed integration tests on connection={{ ansible_connection
       }}
 
 - block:
