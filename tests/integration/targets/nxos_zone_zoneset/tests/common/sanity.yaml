@@ -144,19 +144,17 @@
       register: result
       cisco.nxos.nxos_zone_zoneset: *id001
 
-    - name: Disaplay Idempotence Check result
+    - name: Display Idempotence Check result
       debug:
         var: result
 
     - assert:
         that:
-          - result.commands == ["terminal dont-ask", "zoneset activate name zsetname1
-            vsan 922","zone commit vsan 922", "zoneset activate name zsetname21
-            vsan 923", "no terminal dont-ask"]
+          - result.commands == []
 
     - assert:
         that:
-          - result.changed == true
+          - result.changed == false
 
     - name: Delete zone and zoneset that was configured
       register: result

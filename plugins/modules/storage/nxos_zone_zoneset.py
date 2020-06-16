@@ -916,18 +916,27 @@ def main():
                             + " is not activated, hence cannot deactivate"
                         )
                 elif actionflag == "activate":
-                    messages.append(
-                        "activating zoneset '"
-                        + zsetname
-                        + "' in vsan "
-                        + str(vsan)
-                    )
-                    actcmd.append(
-                        "zoneset activate name "
-                        + zsetname
-                        + " vsan "
-                        + str(vsan)
-                    )
+                    if commands_executed:
+                        messages.append(
+                            "activating zoneset '"
+                            + zsetname
+                            + "' in vsan "
+                            + str(vsan)
+                        )
+                        actcmd.append(
+                            "zoneset activate name "
+                            + zsetname
+                            + " vsan "
+                            + str(vsan)
+                        )
+                    else:
+                        messages.append(
+                            "no changes to existing zoneset '"
+                            + zsetname
+                            + "' in vsan "
+                            + str(vsan)
+                            + " hence activate action is ignored"
+                        )
             commands_executed = commands_executed + dactcmd + actcmd
 
         if commands_executed:

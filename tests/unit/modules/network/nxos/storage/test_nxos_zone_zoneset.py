@@ -634,16 +634,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         self.execute_show_cmd_zoneset_active.return_value = load_fixture(
             "nxos_zone_zoneset", "shzonesetactive_0.cfg"
         )
-        result = self.execute_module(changed=True, failed=False)
-        self.assertEqual(
-            result["commands"],
-            [
-                "terminal dont-ask",
-                "zoneset activate name zsv221 vsan 221",
-                "zone commit vsan 221",
-                "no terminal dont-ask",
-            ],
-        )
+        result = self.execute_module(changed=False, failed=False)
+        self.assertEqual(result["commands"], [])
 
     def test_zoneset_activate_deactivate_1(self):
         a = dict(
