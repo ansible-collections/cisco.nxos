@@ -200,13 +200,13 @@ messages:
   returned: always
   type: list
   sample:
-    - "zone mode is already enhanced ,no change in zone mode configuration for vsan 922",
-    - "zone member '11:11:11:11:11:11:11:11' is already present in zone 'zoneA' in vsan 922 hence nothing to add",
-    - "zone member 'test123' is already present in zone 'zoneA' in vsan 922 hence nothing to add",
-    - "zone member '61:61:62:62:12:12:12:12' is not present in zone 'zoneA' in vsan 922 hence nothing to remove",
-    - "zone member '10:11:11:11:11:11:11:11' is already present in zone 'zoneB' in vsan 922 hence nothing to add",
-    - "zone member '62:62:62:62:21:21:21:21' is already present in zone 'zoneB' in vsan 922 hence nothing to add",
-    - "zone 'zoneC' is not present in vsan 922 , so nothing to remove",
+    - "zone mode is already enhanced ,no change in zone mode configuration for vsan 922"
+    - "zone member '11:11:11:11:11:11:11:11' is already present in zone 'zoneA' in vsan 922 hence nothing to add"
+    - "zone member 'test123' is already present in zone 'zoneA' in vsan 922 hence nothing to add"
+    - "zone member '61:61:62:62:12:12:12:12' is not present in zone 'zoneA' in vsan 922 hence nothing to remove"
+    - "zone member '10:11:11:11:11:11:11:11' is already present in zone 'zoneB' in vsan 922 hence nothing to add"
+    - "zone member '62:62:62:62:21:21:21:21' is already present in zone 'zoneB' in vsan 922 hence nothing to add"
+    - "zone 'zoneC' is not present in vsan 922 , so nothing to remove"
 """
 
 
