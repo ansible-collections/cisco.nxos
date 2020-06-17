@@ -194,6 +194,18 @@ commands:
     - no member device-alias test123
     - zone commit vsan 923
     - no terminal dont-ask
+messages:
+  description: debug messages
+  returned: always
+  type: list
+  sample:
+    - "zone mode is already enhanced ,no change in zone mode configuration for vsan 922",
+    - "zone member '11:11:11:11:11:11:11:11' is already present in zone 'zoneA' in vsan 922 hence nothing to add",
+    - "zone member 'test123' is already present in zone 'zoneA' in vsan 922 hence nothing to add",
+    - "zone member '61:61:62:62:12:12:12:12' is not present in zone 'zoneA' in vsan 922 hence nothing to remove",
+    - "zone member '10:11:11:11:11:11:11:11' is already present in zone 'zoneB' in vsan 922 hence nothing to add",
+    - "zone member '62:62:62:62:21:21:21:21' is already present in zone 'zoneB' in vsan 922 hence nothing to add",
+    - "zone 'zoneC' is not present in vsan 922 , so nothing to remove",
 """
 
 
@@ -360,7 +372,7 @@ class ShowZoneStatus(object):
 
         patfordefzone = "VSAN: " + str(self.vsan) + r" default-zone:\s+(\S+).*"
         patformode = r".*mode:\s+(\S+).*"
-        patforsession = r".*session:\s+(\S+).*"
+        patforsession = r"^session:\s+(\S+).*"
         patforsz = r".*smart-zoning:\s+(\S+).*"
         for line in output:
             if "is not configured" in line:
@@ -914,18 +926,27 @@ def main():
                             + " is not activated, hence cannot deactivate"
                         )
                 elif actionflag == "activate":
-                    messages.append(
-                        "activating zoneset '"
-                        + zsetname
-                        + "' in vsan "
-                        + str(vsan)
-                    )
-                    actcmd.append(
-                        "zoneset activate name "
-                        + zsetname
-                        + " vsan "
-                        + str(vsan)
-                    )
+                    if commands_executed:
+                        messages.append(
+                            "activating zoneset '"
+                            + zsetname
+                            + "' in vsan "
+                            + str(vsan)
+                        )
+                        actcmd.append(
+                            "zoneset activate name "
+                            + zsetname
+                            + " vsan "
+                            + str(vsan)
+                        )
+                    else:
+                        messages.append(
+                            "no changes to existing zoneset '"
+                            + zsetname
+                            + "' in vsan "
+                            + str(vsan)
+                            + " hence activate action is ignored"
+                        )
             commands_executed = commands_executed + dactcmd + actcmd
 
         if commands_executed:

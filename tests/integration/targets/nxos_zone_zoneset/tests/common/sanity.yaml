@@ -49,19 +49,19 @@
 
               - members:
 
-                  - pwwn: 11:11:11:11:11:11:11:11
+                  - pwwn: "11:11:11:11:11:11:11:11"
 
                   - device_alias: test123
 
-                  - pwwn: 61:61:62:62:12:12:12:12
+                  - pwwn: "61:61:62:62:12:12:12:12"
                     remove: true
                 name: zoneA
 
               - members:
 
-                  - pwwn: 10:11:11:11:11:11:11:11
+                  - pwwn: "10:11:11:11:11:11:11:11"
 
-                  - pwwn: 62:62:62:62:21:21:21:21
+                  - pwwn: "62:62:62:62:21:21:21:21"
                 name: zoneB
 
               - name: zoneC
@@ -91,20 +91,20 @@
               - members:
 
                   - devtype: both
-                    pwwn: 11:11:11:11:11:11:11:11
+                    pwwn: "11:11:11:11:11:11:11:11"
 
-                  - pwwn: 62:62:62:62:12:12:12:12
+                  - pwwn: "62:62:62:62:12:12:12:12"
 
                   - devtype: both
-                    pwwn: 92:62:62:62:12:12:1a:1a
+                    pwwn: "92:62:62:62:12:12:1a:1a"
                     remove: true
                 name: zone21A
 
               - members:
 
-                  - pwwn: 10:11:11:11:11:11:11:11
+                  - pwwn: "10:11:11:11:11:11:11:11"
 
-                  - pwwn: 62:62:62:62:21:21:21:21
+                  - pwwn: "62:62:62:62:21:21:21:21"
 
                   - device_alias: somedummyname
 
@@ -143,6 +143,10 @@
     - name: Idempotence Check
       register: result
       cisco.nxos.nxos_zone_zoneset: *id001
+
+    - name: Display Idempotence Check result
+      debug:
+        var: result
 
     - assert:
         that:

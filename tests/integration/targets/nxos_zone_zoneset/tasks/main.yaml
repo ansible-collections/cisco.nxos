@@ -4,9 +4,13 @@
   cisco.nxos.nxos_command:
     commands: show version | grep MDS
 
-- set_fact: skip_test=False
+- name: Set skip_test flag to false
+  set_fact: 
+    skip_test=False
 
-- set_fact: skip_test=True
+- name: Set skip_test flag to true if not MDS
+  set_fact: 
+    skip_test=True
   when: result.stdout[0] is not search('MDS')
 
 - include: cli.yaml
