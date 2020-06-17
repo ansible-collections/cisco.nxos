@@ -6,7 +6,7 @@
 cisco.nxos.nxos
 ***************
 
-**Use NX-API to run command on nxos platform**
+**Use NX-API to run commands on Cisco NX-OS platform**
 
 
 Version added: 1.0.0
@@ -18,8 +18,7 @@ Version added: 1.0.0
 
 Synopsis
 --------
-- This plugin provides low level abstraction APIs for sending and receiving
-  commands using NX-API with devices running Cisco NX-OS.
+- This plugin provides low level abstraction APIs for sending and receiving commands using NX-API with devices running Cisco NX-OS.
 
 
 

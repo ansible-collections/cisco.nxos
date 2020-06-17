@@ -18,8 +18,7 @@ Version added: 1.0.0
 
 Synopsis
 --------
-- This nxos plugin provides low level abstraction apis for sending and receiving CLI
-  commands from Cisco NX-OS network devices.
+- This nxos plugin provides low level abstraction apis for sending and receiving CLI commands from Cisco NX-OS network devices.
 
 
 
