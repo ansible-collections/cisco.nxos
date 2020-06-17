@@ -23,10 +23,10 @@ __metaclass__ = type
 DOCUMENTATION = """
 author: Ansible Networking Team
 cliconf: nxos
-short_description: Use nxos cliconf to run command on Cisco NX-OS platform
+short_description: Use NX-OS cliconf to run commands on Cisco NX-OS platform
 description:
 - This nxos plugin provides low level abstraction apis for sending and receiving CLI
-  commands from Cicso NX-OS network devices.
+  commands from Cisco NX-OS network devices.
 version_added: 1.0.0
 """
 
