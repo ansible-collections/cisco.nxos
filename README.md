@@ -140,7 +140,6 @@ You can also include it in a `requirements.yml` file and install it with `ansibl
 ---
 collections:
   - name: cisco.nxos
-    version: 1.0.0
 ```
 ## Using this collection
 
@@ -165,26 +164,7 @@ The following example task replaces configuration changes in the existing config
 
 ```
 
-Alternately, you can call modules by their short name if you list the `cisco.nxos` collection in the playbook's `collections`, as follows:
-
-```yaml
----
-- hosts: nxos01
-  gather_facts: false
-  connection: network_cli
-
-  collections:
-    - cisco.nxos
-
-  tasks:
-    - name: Merge provided configuration with device configuration.
-      nxos_lacp_interfaces:
-        config:
-          - name: Ethernet1/3
-            port_priority: 5
-            rate: fast
-        state: merged
-```
+**NOTE**: For Ansible 2.9, you may not see deprecation warnings when you run your playbooks with this collection. Use this documentation to track when a module is deprecated.
 
 
 ### See Also:
@@ -196,7 +176,7 @@ Alternately, you can call modules by their short name if you list the `cisco.nxo
 
 Ongoing development efforts and contributions to this collection are solely focused on enhancements to current resource modules, additional resource modules and enhancements to connection plugins.
 
-We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Cisco NX-OS collection repository](https://github.com/ansible-collections/cisco.nxos).
+We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Cisco NX-OS collection repository](https://github.com/ansible-collections/cisco.nxos).  See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for complete details.
 
 You can also join us on:
 
@@ -204,6 +184,11 @@ You can also join us on:
 - Slack - https://ansiblenetwork.slack.com
 
 See the [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for details on contributing to Ansible.
+
+### Code of Conduct
+This collection follows the Ansible project's
+[Code of Conduct](https://docs.ansible.com/ansible/devel/community/code_of_conduct.html).
+Please read and familiarize yourself with this document.
 
 
 ## Changelogs
