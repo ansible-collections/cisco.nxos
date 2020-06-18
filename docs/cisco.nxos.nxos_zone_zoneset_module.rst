@@ -501,6 +501,23 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                                                 <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;terminal dont-ask&#x27;, &#x27;zone name zoneA vsan 923&#x27;, &#x27;member pwwn 11:11:11:11:11:11:11:11&#x27;, &#x27;no member device-alias test123&#x27;, &#x27;zone commit vsan 923&#x27;, &#x27;no terminal dont-ask&#x27;]</div>
                                     </td>
             </tr>
+                                <tr>
+                                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>messages</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                                          </div>
+                                    </td>
+                <td>always</td>
+                <td>
+                                                                        <div>debug messages</div>
+                                                                <br/>
+                                            <div style="font-size: smaller"><b>Sample:</b></div>
+                                                <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;zone mode is already enhanced ,no change in zone mode configuration for vsan 922&#x27;, &quot;zone member &#x27;11:11:11:11:11:11:11:11&#x27; is already present in zone &#x27;zoneA&#x27; in vsan 922 hence nothing to add&quot;, &quot;zone member &#x27;test123&#x27; is already present in zone &#x27;zoneA&#x27; in vsan 922 hence nothing to add&quot;, &quot;zone member &#x27;61:61:62:62:12:12:12:12&#x27; is not present in zone &#x27;zoneA&#x27; in vsan 922 hence nothing to remove&quot;, &quot;zone member &#x27;10:11:11:11:11:11:11:11&#x27; is already present in zone &#x27;zoneB&#x27; in vsan 922 hence nothing to add&quot;, &quot;zone member &#x27;62:62:62:62:21:21:21:21&#x27; is already present in zone &#x27;zoneB&#x27; in vsan 922 hence nothing to add&quot;, &quot;zone &#x27;zoneC&#x27; is not present in vsan 922 , so nothing to remove&quot;]</div>
+                                    </td>
+            </tr>
                         </table>
     <br/><br/>
 
