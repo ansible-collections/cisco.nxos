@@ -1,5 +1,3 @@
-:orphan:
-
 .. _cisco.nxos.nxos_acl_interface_module:
 
 
@@ -441,5 +439,3 @@ Authors
 - Gabriele Gerbino (@GGabriele)
 
 
-.. hint::
-    Configuration entries for each entry type have a low to high priority order. For example, a variable that is lower in the list will override a variable that is higher up.
