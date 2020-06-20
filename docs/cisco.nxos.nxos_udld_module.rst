@@ -1,5 +1,3 @@
-:orphan:
-
 .. _cisco.nxos.nxos_udld_module:
 
 
@@ -495,5 +493,3 @@ Authors
 - Jason Edelman (@jedelman8)
 
 
-.. hint::
-    Configuration entries for each entry type have a low to high priority order. For example, a variable that is lower in the list will override a variable that is higher up.

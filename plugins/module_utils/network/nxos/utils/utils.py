@@ -1,5 +1,3 @@
-# pylint: skip-file
-
 import socket
 
 from ansible.module_utils.six import iteritems

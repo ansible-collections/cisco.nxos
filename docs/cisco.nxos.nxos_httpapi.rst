@@ -1,4 +1,3 @@
-
 .. _cisco.nxos.nxos_httpapi:
 
 

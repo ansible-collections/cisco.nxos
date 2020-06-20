@@ -12,10 +12,10 @@ This collection has been tested against Cisco NX-OS 7.0(3)I5(1).
 <!--start requires_ansible-->
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.9,<2.11**.
+This collection has been tested against following Ansible versions: **>=2.9.10,<2.11**.
 
-Plugins and modules within a collection may be tested with only specific Ansible versions. 
-A collection may contain metadata that identifies these versions. 
+Plugins and modules within a collection may be tested with only specific Ansible versions.
+A collection may contain metadata that identifies these versions.
 PEP440 is the schema used to describe the versions of Ansible.
 <!--end requires_ansible-->
 
@@ -28,10 +28,12 @@ The Cisco NX-OS collection supports ``network_cli``  and ``httpapi`` connections
 Name | Description
 --- | ---
 [cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/master/docs/cisco.nxos.nxos_cliconf.rst)|Use NX-OS cliconf to run commands on Cisco NX-OS platform
+
 ### Httpapi plugins
 Name | Description
 --- | ---
 [cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/master/docs/cisco.nxos.nxos_httpapi.rst)|Use NX-API to run commands on Cisco NX-OS platform
+
 ### Modules
 Name | Description
 --- | ---
@@ -124,6 +126,7 @@ Name | Description
 [cisco.nxos.nxos_vxlan_vtep](https://github.com/ansible-collections/nxos/blob/master/docs/cisco.nxos.nxos_vxlan_vtep_module.rst)|Manages VXLAN Network Virtualization Endpoint (NVE).
 [cisco.nxos.nxos_vxlan_vtep_vni](https://github.com/ansible-collections/nxos/blob/master/docs/cisco.nxos.nxos_vxlan_vtep_vni_module.rst)|Creates a Virtual Network Identifier member (VNI)
 [cisco.nxos.nxos_zone_zoneset](https://github.com/ansible-collections/nxos/blob/master/docs/cisco.nxos.nxos_zone_zoneset_module.rst)|Configuration of zone/zoneset.
+
 <!--end collection content-->
 
 Click the ``Content`` button to see the list of content included in this collection.
