@@ -14,3 +14,9 @@
   with_items: '{{ test_items }}'
   loop_control:
     loop_var: test_case_to_run
+
+- name: run test cases (connection=ansible.netcommon.network_cli with libssh transport)
+  include: '{{ test_case_to_run }} ansible_connection=ansible.netcommon.network_cli ansible_network_cli_ssh_type=libssh'
+  with_items: '{{ test_items }}'
+  loop_control:
+    loop_var: test_case_to_run
