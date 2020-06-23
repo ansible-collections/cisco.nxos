@@ -114,6 +114,6 @@ New Modules
 Storage
 ~~~~~~~
 
-- storage.nxos_devicealias - Configuration of device alias.
-- storage.nxos_vsan - Configuration of vsan.
-- storage.nxos_zone_zoneset - Configuration of zone/zoneset.
+- nxos_devicealias - Configuration of device alias.
+- nxos_vsan - Configuration of vsan.
+- nxos_zone_zoneset - Configuration of zone/zoneset.
