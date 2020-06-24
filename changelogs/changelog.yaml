@@ -1,0 +1,290 @@
+ancestor: null
+releases:
+  1.0.0:
+    modules:
+    - description: Manages AAA server global configuration.
+      name: nxos_aaa_server
+      namespace: ''
+    - description: Manages AAA server host-specific configuration.
+      name: nxos_aaa_server_host
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manages access list entries
+        for ACLs.
+      name: nxos_acl
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manages applying ACLs to
+        interfaces.
+      name: nxos_acl_interface
+      namespace: ''
+    - description: ACL interfaces resource module
+      name: nxos_acl_interfaces
+      namespace: ''
+    - description: ACLs resource module
+      name: nxos_acls
+      namespace: ''
+    - description: Manage multiline banners on Cisco NXOS devices
+      name: nxos_banner
+      namespace: ''
+    - description: Bidirectional Forwarding Detection (BFD) global-level configuration
+      name: nxos_bfd_global
+      namespace: ''
+    - description: BFD interfaces resource module
+      name: nxos_bfd_interfaces
+      namespace: ''
+    - description: Manages BGP configuration.
+      name: nxos_bgp
+      namespace: ''
+    - description: Manages BGP Address-family configuration.
+      name: nxos_bgp_af
+      namespace: ''
+    - description: Manages BGP neighbors configurations.
+      name: nxos_bgp_neighbor
+      namespace: ''
+    - description: Manages BGP address-family's neighbors configuration.
+      name: nxos_bgp_neighbor_af
+      namespace: ''
+    - description: Run arbitrary command on Cisco NXOS devices
+      name: nxos_command
+      namespace: ''
+    - description: Manage Cisco NXOS configuration sections
+      name: nxos_config
+      namespace: ''
+    - description: Configuration of device alias.
+      name: nxos_devicealias
+      namespace: storage
+    - description: Handles the EVPN control plane for VXLAN.
+      name: nxos_evpn_global
+      namespace: ''
+    - description: Manages Cisco EVPN VXLAN Network Identifier (VNI).
+      name: nxos_evpn_vni
+      namespace: ''
+    - description: Gets facts about NX-OS switches
+      name: nxos_facts
+      namespace: ''
+    - description: Manage features in NX-OS switches.
+      name: nxos_feature
+      namespace: ''
+    - description: Copy a file to a remote NXOS device.
+      name: nxos_file_copy
+      namespace: ''
+    - description: Trigger a graceful removal or insertion (GIR) of the switch.
+      name: nxos_gir
+      namespace: ''
+    - description: Create a maintenance-mode or normal-mode profile for GIR.
+      name: nxos_gir_profile_management
+      namespace: ''
+    - description: Manages HSRP configuration on NX-OS switches.
+      name: nxos_hsrp
+      namespace: ''
+    - description: HSRP interfaces resource module
+      name: nxos_hsrp_interfaces
+      namespace: ''
+    - description: Manages IGMP global configuration.
+      name: nxos_igmp
+      namespace: ''
+    - description: Manages IGMP interface configuration.
+      name: nxos_igmp_interface
+      namespace: ''
+    - description: Manages IGMP snooping global configuration.
+      name: nxos_igmp_snooping
+      namespace: ''
+    - description: Set boot options like boot, kickstart image and issu.
+      name: nxos_install_os
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manages physical attributes
+        of interfaces.
+      name: nxos_interface
+      namespace: ''
+    - description: Manages configuration of an OSPF interface instance.
+      name: nxos_interface_ospf
+      namespace: ''
+    - description: Interfaces resource module
+      name: nxos_interfaces
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage Layer-2 interface
+        on Cisco NXOS devices.
+      name: nxos_l2_interface
+      namespace: ''
+    - description: L2 interfaces resource module
+      name: nxos_l2_interfaces
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage L3 interfaces on
+        Cisco NXOS network devices
+      name: nxos_l3_interface
+      namespace: ''
+    - description: L3 interfaces resource module
+      name: nxos_l3_interfaces
+      namespace: ''
+    - description: LACP resource module
+      name: nxos_lacp
+      namespace: ''
+    - description: LACP interfaces resource module
+      name: nxos_lacp_interfaces
+      namespace: ''
+    - description: LAG interfaces resource module
+      name: nxos_lag_interfaces
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage link aggregation
+        groups on Cisco NXOS devices.
+      name: nxos_linkagg
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manage LLDP configuration
+        on Cisco NXOS network devices.
+      name: nxos_lldp
+      namespace: ''
+    - description: LLDP resource module
+      name: nxos_lldp_global
+      namespace: ''
+    - description: LLDP interfaces resource module
+      name: nxos_lldp_interfaces
+      namespace: ''
+    - description: Manage logging on network devices
+      name: nxos_logging
+      namespace: ''
+    - description: Manages core NTP configuration.
+      name: nxos_ntp
+      namespace: ''
+    - description: Manages NTP authentication.
+      name: nxos_ntp_auth
+      namespace: ''
+    - description: Manages NTP options.
+      name: nxos_ntp_options
+      namespace: ''
+    - description: Manage NXAPI configuration on an NXOS device.
+      name: nxos_nxapi
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manages configuration of
+        an ospf instance.
+      name: nxos_ospf
+      namespace: ''
+    - description: Manages a VRF for an OSPF router.
+      name: nxos_ospf_vrf
+      namespace: ''
+    - description: OSPFv2 resource module
+      name: nxos_ospfv2
+      namespace: ''
+    - description: Configures anycast gateway MAC of the switch.
+      name: nxos_overlay_global
+      namespace: ''
+    - description: Manages configuration of a PIM instance.
+      name: nxos_pim
+      namespace: ''
+    - description: Manages PIM interface configuration.
+      name: nxos_pim_interface
+      namespace: ''
+    - description: Manages configuration of an PIM static RP address instance.
+      name: nxos_pim_rp_address
+      namespace: ''
+    - description: Tests reachability using ping from Nexus switch.
+      name: nxos_ping
+      namespace: ''
+    - description: Reboot a network device.
+      name: nxos_reboot
+      namespace: ''
+    - description: Set a checkpoint or rollback to a checkpoint.
+      name: nxos_rollback
+      namespace: ''
+    - description: Install patch or feature rpms on Cisco NX-OS devices.
+      name: nxos_rpm
+      namespace: ''
+    - description: Perform SMUs on Cisco NX-OS devices.
+      name: nxos_smu
+      namespace: ''
+    - description: Manage snapshots of the running states of selected features.
+      name: nxos_snapshot
+      namespace: ''
+    - description: Manages SNMP community configs.
+      name: nxos_snmp_community
+      namespace: ''
+    - description: Manages SNMP contact info.
+      name: nxos_snmp_contact
+      namespace: ''
+    - description: Manages SNMP host configuration.
+      name: nxos_snmp_host
+      namespace: ''
+    - description: Manages SNMP location information.
+      name: nxos_snmp_location
+      namespace: ''
+    - description: Manages SNMP traps.
+      name: nxos_snmp_traps
+      namespace: ''
+    - description: Manages SNMP users for monitoring.
+      name: nxos_snmp_user
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manages static route configuration
+      name: nxos_static_route
+      namespace: ''
+    - description: Static routes resource module
+      name: nxos_static_routes
+      namespace: ''
+    - description: Manage the system attributes on Cisco NXOS devices
+      name: nxos_system
+      namespace: ''
+    - description: TELEMETRY resource module
+      name: nxos_telemetry
+      namespace: ''
+    - description: Manages UDLD global configuration params.
+      name: nxos_udld
+      namespace: ''
+    - description: Manages UDLD interface configuration params.
+      name: nxos_udld_interface
+      namespace: ''
+    - description: Manage the collection of local users on Nexus devices
+      name: nxos_user
+      namespace: ''
+    - description: (deprecated, removed after 2022-06-01) Manages VLAN resources and
+        attributes.
+      name: nxos_vlan
+      namespace: ''
+    - description: VLANs resource module
+      name: nxos_vlans
+      namespace: ''
+    - description: Manages global VPC configuration
+      name: nxos_vpc
+      namespace: ''
+    - description: Manages interface VPC configuration
+      name: nxos_vpc_interface
+      namespace: ''
+    - description: Manages global VRF configuration.
+      name: nxos_vrf
+      namespace: ''
+    - description: Manages VRF AF.
+      name: nxos_vrf_af
+      namespace: ''
+    - description: Manages interface specific VRF configuration.
+      name: nxos_vrf_interface
+      namespace: ''
+    - description: Manages VRRP configuration on NX-OS switches.
+      name: nxos_vrrp
+      namespace: ''
+    - description: Configuration of vsan.
+      name: nxos_vsan
+      namespace: storage
+    - description: Manages VTP domain configuration.
+      name: nxos_vtp_domain
+      namespace: ''
+    - description: Manages VTP password configuration.
+      name: nxos_vtp_password
+      namespace: ''
+    - description: Manages VTP version configuration.
+      name: nxos_vtp_version
+      namespace: ''
+    - description: Manages VXLAN Network Virtualization Endpoint (NVE).
+      name: nxos_vxlan_vtep
+      namespace: ''
+    - description: Creates a Virtual Network Identifier member (VNI)
+      name: nxos_vxlan_vtep_vni
+      namespace: ''
+    - description: Configuration of zone/zoneset.
+      name: nxos_zone_zoneset
+      namespace: storage
+    plugins:
+      cliconf:
+      - description: Use NX-OS cliconf to run commands on Cisco NX-OS platform
+        name: nxos
+        namespace: null
+      httpapi:
+      - description: Use NX-API to run commands on Cisco NX-OS platform
+        name: nxos
+        namespace: null
+    release_date: '2020-06-23'
