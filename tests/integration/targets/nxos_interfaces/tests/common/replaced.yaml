@@ -4,6 +4,7 @@
 
 - set_fact:
     test_int1: "{{ nxos_int1 }}"
+    test_int2: "{{ nxos_int2 }}"
 
 - block:
 
@@ -61,6 +62,37 @@
             that:
               - result.changed == false
               - result.commands|length == 0
+
+        - name: Reset interfaces
+          cisco.nxos.nxos_config:
+            lines:
+              - "default interface {{ test_int1 }}"
+              - "default interface {{ test_int2 }}"
+              - "interface {{ test_int1 }}"
+              - "  description TEST-INTF-1"
+              - "  speed 1000"
+
+        - name: Replace (default existing and add new attributes)
+          cisco.nxos.nxos_interfaces:
+            config:
+              - name: "{{ test_int1 }}"
+                enabled: False
+              - name: "{{ test_int2 }}"
+                description: TEST-INTF-2
+                enabled: True
+            state: replaced
+          register: result
+
+        - assert:
+            that:
+              - "'interface {{ test_int1 }}' in result.commands"
+              - "'no description' in result.commands"
+              - "'no speed' in result.commands"
+              - "'interface {{ test_int2 }}' in result.commands"
+              - "'description TEST-INTF-2' in result.commands"
+              - "'no shutdown' in result.commands"
+              - result.commands|length == 6
+
       always:
 
         - name: teardown

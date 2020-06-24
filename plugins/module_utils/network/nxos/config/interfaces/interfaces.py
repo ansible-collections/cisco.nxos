@@ -231,32 +231,29 @@ class Interfaces(ConfigBase):
             diff = w
 
         merged_commands = self.set_commands(w, have)
-        if merged_commands:
-            # merged_commands:
-            #   - These commands are changes specified by the playbook.
-            #   - merged_commands apply to both existing and new objects
-            # replaced_commands:
-            #   - These are the unspecified commands, used to reset any params
-            #     that are not already set to default states
-            #   - replaced_commands should only be used on 'have' objects
-            #     (interfaces that already exist)
-            if obj_in_have:
-                if "name" not in diff:
-                    diff["name"] = name
-                wkeys = w.keys()
-                dkeys = diff.keys()
-                for k in wkeys:
-                    if k in self.exclude_params and k in dkeys:
-                        del diff[k]
-                replaced_commands = self.del_attribs(diff)
-                cmds = set(replaced_commands).intersection(
-                    set(merged_commands)
-                )
-                for cmd in cmds:
-                    merged_commands.remove(cmd)
-                commands.extend(replaced_commands)
+        # merged_commands:
+        #   - These commands are changes specified by the playbook.
+        #   - merged_commands apply to both existing and new objects
+        # replaced_commands:
+        #   - These are the unspecified commands, used to reset any params
+        #     that are not already set to default states
+        #   - replaced_commands should only be used on 'have' objects
+        #     (interfaces that already exist)
+        if obj_in_have:
+            if "name" not in diff:
+                diff["name"] = name
+            wkeys = w.keys()
+            dkeys = diff.keys()
+            for k in wkeys:
+                if k in self.exclude_params and k in dkeys:
+                    del diff[k]
+            replaced_commands = self.del_attribs(diff)
+            cmds = set(replaced_commands).intersection(set(merged_commands))
+            for cmd in cmds:
+                merged_commands.remove(cmd)
+            commands.extend(replaced_commands)
 
-            commands.extend(merged_commands)
+        commands.extend(merged_commands)
         return commands
 
     def _state_overridden(self, want, have):
