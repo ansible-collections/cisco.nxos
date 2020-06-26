@@ -19,6 +19,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+__metaclass__ = type
+
 __metacl_interfaceass__ = type
 
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
