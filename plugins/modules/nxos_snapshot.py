@@ -36,21 +36,27 @@ options:
     - create
     - delete
     - delete_all
+    type: str
   snapshot_name:
     description:
     - Snapshot name, to be used when C(action=create) or C(action=delete).
+    type: str
   description:
     description:
     - Snapshot description to be used when C(action=create).
+    type: str
   snapshot1:
     description:
     - First snapshot to be used when C(action=compare).
+    type: str
   snapshot2:
     description:
     - Second snapshot to be used when C(action=compare).
+    type: str
   comparison_results_file:
     description:
     - Name of the file where snapshots comparison will be stored when C(action=compare).
+    type: str
   compare_option:
     description:
     - Snapshot options to be used when C(action=compare).
@@ -58,22 +64,28 @@ options:
     - summary
     - ipv4routes
     - ipv6routes
+    type: str
   section:
     description:
     - Used to name the show command output, to be used when C(action=add).
+    type: str
   show_command:
     description:
     - Specify a new show command, to be used when C(action=add).
+    type: str
   row_id:
     description:
     - Specifies the tag of each row entry of the show command's XML output, to be
       used when C(action=add).
+    type: str
   element_key1:
     description:
     - Specify the tags used to distinguish among row entries, to be used when C(action=add).
+    type: str
   element_key2:
     description:
     - Specify the tags used to distinguish among row entries, to be used when C(action=add).
+    type: str
   save_snapshot_locally:
     description:
     - Specify to locally store a new created snapshot, to be used when C(action=create).
@@ -85,6 +97,7 @@ options:
       will be stored, to be used when C(action=create) and C(save_snapshot_locally=true)
       or C(action=compare).
     default: ./
+    type: str
 """
 
 EXAMPLES = """

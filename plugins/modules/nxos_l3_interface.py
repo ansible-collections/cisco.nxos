@@ -28,14 +28,39 @@ options:
   name:
     description:
     - Name of the L3 interface.
+    type: str
   ipv4:
     description:
     - IPv4 of the L3 interface.
+    type: str
   ipv6:
     description:
     - IPv6 of the L3 interface.
+    type: str
   aggregate:
     description: List of L3 interfaces definitions.
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+        - Name of the L3 interface.
+        type: str
+      ipv4:
+        description:
+        - IPv4 of the L3 interface.
+        type: str
+      ipv6:
+        description:
+        - IPv6 of the L3 interface.
+        type: str
+      state:
+        description:
+        - State of the L3 interface configuration.
+        choices:
+        - present
+        - absent
+        type: str
   state:
     description:
     - State of the L3 interface configuration.
@@ -46,8 +71,6 @@ options:
     type: str
 extends_documentation_fragment:
 - cisco.nxos.nxos
-
-
 """
 
 EXAMPLES = """

@@ -39,16 +39,20 @@ options:
     description:
     - IP address or hostname (resolvable by switch) of remote node.
     required: true
+    type: str
   count:
     description:
     - Number of packets to send.
     default: 5
+    type: int
   source:
     description:
     - Source IP Address or hostname (resolvable by switch)
+    type: str
   vrf:
     description:
     - Outgoing VRF.
+    type: str
   state:
     description:
     - Determines if the expected result is success or fail.
@@ -56,6 +60,7 @@ options:
     - absent
     - present
     default: present
+    type: str
 notes:
 - For a general purpose network module, see the M(net_ping) module.
 - For Windows targets, use the M(win_ping) module instead.

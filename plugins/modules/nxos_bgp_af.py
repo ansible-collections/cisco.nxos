@@ -39,10 +39,12 @@ options:
     - BGP autonomous system number. Valid values are String, Integer in ASPLAIN or
       ASDOT notation.
     required: true
+    type: str
   vrf:
     description:
     - Name of the VRF. The name 'default' is a valid VRF representing the global bgp.
-    required: true
+    default: 'default'
+    type: str
   afi:
     description:
     - Address Family Identifier.
@@ -53,6 +55,7 @@ options:
     - vpnv4
     - vpnv6
     - l2vpn
+    type: str
   safi:
     description:
     - Sub Address Family Identifier.
@@ -61,6 +64,7 @@ options:
     - unicast
     - multicast
     - evpn
+    type: str
   additional_paths_install:
     description:
     - Install a backup path into the forwarding table and provide prefix independent
@@ -75,6 +79,7 @@ options:
     description:
     - Configures the capability of selecting additional paths for a prefix. Valid
       values are a string defining the name of the route-map.
+    type: str
   additional_paths_send:
     description:
     - Enables the send capability of additional paths for all of the neighbors under
@@ -92,6 +97,7 @@ options:
     description:
     - Specify dampen value for IGP metric-related changes, in seconds. Valid values
       are integer and keyword 'default'.
+    type: str
   dampening_state:
     description:
     - Enable/disable route-flap dampening.
@@ -100,22 +106,27 @@ options:
     description:
     - Specify decay half-life in minutes for route-flap dampening. Valid values are
       integer and keyword 'default'.
+    type: str
   dampening_max_suppress_time:
     description:
     - Specify max suppress time for route-flap dampening stable route. Valid values
       are integer and keyword 'default'.
+    type: str
   dampening_reuse_time:
     description:
     - Specify route reuse time for route-flap dampening. Valid values are integer
       and keyword 'default'.
+    type: str
   dampening_routemap:
     description:
     - Specify route-map for route-flap dampening. Valid values are a string defining
       the name of the route-map.
+    type: str
   dampening_suppress_time:
     description:
     - Specify route suppress time for route-flap dampening. Valid values are integer
       and keyword 'default'.
+    type: str
   default_information_originate:
     description:
     - Default information originate.
@@ -124,18 +135,22 @@ options:
     description:
     - Sets default metrics for routes redistributed into BGP. Valid values are Integer
       or keyword 'default'
+    type: str
   distance_ebgp:
     description:
     - Sets the administrative distance for eBGP routes. Valid values are Integer or
       keyword 'default'.
+    type: str
   distance_ibgp:
     description:
     - Sets the administrative distance for iBGP routes. Valid values are Integer or
       keyword 'default'.
+    type: str
   distance_local:
     description:
     - Sets the administrative distance for local BGP routes. Valid values are Integer
       or keyword 'default'.
+    type: str
   inject_map:
     description:
     - An array of route-map names which will specify prefixes to inject. Each array
@@ -143,24 +158,31 @@ options:
       optionally the copy-attributes keyword which indicates that attributes should
       be copied from the aggregate. For example [['lax_inject_map', 'lax_exist_map'],
       ['nyc_inject_map', 'nyc_exist_map', 'copy-attributes'], ['fsd_inject_map', 'fsd_exist_map']].
+    type: list
+    elements: list
   maximum_paths:
     description:
     - Configures the maximum number of equal-cost paths for load sharing. Valid value
       is an integer in the range 1-64.
+    type: str
   maximum_paths_ibgp:
     description:
     - Configures the maximum number of ibgp equal-cost paths for load sharing. Valid
       value is an integer in the range 1-64.
+    type: str
   networks:
     description:
     - Networks to configure. Valid value is a list of network prefixes to advertise.
       The list must be in the form of an array. Each entry in the array must include
       a prefix address and an optional route-map. For example [['10.0.0.0/16', 'routemap_LA'],
       ['192.168.1.1', 'Chicago'], ['192.168.2.0/24'], ['192.168.3.0/24', 'routemap_NYC']].
+    type: list
+    elements: list
   next_hop_route_map:
     description:
     - Configure a route-map for valid nexthops. Valid values are a string defining
       the name of the route-map.
+    type: str
   redistribute:
     description:
     - A list of redistribute directives. Multiple redistribute entries are allowed.
@@ -169,6 +191,8 @@ options:
       route-map name. A route-map is highly advised but may be optional on some platforms,
       in which case it may be omitted from the array list. For example [['direct',
       'rm_direct'], ['lisp', 'rm_lisp']].
+    type: list
+    elements: list
   suppress_inactive:
     description:
     - Advertises only active routes to peers.
@@ -176,6 +200,7 @@ options:
   table_map:
     description:
     - Apply table-map to filter routes downloaded into URIB. Valid values are a string.
+    type: str
   table_map_filter:
     description:
     - Filters routes rejected by the route-map and does not download them to the RIB.
@@ -187,6 +212,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 # configure a simple address-family
@@ -747,12 +773,12 @@ def main():
         distance_ebgp=dict(required=False, type="str"),
         distance_ibgp=dict(required=False, type="str"),
         distance_local=dict(required=False, type="str"),
-        inject_map=dict(required=False, type="list"),
+        inject_map=dict(required=False, type="list", elements="list"),
         maximum_paths=dict(required=False, type="str"),
         maximum_paths_ibgp=dict(required=False, type="str"),
-        networks=dict(required=False, type="list"),
+        networks=dict(required=False, type="list", elements="list"),
         next_hop_route_map=dict(required=False, type="str"),
-        redistribute=dict(required=False, type="list"),
+        redistribute=dict(required=False, type="list", elements="list"),
         suppress_inactive=dict(required=False, type="bool"),
         table_map=dict(required=False, type="str"),
         table_map_filter=dict(required=False, type="bool"),

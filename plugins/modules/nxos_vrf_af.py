@@ -39,6 +39,7 @@ options:
     description:
     - Name of the VRF.
     required: true
+    type: str
   afi:
     description:
     - Address-Family Identifier (AFI).
@@ -46,6 +47,7 @@ options:
     choices:
     - ipv4
     - ipv6
+    type: str
   route_target_both_auto_evpn:
     description:
     - Enable/Disable the EVPN route-target 'auto' setting for both import and export
@@ -60,7 +62,7 @@ options:
     suboptions:
       rt:
         description:
-        - Defindes the route-target itself
+        - Defines the route-target itself
         required: true
         type: str
       direction:
@@ -71,6 +73,7 @@ options:
         - export
         - both
         default: both
+        type: str
       state:
         description:
         - Determines whether the route-target with the given direction should be present
@@ -79,6 +82,7 @@ options:
         - present
         - absent
         default: present
+        type: str
     elements: dict
     type: list
   state:
@@ -88,6 +92,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """
@@ -190,7 +195,7 @@ def main():
             type="list",
             elements="dict",
             options=dict(
-                rt=dict(type="str"),
+                rt=dict(type="str", required=True),
                 direction=dict(
                     choices=["import", "export", "both"], default="both"
                 ),

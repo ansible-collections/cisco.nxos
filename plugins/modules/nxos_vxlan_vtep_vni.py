@@ -37,10 +37,12 @@ options:
     description:
     - Interface name for the VXLAN Network Virtualization Endpoint.
     required: true
+    type: str
   vni:
     description:
     - ID of the Virtual Network Identifier.
     required: true
+    type: str
   assoc_vrf:
     description:
     - This attribute is used to identify and separate processing VNIs that are associated
@@ -54,14 +56,18 @@ options:
     - bgp
     - static
     - default
+    type: str
   multicast_group:
     description:
     - The multicast group (range) of the VNI. Valid values are string and keyword
       'default'.
+    type: str
   peer_list:
     description:
     - Set the ingress-replication static peer list. Valid values are an array, a space-separated
       string of ip addresses, or the keyword 'default'.
+    type: list
+    elements: str
   suppress_arp:
     description:
     - Suppress arp under layer 2 VNI.
@@ -78,6 +84,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 - cisco.nxos.nxos_vxlan_vtep_vni:
@@ -323,7 +330,7 @@ def main():
         vni=dict(required=True, type="str"),
         assoc_vrf=dict(required=False, type="bool"),
         multicast_group=dict(required=False, type="str"),
-        peer_list=dict(required=False, type="list"),
+        peer_list=dict(required=False, type="list", elements="str"),
         suppress_arp=dict(required=False, type="bool"),
         suppress_arp_disable=dict(required=False, type="bool"),
         ingress_replication=dict(

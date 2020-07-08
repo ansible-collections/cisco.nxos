@@ -33,6 +33,7 @@ options:
     description:
     - List of device-alias to be added or removed
     type: list
+    elements: dict
     suboptions:
       name:
         description:
@@ -52,6 +53,7 @@ options:
     description:
     - List of device-alias to be renamed
     type: list
+    elements: dict
     suboptions:
       old_name:
         description:

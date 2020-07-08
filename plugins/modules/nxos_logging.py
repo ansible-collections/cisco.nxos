@@ -25,32 +25,42 @@ options:
     - module
     - monitor
     - server
+    type: str
   remote_server:
     description:
     - Hostname or IP Address for remote logging (when dest is 'server').
+    type: str
   use_vrf:
     description:
     - VRF to be used while configuring remote logging (when dest is 'server').
+    type: str
   interface:
     description:
     - Interface to be used while configuring source-interface for logging (e.g., 'Ethernet1/2',
       'mgmt0')
+    type: str
   name:
     description:
     - If value of C(dest) is I(logfile) it indicates file-name.
+    type: str
   facility:
     description:
     - Facility name for logging.
+    type: str
   dest_level:
     description:
     - Set logging severity levels.
     aliases:
     - level
+    type: int
   facility_level:
     description:
     - Set logging severity levels for facility based log messages.
+    type: int
   aggregate:
     description: List of logging definitions.
+    type: list
+    elements: dict
   state:
     description:
     - State of the logging configuration.
@@ -58,6 +68,7 @@ options:
     choices:
     - present
     - absent
+    type: str
   event:
     description:
     - Link/trunk enable/default interface configuration logging
@@ -66,15 +77,18 @@ options:
     - link-default
     - trunk-enable
     - trunk-default
+    type: str
   interface_message:
     description:
     - Add interface description to interface syslogs. Does not work with version 6.0
       images using nxapi as a transport.
     choices:
     - add-interface-description
+    type: str
   file_size:
     description:
     - Set logfile size
+    type: int
   facility_link_status:
     description:
     - Set logging facility ethpm link status. Not idempotent with version 6.0 images.
@@ -83,6 +97,7 @@ options:
     - link-down-error
     - link-up-notif
     - link-up-error
+    type: str
   timestamp:
     description:
     - Set logging timestamp format
@@ -90,6 +105,7 @@ options:
     - microseconds
     - milliseconds
     - seconds
+    type: str
   purge:
     description:
     - Remove any switch logging configuration that does not match what has been configured
@@ -909,7 +925,7 @@ def main():
         file_size=dict(type="int"),
         timestamp=dict(choices=["microseconds", "milliseconds", "seconds"]),
         state=dict(default="present", choices=["present", "absent"]),
-        aggregate=dict(type="list"),
+        aggregate=dict(type="list", elements="dict"),
         purge=dict(default=False, type="bool"),
     )
 

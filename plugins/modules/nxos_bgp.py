@@ -43,9 +43,12 @@ options:
     - BGP autonomous system number. Valid values are String, Integer in ASPLAIN or
       ASDOT notation.
     required: true
+    type: str
   vrf:
     description:
     - Name of the VRF. The name 'default' is a valid VRF representing the global BGP.
+    default: 'default'
+    type: str
   bestpath_always_compare_med:
     description:
     - Enable/Disable MED comparison on paths from different autonomous systems.
@@ -86,12 +89,16 @@ options:
   cluster_id:
     description:
     - Route Reflector Cluster-ID.
+    type: str
   confederation_id:
     description:
     - Routing domain confederation AS.
+    type: str
   confederation_peers:
     description:
     - AS confederation parameters.
+    type: list
+    elements: str
   disable_policy_batching:
     description:
     - Enable/Disable the batching evaluation of prefix advertisement to all peers.
@@ -100,10 +107,12 @@ options:
     description:
     - Enable/Disable the batching evaluation of prefix advertisements to all peers
       with prefix list.
+    type: str
   disable_policy_batching_ipv6_prefix_list:
     description:
     - Enable/Disable the batching evaluation of prefix advertisements to all peers
       with prefix list.
+    type: str
   enforce_first_as:
     description:
     - Enable/Disable enforces the neighbor autonomous system to be the first AS number
@@ -119,6 +128,9 @@ options:
     - size_large
     - size_disable
     - default
+    - 'true'
+    - 'false'
+    type: str
   event_history_detail:
     description:
     - Enable/Disable detail event history buffer.
@@ -128,6 +140,9 @@ options:
     - size_large
     - size_disable
     - default
+    - 'true'
+    - 'false'
+    type: str
   event_history_events:
     description:
     - Enable/Disable event history buffer.
@@ -137,6 +152,9 @@ options:
     - size_large
     - size_disable
     - default
+    - 'true'
+    - 'false'
+    type: str
   event_history_periodic:
     description:
     - Enable/Disable periodic event history buffer.
@@ -146,6 +164,9 @@ options:
     - size_large
     - size_disable
     - default
+    - 'true'
+    - 'false'
+    type: str
   fast_external_fallover:
     description:
     - Enable/Disable immediately reset the session if the link to a directly connected
@@ -167,9 +188,11 @@ options:
   graceful_restart_timers_restart:
     description:
     - Set maximum time for a restart sent to the BGP peer.
+    type: str
   graceful_restart_timers_stalepath_time:
     description:
     - Set maximum time that BGP keeps the stale routes from the restarting BGP peer.
+    type: str
   isolate:
     description:
     - Enable/Disable isolate this router from BGP perspective.
@@ -177,6 +200,7 @@ options:
   local_as:
     description:
     - Local AS number to be used within a VRF instance.
+    type: str
   log_neighbor_changes:
     description:
     - Enable/Disable message logging for neighbor up/down event.
@@ -185,6 +209,7 @@ options:
     description:
     - Specify Maximum number of AS numbers allowed in the AS-path attribute. Valid
       values are between 1 and 512.
+    type: str
   neighbor_down_fib_accelerate:
     description:
     - Enable/Disable handle BGP neighbor down event, due to various reasons.
@@ -193,9 +218,11 @@ options:
     description:
     - The BGP reconnection interval for dropped sessions. Valid values are between
       1 and 60.
+    type: str
   router_id:
     description:
     - Router Identifier (ID) of the BGP router VRF instance.
+    type: str
   shutdown:
     description:
     - Administratively shutdown the BGP protocol.
@@ -207,12 +234,15 @@ options:
   timer_bestpath_limit:
     description:
     - Specify timeout for the first best path after a restart, in seconds.
+    type: str
   timer_bgp_hold:
     description:
     - Set BGP hold timer.
+    type: str
   timer_bgp_keepalive:
     description:
     - Set BGP keepalive timer.
+    type: str
   state:
     description:
     - Determines whether the config should be present or not on the device.
@@ -220,6 +250,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 
@@ -594,7 +625,7 @@ def main():
         bestpath_med_non_deterministic=dict(required=False, type="bool"),
         cluster_id=dict(required=False, type="str"),
         confederation_id=dict(required=False, type="str"),
-        confederation_peers=dict(required=False, type="list"),
+        confederation_peers=dict(required=False, type="list", elements="str"),
         disable_policy_batching=dict(required=False, type="bool"),
         disable_policy_batching_ipv4_prefix_list=dict(
             required=False, type="str"

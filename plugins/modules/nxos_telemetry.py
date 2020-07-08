@@ -78,6 +78,7 @@ options:
         type: list
         description:
         - List of telemetry destination groups.
+        elements: raw
         suboptions:
           id:
             type: int
@@ -118,6 +119,7 @@ options:
         type: list
         description:
         - List of telemetry sensor groups.
+        elements: raw
         suboptions:
           id:
             type: int
@@ -161,6 +163,7 @@ options:
         type: list
         description:
         - List of telemetry subscriptions.
+        elements: raw
         suboptions:
           id:
             type: int

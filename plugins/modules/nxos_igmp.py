@@ -58,6 +58,7 @@ options:
     choices:
     - present
     - default
+    type: str
 """
 EXAMPLES = """
 - name: Default igmp global params (all params except restart)

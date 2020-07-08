@@ -44,6 +44,7 @@ options:
     description:
     - Group membership timeout value for all VLANs on the device. Accepted values
       are integer in range 1-10080, I(never) and I(default).
+    type: str
   link_local_grp_supp:
     description:
     - Global link-local groups suppression.
@@ -63,6 +64,7 @@ options:
     choices:
     - present
     - default
+    type: str
 """
 
 EXAMPLES = """

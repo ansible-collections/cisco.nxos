@@ -39,6 +39,7 @@ options:
     description:
     - IP address of hostname of target host.
     required: true
+    type: str
   version:
     description:
     - SNMP version. If this is not specified, v1 is used.
@@ -46,6 +47,7 @@ options:
     - v1
     - v2c
     - v3
+    type: str
   v3:
     description:
     - Use this when verion is v3. SNMPv3 Security level.
@@ -53,29 +55,36 @@ options:
     - noauth
     - auth
     - priv
+    type: str
   community:
     description:
     - Community string or v3 username.
+    type: str
   udp:
     description:
     - UDP port number (0-65535).
     default: 162
+    type: str
   snmp_type:
     description:
     - type of message to send to host. If this is not specified, trap type is used.
     choices:
     - trap
     - inform
+    type: str
   vrf:
     description:
     - VRF to use to source traffic to source. If state = absent, the vrf is removed.
+    type: str
   vrf_filter:
     description:
     - Name of VRF to filter. If state = absent, the vrf is removed from the filter.
+    type: str
   src_intf:
     description:
     - Source interface. Must be fully qualified interface name. If state = absent,
       the interface is removed.
+    type: str
   state:
     description:
     - Manage the state of the resource. If state = present, the host is added to the
@@ -88,6 +97,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

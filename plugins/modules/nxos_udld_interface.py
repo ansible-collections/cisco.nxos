@@ -42,10 +42,12 @@ options:
     - enabled
     - disabled
     - aggressive
+    type: str
   interface:
     description:
     - FULL name of the interface, i.e. Ethernet1/1-
     required: true
+    type: str
   state:
     description:
     - Manage the state of the resource.
@@ -54,6 +56,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 # ensure Ethernet1/1 is configured to be in aggressive mode

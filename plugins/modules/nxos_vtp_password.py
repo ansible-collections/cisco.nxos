@@ -45,6 +45,7 @@ options:
   vtp_password:
     description:
     - VTP password
+    type: str
   state:
     description:
     - Manage the state of the resource
@@ -52,6 +53,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

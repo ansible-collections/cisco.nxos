@@ -38,18 +38,22 @@ options:
     description:
     - Case-sensitive community string.
     required: true
+    type: str
   access:
     description:
     - Access type for community.
     choices:
     - ro
     - rw
+    type: str
   group:
     description:
     - Group to which the community belongs.
+    type: str
   acl:
     description:
     - ACL name to filter snmp requests or keyword 'default'.
+    type: str
   state:
     description:
     - Manage the state of the resource.
@@ -57,6 +61,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

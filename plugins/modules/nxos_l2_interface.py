@@ -30,36 +30,88 @@ options:
   name:
     description:
     - Full name of the interface excluding any logical unit number, i.e. Ethernet1/1.
-    required: true
     aliases:
     - interface
+    type: str
   mode:
     description:
     - Mode in which interface needs to be configured.
     choices:
     - access
     - trunk
+    type: str
   access_vlan:
     description:
     - Configure given VLAN in access port. If C(mode=access), used as the access VLAN
       ID.
+    type: str
   native_vlan:
     description:
     - Native VLAN to be configured in trunk port. If C(mode=trunk), used as the trunk
       native VLAN ID.
+    type: str
   trunk_vlans:
     description:
     - List of VLANs to be configured in trunk port. If C(mode=trunk), used as the
       VLAN range to ADD or REMOVE from the trunk.
     aliases:
     - trunk_add_vlans
+    type: str
   trunk_allowed_vlans:
     description:
     - List of allowed VLANs in a given trunk port. If C(mode=trunk), these are the
       only VLANs that will be configured on the trunk, i.e. "2-10,15".
+    type: str
   aggregate:
     description:
     - List of Layer-2 interface definitions.
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+        - Full name of the interface excluding any logical unit number, i.e. Ethernet1/1.
+        aliases:
+        - interface
+        type: str
+      mode:
+        description:
+        - Mode in which interface needs to be configured.
+        choices:
+        - access
+        - trunk
+        type: str
+      access_vlan:
+        description:
+        - Configure given VLAN in access port. If C(mode=access), used as the access VLAN
+          ID.
+        type: str
+      native_vlan:
+        description:
+        - Native VLAN to be configured in trunk port. If C(mode=trunk), used as the trunk
+          native VLAN ID.
+        type: str
+      trunk_vlans:
+        description:
+        - List of VLANs to be configured in trunk port. If C(mode=trunk), used as the
+          VLAN range to ADD or REMOVE from the trunk.
+        aliases:
+        - trunk_add_vlans
+        type: str
+      trunk_allowed_vlans:
+        description:
+        - List of allowed VLANs in a given trunk port. If C(mode=trunk), these are the
+          only VLANs that will be configured on the trunk, i.e. "2-10,15".
+        type: str
+      state:
+        description:
+        - Manage the state of the Layer-2 Interface configuration.
+        choices:
+        - present
+        - absent
+        - unconfigured
+        type: str
+
   state:
     description:
     - Manage the state of the Layer-2 Interface configuration.
@@ -68,6 +120,7 @@ options:
     - present
     - absent
     - unconfigured
+    type: str
 
 
 """

@@ -44,26 +44,31 @@ options:
     description:
     - VPC domain
     required: true
+    type: str
   role_priority:
     description:
     - Role priority for device. Remember lower is better.
+    type: str
   system_priority:
     description:
     - System priority device.  Remember they must match between peers.
+    type: str
   pkl_src:
     description:
     - Source IP address used for peer keepalive link
+    type: str
   pkl_dest:
     description:
     - Destination (remote) IP address used for peer keepalive link
     - pkl_dest is required whenever pkl options are used.
+    type: str
   pkl_vrf:
     description:
     - VRF used for peer keepalive link
     - The VRF must exist on the device before using pkl_vrf.
     - "(Note) 'default' is an overloaded term: Default vrf context for pkl_vrf is
       'management'; 'pkl_vrf: default' refers to the literal 'default' rib."
-    default: management
+    type: str
   peer_gw:
     description:
     - Enables/Disables peer gateway
@@ -96,10 +101,11 @@ options:
   state:
     description:
     - Manages desired state of the resource
-    required: true
+    default: present
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

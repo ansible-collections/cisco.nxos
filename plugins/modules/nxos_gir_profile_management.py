@@ -38,6 +38,8 @@ options:
   commands:
     description:
     - List of commands to be included into the profile.
+    type: list
+    elements: str
   mode:
     description:
     - Configure the profile as Maintenance or Normal mode.
@@ -45,6 +47,7 @@ options:
     choices:
     - maintenance
     - normal
+    type: str
   state:
     description:
     - Specify desired state of the resource.
@@ -52,6 +55,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """
@@ -161,7 +165,7 @@ def invoke(name, *args, **kwargs):
 
 def main():
     argument_spec = dict(
-        commands=dict(required=False, type="list"),
+        commands=dict(required=False, type="list", elements="str"),
         mode=dict(required=True, choices=["maintenance", "normal"]),
         state=dict(choices=["absent", "present"], default="present"),
     )

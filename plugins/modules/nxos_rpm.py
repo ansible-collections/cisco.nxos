@@ -41,15 +41,37 @@ options:
   pkg:
     description:
     - Name of the RPM package.
-    required: true
+    type: str
   file_system:
     description:
     - The remote file system of the device. If omitted, devices that support a file_system
       parameter will use their default values.
     default: bootflash
+    type: str
   aggregate:
     description:
     - List of RPM/patch definitions.
+    type: list
+    elements: dict
+    suboptions:
+      pkg:
+        description:
+        - Name of the RPM package.
+        required: True
+        type: str
+      file_system:
+        description:
+        - The remote file system of the device. If omitted, devices that support a file_system
+          parameter will use their default values.
+        type: str
+      state:
+        description:
+        - If the state is present, the rpm will be installed, If the state is absent,
+          it will be removed.
+        choices:
+        - present
+        - absent
+        type: str
   state:
     description:
     - If the state is present, the rpm will be installed, If the state is absent,
@@ -58,6 +80,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

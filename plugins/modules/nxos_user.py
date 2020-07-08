@@ -41,15 +41,65 @@ options:
     aliases:
     - users
     - collection
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+        - The username to be configured on the remote Cisco Nexus device.  This argument
+          accepts a string value and is mutually exclusive with the C(aggregate) argument.
+        type: str
+      configured_password:
+        description:
+        - The password to be configured on the network device. The password needs to be
+          provided in cleartext and it will be encrypted on the device. Please note that
+          this option is not same as C(provider password).
+        type: str
+      update_password:
+        description:
+        - Since passwords are encrypted in the device running config, this argument will
+          instruct the module when to change the password.  When set to C(always), the
+          password will always be updated in the device and when set to C(on_create) the
+          password will be updated only if the username is created.
+        choices:
+        - on_create
+        - always
+        type: str
+      roles:
+        description:
+        - The C(role) argument configures the role for the username in the device running
+          configuration.  The argument accepts a string value defining the role name.  This
+          argument does not check if the role has been configured on the device.
+        aliases:
+        - role
+        type: list
+        elements: str
+      sshkey:
+        description:
+        - The C(sshkey) argument defines the SSH public key to configure for the username.  This
+          argument accepts a valid SSH key value.
+        type: str
+      state:
+        description:
+        - The C(state) argument configures the state of the username definition as it
+         relates to the device operational configuration.  When set to I(present), the
+         username(s) should be configured in the device active configuration and when
+         set to I(absent) the username(s) should not be in the device active configuration
+        choices:
+        - present
+        - absent
+        type: str
   name:
     description:
     - The username to be configured on the remote Cisco Nexus device.  This argument
       accepts a string value and is mutually exclusive with the C(aggregate) argument.
+    type: str
   configured_password:
     description:
     - The password to be configured on the network device. The password needs to be
       provided in cleartext and it will be encrypted on the device. Please note that
       this option is not same as C(provider password).
+    type: str
   update_password:
     description:
     - Since passwords are encrypted in the device running config, this argument will
@@ -60,17 +110,21 @@ options:
     choices:
     - on_create
     - always
-  role:
+    type: str
+  roles:
     description:
     - The C(role) argument configures the role for the username in the device running
       configuration.  The argument accepts a string value defining the role name.  This
       argument does not check if the role has been configured on the device.
     aliases:
-    - roles
+    - role
+    type: list
+    elements: str
   sshkey:
     description:
     - The C(sshkey) argument defines the SSH public key to configure for the username.  This
       argument accepts a valid SSH key value.
+    type: str
   purge:
     description:
     - The C(purge) argument instructs the module to consider the resource definition
@@ -88,6 +142,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """
@@ -336,7 +391,7 @@ def main():
         update_password=dict(
             default="always", choices=["on_create", "always"]
         ),
-        roles=dict(type="list", aliases=["role"]),
+        roles=dict(type="list", aliases=["role"], elements="str"),
         sshkey=dict(),
         state=dict(default="present", choices=["present", "absent"]),
     )

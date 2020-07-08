@@ -28,7 +28,6 @@ class ModuleDocFragment(object):
           over the specified transport.  The value of host is used as the destination
           address for the transport.
         type: str
-        required: true
       port:
         description:
         - Specifies the port to use when building the connection to the remote device.  This
@@ -36,7 +35,6 @@ class ModuleDocFragment(object):
           to the appropriate transport common port if none is provided in the task.  (cli=22,
           http=80, https=443).
         type: int
-        default: 0 (use common port)
       username:
         description:
         - Configures the username to use to authenticate the connection to the remote
@@ -75,7 +73,6 @@ class ModuleDocFragment(object):
           the operation is completed, the module will error. NX-API can be slow to
           return on long-running commands (sh mac, sh bgp, etc).
         type: int
-        default: 10
       ssh_keyfile:
         description:
         - Specifies the SSH key to use to authenticate the connection to the remote
@@ -89,7 +86,6 @@ class ModuleDocFragment(object):
           device.  The transport argument supports connectivity to the device over
           cli (ssh) or nxapi.
         type: str
-        required: true
         choices:
         - cli
         - nxapi
@@ -106,7 +102,7 @@ class ModuleDocFragment(object):
           on personally controlled sites using self-signed certificates.  If the transport
           argument is not nxapi, this value is ignored.
         type: bool
-        default: true
+        default: False
       use_proxy:
         description:
         - If C(no), the environment variables C(http_proxy) and C(https_proxy) will

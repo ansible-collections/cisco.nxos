@@ -41,10 +41,12 @@ options:
     description:
     - Case sensitive name of the access list (ACL).
     required: true
+    type: str
   interface:
     description:
     - Full name of interface, e.g. I(Ethernet1/1).
     required: true
+    type: str
   direction:
     description:
     - Direction ACL to be applied in on the interface.
@@ -52,6 +54,7 @@ options:
     choices:
     - ingress
     - egress
+    type: str
   state:
     description:
     - Specify desired state of the resource.
@@ -60,6 +63,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 
 
 """
@@ -162,7 +166,7 @@ def flatten_list(command_lists):
 
 def main():
     argument_spec = dict(
-        name=dict(required=False, type="str"),
+        name=dict(required=True, type="str"),
         interface=dict(required=True),
         direction=dict(required=True, choices=["egress", "ingress"]),
         state=dict(choices=["absent", "present"], default="present"),

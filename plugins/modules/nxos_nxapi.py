@@ -39,6 +39,7 @@ options:
       argument accepts valid port values in the range of 1 to 65535.
     required: false
     default: 80
+    type: int
   http:
     description:
     - Controls the operating state of the HTTP protocol as one of the underlying transports
@@ -57,6 +58,7 @@ options:
       argument accepts valid port values in the range of 1 to 65535.
     required: false
     default: 443
+    type: int
   https:
     description:
     - Controls the operating state of the HTTPS protocol as one of the underlying
@@ -91,6 +93,7 @@ options:
     - absent
     required: false
     default: present
+    type: str
   ssl_strong_ciphers:
     description:
     - Controls the use of whether strong or weak ciphers are configured. By default,
@@ -394,10 +397,7 @@ def main():
         https=dict(aliases=["enable_https"], type="bool", default=False),
         https_port=dict(type="int", default=443),
         sandbox=dict(aliases=["enable_sandbox"], type="bool"),
-        state=dict(
-            default="present",
-            choices=["started", "stopped", "present", "absent"],
-        ),
+        state=dict(default="present", choices=["present", "absent"]),
         ssl_strong_ciphers=dict(type="bool", default=False),
         tlsv1_0=dict(type="bool", default=True),
         tlsv1_1=dict(type="bool", default=False),

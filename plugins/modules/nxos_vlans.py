@@ -53,6 +53,7 @@ options:
   config:
     description: A dictionary of Vlan options
     type: list
+    elements: dict
     suboptions:
       vlan_id:
         description:

@@ -71,6 +71,7 @@ options:
     - upgrade
     - vtp
     - all
+    type: str
   state:
     description:
     - Manage the state of the resource.
@@ -79,6 +80,7 @@ options:
     choices:
     - enabled
     - disabled
+    type: str
 """
 
 EXAMPLES = """

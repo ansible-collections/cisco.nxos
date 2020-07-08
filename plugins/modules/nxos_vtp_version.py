@@ -44,6 +44,7 @@ options:
     choices:
     - '1'
     - '2'
+    type: str
 """
 EXAMPLES = """
 # ENSURE VTP VERSION IS 2

@@ -31,10 +31,12 @@ options:
     description:
     - HSRP group number.
     required: true
+    type: str
   interface:
     description:
     - Full name of interface that is being managed for HSRP.
     required: true
+    type: str
   version:
     description:
     - HSRP version.
@@ -42,30 +44,36 @@ options:
     choices:
     - '1'
     - '2'
+    type: str
   priority:
     description:
     - HSRP priority or keyword 'default'.
+    type: str
   preempt:
     description:
     - Enable/Disable preempt.
     choices:
     - enabled
     - disabled
+    type: str
   vip:
     description:
     - HSRP virtual IP address or keyword 'default'
+    type: str
   auth_string:
     description:
     - Authentication string. If this needs to be hidden(for md5 type), the string
       should be 7 followed by the key string. Otherwise, it can be 0 followed by key
       string or just key string (for backward compatibility). For text type, this
       should be just be a key string. if this is 'default', authentication is removed.
+    type: str
   auth_type:
     description:
     - Authentication type.
     choices:
     - text
     - md5
+    type: str
   state:
     description:
     - Specify desired state of the resource.
@@ -73,6 +81,7 @@ options:
     - present
     - absent
     default: present
+    type: str
 """
 
 EXAMPLES = """

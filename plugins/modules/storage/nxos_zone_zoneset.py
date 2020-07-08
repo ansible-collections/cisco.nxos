@@ -21,6 +21,7 @@ options:
     description:
     - List of zone/zoneset details to be added or removed
     type: list
+    elements: dict
     suboptions:
       vsan:
         description:
@@ -50,6 +51,7 @@ options:
         description:
         - List of zone options for that vsan
         type: list
+        elements: dict
         suboptions:
           name:
             description:
@@ -65,6 +67,7 @@ options:
             description:
             - Members of the zone that needs to be removed or added
             type: list
+            elements: dict
             suboptions:
               pwwn:
                 description:
@@ -91,6 +94,7 @@ options:
         description:
         - List of zoneset options for the vsan
         type: list
+        elements: dict
         suboptions:
           name:
             description:
@@ -113,6 +117,7 @@ options:
             description:
             - Members of the zoneset that needs to be removed or added
             type: list
+            elements: dict
             suboptions:
               name:
                 description:

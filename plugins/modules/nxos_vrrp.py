@@ -43,30 +43,33 @@ options:
     description:
     - VRRP group number.
     required: true
+    type: str
   interface:
     description:
     - Full name of interface that is being managed for VRRP.
     required: true
+    type: str
   interval:
     description:
     - Time interval between advertisement or 'default' keyword
     required: false
-    default: 1
+    type: str
   priority:
     description:
     - VRRP priority or 'default' keyword
-    default: 100
+    type: str
   preempt:
     description:
     - Enable/Disable preempt.
     type: bool
-    default: yes
   vip:
     description:
     - VRRP virtual IP address or 'default' keyword
+    type: str
   authentication:
     description:
     - Clear text authentication string or 'default' keyword
+    type: str
   admin_state:
     description:
     - Used to enable or disable the VRRP process.
@@ -75,6 +78,7 @@ options:
     - no shutdown
     - default
     default: shutdown
+    type: str
   state:
     description:
     - Specify desired state of the resource.
@@ -82,6 +86,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

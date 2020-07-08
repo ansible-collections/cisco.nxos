@@ -45,6 +45,7 @@ options:
     description:
     - VTP domain name.
     required: true
+    type: str
 """
 
 EXAMPLES = """

@@ -39,6 +39,7 @@ options:
     description:
     - Name of the ospf instance.
     required: true
+    type: str
   state:
     description:
     - Determines whether the config should be present or not on the device.
@@ -47,6 +48,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 
 """
 

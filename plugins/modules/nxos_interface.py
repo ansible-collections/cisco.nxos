@@ -35,9 +35,9 @@ options:
   name:
     description:
     - Full name of interface, i.e. Ethernet1/1, port-channel10.
-    required: true
     aliases:
     - interface
+    type: str
   interface_type:
     description:
     - Interface type to be unconfigured from the device.
@@ -46,9 +46,11 @@ options:
     - portchannel
     - svi
     - nve
+    type: str
   speed:
     description:
     - Interface link speed. Applicable for ethernet interface only.
+    type: str
   admin_state:
     description:
     - Administrative state of the interface.
@@ -56,9 +58,11 @@ options:
     choices:
     - up
     - down
+    type: str
   description:
     description:
     - Interface description.
+    type: str
   mode:
     description:
     - Manage Layer 2 or Layer 3 state of the interface. This option is supported for
@@ -67,16 +71,19 @@ options:
     choices:
     - layer2
     - layer3
+    type: str
   mtu:
     description:
     - MTU for a specific interface. Must be an even number between 576 and 9216. Applicable
       for ethernet interface only.
+    type: str
   ip_forward:
     description:
     - Enable/Disable ip forward feature on SVIs.
     choices:
     - enable
     - disable
+    type: str
   fabric_forwarding_anycast_gateway:
     description:
     - Associate SVI with anycast gateway under VLAN configuration mode. Applicable
@@ -85,34 +92,146 @@ options:
   duplex:
     description:
     - Interface link status. Applicable for ethernet interface only.
-    default: auto
     choices:
     - full
     - half
     - auto
+    type: str
   tx_rate:
     description:
     - Transmit rate in bits per second (bps).
     - This is state check parameter only.
     - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+    type: str
   rx_rate:
     description:
     - Receiver rate in bits per second (bps).
     - This is state check parameter only.
     - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+    type: str
   neighbors:
     description:
     - Check the operational state of given interface C(name) for LLDP neighbor.
     - The following suboptions are available. This is state check parameter only.
+    type: list
+    elements: dict
     suboptions:
       host:
         description:
         - LLDP neighbor host for given interface C(name).
+        type: str
       port:
         description:
         - LLDP neighbor port to which given interface C(name) is connected.
+        type: str
   aggregate:
     description: List of Interfaces definitions.
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+        - Full name of interface, i.e. Ethernet1/1, port-channel10.
+        required: true
+        type: str
+      interface_type:
+        description:
+        - Interface type to be unconfigured from the device.
+        choices:
+        - loopback
+        - portchannel
+        - svi
+        - nve
+        type: str
+      speed:
+        description:
+        - Interface link speed. Applicable for ethernet interface only.
+        type: str
+      admin_state:
+        description:
+        - Administrative state of the interface.
+        choices:
+        - up
+        - down
+        type: str
+      description:
+        description:
+        - Interface description.
+        type: str
+      mode:
+        description:
+        - Manage Layer 2 or Layer 3 state of the interface. This option is supported for
+          ethernet and portchannel interface. Applicable for ethernet and portchannel
+          interface only.
+        choices:
+        - layer2
+        - layer3
+        type: str
+      mtu:
+        description:
+        - MTU for a specific interface. Must be an even number between 576 and 9216. Applicable
+          for ethernet interface only.
+        type: str
+      ip_forward:
+        description:
+        - Enable/Disable ip forward feature on SVIs.
+        choices:
+        - enable
+        - disable
+        type: str
+      fabric_forwarding_anycast_gateway:
+        description:
+        - Associate SVI with anycast gateway under VLAN configuration mode. Applicable
+          for SVI interface only.
+        type: bool
+      duplex:
+        description:
+        - Interface link status. Applicable for ethernet interface only.
+        choices:
+        - full
+        - half
+        - auto
+        type: str
+      tx_rate:
+        description:
+        - Transmit rate in bits per second (bps).
+        - This is state check parameter only.
+        - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+        type: str
+      rx_rate:
+        description:
+        - Receiver rate in bits per second (bps).
+        - This is state check parameter only.
+        - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+        type: str
+      neighbors:
+        description:
+        - Check the operational state of given interface C(name) for LLDP neighbor.
+        - The following suboptions are available. This is state check parameter only.
+        type: list
+        elements: dict
+        suboptions:
+          host:
+            description:
+            - LLDP neighbor host for given interface C(name).
+            type: str
+          port:
+            description:
+            - LLDP neighbor port to which given interface C(name) is connected.
+            type: str
+      state:
+        description:
+        - Specify desired state of the resource.
+        choices:
+        - present
+        - absent
+        - default
+        type: str
+      delay:
+        description:
+        - Time in seconds to wait before checking for the operational state on remote
+          device. This wait is applicable for operational state arguments.
+        type: int
   state:
     description:
     - Specify desired state of the resource.
@@ -121,11 +240,13 @@ options:
     - present
     - absent
     - default
+    type: str
   delay:
     description:
     - Time in seconds to wait before checking for the operational state on remote
       device. This wait is applicable for operational state arguments.
     default: 10
+    type: int
 
 
 """

@@ -38,6 +38,7 @@ options:
     description:
     - Name of the user.
     required: true
+    type: str
   group:
     description:
     - Group to which the user will belong to. If state = present, and the user is
@@ -46,18 +47,22 @@ options:
       is removed from the user entry. However, to maintain backward compatibility,
       if the existing user belongs to only one group, and if group argument is same
       as the existing user's group, then the user entry also is deleted.
+    type: str
   authentication:
     description:
     - Authentication parameters for the user.
     choices:
     - md5
     - sha
+    type: str
   pwd:
     description:
     - Authentication password when using md5 or sha. This is not idempotent
+    type: str
   privacy:
     description:
     - Privacy password for the user. This is not idempotent
+    type: str
   encrypt:
     description:
     - Enables AES-128 bit encryption when using privacy password.
@@ -69,6 +74,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

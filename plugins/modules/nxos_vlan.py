@@ -52,6 +52,7 @@ options:
     description:
     - List of interfaces that should be associated to the VLAN or keyword 'default'.
     type: list
+    elements: str
   associated_interfaces:
     description:
     - This is a intent option and checks the operational state of the for given vlan
@@ -59,6 +60,7 @@ options:
       does not match with the operational state of vlan interfaces on device it will
       result in failure.
     type: list
+    elements: str
   vlan_state:
     description:
     - Manage the vlan operational state of the VLAN
@@ -81,6 +83,77 @@ options:
     - The Virtual Network Identifier (VNI) ID that is mapped to the VLAN. Valid values
       are integer and keyword 'default'. Range 4096-16773119.
     type: str
+  aggregate:
+    description: List of VLANs definitions.
+    type: list
+    elements: dict
+    suboptions:
+      vlan_id:
+        description:
+        - Single VLAN ID.
+        required: True
+        type: int
+      vlan_range:
+        description:
+        - Range of VLANs such as 2-10 or 2,5,10-15, etc.
+        type: str
+      name:
+        description:
+        - Name of VLAN or keyword 'default'.
+        type: str
+      interfaces:
+        description:
+        - List of interfaces that should be associated to the VLAN or keyword 'default'.
+        type: list
+        elements: str
+      associated_interfaces:
+        description:
+        - This is a intent option and checks the operational state of the for given vlan
+          C(name) for associated interfaces. If the value in the C(associated_interfaces)
+          does not match with the operational state of vlan interfaces on device it will
+          result in failure.
+        type: list
+        elements: str
+      vlan_state:
+        description:
+        - Manage the vlan operational state of the VLAN
+        choices:
+        - active
+        - suspend
+        type: str
+      admin_state:
+        description:
+        - Manage the VLAN administrative state of the VLAN equivalent to shut/no shut
+          in VLAN config mode.
+        choices:
+        - up
+        - down
+        type: str
+      mapped_vni:
+        description:
+        - The Virtual Network Identifier (VNI) ID that is mapped to the VLAN. Valid values
+          are integer and keyword 'default'. Range 4096-16773119.
+        type: str
+      mode:
+        description:
+        - Set VLAN mode to classical ethernet or fabricpath. This is a valid option for
+          Nexus 5000 and 7000 series.
+        choices:
+        - ce
+        - fabricpath
+        type: str
+      delay:
+        description:
+          - Time in seconds to wait before checking for the operational state on remote
+            device. This wait is applicable for operational state arguments.
+        type: int
+      state:
+        description:
+        - Manage the state of the resource.
+        choices:
+        - present
+        - absent
+        type: str
   state:
     description:
     - Manage the state of the resource.
@@ -98,10 +171,6 @@ options:
     - fabricpath
     default: ce
     type: str
-  aggregate:
-    description: List of VLANs definitions.
-    type: list
-    elements: dict
   purge:
     description:
     - Purge VLANs not defined in the I(aggregate) parameter. This parameter can be
@@ -708,8 +777,8 @@ def main():
         vlan_id=dict(required=False, type="int"),
         vlan_range=dict(required=False),
         name=dict(required=False),
-        interfaces=dict(type="list"),
-        associated_interfaces=dict(type="list"),
+        interfaces=dict(type="list", elements="str"),
+        associated_interfaces=dict(type="list", elements="str"),
         vlan_state=dict(
             choices=["active", "suspend"], required=False, default="active"
         ),
@@ -723,7 +792,7 @@ def main():
     )
 
     aggregate_spec = deepcopy(element_spec)
-    aggregate_spec["vlan_id"] = dict(required=True)
+    aggregate_spec["vlan_id"] = dict(required=True, type="int")
 
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)

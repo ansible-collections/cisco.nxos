@@ -42,36 +42,86 @@ options:
   prefix:
     description:
     - Destination prefix of static route.
-    required: true
     aliases:
     - address
+    type: str
   next_hop:
     description:
     - Next hop address or interface of static route. If interface, it must be the
       fully-qualified interface name.
-    required: true
+    type: str
   vrf:
     description:
     - VRF for static route.
     default: default
+    type: str
   tag:
     description:
     - Route tag value (numeric) or keyword 'default'.
+    type: str
   route_name:
     description:
     - Name of the route or keyword 'default'. Used with the name parameter on the
       CLI.
+    type: str
   pref:
     description:
     - Preference or administrative difference of route (range 1-255) or keyword 'default'.
     aliases:
     - admin_distance
+    type: str
   aggregate:
     description: List of static route definitions
+    type: list
+    elements: dict
+    suboptions:
+      prefix:
+        description:
+        - Destination prefix of static route.
+        required: True
+        type: str
+      next_hop:
+        description:
+        - Next hop address or interface of static route. If interface, it must be the
+          fully-qualified interface name.
+        required: true
+        type: str
+      vrf:
+        description:
+        - VRF for static route.
+        type: str
+      tag:
+        description:
+        - Route tag value (numeric) or keyword 'default'.
+        type: str
+      route_name:
+        description:
+        - Name of the route or keyword 'default'. Used with the name parameter on the
+          CLI.
+        type: str
+      pref:
+        description:
+        - Preference or administrative difference of route (range 1-255) or keyword 'default'.
+        aliases:
+        - admin_distance
+        type: str
+      track:
+        description:
+        - Track value (range 1 - 512). Track must already be configured on the device
+          before adding the route.
+        type: int
+      state:
+        description:
+        - Manage the state of the resource.
+        choices:
+        - present
+        - absent
+        type: str
   track:
     description:
     - Track value (range 1 - 512). Track must already be configured on the device
       before adding the route.
+    type: int
   state:
     description:
     - Manage the state of the resource.
@@ -79,8 +129,7 @@ options:
     - present
     - absent
     default: present
-
-
+    type: str
 """
 
 EXAMPLES = """

@@ -50,6 +50,7 @@ options:
     description:
     - The full interface name for IGMP configuration. e.g. I(Ethernet1/2).
     required: true
+    type: str
   version:
     description:
     - IGMP version. It can be 2 or 3 or keyword 'default'.
@@ -57,45 +58,55 @@ options:
     - '2'
     - '3'
     - default
+    type: str
   startup_query_interval:
     description:
     - Query interval used when the IGMP process starts up. The range is from 1 to
       18000 or keyword 'default'. The default is 31.
+    type: str
   startup_query_count:
     description:
     - Query count used when the IGMP process starts up. The range is from 1 to 10
       or keyword 'default'. The default is 2.
+    type: str
   robustness:
     description:
     - Sets the robustness variable. Values can range from 1 to 7 or keyword 'default'.
       The default is 2.
+    type: str
   querier_timeout:
     description:
     - Sets the querier timeout that the software uses when deciding to take over as
       the querier. Values can range from 1 to 65535 seconds or keyword 'default'.
       The default is 255 seconds.
+    type: str
   query_mrt:
     description:
     - Sets the response time advertised in IGMP queries. Values can range from 1 to
       25 seconds or keyword 'default'. The default is 10 seconds.
+    type: str
   query_interval:
     description:
     - Sets the frequency at which the software sends IGMP host query messages. Values
       can range from 1 to 18000 seconds or keyword 'default'. The default is 125 seconds.
+    type: str
   last_member_qrt:
     description:
     - Sets the query interval waited after sending membership reports before the software
       deletes the group state. Values can range from 1 to 25 seconds or keyword 'default'.
       The default is 1 second.
+    type: str
   last_member_query_count:
     description:
     - Sets the number of times that the software sends an IGMP query in response to
       a host leave message. Values can range from 1 to 5 or keyword 'default'. The
       default is 2.
+    type: str
   group_timeout:
     description:
     - Sets the group membership timeout for IGMPv2. Values can range from 3 to 65,535
       seconds or keyword 'default'. The default is 260 seconds.
+    type: str
   report_llg:
     description:
     - Configures report-link-local-groups. Enables sending reports for groups in 224.0.0.0/24.
@@ -112,6 +123,7 @@ options:
   oif_routemap:
     description:
     - Configure a routemap for static outgoing interface (OIF) or keyword 'default'.
+    type: str
   oif_ps:
     description:
     - Configure prefixes and sources for static outgoing interface (OIF). This is
@@ -119,6 +131,7 @@ options:
       if source is not needed. The specified values will be configured on the device
       and if any previous prefix/sources exist, they will be removed. Keyword 'default'
       is also accepted which removes all existing prefix/sources.
+    type: raw
   restart:
     description:
     - Restart IGMP. This is NOT idempotent as this is action only.
@@ -132,6 +145,7 @@ options:
     - present
     - absent
     - default
+    type: str
 """
 EXAMPLES = """
 - cisco.nxos.nxos_igmp_interface:
@@ -495,7 +509,9 @@ def config_remove_oif(existing, existing_oif_prefix_source):
 def main():
     argument_spec = dict(
         interface=dict(required=True, type="str"),
-        version=dict(required=False, type="str"),
+        version=dict(
+            required=False, type="str", choices=["2", "3", "default"]
+        ),
         startup_query_interval=dict(required=False, type="str"),
         startup_query_count=dict(required=False, type="str"),
         robustness=dict(required=False, type="str"),
