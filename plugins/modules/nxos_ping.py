@@ -27,9 +27,9 @@ extends_documentation_fragment:
 short_description: Tests reachability using ping from Nexus switch.
 description:
 - Tests reachability using ping from switch to a remote destination.
-- For a general purpose network module, see the M(net_ping) module.
-- For Windows targets, use the M(win_ping) module instead.
-- For targets running Python, use the M(ping) module instead.
+- For a general purpose network module, see the M(ansible.netcommon.net_ping) module.
+- For Windows targets, use the M(ansible.windows.win_ping) module instead.
+- For targets running Python, use the M(ansible.builtin.ping) module instead.
 version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
@@ -57,9 +57,9 @@ options:
     - present
     default: present
 notes:
-- For a general purpose network module, see the M(net_ping) module.
-- For Windows targets, use the M(win_ping) module instead.
-- For targets running Python, use the M(ping) module instead.
+- For a general purpose network module, see the M(ansible.netcommon.net_ping) module.
+- For Windows targets, use the M(ansible.windows.win_ping) module instead.
+- For targets running Python, use the M(ansible.builtin.ping) module instead.
 """
 
 EXAMPLES = """

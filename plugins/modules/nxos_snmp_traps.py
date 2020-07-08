@@ -33,7 +33,7 @@ author:
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - This module works at the group level for traps.  If you need to only enable/disable
-  1 specific trap within a group, use the M(nxos_command) module.
+  1 specific trap within a group, use the M(cisco.nxos.nxos_command) module.
 - Be aware that you can set a trap only for an enabled feature.
 options:
   group:

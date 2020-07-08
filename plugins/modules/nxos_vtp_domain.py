@@ -36,10 +36,10 @@ notes:
 - This module is used to manage only VTP domain names.
 - VTP domain names are case-sensible.
 - If it's never been configured before, VTP version is set to 1 by default. Otherwise,
-  it leaves the previous configured version untouched. Use M(nxos_vtp_version) to
-  change it.
-- Use this in combination with M(nxos_vtp_password) and M(nxos_vtp_version) to fully
-  manage VTP operations.
+  it leaves the previous configured version untouched. Use M(cisco.nxos.nxos_vtp_version)
+  to change it.
+- Use this in combination with M(cisco.nxos.nxos_vtp_password) and M(cisco.nxos.nxos_vtp_version)
+  to fully manage VTP operations.
 options:
   domain:
     description:
