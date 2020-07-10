@@ -286,7 +286,7 @@ class Lag_interfaces(ConfigBase):
             commands.append("interface" + " " + d["member"])
             cmd = ""
             group_cmd = "channel-group {0}".format(name)
-            if "force" in d and d["force"]:
+            if d.get("force"):
                 cmd = group_cmd + " force "
             if "mode" in d:
                 if cmd:
