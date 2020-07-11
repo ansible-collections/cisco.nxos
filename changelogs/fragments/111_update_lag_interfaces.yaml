@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fixed force option in lag_interfaces.py (https://github.com/ansible-collections/cisco.nxos/pull/111).
