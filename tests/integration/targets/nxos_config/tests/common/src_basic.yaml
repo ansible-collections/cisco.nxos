@@ -33,4 +33,15 @@
       - result.changed == false
       - result.updates is not defined
 
+- name: Use src with module alias
+  register: result
+  cisco.nxos.config:
+    src: basic/config.j2
+
+- assert:
+    that:
+      # make sure that the template content was read and not the path
+      - "result.changed == false"
+      - "result.updates is not defined"
+
 - debug: msg="END common/src_basic.yaml on connection={{ ansible_connection }}"
