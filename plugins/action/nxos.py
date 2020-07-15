@@ -45,7 +45,9 @@ class ActionModule(ActionNetworkModule):
         del tmp  # tmp no longer has any effect
 
         module_name = self._task.action.split(".")[-1]
-        self._config_module = True if module_name == "nxos_config" else False
+        self._config_module = (
+            True if module_name in ["nxos_config", "config"] else False
+        )
         persistent_connection = self._play_context.connection.split(".")[-1]
         warnings = []
 
