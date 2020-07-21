@@ -517,13 +517,7 @@ def main():
         )
 
         if module.params["diff_against"] == "running":
-            if module.check_mode:
-                module.warn(
-                    "unable to perform diff against running-config due to check mode"
-                )
-                contents = None
-            else:
-                contents = config.config_text
+            contents = config.config_text
 
         elif module.params["diff_against"] == "startup":
             if not startup_config:
