@@ -36,12 +36,15 @@ options:
     description:
     - Configure the device hostname parameter. This option takes an ASCII string value
       or keyword 'default'
+    type: str
   domain_name:
     description:
     - Configures the default domain name suffix to be used when referencing this node
       by its FQDN.  This argument accepts either a list of domain names or a list
       of dicts that configure the domain name and VRF name or keyword 'default'. See
       examples.
+    type: list
+    elements: raw
   domain_lookup:
     description:
     - Enables or disables the DNS lookup feature in Cisco NXOS.  This argument accepts
@@ -54,14 +57,19 @@ options:
       resolution. This argument accepts either a list of domain names or a list of
       dicts that configure the domain name and VRF name or keyword 'default'. See
       examples.
+    type: list
+    elements: raw
   name_servers:
     description:
     - List of DNS name servers by IP address to use to perform name resolution lookups.  This
       argument accepts either a list of DNS servers or a list of hashes that configure
       the name server and VRF name or keyword 'default'. See examples.
+    type: list
+    elements: raw
   system_mtu:
     description:
     - Specifies the mtu, must be an integer or keyword 'default'.
+    type: str
   state:
     description:
     - State of the configuration values in the device's current active configuration.  When
@@ -71,6 +79,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """
@@ -356,11 +365,11 @@ def main():
         hostname=dict(),
         domain_lookup=dict(type="bool"),
         # { name: <str>, vrf: <str> }
-        domain_name=dict(type="list"),
+        domain_name=dict(type="list", elements="raw"),
         # {name: <str>, vrf: <str> }
-        domain_search=dict(type="list"),
+        domain_search=dict(type="list", elements="raw"),
         # { server: <str>; vrf: <str> }
-        name_servers=dict(type="list"),
+        name_servers=dict(type="list", elements="raw"),
         system_mtu=dict(type="str"),
         state=dict(default="present", choices=["present", "absent"]),
     )

@@ -39,14 +39,15 @@ options:
     description:
     - Contact information.
     required: true
+    type: str
   state:
     description:
     - Manage the state of the resource.
-    required: true
     default: present
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

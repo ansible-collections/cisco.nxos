@@ -47,9 +47,11 @@ options:
     choices:
     - radius
     - tacacs
+    type: str
   global_key:
     description:
     - Global AAA shared secret or keyword 'default'.
+    type: str
   encrypt_type:
     description:
     - The state of encryption applied to the entered global key. O clear text, 7 encrypted.
@@ -57,14 +59,17 @@ options:
     choices:
     - '0'
     - '7'
+    type: str
   deadtime:
     description:
     - Duration for which a non-reachable AAA server is skipped, in minutes or keyword
       'default. Range is 1-1440. Device default is 0.
+    type: str
   server_timeout:
     description:
     - Global AAA server timeout period, in seconds or keyword 'default. Range is 1-60.
       Device default is 5.
+    type: str
   directed_request:
     description:
     - Enables direct authentication requests to AAA server or keyword 'default' Device
@@ -72,6 +77,8 @@ options:
     choices:
     - enabled
     - disabled
+    - default
+    type: str
   state:
     description:
     - Manage the state of the resource.
@@ -79,6 +86,7 @@ options:
     choices:
     - present
     - default
+    type: str
 """
 
 EXAMPLES = """

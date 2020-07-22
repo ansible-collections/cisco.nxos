@@ -43,6 +43,7 @@ options:
     description:
     - If C(master=true), an optional stratum can be supplied (1-15). The device default
       is 8.
+    type: str
   logging:
     description:
     - Sets whether NTP logging is enabled on the device.
@@ -54,6 +55,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 # Basic NTP options configuration

@@ -52,10 +52,12 @@ options:
   seq:
     description:
     - Sequence number of the entry (ACE).
+    type: str
   name:
     description:
     - Case sensitive name of the access list (ACL).
     required: true
+    type: str
   action:
     description:
     - Action of the ACE.
@@ -63,15 +65,19 @@ options:
     - permit
     - deny
     - remark
+    type: str
   remark:
     description:
     - If action is set to remark, this is the description.
+    type: str
   proto:
     description:
     - Port number or protocol (as supported by the switch).
+    type: str
   src:
     description:
     - Source ip and mask using IP/MASK notation and supports keyword 'any'.
+    type: str
   src_port_op:
     description:
     - Source port operands such as eq, neq, gt, lt, range.
@@ -82,15 +88,19 @@ options:
     - lt
     - neq
     - range
+    type: str
   src_port1:
     description:
     - Port/protocol and also first (lower) port when using range operand.
+    type: str
   src_port2:
     description:
     - Second (end) port when using range operand.
+    type: str
   dest:
     description:
     - Destination ip and mask using IP/MASK notation and supports the keyword 'any'.
+    type: str
   dest_port_op:
     description:
     - Destination port operands such as eq, neq, gt, lt, range.
@@ -101,60 +111,73 @@ options:
     - lt
     - neq
     - range
+    type: str
   dest_port1:
     description:
     - Port/protocol and also first (lower) port when using range operand.
+    type: str
   dest_port2:
     description:
     - Second (end) port when using range operand.
+    type: str
   log:
     description:
     - Log matches against this entry.
     choices:
     - enable
+    type: str
   urg:
     description:
     - Match on the URG bit.
     choices:
     - enable
+    type: str
   ack:
     description:
     - Match on the ACK bit.
     choices:
     - enable
+    type: str
   psh:
     description:
     - Match on the PSH bit.
     choices:
     - enable
+    type: str
   rst:
     description:
     - Match on the RST bit.
     choices:
     - enable
+    type: str
   syn:
     description:
     - Match on the SYN bit.
     choices:
     - enable
+    type: str
   fin:
     description:
     - Match on the FIN bit.
     choices:
     - enable
+    type: str
   established:
     description:
     - Match established connections.
     choices:
     - enable
+    type: str
   fragments:
     description:
     - Check non-initial fragments.
     choices:
     - enable
+    type: str
   time_range:
     description:
     - Name of time-range to apply.
+    type: str
   precedence:
     description:
     - Match packets with given precedence.
@@ -167,6 +190,7 @@ options:
     - network
     - priority
     - routine
+    type: str
   dscp:
     description:
     - Match packets with given dscp value.
@@ -192,6 +216,7 @@ options:
     - cs7
     - default
     - ef
+    type: str
   state:
     description:
     - Specify desired state of the resource.
@@ -200,6 +225,7 @@ options:
     - present
     - absent
     - delete_acl
+    type: str
 
 
 """
@@ -424,11 +450,15 @@ def main():
         remark=dict(required=False, type="str"),
         proto=dict(required=False, type="str"),
         src=dict(required=False, type="str"),
-        src_port_op=dict(required=False),
+        src_port_op=dict(
+            required=False, choices=["any", "eq", "gt", "lt", "neq", "range"]
+        ),
         src_port1=dict(required=False, type="str"),
         src_port2=dict(required=False, type="str"),
         dest=dict(required=False, type="str"),
-        dest_port_op=dict(required=False),
+        dest_port_op=dict(
+            required=False, choices=["any", "eq", "gt", "lt", "neq", "range"]
+        ),
         dest_port1=dict(required=False, type="str"),
         dest_port2=dict(required=False, type="str"),
         log=dict(required=False, choices=["enable"]),

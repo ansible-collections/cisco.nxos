@@ -39,17 +39,21 @@ options:
     - Name of the resource instance. Valid value is a string. The name 'default' is
       a valid VRF representing the global OSPF.
     default: default
+    type: str
   ospf:
     description:
     - Name of the OSPF instance.
     required: true
+    type: str
   router_id:
     description:
     - Router Identifier (ID) of the OSPF router VRF instance.
+    type: str
   default_metric:
     description:
     - Specify the default Metric value. Valid values are an integer or the keyword
       'default'.
+    type: str
   log_adjacency:
     description:
     - Controls the level of log messages generated whenever a neighbor changes state.
@@ -58,34 +62,42 @@ options:
     - log
     - detail
     - default
+    type: str
   timer_throttle_lsa_start:
     description:
     - Specify the start interval for rate-limiting Link-State Advertisement (LSA)
       generation. Valid values are an integer, in milliseconds, or the keyword 'default'.
+    type: str
   timer_throttle_lsa_hold:
     description:
     - Specify the hold interval for rate-limiting Link-State Advertisement (LSA) generation.
       Valid values are an integer, in milliseconds, or the keyword 'default'.
+    type: str
   timer_throttle_lsa_max:
     description:
     - Specify the max interval for rate-limiting Link-State Advertisement (LSA) generation.
       Valid values are an integer, in milliseconds, or the keyword 'default'.
+    type: str
   timer_throttle_spf_start:
     description:
     - Specify initial Shortest Path First (SPF) schedule delay. Valid values are an
       integer, in milliseconds, or the keyword 'default'.
+    type: str
   timer_throttle_spf_hold:
     description:
     - Specify minimum hold time between Shortest Path First (SPF) calculations. Valid
       values are an integer, in milliseconds, or the keyword 'default'.
+    type: str
   timer_throttle_spf_max:
     description:
     - Specify the maximum wait time between Shortest Path First (SPF) calculations.
       Valid values are an integer, in milliseconds, or the keyword 'default'.
+    type: str
   auto_cost:
     description:
     - Specifies the reference bandwidth used to assign OSPF cost. Valid values are
       an integer, in Mbps, or the keyword 'default'.
+    type: str
   bfd:
     description:
     - Enables BFD on all OSPF interfaces.
@@ -105,6 +117,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

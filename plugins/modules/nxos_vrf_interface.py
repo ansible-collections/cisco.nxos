@@ -42,10 +42,12 @@ options:
     description:
     - Name of VRF to be managed.
     required: true
+    type: str
   interface:
     description:
     - Full name of interface to be managed, i.e. Ethernet1/1.
     required: true
+    type: str
   state:
     description:
     - Manages desired state of the resource.
@@ -54,6 +56,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

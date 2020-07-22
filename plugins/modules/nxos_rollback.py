@@ -39,9 +39,11 @@ options:
   checkpoint_file:
     description:
     - Name of checkpoint file to create. Mutually exclusive with rollback_to.
+    type: str
   rollback_to:
     description:
     - Name of checkpoint file to rollback to. Mutually exclusive with checkpoint_file.
+    type:  str
 """
 
 EXAMPLES = """

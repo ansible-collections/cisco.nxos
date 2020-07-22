@@ -41,13 +41,16 @@ options:
     choices:
     - radius
     - tacacs
+    type: str
   address:
     description:
     - Address or name of the radius or tacacs host.
     required: true
+    type: str
   key:
     description:
     - Shared secret for the specified host or keyword 'default'.
+    type: str
   encrypt_type:
     description:
     - The state of encryption applied to the entered key. O for clear text, 7 for
@@ -55,19 +58,24 @@ options:
     choices:
     - '0'
     - '7'
+    type: str
   host_timeout:
     description:
     - Timeout period for specified host, in seconds or keyword 'default. Range is
       1-60.
+    type: str
   auth_port:
     description:
     - Alternate UDP port for RADIUS authentication or keyword 'default'.
+    type: str
   acct_port:
     description:
     - Alternate UDP port for RADIUS accounting or keyword 'default'.
+    type: str
   tacacs_port:
     description:
     - Alternate TCP port TACACS Server or keyword 'default'.
+    type: str
   state:
     description:
     - Manage the state of the resource.
@@ -75,6 +83,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 # Radius Server Host Basic settings

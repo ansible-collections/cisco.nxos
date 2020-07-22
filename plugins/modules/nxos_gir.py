@@ -59,6 +59,7 @@ options:
     description:
     - Keeps the switch in maintenance mode for a specified number of minutes. Range
       is 5-65535.
+    type: str
   system_mode_maintenance_shutdown:
     description:
     - Shuts down all protocols, vPC domains, and interfaces except the management
@@ -83,14 +84,15 @@ options:
     - manual_reload
     - any_other
     - maintenance
+    type: str
   state:
     description:
     - Specify desired state of the resource.
-    required: true
     default: present
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """
@@ -311,9 +313,7 @@ def main():
             ],
         ),
         state=dict(
-            choices=["absent", "present", "default"],
-            default="present",
-            required=False,
+            choices=["absent", "present"], default="present", required=False
         ),
     )
 

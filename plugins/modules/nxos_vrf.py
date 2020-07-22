@@ -45,9 +45,9 @@ options:
   name:
     description:
     - Name of VRF to be managed.
-    required: true
     aliases:
     - vrf
+    type: str
   admin_state:
     description:
     - Administrative state of the VRF.
@@ -55,25 +55,87 @@ options:
     choices:
     - up
     - down
+    type: str
   vni:
     description:
     - Specify virtual network identifier. Valid values are Integer or keyword 'default'.
+    type: str
   rd:
     description:
     - VPN Route Distinguisher (RD). Valid values are a string in one of the route-distinguisher
       formats (ASN2:NN, ASN4:NN, or IPV4:NN); the keyword 'auto', or the keyword 'default'.
+    type: str
   interfaces:
     description:
     - List of interfaces to check the VRF has been configured correctly or keyword
       'default'.
+    type: list
+    elements: str
   associated_interfaces:
     description:
     - This is a intent option and checks the operational state of the for given vrf
       C(name) for associated interfaces. If the value in the C(associated_interfaces)
       does not match with the operational state of vrf interfaces on device it will
       result in failure.
+    type: list
+    elements: str
   aggregate:
     description: List of VRFs definitions.
+    type: list
+    elements: dict
+    suboptions:
+      name:
+        description:
+        - Name of VRF to be managed.
+        aliases:
+        - vrf
+        type: str
+      admin_state:
+        description:
+        - Administrative state of the VRF.
+        choices:
+        - up
+        - down
+        type: str
+      vni:
+        description:
+        - Specify virtual network identifier. Valid values are Integer or keyword 'default'.
+        type: str
+      rd:
+        description:
+        - VPN Route Distinguisher (RD). Valid values are a string in one of the route-distinguisher
+          formats (ASN2:NN, ASN4:NN, or IPV4:NN); the keyword 'auto', or the keyword 'default'.
+        type: str
+      interfaces:
+        description:
+        - List of interfaces to check the VRF has been configured correctly or keyword
+          'default'.
+        type: list
+        elements: str
+      associated_interfaces:
+        description:
+        - This is a intent option and checks the operational state of the for given vrf
+          C(name) for associated interfaces. If the value in the C(associated_interfaces)
+          does not match with the operational state of vrf interfaces on device it will
+          result in failure.
+        type: list
+        elements: str
+      state:
+        description:
+        - Manages desired state of the resource.
+        choices:
+        - present
+        - absent
+        type: str
+      description:
+        description:
+        - Description of the VRF or keyword 'default'.
+        type: str
+      delay:
+        description:
+        - Time in seconds to wait before checking for the operational state on remote
+          device. This wait is applicable for operational state arguments.
+        type: int
   purge:
     description:
     - Purge VRFs not defined in the I(aggregate) parameter.
@@ -86,14 +148,17 @@ options:
     choices:
     - present
     - absent
+    type: str
   description:
     description:
     - Description of the VRF or keyword 'default'.
+    type: str
   delay:
     description:
     - Time in seconds to wait before checking for the operational state on remote
       device. This wait is applicable for operational state arguments.
     default: 10
+    type: int
 """
 
 EXAMPLES = """
@@ -521,8 +586,8 @@ def main():
         vni=dict(type="str"),
         rd=dict(type="str"),
         admin_state=dict(type="str", default="up", choices=["up", "down"]),
-        interfaces=dict(type="list"),
-        associated_interfaces=dict(type="list"),
+        interfaces=dict(type="list", elements="str"),
+        associated_interfaces=dict(type="list", elements="str"),
         delay=dict(type="int", default=10),
         state=dict(
             type="str", default="present", choices=["present", "absent"]

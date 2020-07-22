@@ -106,6 +106,7 @@ options:
     type: str
     choices:
     - present
+    - absent
     - default
     default: present
 """

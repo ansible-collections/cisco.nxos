@@ -39,18 +39,22 @@ options:
     - BGP autonomous system number. Valid values are string, Integer in ASPLAIN or
       ASDOT notation.
     required: true
+    type: str
   vrf:
     description:
     - Name of the VRF. The name 'default' is a valid VRF representing the global bgp.
     default: default
+    type: str
   neighbor:
     description:
     - Neighbor Identifier. Valid values are string. Neighbors may use IPv4 or IPv6
       notation, with or without prefix length.
     required: true
+    type: str
   description:
     description:
     - Description of the neighbor.
+    type: str
   bfd:
     description:
     - Enables/Disables BFD for a given neighbor.
@@ -75,11 +79,13 @@ options:
     description:
     - Specify multihop TTL for a remote peer. Valid values are integers between 2
       and 255, or keyword 'default' to disable this property.
+    type: str
   local_as:
     description:
     - Specify the local-as number for the eBGP neighbor. Valid values are String or
       Integer in ASPLAIN or ASDOT notation, or 'default', which means not to configure
       it.
+    type: str
   log_neighbor_changes:
     description:
     - Specify whether or not to enable log messages for neighbor up/down event.
@@ -87,6 +93,7 @@ options:
     - enable
     - disable
     - inherit
+    type: str
   low_memory_exempt:
     description:
     - Specify whether or not to shut down this neighbor under memory pressure.
@@ -96,9 +103,11 @@ options:
     - Specify Maximum number of peers for this neighbor prefix Valid values are between
       1 and 1000, or 'default', which does not impose the limit. Note that this parameter
       is accepted only on neighbors with address/prefix.
+    type: str
   pwd:
     description:
     - Specify the password for neighbor. Valid value is string.
+    type: str
   pwd_type:
     description:
     - Specify the encryption type the password will use. Valid values are '3des' or
@@ -107,11 +116,13 @@ options:
     - 3des
     - cisco_type_7
     - default
+    type: str
   remote_as:
     description:
     - Specify Autonomous System Number of the neighbor. Valid values are String or
       Integer in ASPLAIN or ASDOT notation, or 'default', which means not to configure
       it.
+    type: str
   remove_private_as:
     description:
     - Specify the config to remove private AS number from outbound updates. Valid
@@ -123,6 +134,7 @@ options:
     - disable
     - all
     - replace-as
+    type: str
   shutdown:
     description:
     - Configure to administratively shutdown this neighbor.
@@ -135,10 +147,12 @@ options:
     description:
     - Specify keepalive timer value. Valid values are integers between 0 and 3600
       in terms of seconds, or 'default', which is 60.
+    type: str
   timers_holdtime:
     description:
     - Specify holdtime timer value. Valid values are integers between 0 and 3600 in
       terms of seconds, or 'default', which is 180.
+    type: str
   transport_passive_only:
     description:
     - Specify whether or not to only allow passive connection setup. Valid values
@@ -149,6 +163,7 @@ options:
   update_source:
     description:
     - Specify source interface of BGP session and updates.
+    type: str
   state:
     description:
     - Determines whether the config should be present or not on the device.
@@ -156,6 +171,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 # create a new neighbor

@@ -41,15 +41,18 @@ options:
     - BGP autonomous system number. Valid values are String, Integer in ASPLAIN or
       ASDOT notation.
     required: true
+    type: str
   vrf:
     description:
     - Name of the VRF. The name 'default' is a valid VRF representing the global bgp.
     default: default
+    type: str
   neighbor:
     description:
     - Neighbor Identifier. Valid values are string. Neighbors may use IPv4 or IPv6
       notation, with or without prefix length.
     required: true
+    type: str
   afi:
     description:
     - Address Family Identifier.
@@ -60,6 +63,7 @@ options:
     - vpnv4
     - vpnv6
     - l2vpn
+    type: str
   safi:
     description:
     - Sub Address Family Identifier.
@@ -68,6 +72,7 @@ options:
     - unicast
     - multicast
     - evpn
+    type: str
   additional_paths_receive:
     description:
     - Valid values are enable for basic command enablement; disable for disabling
@@ -78,6 +83,7 @@ options:
     - enable
     - disable
     - inherit
+    type: str
   additional_paths_send:
     description:
     - Valid values are enable for basic command enablement; disable for disabling
@@ -88,12 +94,15 @@ options:
     - enable
     - disable
     - inherit
+    type: str
   advertise_map_exist:
     description:
     - Conditional route advertisement. This property requires two route maps, an advertise-map
       and an exist-map. Valid values are an array specifying both the advertise-map
       name and the exist-map name, or simply 'default' e.g. ['my_advertise_map', 'my_exist_map'].
       This command is mutually exclusive with the advertise_map_non_exist property.
+    type: list
+    elements: str
   advertise_map_non_exist:
     description:
     - Conditional route advertisement. This property requires two route maps, an advertise-map
@@ -101,6 +110,8 @@ options:
       name and the non-exist-map name, or simply 'default' e.g. ['my_advertise_map',
       'my_non_exist_map']. This command is mutually exclusive with the advertise_map_exist
       property.
+    type: list
+    elements: str
   allowas_in:
     description:
     - Activate allowas-in property
@@ -109,6 +120,7 @@ options:
     description:
     - Max-occurrences value for allowas_in. Valid values are an integer value or 'default'.
       This is mutually exclusive with allowas_in.
+    type: str
   as_override:
     description:
     - Activate the as-override feature.
@@ -121,6 +133,7 @@ options:
     description:
     - Route-map for the default_originate property. Valid values are a string defining
       a route-map name, or 'default'. This is mutually exclusive with default_originate.
+    type: str
   disable_peer_as_check:
     description:
     - Disable checking of peer AS-number while advertising
@@ -128,20 +141,25 @@ options:
   filter_list_in:
     description:
     - Valid values are a string defining a filter-list name, or 'default'.
+    type: str
   filter_list_out:
     description:
     - Valid values are a string defining a filter-list name, or 'default'.
+    type: str
   max_prefix_limit:
     description:
     - maximum-prefix limit value. Valid values are an integer value or 'default'.
+    type: str
   max_prefix_interval:
     description:
     - Optional restart interval. Valid values are an integer. Requires max_prefix_limit.
       May not be combined with max_prefix_warning.
+    type: str
   max_prefix_threshold:
     description:
     - Optional threshold percentage at which to generate a warning. Valid values are
       an integer value. Requires max_prefix_limit.
+    type: str
   max_prefix_warning:
     description:
     - Optional warning-only keyword. Requires max_prefix_limit. May not be combined
@@ -158,15 +176,19 @@ options:
   prefix_list_in:
     description:
     - Valid values are a string defining a prefix-list name, or 'default'.
+    type: str
   prefix_list_out:
     description:
     - Valid values are a string defining a prefix-list name, or 'default'.
+    type: str
   route_map_in:
     description:
     - Valid values are a string defining a route-map name, or 'default'.
+    type: str
   route_map_out:
     description:
     - Valid values are a string defining a route-map name, or 'default'.
+    type: str
   route_reflector_client:
     description:
     - Router reflector client.
@@ -180,6 +202,7 @@ options:
     - extended
     - standard
     - default
+    type: str
   soft_reconfiguration_in:
     description:
     - Valid values are 'enable' for basic command enablement; 'always' to add the
@@ -189,9 +212,11 @@ options:
     - enable
     - always
     - inherit
+    type: str
   soo:
     description:
     - Site-of-origin. Valid values are a string defining a VPN extcommunity or 'default'.
+    type: str
   suppress_inactive:
     description:
     - suppress-inactive feature.
@@ -199,9 +224,11 @@ options:
   unsuppress_map:
     description:
     - unsuppress-map. Valid values are a string defining a route-map name or 'default'.
+    type: str
   weight:
     description:
     - Weight value. Valid values are an integer value or 'default'.
+    type: str
   state:
     description:
     - Determines whether the config should be present or not on the device.
@@ -209,6 +236,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 - name: configure RR client
@@ -628,8 +656,14 @@ def main():
         asn=dict(required=True, type="str"),
         vrf=dict(required=False, type="str", default="default"),
         neighbor=dict(required=True, type="str"),
-        afi=dict(required=True, type="str"),
-        safi=dict(required=True, type="str"),
+        afi=dict(
+            required=True,
+            type="str",
+            choices=["ipv4", "ipv6", "vpnv4", "vpnv6", "l2vpn"],
+        ),
+        safi=dict(
+            required=True, type="str", choices=["unicast", "multicast", "evpn"]
+        ),
         additional_paths_receive=dict(
             required=False,
             type="str",
@@ -640,8 +674,10 @@ def main():
             type="str",
             choices=["enable", "disable", "inherit"],
         ),
-        advertise_map_exist=dict(required=False, type="list"),
-        advertise_map_non_exist=dict(required=False, type="list"),
+        advertise_map_exist=dict(required=False, type="list", elements="str"),
+        advertise_map_non_exist=dict(
+            required=False, type="list", elements="str"
+        ),
         allowas_in=dict(required=False, type="bool"),
         allowas_in_max=dict(required=False, type="str"),
         as_override=dict(required=False, type="bool"),

@@ -41,9 +41,11 @@ options:
     description:
     - Interface name for the VXLAN Network Virtualization Endpoint.
     required: true
+    type: str
   description:
     description:
     - Description of the NVE interface.
+    type: str
   host_reachability:
     description:
     - Specify mechanism for host reachability advertisement.
@@ -55,17 +57,21 @@ options:
   source_interface:
     description:
     - Specify the loopback interface whose IP address should be used for the NVE interface.
+    type: str
   source_interface_hold_down_time:
     description:
     - Suppresses advertisement of the NVE loopback address until the overlay has converged.
+    type: str
   global_mcast_group_L3:
     description:
     - Global multicast ip prefix for L3 VNIs or the keyword 'default' This is available
       on NX-OS 9K series running 9.2.x or higher.
+    type: str
   global_mcast_group_L2:
     description:
     - Global multicast ip prefix for L2 VNIs or the keyword 'default' This is available
       on NX-OS 9K series running 9.2.x or higher.
+    type: str
   global_suppress_arp:
     description:
     - Enables ARP suppression for all VNIs This is available on NX-OS 9K series running
@@ -83,6 +89,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 - cisco.nxos.nxos_vxlan_vtep:

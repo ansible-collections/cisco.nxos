@@ -38,10 +38,13 @@ options:
     description:
     - Name of the remote package.
     required: true
+    type: str
   file_system:
     description:
     - The remote file system of the device. If omitted, devices that support a file_system
       parameter will use their default values.
+    default: 'bootflash:'
+    type: str
 """
 
 EXAMPLES = """

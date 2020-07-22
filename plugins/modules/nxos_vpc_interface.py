@@ -43,9 +43,11 @@ options:
     description:
     - Group number of the portchannel that will be configured.
     required: true
+    type: str
   vpc:
     description:
     - VPC group/id that will be configured on associated portchannel.
+    type: str
   peer_link:
     description:
     - Set to true/false for peer link config on associated portchannel.
@@ -53,11 +55,11 @@ options:
   state:
     description:
     - Manages desired state of the resource.
-    required: true
     choices:
     - present
     - absent
     default: present
+    type: str
 """
 
 EXAMPLES = """

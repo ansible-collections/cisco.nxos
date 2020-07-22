@@ -21,6 +21,7 @@ options:
     description:
     - List of vsan details to be added or removed
     type: list
+    elements: dict
     suboptions:
       id:
         description:
@@ -45,6 +46,7 @@ options:
         description:
         - List of vsan's interfaces to be added
         type: list
+        elements: str
 """
 
 EXAMPLES = """

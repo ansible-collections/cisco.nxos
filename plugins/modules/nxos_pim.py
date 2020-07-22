@@ -45,7 +45,8 @@ options:
       all SSM group ranges. C(default) will set ssm_range to the default multicast
       address. If you set multicast address, please ensure that it is not the same
       as the C(default), otherwise use the C(default) option.
-    required: true
+    type: list
+    elements: str
 """
 EXAMPLES = """
 - name: Configure ssm_range, enable bfd
@@ -154,7 +155,9 @@ def get_commands(module, existing, proposed, candidate):
 def main():
     argument_spec = dict(
         bfd=dict(required=False, type="str", choices=["enable", "disable"]),
-        ssm_range=dict(required=False, type="list", default=[]),
+        ssm_range=dict(
+            required=False, type="list", default=[], elements="str"
+        ),
     )
 
     argument_spec.update(nxos_argument_spec)

@@ -52,6 +52,7 @@ options:
   config:
     description: A list of link aggregation group configurations.
     type: list
+    elements: dict
     suboptions:
       name:
         description:
@@ -62,6 +63,7 @@ options:
         description:
         - The list of interfaces that are part of the group.
         type: list
+        elements: dict
         suboptions:
           member:
             description:
@@ -72,9 +74,9 @@ options:
             - Link aggregation group (LAG).
             type: str
             choices:
-            - active
-            - true
-            - passive
+            - 'active'
+            - 'on'
+            - 'passive'
           force:
             description:
             - When true it forces link aggregation group members to match what is

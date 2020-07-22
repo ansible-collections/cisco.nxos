@@ -41,15 +41,18 @@ options:
     description:
     - Name of this cisco_interface resource. Valid value is a string.
     required: true
+    type: str
   ospf:
     description:
     - Name of the ospf instance.
     required: true
+    type: str
   area:
     description:
     - Ospf area associated with this cisco_interface_ospf instance. Valid values are
       a string, formatted as an IP address (i.e. "0.0.0.0") or as an integer.
     required: true
+    type: str
   bfd:
     description:
     - Enables bfd at interface level. This overrides the bfd variable set at the ospf
@@ -64,14 +67,17 @@ options:
   cost:
     description:
     - The cost associated with this cisco_interface_ospf instance.
+    type: str
   hello_interval:
     description:
     - Time between sending successive hello packets. Valid values are an integer or
       the keyword 'default'.
+    type: str
   dead_interval:
     description:
     - Time interval an ospf neighbor waits for a hello packet before tearing down
       adjacencies. Valid values are an integer or the keyword 'default'.
+    type: str
   passive_interface:
     description:
     - Enable or disable passive-interface state on this interface. true - (enable)
@@ -86,6 +92,7 @@ options:
     choices:
     - point-to-point
     - broadcast
+    type: str
   message_digest:
     description:
     - Enables or disables the usage of message digest authentication.
@@ -95,6 +102,7 @@ options:
     - Md5 authentication key-id associated with the ospf instance. If this is present,
       message_digest_encryption_type, message_digest_algorithm_type and message_digest_password
       are mandatory. Valid value is an integer and 'default'.
+    type: str
   message_digest_algorithm_type:
     description:
     - Algorithm used for authentication among neighboring routers within an area.
@@ -102,6 +110,7 @@ options:
     choices:
     - md5
     - default
+    type: str
   message_digest_encryption_type:
     description:
     - Specifies the scheme used for encrypting message_digest_password. Valid values
@@ -110,9 +119,11 @@ options:
     - cisco_type_7
     - 3des
     - default
+    type: str
   message_digest_password:
     description:
     - Specifies the message_digest password. Valid value is a string.
+    type: str
   state:
     description:
     - Determines whether the config should be present or not on the device.
@@ -120,6 +131,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 - cisco.nxos.nxos_interface_ospf:

@@ -36,16 +36,15 @@ options:
   group:
     description:
     - Channel-group number for the port-channel Link aggregation group.
-    required: true
     type: str
   mode:
     description:
     - Mode for the link aggregation group.
     choices:
-    - active
-    - on
-    - passive
-    default: on
+    - 'active'
+    - 'on'
+    - 'passive'
+    default: 'on'
     type: str
   min_links:
     description:
@@ -56,6 +55,7 @@ options:
     description:
     - List of interfaces that will be managed in the link aggregation group.
     type: list
+    elements: str
   force:
     description:
     - When true it forces link aggregation group members to match what is declared
@@ -65,6 +65,44 @@ options:
   aggregate:
     description: List of link aggregation definitions.
     type: list
+    elements: dict
+    suboptions:
+      group:
+        description:
+        - Channel-group number for the port-channel Link aggregation group.
+        type: str
+        required: True
+      mode:
+        description:
+        - Mode for the link aggregation group.
+        choices:
+        - 'active'
+        - 'on'
+        - 'passive'
+        type: str
+      min_links:
+        description:
+        - Minimum number of ports required up before bringing up the link aggregation
+          group.
+        type: int
+      members:
+        description:
+        - List of interfaces that will be managed in the link aggregation group.
+        type: list
+        elements: str
+      force:
+        description:
+        - When true it forces link aggregation group members to match what is declared
+          in the members param. This can be used to remove members.
+        type: bool
+        default: no
+      state:
+        description:
+        - State of the link aggregation group.
+        choices:
+        - present
+        - absent
+        type: str
   state:
     description:
     - State of the link aggregation group.
@@ -78,8 +116,6 @@ options:
     - Purge links not defined in the I(aggregate) parameter.
     type: bool
     default: no
-
-
 """
 
 EXAMPLES = """
@@ -460,7 +496,9 @@ def main():
             type="str",
         ),
         min_links=dict(required=False, default=None, type="int"),
-        members=dict(required=False, default=None, type="list"),
+        members=dict(
+            required=False, default=None, type="list", elements="str"
+        ),
         force=dict(required=False, default=False, type="bool"),
         state=dict(
             required=False, choices=["absent", "present"], default="present"

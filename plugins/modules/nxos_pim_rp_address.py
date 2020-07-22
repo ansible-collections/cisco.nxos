@@ -39,15 +39,19 @@ options:
     - Configures a Protocol Independent Multicast (PIM) static rendezvous point (RP)
       address. Valid values are unicast addresses.
     required: true
+    type: str
   group_list:
     description:
     - Group range for static RP. Valid values are multicast addresses.
+    type: str
   prefix_list:
     description:
     - Prefix list policy for static RP. Valid values are prefix-list policy names.
+    type: str
   route_map:
     description:
     - Route map policy for static RP. Valid values are route-map policy names.
+    type: str
   bidir:
     description:
     - Group range is treated in PIM bidirectional mode.
@@ -55,12 +59,11 @@ options:
   state:
     description:
     - Specify desired state of the resource.
-    required: true
     default: present
     choices:
     - present
     - absent
-    - default
+    type: str
 """
 EXAMPLES = """
 - cisco.nxos.nxos_pim_rp_address:

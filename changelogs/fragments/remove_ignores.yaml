@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Makes sure that docstring and argspec are in sync and removes sanity ignores (https://github.com/ansible-collections/cisco.nxos/pull/112).

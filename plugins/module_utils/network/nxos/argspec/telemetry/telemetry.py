@@ -70,6 +70,7 @@ class TelemetryArgs(object):  # pylint: disable=R0903
                         "id": {"type": "int"},
                     },
                     "type": "list",
+                    "elements": "raw",
                 },
                 "sensor_groups": {
                     "options": {
@@ -89,6 +90,7 @@ class TelemetryArgs(object):  # pylint: disable=R0903
                         },
                     },
                     "type": "list",
+                    "elements": "raw",
                 },
                 "subscriptions": {
                     "options": {
@@ -103,6 +105,7 @@ class TelemetryArgs(object):  # pylint: disable=R0903
                         },
                     },
                     "type": "list",
+                    "elements": "raw",
                 },
             },
             "type": "dict",

@@ -40,9 +40,11 @@ options:
     choices:
     - enabled
     - disabled
+    type: str
   msg_time:
     description:
     - Message time in seconds for UDLD packets or keyword 'default'.
+    type: str
   reset:
     description:
     - Ability to reset all ports shut down by UDLD. 'state' parameter cannot be 'absent'
@@ -57,6 +59,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 EXAMPLES = """
 # ensure udld aggressive mode is globally disabled and se global message interval is 20

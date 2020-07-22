@@ -38,9 +38,11 @@ options:
   key_id:
     description:
     - Authentication key identifier (numeric).
+    type: str
   md5string:
     description:
     - MD5 String.
+    type: str
   auth_type:
     description:
     - Whether the given md5string is in cleartext or has been encrypted. If in cleartext,
@@ -49,6 +51,7 @@ options:
     choices:
     - text
     - encrypt
+    type: str
   trusted_key:
     description:
     - Whether the given key is required to be supplied by a time source for the device
@@ -57,12 +60,14 @@ options:
     - 'false'
     - 'true'
     default: 'false'
+    type: str
   authentication:
     description:
     - Turns NTP authentication on or off.
     choices:
     - "on"
     - "off"
+    type: str
   state:
     description:
     - Manage the state of the resource.
@@ -70,6 +75,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

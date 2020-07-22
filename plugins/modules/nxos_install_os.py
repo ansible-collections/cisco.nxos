@@ -51,9 +51,11 @@ options:
     description:
     - Name of the system (or combined) image file on flash.
     required: true
+    type: str
   kickstart_image_file:
     description:
     - Name of the kickstart image file on flash. (Not required on all Nexus platforms)
+    type: str
   issu:
     description:
     - Upgrade using In Service Software Upgrade (ISSU). (Supported on N5k, N7k, N9k
@@ -68,7 +70,8 @@ options:
     - "desired"
     - "yes"
     - "no"
-    default: no
+    default: "no"
+    type: str
 """
 
 EXAMPLES = """

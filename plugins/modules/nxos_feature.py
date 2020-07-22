@@ -36,6 +36,7 @@ options:
     description:
     - Name of feature.
     required: true
+    type: str
   state:
     description:
     - Desired state of the feature.
@@ -44,6 +45,7 @@ options:
     choices:
     - enabled
     - disabled
+    type: str
 """
 
 EXAMPLES = """

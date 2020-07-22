@@ -21,30 +21,37 @@ options:
   server:
     description:
     - Network address of NTP server.
+    type: str
   peer:
     description:
     - Network address of NTP peer.
+    type: str
   key_id:
     description:
     - Authentication key identifier to use with given NTP server or peer or keyword
       'default'.
+    type: str
   prefer:
     description:
     - Makes given NTP server or peer the preferred NTP server or peer for the device.
     choices:
     - enabled
     - disabled
+    type: str
   vrf_name:
     description:
     - Makes the device communicate with the given NTP server or peer over a specific
       VRF or keyword 'default'.
+    type: str
   source_addr:
     description:
-    - Local source address from which NTP messages are sent or keyword 'default'
+    - Local source address from which NTP messages are sent or keyword 'default'.
+    type: str
   source_int:
     description:
     - Local source interface from which NTP messages are sent. Must be fully qualified
       interface name or keyword 'default'
+    type: str
   state:
     description:
     - Manage the state of the resource.
@@ -52,6 +59,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 """
 
 EXAMPLES = """

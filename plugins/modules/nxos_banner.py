@@ -39,10 +39,12 @@ options:
     choices:
     - exec
     - motd
+    type: str
   text:
     description:
     - The banner text that should be present in the remote device running configuration.
       This argument accepts a multiline string, with no empty lines. Requires I(state=present).
+    type: str
   state:
     description:
     - Specifies whether or not the configuration is present in the current devices
@@ -51,6 +53,7 @@ options:
     choices:
     - present
     - absent
+    type: str
 extends_documentation_fragment:
 - cisco.nxos.nxos
 """
