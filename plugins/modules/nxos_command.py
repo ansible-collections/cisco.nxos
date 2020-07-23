@@ -25,13 +25,16 @@ options:
       command is returned.  If the I(wait_for) argument is provided, the module is
       not returned until the condition is satisfied or the number of retires as expired.
     - The I(commands) argument also accepts an alternative form that allows for complex
-      values that specify the command to run and the output format to return.   This
+      values that specify the command to run and the output format to return. This
       can be done on a command by command basis.  The complex argument supports the
       keywords C(command) and C(output) where C(command) is the command to run and
       C(output) is one of 'text' or 'json'.
+    - If a command sent to the device requires answering a prompt, it is possible to pass
+      a dict containing command, answer and prompt. Common answers are 'y' or "\\r"
+      (carriage return, must be double quotes). See examples.
     required: true
     type: list
-    elements: str
+    elements: raw
   wait_for:
     description:
     - Specifies what to evaluate from the output of the command and what conditionals
@@ -170,7 +173,7 @@ def main():
     """
     argument_spec = dict(
         # { command: <str>, output: <str>, prompt: <str>, response: <str> }
-        commands=dict(type="list", required=True, elements="str"),
+        commands=dict(type="list", required=True, elements="raw"),
         wait_for=dict(type="list", aliases=["waitfor"], elements="str"),
         match=dict(default="all", choices=["any", "all"]),
         retries=dict(default=10, type="int"),
