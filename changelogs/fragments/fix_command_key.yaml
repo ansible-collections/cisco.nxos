@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Element type of `commands` key should be `raw` since it accepts both strings and dicts (https://github.com/ansible-collections/cisco.nxos/pull/126).
