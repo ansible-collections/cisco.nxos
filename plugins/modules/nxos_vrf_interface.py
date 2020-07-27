@@ -33,7 +33,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-- VRF needs to be added globally with M(nxos_vrf) before adding a VRF to an interface.
+- VRF needs to be added globally with M(cisco.nxos.nxos_vrf) before adding a VRF to an interface.
 - Remove a VRF from an interface will still remove all L3 attributes just as it does
   from CLI.
 - VRF is not read from an interface until IP address is configured on that interface.

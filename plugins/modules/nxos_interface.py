@@ -29,7 +29,7 @@ notes:
 - This module is also used to create logical interfaces such as svis and loopbacks.
 - Be cautious of platform specific idiosyncrasies. For example, when you default a
   loopback interface, the admin state toggles on certain versions of NX-OS.
-- The M(nxos_overlay_global) C(anycast_gateway_mac) attribute must be set before setting
+- The M(cisco.nxos.nxos_overlay_global) C(anycast_gateway_mac) attribute must be set before setting
   the C(fabric_forwarding_anycast_gateway) property.
 options:
   name:

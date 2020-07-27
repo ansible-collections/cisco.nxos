@@ -34,7 +34,7 @@ notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - VTP feature must be active on the device to use this module.
 - This module is used to manage only VTP passwords.
-- Use this in combination with M(nxos_vtp_domain) and M(nxos_vtp_version) to fully
+- Use this in combination with M(cisco.nxos.nxos_vtp_domain) and M(cisco.nxos.nxos_vtp_version) to fully
   manage VTP operations.
 - You can set/remove password only if a VTP domain already exist.
 - If C(state=absent) and no C(vtp_password) is provided, it remove the current VTP

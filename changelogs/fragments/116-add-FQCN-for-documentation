@@ -1,0 +1,2 @@
+minor_changes:
+- documentation - Use FQCN when refering to modules (https://github.com/ansible-collections/cisco.nxos/pull/116)
