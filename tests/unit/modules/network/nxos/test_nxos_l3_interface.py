@@ -393,3 +393,137 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         )
         result = self.execute_module()
         self.assertEqual(result["warnings"], ["Unknown interface Ethernet1/2"])
+
+    def test_nxos_l3_interface_dci_tracking(self):
+        self.mode = "ethernet_noshut"
+        set_module_args(
+            dict(
+                name="Ethernet1/1",
+                ipv4="192.168.0.1/24",
+                evpn_multisite_tracking="dci_tracking",
+            )
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/1",
+                "ip address 192.168.0.1/24",
+                "evpn multisite dci-tracking",
+                "exit",
+            ],
+        )
+
+    def test_nxos_l3_interface_fabric_tracking(self):
+        self.mode = "ethernet_noshut"
+        set_module_args(
+            dict(
+                name="Ethernet1/1",
+                ipv4="192.168.0.1/24",
+                evpn_multisite_tracking="fabric_tracking",
+            )
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/1",
+                "ip address 192.168.0.1/24",
+                "evpn multisite fabric-tracking",
+                "exit",
+            ],
+        )
+
+    def test_nxos_l3_interface_dci_tracking_absent(self):
+        self.mode = "ethernet_noshut_ipv4_ipv6_dci"
+        set_module_args(
+            dict(
+                name="Ethernet1/1",
+                ipv4="192.168.0.1/24",
+                evpn_multisite_tracking="dci_tracking",
+                state="absent",
+            )
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/1",
+                "no ip address 192.168.0.1/24",
+                "no evpn multisite dci-tracking",
+                "exit",
+            ],
+        )
+
+    def test_nxos_l3_interface_fabric_tracking_absent(self):
+        self.mode = "ethernet_noshut_ipv4_ipv6_fabric"
+        set_module_args(
+            dict(
+                name="Ethernet1/1",
+                ipv4="192.168.0.1/24",
+                evpn_multisite_tracking="fabric_tracking",
+                state="absent",
+            )
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/1",
+                "no ip address 192.168.0.1/24",
+                "no evpn multisite fabric-tracking",
+                "exit",
+            ],
+        )
+
+    def test_nxos_l3_interface_add_existing_ipv4_dci(self):
+        self.mode = "ethernet_noshut_ipv4_ipv6_dci"
+        set_module_args(
+            dict(
+                name="Ethernet1/1",
+                ipv4="192.168.0.1/24",
+                evpn_multisite_tracking="dci_tracking",
+            )
+        )
+        result = self.execute_module()
+
+    def test_nxos_l3_interface_add_existing_ipv4_fabric(self):
+        self.mode = "ethernet_noshut_ipv4_ipv6_fabric"
+        set_module_args(
+            dict(
+                name="Ethernet1/1",
+                ipv4="192.168.0.1/24",
+                evpn_multisite_tracking="fabric_tracking",
+            )
+        )
+        result = self.execute_module()
+
+    def test_nxos_l3_interface_dci_tracking_default(self):
+        self.mode = "ethernet_noshut_ipv4_ipv6_dci"
+        set_module_args(
+            dict(name="Ethernet1/1", evpn_multisite_tracking="default")
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/1",
+                "no evpn multisite dci-tracking",
+                "exit",
+            ],
+        )
+
+    def test_nxos_l3_interface_fabric_tracking_default(self):
+        self.mode = "ethernet_noshut_ipv4_ipv6_fabric"
+        set_module_args(
+            dict(name="Ethernet1/1", evpn_multisite_tracking="default")
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface Ethernet1/1",
+                "no evpn multisite fabric-tracking",
+                "exit",
+            ],
+        )

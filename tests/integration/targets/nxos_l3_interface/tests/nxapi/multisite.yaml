@@ -1,0 +1,255 @@
+---
+- debug: msg="START TRANSPORT:CLI nxos_l3_interface multisite sanity test"
+
+- set_fact: testint2="{{ nxos_int2 }}"
+
+- set_fact: testint3="{{ nxos_int3 }}"
+
+- set_fact: ipv6_address=""
+
+- set_fact: ipv6_address="33:db::2/8"
+  when: ipv6_supported
+
+- name: Setup - remove address from interface prior to testing(Part1)
+  ignore_errors: true
+  cisco.nxos.nxos_config:
+    lines:
+      - no ip address 192.168.22.1/24
+    parents: no switchport
+    before: interface {{ testint2 }}
+
+- name: Setup - remove address from interface prior to testing(Part2)
+  ignore_errors: true
+  cisco.nxos.nxos_config:
+    lines:
+      - no ip address 192.168.20.1/24
+      - no ipv6 address 33:db::2/8
+    parents: no switchport
+    before: interface {{ testint3 }}
+
+- name: Setup - Ensure interfaces are layer3
+  cisco.nxos.nxos_interface:
+    aggregate:
+
+      - name: '{{ testint2 }}'
+
+      - name: '{{ testint3 }}'
+    mode: layer3
+
+- name: Enable feature nv overlay - multisite
+  ignore_errors: true
+  cisco.nxos.nxos_feature:
+    feature: nv overlay
+    state: enabled
+
+- name: Enable nv overlay evpn - multisite
+  when: platform is search('N9K')
+  ignore_errors: true
+  cisco.nxos.nxos_config:
+    lines:
+      - nv overlay evpn
+
+- name: Enable multisite border gateway - multisite
+  ignore_errors: true
+  register: multiout
+  cisco.nxos.nxos_config:
+    lines:
+      - evpn multisite border-gateway 10
+
+- block:
+
+    - name: Configure ipv4 address to interface - dci
+      register: result
+      cisco.nxos.nxos_l3_interface: &id001
+        name: '{{ testint2 }}'
+        ipv4: 192.168.22.1/24
+        evpn_multisite_tracking: dci_tracking
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Configure ipv4 address to interface(Idempotence) - dci
+      register: result
+      cisco.nxos.nxos_l3_interface: *id001
+
+    - assert:
+        that:
+          - result.changed == false
+
+    - name: Remove ipv4 address from interface - dci
+      register: result
+      cisco.nxos.nxos_l3_interface: &id002
+        name: '{{ testint2 }}'
+        ipv4: 192.168.22.1/24
+        evpn_multisite_tracking: dci_tracking
+        state: absent
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Remove ipv4 address from interface(Idempotence) dci
+      register: result
+      cisco.nxos.nxos_l3_interface: *id002
+
+    - assert:
+        that:
+          - result.changed == false
+
+    - name: Configure ipv4 address to interface - default
+      register: result
+      cisco.nxos.nxos_l3_interface: &id011
+        name: '{{ testint2 }}'
+        ipv4: 192.168.22.1/24
+        evpn_multisite_tracking: default 
+        state: present
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Configure ipv4 address to interface(Idempotence) - default
+      register: result
+      cisco.nxos.nxos_l3_interface: *id011
+
+    - assert:
+        that:
+          - result.changed == false
+
+    - name: Remove ipv4 address from interface - default
+      register: result
+      cisco.nxos.nxos_l3_interface: &id012
+        name: '{{ testint2 }}'
+        ipv4: 192.168.22.1/24
+        evpn_multisite_tracking: default 
+        state: absent
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Remove ipv4 address from interface(Idempotence) - default
+      register: result
+      cisco.nxos.nxos_l3_interface: *id012
+
+    - assert:
+        that:
+          - result.changed == false
+
+    - name: Configure ipv4 address to interface - fabric
+      register: result
+      cisco.nxos.nxos_l3_interface: &id013
+        name: '{{ testint2 }}'
+        ipv4: 192.168.22.1/24
+        evpn_multisite_tracking: fabric_tracking
+        state: present
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Configure ipv4 address to interface(Idempotence) - fabric
+      register: result
+      cisco.nxos.nxos_l3_interface: *id013
+
+    - assert:
+        that:
+          - result.changed == false
+
+    - name: Remove ipv4 address from interface - fabric
+      register: result
+      cisco.nxos.nxos_l3_interface: &id014
+        name: '{{ testint2 }}'
+        ipv4: 192.168.22.1/24
+        evpn_multisite_tracking: fabric_tracking
+        state: absent
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Remove ipv4 address from interface(Idempotence) - default
+      register: result
+      cisco.nxos.nxos_l3_interface: *id014
+
+    - assert:
+        that:
+          - result.changed == false
+
+    - name: Configure address to interfaces aggregate - multisite
+      register: result
+      cisco.nxos.nxos_l3_interface: &id003
+        aggregate:
+
+          - name: '{{ testint2 }}'
+            ipv4: 192.168.22.1/24
+            evpn_multisite_tracking: fabric_tracking
+
+          - name: '{{ testint3 }}'
+            ipv4: 192.168.20.1/24
+            ipv6: '{{ ipv6_address }}'
+            evpn_multisite_tracking: dci_tracking
+        state: present
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Configure address to interfaces aggregate(Idempotence) - multisite
+      register: result
+      cisco.nxos.nxos_l3_interface: *id003
+
+    - assert:
+        that:
+          - result.changed == false
+
+    - name: Remove address from interfaces aggregate - multisite
+      register: result
+      cisco.nxos.nxos_l3_interface: &id004
+        aggregate:
+
+          - name: '{{ testint2 }}'
+            ipv4: 192.168.22.1/24
+            evpn_multisite_tracking: fabric_tracking
+
+          - name: '{{ testint3 }}'
+            ipv4: 192.168.20.1/24
+            ipv6: '{{ ipv6_address }}'
+            evpn_multisite_tracking: dci_tracking
+        state: absent
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Remove address from interfaces aggregate(Idempotence) - multisite
+      register: result
+      cisco.nxos.nxos_l3_interface: *id004
+
+    - assert:
+        that:
+          - result.changed == false
+
+    - name: Disable multisite border gateway - multisite
+      cisco.nxos.nxos_config:
+       lines:
+         - no evpn multisite border-gateway 10
+  when: multiout is not search("Invalid command")
+
+- name: Disable feature nv overlay - multisite
+  ignore_errors: true
+  cisco.nxos.nxos_feature:
+    feature: nv overlay
+    state: disabled
+
+- pause:
+    seconds: 5
+
+- name: Remove nv overlay evpn - multisite
+  when: platform is search('N9K')
+  cisco.nxos.nxos_config:
+    lines:
+      - no nv overlay evpn
+
+- debug: msg="END TRANSPORT:CLI nxos_l3_interface multisite sanity test"

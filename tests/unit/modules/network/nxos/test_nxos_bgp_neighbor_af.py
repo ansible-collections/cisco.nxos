@@ -206,3 +206,55 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 "disable-peer-as-check",
             ],
         )
+
+    def test_nxos_bgp_neighbor_af_rewrite_evpn(self):
+        set_module_args(
+            dict(
+                asn=65535,
+                neighbor="30.30.30.5",
+                afi="l2vpn",
+                safi="evpn",
+                rewrite_evpn_rt_asn=True,
+            )
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "router bgp 65535",
+                "neighbor 30.30.30.5",
+                "address-family l2vpn evpn",
+                "rewrite-evpn-rt-asn",
+            ],
+        )
+
+    def test_nxos_bgp_neighbor_af_rewrite_evpn_disable(self):
+        set_module_args(
+            dict(
+                asn=65535,
+                neighbor="30.30.30.5",
+                afi="l2vpn",
+                safi="evpn",
+                rewrite_evpn_rt_asn=False,
+            )
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "router bgp 65535",
+                "neighbor 30.30.30.5",
+                "address-family l2vpn evpn",
+                "no rewrite-evpn-rt-asn",
+            ],
+        )
+
+    def test_nxos_bgp_neighbor_af_rewrite_evpn_exists(self):
+        set_module_args(
+            dict(
+                asn=65535,
+                neighbor="7.7.7.7",
+                afi="l2vpn",
+                safi="evpn",
+                rewrite_evpn_rt_asn=True,
+            )
+        )
+        self.execute_module(changed=False, commands=[])

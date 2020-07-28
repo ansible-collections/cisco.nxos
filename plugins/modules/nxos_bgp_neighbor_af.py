@@ -237,6 +237,10 @@ options:
     - present
     - absent
     type: str
+  rewrite_evpn_rt_asn:
+    description:
+    - Auto generate RTs for EBGP neighbor.
+    type: bool
 """
 EXAMPLES = """
 - name: configure RR client
@@ -247,6 +251,7 @@ EXAMPLES = """
     safi: unicast
     route_reflector_client: true
     state: present
+    rewrite_evpn_rt_asn: true
 """
 
 RETURN = """
@@ -255,7 +260,8 @@ commands:
   returned: always
   type: list
   sample: ["router bgp 65535", "neighbor 192.0.2.3",
-           "address-family ipv4 unicast", "route-reflector-client"]
+           "address-family ipv4 unicast", "route-reflector-client",
+           "rewrite-evpn-rt-asn"]
 """
 
 import re
@@ -282,6 +288,7 @@ BOOL_PARAMS = [
     "next_hop_third_party",
     "route_reflector_client",
     "suppress_inactive",
+    "rewrite_evpn_rt_asn",
 ]
 PARAM_TO_COMMAND_KEYMAP = {
     "afi": "address-family",
@@ -318,6 +325,7 @@ PARAM_TO_COMMAND_KEYMAP = {
     "unsuppress_map": "unsuppress-map",
     "weight": "weight",
     "vrf": "vrf",
+    "rewrite_evpn_rt_asn": "rewrite-evpn-rt-asn",
 }
 
 
@@ -711,6 +719,7 @@ def main():
         state=dict(
             choices=["present", "absent"], default="present", required=False
         ),
+        rewrite_evpn_rt_asn=dict(required=False, type="bool"),
     )
     argument_spec.update(nxos_argument_spec)
 

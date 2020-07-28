@@ -213,6 +213,14 @@ options:
     - present
     - absent
     type: str
+  retain_route_target:
+    description:
+    - Retains all or the routes which are part of configured route-map. Valid values
+      are route-map names or the keyword C(all) or keyword C(default). C(all) retains
+      all the routes regardless of Target-VPN community. C(default) will disable the
+      retain route target option. If you are using route-map name please ensure that
+      the name is not same as C(all) and C(default).
+    type: str
 """
 EXAMPLES = """
 # configure a simple address-family
@@ -223,6 +231,7 @@ EXAMPLES = """
     safi: unicast
     advertise_l2vpn_evpn: true
     state: present
+    retain_route_target: all
 """
 
 RETURN = """
@@ -231,7 +240,8 @@ commands:
     returned: always
     type: list
     sample: ["router bgp 65535", "vrf TESTING",
-            "address-family ipv4 unicast", "advertise l2vpn evpn"]
+            "address-family ipv4 unicast", "advertise l2vpn evpn",
+            "retain route-target all"]
 """
 
 import re
@@ -299,6 +309,7 @@ PARAM_TO_COMMAND_KEYMAP = {
     "table_map": "table-map",
     "table_map_filter": "table-map-filter",
     "vrf": "vrf",
+    "retain_route_target": "retain route-target",
 }
 DAMPENING_PARAMS = [
     "dampening_half_time",
@@ -385,6 +396,16 @@ def get_value(arg, config, module):
 
         if no_command_re.search(config):
             value = False
+
+    elif arg == "retain_route_target":
+        value = ""
+        if command in config:
+            route_target = has_command_val.group("value")
+            if route_target:
+                if route_target == "all":
+                    value = "all"
+                elif "route-map" in route_target:
+                    value = route_target.replace("route-map ", "")
 
     elif arg in BOOL_PARAMS:
         command_re = re.compile(r"^\s+{0}\s*$".format(command), re.M)
@@ -533,6 +554,12 @@ def default_existing(existing_value, key, value):
                 "no redistribute {0} route-map {1}".format(maps[0], maps[1])
             )
 
+    elif key == "retain route-target":
+        if existing_value == "all":
+            commands.append("no {0} {1}".format(key, existing_value))
+        elif existing_value != "default":
+            commands.append("no {0} route-map {1}".format(key, existing_value))
+
     else:
         commands.append("no {0} {1}".format(key, existing_value))
     return commands
@@ -634,6 +661,25 @@ def get_table_map_command(module, existing, key, value):
     return commands
 
 
+def get_retain_route_target_command(existing, key, value):
+    commands = []
+    if key == "retain route-target":
+        if value != "default":
+            if value == "all":
+                command = "{0} {1}".format(key, value)
+            else:
+                command = "{0} route-map {1}".format(key, value)
+            commands.append(command)
+        else:
+            existing_value = existing.get("retain_route_target")
+            if existing_value == "all":
+                command = "no {0} {1}".format(key, existing_value)
+            else:
+                command = "no {0} route-map {1}".format(key, existing_value)
+            commands.append(command)
+    return commands
+
+
 def get_default_table_map_filter(existing):
     commands = []
     existing_table_map_filter = existing.get("table_map_filter")
@@ -711,6 +757,13 @@ def state_present(module, existing, proposed, candidate):
                 if redistribute_commands:
                     commands.extend(redistribute_commands)
 
+            elif key == "retain route-target":
+                retain_route_target_commands = get_retain_route_target_command(
+                    existing, key, value
+                )
+                if retain_route_target_commands:
+                    commands.extend(retain_route_target_commands)
+
             else:
                 command = "{0} {1}".format(key, value)
                 commands.append(command)
@@ -785,6 +838,7 @@ def main():
         state=dict(
             choices=["present", "absent"], default="present", required=False
         ),
+        retain_route_target=dict(required=False, type="str"),
     )
 
     argument_spec.update(nxos_argument_spec)

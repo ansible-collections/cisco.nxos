@@ -90,6 +90,13 @@ options:
     - present
     - absent
     type: str
+  multisite_border_gateway_interface:
+    description:
+    - Specify the loopback interface whose IP address should be used for the NVE
+      Multisite Border-gateway Interface. This is available on selected NX-OS 9K
+      series running 7.0(3)I7 or higher. Specify "default" to remove an exiting 
+      gateway config.
+    type: str
 """
 EXAMPLES = """
 - cisco.nxos.nxos_vxlan_vtep:
@@ -99,6 +106,7 @@ EXAMPLES = """
     source_interface: Loopback0
     source_interface_hold_down_time: 30
     shutdown: default
+    multisite_border_gateway_interface: Loopback0
 """
 
 RETURN = """
@@ -108,7 +116,8 @@ commands:
     type: list
     sample: ["interface nve1", "source-interface loopback0",
         "source-interface hold-down-time 30", "description simple description",
-        "shutdown", "host-reachability protocol bgp"]
+        "shutdown", "host-reachability protocol bgp",
+        "multisite border-gateway interface loopback0"]
 """
 
 import re
@@ -145,6 +154,7 @@ PARAM_TO_COMMAND_KEYMAP = {
     "shutdown": "shutdown",
     "source_interface": "source-interface",
     "source_interface_hold_down_time": "source-interface hold-down-time",
+    "multisite_border_gateway_interface": "multisite border-gateway interface",
 }
 PARAM_TO_DEFAULT_KEYMAP = {
     "description": False,
@@ -186,6 +196,10 @@ def get_value(arg, config, module):
             r"(?:{0}\s)(?P<value>\S+)$".format(PARAM_TO_COMMAND_KEYMAP[arg]),
             re.M,
         )
+        MULTI_BORD_GW_INTF_REGEX = re.compile(
+            r"(?:{0}\s)(?P<value>\S+)$".format(PARAM_TO_COMMAND_KEYMAP[arg]),
+            re.M,
+        )
         value = ""
         if arg == "description":
             if NO_DESC_REGEX.search(config):
@@ -217,6 +231,18 @@ def get_value(arg, config, module):
                 try:
                     if "global mcast-group" in line and "L3" in line:
                         value = line.split()[2].strip()
+                        break
+                except AttributeError:
+                    value = ""
+        elif arg == "multisite_border_gateway_interface":
+            for line in config.splitlines():
+                try:
+                    if PARAM_TO_COMMAND_KEYMAP[arg] in config:
+                        value = (
+                            MULTI_BORD_GW_INTF_REGEX.search(config)
+                            .group("value")
+                            .strip()
+                        )
                         break
                 except AttributeError:
                     value = ""
@@ -394,6 +420,7 @@ def main():
         state=dict(
             choices=["present", "absent"], default="present", required=False
         ),
+        multisite_border_gateway_interface=dict(required=False, type="str"),
     )
 
     argument_spec.update(nxos_argument_spec)

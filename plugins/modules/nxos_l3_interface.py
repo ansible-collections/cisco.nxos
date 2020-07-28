@@ -69,6 +69,14 @@ options:
     - present
     - absent
     type: str
+  evpn_multisite_tracking:
+    description:
+    -  VxLAN evpn multisite Interface tracking. Supported only on selected model.
+    choices:
+    - default
+    - fabric_tracking
+    - dci_tracking
+    type: str
 extends_documentation_fragment:
 - cisco.nxos.nxos
 """
@@ -78,6 +86,7 @@ EXAMPLES = """
   cisco.nxos.nxos_l3_interface:
     name: Ethernet2/3
     ipv4: 192.168.0.1/24
+    evpn_multisite_tracking:fabric_tracking
 
 - name: Remove interface IPv4 address
   cisco.nxos.nxos_l3_interface:
@@ -109,6 +118,7 @@ commands:
     - ip address 192.168.22.1/24
     - ipv6 address "fd5d:12c9:2201:1::1/64"
     - no ip address 192.168.22.1/24
+    - evpn multisite fabric-tracking
 """
 
 import re
@@ -147,6 +157,7 @@ def map_obj_to_commands(updates, module, warnings):
         ipv4 = w["ipv4"]
         ipv6 = w["ipv6"]
         state = w["state"]
+        evpn_multisite_tracking = w["evpn_multisite_tracking"]
         del w["state"]
 
         obj_in_have = search_obj_in_list(name, have)
@@ -160,6 +171,15 @@ def map_obj_to_commands(updates, module, warnings):
                     command.append("no ip address {0}".format(ipv4))
                 if ipv6 and ipv6 in obj_in_have["ipv6"]:
                     command.append("no ipv6 address {0}".format(ipv6))
+                if (
+                    evpn_multisite_tracking
+                    and evpn_multisite_tracking
+                    in obj_in_have["evpn_multisite_tracking"]
+                ):
+                    if evpn_multisite_tracking == "dci_tracking":
+                        command.append("no evpn multisite dci-tracking")
+                    elif evpn_multisite_tracking == "fabric_tracking":
+                        command.append("no evpn multisite fabric-tracking")
                 if command:
                     command.append("exit")
                     command.insert(0, "interface {0}".format(name))
@@ -172,11 +192,41 @@ def map_obj_to_commands(updates, module, warnings):
                     command.append("ip address {0}".format(ipv4))
                 if ipv6 and ipv6 not in obj_in_have["ipv6"]:
                     command.append("ipv6 address {0}".format(ipv6))
+                if (
+                    evpn_multisite_tracking
+                    and evpn_multisite_tracking
+                    not in obj_in_have["evpn_multisite_tracking"]
+                ):
+                    if evpn_multisite_tracking == "dci_tracking":
+                        command.append("evpn multisite dci-tracking")
+                    if evpn_multisite_tracking == "fabric_tracking":
+                        command.append("evpn multisite fabric-tracking")
+                    if evpn_multisite_tracking == "default":
+                        if (
+                            obj_in_have["evpn_multisite_tracking"]
+                            == "dci_tracking"
+                        ):
+                            command.append("no evpn multisite dci-tracking")
+                        if (
+                            obj_in_have["evpn_multisite_tracking"]
+                            == "fabric_tracking"
+                        ):
+                            command.append("no evpn multisite fabric-tracking")
                 if command:
                     command.append("exit")
                     command.insert(0, "interface {0}".format(name))
                 elif not ipv4 and not ipv6:
                     command.append("interface {0}".format(name))
+                    if (
+                        evpn_multisite_tracking
+                        and evpn_multisite_tracking
+                        in obj_in_have["evpn_multisite_tracking"]
+                    ):
+                        if evpn_multisite_tracking == "dci_tracking":
+                            command.append("evpn multisite dci-tracking")
+                        elif evpn_multisite_tracking == "fabric_tracking":
+                            command.append("evpn multisite fabric-tracking")
+                        command.append("exit")
             commands.extend(command)
 
     return commands
@@ -204,6 +254,9 @@ def map_params_to_obj(module):
                 "ipv4": module.params["ipv4"],
                 "ipv6": module.params["ipv6"],
                 "state": module.params["state"],
+                "evpn_multisite_tracking": module.params[
+                    "evpn_multisite_tracking"
+                ],
             }
         )
 
@@ -217,7 +270,7 @@ def map_config_to_obj(want, module):
     for w in want:
         parents = ["interface {0}".format(w["name"])]
         config = netcfg.get_section(parents)
-        obj = dict(name=None, ipv4=None, ipv6=[])
+        obj = dict(name=None, ipv4=None, ipv6=[], evpn_multisite_tracking=None)
 
         if config:
             match_name = re.findall(r"interface (\S+)", config, re.M)
@@ -231,6 +284,12 @@ def map_config_to_obj(want, module):
             match_ipv6 = re.findall(r"ipv6 address (\S+)", config, re.M)
             if match_ipv6:
                 obj["ipv6"] = match_ipv6
+            if "evpn multisite fabric-tracking" in config:
+                obj["evpn_multisite_tracking"] = "fabric_tracking"
+            elif "evpn multisite dci-tracking" in config:
+                obj["evpn_multisite_tracking"] = "dci_tracking"
+            else:
+                obj["evpn_multisite_tracking"] = "default"
 
             objs.append(obj)
     return objs
@@ -244,6 +303,9 @@ def main():
         ipv4=dict(),
         ipv6=dict(),
         state=dict(default="present", choices=["present", "absent"]),
+        evpn_multisite_tracking=dict(
+            choices=["default", "fabric_tracking", "dci_tracking"]
+        ),
     )
 
     aggregate_spec = deepcopy(element_spec)

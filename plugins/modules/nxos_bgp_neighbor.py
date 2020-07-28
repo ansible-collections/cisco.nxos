@@ -172,6 +172,14 @@ options:
     - present
     - absent
     type: str
+  peer_type:
+    description:
+    - Specify the peer type for BGP session.
+    choices:
+    - fabric_border_leaf
+    - fabric_external
+    - disable
+    type: str
 """
 EXAMPLES = """
 # create a new neighbor
@@ -184,6 +192,7 @@ EXAMPLES = """
     description: just a description
     update_source: Ethernet1/3
     state: present
+    peer_type: fabric_external
 """
 
 RETURN = """
@@ -193,7 +202,7 @@ commands:
   type: list
   sample: ["router bgp 65535", "neighbor 192.0.2.3",
            "remote-as 30", "update-source Ethernet1/3",
-           "description just a description", "local-as 20"]
+           "description just a description", "local-as 20", "peer-type fabric-external"]
 """
 
 import re
@@ -244,6 +253,7 @@ PARAM_TO_COMMAND_KEYMAP = {
     "transport_passive_only": "transport connection-mode passive",
     "update_source": "update-source",
     "vrf": "vrf",
+    "peer_type": "peer-type",
 }
 PARAM_TO_DEFAULT_KEYMAP = {
     "bfd": "disable",
@@ -251,6 +261,7 @@ PARAM_TO_DEFAULT_KEYMAP = {
     "dynamic_capability": True,
     "timers_keepalive": 60,
     "timers_holdtime": 180,
+    "peer_type": "disable",
 }
 
 
@@ -287,6 +298,15 @@ def get_value(arg, config):
             value = has_command_val.group("value")
     elif arg == "bfd":
         value = "enable" if has_command else "disable"
+
+    elif arg == "peer_type":
+        value = "disable"
+        if has_command_val:
+            ptype = has_command_val.group("value")
+            if ptype == "fabric-external":
+                value = "fabric_external"
+            elif ptype == "fabric-border-leaf":
+                value = "fabric_border_leaf"
     else:
         value = ""
 
@@ -413,6 +433,19 @@ def state_present(module, existing, proposed, candidate):
             elif key == "bfd":
                 no_cmd = "no " if value == "disable" else ""
                 commands.append(no_cmd + key)
+            elif key == "peer-type":
+                if value == "disable":
+                    if existing_commands.get(key) != "disable":
+                        command = "no {0}".format(key)
+                        commands.append(command)
+                elif value == "fabric_external":
+                    ptype = "fabric-external"
+                    command = "{0} {1}".format(key, ptype)
+                    commands.append(command)
+                elif value == "fabric_border_leaf":
+                    ptype = "fabric-border-leaf"
+                    command = "{0} {1}".format(key, ptype)
+                    commands.append(command)
             else:
                 command = "{0} {1}".format(key, value)
                 commands.append(command)
@@ -481,6 +514,11 @@ def main():
         update_source=dict(required=False, type="str"),
         state=dict(
             choices=["present", "absent"], default="present", required=False
+        ),
+        peer_type=dict(
+            required=False,
+            type="str",
+            choices=["disable", "fabric_border_leaf", "fabric_external"],
         ),
     )
     argument_spec.update(nxos_argument_spec)

@@ -113,3 +113,43 @@ class TestNxosBgpNeighborModule(TestNxosModule):
                 "remove-private-as replace-as",
             ],
         )
+
+    def test_nxos_bgp_neighbor_peertype_border_leaf(self):
+        set_module_args(
+            dict(
+                asn=65535, neighbor="192.0.2.3", peer_type="fabric_border_leaf"
+            )
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "router bgp 65535",
+                "neighbor 192.0.2.3",
+                "peer-type fabric-border-leaf",
+            ],
+        )
+
+    def test_nxos_bgp_neighbor_peertype_external(self):
+        set_module_args(
+            dict(asn=65535, neighbor="192.0.2.3", peer_type="fabric_external")
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "router bgp 65535",
+                "neighbor 192.0.2.3",
+                "peer-type fabric-external",
+            ],
+        )
+
+    def test_nxos_bgp_neighbor_peertype_border_leaf_exists(self):
+        set_module_args(
+            dict(asn=65535, neighbor="5.5.5.5", peer_type="fabric_border_leaf")
+        )
+        self.execute_module(changed=False)
+
+    def test_nxos_bgp_neighbor_peertype_external_exists(self):
+        set_module_args(
+            dict(asn=65535, neighbor="6.6.6.6", peer_type="fabric_external")
+        )
+        self.execute_module(changed=False)
