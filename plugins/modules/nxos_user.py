@@ -226,8 +226,9 @@ def get_custom_roles(module):
 
 
 def validate_roles(value, module):
+    valid_roles = BUILTIN_ROLES + get_custom_roles(module)
     for item in value:
-        if item not in BUILTIN_ROLES + get_custom_roles(module):
+        if item not in valid_roles:
             module.fail_json(msg="invalid role specified")
 
 
