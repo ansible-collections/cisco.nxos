@@ -39,14 +39,15 @@ Parameters
                     <b>commands</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
-                                                 / <span style="color: red">required</span>                    </div>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=raw</span>                         / <span style="color: red">required</span>                    </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
                                                                 <td>
                                             <div>The commands to send to the remote NXOS device.  The resulting output from the command is returned.  If the <em>wait_for</em> argument is provided, the module is not returned until the condition is satisfied or the number of retires as expired.</div>
-                                            <div>The <em>commands</em> argument also accepts an alternative form that allows for complex values that specify the command to run and the output format to return.   This can be done on a command by command basis.  The complex argument supports the keywords <code>command</code> and <code>output</code> where <code>command</code> is the command to run and <code>output</code> is one of &#x27;text&#x27; or &#x27;json&#x27;.</div>
+                                            <div>The <em>commands</em> argument also accepts an alternative form that allows for complex values that specify the command to run and the output format to return. This can be done on a command by command basis.  The complex argument supports the keywords <code>command</code> and <code>output</code> where <code>command</code> is the command to run and <code>output</code> is one of &#x27;text&#x27; or &#x27;json&#x27;.</div>
+                                            <div>If a command sent to the device requires answering a prompt, it is possible to pass a dict containing command, answer and prompt. Common answers are &#x27;y&#x27; or &quot;\r&quot; (carriage return, must be double quotes). See examples.</div>
                                                         </td>
             </tr>
                                 <tr>
@@ -55,7 +56,7 @@ Parameters
                     <b>interval</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">integer</span>
                                                                     </div>
                                     </td>
                                 <td>
@@ -71,12 +72,15 @@ Parameters
                     <b>match</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">"all"</div>
-                                    </td>
+                                                                                                                            <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                                                                                                                                                <li>any</li>
+                                                                                                                                                                                                <li><div style="color: blue"><b>all</b>&nbsp;&larr;</div></li>
+                                                                                    </ul>
+                                                                            </td>
                                                                 <td>
                                             <div>The <em>match</em> argument is used in conjunction with the <em>wait_for</em> argument to specify the match policy.  Valid values are <code>all</code> or <code>any</code>.  If the value is set to <code>all</code> then all conditionals in the <em>wait_for</em> must be satisfied.  If the value is set to <code>any</code> then only one of the values must be satisfied.</div>
                                                         </td>
@@ -146,7 +150,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
-                                                 / <span style="color: red">required</span>                    </div>
+                                                                    </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
@@ -181,8 +185,7 @@ Parameters
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">"0 (use common port)"</div>
-                                    </td>
+                                                                                                                                                            </td>
                                                                 <td>
                                             <div>Specifies the port to use when building the connection to the remote device.  This value applies to either <em>cli</em> or <em>nxapi</em>.  The port value will default to the appropriate transport common port if none is provided in the task.  (cli=22, http=80, https=443).</div>
                                                         </td>
@@ -214,8 +217,7 @@ Parameters
                                                                     </div>
                                     </td>
                                 <td>
-                                                                                                                                                                    <b>Default:</b><br/><div style="color: blue">10</div>
-                                    </td>
+                                                                                                                                                            </td>
                                                                 <td>
                                             <div>Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.  If the timeout is exceeded before the operation is completed, the module will error. NX-API can be slow to return on long-running commands (sh mac, sh bgp, etc).</div>
                                                         </td>
@@ -228,7 +230,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
-                                                 / <span style="color: red">required</span>                    </div>
+                                                                    </div>
                                     </td>
                                 <td>
                                                                                                                             <ul style="margin: 0; padding: 0"><b>Choices:</b>
@@ -308,8 +310,8 @@ Parameters
                                     </td>
                                 <td>
                                                                                                                                                                                                                     <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                                <li>no</li>
-                                                                                                                                                                                                <li><div style="color: blue"><b>yes</b>&nbsp;&larr;</div></li>
+                                                                                                                                                                <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                                                                                                                                                                                <li>yes</li>
                                                                                     </ul>
                                                                             </td>
                                                                 <td>
@@ -323,7 +325,7 @@ Parameters
                     <b>retries</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">integer</span>
                                                                     </div>
                                     </td>
                                 <td>
@@ -339,8 +341,8 @@ Parameters
                     <b>wait_for</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
-                                                                    </div>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>                                            </div>
                                     </td>
                                 <td>
                                                                                                                                                             </td>
