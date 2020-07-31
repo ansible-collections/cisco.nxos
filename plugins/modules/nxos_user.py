@@ -173,12 +173,15 @@ commands:
     - name ansible
     - name ansible password password
 """
+import re
+
 from copy import deepcopy
 from functools import partial
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     run_commands,
     load_config,
+    get_config,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
@@ -190,7 +193,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 
-VALID_ROLES = [
+BUILTIN_ROLES = [
     "network-admin",
     "network-operator",
     "vdc-admin",
@@ -214,9 +217,18 @@ VALID_ROLES = [
 ]
 
 
+def get_custom_roles(module):
+    return re.findall(
+        r"^role name (\S+)",
+        get_config(module, flags=["| include '^role name'"]),
+        re.M,
+    )
+
+
 def validate_roles(value, module):
+    valid_roles = BUILTIN_ROLES + get_custom_roles(module)
     for item in value:
-        if item not in VALID_ROLES:
+        if item not in valid_roles:
             module.fail_json(msg="invalid role specified")
 
 
