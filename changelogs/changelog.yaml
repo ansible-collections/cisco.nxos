@@ -307,7 +307,6 @@ releases:
     - 102-fix-nxos_interfaces-states.yaml
     - 111_update_lag_interfaces.yaml
     - 116-add-FQCN-for-documentation
-    - 99-add-change-log-1.0.0.yaml
     - fix_command_key.yaml
     - fix_nxos_user_role.yaml
     - fix_src_backup_with_module_alias.yaml
@@ -320,4 +319,3 @@ releases:
     fragments:
     - 1.0.2.yaml
     release_date: '2020-08-07'
-
