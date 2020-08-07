@@ -1,2 +1,0 @@
-bugfixes:
-- Fix nxos_interfaces states replaced and overridden (https://github.com/ansible-collections/cisco.nxos/pull/102).

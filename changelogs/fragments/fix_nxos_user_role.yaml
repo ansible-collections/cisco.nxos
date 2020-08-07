@@ -1,3 +1,0 @@
----
-bugfixes:
-  - nxos_user - do not fail when a custom role is used (https://github.com/ansible-collections/cisco.nxos/pull/130)

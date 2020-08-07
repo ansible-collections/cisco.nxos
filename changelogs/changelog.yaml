@@ -288,3 +288,34 @@ releases:
         name: nxos
         namespace: null
     release_date: '2020-06-23'
+  1.0.1:
+    changes:
+      bugfixes:
+      - Element type of `commands` key should be `raw` since it accepts both strings
+        and dicts (https://github.com/ansible-collections/cisco.nxos/pull/126).
+      - Fix nxos_interfaces states replaced and overridden (https://github.com/ansible-collections/cisco.nxos/pull/102).
+      - Fixed force option in lag_interfaces.py (https://github.com/ansible-collections/cisco.nxos/pull/111).
+      - Make `src`, `backup` and `backup_options` in nxos_config work when module
+        alias is used (https://github.com/ansible-collections/cisco.nxos/pull/121).
+      - Makes sure that docstring and argspec are in sync and removes sanity ignores
+        (https://github.com/ansible-collections/cisco.nxos/pull/112).
+      - Update docs after sanity fixes to modules.
+      - nxos_user - do not fail when a custom role is used (https://github.com/ansible-collections/cisco.nxos/pull/130)
+      minor_changes:
+      - documentation - Use FQCN when refering to modules (https://github.com/ansible-collections/cisco.nxos/pull/116)
+    fragments:
+    - 102-fix-nxos_interfaces-states.yaml
+    - 111_update_lag_interfaces.yaml
+    - 116-add-FQCN-for-documentation
+    - fix_command_key.yaml
+    - fix_nxos_user_role.yaml
+    - fix_src_backup_with_module_alias.yaml
+    - remove_ignores.yaml
+    - update_docs.yaml
+    release_date: '2020-08-03'
+  1.0.2:
+    changes:
+      release_summary: Rereleased 1.0.1 with updated changelog.
+    fragments:
+    - 1.0.2.yaml
+    release_date: '2020-08-07'

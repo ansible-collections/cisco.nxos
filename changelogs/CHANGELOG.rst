@@ -4,6 +4,32 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v1.0.2
+======
+
+Release Summary
+---------------
+
+Rereleased 1.0.1 with updated changelog.
+
+v1.0.1
+======
+
+Minor Changes
+-------------
+
+- documentation - Use FQCN when refering to modules (https://github.com/ansible-collections/cisco.nxos/pull/116)
+
+Bugfixes
+--------
+
+- Element type of `commands` key should be `raw` since it accepts both strings and dicts (https://github.com/ansible-collections/cisco.nxos/pull/126).
+- Fix nxos_interfaces states replaced and overridden (https://github.com/ansible-collections/cisco.nxos/pull/102).
+- Fixed force option in lag_interfaces.py (https://github.com/ansible-collections/cisco.nxos/pull/111).
+- Make `src`, `backup` and `backup_options` in nxos_config work when module alias is used (https://github.com/ansible-collections/cisco.nxos/pull/121).
+- Makes sure that docstring and argspec are in sync and removes sanity ignores (https://github.com/ansible-collections/cisco.nxos/pull/112).
+- Update docs after sanity fixes to modules.
+- nxos_user - do not fail when a custom role is used (https://github.com/ansible-collections/cisco.nxos/pull/130)
 
 v1.0.0
 ======
