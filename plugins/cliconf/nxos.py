@@ -45,12 +45,17 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 from ansible.plugins.cliconf import CliconfBase, enable_mode
+from ansible.plugins.loader import cache_loader
+from ansible_collections.ansible.netcommon.plugins.cache.network import (
+    NetworkCache,
+)
 
 
 class Cliconf(CliconfBase):
     def __init__(self, *args, **kwargs):
         self._module_context = {}
         self._device_info = {}
+        self._cache = None
         super(Cliconf, self).__init__(*args, **kwargs)
 
     def read_module_context(self, module_key):
@@ -213,7 +218,15 @@ class Cliconf(CliconfBase):
             cmd += " ".join(to_list(flags))
         cmd = cmd.strip()
 
-        return self.send_command(cmd)
+        # attempt a cache lookup
+        out = self._get_cache().lookup(cmd)
+        # if cache is not enabled or was a cache miss
+        if not out:
+            out = self.send_command(cmd)
+            # populate cache for re-use (if enabled)
+            self._get_cache().populate(cmd, out)
+
+        return out
 
     def edit_config(
         self, candidate=None, commit=True, replace=None, comment=None
@@ -250,6 +263,11 @@ class Cliconf(CliconfBase):
 
         resp["request"] = requests
         resp["response"] = results
+
+        if commit or replace:
+            # invalidate the cache since configuration changes were made
+            self._get_cache().invalidate()
+
         return resp
 
     def get(
@@ -262,16 +280,23 @@ class Cliconf(CliconfBase):
         newline=True,
         check_all=False,
     ):
-        if output:
-            command = self._get_command_with_output(command, output)
-        return self.send_command(
-            command=command,
-            prompt=prompt,
-            answer=answer,
-            sendonly=sendonly,
-            newline=newline,
-            check_all=check_all,
-        )
+        # attempt a cache lookup
+        out = self._get_cache().lookup(command)
+        # if cache is not enabled or was a cache miss
+        if not out:
+            if output:
+                command = self._get_command_with_output(command, output)
+            out = self.send_command(
+                command=command,
+                prompt=prompt,
+                answer=answer,
+                sendonly=sendonly,
+                newline=newline,
+                check_all=check_all,
+            )
+            # populate cache
+            self._get_cache().populate(command, out)
+        return out
 
     def run_commands(self, commands=None, check_rc=True):
         if commands is None:
@@ -288,28 +313,38 @@ class Cliconf(CliconfBase):
                     cmd["command"], output
                 )
 
-            try:
-                out = self.send_command(**cmd)
-            except AnsibleConnectionFailure as e:
-                if check_rc is True:
-                    raise
-                out = getattr(e, "err", e)
-
-            if out is not None:
+            # attempt a cache lookup
+            out = self._get_cache().lookup(cmd["command"])
+            # if cache is not enabled or was a cache miss
+            if not out:
                 try:
-                    out = to_text(out, errors="surrogate_or_strict").strip()
-                except UnicodeError:
-                    raise ConnectionError(
-                        message=u"Failed to decode output from %s: %s"
-                        % (cmd, to_text(out))
-                    )
+                    out = self.send_command(**cmd)
+                except AnsibleConnectionFailure as e:
+                    if check_rc is True:
+                        raise
+                    out = getattr(e, "err", e)
 
-                try:
-                    out = json.loads(out)
-                except ValueError:
-                    pass
+                if out is not None:
+                    try:
+                        out = to_text(
+                            out, errors="surrogate_or_strict"
+                        ).strip()
+                    except UnicodeError:
+                        raise ConnectionError(
+                            message=u"Failed to decode output from %s: %s"
+                            % (cmd, to_text(out))
+                        )
 
-                responses.append(out)
+                    try:
+                        out = json.loads(out)
+                    except ValueError:
+                        pass
+
+                # populate cache
+                self._get_cache().populate(cmd["command"], out)
+
+            responses.append(out)
+
         return responses
 
     def get_device_operations(self):
@@ -389,3 +424,10 @@ class Cliconf(CliconfBase):
         else:
             cmd = command
         return cmd
+
+    def _get_cache(self):
+        if not self._cache:
+            self._cache = NetworkCache(
+                is_enabled=self._connection.get_option("enable_cache")
+            )
+        return self._cache
