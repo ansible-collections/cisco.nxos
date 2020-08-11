@@ -45,7 +45,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 from ansible.plugins.cliconf import CliconfBase, enable_mode
-from ansible.plugins.loader import cache_loader
 from ansible_collections.ansible.netcommon.plugins.cache.network import (
     NetworkCache,
 )
