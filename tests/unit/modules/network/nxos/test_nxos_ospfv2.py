@@ -495,7 +495,7 @@ class TestNxosOspfv2Module(TestNxosModule):
         commands = ["no router ospf 100", "no router ospf 300"]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_nxos_ospfv2_deleted_idempotent(self):
         self.get_config.return_value = dedent(
