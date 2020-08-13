@@ -45,9 +45,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 from ansible.plugins.cliconf import CliconfBase, enable_mode
-from ansible_collections.ansible.netcommon.plugins.cache.network import (
-    NetworkCache,
-)
 
 
 class Cliconf(CliconfBase):
@@ -217,15 +214,7 @@ class Cliconf(CliconfBase):
             cmd += " ".join(to_list(flags))
         cmd = cmd.strip()
 
-        # attempt a cache lookup
-        out = self._get_cache().lookup(cmd)
-        # if cache is not enabled or was a cache miss
-        if not out:
-            out = self.send_command(cmd)
-            # populate cache for re-use (if enabled)
-            self._get_cache().populate(cmd, out)
-
-        return out
+        return self.send_command(cmd, use_cache=True)
 
     def edit_config(
         self, candidate=None, commit=True, replace=None, comment=None
@@ -265,7 +254,7 @@ class Cliconf(CliconfBase):
 
         if commit or replace:
             # invalidate the cache since configuration changes were made
-            self._get_cache().invalidate()
+            self._connection.get_cache().invalidate()
 
         return resp
 
@@ -279,23 +268,17 @@ class Cliconf(CliconfBase):
         newline=True,
         check_all=False,
     ):
-        # attempt a cache lookup
-        out = self._get_cache().lookup(command)
-        # if cache is not enabled or was a cache miss
-        if not out:
-            if output:
-                command = self._get_command_with_output(command, output)
-            out = self.send_command(
-                command=command,
-                prompt=prompt,
-                answer=answer,
-                sendonly=sendonly,
-                newline=newline,
-                check_all=check_all,
-            )
-            # populate cache
-            self._get_cache().populate(command, out)
-        return out
+        if output:
+            command = self._get_command_with_output(command, output)
+        return self.send_command(
+            command=command,
+            prompt=prompt,
+            answer=answer,
+            sendonly=sendonly,
+            newline=newline,
+            check_all=check_all,
+            use_cache=True,
+        )
 
     def run_commands(self, commands=None, check_rc=True):
         in_config_mode = False
@@ -313,47 +296,42 @@ class Cliconf(CliconfBase):
                     cmd["command"], output
                 )
 
-            # attempt a cache lookup
-            out = self._get_cache().lookup(cmd["command"])
-            # if cache is not enabled or was a cache miss
-            if not out:
-                try:
-                    out = self.send_command(**cmd)
-                    if self.get_cli_prompt_context().endswith(b")#"):
-                        if in_config_mode:
-                            # command has been sent in configuration mode
-                            self._get_cache().invalidate()
-                        else:
-                            # the device has now entered configuration mode
-                            in_config_mode = True
+            if not cmd["prompt"]:
+                cmd["use_cache"] = True
+
+            try:
+                out = self.send_command(**cmd)
+                if self.get_cli_prompt_context().endswith(")#"):
+                    if in_config_mode:
+                        # the command has been sent in configuration mode
+                        # if there is an existing cache, empty it
+                        if self._connection.get_cache():
+                            self._connection.get_cache().invalidate()
                     else:
-                        in_config_mode = False
-                except AnsibleConnectionFailure as e:
-                    if check_rc is True:
-                        raise
-                    out = getattr(e, "err", e)
+                        # the device has entered configuration mode
+                        in_config_mode = True
+                else:
+                    in_config_mode = False
+            except AnsibleConnectionFailure as e:
+                if check_rc is True:
+                    raise
+                out = getattr(e, "err", e)
 
-                if out is not None:
-                    try:
-                        out = to_text(
-                            out, errors="surrogate_or_strict"
-                        ).strip()
-                    except UnicodeError:
-                        raise ConnectionError(
-                            message=u"Failed to decode output from %s: %s"
-                            % (cmd, to_text(out))
-                        )
+            if out is not None:
+                try:
+                    out = to_text(out, errors="surrogate_or_strict").strip()
+                except UnicodeError:
+                    raise ConnectionError(
+                        message=u"Failed to decode output from %s: %s"
+                        % (cmd, to_text(out))
+                    )
 
-                    try:
-                        out = json.loads(out)
-                    except ValueError:
-                        pass
+                try:
+                    out = json.loads(out)
+                except ValueError:
+                    pass
 
-                # populate cache
-                self._get_cache().populate(cmd["command"], out)
-
-            responses.append(out)
-
+                responses.append(out)
         return responses
 
     def get_device_operations(self):
@@ -433,10 +411,3 @@ class Cliconf(CliconfBase):
         else:
             cmd = command
         return cmd
-
-    def _get_cache(self):
-        if not self._cache:
-            self._cache = NetworkCache(
-                is_enabled=self._connection.get_option("enable_cache")
-            )
-        return self._cache
