@@ -92,7 +92,7 @@ options:
     - disable
     - enable
     - optimized
-    type: list
+    type: str
 """
 EXAMPLES = """
 - cisco.nxos.nxos_vxlan_vtep_vni:

@@ -215,11 +215,11 @@ options:
     type: str
   retain_route_target:
     description:
-    - Retains all or the routes which are part of configured route-map. Valid values
-      are route-map names or the keyword C(all) or keyword C(default). C(all) retains
-      all the routes regardless of Target-VPN community. C(default) will disable the
-      retain route target option. If you are using route-map name please ensure that
-      the name is not same as C(all) and C(default).
+    - Retains all of the routes or the routes which are part of configured route-map.
+      Valid values are route-map names or keyword C(all) or keyword C(default).  C(all)
+      retains all the routes regardless of Target-VPN community. C(default) will disable
+      the retain route target option. If you are using route-map name please ensure
+      that the name is not same as C(all) and C(default).
     type: str
 """
 EXAMPLES = """
@@ -669,14 +669,13 @@ def get_retain_route_target_command(existing, key, value):
                 command = "{0} {1}".format(key, value)
             else:
                 command = "{0} route-map {1}".format(key, value)
-            commands.append(command)
         else:
             existing_value = existing.get("retain_route_target")
             if existing_value == "all":
                 command = "no {0} {1}".format(key, existing_value)
             else:
                 command = "no {0} route-map {1}".format(key, existing_value)
-            commands.append(command)
+        commands.append(command)
     return commands
 
 

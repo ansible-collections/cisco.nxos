@@ -104,6 +104,13 @@ options:
         description:
         - Enables/disables ip redirects
         type: bool
+      evpn_multisite_tracking:
+        description:
+        -  VxLAN evpn multisite Interface tracking. Supported only on selected model.
+        type: str
+        choices:
+        - fabric-tracking
+        - dci-tracking
   state:
     description:
     - The state of the configuration after module completion.

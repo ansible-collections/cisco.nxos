@@ -426,6 +426,13 @@ class L3_interfaces(ConfigBase):
             commands.append("no ip address")
         if "ipv6" in obj:
             commands.append("no ipv6 address")
+        if "evpn_multisite_tracking" in obj:
+            have = self.existing_facts.get(name, {})
+            if have.get("evpn_multisite_tracking", False) is not False:
+                cmd = "no evpn multisite %s" % have.get(
+                    "evpn_multisite_tracking"
+                )
+                commands.append(cmd)
         return commands
 
     def init_check_existing(self, have):
@@ -489,6 +496,10 @@ class L3_interfaces(ConfigBase):
             ):
                 no_cmd = "no " if diff["unreachables"] is False else ""
                 commands.append(no_cmd + "ip unreachables")
+        if "evpn_multisite_tracking" in diff:
+            commands.append(
+                "evpn multisite " + str(diff["evpn_multisite_tracking"])
+            )
         if "ipv4" in diff:
             commands.extend(self.generate_afi_commands(diff["ipv4"]))
         if "ipv6" in diff:

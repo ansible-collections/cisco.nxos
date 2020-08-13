@@ -94,7 +94,7 @@ options:
     description:
     - Specify the loopback interface whose IP address should be used for the NVE
       Multisite Border-gateway Interface. This is available on selected NX-OS 9K
-      series running 7.0(3)I7 or higher. Specify "default" to remove an exiting 
+      series running 7.0(3)I7 or higher. Specify "default" to remove an exiting
       gateway config.
     type: str
 """
@@ -196,10 +196,6 @@ def get_value(arg, config, module):
             r"(?:{0}\s)(?P<value>\S+)$".format(PARAM_TO_COMMAND_KEYMAP[arg]),
             re.M,
         )
-        MULTI_BORD_GW_INTF_REGEX = re.compile(
-            r"(?:{0}\s)(?P<value>\S+)$".format(PARAM_TO_COMMAND_KEYMAP[arg]),
-            re.M,
-        )
         value = ""
         if arg == "description":
             if NO_DESC_REGEX.search(config):
@@ -239,7 +235,7 @@ def get_value(arg, config, module):
                 try:
                     if PARAM_TO_COMMAND_KEYMAP[arg] in config:
                         value = (
-                            MULTI_BORD_GW_INTF_REGEX.search(config)
+                            SOURCE_INTF_REGEX.search(config)
                             .group("value")
                             .strip()
                         )

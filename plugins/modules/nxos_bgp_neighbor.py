@@ -302,11 +302,7 @@ def get_value(arg, config):
     elif arg == "peer_type":
         value = "disable"
         if has_command_val:
-            ptype = has_command_val.group("value")
-            if ptype == "fabric-external":
-                value = "fabric_external"
-            elif ptype == "fabric-border-leaf":
-                value = "fabric_border_leaf"
+            value = has_command_val.group("value").replace("-", "_")
     else:
         value = ""
 

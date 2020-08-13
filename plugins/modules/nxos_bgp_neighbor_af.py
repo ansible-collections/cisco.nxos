@@ -239,7 +239,7 @@ options:
     type: str
   rewrite_evpn_rt_asn:
     description:
-    - Auto generate RTs for EBGP neighbor.
+    - Auto generate route targets for EBGP neighbor.
     type: bool
 """
 EXAMPLES = """
