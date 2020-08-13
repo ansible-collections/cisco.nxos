@@ -298,6 +298,7 @@ class Cliconf(CliconfBase):
         return out
 
     def run_commands(self, commands=None, check_rc=True):
+        in_config_mode = False
         if commands is None:
             raise ValueError("'commands' value is required")
 
@@ -318,6 +319,15 @@ class Cliconf(CliconfBase):
             if not out:
                 try:
                     out = self.send_command(**cmd)
+                    if self.get_cli_prompt_context().endswith(b")#"):
+                        if in_config_mode:
+                            # command has been sent in configuration mode
+                            self._get_cache().invalidate()
+                        else:
+                            # the device has now entered configuration mode
+                            in_config_mode = True
+                    else:
+                        in_config_mode = False
                 except AnsibleConnectionFailure as e:
                     if check_rc is True:
                         raise
@@ -377,30 +387,30 @@ class Cliconf(CliconfBase):
 
         return json.dumps(result)
 
+    def get_cli_prompt_context(self):
+        out = self._connection.get_prompt()
+        if out is None:
+            raise AnsibleConnectionFailure(
+                message=u"cli prompt is not identified from the last received"
+                u" response window: %s" % self._connection._last_recv_window
+            )
+        return to_text(out, errors="surrogate_then_replace").strip()
+
     def set_cli_prompt_context(self):
         """
         Make sure we are in the operational cli context
         :return: None
         """
         if self._connection.connected:
-            out = self._connection.get_prompt()
-            if out is None:
-                raise AnsibleConnectionFailure(
-                    message=u"cli prompt is not identified from the last received"
-                    u" response window: %s"
-                    % self._connection._last_recv_window
-                )
             # Match prompts ending in )# except those with (maint-mode)#
             config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
-
-            while config_prompt.match(
-                to_text(out, errors="surrogate_then_replace").strip()
-            ):
+            out = self.get_cli_prompt_context()
+            while config_prompt.match(out):
                 self._connection.queue_message(
                     "vvvv", "wrong context, sending exit to device"
                 )
                 self._connection.send_command("exit")
-                out = self._connection.get_prompt()
+                out = self.get_cli_prompt_context()
 
     def _get_command_with_output(self, command, output):
         options_values = self.get_option_values()
