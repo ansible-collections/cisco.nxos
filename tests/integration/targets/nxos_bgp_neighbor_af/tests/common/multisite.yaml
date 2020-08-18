@@ -114,7 +114,3 @@
 
 - debug: msg="END connection={{ ansible_connection }} nxos_bgp_neighbor_af multisite 
      sanity test"
-
-- name: End Play
-  meta: end_play
-
