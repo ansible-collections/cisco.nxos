@@ -83,8 +83,10 @@ class Vlans(ConfigBase):
 
         if self.state in self.ACTION_STATES:
             existing_vlans_facts = self.get_vlans_facts()
+            self._platform = self.get_platform()
         else:
             existing_vlans_facts = []
+            self._platform = ""
 
         if self.state in self.ACTION_STATES or self.state == "rendered":
             commands.extend(self.set_config(existing_vlans_facts))
@@ -327,7 +329,7 @@ class Vlans(ConfigBase):
     def _sanitize(self, vlans):
         sanitized_vlans = []
         for vlan in vlans:
-            if not re.search("N[567]K", self.get_platform()):
+            if not re.search("N[567]K", self._platform):
                 if "mode" in vlan:
                     del vlan["mode"]
             sanitized_vlans.append(remove_empties(vlan))
