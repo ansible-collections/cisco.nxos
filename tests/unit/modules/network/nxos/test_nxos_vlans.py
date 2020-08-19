@@ -84,6 +84,13 @@ class TestNxosVlansModule(TestNxosModule):
         self.mock_edit_config.stop()
         self.mock_get_platform.stop()
 
+    def prepare(self, test=""):
+        if test == "_no_facts":
+            self.get_device_data.side_effect = self.load_from_file_no_facts
+        else:
+            self.get_device_data.side_effect = self.load_from_file
+        self.get_platform.return_value = "N9K-NXOSv"
+
     def load_from_file(self, *args, **kwargs):
         cmd = args[1]
         filename = str(cmd).split(" | ")[0].replace(" ", "_")
@@ -114,7 +121,7 @@ class TestNxosVlansModule(TestNxosModule):
           name test-changeme-not
           state suspend
         """
-        self.get_device_data.side_effect = self.load_from_file
+        self.prepare()
         self.get_platform.return_value = "N7K-Cxxx"
 
         playbook = dict(
@@ -208,8 +215,7 @@ class TestNxosVlansModule(TestNxosModule):
 
     def test_2(self):
         # Test when no 'config' key is used in playbook.
-        self.get_device_data.side_effect = self.load_from_file
-        self.get_platform.return_value = "N9K-NXOSv"
+        self.prepare()
         deleted = [
             "no vlan 1",
             "no vlan 3",
@@ -227,15 +233,13 @@ class TestNxosVlansModule(TestNxosModule):
 
     def test_3(self):
         # Test no facts returned
-        self.get_device_data.side_effect = self.load_from_file_no_facts
-        self.get_platform.return_value = "N9K-NXOSv"
+        self.prepare(test="_no_facts")
         playbook = dict(state="deleted")
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=False)
 
     def test_4(self):
-        self.get_device_data.side_effect = self.load_from_file
-        self.get_platform.return_value = "N9K-NXOSv"
+        self.prepare()
         # Misc tests to hit codepaths highlighted by code coverage tool as missed.
         playbook = dict(config=[dict(vlan_id=8, enabled=True)])
         replaced = [
