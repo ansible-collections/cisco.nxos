@@ -64,14 +64,6 @@ class TerminalModule(TerminalBase):
             br"Cannot apply ACL to an interface that is a port-channel member",
             re.I,
         ),
-        re.compile(
-            br"rewrite-rt-asn is valid only for EBGP peers",
-            re.I,
-        ),
-        re.compile(
-            br"as-override is valid only for EBGP peers",
-            re.I,
-        ),
     ]
 
     def on_become(self, passwd=None):

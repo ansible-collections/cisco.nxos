@@ -108,6 +108,7 @@ options:
         description:
         -  VxLAN evpn multisite Interface tracking. Supported only on selected model.
         type: str
+        version_added: 1.1.0
         choices:
         - fabric-tracking
         - dci-tracking

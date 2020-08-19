@@ -221,6 +221,7 @@ options:
       the retain route target option. If you are using route-map name please ensure
       that the name is not same as C(all) and C(default).
     type: str
+    version_added: 1.1.0
 """
 EXAMPLES = """
 # configure a simple address-family

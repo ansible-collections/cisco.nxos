@@ -97,6 +97,7 @@ options:
       series running 7.0(3)I7 or higher. Specify "default" to remove an exiting
       gateway config.
     type: str
+    version_added: 1.1.0
 """
 EXAMPLES = """
 - cisco.nxos.nxos_vxlan_vtep:

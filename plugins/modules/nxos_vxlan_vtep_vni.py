@@ -93,6 +93,7 @@ options:
     - enable
     - optimized
     type: str
+    version_added: 1.1.0
 """
 EXAMPLES = """
 - cisco.nxos.nxos_vxlan_vtep_vni:

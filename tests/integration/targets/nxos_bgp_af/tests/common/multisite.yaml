@@ -96,7 +96,6 @@
         asn: 65535
         afi: l2vpn
         safi: evpn
-        asn: 65535
         retain_route_target: all
         state: absent
 

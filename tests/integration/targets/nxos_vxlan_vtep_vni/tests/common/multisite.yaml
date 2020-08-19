@@ -106,4 +106,3 @@
 
 - debug: msg="END connection={{ ansible_connection }} nxos_vxlan_vtep_vni multisite 
     sanity test"
-

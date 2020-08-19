@@ -241,6 +241,7 @@ options:
     description:
     - Auto generate route targets for EBGP neighbor.
     type: bool
+    version_added: 1.1.0
 """
 EXAMPLES = """
 - name: configure RR client
@@ -796,7 +797,12 @@ def main():
     if candidate:
         candidate = candidate.items_text()
         if not module.check_mode:
-            load_config(module, candidate)
+            responses = load_config(module, candidate)
+            if responses:
+                for resp in responses:
+                    if resp:
+                        if resp.endswith("is valid only for EBGP peers"):
+                            module.fail_json(msg=resp)
         result["changed"] = True
         result["commands"] = candidate
     else:

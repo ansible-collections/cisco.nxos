@@ -180,6 +180,7 @@ options:
     - fabric_external
     - disable
     type: str
+    version_added: 1.1.0
 """
 EXAMPLES = """
 # create a new neighbor
