@@ -1,0 +1,65 @@
+---
+- debug:
+    msg: START nxos_vlans round trip integration tests on connection={{ ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: Apply the provided configuration (Base config)
+      register: base_config
+      cisco.nxos.nxos_vlans:
+        config:
+          - vlan_id: 2
+            name: test-vlan2
+            enabled: false
+          - vlan_id: 4
+            name: test-vlan3
+            enabled: true
+            state: active
+        state: merged
+      tags: base_config
+
+    - name: Gather VLANs facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - '!all'
+          - '!min'
+        gather_network_resources:
+          - 'vlans'
+    
+    - name: Set default vlan (vlan1) config and config to revert
+      set_fact:
+        default_vlan: "{{ ansible_facts.network_resources.vlans|selectattr('vlan_id', 'equalto', 1)|list }}"
+        config_to_revert:
+          - vlan_id: 3
+            name: test-vlan3
+            enabled: true
+            state: suspend
+          - vlan_id: 5
+            name: test-vlan5
+            enabled: false
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.nxos.nxos_vlans:
+        config: "{{ config_to_revert + default_vlan }}"
+        state: overridden
+
+    - assert:
+        that:
+        - result.changed == true
+
+    - name: Revert back to base config using facts round trip
+      register: revert
+      cisco.nxos.nxos_vlans:
+        config: "{{ ansible_facts['network_resources']['vlans'] }}"
+        state: overridden
+
+    - assert:
+        that:
+          - base_config['after'] == revert['after']
+  always:
+    - include_tasks: _remove_config.yaml
+
+- debug:
+    msg: END nxos_vlans round trip integration tests on connection={{ ansible_connection }}

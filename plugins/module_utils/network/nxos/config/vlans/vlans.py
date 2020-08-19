@@ -15,6 +15,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import re
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
@@ -36,12 +37,18 @@ class Vlans(ConfigBase):
     The nxos_vlans class
     """
 
-    gather_subset = ["!all", "!min"]
+    gather_subset = ["min"]
 
     gather_network_resources = ["vlans"]
 
     def __init__(self, module):
         super(Vlans, self).__init__(module)
+
+    def get_platform(self):
+        """Wrapper method for getting platform info
+        This method exists solely to allow the unit test framework to mock calls.
+        """
+        return self.facts.get("ansible_net_platform", "")
 
     def get_vlans_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
@@ -49,15 +56,13 @@ class Vlans(ConfigBase):
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
-        facts, _warnings = Facts(self._module).get_facts(
+        self.facts, _warnings = Facts(self._module).get_facts(
             self.gather_subset, self.gather_network_resources, data=data
         )
-        vlans_facts = facts["ansible_network_resources"].get("vlans")
+        vlans_facts = self.facts["ansible_network_resources"].get("vlans")
         if not vlans_facts:
             return []
 
-        # Remove vlan 1 from facts list
-        vlans_facts = [i for i in vlans_facts if (int(i["vlan_id"])) != 1]
         return vlans_facts
 
     def edit_config(self, commands):
@@ -125,17 +130,9 @@ class Vlans(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        config = self._module.params.get("config")
-        want = []
-        if config:
-            for w in config:
-                if int(w["vlan_id"]) == 1:
-                    self._module.fail_json(
-                        msg="Vlan 1 is not allowed to be managed by this module"
-                    )
-                want.append(remove_empties(w))
+        want = self._module.params.get("config") or []
         have = existing_vlans_facts
-        resp = self.set_state(want, have)
+        resp = self.set_state(self._sanitize(want), self._sanitize(have))
         return to_list(resp)
 
     def set_state(self, want, have):
@@ -169,6 +166,7 @@ class Vlans(ConfigBase):
                     commands.extend(self._state_merged(w, have))
                 elif state == "replaced":
                     commands.extend(self._state_replaced(w, have))
+
         return commands
 
     def remove_default_states(self, obj):
@@ -176,7 +174,7 @@ class Vlans(ConfigBase):
         """
         default_states = {"enabled": True, "state": "active", "mode": "ce"}
         for k in default_states.keys():
-            if obj[k] == default_states[k]:
+            if obj.get(k) == default_states[k]:
                 obj.pop(k, None)
         return obj
 
@@ -325,3 +323,12 @@ class Vlans(ConfigBase):
             diff = self.diff_of_dicts(w, obj_in_have)
             commands = self.add_commands(diff)
         return commands
+
+    def _sanitize(self, vlans):
+        sanitized_vlans = []
+        for vlan in vlans:
+            if not re.search("N[567]K", self.get_platform()):
+                if "mode" in vlan:
+                    del vlan["mode"]
+            sanitized_vlans.append(remove_empties(vlan))
+        return sanitized_vlans

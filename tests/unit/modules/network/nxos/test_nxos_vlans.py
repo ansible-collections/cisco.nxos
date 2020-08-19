@@ -71,40 +71,29 @@ class TestNxosVlansModule(TestNxosModule):
         )
         self.get_device_data = self.mock_get_device_data.start()
 
+        self.mock_get_platform = patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vlans.vlans.Vlans.get_platform"
+        )
+        self.get_platform = self.mock_get_platform.start()
+
     def tearDown(self):
         super(TestNxosVlansModule, self).tearDown()
         self.mock_FACT_LEGACY_SUBSETS.stop()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
+        self.mock_get_platform.stop()
 
-    def load_fixtures(self, commands=None, device=""):
-        self.mock_FACT_LEGACY_SUBSETS.return_value = dict()
-        self.edit_config.return_value = None
+    def load_from_file(self, *args, **kwargs):
+        cmd = args[1]
+        filename = str(cmd).split(" | ")[0].replace(" ", "_")
+        return load_fixture("nxos_vlans", filename)
 
-        def load_from_file(*args, **kwargs):
-            cmd = args[1]
-            filename = str(cmd).split(" | ")[0].replace(" ", "_")
-            return load_fixture("nxos_vlans", filename)
-
-        def load_from_file_no_facts(*args, **kwargs):
-            cmd = args[1]
-            filename = str(cmd).split(" | ")[0].replace(" ", "_")
-            filename += "_no_facts"
-            return load_fixture("nxos_vlans", filename)
-
-        def load_from_file_vlan_1(*args, **kwargs):
-            cmd = args[1]
-            filename = str(cmd).split(" | ")[0].replace(" ", "_")
-            filename += "_vlan_1"
-            return load_fixture("nxos_vlans", filename)
-
-        if device == "":
-            self.get_device_data.side_effect = load_from_file
-        elif device == "_no_facts":
-            self.get_device_data.side_effect = load_from_file_no_facts
-        elif device == "_vlan_1":
-            self.get_device_data.side_effect = load_from_file_vlan_1
+    def load_from_file_no_facts(self, *args, **kwargs):
+        cmd = args[1]
+        filename = str(cmd).split(" | ")[0].replace(" ", "_")
+        filename += "_no_facts"
+        return load_fixture("nxos_vlans", filename)
 
     def test_1(self):
         """
@@ -125,6 +114,9 @@ class TestNxosVlansModule(TestNxosModule):
           name test-changeme-not
           state suspend
         """
+        self.get_device_data.side_effect = self.load_from_file
+        self.get_platform.return_value = "N7K-Cxxx"
+
         playbook = dict(
             config=[
                 dict(vlan_id=4),
@@ -153,6 +145,7 @@ class TestNxosVlansModule(TestNxosModule):
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=merged)
 
+        self.get_platform.return_value = "N9K-NXOSv"
         deleted = [
             # Reset existing device state to default values. Scope is limited to
             # objects in the play when the 'config' key is specified. For vlans
@@ -166,10 +159,12 @@ class TestNxosVlansModule(TestNxosModule):
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=deleted)
 
+        self.get_platform.return_value = "N5K-Cxxx"
         overridden = [
             # The play is the source of truth. Similar to replaced but the scope
             # includes all objects on the device; i.e. it will also reset state
             # on objects not found in the play.
+            "no vlan 1",
             "no vlan 3",
             "vlan 5",
             "mode ce",
@@ -189,6 +184,7 @@ class TestNxosVlansModule(TestNxosModule):
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=overridden)
 
+        self.get_platform.return_value = "N7K-NXOSv"
         replaced = [
             # Scope is limited to objects in the play.
             # replaced should ignore existing vlan 3.
@@ -211,15 +207,11 @@ class TestNxosVlansModule(TestNxosModule):
         self.execute_module(changed=True, commands=replaced)
 
     def test_2(self):
-        # vlan 1 in playbook should raise
-        playbook = dict(config=[dict(vlan_id=1)], state="merged")
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(failed=True)
-
-    def test_3(self):
         # Test when no 'config' key is used in playbook.
+        self.get_device_data.side_effect = self.load_from_file
+        self.get_platform.return_value = "N9K-NXOSv"
         deleted = [
-            # Reset existing device state for all vlans found on device other than vlan 1.
+            "no vlan 1",
             "no vlan 3",
             "no vlan 4",
             "no vlan 5",
@@ -233,19 +225,17 @@ class TestNxosVlansModule(TestNxosModule):
             set_module_args(dict(state=test_state), ignore_provider_arg)
             self.execute_module(failed=True)
 
-    def test_4(self):
-        # Test only vlan 1 found
-        playbook = dict(state="deleted")
-        set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(device="_vlan_1", changed=False)
-
-    def test_5(self):
+    def test_3(self):
         # Test no facts returned
+        self.get_device_data.side_effect = self.load_from_file_no_facts
+        self.get_platform.return_value = "N9K-NXOSv"
         playbook = dict(state="deleted")
         set_module_args(playbook, ignore_provider_arg)
-        self.execute_module(device="_no_facts", changed=False)
+        self.execute_module(changed=False)
 
-    def test_6(self):
+    def test_4(self):
+        self.get_device_data.side_effect = self.load_from_file
+        self.get_platform.return_value = "N9K-NXOSv"
         # Misc tests to hit codepaths highlighted by code coverage tool as missed.
         playbook = dict(config=[dict(vlan_id=8, enabled=True)])
         replaced = [

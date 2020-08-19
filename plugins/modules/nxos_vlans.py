@@ -90,6 +90,9 @@ options:
   state:
     description:
     - The state of the configuration after module completion.
+    - The state I(overridden) would override the configuration of all the
+      VLANs on the device (including VLAN 1) with the provided configuration in
+      the task. Use caution with this state.
     type: str
     choices:
     - merged
@@ -185,7 +188,6 @@ EXAMPLES = """
 
 # After state:
 # ------------
-# vlan 1
 # vlan 5
 #   name test-vlan
 #   state active
@@ -212,7 +214,7 @@ EXAMPLES = """
 
 # After state:
 # ------------
-# vlan 1
+#
 
 # Using rendered
 
