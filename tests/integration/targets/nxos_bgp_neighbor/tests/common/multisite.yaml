@@ -1,0 +1,119 @@
+---
+- debug: msg="START connection={{ ansible_connection }} nxos_bgp_neighbor multisite sanity
+    test"
+
+- set_fact: intname="{{ nxos_int1 }}"
+
+- name: 'Setup: Disable features - multisite'
+  loop:
+    - bgp
+    - bfd
+    - nv overlay
+  ignore_errors: true
+  cisco.nxos.nxos_feature:
+    feature: '{{ item }}'
+    state: disabled
+
+- name: 'Setup: Enable features - multisite'
+  loop:
+    - bgp
+    - bfd
+    - nv overlay
+  cisco.nxos.nxos_feature:
+    feature: '{{ item }}'
+    state: enabled
+
+- name: Enable nv overlay evpn - multisite
+  when: platform is search('N9K')
+  cisco.nxos.nxos_config:
+    lines:
+      - nv overlay evpn
+
+- name: Enable multisite border gateway - multisite
+  ignore_errors: true
+  register: multiout
+  cisco.nxos.nxos_config:
+    lines:
+      - evpn multisite border-gateway 10
+
+- block:
+
+    - name: Configure BGP neighbor1 - multisite
+      register: result
+      cisco.nxos.nxos_bgp_neighbor: &id001
+        asn: 65535
+        neighbor: 192.0.2.3/32
+        remote_as: 33.22
+        description: just a description
+        shutdown: true
+        state: present
+        peer_type: fabric_border_leaf
+
+    - assert: &id002
+        that:
+          - result.changed == true
+
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_bgp_neighbor: *id001
+
+    - assert: &id003
+        that:
+          - result.changed == false
+
+    - name: Configure BGP neighbor2 - multisite
+      register: result
+      cisco.nxos.nxos_bgp_neighbor: &id004
+        asn: 65535
+        neighbor: 192.0.2.3/32
+        peer_type: disable
+
+    - assert: *id002
+
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_bgp_neighbor: *id004
+
+    - assert: *id003
+
+    - name: Configure BGP neighbor3 - multisite
+      register: result
+      cisco.nxos.nxos_bgp_neighbor: &id005
+        asn: 65535
+        neighbor: 192.0.2.3/32
+        peer_type: fabric_external
+
+    - assert: *id002
+
+    - name: Check Idempotence
+      register: result
+      cisco.nxos.nxos_bgp_neighbor: *id005
+
+    - assert: *id003
+
+    - name: Disable multisite border gateway - multisite
+      cisco.nxos.nxos_config:
+       lines:
+         - no evpn multisite border-gateway 10
+  when: multiout is not search("Invalid command")
+
+- name: 'Teardown: Disable features'
+  loop:
+    - bgp
+    - bfd
+    - nv overlay
+  ignore_errors: true
+  cisco.nxos.nxos_feature:
+    feature: '{{ item }}'
+    state: disabled
+
+- pause:
+    seconds: 5
+
+- name: Remove nv overlay evpn - multisite
+  when: platform is search('N9K')
+  cisco.nxos.nxos_config:
+    lines:
+      - no nv overlay evpn
+
+- debug: msg="END connection={{ ansible_connection }} nxos_bgp_neighbor multisite sanity test"

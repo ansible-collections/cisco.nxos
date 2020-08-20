@@ -152,3 +152,41 @@ class TestNxosBgpAfModule(TestNxosModule):
                 "no client-to-client reflection",
             ],
         )
+
+    def test_nxos_bgp_af_retain_route_target(self):
+        set_module_args(
+            dict(
+                asn=65535, afi="l2vpn", safi="evpn", retain_route_target="abc"
+            )
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "router bgp 65535",
+                "address-family l2vpn evpn",
+                "retain route-target route-map abc",
+            ],
+        )
+
+    def test_nxos_bgp_af_retain_route_target_all(self):
+        set_module_args(
+            dict(
+                asn=65535, afi="l2vpn", safi="evpn", retain_route_target="all"
+            )
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "router bgp 65535",
+                "address-family l2vpn evpn",
+                "retain route-target all",
+            ],
+        )
+
+    def test_nxos_bgp_af_retain_route_target_exists(self):
+        set_module_args(
+            dict(
+                asn=65535, afi="l2vpn", safi="evpn", retain_route_target="xyz"
+            )
+        )
+        self.execute_module(changed=False, commands=[])

@@ -99,6 +99,9 @@ class L3_interfacesFacts(object):
         config["unreachables"] = utils.parse_conf_cmd_arg(
             conf, "ip unreachables", True, False
         )
+        config["evpn_multisite_tracking"] = utils.parse_conf_arg(
+            conf, "evpn multisite"
+        )
         ipv4_match = re.compile(r"\n  ip address (.*)")
         matches = ipv4_match.findall(conf)
         if matches:

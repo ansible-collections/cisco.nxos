@@ -73,3 +73,47 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
     def test_nxos_vxlan_vtep_vni_absent_no_change(self):
         set_module_args(dict(interface="nve2", vni=6000, state="absent"))
         self.execute_module(changed=False, commands=[])
+
+    def test_nxos_vxlan_vtep_vni_multi_ingress_repl(self):
+        set_module_args(
+            dict(
+                interface="nve1",
+                vni=5000,
+                multisite_ingress_replication="enable",
+            )
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "interface nve1",
+                "member vni 5000",
+                "multisite ingress-replication",
+            ],
+        )
+
+    def test_nxos_vxlan_vtep_vni_multi_ingress_repl_opt(self):
+        set_module_args(
+            dict(
+                interface="nve1",
+                vni=5000,
+                multisite_ingress_replication="optimized",
+            )
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "interface nve1",
+                "member vni 5000",
+                "multisite ingress-replication optimized",
+            ],
+        )
+
+    def test_nxos_vxlan_vtep_vni_multi_ingress_repl_opt_exists(self):
+        set_module_args(
+            dict(
+                interface="nve1",
+                vni=6000,
+                multisite_ingress_replication="optimized",
+            )
+        )
+        self.execute_module(changed=False, commands=[])
