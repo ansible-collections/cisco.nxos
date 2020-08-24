@@ -62,6 +62,10 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                 "name": {"required": True, "type": "str"},
                 "redirects": {"type": "bool"},
                 "unreachables": {"type": "bool"},
+                "evpn_multisite_tracking": {
+                    "type": "str",
+                    "choices": ["fabric-tracking", "dci-tracking"],
+                },
             },
             "type": "list",
         },

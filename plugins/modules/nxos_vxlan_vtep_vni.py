@@ -85,12 +85,22 @@ options:
     - present
     - absent
     type: str
+  multisite_ingress_replication:
+    description:
+    - Enables multisite ingress replication.
+    choices:
+    - disable
+    - enable
+    - optimized
+    type: str
+    version_added: 1.1.0
 """
 EXAMPLES = """
 - cisco.nxos.nxos_vxlan_vtep_vni:
     interface: nve1
     vni: 6000
     ingress_replication: default
+    multisite_ingress_replication: enable
 """
 
 RETURN = """
@@ -98,7 +108,7 @@ commands:
     description: commands sent to the device
     returned: always
     type: list
-    sample: ["interface nve1", "member vni 6000"]
+    sample: ["interface nve1", "member vni 6000", "multisite ingress-replication"]
 """
 
 import re
@@ -129,6 +139,7 @@ PARAM_TO_COMMAND_KEYMAP = {
     "peer_list": "peer-ip",
     "suppress_arp": "suppress-arp",
     "suppress_arp_disable": "suppress-arp disable",
+    "multisite_ingress_replication": "multisite ingress-replication",
 }
 
 
@@ -148,6 +159,14 @@ def get_value(arg, config, module):
         value = []
         if has_command_val:
             value = has_command_val
+    elif arg == "multisite_ingress_replication":
+        has_command = re.search(r"^\s+{0}$".format(command), config, re.M)
+        has_command_val = command_val_re.search(config, re.M)
+        value = "disable"
+        if has_command:
+            value = "enable"
+        elif has_command_val:
+            value = "optimized"
     else:
         value = ""
         has_command_val = command_val_re.search(config, re.M)
@@ -266,6 +285,22 @@ def state_present(module, existing, proposed, candidate):
             else:
                 if key.replace(" ", "_").replace("-", "_") in BOOL_PARAMS:
                     commands.append("no {0}".format(key.lower()))
+        elif (
+            key == "multisite ingress-replication"
+            and value != existing_commands.get(key)
+        ):
+            vni_command = "member vni {0}".format(module.params["vni"])
+            if vni_command not in commands:
+                commands.append("member vni {0}".format(module.params["vni"]))
+            if value == "disable":
+                command = "no {0}".format(key)
+                commands.append(command)
+            elif value == "enable":
+                command = "{0}".format(key)
+                commands.append(command)
+            elif value == "optimized":
+                command = "{0} {1}".format(key, value)
+                commands.append(command)
         else:
             command = "{0} {1}".format(key, value.lower())
             commands.append(command)
@@ -339,6 +374,11 @@ def main():
         state=dict(
             choices=["present", "absent"], default="present", required=False
         ),
+        multisite_ingress_replication=dict(
+            required=False,
+            type="str",
+            choices=["enable", "optimized", "disable"],
+        ),
     )
 
     argument_spec.update(nxos_argument_spec)
@@ -375,6 +415,16 @@ def main():
             else:
                 stripped_peer_list = list(map(str.strip, peer_list))
                 module.params["peer_list"] = stripped_peer_list
+
+    if (
+        module.params["multisite_ingress_replication"] == "enable"
+        or module.params["multisite_ingress_replication"] == "optimized"
+    ):
+        if module.params["ingress_replication"] == "static":
+            module.fail_json(
+                msg="ingress_replication=static is not allowed "
+                "when using multisite_ingress_replication"
+            )
 
     state = module.params["state"]
     args = PARAM_TO_COMMAND_KEYMAP.keys()

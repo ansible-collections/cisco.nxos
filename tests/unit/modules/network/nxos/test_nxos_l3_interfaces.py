@@ -745,3 +745,235 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         playbook["state"] = "overridden"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=overridden, device=platform)
+
+    def test_10(self):
+        # basic tests
+        existing = dedent(
+            """\
+          interface mgmt0
+            ip address 10.0.0.254/24
+          interface Ethernet1/1
+            ip address 10.1.1.1/24
+          interface Ethernet1/2
+            ip address 10.1.2.1/24
+            evpn multisite fabric-tracking
+          interface Ethernet1/3
+            ip address 10.1.3.1/24
+            evpn multisite dci-tracking
+        """
+        )
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_CMD: existing
+        }
+        playbook = dict(
+            config=[
+                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
+                dict(name="Ethernet1/1", ipv4=[{"address": "192.168.1.1/24"}]),
+                dict(name="Ethernet1/2"),
+                # Eth1/3 not present! Thus overridden should set Eth1/3 to defaults;
+                # replaced should ignore Eth1/3.
+            ]
+        )
+        # Expected result commands for each 'state'
+        merged = ["interface Ethernet1/1", "ip address 192.168.1.1/24"]
+        deleted = [
+            "interface mgmt0",
+            "no ip address",
+            "interface Ethernet1/1",
+            "no ip address",
+            "interface Ethernet1/2",
+            "no ip address",
+            "no evpn multisite fabric-tracking",
+        ]
+        replaced = [
+            "interface Ethernet1/1",
+            "ip address 192.168.1.1/24",
+            "interface Ethernet1/2",
+            "no ip address",
+            "no evpn multisite fabric-tracking",
+        ]
+        overridden = [
+            "interface Ethernet1/1",
+            "ip address 192.168.1.1/24",
+            "interface Ethernet1/2",
+            "no ip address",
+            "no evpn multisite fabric-tracking",
+            "interface Ethernet1/3",
+            "no ip address",
+            "no evpn multisite dci-tracking",
+        ]
+
+        playbook["state"] = "merged"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=merged)
+
+        playbook["state"] = "deleted"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=deleted)
+
+        playbook["state"] = "replaced"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=replaced)
+
+        playbook["state"] = "overridden"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=overridden)
+
+    def test_11(self):
+        # IPv4-centric testing
+        existing = dedent(
+            """\
+          interface mgmt0
+            ip address 10.0.0.254/24
+          interface Ethernet1/1
+            no ip redirects
+            ip address 10.1.1.1/24 tag 11
+            ip address 10.2.2.2/24 secondary tag 12
+            ip address 10.3.3.3/24 secondary
+            ip address 10.4.4.4/24 secondary tag 14
+            ip address 10.5.5.5/24 secondary tag 15
+            ip address 10.6.6.6/24 secondary tag 16
+          interface Ethernet1/2
+            ip address 10.12.12.12/24
+          interface Ethernet1/3
+            ip address 10.13.13.13/24
+          interface Ethernet1/5
+            no ip redirects
+            ip address 10.15.15.15/24
+            ip address 10.25.25.25/24 secondary
+            evpn multisite fabric-tracking
+        """
+        )
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_CMD: existing
+        }
+        playbook = dict(
+            config=[
+                dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
+                dict(
+                    name="Ethernet1/1",
+                    ipv4=[
+                        {
+                            "address": "10.1.1.1/24",
+                            "secondary": True,
+                        },  # prim->sec
+                        {
+                            "address": "10.2.2.2/24",
+                            "secondary": True,
+                        },  # rmv tag
+                        {"address": "10.3.3.3/24", "tag": 3},  # become prim
+                        {
+                            "address": "10.4.4.4/24",
+                            "secondary": True,
+                            "tag": 14,
+                        },  # no chg
+                        {
+                            "address": "10.5.5.5/24",
+                            "secondary": True,
+                            "tag": 55,
+                        },  # chg tag
+                        {
+                            "address": "10.7.7.7/24",
+                            "secondary": True,
+                            "tag": 77,
+                        },
+                    ],
+                ),  # new ip
+                dict(name="Ethernet1/2"),
+                dict(
+                    name="Ethernet1/4",
+                    ipv4=[
+                        {"address": "10.40.40.40/24"},
+                        {"address": "10.41.41.41/24", "secondary": True},
+                    ],
+                    evpn_multisite_tracking="dci-tracking",
+                ),
+                dict(name="Ethernet1/5"),
+            ]
+        )
+        # Expected result commands for each 'state'
+        merged = [
+            "interface Ethernet1/1",
+            "no ip address 10.5.5.5/24 secondary",
+            "no ip address 10.2.2.2/24 secondary",
+            "no ip address 10.3.3.3/24 secondary",
+            "ip address 10.3.3.3/24 tag 3",  # Changes primary
+            "ip address 10.1.1.1/24 secondary",
+            "ip address 10.2.2.2/24 secondary",
+            "ip address 10.7.7.7/24 secondary tag 77",
+            "ip address 10.5.5.5/24 secondary tag 55",
+            "interface Ethernet1/4",
+            "ip address 10.40.40.40/24",
+            "ip address 10.41.41.41/24 secondary",
+            "evpn multisite dci-tracking",
+        ]
+        deleted = [
+            "interface mgmt0",
+            "no ip address",
+            "interface Ethernet1/1",
+            "no ip address",
+            "interface Ethernet1/2",
+            "no ip address",
+            "interface Ethernet1/5",
+            "no ip address",
+            "no evpn multisite fabric-tracking",
+        ]
+        replaced = [
+            "interface Ethernet1/1",
+            "no ip address 10.5.5.5/24 secondary",
+            "no ip address 10.2.2.2/24 secondary",
+            "no ip address 10.3.3.3/24 secondary",
+            "ip address 10.3.3.3/24 tag 3",  # Changes primary
+            "ip address 10.1.1.1/24 secondary",
+            "ip address 10.2.2.2/24 secondary",
+            "ip address 10.7.7.7/24 secondary tag 77",
+            "ip address 10.5.5.5/24 secondary tag 55",
+            "interface Ethernet1/2",
+            "no ip address",
+            "interface Ethernet1/4",
+            "ip address 10.40.40.40/24",
+            "ip address 10.41.41.41/24 secondary",
+            "evpn multisite dci-tracking",
+            "interface Ethernet1/5",
+            "no ip address",
+            "no evpn multisite fabric-tracking",
+        ]
+        overridden = [
+            "interface Ethernet1/1",
+            "no ip address 10.6.6.6/24 secondary",
+            "no ip address 10.5.5.5/24 secondary",
+            "no ip address 10.2.2.2/24 secondary",
+            "no ip address 10.3.3.3/24 secondary",
+            "ip address 10.3.3.3/24 tag 3",  # Changes primary
+            "ip address 10.1.1.1/24 secondary",
+            "ip address 10.2.2.2/24 secondary",
+            "ip address 10.7.7.7/24 secondary tag 77",
+            "ip address 10.5.5.5/24 secondary tag 55",
+            "interface Ethernet1/2",
+            "no ip address",
+            "interface Ethernet1/3",
+            "no ip address",
+            "interface Ethernet1/4",
+            "ip address 10.40.40.40/24",
+            "ip address 10.41.41.41/24 secondary",
+            "evpn multisite dci-tracking",
+            "interface Ethernet1/5",
+            "no ip address",
+            "no evpn multisite fabric-tracking",
+        ]
+
+        playbook["state"] = "merged"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=merged)
+
+        playbook["state"] = "deleted"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=deleted)
+
+        playbook["state"] = "replaced"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=replaced)
+
+        playbook["state"] = "overridden"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=overridden)

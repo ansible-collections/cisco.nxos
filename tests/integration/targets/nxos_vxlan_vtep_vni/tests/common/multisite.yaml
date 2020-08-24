@@ -1,0 +1,108 @@
+---
+- debug: msg="START connection={{ ansible_connection }} nxos_vxlan_vtep_vni multisite 
+    sanity test"
+
+- name: Disable feature nv overlay - multisite
+  ignore_errors: true
+  cisco.nxos.nxos_feature:
+    feature: nv overlay
+    state: disabled
+
+- name: Enable feature nv overlay - multisite
+  ignore_errors: true
+  cisco.nxos.nxos_feature:
+    feature: nv overlay
+    state: enabled
+
+- name: Enable nv overlay evpn - multisite
+  when: platform is search('N9K')
+  cisco.nxos.nxos_config:
+    lines:
+      - nv overlay evpn
+
+- name: Enable multisite border gateway - multisite
+  ignore_errors: true
+  register: multiout
+  cisco.nxos.nxos_config:
+    lines:
+      - evpn multisite border-gateway 10
+
+- block:
+
+    - name: configure vxlan_vtep - multisite
+      cisco.nxos.nxos_vxlan_vtep:
+        interface: nve1
+        host_reachability: true
+
+    - name: Configure multisite ingress replication - multisite
+      register: result
+      cisco.nxos.nxos_vxlan_vtep_vni: &id001
+        interface: nve1
+        vni: 8000
+        multisite_ingress_replication: enable
+
+    - assert: &id002
+        that:
+          - result.changed == true
+
+    - name: Idempotence check
+      register: result
+      cisco.nxos.nxos_vxlan_vtep_vni: *id001
+
+    - assert: &id003
+        that:
+          - result.changed == false
+
+    - name: Remove multisite ingress replication - multisite
+      register: result
+      cisco.nxos.nxos_vxlan_vtep_vni: &id004
+        interface: nve1
+        vni: 8000
+        multisite_ingress_replication: disable
+
+    - assert: *id002
+
+    - name: Idempotence check
+      register: result
+      cisco.nxos.nxos_vxlan_vtep_vni: *id004
+
+    - assert: *id003
+
+    - name: Configure optimized multisite ingress replication - multisite
+      register: result
+      cisco.nxos.nxos_vxlan_vtep_vni: &id005
+        interface: nve1
+        vni: 8000
+        multisite_ingress_replication: optimized 
+
+    - assert: *id002
+
+    - name: Idempotence check
+      register: result
+      cisco.nxos.nxos_vxlan_vtep_vni: *id005
+
+    - assert: *id003
+
+    - name: Disable multisite border gateway - multisite
+      cisco.nxos.nxos_config:
+       lines:
+         - no evpn multisite border-gateway 10
+  when: multiout is not search("Invalid command")
+
+- name: Disable feature nv overlay - multisite
+  ignore_errors: true
+  cisco.nxos.nxos_feature:
+    feature: nv overlay
+    state: disabled
+
+- pause:
+    seconds: 5
+
+- name: Remove nv overlay evpn - multisite
+  when: platform is search('N9K')
+  cisco.nxos.nxos_config:
+    lines:
+      - no nv overlay evpn
+
+- debug: msg="END connection={{ ansible_connection }} nxos_vxlan_vtep_vni multisite 
+    sanity test"
