@@ -67,10 +67,13 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acls
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.static_routes.static_routes import (
     Static_routesFacts,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv2.ospfv2 import (
     Ospfv2Facts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv3.ospfv3 import (
+    Ospfv3Facts,
+)
+
 
 FACT_LEGACY_SUBSETS = dict(
     default=Default,
@@ -97,6 +100,7 @@ FACT_RESOURCE_SUBSETS = dict(
     acls=AclsFacts,
     static_routes=Static_routesFacts,
     ospfv2=Ospfv2Facts,
+    ospfv3=Ospfv3Facts,
 )
 
 
