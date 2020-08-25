@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Allow facts round trip to work on nxos_vlans (https://github.com/ansible-collections/cisco.nxos/pull/141).
