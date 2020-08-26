@@ -26,7 +26,8 @@
     - assert:
         that:
           - result.changed == true
-          - result.before|length == 0
+          # default vlan
+          - result.before|length == 1
           - "'vlan 5' in result.commands"
           - "'name vlan5' in result.commands"
           - "'vlan 6' in result.commands"
@@ -43,8 +44,7 @@
 
     - assert:
         that:
-          - result.after|length == (ansible_facts.network_resources.vlans|length
-            - 1)
+          - result.after|length == ansible_facts.network_resources.vlans|length
 
     - name: Idempotence - Merged
       register: result

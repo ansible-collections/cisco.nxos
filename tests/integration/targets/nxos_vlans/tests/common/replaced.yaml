@@ -36,8 +36,7 @@
 
     - assert:
         that:
-          - result.before|length == (ansible_facts.network_resources.vlans|length
-            - 1)
+          - result.before|length == ansible_facts.network_resources.vlans|length
           - result.changed == true
           - "'vlan 6' in result.commands"
           - "'no name' in result.commands"
@@ -49,8 +48,7 @@
 
     - assert:
         that:
-          - result.after|length == (ansible_facts.network_resources.vlans|length
-            - 1)
+          - result.after|length == ansible_facts.network_resources.vlans|length
 
     - name: Idempotence - Replaced
       register: result

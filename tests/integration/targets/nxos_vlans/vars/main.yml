@@ -1,4 +1,10 @@
 gathered:
+  - vlan_id: 1
+    enabled: True
+    mode: "ce"
+    state: active
+    name: default
+
   - vlan_id: 5
     enabled: True
     mode: "ce"
@@ -18,6 +24,12 @@ gathered:
     mapped_vni: 190
 
 parsed:
+  - vlan_id: 1
+    enabled: True
+    mode: "ce"
+    state: active
+    name: default
+
   - vlan_id: 5
     enabled: True
     mode: "ce"

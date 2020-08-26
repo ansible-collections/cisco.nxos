@@ -24,21 +24,24 @@
           - '!all'
           - '!min'
         gather_network_resources: vlans
+    
+    - name: Set default vlan (vlan1) config and config to revert
+      set_fact:
+        default_vlan: "{{ ansible_facts.network_resources.vlans|selectattr('vlan_id', 'equalto', 1)|list }}"
+        config_to_override:
+          - vlan_id: 9
+            name: test-vlan9
+            enabled: false
 
     - name: Overridden
       register: result
       cisco.nxos.nxos_vlans: &id002
-        config:
-
-          - vlan_id: 9
-            name: test-vlan9
-            enabled: false
+        config: "{{ default_vlan + config_to_override }}"
         state: overridden
 
     - assert:
         that:
-          - result.before|length == (ansible_facts.network_resources.vlans|length
-            - 1)
+          - result.before|length == ansible_facts.network_resources.vlans|length
           - result.changed == true
           - "'no vlan 5' in result.commands"
           - "'no vlan 6' in result.commands"
@@ -52,8 +55,7 @@
 
     - assert:
         that:
-          - result.after|length == (ansible_facts.network_resources.vlans|length
-            - 1)
+          - result.after|length == ansible_facts.network_resources.vlans|length
 
     - name: Idempotence - Overridden
       register: result
