@@ -194,8 +194,9 @@ This collection follows the Ansible project's
 Please read and familiarize yourself with this document.
 
 
-## Changelogs
-<!--Add a link to a changelog.md file or an external docsite to cover this information. -->
+## Release notes
+
+Release notes are available [here](https://github.com/ansible-collections/cisco.nxos/blob/main/changelogs/CHANGELOG.rst).
 
 ## Roadmap
 

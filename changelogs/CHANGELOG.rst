@@ -4,6 +4,20 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+
+v1.1.0
+======
+
+Minor Changes
+-------------
+
+- Add N9K multisite support(https://github.com/ansible-collections/cisco.nxos/pull/142)
+
+Bugfixes
+--------
+
+- Allow facts round trip to work on nxos_vlans (https://github.com/ansible-collections/cisco.nxos/pull/141).
+
 v1.0.2
 ======
 

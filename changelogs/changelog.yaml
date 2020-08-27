@@ -319,3 +319,13 @@ releases:
     fragments:
     - 1.0.2.yaml
     release_date: '2020-08-07'
+  1.1.0:
+    changes:
+      bugfixes:
+      - Allow facts round trip to work on nxos_vlans (https://github.com/ansible-collections/cisco.nxos/pull/141).
+      minor_changes:
+      - Add N9K multisite support(https://github.com/ansible-collections/cisco.nxos/pull/142)
+    fragments:
+    - 141_fix_nxos_vlans.yaml
+    - 142-N9K-multisite.yaml
+    release_date: '2020-08-28'

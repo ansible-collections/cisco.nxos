@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Add N9K multisite support(https://github.com/ansible-collections/cisco.nxos/pull/142)
