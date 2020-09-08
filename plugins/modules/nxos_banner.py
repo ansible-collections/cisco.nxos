@@ -31,7 +31,7 @@ description:
 - This will configure both exec and motd banners on remote devices running Cisco NXOS.
   It allows playbooks to add or remove banner text from the active running configuration.
 notes:
-- Since responses from the device are always read with surrounding whitespaces stripped, 
+- Since responses from the device are always read with surrounding whitespaces stripped,
   tasks that configure banners with preceeding or trailing whitespaces will not be idempotent.
 version_added: 1.0.0
 options:
