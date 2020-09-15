@@ -93,3 +93,9 @@ class TestNxosBannerModule(TestNxosModule):
         commands = ["no banner motd"]
         self.run_commands.return_value = commands
         self.execute_module(changed=True, commands=commands)
+
+    def test_nxos_banner_with_preserved_spaces(self):
+        set_module_args(dict(banner="motd", text="  foo \n"))
+        commands = ["banner motd @\n  foo \n\n@"]
+        self.run_commands.return_value = commands
+        self.execute_module(changed=True, commands=commands)

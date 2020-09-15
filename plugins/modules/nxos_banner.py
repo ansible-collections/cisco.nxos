@@ -30,6 +30,9 @@ short_description: Manage multiline banners on Cisco NXOS devices
 description:
 - This will configure both exec and motd banners on remote devices running Cisco NXOS.
   It allows playbooks to add or remove banner text from the active running configuration.
+notes:
+- Since responses from the device are always read with surrounding whitespaces stripped,
+  tasks that configure banners with preceeding or trailing whitespaces will not be idempotent.
 version_added: 1.0.0
 options:
   banner:
@@ -91,6 +94,7 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils._text import to_text
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -123,7 +127,7 @@ def map_obj_to_commands(want, have, module):
     elif state == "present" and want.get("text") != have.get("text"):
         banner_cmd = "banner %s @\n%s\n@" % (
             module.params["banner"],
-            want["text"].strip(),
+            want["text"],
         )
         commands.append(banner_cmd)
 
@@ -164,12 +168,9 @@ def map_config_to_obj(module):
 
 def map_params_to_obj(module):
     text = module.params["text"]
-    if text:
-        text = str(text).strip()
-
     return {
         "banner": module.params["banner"],
-        "text": text,
+        "text": to_text(text) if text else None,
         "state": module.params["state"],
     }
 

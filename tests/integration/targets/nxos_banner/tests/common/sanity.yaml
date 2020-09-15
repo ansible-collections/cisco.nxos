@@ -1,10 +1,12 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_banner sanity test"
 
-- set_fact: banner_exec_image_ok
+- set_fact: 
+    banner_exec_image_ok: True
   when: platform is search("N7K|N3K-F")
 
-- set_fact: banner_motd_image_ok
+- set_fact: 
+    banner_motd_image_ok: True
   when: imagetag is not search("I7") and ansible_connection != "ansible.netcommon.httpapi"
 
 - block:
@@ -20,7 +22,7 @@
       register: result
       cisco.nxos.nxos_banner: &id001
         banner: exec
-        text: "this is my exec banner\nthat has a multiline\nstring\n"
+        text: "this is my exec banner\nthat has a multiline\nstring"
         state: present
 
     - assert:
@@ -40,7 +42,7 @@
 
     - name: teardown exec
       cisco.nxos.nxos_banner: *id002
-  when: banner_exec_image_ok is defined
+  when: banner_exec_image_ok == True
 
 - block:
 
@@ -53,7 +55,7 @@
       register: result
       cisco.nxos.nxos_banner: &id003
         banner: motd
-        text: "Junk motd banner\nover multiple lines\n"
+        text: "Junk motd banner\nover multiple lines"
         state: present
 
     - assert:
@@ -71,6 +73,6 @@
 
     - name: teardown motd
       cisco.nxos.nxos_banner: *id004
-  when: banner_motd_image_ok is defined
+  when: banner_motd_image_ok == True
 
 - debug: msg="END connection={{ ansible_connection }} nxos_banner sanity test"
