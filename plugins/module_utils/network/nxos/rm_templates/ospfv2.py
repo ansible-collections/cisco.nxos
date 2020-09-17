@@ -33,7 +33,7 @@ def _tmplt_default_information(proc):
 
 def _tmplt_log_adjacency_changes(proc):
     command = "log-adjacency-changes"
-    if proc.get("detail") is True:
+    if proc.get("log_adjacency_changes").get("detail", False) is True:
         command += " detail"
     return command
 
