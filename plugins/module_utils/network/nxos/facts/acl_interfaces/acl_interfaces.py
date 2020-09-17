@@ -101,28 +101,24 @@ class Acl_interfacesFacts(object):
         :returns: The generated config
         """
         config = deepcopy(spec)
-        name = conf[0].strip()
-        config["name"] = normalize_interface(name)
+        config["name"] = conf[0].strip()
         config["access_groups"] = []
         v4 = {"afi": "ipv4", "acls": []}
         v6 = {"afi": "ipv6", "acls": []}
         for c in conf[1:]:
             if c:
-                acl4 = re.search(r"ip( port)? access-group (\w*) (\w*)", c)
-                acl6 = re.search(r"ipv6( port)? traffic-filter (\w*) (\w*)", c)
+                acl4 = re.search(
+                    r"ip(?P<port>\sport)?\saccess-group\s(?P<name>\S+)\s(?P<dir>in|out)",
+                    c,
+                )
+                acl6 = re.search(
+                    r"ipv6(?P<port>\sport)?\straffic-filter\s(?P<name>\S+)\s(?P<dir>in|out)",
+                    c,
+                )
                 if acl4:
-                    acl = {
-                        "name": acl4.group(2).strip(),
-                        "direction": acl4.group(3).strip(),
-                    }
-                    if acl4.group(1):
-                        acl.update({"port": True})
-                    v4["acls"].append(acl)
+                    v4["acls"].append(self._parse(acl4))
                 elif acl6:
-                    acl = {"name": acl6.group(2), "direction": acl6.group(3)}
-                    if acl6.group(1):
-                        acl.update({"port": True})
-                    v6["acls"].append(acl)
+                    v6["acls"].append(self._parse(acl6))
 
         if len(v4["acls"]) > 0:
             config["access_groups"].append(v4)
@@ -130,3 +126,10 @@ class Acl_interfacesFacts(object):
             config["access_groups"].append(v6)
 
         return utils.remove_empties(config)
+
+    def _parse(self, data):
+        return {
+            "name": data.group("name").strip(),
+            "direction": data.group("dir").strip(),
+            "port": True if data.group("port") else None,
+        }

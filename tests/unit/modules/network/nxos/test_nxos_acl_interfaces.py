@@ -84,7 +84,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                         access_groups=[
                             dict(
                                 afi="ipv4",
-                                acls=[dict(name="ACL1v4", direction="in")],
+                                acls=[dict(name="ACL1-v4", direction="in")],
                             )
                         ],
                     )
@@ -92,7 +92,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                 state="merged",
             )
         )
-        commands = ["interface Ethernet1/3", "ip access-group ACL1v4 in"]
+        commands = ["interface Ethernet1/3", "ip access-group ACL1-v4 in"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_acl_interfaces_merged_idempotent(self):
