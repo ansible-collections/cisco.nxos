@@ -24,11 +24,15 @@ DOCUMENTATION = """
 module: nxos_smu
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Perform SMUs on Cisco NX-OS devices.
+short_description: (deprecated, removed after 2022-10-01) Perform SMUs on Cisco NX-OS devices.
 description:
 - Perform software maintenance upgrades (SMUs) on Cisco NX-OS devices.
 version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
+deprecated:
+  alternative: nxos_rpm
+  why: Updated modules released with more functionality.
+  removed_at_date: '2022-10-01'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - The module can only activate and commit a package, not remove or deactivate it.
@@ -110,13 +114,11 @@ def get_commands(module, pkg, file_system):
         commands.append("install add {0}{1}".format(file_system, pkg))
 
     if fixed_pkg not in active_body[0]:
-        commands.append(
-            "install activate {0}{1} force".format(file_system, pkg)
-        )
+        commands.append("install activate {0} force".format(pkg))
     command = "show install committed"
     install_body = execute_show_command(command, module)
     if fixed_pkg not in install_body[0]:
-        commands.append("install commit {0}{1}".format(file_system, pkg))
+        commands.append("install commit {0}".format(pkg))
 
     return commands
 
