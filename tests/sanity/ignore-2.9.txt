@@ -19,3 +19,5 @@ plugins/modules/nxos_static_route.py validate-modules:invalid-documentation # re
 plugins/modules/nxos_vlan.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
 plugins/modules/nxos_vlan.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/action/nxos.py action-plugin-docs # base class for deprecated network platform modules using `connection: local`
+plugins/modules/nxos_smu.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_smu.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
