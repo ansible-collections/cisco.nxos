@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fix for nxos smu issue (https://github.com/ansible-collections/cisco.nxos/pull/160).
