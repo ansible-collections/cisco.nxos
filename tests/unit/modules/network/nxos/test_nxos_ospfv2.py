@@ -76,7 +76,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                     route_map="direct-connect",
                                 ),
                             ],
-                            log_adjacency_changes=dict(detail=True)
+                            log_adjacency_changes=dict(detail=True),
                         ),
                         dict(
                             process_id="200",
