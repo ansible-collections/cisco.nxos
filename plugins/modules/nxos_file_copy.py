@@ -78,6 +78,20 @@ options:
       the operation is NOT idempotent.
     type: bool
     default: false
+  file_pull_protocol:
+    description:
+    - When file_pull is True, this can be used to define the transfer protocol for
+      copying file from remote to the NXOS device.
+    - When (file_pull is False), this is not used.
+    default: 'scp'
+    choices:
+    - scp
+    - sftp
+    - ftp
+    - http
+    - https
+    - tftp
+    type: str
   file_pull_compact:
     description:
     - When file_pull is True, this is used to compact nxos image files. This option
@@ -138,6 +152,19 @@ EXAMPLES = """
     file_pull: true
     local_file: xyz
     local_file_directory: dir1/dir2/dir3
+    remote_file: /mydir/abc
+    remote_scp_server: 192.168.0.1
+    remote_scp_server_user: myUser
+    remote_scp_server_password: myPassword
+    vrf: management
+
+# Initiate file copy from the nxos device to transfer file from a ftp server back to the nxos device.
+# remote_scp_server_user and remote_scp_server_password are used to login to the FTP server.
+- name: initiate file copy from device
+  cisco.nxos.nxos_file_copy:
+    file_pull: true
+    file_pull_protocol: ftp
+    local_file: xyz
     remote_file: /mydir/abc
     remote_scp_server: 192.168.0.1
     remote_scp_server_user: myUser
