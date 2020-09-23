@@ -13,7 +13,7 @@
           interface port-channel11
           interface port-channel12
           interface Ethernet1/800
-            channel-group 10 mode active
+            channel-group 10
             no shutdown
           interface Ethernet1/801
             channel-group 10 mode active
