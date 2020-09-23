@@ -59,7 +59,11 @@ class ActionModule(ActionBase):
             file_system=dict(type="str", default="bootflash:"),
             file_pull=dict(type="bool", default=False),
             file_pull_timeout=dict(type="int", default=300),
-            file_pull_protocol=dict(type="str", default="scp", choices=['scp', 'sftp', 'http', 'https', 'tftp', 'ftp']),
+            file_pull_protocol=dict(
+                type="str",
+                default="scp",
+                choices=['scp', 'sftp', 'http', 'https', 'tftp', 'ftp'],
+            ),
             file_pull_compact=dict(type="bool", default=False),
             file_pull_kstack=dict(type="bool", default=False),
             local_file=dict(type="path"),
@@ -102,10 +106,14 @@ class ActionModule(ActionBase):
                     % (key, type(playvals[key]), option_type, to_native(e))
                 )
 
-            if "choices" in argument_spec[key] and playvals[key] not in argument_spec[key].get("choices"):
+            if "choices" in argument_spec[key] and playvals[
+                key
+            ] not in argument_spec[key].get("choices"):
                 raise AnsibleError(
                     "argument {0} with value {1} is not valid. Allowed values are {2}". format(
-                        key, playvals[key], ", ".join(argument_spec[key].get("choices"))
+                        key,
+                        playvals[key],
+                        ", ".join(argument_spec[key].get("choices")),
                     )
                 )
 
@@ -288,7 +296,7 @@ class ActionModule(ActionBase):
         port = self.playvals["connect_ssh_port"]
 
         # Build copy command components that will be used to initiate copy from the nxos device.
-        cmdroot = "copy " +  self.playvals["file_pull_protocol"] + "://"
+        cmdroot = "copy " + self.playvals["file_pull_protocol"] + "://"
         ruser = self.playvals["remote_scp_server_user"] + "@"
         rserver = self.playvals["remote_scp_server"]
         rfile = self.playvals["remote_file"] + " "
