@@ -62,7 +62,7 @@ class ActionModule(ActionBase):
             file_pull_protocol=dict(
                 type="str",
                 default="scp",
-                choices=['scp', 'sftp', 'http', 'https', 'tftp', 'ftp'],
+                choices=["scp", "sftp", "http", "https", "tftp", "ftp"],
             ),
             file_pull_compact=dict(type="bool", default=False),
             file_pull_kstack=dict(type="bool", default=False),
@@ -110,7 +110,7 @@ class ActionModule(ActionBase):
                 key
             ] not in argument_spec[key].get("choices"):
                 raise AnsibleError(
-                    "argument {0} with value {1} is not valid. Allowed values are {2}". format(
+                    "argument {0} with value {1} is not valid. Allowed values are {2}".format(
                         key,
                         playvals[key],
                         ", ".join(argument_spec[key].get("choices")),
