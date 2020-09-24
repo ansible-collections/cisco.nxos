@@ -246,7 +246,7 @@ class Ospfv3Template(NetworkTemplate):
             'shared': True,
         },
         {
-            "name": "address_family.area.default_cost",
+            "name": "area.default_cost",
             "getval": re.compile(
                 r"""
                 \s+area\s(?P<area_id>\S+)\s
@@ -268,7 +268,7 @@ class Ospfv3Template(NetworkTemplate):
             },
         },
         {
-            "name": "address_family.area.filter_list",
+            "name": "area.filter_list",
             "getval": re.compile(
                 r"""
                 \s+area\s(?P<area_id>\S+)
@@ -295,7 +295,7 @@ class Ospfv3Template(NetworkTemplate):
             },
         },
         {
-            "name": "address_family.area.ranges",
+            "name": "area.ranges",
             "getval": re.compile(
                 r"""
                 \s+area\s(?P<area_id>\S+)
@@ -325,7 +325,7 @@ class Ospfv3Template(NetworkTemplate):
             },
         },
         {
-            "name": "address_family.default_information.originate",
+            "name": "default_information.originate",
             "getval": re.compile(
                 r"""
                 \s+default-information
@@ -349,7 +349,7 @@ class Ospfv3Template(NetworkTemplate):
             },
         },
         {
-            "name": "address_family.distance",
+            "name": "distance",
             "getval": re.compile(
                 r"""
                 \s+distance
@@ -364,7 +364,7 @@ class Ospfv3Template(NetworkTemplate):
             },
         },
         {
-            "name": "address_family.maximum_paths",
+            "name": "maximum_paths",
             "getval": re.compile(
                 r"""
                 \s+maximum-paths
@@ -379,7 +379,7 @@ class Ospfv3Template(NetworkTemplate):
             },
         },
         {
-            "name": "address_family.redistribute",
+            "name": "redistribute",
             "getval": re.compile(
                 r"""
                 \s+redistribute
@@ -403,7 +403,7 @@ class Ospfv3Template(NetworkTemplate):
             },
         },
         {
-            "name": "address_family.summary_address",
+            "name": "summary_address",
             "getval": re.compile(
                 r"""
                 \s+summary-address
@@ -427,7 +427,7 @@ class Ospfv3Template(NetworkTemplate):
             },
         },
         {
-            "name": "address_family.table_map",
+            "name": "table_map",
             "getval": re.compile(
                 r"""
                 \s+table-map
@@ -447,7 +447,7 @@ class Ospfv3Template(NetworkTemplate):
             },
         },
         {
-            "name": "address_family.timers.throttle.spf",
+            "name": "timers.throttle.spf",
             "getval": re.compile(
                 r"""
                 \s+timers\sthrottle\sspf

@@ -22,6 +22,7 @@ from copy import deepcopy
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
+    get_from_dict,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
@@ -125,6 +126,7 @@ class Ospfv3(ResourceModule):
         self.compare(parsers=self.parsers, want=want, have=have)
         self._areas_compare(want=want, have=have)
         self._vrfs_compare(want=want, have=have)
+        self._af_compare(want=want, have=have)
 
         if len(self.commands) != begin or (not have and want):
             self.commands.insert(
@@ -158,6 +160,64 @@ class Ospfv3(ResourceModule):
         # remove remaining items in have for replaced
         for name, entry in iteritems(hvrfs):
             self.addcmd(entry, "vrf", True)
+
+    def _af_compare(self, want, have):
+        parsers = [
+            "default_information.originate",
+            "distance",
+            "maximum_paths",
+            "table_map",
+            "timers.throttle.spf",
+        ]
+        waf = want.get("address_family", {})
+        haf = have.get("address_family", {})
+
+        cmd_ptr = len(self.commands)
+
+        self._af_areas_compare(want=waf, have=haf)
+        self._af_compare_lists(want=waf, have=haf)
+        self.compare(parsers=parsers, want=waf, have=haf)
+
+        cmd_ptr_nxt = len(self.commands)
+        if cmd_ptr < cmd_ptr_nxt:
+            self.commands.insert(cmd_ptr, "address-family ipv6 unicast")
+
+    def _af_areas_compare(self, want, have):
+        wareas = want.get("areas", {})
+        hareas = have.get("areas", {})
+        for name, entry in iteritems(wareas):
+            self._af_area_compare(want=entry, have=hareas.pop(name, {}))
+        for name, entry in iteritems(hareas):
+            self._af_area_compare(want={}, have=entry)
+
+    def _af_area_compare(self, want, have):
+        self.compare(parsers=["area.default_cost"], want=want, have=have)
+        self._af_area_compare_lists(want=want, have=have)
+
+    def _af_area_compare_lists(self, want, have):
+        for attrib in ["filter_list", "ranges"]:
+            wdict = want.get(attrib, {})
+            hdict = have.get(attrib, {})
+            for key, entry in iteritems(wdict):
+                if entry != hdict.pop(key, {}):
+                    entry["area_id"] = want["area_id"]
+                    self.addcmd(entry, "area.{0}".format(attrib), False)
+            # remove remaining items in have for replaced
+            for entry in hdict.values():
+                entry["area_id"] = have["area_id"]
+                self.addcmd(entry, "area.{0}".format(attrib), True)
+
+    def _af_compare_lists(self, want, have):
+        for attrib in ["summary_address", "redistribute"]:
+            wdict = get_from_dict(want, attrib) or {}
+            hdict = get_from_dict(have, attrib) or {}
+
+            for key, entry in iteritems(wdict):
+                if entry != hdict.pop(key, {}):
+                    self.addcmd(entry, attrib, False)
+            # remove remaining items in have for replaced
+            for entry in hdict.values():
+                self.addcmd(entry, attrib, True)
 
     def _ospfv3_list_to_dict(self, entry):
         for _pid, proc in iteritems(entry):
