@@ -1,4 +1,4 @@
-# (c) 2019 Red Hat Inc.
+# (c) 2020 Red Hat Inc.
 #
 # This file is part of Ansible
 #
@@ -398,7 +398,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               address-family ipv6 unicast
-                default-information originate    
+                default-information originate
             """
         )
         set_module_args(
@@ -437,7 +437,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               address-family ipv6 unicast
-                default-information originate always test-2   
+                default-information originate always test-2
             """
         )
         set_module_args(
