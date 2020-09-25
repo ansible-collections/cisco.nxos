@@ -531,6 +531,13 @@ plugin_routing:
       redirect: cisco.nxos.nxos_rpm
     smu:
       redirect: cisco.nxos.nxos_smu
+      deprecation:
+        removal_date: '2022-10-01'
+        warning_text: See the plugin documentation for more details
+    nxos_smu:
+      deprecation:
+        removal_date: '2022-10-01'
+        warning_text: See the plugin documentation for more details
     snapshot:
       redirect: cisco.nxos.nxos_snapshot
     snmp_community:
