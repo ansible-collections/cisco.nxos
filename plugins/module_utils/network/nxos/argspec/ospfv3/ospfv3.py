@@ -196,6 +196,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                         },
                                         "no_redistribution": {"type": "bool"},
                                         "no_summary": {"type": "bool"},
+                                        "route_map": {"type": "str"},
                                         "translate": {
                                             "type": "dict",
                                             "options": {

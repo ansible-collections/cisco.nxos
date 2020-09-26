@@ -33,6 +33,8 @@ def _tmplt_area_nssa(area):
         ]:
             if nssa.get(attrib):
                 command += " {0}".format(attrib.replace("_", "-"))
+        if nssa.get("route_map"):
+            command += " route-map {route_map}".format(**nssa)
     return command
 
 
@@ -57,7 +59,7 @@ def _tmplt_area_stub(area):
 
 def _tmplt_log_adjacency_changes(proc):
     command = "log-adjacency-changes"
-    if proc.get("detail") is True:
+    if proc.get("log_adjacency_changes").get("detail", False) is True:
         command += " detail"
     return command
 
@@ -483,6 +485,7 @@ class Ospfv3Template(NetworkTemplate):
                 \s*(?P<no_sum>no-summary)*
                 \s*(?P<no_redis>no-redistribution)*
                 \s*(?P<def_info>default-information-originate)*
+                \s*(route-map)*\s*(?P<rmap>\S+)*
                 $""",
                 re.VERBOSE,
             ),
@@ -496,10 +499,12 @@ class Ospfv3Template(NetworkTemplate):
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
                                 "nssa": {
-                                    "set": "{{ True if nssa is defined and no_sum is undefined and no_redis is undefined and def_info is undefined }}",
+                                    "set": "{{ True if nssa is defined and no_sum is undefined and no_redis is undefined and \
+                                        def_info is undefined and rmap is undefined }}",
                                     "no_summary": "{{ not not no_sum }}",
                                     "no_redistribution": "{{ not not no_redis }}",
                                     "default_information_originate": "{{ not not def_info }}",
+                                    "route_map": "{{ rmap }}",
                                 },
                             }
                         }
@@ -682,7 +687,7 @@ class Ospfv3Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "graceful-restart grace-period {{ grace_period }}",
+            "setval": "graceful-restart grace-period {{ graceful_restart.grace_period }}",
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
@@ -801,7 +806,8 @@ class Ospfv3Template(NetworkTemplate):
                     '{{ "vrf_" + vrf|d() }}': {
                         "max_metric": {
                             "router_lsa": {
-                                "set": "{{ True if router_lsa is defined and external_lsa is undefined else None }}",
+                                "set": "{{ True if router_lsa is defined and (external_lsa is undefined) and (inter_area_prefix_lsa is undefined) and \
+                                    (stub_prefix_lsa is undefined) and (on_startup is undefined) else None }}",
                                 "external_lsa": {
                                     "set": "{{ True if external_lsa is defined and max_metric_value is undefined else None }}",
                                     "max_metric_value": "{{ max_metric_value }}",

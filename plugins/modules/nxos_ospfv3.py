@@ -270,6 +270,10 @@ options:
                     description:
                     - Do not send summary LSAs into NSSA area.
                     type: bool
+                  route_map:
+                    description:
+                    - Policy to control distribution of default route.
+                    type: str
                   translate:
                     description:
                     - Translate LSA.

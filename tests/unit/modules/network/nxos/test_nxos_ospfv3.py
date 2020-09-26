@@ -35,6 +35,17 @@ ignore_provider_arg = True
 
 class TestNxosOspfv3Module(TestNxosModule):
 
+    # Testing strategy
+    # ------------------
+    # (a) The unit tests cover `merged` and `replaced` for every attribute.
+    #     Since `overridden` is essentially `replaced` but at a larger
+    #     scale, these indirectly cover `overridden` as well.
+    # (b) For linear attributes replaced is not valid and hence, those tests
+    #     delete the attributes from the config subsection.
+    # (c) The argspec for VRFs is same as the top-level spec and the config logic
+    #     is re-used. Hence, those attributes are not explictly covered. However, a
+    #     combination of VRF + top-level spec + AF is tested.
+
     module = nxos_ospfv3
 
     def setUp(self):
@@ -931,6 +942,643 @@ class TestNxosOspfv3Module(TestNxosModule):
             "router ospfv3 100",
             "address-family ipv6 unicast",
             "no timers throttle spf 1000 20 2800",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_areas_nssa_merged(self):
+        # test merged for config->processes->areas->nssa
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              area 1.1.1.1 nssa no-redistribution default-information-originate
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            areas=[
+                                dict(
+                                    area_id="1.1.1.1",
+                                    nssa=dict(no_summary=True),
+                                ),
+                                dict(area_id="1.1.1.2", nssa=dict(set=True)),
+                                dict(
+                                    area_id="1.1.1.3",
+                                    nssa=dict(
+                                        default_information_originate=True,
+                                        no_summary=True,
+                                        no_redistribution=True,
+                                        route_map="test-1",
+                                        translate=dict(
+                                            type7=dict(
+                                                always=True, supress_fa=True
+                                            )
+                                        ),
+                                    ),
+                                ),
+                            ],
+                        )
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "area 1.1.1.1 nssa no-summary no-redistribution default-information-originate",
+            "area 1.1.1.2 nssa",
+            "area 1.1.1.3 nssa translate type7 always supress-fa",
+            "area 1.1.1.3 nssa no-summary no-redistribution default-information-originate route-map test-1",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_areas_nssa_replaced(self):
+        # test replaced for config->processes->areas->nssa
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              area 1.1.1.1 nssa no-summary no-redistribution default-information-originate
+              area 1.1.1.3 nssa translate type7 always supress-fa
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            areas=[
+                                dict(
+                                    area_id="1.1.1.3",
+                                    nssa=dict(
+                                        default_information_originate=True,
+                                        no_summary=True,
+                                        no_redistribution=True,
+                                        route_map="test-1",
+                                    ),
+                                )
+                            ],
+                        )
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "no area 1.1.1.1 nssa",
+            "no area 1.1.1.3 nssa translate type7 always supress-fa",
+            "area 1.1.1.3 nssa no-summary no-redistribution default-information-originate route-map test-1",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_areas_stub_merged(self):
+        # test merged for config->processes->areas->stub
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              area 1.1.1.3 stub
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            areas=[
+                                dict(
+                                    area_id="1.1.1.3",
+                                    stub=dict(no_summary=True),
+                                )
+                            ],
+                        )
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = ["router ospfv3 100", "area 1.1.1.3 stub no-summary"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_areas_stub_replaced(self):
+        # test replaced for config->processes->areas->stub
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              area 1.1.1.3 stub no-summary
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(process_id="100", areas=[dict(area_id="1.1.1.3")])
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = ["router ospfv3 100", "no area 1.1.1.3 stub"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_autocost_flush_route_isolate_merged(self):
+        # test merged for config->processes->autocost,flush_routes, isolate
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              auto-cost reference-bandwidth 300 Mbps
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            auto_cost=dict(
+                                reference_bandwidth=100, unit="Gbps"
+                            ),
+                            flush_routes=True,
+                            isolate=True,
+                        )
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "auto-cost reference-bandwidth 100 Gbps",
+            "flush-routes",
+            "isolate",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_autocost_flush_route_isolate_replaced(self):
+        # test merged for config->processes->autocost,flush_routes, isolate
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              auto-cost reference-bandwidth 300 Mbps
+              flush-routes
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(processes=[dict(process_id="100", isolate=True)]),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "no auto-cost reference-bandwidth 300 Mbps",
+            "no flush-routes",
+            "isolate",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_log_adjacency_changes_name_lookup_passive_interface_merged(
+        self
+    ):
+        # test merged for config->processes->log_adjacency_changes, name_lookup, passive_interface
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              log-adjacency-changes
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            log_adjacency_changes=dict(detail=True),
+                            name_lookup=True,
+                            passive_interface=dict(default=True),
+                        )
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "log-adjacency-changes detail",
+            "name-lookup",
+            "passive-interface default",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_log_adjacency_changes_name_lookup_passive_interface_replaced(
+        self
+    ):
+        # test replaced for config->processes->log_adjacency_changes, name_lookup, passive_interface
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              log-adjacency-changes detail
+              name-lookup
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            passive_interface=dict(default=True),
+                        )
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "no log-adjacency-changes detail",
+            "no name-lookup",
+            "passive-interface default",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_max_lsa_router_id_merged(self):
+        # test merged for config->processes->max_lsa, router_id
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              router-id 192.168.1.100
+              max-lsa 4200 85 ignore-count 10 reset-time 120
+            router ospfv3 102
+              max-lsa 4200 85 ignore-time 120 ignore-count 12 reset-time 300
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            router_id="192.168.1.100",
+                            max_lsa=dict(
+                                max_non_self_generated_lsa=4200,
+                                threshold=85,
+                                ignore_count=100,
+                                reset_time=138,
+                            ),
+                        ),
+                        dict(
+                            process_id="102",
+                            router_id="192.168.2.102",
+                            max_lsa=dict(
+                                max_non_self_generated_lsa=4200,
+                                threshold=85,
+                                ignore_time=200,
+                                ignore_count=20,
+                                reset_time=120,
+                            ),
+                        ),
+                        dict(
+                            process_id="103",
+                            max_lsa=dict(
+                                max_non_self_generated_lsa=4200,
+                                warning_only=True,
+                            ),
+                        ),
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "max-lsa 4200 85 ignore-count 100 reset-time 138",
+            "router ospfv3 102",
+            "router-id 192.168.2.102",
+            "max-lsa 4200 85 ignore-time 200 ignore-count 20 reset-time 120",
+            "router ospfv3 103",
+            "max-lsa 4200 warning-only",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_max_lsa_router_id_replaced(self):
+        # test replaced for config->processes->max_lsa, router_id
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              router-id 192.168.1.100
+              max-lsa 4200 85 ignore-count 10 reset-time 120
+            router ospfv3 102
+              max-lsa 4200 85 ignore-time 120 ignore-count 12 reset-time 300
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            max_lsa=dict(
+                                max_non_self_generated_lsa=4200,
+                                threshold=85,
+                                warning_only=True,
+                            ),
+                        )
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "no router-id 192.168.1.100",
+            "max-lsa 4200 85 warning-only",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_graceful_restart_merged(self):
+        # test merged for config->processes->graceful_restart
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              no graceful-restart
+            router ospfv3 102
+              no graceful-restart planned-only
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            graceful_restart=dict(
+                                grace_period=50, helper_disable=True
+                            ),
+                        ),
+                        dict(
+                            process_id="102",
+                            graceful_restart=dict(planned_only=True),
+                        ),
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "graceful-restart grace-period 50",
+            "graceful-restart helper-disable",
+            "router ospfv3 102",
+            "graceful-restart planned-only",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_graceful_restart_replaced(self):
+        # test replaced for config->processes->graceful_restart
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              graceful-restart grace-period 50
+              graceful-restart helper-disable
+            router ospfv3 102
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            graceful_restart=dict(grace_period=10),
+                        ),
+                        dict(
+                            process_id="102",
+                            graceful_restart=dict(helper_disable=True),
+                        ),
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "graceful-restart grace-period 10",
+            "no graceful-restart helper-disable",
+            "router ospfv3 102",
+            "graceful-restart helper-disable",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_max_metric_merged(self):
+        # test merged for config->processes->max_metric
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              max-metric router-lsa external-lsa 1900
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            max_metric=dict(
+                                router_lsa=dict(
+                                    external_lsa=dict(max_metric_value=2000),
+                                    stub_prefix_lsa=True,
+                                    on_startup=dict(set=True),
+                                )
+                            ),
+                        ),
+                        dict(
+                            process_id="102",
+                            max_metric=dict(
+                                router_lsa=dict(
+                                    inter_area_prefix_lsa=dict(
+                                        max_metric_value=1800
+                                    )
+                                )
+                            ),
+                        ),
+                        dict(
+                            process_id="103",
+                            max_metric=dict(
+                                router_lsa=dict(
+                                    on_startup=dict(
+                                        wait_period=1200,
+                                        wait_for_bgp_asn=65563,
+                                    ),
+                                    inter_area_prefix_lsa=dict(set=True),
+                                )
+                            ),
+                        ),
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "max-metric router-lsa external-lsa 2000 stub-prefix-lsa on-startup",
+            "router ospfv3 102",
+            "max-metric router-lsa inter-area-prefix-lsa 1800",
+            "router ospfv3 103",
+            "max-metric router-lsa on-startup 1200 wait-for bgp 65563 inter-area-prefix-lsa",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_max_metric_replaced(self):
+        # test replaced for config->processes->max_metric
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+            router ospfv3 102
+              max-metric router-lsa inter-area-prefix-lsa 1800
+            router ospfv3 103
+              max-metric router-lsa on-startup 1200 wait-for bgp 65563 inter-area-prefix-lsa
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            max_metric=dict(
+                                router_lsa=dict(
+                                    external_lsa=dict(max_metric_value=2000),
+                                    stub_prefix_lsa=True,
+                                    on_startup=dict(set=True),
+                                )
+                            ),
+                        ),
+                        dict(process_id="102"),
+                        dict(process_id="103"),
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "max-metric router-lsa external-lsa 2000 stub-prefix-lsa on-startup",
+            "router ospfv3 102",
+            "no max-metric router-lsa",
+            "router ospfv3 103",
+            "no max-metric router-lsa",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_timers_shutdown_merged(self):
+        # test merged for config->processes->timers, shutdown
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              timers lsa-group-pacing 190
+              shutdown
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            timers=dict(
+                                lsa_arrival=1200,
+                                lsa_group_pacing=210,
+                                throttle=dict(
+                                    lsa=dict(
+                                        start_interval=100,
+                                        hold_interval=70,
+                                        max_interval=1500,
+                                    )
+                                ),
+                            ),
+                            shutdown=False,
+                        )
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "timers lsa-arrival 1200",
+            "timers lsa-group-pacing 210",
+            "timers throttle lsa 100 70 1500",
+            "no shutdown",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_timers_shutdown_replaced(self):
+        # test replaced for config->processes->timers, shutdown
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              timers lsa-arrival 800
+              timers lsa-group-pacing 210
+              timers throttle lsa 100 70 1500
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            timers=dict(lsa_arrival=1200),
+                            shutdown=True,
+                        )
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "timers lsa-arrival 1200",
+            "no timers lsa-group-pacing 210",
+            "no timers throttle lsa 100 70 1500",
+            "shutdown",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))

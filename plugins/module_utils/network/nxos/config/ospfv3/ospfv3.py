@@ -149,7 +149,7 @@ class Ospfv3(ResourceModule):
             self._area_compare(want={}, have=entry)
 
     def _area_compare(self, want, have):
-        parsers = ["area.nssa", "area.stub"]
+        parsers = ["area.nssa", "area.nssa.translate", "area.stub"]
         self.compare(parsers=parsers, want=want, have=have)
 
     def _vrfs_compare(self, want, have):
