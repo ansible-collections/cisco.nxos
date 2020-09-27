@@ -1582,3 +1582,403 @@ class TestNxosOspfv3Module(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_vrf_merged(self):
+        # test merged for config->processes->vrf
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              vrf blue
+                area 1.1.1.1 nssa
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            vrfs=[
+                                dict(
+                                    vrf="blue",
+                                    areas=[
+                                        dict(
+                                            area_id="1.1.1.1",
+                                            nssa=dict(no_summary=True),
+                                        ),
+                                        dict(
+                                            area_id="1.1.1.2",
+                                            nssa=dict(set=True),
+                                        ),
+                                    ],
+                                ),
+                                dict(
+                                    vrf="red",
+                                    areas=[
+                                        dict(
+                                            area_id="1.1.1.3",
+                                            nssa=dict(
+                                                default_information_originate=True,
+                                                no_summary=True,
+                                                no_redistribution=True,
+                                                route_map="test-1",
+                                                translate=dict(
+                                                    type7=dict(
+                                                        always=True,
+                                                        supress_fa=True,
+                                                    )
+                                                ),
+                                            ),
+                                        )
+                                    ],
+                                ),
+                            ],
+                        ),
+                        dict(
+                            process_id="103",
+                            vrfs=[
+                                dict(
+                                    vrf="red",
+                                    max_metric=dict(
+                                        router_lsa=dict(
+                                            on_startup=dict(
+                                                wait_period=1200,
+                                                wait_for_bgp_asn=65563,
+                                            ),
+                                            inter_area_prefix_lsa=dict(
+                                                set=True
+                                            ),
+                                        )
+                                    ),
+                                )
+                            ],
+                        ),
+                        dict(
+                            process_id="104",
+                            vrfs=[
+                                dict(
+                                    vrf="red",
+                                    timers=dict(
+                                        lsa_arrival=1200,
+                                        lsa_group_pacing=210,
+                                        throttle=dict(
+                                            lsa=dict(
+                                                start_interval=100,
+                                                hold_interval=70,
+                                                max_interval=1500,
+                                            )
+                                        ),
+                                    ),
+                                    shutdown=True,
+                                )
+                            ],
+                        ),
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "vrf blue",
+            "area 1.1.1.1 nssa no-summary",
+            "area 1.1.1.2 nssa",
+            "vrf red",
+            "area 1.1.1.3 nssa translate type7 always supress-fa",
+            "area 1.1.1.3 nssa no-summary no-redistribution default-information-originate route-map test-1",
+            "router ospfv3 103",
+            "vrf red",
+            "max-metric router-lsa on-startup 1200 wait-for bgp 65563 inter-area-prefix-lsa",
+            "router ospfv3 104",
+            "vrf red",
+            "timers lsa-arrival 1200",
+            "timers lsa-group-pacing 210",
+            "timers throttle lsa 100 70 1500",
+            "shutdown",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_vrf_replaced(self):
+        # test replaced for config->processes->vrf
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              vrf blue
+                area 1.1.1.1 nssa no-summary
+                area 1.1.1.2 nssa
+              vrf red
+                area 1.1.1.3 nssa translate type7 always supress-fa
+                area 1.1.1.3 nssa no-summary no-redistribution default-information-originate route-map test-1
+            router ospfv3 103
+              vrf red
+                max-metric router-lsa on-startup 1200 wait-for bgp 65563 inter-area-prefix-lsa
+            router ospfv3 104
+              vrf red
+                timers lsa-arrival 1200
+                timers lsa-group-pacing 210
+                timers throttle lsa 100 70 1500
+                shutdown
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            vrfs=[
+                                dict(
+                                    vrf="blue",
+                                    areas=[
+                                        dict(
+                                            area_id="1.1.1.1",
+                                            nssa=dict(
+                                                no_summary=True,
+                                                translate=dict(
+                                                    type7=dict(
+                                                        always=True,
+                                                        supress_fa=True,
+                                                    )
+                                                ),
+                                            ),
+                                        )
+                                    ],
+                                )
+                            ],
+                        )
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "vrf blue",
+            "area 1.1.1.1 nssa no-summary",
+            "no area 1.1.1.2 nssa",
+            "area 1.1.1.1 nssa translate type7 always supress-fa",
+            "no vrf red",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_top_spec_af_vrf_merged(self):
+        # test merged for every nested level
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              address-family ipv6 unicast
+                table-map map1 filter
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            address_family=dict(
+                                afi="ipv6",
+                                safi="unicast",
+                                redistribute=[
+                                    dict(
+                                        protocol="eigrp",
+                                        id="100",
+                                        route_map="rmap1",
+                                    )
+                                ],
+                            ),
+                            vrfs=[
+                                dict(vrf="blue", router_id="10.0.0.2"),
+                                dict(
+                                    vrf="red",
+                                    areas=[
+                                        dict(
+                                            area_id="1.1.1.1",
+                                            nssa=dict(set=True),
+                                        )
+                                    ],
+                                ),
+                            ],
+                        ),
+                        dict(
+                            process_id="103",
+                            vrfs=[dict(vrf="red", shutdown=True)],
+                        ),
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "address-family ipv6 unicast",
+            "redistribute eigrp 100 route-map rmap1",
+            "vrf blue",
+            "router-id 10.0.0.2",
+            "vrf red",
+            "area 1.1.1.1 nssa",
+            "router ospfv3 103",
+            "vrf red",
+            "shutdown",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_top_spec_af_vrf_replaced(self):
+        # test replaced for every nested level
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              address-family ipv6 unicast
+                table-map map1 filter
+                redistribute eigrp 100 route-map rmap1
+              vrf blue
+                router-id 10.0.0.2
+              vrf red
+                area 1.1.1.1 nssa
+            router ospfv3 103
+              vrf red
+              shutdown
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            address_family=dict(
+                                afi="ipv6",
+                                safi="unicast",
+                                redistribute=[
+                                    dict(
+                                        protocol="eigrp",
+                                        id="100",
+                                        route_map="rmap1",
+                                    )
+                                ],
+                            ),
+                        )
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "address-family ipv6 unicast",
+            "no table-map map1 filter",
+            "no vrf blue",
+            "no vrf red",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_top_spec_af_vrf_overridden(self):
+        # test overridden for every nested level
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              address-family ipv6 unicast
+                table-map map1 filter
+                redistribute eigrp 100 route-map rmap1
+              vrf blue
+                router-id 10.0.0.2
+              vrf red
+                area 1.1.1.1 nssa
+            router ospfv3 103
+              vrf red
+              shutdown
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            address_family=dict(
+                                afi="ipv6",
+                                safi="unicast",
+                                redistribute=[
+                                    dict(
+                                        protocol="eigrp",
+                                        id="100",
+                                        route_map="rmap2",
+                                    )
+                                ],
+                            ),
+                        )
+                    ]
+                ),
+                state="overridden",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "address-family ipv6 unicast",
+            "no table-map map1 filter",
+            "redistribute eigrp 100 route-map rmap2",
+            "no vrf blue",
+            "no vrf red",
+            "no router ospfv3 103",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_top_spec_af_vrf_deleted(self):
+        # test overridden for every nested level
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              address-family ipv6 unicast
+                table-map map1 filter
+                redistribute eigrp 100 route-map rmap1
+              vrf blue
+                router-id 10.0.0.2
+              vrf red
+                area 1.1.1.1 nssa
+            router ospfv3 103
+              vrf red
+              shutdown
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(processes=[dict(process_id="100")]),
+                state="deleted",
+            ),
+            ignore_provider_arg,
+        )
+        commands = ["no router ospfv3 100"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_top_spec_af_vrf_deleted_all(self):
+        # test overridden for every nested level
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              address-family ipv6 unicast
+                table-map map1 filter
+                redistribute eigrp 100 route-map rmap1
+              vrf blue
+                router-id 10.0.0.2
+              vrf red
+                area 1.1.1.1 nssa
+            router ospfv3 103
+              vrf red
+              shutdown
+            """
+        )
+        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        commands = ["no router ospfv3 100", "no router ospfv3 103"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
