@@ -147,8 +147,7 @@ def _tmplt_redistribute(redis):
     command = "redistribute {protocol}".format(**redis)
     if redis.get("id"):
         command += " {id}".format(**redis)
-    if redis.get("route_map"):
-        command += " route-map {route_map}".format(**redis)
+    command += " route-map {route_map}".format(**redis)
     return command
 
 
@@ -163,10 +162,7 @@ def _tmplt_summary_address(proc):
 
 def _tmplt_table_map(proc):
     table_map = proc["table_map"]
-    command = "table-map"
-
-    if table_map.get("name"):
-        command += " {name}".format(**table_map)
+    command = "table-map {name}".format(**table_map)
     if table_map.get("filter"):
         command += " filter"
 

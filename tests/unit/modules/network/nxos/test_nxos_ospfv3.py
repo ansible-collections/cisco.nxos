@@ -781,6 +781,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         prefix="2001:db3::/32",
                                         not_advertise=True,
                                     ),
+                                    dict(prefix="2001:db4::/32"),
                                 ],
                             ),
                         )
@@ -795,6 +796,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "address-family ipv6 unicast",
             "summary-address 2001:db2::/32 tag 19",
             "summary-address 2001:db3::/32 not-advertise",
+            "summary-address 2001:db4::/32",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -1151,7 +1153,11 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="100",
                             areas=[
-                                dict(area_id="1.1.1.3", stub=dict(set=False))
+                                dict(area_id="1.1.1.3", stub=dict(set=False)),
+                                dict(
+                                    area_id="1.1.1.4",
+                                    stub=dict(no_summary=True),
+                                ),
                             ],
                         )
                     ]
@@ -1160,7 +1166,11 @@ class TestNxosOspfv3Module(TestNxosModule):
             ),
             ignore_provider_arg,
         )
-        commands = ["router ospfv3 100", "no area 1.1.1.3 stub"]
+        commands = [
+            "router ospfv3 100",
+            "no area 1.1.1.3 stub",
+            "area 1.1.1.4 stub no-summary",
+        ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
