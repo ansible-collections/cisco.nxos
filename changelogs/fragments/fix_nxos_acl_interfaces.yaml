@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fix regexes in nxos_acl_interfaces facts and some code cleanup (https://github.com/ansible-collections/cisco.nxos/issues/149).
