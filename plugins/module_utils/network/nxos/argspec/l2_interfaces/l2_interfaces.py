@@ -45,7 +45,7 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                     "options": {"vlan": {"type": "int"}},
                     "type": "dict",
                 },
-                "mode": {"type": "str", "choices": ["access", "trunk"]},
+                "mode": {"type": "str", "choices": ["access", "trunk", "fex-fabric"]},
                 "name": {"required": True, "type": "str"},
                 "trunk": {
                     "options": {
