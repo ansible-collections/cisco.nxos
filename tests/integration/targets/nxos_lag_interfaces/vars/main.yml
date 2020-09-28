@@ -19,7 +19,6 @@ rendered:
 parsed:
   - members:
       - member: Ethernet1/800
-        mode: active
       - member: Ethernet1/801
         mode: active
     name: port-channel10

@@ -95,7 +95,7 @@ class Lag_interfacesFacts(object):
                 member["member"] = match_intf.group(0)
 
             match_line = re.search(
-                r"channel-group (?P<port_channel>\d+)\s*(?:mode)*\s*(?P<mode>\S+)*",
+                r"channel-group\s(?P<port_channel>\d+)(\smode\s(?P<mode>on|active|passive))?",
                 intf,
             )
             if match_line:
