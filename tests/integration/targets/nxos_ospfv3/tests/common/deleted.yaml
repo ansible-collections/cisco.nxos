@@ -1,0 +1,93 @@
+---
+- debug:
+    msg: Start nxos_ospfv3 deleted integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete a single OSPF process
+      cisco.nxos.nxos_ospfv3: &id005
+        config:
+          processes:
+            - process_id: 102
+        state: deleted
+      register: result
+    
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
+            \ == 0 }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - '"no router ospfv3 102" in result.commands'
+          - result.commands|length == 1
+  
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - "{{ deleted['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
+            \ == 0 }}"
+    
+    - name: Delete a single OSPF process (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_ospfv3: *id005
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Assert that before dict is correctly generated
+      assert:
+        that:
+          - "{{ deleted['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
+            \ == 0 }}"
+    
+    - include_tasks: _populate_config.yaml
+
+    - name: Delete all OSPFv3 processes from the device
+      cisco.nxos.nxos_ospfv3: &id007
+        state: deleted
+      register: result
+    
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
+            \ == 0 }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - '"no router ospfv3 100" in result.commands'
+          - '"no router ospfv3 102" in result.commands'
+          - result.commands|length == 2
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - "{{ result['after'] == {} }}"
+    
+    - name: Delete all OSPF processes from the device (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_ospfv3: *id007
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Assert that before dict is correctly generated
+      assert:
+        that:
+          - "{{ result['before'] == {} }}"
+
+  always:
+    - include_tasks: _remove_config.yaml

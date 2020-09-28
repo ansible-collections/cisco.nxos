@@ -31,7 +31,7 @@ description:
 version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 deprecated:
-  alternative: nxos_ospfv2
+  alternative: nxos_ospfv2 and nxos_ospfv3
   why: Updated modules released with more functionality.
   removed_at_date: '2022-06-01'
 options:
