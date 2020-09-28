@@ -442,6 +442,43 @@ class TestNxosOspfv3Module(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def test_nxos_ospfv3_af_default_information_merged_2(self):
+        # test merged for config->processes->af->default_information->set
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              address-family ipv6 unicast
+                default-information originate always route-map test-2
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            address_family=dict(
+                                afi="ipv6",
+                                safi="unicast",
+                                default_information=dict(
+                                    originate=dict(set=False)
+                                ),
+                            ),
+                        )
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router ospfv3 100",
+            "address-family ipv6 unicast",
+            "no default-information originate",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
     def test_nxos_ospfv3_af_default_information_replaced(self):
         # test replaced for config->processes->af->default_information
         self.get_config.return_value = dedent(
@@ -998,6 +1035,34 @@ class TestNxosOspfv3Module(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def test_nxos_ospfv3_areas_nssa_merged_2(self):
+        # test merged for config->processes->areas->nssa->set
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              area 1.1.1.1 nssa no-summary
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            areas=[
+                                dict(area_id="1.1.1.1", nssa=dict(set=False))
+                            ],
+                        )
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = ["router ospfv3 100", "no area 1.1.1.1 nssa"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
     def test_nxos_ospfv3_areas_nssa_replaced(self):
         # test replaced for config->processes->areas->nssa
         self.get_config.return_value = dedent(
@@ -1068,6 +1133,34 @@ class TestNxosOspfv3Module(TestNxosModule):
             ignore_provider_arg,
         )
         commands = ["router ospfv3 100", "area 1.1.1.3 stub no-summary"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_areas_stub_merged_2(self):
+        # test merged for config->processes->areas->stub->set
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              area 1.1.1.3 stub
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            areas=[
+                                dict(area_id="1.1.1.3", stub=dict(set=False))
+                            ],
+                        )
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = ["router ospfv3 100", "no area 1.1.1.3 stub"]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
@@ -1173,7 +1266,11 @@ class TestNxosOspfv3Module(TestNxosModule):
                             log_adjacency_changes=dict(detail=True),
                             name_lookup=True,
                             passive_interface=dict(default=True),
-                        )
+                        ),
+                        dict(
+                            process_id="102",
+                            log_adjacency_changes=dict(log=True),
+                        ),
                     ]
                 ),
                 state="merged",
@@ -1185,6 +1282,8 @@ class TestNxosOspfv3Module(TestNxosModule):
             "log-adjacency-changes detail",
             "name-lookup",
             "passive-interface default",
+            "router ospfv3 102",
+            "log-adjacency-changes",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -1457,6 +1556,34 @@ class TestNxosOspfv3Module(TestNxosModule):
             "router ospfv3 103",
             "max-metric router-lsa on-startup 1200 wait-for bgp 65563 inter-area-prefix-lsa",
         ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_max_metric_merged_2(self):
+        # test merged for config->processes->max_metric->set
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              max-metric router-lsa inter-area-prefix-lsa 1800
+            router ospfv3 103
+              max-metric router-lsa on-startup 1200 wait-for bgp 65563 inter-area-prefix-lsa
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="100",
+                            max_metric=dict(router_lsa=dict(set=False)),
+                        )
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = ["router ospfv3 100", "no max-metric router-lsa"]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
@@ -1982,3 +2109,114 @@ class TestNxosOspfv3Module(TestNxosModule):
         commands = ["no router ospfv3 100", "no router ospfv3 103"]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospfv3_parsed(self):
+        # test parsed
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    router ospfv3 100
+                      address-family ipv6 unicast
+                        table-map map1 filter
+                        redistribute eigrp 100 route-map rmap1
+                      vrf blue
+                        router-id 10.0.0.2
+                      vrf red
+                        area 1.1.1.1 nssa
+                    router ospfv3 103
+                      vrf red
+                        shutdown
+                    """
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = {
+            "processes": [
+                {
+                    "process_id": "100",
+                    "address_family": {
+                        "table_map": {"name": "map1", "filter": True},
+                        "redistribute": [
+                            {
+                                "protocol": "eigrp",
+                                "id": "100",
+                                "route_map": "rmap1",
+                            }
+                        ],
+                        "afi": "ipv6",
+                        "safi": "unicast",
+                    },
+                    "vrfs": [
+                        {"vrf": "blue", "router_id": "10.0.0.2"},
+                        {
+                            "vrf": "red",
+                            "areas": [
+                                {"area_id": "1.1.1.1", "nssa": {"set": True}}
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "process_id": "103",
+                    "vrfs": [{"vrf": "red", "shutdown": True}],
+                },
+            ]
+        }
+        result = self.execute_module(changed=False)
+        self.assertEqual(set(result["parsed"]), set(parsed))
+
+    def test_nxos_ospfv3_gathered(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              address-family ipv6 unicast
+                table-map map1 filter
+                redistribute eigrp 100 route-map rmap1
+              vrf blue
+                router-id 10.0.0.2
+              vrf red
+                area 1.1.1.1 nssa
+            router ospfv3 103
+              vrf red
+              shutdown
+            """
+        )
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        gathered = {
+            "processes": [
+                {
+                    "process_id": "100",
+                    "address_family": {
+                        "table_map": {"name": "map1", "filter": True},
+                        "redistribute": [
+                            {
+                                "protocol": "eigrp",
+                                "id": "100",
+                                "route_map": "rmap1",
+                            }
+                        ],
+                        "afi": "ipv6",
+                        "safi": "unicast",
+                    },
+                    "vrfs": [
+                        {"vrf": "blue", "router_id": "10.0.0.2"},
+                        {
+                            "vrf": "red",
+                            "areas": [
+                                {"area_id": "1.1.1.1", "nssa": {"set": True}}
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "process_id": "103",
+                    "vrfs": [{"vrf": "red", "shutdown": True}],
+                },
+            ]
+        }
+        result = self.execute_module(changed=False)
+        self.assertEqual(set(result["gathered"]), set(gathered))
