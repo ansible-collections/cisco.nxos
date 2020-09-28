@@ -24,7 +24,7 @@ DOCUMENTATION = """
 module: nxos_ospf_vrf
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: (deprecated, removed after 2022-09-30)Manages a VRF for an OSPF router.
+short_description: (deprecated, removed after 2022-10-01)Manages a VRF for an OSPF router.
 description:
 - Manages a VRF for an OSPF router.
 version_added: 1.0.0
@@ -32,7 +32,7 @@ author: Gabriele Gerbino (@GGabriele)
 deprecated:
   alternative: nxos_ospfv2 and nxos_ospfv3
   why: Updated modules released with more functionality.
-  removed_at_date: '2022-09-30'
+  removed_at_date: '2022-10-01'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - Value I(default) restores params default value, if any. Otherwise it removes the
