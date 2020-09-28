@@ -31,7 +31,7 @@ from .nxos_module import TestNxosModule, set_module_args
 
 ignore_provider_arg = True
 
- 
+
 class TestNxosLacpInterfacesModule(TestNxosModule):
 
     module = nxos_lacp_interfaces
