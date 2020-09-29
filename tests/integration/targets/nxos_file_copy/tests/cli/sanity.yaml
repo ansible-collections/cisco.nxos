@@ -30,17 +30,19 @@
     feature: sftp-server
     state: enabled
 
-- name: Setup - Backup admin password
+- name: Setup - Backup admin password if ansible_user is not admin
   cisco.nxos.nxos_command:
     commands:
       - command: show running-config | include "username admin password"
   register: nxos_admin_password
   no_log: true
+  when: ansible_user != "admin"
 
-- name: Setup - Change admin password
+- name: Setup - Change admin password if ansible_user is not admin
   cisco.nxos.nxos_user:
     name: admin
     configured_password: "{{ temp_passwd }}"
+  when: ansible_user != "admin"
 
 - block:
 
@@ -158,7 +160,7 @@
         local_file_directory: dir1/dir2/dir3
         remote_scp_server: '{{ mgmt0_ip }}'
         remote_scp_server_user: admin
-        remote_scp_server_password: "{{ temp_passwd }}"
+        remote_scp_server_password: "{% if ansible_user == 'admin' %}{{ ansible_password }}{% else %}{{ temp_passwd }}{% endif %}"
         connect_ssh_port: '{{ ansible_ssh_port }}'
 
     - assert:
@@ -179,11 +181,12 @@
       cisco.nxos.nxos_command: *id002
 
 
-    - name: Recover the admin password
+    - name: Recover the admin password if ansible_user is not admin
       cisco.nxos.nxos_config:
         lines:
           - "{{ nxos_admin_password['stdout_lines'][0][0] }}"
       no_log: true
+      when: ansible_user != "admin"
 
     - name: Turn off feature scp-server
       cisco.nxos.nxos_feature:
