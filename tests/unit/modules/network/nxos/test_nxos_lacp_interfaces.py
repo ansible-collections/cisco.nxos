@@ -97,7 +97,7 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
                     name="port-channel1",
                     convergence={"graceful": False},
                     suspend_individual=True,
-                    mode="delay"
+                    mode="delay",
                 )
             ]
         )
