@@ -57,3 +57,4 @@
     that:
       - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
         \ == 0 }}"
+      - result.changed == False
