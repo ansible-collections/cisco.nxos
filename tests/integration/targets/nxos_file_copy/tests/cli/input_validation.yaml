@@ -68,4 +68,19 @@
       - result is search('Playbook parameters <remote_scp_server>, <remote_scp_server_user>
         must be set together')
 
+- name: Input Validation - param <file_pull_protocol> should only accept strings, which are included in choices
+  register: result
+  ignore_errors: true
+  cisco.nxos.nxos_file_copy:
+    file_pull: true
+    file_pull_protocol: foobar
+    remote_file: /network-integration.cfg
+    remote_scp_server: foobar
+    remote_scp_server_user: foobar
+
+- assert:
+    that:
+      - result is search("argument file_pull_protocol with value foobar is not valid.
+        Allowed values are scp, sftp, http, https, tftp, ftp")
+
 - debug: msg="END nxos_file_copy input_validation test"

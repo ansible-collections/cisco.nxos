@@ -5,6 +5,9 @@
     test_source_file: "data.cfg"
     test_destination_file: "test_destination_file"
 
+- set_fact:
+    sftp_root_dir: "{% if major_version is version('9.2', 'ge') %}/bootflash{% else %}/{% endif %}"
+
 - name: Setup - Remove existing file
   ignore_errors: true
   cisco.nxos.nxos_command: &id002
@@ -21,6 +24,25 @@
   cisco.nxos.nxos_feature:
     feature: scp-server
     state: enabled
+
+- name: Setup - Turn on feature sftp-server
+  cisco.nxos.nxos_feature:
+    feature: sftp-server
+    state: enabled
+
+- name: Setup - Backup admin password if ansible_user is not admin
+  cisco.nxos.nxos_command:
+    commands:
+      - command: show running-config | include "username admin password"
+  register: nxos_admin_password
+  no_log: true
+  when: ansible_user != "admin"
+
+- name: Setup - Change admin password if ansible_user is not admin
+  cisco.nxos.nxos_user:
+    name: admin
+    configured_password: "{{ temp_passwd }}"
+  when: ansible_user != "admin"
 
 - block:
 
@@ -125,15 +147,55 @@
       cisco.nxos.nxos_file_copy: *id005
 
     - assert: *id006
+
+    - name: Initiate copy with sftp from nxos device to copy /bootflash/{{ test_destination_file }} to
+        bootflash:dir2/dir2/dir3/{{ test_destination_file }}_another_copy
+      register: result
+      cisco.nxos.nxos_file_copy:
+        file_pull: true
+        file_pull_protocol: sftp
+        file_pull_timeout: 30
+        remote_file: "{{ sftp_root_dir }}/{{ test_destination_file }}"
+        local_file: '{{ test_destination_file }}_another_copy'
+        local_file_directory: dir1/dir2/dir3
+        remote_scp_server: '{{ mgmt0_ip }}'
+        remote_scp_server_user: admin
+        remote_scp_server_password: "{% if ansible_user == 'admin' %}{{ ansible_password }}{% else %}{{ temp_passwd }}{% endif %}"
+        connect_ssh_port: '{{ ansible_ssh_port }}'
+
+    - assert:
+        that:
+          - result.changed == true
+          - "'copy sftp:' in result.copy_cmd"
+          - "'bootflash:' in result.file_system"
+          - "'bootflash:dir1/dir2/dir3/{{ test_destination_file }}_another_copy' in result.local_file"
+          - "'{{ sftp_root_dir }}/{{ test_destination_file }}' in result.remote_file"
+
+          - "'Received: File copied/pulled to nxos device from remote scp server.'\
+            \ in result.transfer_status"
+          - "'{{ mgmt0_ip }}' in result.remote_scp_server"
   
   always:
     - name: Remove file
       ignore_errors: true
       cisco.nxos.nxos_command: *id002
 
+
+    - name: Recover the admin password if ansible_user is not admin
+      cisco.nxos.nxos_config:
+        lines:
+          - "{{ nxos_admin_password['stdout_lines'][0][0] }}"
+      no_log: true
+      when: ansible_user != "admin"
+
     - name: Turn off feature scp-server
       cisco.nxos.nxos_feature:
         feature: scp-server
+        state: disabled
+
+    - name: Turn off feature sftp-server
+      cisco.nxos.nxos_feature:
+        feature: sftp-server
         state: disabled
 
     - debug: msg="END connection={{ ansible_connection }} nxos_file_copy sanity
