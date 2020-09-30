@@ -99,7 +99,7 @@ class Lacp_interfacesFacts(object):
             conf, "lacp port-priority"
         )
         config["rate"] = utils.parse_conf_arg(conf, "lacp rate")
-        config["mode"] = utils.parse_conf_arg(conf, "mode")
+        config["mode"] = utils.parse_conf_arg(conf, "lacp mode")
         suspend_individual = re.search(r"no lacp suspend-individual", conf)
         if suspend_individual:
             config["suspend_individual"] = False

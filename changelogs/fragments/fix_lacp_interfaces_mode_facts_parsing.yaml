@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Correctly parse facts for lacp interfaces mode information (https://github.com/ansible-collections/cisco.nxos/pull/164).
