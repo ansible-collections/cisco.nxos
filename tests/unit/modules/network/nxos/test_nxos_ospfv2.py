@@ -76,6 +76,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                     route_map="direct-connect",
                                 ),
                             ],
+                            log_adjacency_changes=dict(detail=True),
                         ),
                         dict(
                             process_id="200",
@@ -113,6 +114,7 @@ class TestNxosOspfv2Module(TestNxosModule):
             "router-id 203.0.113.20",
             "redistribute eigrp 100 route-map rmap_1",
             "redistribute direct route-map direct-connect",
+            "log-adjacency-changes detail",
             "router ospf 200",
             "router-id 198.51.100.1",
             "area 0.0.0.100 filter-list route-map rmap_1 in",

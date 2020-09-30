@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fix rendering of `log-adjacency-changes` commands.
