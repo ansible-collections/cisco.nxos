@@ -1,0 +1,14 @@
+---
+- debug:
+    msg: START nxos_ospfv3 parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided OSPFv3 config
+  register: result
+  cisco.nxos.nxos_ospfv3:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+- name: Assert that config was correctly parsed
+  assert:
+    that:
+      - "{{ merged['after']['processes'] | symmetric_difference(result['parsed']['processes']) |length == 0 }}"
