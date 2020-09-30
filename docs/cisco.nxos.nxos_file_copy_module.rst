@@ -121,6 +121,30 @@ Parameters
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>file_pull_protocol</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>scp</b>&nbsp;&larr;</div></li>
+                                    <li>sftp</li>
+                                    <li>ftp</li>
+                                    <li>http</li>
+                                    <li>https</li>
+                                    <li>tftp</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>When file_pull is True, this can be used to define the transfer protocol for copying file from remote to the NXOS device.</div>
+                        <div>When (file_pull is False), this is not used.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>file_pull_timeout</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -533,6 +557,19 @@ Examples
         file_pull: true
         local_file: xyz
         local_file_directory: dir1/dir2/dir3
+        remote_file: /mydir/abc
+        remote_scp_server: 192.168.0.1
+        remote_scp_server_user: myUser
+        remote_scp_server_password: myPassword
+        vrf: management
+
+    # Initiate file copy from the nxos device to transfer file from a ftp server back to the nxos device.
+    # remote_scp_server_user and remote_scp_server_password are used to login to the FTP server.
+    - name: initiate file copy from device
+      cisco.nxos.nxos_file_copy:
+        file_pull: true
+        file_pull_protocol: ftp
+        local_file: xyz
         remote_file: /mydir/abc
         remote_scp_server: 192.168.0.1
         remote_scp_server_user: myUser
