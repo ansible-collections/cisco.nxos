@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Fix regex for parsing configuration in nxos_lag_interfaces.

@@ -1,5 +1,0 @@
----
-minor_changes:
-  - Add nxos_ospfv3 module.
-deprecated_features:
-  - The `nxos_ospf_vrf` module is deprecated by `nxos_ospfv2` and `nxos_ospfv3` Resource Modules.

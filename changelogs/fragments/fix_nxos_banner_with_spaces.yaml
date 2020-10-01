@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Preserve whitespaces in banner text (https://github.com/ansible-collections/cisco.nxos/pull/146).
