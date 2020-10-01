@@ -4373,6 +4373,74 @@ Examples
 
 
 
+Return Values
+-------------
+Common return values are documented `here <https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html#common-return-values>`_, the following are the fields unique to this module:
+
+.. raw:: html
+
+    <table border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="1">Key</th>
+            <th>Returned</th>
+            <th width="100%">Description</th>
+        </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>after</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when changed</td>
+                <td>
+                            <div>The resulting configuration model invocation.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format
+     of the parameters above.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>before</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>always</td>
+                <td>
+                            <div>The configuration prior to the model invocation.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format
+     of the parameters above.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>commands</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>always</td>
+                <td>
+                            <div>The set of commands pushed to the remote device.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospfv3 102&#x27;, &#x27;router-id 198.54.100.1&#x27;, &#x27;router ospfv3 100&#x27;, &#x27;router-id 192.0.100.1&#x27;, &#x27;address-family ipv6 unicast&#x27;, &#x27;redistribute eigrp 120 route-map rmap_1&#x27;, &#x27;redistribute direct route-map ospf-direct-connect&#x27;, &#x27;area 0.0.0.100 filter-list route-map rmap_1 in&#x27;, &#x27;area 0.0.0.100 filter-list route-map rmap_2 out&#x27;, &#x27;area 0.0.0.100 range 2001:db2::/32 not-advertise&#x27;, &#x27;area 0.0.0.100 range 2001:db3::/32 cost 120&#x27;, &#x27;vrf zone1&#x27;, &#x27;router-id 192.0.100.2&#x27;, &#x27;vrf zone2&#x27;, &#x27;auto-cost reference-bandwidth 45 Gbps&#x27;]</div>
+                </td>
+            </tr>
+    </table>
+    <br/><br/>
+
 
 Status
 ------

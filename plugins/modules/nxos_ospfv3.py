@@ -1626,6 +1626,42 @@ EXAMPLES = """
 #        vrf: zone2
 #
 """
+RETURN = """
+before:
+  description: The configuration prior to the model invocation.
+  returned: always
+  type: dict
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+after:
+  description: The resulting configuration model invocation.
+  returned: when changed
+  type: dict
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: always
+  type: list
+  sample:
+    - "router ospfv3 102"
+    - "router-id 198.54.100.1"
+    - "router ospfv3 100"
+    - "router-id 192.0.100.1"
+    - "address-family ipv6 unicast"
+    - "redistribute eigrp 120 route-map rmap_1"
+    - "redistribute direct route-map ospf-direct-connect"
+    - "area 0.0.0.100 filter-list route-map rmap_1 in"
+    - "area 0.0.0.100 filter-list route-map rmap_2 out"
+    - "area 0.0.0.100 range 2001:db2::/32 not-advertise"
+    - "area 0.0.0.100 range 2001:db3::/32 cost 120"
+    - "vrf zone1"
+    - "router-id 192.0.100.2"
+    - "vrf zone2"
+    - "auto-cost reference-bandwidth 45 Gbps"
+"""
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
