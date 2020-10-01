@@ -329,3 +329,35 @@ releases:
     - 141_fix_nxos_vlans.yaml
     - 142-N9K-multisite.yaml
     release_date: '2020-08-28'
+  1.2.0:
+    changes:
+      bugfixes:
+      - Correctly parse facts for lacp interfaces mode information (https://github.com/ansible-collections/cisco.nxos/pull/164).
+      - Fix for nxos smu issue (https://github.com/ansible-collections/cisco.nxos/pull/160).
+      - Fix regex for parsing configuration in nxos_lag_interfaces.
+      - Fix regexes in nxos_acl_interfaces facts and some code cleanup (https://github.com/ansible-collections/cisco.nxos/issues/149).
+      - Fix rendering of `log-adjacency-changes` commands.
+      - Preserve whitespaces in banner text (https://github.com/ansible-collections/cisco.nxos/pull/146).
+      deprecated_features:
+      - Deprecated `nxos_smu` in favour of `nxos_rpm` module.
+      - The `nxos_ospf_vrf` module is deprecated by `nxos_ospfv2` and `nxos_ospfv3`
+        Resource Modules.
+      minor_changes:
+      - Add nxos_ospfv3 module.
+      - Allow other transfer protocols than scp to pull files from a NXOS device in
+        nxos_file_copy module. sftp, http, https, tftp and ftp can be choosen as a
+        transfer protocol, when the file_pull parameter is true..
+    fragments:
+    - 161-transfer_protocol_file_copy.yaml
+    - add_nxos_ospfv3.yaml
+    - fix_lacp_interfaces_mode_facts_parsing.yaml
+    - fix_nxos_acl_interfaces.yaml
+    - fix_nxos_banner_with_spaces.yaml
+    - fix_nxos_lag_interfaces.yaml
+    - fix_nxos_ospfv2.yaml
+    - fix_nxos_smu.yaml
+    modules:
+    - description: OSPFv3 resource module
+      name: nxos_ospfv3
+      namespace: ''
+    release_date: '2020-10-01'

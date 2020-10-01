@@ -5,6 +5,36 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v1.2.0
+======
+
+Minor Changes
+-------------
+
+- Add nxos_ospfv3 module.
+- Allow other transfer protocols than scp to pull files from a NXOS device in nxos_file_copy module. sftp, http, https, tftp and ftp can be choosen as a transfer protocol, when the file_pull parameter is true..
+
+Deprecated Features
+-------------------
+
+- Deprecated `nxos_smu` in favour of `nxos_rpm` module.
+- The `nxos_ospf_vrf` module is deprecated by `nxos_ospfv2` and `nxos_ospfv3` Resource Modules.
+
+Bugfixes
+--------
+
+- Correctly parse facts for lacp interfaces mode information (https://github.com/ansible-collections/cisco.nxos/pull/164).
+- Fix for nxos smu issue (https://github.com/ansible-collections/cisco.nxos/pull/160).
+- Fix regex for parsing configuration in nxos_lag_interfaces.
+- Fix regexes in nxos_acl_interfaces facts and some code cleanup (https://github.com/ansible-collections/cisco.nxos/issues/149).
+- Fix rendering of `log-adjacency-changes` commands.
+- Preserve whitespaces in banner text (https://github.com/ansible-collections/cisco.nxos/pull/146).
+
+New Modules
+-----------
+
+- nxos_ospfv3 - OSPFv3 resource module
+
 v1.1.0
 ======
 

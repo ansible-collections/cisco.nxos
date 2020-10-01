@@ -1,5 +1,0 @@
----
-bugfixes:
-  - Fix for nxos smu issue (https://github.com/ansible-collections/cisco.nxos/pull/160).
-deprecated_features:
-  - Deprecated `nxos_smu` in favour of `nxos_rpm` module.
