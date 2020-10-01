@@ -7,7 +7,7 @@ The Ansible Cisco NX-OS collection includes a variety of Ansible content to help
 
 The Cisco NX-OS connection plugins combined with Cisco NX-OS resource modules aligns the Cisco NX-OS experience with the other core networking platforms supported by Ansible.
 
-This collection has been tested against Cisco NX-OS 7.0(3)I5(1).
+This collection has been tested against Cisco NX-OS 7.0(3)I5(1) on Nexus Switches and NX-OS 8.4(1) on MDS Switches.
 
 <!--start requires_ansible-->
 ## Ansible version compatibility
@@ -86,8 +86,9 @@ Name | Description
 [cisco.nxos.nxos_ntp_options](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ntp_options_module.rst)|Manages NTP options.
 [cisco.nxos.nxos_nxapi](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_nxapi_module.rst)|Manage NXAPI configuration on an NXOS device.
 [cisco.nxos.nxos_ospf](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospf_module.rst)|(deprecated, removed after 2022-06-01) Manages configuration of an ospf instance.
-[cisco.nxos.nxos_ospf_vrf](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospf_vrf_module.rst)|Manages a VRF for an OSPF router.
+[cisco.nxos.nxos_ospf_vrf](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospf_vrf_module.rst)|(deprecated, removed after 2022-10-01)Manages a VRF for an OSPF router.
 [cisco.nxos.nxos_ospfv2](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospfv2_module.rst)|OSPFv2 resource module
+[cisco.nxos.nxos_ospfv3](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospfv3_module.rst)|OSPFv3 resource module
 [cisco.nxos.nxos_overlay_global](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_overlay_global_module.rst)|Configures anycast gateway MAC of the switch.
 [cisco.nxos.nxos_pim](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_pim_module.rst)|Manages configuration of a PIM instance.
 [cisco.nxos.nxos_pim_interface](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_pim_interface_module.rst)|Manages PIM interface configuration.
@@ -96,7 +97,7 @@ Name | Description
 [cisco.nxos.nxos_reboot](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_reboot_module.rst)|Reboot a network device.
 [cisco.nxos.nxos_rollback](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_rollback_module.rst)|Set a checkpoint or rollback to a checkpoint.
 [cisco.nxos.nxos_rpm](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_rpm_module.rst)|Install patch or feature rpms on Cisco NX-OS devices.
-[cisco.nxos.nxos_smu](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_smu_module.rst)|Perform SMUs on Cisco NX-OS devices.
+[cisco.nxos.nxos_smu](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_smu_module.rst)|(deprecated, removed after 2022-10-01) Perform SMUs on Cisco NX-OS devices.
 [cisco.nxos.nxos_snapshot](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_snapshot_module.rst)|Manage snapshots of the running states of selected features.
 [cisco.nxos.nxos_snmp_community](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_snmp_community_module.rst)|Manages SNMP community configs.
 [cisco.nxos.nxos_snmp_contact](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_snmp_contact_module.rst)|Manages SNMP contact info.

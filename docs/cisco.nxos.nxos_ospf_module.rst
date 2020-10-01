@@ -18,7 +18,7 @@ DEPRECATED
 ----------
 :Removed in collection release after 2022-06-01
 :Why: Updated modules released with more functionality.
-:Alternative: nxos_ospfv2
+:Alternative: nxos_ospfv2 and nxos_ospfv3
 
 
 
