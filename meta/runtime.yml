@@ -190,6 +190,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     nxapi:
       redirect: cisco.nxos.nxos
+    nxos_ospf_interfaces:
+      redirect: cisco.nxos.nxos
+    ospf_interfaces:
+      redirect: cisco.nxos.nxos
     nxos_ospf:
       redirect: cisco.nxos.nxos
     ospf:
@@ -504,6 +508,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_ntp_options
     nxapi:
       redirect: cisco.nxos.nxos_nxapi
+    ospf_interfaces:
+      redirect: cisco.nxos.nxos_ospf_interfaces
     ospf:
       redirect: cisco.nxos.nxos_ospf
       deprecation:

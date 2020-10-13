@@ -73,6 +73,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospf
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv3.ospfv3 import (
     Ospfv3Facts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospf_interfaces.ospf_interfaces import (
+    Ospf_interfacesFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(
@@ -101,6 +104,7 @@ FACT_RESOURCE_SUBSETS = dict(
     static_routes=Static_routesFacts,
     ospfv2=Ospfv2Facts,
     ospfv3=Ospfv3Facts,
+    ospf_interfaces=Ospf_interfacesFacts,
 )
 
 
