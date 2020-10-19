@@ -156,12 +156,13 @@ class Ospf_interfaces(ResourceModule):
 
     def _compare_processes(self, afi, want, have):
         # add and update config->address_family->processes
+
         for w_id, wproc in want.items():
             hproc = have.pop(w_id, {})
             hproc["afi"] = wproc["afi"] = afi
 
             # compare config->address_family->processes->area
-            self.compare(["processes_area"], wproc, hproc)
+            self.compare(["area"], wproc, hproc)
 
             # compare config->address_family->processes->multi_areas
             marea_dict = {"afi": afi, "process_id": wproc["process_id"]}
@@ -184,7 +185,7 @@ class Ospf_interfaces(ResourceModule):
             hproc["afi"] = afi
 
             # remove config->address_family->processes->area
-            self.addcmd(hproc, "processes_area", negate=True)
+            self.addcmd(hproc, "area", negate=True)
 
             # remove superfluous processes->multi_areas config
             marea_dict = {"afi": afi, "process_id": hproc["process_id"]}

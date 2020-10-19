@@ -94,7 +94,7 @@ class Ospf_interfacesArgs(object):  # pylint: disable=R0903
                         "message_digest_key": {
                             "type": "dict",
                             "options": {
-                                "key_id": {"type": "int"},
+                                "key_id": {"type": "int", "required": True},
                                 "encryption": {"type": "int"},
                                 "key": {"type": "str", "required": True},
                             },

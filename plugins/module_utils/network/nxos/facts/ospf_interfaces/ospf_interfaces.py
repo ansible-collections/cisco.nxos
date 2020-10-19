@@ -46,6 +46,12 @@ class Ospf_interfacesFacts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get("show running-config | section '^interface'")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Ospf_interfaces network resource
 
@@ -60,7 +66,7 @@ class Ospf_interfacesFacts(object):
         objs = []
 
         if not data:
-            data = connection.get("show running-config | section '^interface'")
+            data = self.get_config(connection)
 
         # parse native config using the Ospf_interfaces template
         ospf_interfaces_parser = Ospf_interfacesTemplate(

@@ -55,7 +55,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "shared": True,
         },
         {
-            "name": "processes_area",
+            "name": "area",
             "getval": re.compile(
                 r"""
                 \s+(?P<afi>ip|ipv6)
@@ -235,7 +235,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "ip ospf "
                       "message-digest-key {{ message_digest_key.key_id }} "
-                      "md5 {{ message_digest_key.encryption }} {{ message_digest_key.key }}",
+                      "md5 {{ message_digest_key.encryption|default('') }} {{ message_digest_key.key }}",
             "result": {
                 "{{ name }}": {
                     "address_family": {
@@ -324,19 +324,16 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "name": "instance",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip)?
-                \s(ospf|ospfv3)
+                \s+(ospf|ospfv3)
                 \sinstance\s(?P<instance>\d+)$""",
                 re.VERBOSE,
             ),
-            "setval": "{{ 'ip ' if afi == 'ipv4' else '' }}"
-                      "{{ 'ospf' if afi == 'ipv4' else 'ospfv3' }} "
-                      "instance {{ instance }}",
+            "setval": "ospfv3 instance {{ instance }}",
             "result": {
                 "{{ name }}": {
                     "address_family": {
                         "{{ afi|d('ipv6') }}": {
-                            "afi": "{{ 'ipv4' if afi is defined else 'ipv6' }}",
+                            "afi": "ipv6",
                             "instance": "{{ instance }}",
                         },
                     }
@@ -381,7 +378,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ 'afi|d('ipv6') }}": {
+                        "{{ afi|d('ipv6') }}": {
                             "afi": "{{ 'ipv4' if afi is defined else 'ipv6' }}",
                             "network": "{{ network }}",
                         },
@@ -400,7 +397,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "{{ 'ip ' if afi == 'ipv4' else '' }}"
                       "{{ 'ospf' if afi == 'ipv4' else 'ospfv3' }} "
-                      "passive-interface {{ passive_interface }}",
+                      "passive-interface",
             "result": {
                 "{{ name }}": {
                     "address_family": {
@@ -427,7 +424,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "address_family": {
-                        "{{ 'afi|d('ipv6') }}": {
+                        "{{ afi|d('ipv6') }}": {
                             "afi": "{{ 'ipv4' if afi is defined else 'ipv6' }}",
                             "priority": "{{ priority }}",
                         },

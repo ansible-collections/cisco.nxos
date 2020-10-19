@@ -136,6 +136,7 @@ options:
                 description:
                 - Key ID.
                 type: int
+                required: True
               encryption:
                 description:
                 - 0 Specifies an UNENCRYPTED ospf password (key) will follow.
