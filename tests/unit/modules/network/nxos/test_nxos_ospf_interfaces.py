@@ -306,6 +306,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             interface Ethernet1/2
               no switchport
               ipv6 router ospfv3 109 multi-area 5.5.5.5
+              ipv6 router ospfv3 200 multi-area 4.2.2.1
+              ipv6 router ospfv3 200 multi-area 4.2.2.2
             interface Ethernet1/3
               no switchport
             interface Ethernet1/4
@@ -366,6 +368,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ipv6 router ospfv3 200 multi-area 4.4.4.4",
             "interface Ethernet1/2",
             "no ipv6 router ospfv3 109 multi-area 5.5.5.5",
+            "no ipv6 router ospfv3 200 multi-area 4.2.2.1",
+            "no ipv6 router ospfv3 200 multi-area 4.2.2.2",
             "ipv6 router ospfv3 109 multi-area 5.5.5.6",
         ]
         result = self.execute_module(changed=True)
@@ -493,6 +497,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
+              ip ospf authentication
             """
         )
         set_module_args(
@@ -523,6 +528,12 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                             dict(afi="ipv4", authentication=dict(enable=True))
                         ],
                     ),
+                    dict(
+                        name="Ethernet1/4",
+                        address_family=[
+                            dict(afi="ipv4", authentication=dict(enable=False))
+                        ],
+                    ),
                 ],
                 state="merged",
             ),
@@ -536,6 +547,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ip ospf authentication null",
             "interface Ethernet1/3",
             "ip ospf authentication",
+            "interface Ethernet1/4",
+            "no ip ospf authentication",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -1299,6 +1312,261 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "no ospfv3 shutdown",
             "no ip ospf transmit-delay 210",
             "ospfv3 transmit-delay 300",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospf_interfaces_parsed(self):
+        # test parsed
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    interface Ethernet1/1
+                      no switchport
+                      ip router ospf 102 area 1.1.1.2 secondaries none
+                      ipv6 router ospfv3 200 area 2.2.2.8
+                    interface Ethernet1/2
+                      no switchport
+                      ipv6 router ospfv3 210 multi-area 3.3.3.3
+                    interface Ethernet1/3
+                      no switchport
+                    interface Ethernet1/4
+                      no switchport
+                    """
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = [
+            {
+                "name": "Ethernet1/1",
+                "address_family": [
+                    {
+                        "afi": "ipv4",
+                        "processes": [
+                            {
+                                "process_id": "102",
+                                "area": {
+                                    "area_id": "1.1.1.2",
+                                    "secondaries": False,
+                                },
+                            }
+                        ],
+                    },
+                    {
+                        "afi": "ipv6",
+                        "processes": [
+                            {
+                                "process_id": "200",
+                                "area": {"area_id": "2.2.2.8"},
+                            }
+                        ],
+                    },
+                ],
+            },
+            {
+                "name": "Ethernet1/2",
+                "address_family": [
+                    {
+                        "afi": "ipv6",
+                        "processes": [
+                            {"process_id": "210", "multi_areas": ["3.3.3.3"]}
+                        ],
+                    }
+                ],
+            },
+            {"name": "Ethernet1/3"},
+            {"name": "Ethernet1/4"},
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)
+
+    def test_nxos_ospf_interfaces_gathered(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              no switchport
+              ip router ospf 102 area 1.1.1.2 secondaries none
+              ipv6 router ospfv3 200 area 2.2.2.8
+            interface Ethernet1/2
+              no switchport
+              ipv6 router ospfv3 210 multi-area 3.3.3.3
+            interface Ethernet1/3
+              no switchport
+            interface Ethernet1/4
+              no switchport
+            """
+        )
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        gathered = [
+            {
+                "name": "Ethernet1/1",
+                "address_family": [
+                    {
+                        "afi": "ipv4",
+                        "processes": [
+                            {
+                                "process_id": "102",
+                                "area": {
+                                    "area_id": "1.1.1.2",
+                                    "secondaries": False,
+                                },
+                            }
+                        ],
+                    },
+                    {
+                        "afi": "ipv6",
+                        "processes": [
+                            {
+                                "process_id": "200",
+                                "area": {"area_id": "2.2.2.8"},
+                            }
+                        ],
+                    },
+                ],
+            },
+            {
+                "name": "Ethernet1/2",
+                "address_family": [
+                    {
+                        "afi": "ipv6",
+                        "processes": [
+                            {"process_id": "210", "multi_areas": ["3.3.3.3"]}
+                        ],
+                    }
+                ],
+            },
+            {"name": "Ethernet1/3"},
+            {"name": "Ethernet1/4"},
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_ospf_interfaces_sanity(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """
+            """
+        )
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        gathered = []
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_ospf_interfaces_overridden(self):
+        # test overriden
+        self.get_config.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              no switchport
+              ip ospf shutdown
+              ospfv3 transmit-delay 200
+            interface Ethernet1/2
+              no switchport
+              ip ospf transmit-delay 210
+              ospfv3 shutdown
+            interface Ethernet1/3
+              no switchport
+              ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d
+            interface Ethernet1/4
+              no switchport
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        address_family=[
+                            dict(
+                                afi="ipv4", shutdown=False, transmit_delay=300
+                            ),
+                            dict(afi="ipv6", shutdown=True),
+                        ],
+                    )
+                ],
+                state="overridden",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "interface Ethernet1/1",
+            "ip ospf transmit-delay 300",
+            "no ip ospf shutdown",
+            "no ospfv3 transmit-delay 200",
+            "ospfv3 shutdown",
+            "interface Ethernet1/2",
+            "no ip ospf transmit-delay 210",
+            "no ospfv3 shutdown",
+            "interface Ethernet1/3",
+            "no ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospf_interfaces_deleted(self):
+        # test deleted
+        self.get_config.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              no switchport
+              ip ospf shutdown
+              ospfv3 transmit-delay 200
+            interface Ethernet1/2
+              no switchport
+              ip ospf transmit-delay 210
+              ospfv3 shutdown
+            interface Ethernet1/3
+              no switchport
+              ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d
+            interface Ethernet1/4
+              no switchport
+            """
+        )
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/1")], state="deleted"),
+            ignore_provider_arg,
+        )
+        commands = [
+            "interface Ethernet1/1",
+            "no ip ospf shutdown",
+            "no ospfv3 transmit-delay 200",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospf_interfaces_deleted_all(self):
+        # test deleted
+        self.get_config.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              no switchport
+              ip ospf shutdown
+              ospfv3 transmit-delay 200
+            interface Ethernet1/2
+              no switchport
+              ip ospf transmit-delay 210
+              ospfv3 shutdown
+            interface Ethernet1/3
+              no switchport
+              ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d
+            interface Ethernet1/4
+              no switchport
+            """
+        )
+        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        commands = [
+            "interface Ethernet1/1",
+            "no ip ospf shutdown",
+            "no ospfv3 transmit-delay 200",
+            "interface Ethernet1/2",
+            "no ip ospf transmit-delay 210",
+            "no ospfv3 shutdown",
+            "interface Ethernet1/3",
+            "no ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
