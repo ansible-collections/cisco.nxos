@@ -1,0 +1,89 @@
+---
+- debug:
+    msg: Start nxos_ospf_interfaces merged integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _setup.yaml
+
+- block:
+    - name: Merge the provided configuration with the exisiting running configuration
+      cisco.nxos.nxos_ospf_interfaces: &id001
+        config:
+          - name: "{{ nxos_int1 }}"
+            address_family:
+            - afi: ipv4
+              processes:
+              - process_id: "100"
+                area:
+                  area_id: 1.1.1.1
+                  secondaries: False
+              multi_areas:
+              - 11.11.11.11
+            - afi: ipv6
+              processes:
+              - process_id: "200"
+                area:
+                  area_id: 2.2.2.2
+                multi_areas:
+                - 21.0.0.0
+              - process_id: "300"
+                multi_areas:
+                - 50.50.50.50
+              multi_areas:
+              - 16.10.10.10
+          - name: "{{ nxos_int2 }}"
+            address_family:
+            - afi: ipv4
+              authentication:
+                enable: True
+                key_chain: test-1
+              message_digest_key:
+                key_id: 10
+                encryption: 3
+                key: abc01d272be25d29
+              cost: 100
+            - afi: ipv6
+              network: broadcast
+              shutdown: True
+          - name: "{{ nxos_int3 }}"
+            address_family:
+            - afi: ipv4
+              authentication_key:
+                encryption: 7
+                key: 12090404011C03162E
+        state: merged
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that:
+        - result["before"][0] == merged["before"][0]
+        - result["before"][1] == merged["before"][1]
+        - result["before"][2] == merged["before"][2]
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+        - "{{ result['after'][0]  == merged['after'][0] }}"
+        - "{{ result['after'][1]  == merged['after'][1] }}"
+        - "{{ result['after'][2]  == merged['after'][2] }}"
+
+    - name: Merge the provided configuration with the existing running configuration
+        (IDEMPOTENT)
+      cisco.nxos.nxos_ospf_interfaces: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+  always:
+    - include_tasks: _remove_config.yaml

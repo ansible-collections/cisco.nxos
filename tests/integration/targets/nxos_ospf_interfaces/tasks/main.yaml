@@ -1,0 +1,27 @@
+---
+- name: Enable OSPF v2 and v3 features
+  cisco.nxos.nxos_config:
+    lines:
+      - feature ospf
+      - feature ospfv3
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+
+- block:
+
+    - include: cli.yaml
+      tags:
+        - cli.yaml
+
+    - include: nxapi.yaml
+      tags:
+        - nxapi
+
+  always:
+    - name: Disable OSPF v2 and v3 features
+      cisco.nxos.nxos_config:
+        lines:
+          - feature ospf
+          - feature ospfv3
+      vars:
+        ansible_connection: ansible.netcommon.network_cli

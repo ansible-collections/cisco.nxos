@@ -1,0 +1,20 @@
+---
+- name: Populate config
+  cisco.nxos.nxos_config:
+    lines:
+    - "interface {{ nxos_int1 }}"
+    - "  ip router ospf 100 area 1.1.1.1 secondaries none"
+    - "  ip router ospf multi-area 11.11.11.11"
+    - "  ipv6 router ospfv3 200 area 2.2.2.2"
+    - "  ipv6 router ospfv3 200 multi-area 21.0.0.0"
+    - "  ipv6 router ospfv3 300 multi-area 50.50.50.50"
+    - "  ipv6 router ospfv3 multi-area 16.10.10.10"
+    - "interface {{ nxos_int2 }}"
+    - "  ip ospf authentication"
+    - "  ip ospf authentication key-chain test-1"
+    - "  ip ospf message-digest-key 10 md5 3 abc01d272be25d29"
+    - "  ip ospf cost 100"
+    - "  ospfv3 network broadcast"
+    - "  ospfv3 shutdown"
+    - "interface {{ nxos_int3 }}"
+    - "  ip ospf authentication-key 7 12090404011C03162E"
