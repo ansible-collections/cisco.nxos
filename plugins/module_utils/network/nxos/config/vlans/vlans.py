@@ -329,7 +329,7 @@ class Vlans(ConfigBase):
     def _sanitize(self, vlans):
         sanitized_vlans = []
         for vlan in vlans:
-            if not re.search("N[567]K", self._platform):
+            if not re.search("N[567][7K]", self._platform):
                 if "mode" in vlan:
                     del vlan["mode"]
             sanitized_vlans.append(remove_empties(vlan))
