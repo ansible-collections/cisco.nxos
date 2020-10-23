@@ -199,19 +199,21 @@ def activate_reload(module, pkg, flag):
                 if msg[0] == -32603:
                     return cmd
             elif isinstance(msg[0], str):
+                if "socket is closed" in msg[0].lower():
+                    return cmd
                 if (
                     "another install operation is in progress"
                     in msg[0].lower()
                     or "failed" in msg[0].lower()
                 ):
                     time.sleep(2)
-                    iteration += 1
+        iteration += 1
 
 
-def commit_operation(module, show_cmd, pkg):
+def commit_operation(module, show_cmd, pkg, flag):
     cmd = "install commit {0}".format(pkg)
     config_cmd_operation(module, cmd)
-    validate_operation(module, show_cmd, cmd, pkg, False)
+    validate_operation(module, show_cmd, cmd, pkg, flag)
     return cmd
 
 
@@ -222,11 +224,24 @@ def deactivate_operation(module, show_cmd, pkg, flag):
     return cmd
 
 
+def terminal_operation(module, config):
+    if config:
+        cmd = "terminal dont-ask"
+    else:
+        cmd = "no terminal dont-ask"
+    config_cmd_operation(module, cmd)
+    return cmd
+
+
 def remove_operation(module, show_cmd, pkg):
+    commands = []
+    commands.append(terminal_operation(module, True))
     cmd = "install remove {0} forced".format(pkg)
     config_cmd_operation(module, cmd)
     validate_operation(module, show_cmd, cmd, pkg, True)
-    return cmd
+    commands.append(cmd)
+    commands.append(terminal_operation(module, False))
+    return commands
 
 
 def install_remove_rpm(module, full_pkg, file_system, state):
@@ -270,7 +285,9 @@ def install_remove_rpm(module, full_pkg, file_system, state):
             patch_body = execute_show_command(show_patches, module)
             if pkg in patch_body:
                 # This is smu/patch rpm
-                commands.append(commit_operation(module, show_active, pkg))
+                commands.append(
+                    commit_operation(module, show_commit, pkg, False)
+                )
             else:
                 err = 'Operation "install activate {0} forced" Failed'.format(
                     pkg
@@ -298,14 +315,14 @@ def install_remove_rpm(module, full_pkg, file_system, state):
                 if pkg in commit_body:
                     # This is smu/patch rpm
                     commands.append(
-                        commit_operation(module, show_inactive, pkg)
+                        commit_operation(module, show_commit, pkg, True)
                     )
-                commands.append(remove_operation(module, show_inactive, pkg))
+                commands.extend(remove_operation(module, show_inactive, pkg))
 
         elif pkg in commit_body:
             # This is smu/patch rpm
-            commands.append(commit_operation(module, show_inactive, pkg))
-            commands.append(remove_operation(module, show_inactive, pkg))
+            commands.append(commit_operation(module, show_commit, pkg, True))
+            commands.extend(remove_operation(module, show_inactive, pkg))
 
         elif pkg in active_body:
             # This is smu/patch rpm
@@ -316,12 +333,12 @@ def install_remove_rpm(module, full_pkg, file_system, state):
                 commands.append(
                     deactivate_operation(module, show_inactive, pkg, False)
                 )
-                commands.append(remove_operation(module, show_inactive, pkg))
+                commands.extend(remove_operation(module, show_inactive, pkg))
 
         else:
             inactive_body = execute_show_command(show_inactive, module)
             if pkg in inactive_body:
-                commands.append(remove_operation(module, show_inactive, pkg))
+                commands.extend(remove_operation(module, show_inactive, pkg))
 
     return commands
 
