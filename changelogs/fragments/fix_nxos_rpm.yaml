@@ -1,0 +1,3 @@
+
+bugfixes:
+  - Fixes for nxos rpm issue (https://github.com/ansible-collections/cisco.nxos/pull/173).
