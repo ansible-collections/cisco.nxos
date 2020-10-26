@@ -272,11 +272,11 @@ class ActionModule(ActionNetworkModule):
             result = json.loads(output)
         else:
             result = super(ActionModule, self).run(task_vars=task_vars)
-            if warnings:
-                if "warnings" in result:
-                    result["warnings"].extend(warnings)
-                else:
-                    result["warnings"] = warnings
+        if warnings:
+            if "warnings" in result:
+                result["warnings"].extend(warnings)
+            else:
+                result["warnings"] = warnings
         return result
 
     @staticmethod
