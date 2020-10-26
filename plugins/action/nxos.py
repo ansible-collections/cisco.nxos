@@ -226,12 +226,57 @@ class ActionModule(ActionNetworkModule):
                 % self._play_context.connection,
             }
 
-        result = super(ActionModule, self).run(task_vars=task_vars)
-        if warnings:
-            if "warnings" in result:
-                result["warnings"].extend(warnings)
-            else:
-                result["warnings"] = warnings
+        make_fast = task_vars.get('ansible_network_make_fast')
+        if make_fast:
+            import importlib, io, json, sys
+            from ansible.module_utils.basic import AnsibleModule as _AnsibleModule
+
+            # get the loader, module file name and import
+            mloadr = self._shared_loader_obj.module_loader
+            filename = mloadr.find_plugin(self._task.action)
+            spec = importlib.util.spec_from_file_location("module", filename)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+
+            # build an AnsibleModule that doesn't load params
+            class AnsibleModule(_AnsibleModule):
+                def _load_params(self):
+                    pass
+            
+            # update the task args w/ all the magic vars
+            self._update_module_args(self._task.action, self._task.args, task_vars)
+
+            # set the params of the ansible module cause we're using stdin
+            AnsibleModule.params = self._task.args
+
+            # give the module our revised AnsibleModule
+            module.AnsibleModule = AnsibleModule
+
+            # redirect stdout to a buffer, because the module "prints"
+            stdout = sys.stdout
+            sys.stdout = io.StringIO()
+
+            # redefine sys.exit, otherwise the module exits & dead worker
+            sys.exit = lambda x: None
+
+            # run the module
+            module.main()
+
+            # capture the module's output
+            output = sys.stdout.getvalue()
+
+            # restore stdout
+            sys.stdout = stdout
+
+            # load the json from module exit_json or fail_json
+            result = json.loads(output)
+        else:
+            result = super(ActionModule, self).run(task_vars=task_vars)
+            if warnings:
+                if "warnings" in result:
+                    result["warnings"].extend(warnings)
+                else:
+                    result["warnings"] = warnings
         return result
 
     @staticmethod
