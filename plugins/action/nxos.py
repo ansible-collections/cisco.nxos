@@ -227,7 +227,7 @@ class ActionModule(ActionNetworkModule):
             }
 
         make_fast = task_vars.get('ansible_network_make_fast')
-        if make_fast:
+        if make_fast or True:  #FIXME
             import importlib, io, json, sys
             from ansible.module_utils.basic import AnsibleModule as _AnsibleModule
 
