@@ -446,6 +446,13 @@ plugin_routing:
         warning_text: See the plugin documentation for more details
     interface_ospf:
       redirect: cisco.nxos.nxos_interface_ospf
+      deprecation:
+        removal_date: '2022-10-26'
+        warning_text: See the plugin documentation for more details
+    nxos_interface_ospf:
+      deprecation:
+        removal_date: '2022-10-26'
+        warning_text: See the plugin documentation for more details
     interfaces:
       redirect: cisco.nxos.nxos_interfaces
     l2_interface:

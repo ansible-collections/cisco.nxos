@@ -1,3 +1,5 @@
 ---
 minor_changes:
   - Add nxos_ospf_interfaces resource module.
+deprecated_features:
+  - Deprecated `nxos_inteerface_ospf` in favor of `nxos_ospf_interfaces` Resource Module.
