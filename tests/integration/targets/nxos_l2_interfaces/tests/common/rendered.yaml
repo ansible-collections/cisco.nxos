@@ -25,6 +25,8 @@
             trunk:
               native_vlan: 20
               allowed_vlans: 5-10, 15
+          - name: Ethernet1/4
+            mode: fex-fabric
         state: rendered
         
     - assert:

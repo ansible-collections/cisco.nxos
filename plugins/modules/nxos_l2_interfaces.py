@@ -93,6 +93,7 @@ options:
         choices:
         - access
         - trunk
+        - fex-fabric
   state:
     description:
     - The state of the configuration after module completion.
