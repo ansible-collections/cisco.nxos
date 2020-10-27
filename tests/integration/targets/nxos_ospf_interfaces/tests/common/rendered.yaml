@@ -1,0 +1,58 @@
+---
+- debug:
+    msg: START nxos_ospf_interfaces rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_ospf_interfaces:
+    config:
+      - name: "{{ nxos_int1 }}"
+        address_family:
+        - afi: ipv4
+          processes:
+          - process_id: "100"
+            area:
+              area_id: 1.1.1.1
+              secondaries: False
+          multi_areas:
+          - 11.11.11.11
+        - afi: ipv6
+          processes:
+          - process_id: "200"
+            area:
+              area_id: 2.2.2.2
+            multi_areas:
+            - 21.0.0.0
+          - process_id: "300"
+            multi_areas:
+            - 50.50.50.50
+          multi_areas:
+          - 16.10.10.10
+      - name: "{{ nxos_int2 }}"
+        address_family:
+        - afi: ipv4
+          authentication:
+            enable: True
+            key_chain: test-1
+          message_digest_key:
+            key_id: 10
+            encryption: 3
+            key: abc01d272be25d29
+          cost: 100
+        - afi: ipv6
+          network: broadcast
+          shutdown: True
+      - name: "{{ nxos_int3 }}"
+        address_family:
+        - afi: ipv4
+          authentication_key:
+            encryption: 7
+            key: 12090404011C03162E
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  assert:
+    that:
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
+        \ == 0 }}"
+      - result.changed == False

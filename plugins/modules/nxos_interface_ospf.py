@@ -24,10 +24,14 @@ DOCUMENTATION = """
 module: nxos_interface_ospf
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages configuration of an OSPF interface instance.
+short_description: (deprecated, removed after 2022-10-26) Manages configuration of an OSPF interface instance.
 description:
 - Manages configuration of an OSPF interface instance.
 version_added: 1.0.0
+deprecated:
+  alternative: nxos_ospf_interfaces
+  why: Updated modules released with more functionality
+  removed_at_date: '2022-10-26'
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL

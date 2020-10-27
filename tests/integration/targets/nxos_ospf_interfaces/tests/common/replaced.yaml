@@ -1,0 +1,61 @@
+---
+- debug:
+    msg: Start nxos_ospf_interfaces replaced integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _setup.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace OSPF configurations of listed interfaces with provided configurations
+      cisco.nxos.nxos_ospf_interfaces: &id002
+        config:
+        - name: "{{ nxos_int1 }}"
+          address_family:
+          - afi: ipv4
+            processes:
+            - process_id: "100"
+              area:
+                area_id: 1.1.1.1
+                secondaries: False
+            multi_areas:
+            - 11.11.11.12
+        - name: "{{ nxos_int3 }}"
+        state: replaced
+      register: result
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+        - result["before"][0] == merged["after"][0]
+        - result["before"][1] == merged["after"][1]
+        - result["before"][2] == merged["after"][2]
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
+            \ |length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+        - result['after'][0]  == replaced['after'][0]
+        - result['after'][1]  == replaced['after'][1]
+        - result['after'][2]  == replaced['after'][2]
+
+    - name: Replace OSPF configurations of listed interfaces with provided configurations
+        (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_ospf_interfaces: *id002
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml

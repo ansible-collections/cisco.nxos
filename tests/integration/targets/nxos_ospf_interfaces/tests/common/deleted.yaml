@@ -1,0 +1,101 @@
+---
+- debug:
+    msg: Start nxos_ospf_interfaces deleted integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _setup.yaml
+
+- include_tasks: _populate_config.yaml
+
+- set_fact:
+    int1:
+      name: "{{ nxos_int1 }}"
+    int2:
+      name: "{{ nxos_int2 }}"
+    int3:
+      name: "{{ nxos_int3 }}"
+
+- block:
+    - name: Delete OSPF config from a single interface
+      cisco.nxos.nxos_ospf_interfaces: &id005
+        config:
+          - name: "{{ nxos_int1 }}"
+        state: deleted
+      register: result
+    
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+        - result["before"][0] == merged["after"][0]
+        - result["before"][1] == merged["after"][1]
+        - result["before"][2] == merged["after"][2]
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - '"interface {{ nxos_int1 }}" in result.commands'
+          - '"no ip router ospf 100 area 1.1.1.1 secondaries none" in result.commands'
+          - '"no ip router ospf multi-area 11.11.11.11" in result.commands'
+          - '"no ipv6 router ospfv3 200 area 2.2.2.2" in result.commands'
+          - '"no ipv6 router ospfv3 200 multi-area 21.0.0.0" in result.commands'
+          - '"no ipv6 router ospfv3 300 multi-area 50.50.50.50" in result.commands'
+          - '"no ipv6 router ospfv3 multi-area 16.10.10.10" in result.commands'
+          - result.commands|length == 7        
+  
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+        - result["after"][0] == int1
+        - result["after"][1] == merged["after"][1]
+        - result["after"][2] == merged["after"][2]
+          
+    
+    - name: Delete OSPF config from a single interface (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_ospf_interfaces: *id005
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+    
+    - include_tasks: _populate_config.yaml
+
+    - name: Delete OSPF config from all interfaces
+      cisco.nxos.nxos_ospf_interfaces: &id007
+        state: deleted
+      register: result
+    
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+        - result["before"][0] == merged["after"][0]
+        - result["before"][1] == merged["after"][1]
+        - result["before"][2] == merged["after"][2]
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+        - result["after"][0] == int1
+        - result["after"][1] == int2
+        - result["after"][2] == int3
+    
+    - name: Delete OSPF config from all interfaces (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_ospf_interfaces: *id007
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml
