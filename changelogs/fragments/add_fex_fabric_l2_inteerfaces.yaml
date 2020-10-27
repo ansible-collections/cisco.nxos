@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Allow `fex-fabric` option for mode key (https://github.com/ansible-collections/cisco.nxos/issues/166).

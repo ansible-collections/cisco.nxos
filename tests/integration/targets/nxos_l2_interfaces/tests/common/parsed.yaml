@@ -14,6 +14,8 @@
             switchport trunk allowed vlan 210
           interface Ethernet1/801
             switchport trunk allowed vlan 2,4,15
+          interface Ethernet1/802
+            switchport mode fex-fabric
         state: parsed
 
     - assert:
