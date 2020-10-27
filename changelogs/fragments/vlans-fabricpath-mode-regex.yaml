@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Update regex to accept the platform "N77" as supporting fabricpath.
