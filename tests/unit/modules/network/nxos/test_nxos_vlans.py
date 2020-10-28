@@ -253,3 +253,31 @@ class TestNxosVlansModule(TestNxosModule):
         playbook["_ansible_check_mode"] = True
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=replaced)
+
+    def test_5(self):
+        """
+        Idempotency test
+        """
+
+        self.prepare()
+        # Misc tests to hit codepaths highlighted by code coverage tool as missed.
+        playbook = dict(config=[
+            dict(vlan_id=1, name='default', enabled=True),
+            dict(vlan_id=3, name='test-vlan3', enabled=True),
+            dict(vlan_id=4, enabled=True),
+            dict(vlan_id=5, name='test-changeme', mapped_vni=942, state='suspend', enabled=False),
+            dict(vlan_id=8, name='test-changeme-not', state='suspend', enabled=False),
+            ])
+
+        
+        playbook["state"] = "merged"
+        set_module_args(playbook, ignore_provider_arg)
+        r = self.execute_module(changed=False)
+
+        playbook["state"] = "overridden"
+        set_module_args(playbook, ignore_provider_arg)
+        r = self.execute_module(changed=False)
+
+        playbook["state"] = "replaced"
+        set_module_args(playbook, ignore_provider_arg)
+        r = self.execute_module(changed=False)
