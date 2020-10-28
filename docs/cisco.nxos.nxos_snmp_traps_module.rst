@@ -354,7 +354,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ensure lldp trap configured
     - cisco.nxos.nxos_snmp_traps:

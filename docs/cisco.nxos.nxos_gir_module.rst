@@ -406,7 +406,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # Trigger system maintenance mode
     - cisco.nxos.nxos_gir:

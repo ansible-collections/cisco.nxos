@@ -412,7 +412,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # Radius Server Basic settings
     - name: Radius Server Basic settings

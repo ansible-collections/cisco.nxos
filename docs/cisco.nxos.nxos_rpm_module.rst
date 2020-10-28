@@ -409,7 +409,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - cisco.nxos.nxos_rpm:
         pkg: nxos.sample-n9k_ALL-1.0.0-7.0.3.I7.3.lib32_n9000.rpm

@@ -97,6 +97,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>access</li>
                                     <li>trunk</li>
+                                    <li>fex-fabric</li>
                         </ul>
                 </td>
                 <td>
@@ -229,7 +230,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # Using merged
 

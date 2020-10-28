@@ -569,7 +569,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - cisco.nxos.nxos_igmp_interface:
         interface: ethernet1/32

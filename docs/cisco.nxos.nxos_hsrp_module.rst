@@ -444,7 +444,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Ensure HSRP is configured with following params on a SVI
       cisco.nxos.nxos_hsrp:

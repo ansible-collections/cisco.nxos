@@ -534,7 +534,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Ensure PIM is not running on the interface
       cisco.nxos.nxos_pim_interface:

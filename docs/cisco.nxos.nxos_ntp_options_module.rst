@@ -358,7 +358,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # Basic NTP options configuration
     - cisco.nxos.nxos_ntp_options:

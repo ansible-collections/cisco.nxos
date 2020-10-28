@@ -397,7 +397,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ensure igmp snooping params supported in this module are in there default state
     - cisco.nxos.nxos_igmp_snooping:

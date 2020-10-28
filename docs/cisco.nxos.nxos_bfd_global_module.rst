@@ -504,7 +504,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - cisco.nxos.nxos_bfd_global:
         echo_interface: Ethernet1/2

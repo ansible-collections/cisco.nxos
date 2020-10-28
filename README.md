@@ -29,10 +29,18 @@ Name | Description
 --- | ---
 [cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_cliconf.rst)|Use NX-OS cliconf to run commands on Cisco NX-OS platform
 
+### Filter plugins
+Name | Description
+--- | ---
+
 ### Httpapi plugins
 Name | Description
 --- | ---
 [cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_httpapi.rst)|Use NX-API to run commands on Cisco NX-OS platform
+
+### Inventory plugins
+Name | Description
+--- | ---
 
 ### Modules
 Name | Description
@@ -67,7 +75,7 @@ Name | Description
 [cisco.nxos.nxos_igmp_snooping](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_igmp_snooping_module.rst)|Manages IGMP snooping global configuration.
 [cisco.nxos.nxos_install_os](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_install_os_module.rst)|Set boot options like boot, kickstart image and issu.
 [cisco.nxos.nxos_interface](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_interface_module.rst)|(deprecated, removed after 2022-06-01) Manages physical attributes of interfaces.
-[cisco.nxos.nxos_interface_ospf](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_interface_ospf_module.rst)|Manages configuration of an OSPF interface instance.
+[cisco.nxos.nxos_interface_ospf](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_interface_ospf_module.rst)|(deprecated, removed after 2022-10-26) Manages configuration of an OSPF interface instance.
 [cisco.nxos.nxos_interfaces](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_interfaces_module.rst)|Interfaces resource module
 [cisco.nxos.nxos_l2_interface](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_l2_interface_module.rst)|(deprecated, removed after 2022-06-01) Manage Layer-2 interface on Cisco NXOS devices.
 [cisco.nxos.nxos_l2_interfaces](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_l2_interfaces_module.rst)|L2 interfaces resource module
@@ -86,6 +94,7 @@ Name | Description
 [cisco.nxos.nxos_ntp_options](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ntp_options_module.rst)|Manages NTP options.
 [cisco.nxos.nxos_nxapi](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_nxapi_module.rst)|Manage NXAPI configuration on an NXOS device.
 [cisco.nxos.nxos_ospf](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospf_module.rst)|(deprecated, removed after 2022-06-01) Manages configuration of an ospf instance.
+[cisco.nxos.nxos_ospf_interfaces](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospf_interfaces_module.rst)|OSPF Interfaces Resource Module.
 [cisco.nxos.nxos_ospf_vrf](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospf_vrf_module.rst)|(deprecated, removed after 2022-10-01)Manages a VRF for an OSPF router.
 [cisco.nxos.nxos_ospfv2](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospfv2_module.rst)|OSPFv2 resource module
 [cisco.nxos.nxos_ospfv3](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ospfv3_module.rst)|OSPFv3 resource module

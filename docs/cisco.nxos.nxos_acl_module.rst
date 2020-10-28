@@ -773,7 +773,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # configure ACL ANSIBLE
     - cisco.nxos.nxos_acl:

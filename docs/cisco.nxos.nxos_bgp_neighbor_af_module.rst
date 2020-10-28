@@ -914,7 +914,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: configure RR client
       cisco.nxos.nxos_bgp_neighbor_af:

@@ -316,7 +316,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - cisco.nxos.nxos_rollback:
         checkpoint_file: backup.cfg

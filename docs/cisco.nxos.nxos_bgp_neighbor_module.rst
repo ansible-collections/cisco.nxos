@@ -724,7 +724,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # create a new neighbor
     - cisco.nxos.nxos_bgp_neighbor:

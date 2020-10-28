@@ -471,7 +471,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Enable NXAPI access with default configuration
       cisco.nxos.nxos_nxapi:

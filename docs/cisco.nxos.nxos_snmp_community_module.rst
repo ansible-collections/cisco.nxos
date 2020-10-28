@@ -369,7 +369,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ensure snmp community is configured
     - cisco.nxos.nxos_snmp_community:

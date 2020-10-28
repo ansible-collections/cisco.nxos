@@ -320,7 +320,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Configure ssm_range, enable bfd
       cisco.nxos.nxos_pim:

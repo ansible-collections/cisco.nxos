@@ -341,7 +341,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # Create a maintenance-mode profile
     - cisco.nxos.nxos_gir_profile_management:

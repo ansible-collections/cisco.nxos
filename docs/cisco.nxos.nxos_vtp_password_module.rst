@@ -325,7 +325,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ENSURE VTP PASSWORD IS SET
     - cisco.nxos.nxos_vtp_password:

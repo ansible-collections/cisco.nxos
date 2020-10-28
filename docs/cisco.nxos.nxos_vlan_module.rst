@@ -707,7 +707,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Ensure a range of VLANs are not present on the switch
       cisco.nxos.nxos_vlan:

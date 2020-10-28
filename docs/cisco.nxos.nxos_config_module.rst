@@ -598,7 +598,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: configure top level configuration and save it
       cisco.nxos.nxos_config:

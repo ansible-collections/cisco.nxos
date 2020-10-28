@@ -842,7 +842,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # configure a simple address-family
     - cisco.nxos.nxos_bgp_af:

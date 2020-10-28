@@ -393,7 +393,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # Basic NTP authentication configuration
     - cisco.nxos.nxos_ntp_auth:

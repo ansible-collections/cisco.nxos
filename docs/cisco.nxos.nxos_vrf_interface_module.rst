@@ -339,7 +339,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Ensure vrf ntc exists on Eth1/1
       cisco.nxos.nxos_vrf_interface:

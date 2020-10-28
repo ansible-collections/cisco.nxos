@@ -371,7 +371,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Test reachability to 8.8.8.8 using mgmt vrf
       cisco.nxos.nxos_ping:
