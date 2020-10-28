@@ -516,7 +516,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # Create a snapshot and store it locally
     - cisco.nxos.nxos_snapshot:

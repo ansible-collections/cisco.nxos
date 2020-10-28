@@ -303,7 +303,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - cisco.nxos.nxos_overlay_global:
         anycast_gateway_mac: b.b.b

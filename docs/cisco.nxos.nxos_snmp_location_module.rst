@@ -320,7 +320,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ensure snmp location is configured
     - cisco.nxos.nxos_snmp_location:

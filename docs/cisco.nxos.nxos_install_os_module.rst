@@ -345,7 +345,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Install OS on N9k
       check_mode: no

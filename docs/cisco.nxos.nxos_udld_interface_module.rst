@@ -342,7 +342,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ensure Ethernet1/1 is configured to be in aggressive mode
     - cisco.nxos.nxos_udld_interface:

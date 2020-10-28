@@ -318,7 +318,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Gather all legacy facts
       cisco.nxos.nxos_facts:

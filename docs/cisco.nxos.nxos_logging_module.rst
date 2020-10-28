@@ -561,7 +561,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: configure console logging with level
       cisco.nxos.nxos_logging:

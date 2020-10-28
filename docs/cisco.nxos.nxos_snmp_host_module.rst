@@ -456,7 +456,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ensure snmp host is configured
     - cisco.nxos.nxos_snmp_host:

@@ -505,7 +505,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: configure a simple asn
       cisco.nxos.nxos_vpc:

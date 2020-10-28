@@ -385,7 +385,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - cisco.nxos.nxos_pim_rp_address:
         rp_address: 10.1.1.20

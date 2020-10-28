@@ -358,7 +358,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ensure udld aggressive mode is globally disabled and se global message interval is 20
     - cisco.nxos.nxos_udld:

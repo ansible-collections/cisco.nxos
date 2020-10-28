@@ -573,7 +573,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - cisco.nxos.nxos_static_route:
         prefix: 192.168.20.64/24

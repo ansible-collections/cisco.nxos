@@ -339,7 +339,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: configure the exec banner
       cisco.nxos.nxos_banner:

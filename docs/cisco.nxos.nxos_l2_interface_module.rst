@@ -548,7 +548,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Ensure Eth1/5 is in its default l2 interface state
       cisco.nxos.nxos_l2_interface:

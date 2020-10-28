@@ -440,7 +440,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Ensure vrrp group 100 and vip 10.1.100.1 is on vlan10
       cisco.nxos.nxos_vrrp:

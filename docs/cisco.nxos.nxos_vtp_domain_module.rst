@@ -306,7 +306,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ENSURE VTP DOMAIN IS CONFIGURED
     - cisco.nxos.nxos_vtp_domain:

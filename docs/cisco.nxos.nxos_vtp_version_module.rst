@@ -308,7 +308,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # ENSURE VTP VERSION IS 2
     - cisco.nxos.nxos_vtp_version:

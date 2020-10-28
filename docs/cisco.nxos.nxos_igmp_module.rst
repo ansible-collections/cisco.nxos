@@ -363,7 +363,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Default igmp global params (all params except restart)
       cisco.nxos.nxos_igmp:

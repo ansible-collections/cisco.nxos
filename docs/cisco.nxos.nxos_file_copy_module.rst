@@ -543,7 +543,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     # File copy from ansible controller to nxos device
     - name: copy from server to device

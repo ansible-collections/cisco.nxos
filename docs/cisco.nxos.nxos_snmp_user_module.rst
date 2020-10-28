@@ -404,7 +404,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - cisco.nxos.nxos_snmp_user:
         user: ntc

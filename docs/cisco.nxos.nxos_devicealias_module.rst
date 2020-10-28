@@ -207,7 +207,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Test that device alias module works
       cisco.nxos.nxos_devicealias:

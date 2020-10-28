@@ -924,7 +924,7 @@ Notes
 Examples
 --------
 
-.. code-block:: yaml+jinja
+.. code-block:: yaml
 
     - name: Ensure an interface is a Layer 3 port and that it has the proper description
       cisco.nxos.nxos_interface:
