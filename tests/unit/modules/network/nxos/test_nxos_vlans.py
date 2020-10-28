@@ -260,7 +260,6 @@ class TestNxosVlansModule(TestNxosModule):
         """
 
         self.prepare()
-        # Misc tests to hit codepaths highlighted by code coverage tool as missed.
         playbook = dict(config=[
             dict(vlan_id=1, name='default', enabled=True),
             dict(vlan_id=3, name='test-vlan3', enabled=True),
