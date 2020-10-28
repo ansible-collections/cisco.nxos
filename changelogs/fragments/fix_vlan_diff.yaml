@@ -1,0 +1,2 @@
+bugfixes:
+  - Vlan config diff was not removing default values
