@@ -29,18 +29,10 @@ Name | Description
 --- | ---
 [cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_cliconf.rst)|Use NX-OS cliconf to run commands on Cisco NX-OS platform
 
-### Filter plugins
-Name | Description
---- | ---
-
 ### Httpapi plugins
 Name | Description
 --- | ---
 [cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_httpapi.rst)|Use NX-API to run commands on Cisco NX-OS platform
-
-### Inventory plugins
-Name | Description
---- | ---
 
 ### Modules
 Name | Description
