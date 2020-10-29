@@ -189,8 +189,7 @@ class Vlans(ConfigBase):
         """
         obj_in_have = search_obj_in_list(want["vlan_id"], have, "vlan_id")
         if obj_in_have:
-            # ignore states that are already reset, then diff what's left
-            obj_in_have = self.remove_default_states(obj_in_have)
+            # Diff the want and have
             diff = dict_diff(want, obj_in_have)
             # Remove merge items from diff; what's left will be used to
             # remove states not specified in the playbook
@@ -198,6 +197,9 @@ class Vlans(ConfigBase):
                 diff.pop(k, None)
         else:
             diff = want
+
+        # Remove default states from resulting diff
+        diff = self.remove_default_states(diff)
 
         # merged_cmds: 'want' cmds to update 'have' states that don't match
         # replaced_cmds: remaining 'have' cmds that need to be reset to default
