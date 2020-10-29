@@ -260,15 +260,27 @@ class TestNxosVlansModule(TestNxosModule):
         """
 
         self.prepare()
-        playbook = dict(config=[
-            dict(vlan_id=1, name='default', enabled=True),
-            dict(vlan_id=3, name='test-vlan3', enabled=True),
-            dict(vlan_id=4, enabled=True),
-            dict(vlan_id=5, name='test-changeme', mapped_vni=942, state='suspend', enabled=False),
-            dict(vlan_id=8, name='test-changeme-not', state='suspend', enabled=False),
-            ])
+        playbook = dict(
+            config=[
+                dict(vlan_id=1, name="default", enabled=True),
+                dict(vlan_id=3, name="test-vlan3", enabled=True),
+                dict(vlan_id=4, enabled=True),
+                dict(
+                    vlan_id=5,
+                    name="test-changeme",
+                    mapped_vni=942,
+                    state="suspend",
+                    enabled=False,
+                ),
+                dict(
+                    vlan_id=8,
+                    name="test-changeme-not",
+                    state="suspend",
+                    enabled=False,
+                ),
+            ]
+        )
 
-        
         playbook["state"] = "merged"
         set_module_args(playbook, ignore_provider_arg)
         r = self.execute_module(changed=False)
