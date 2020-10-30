@@ -361,3 +361,26 @@ releases:
       name: nxos_ospfv3
       namespace: ''
     release_date: '2020-10-01'
+  1.3.0:
+    changes:
+      bugfixes:
+      - Allow `fex-fabric` option for mode key (https://github.com/ansible-collections/cisco.nxos/issues/166).
+      - Fixes for nxos rpm issue (https://github.com/ansible-collections/cisco.nxos/pull/173).
+      - Update regex to accept the platform "N77" as supporting fabricpath.
+      - Vlan config diff was not removing default values
+      deprecated_features:
+      - Deprecated `nxos_interface_ospf` in favor of `nxos_ospf_interfaces` Resource
+        Module.
+      minor_changes:
+      - Add nxos_ospf_interfaces resource module.
+    fragments:
+    - add_fex_fabric_l2_inteerfaces.yaml
+    - add_nxos_ospf_interfaces.yaml
+    - fix_nxos_rpm.yaml
+    - fix_vlan_diff.yaml
+    - vlans-fabricpath-mode-regex.yaml
+    modules:
+    - description: OSPF Interfaces Resource Module.
+      name: nxos_ospf_interfaces
+      namespace: ''
+    release_date: '2020-10-29'

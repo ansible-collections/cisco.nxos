@@ -5,6 +5,32 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v1.3.0
+======
+
+Minor Changes
+-------------
+
+- Add nxos_ospf_interfaces resource module.
+
+Deprecated Features
+-------------------
+
+- Deprecated `nxos_interface_ospf` in favor of `nxos_ospf_interfaces` Resource Module.
+
+Bugfixes
+--------
+
+- Allow `fex-fabric` option for mode key (https://github.com/ansible-collections/cisco.nxos/issues/166).
+- Fixes for nxos rpm issue (https://github.com/ansible-collections/cisco.nxos/pull/173).
+- Update regex to accept the platform "N77" as supporting fabricpath.
+- Vlan config diff was not removing default values
+
+New Modules
+-----------
+
+- nxos_ospf_interfaces - OSPF Interfaces Resource Module.
+
 v1.2.0
 ======
 
