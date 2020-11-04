@@ -444,6 +444,7 @@ def main():
     if module.params["purge"]:
         want_users = [x["name"] for x in want]
         have_users = [x["name"] for x in have]
+
         for item in set(have_users).difference(want_users):
             if item != "admin":
                 item = item.replace("\\", "\\\\")
