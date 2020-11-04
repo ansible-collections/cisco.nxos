@@ -281,7 +281,6 @@ class Cliconf(CliconfBase):
         )
 
     def run_commands(self, commands=None, check_rc=True):
-        in_config_mode = False
         if commands is None:
             raise ValueError("'commands' value is required")
 
@@ -302,16 +301,10 @@ class Cliconf(CliconfBase):
             try:
                 out = self.send_command(**cmd)
                 if self.get_cli_prompt_context().endswith(")#"):
-                    if in_config_mode:
-                        # the command has been sent in configuration mode
-                        # if there is an existing cache, empty it
-                        if self._connection.get_cache():
-                            self._connection.get_cache().invalidate()
-                    else:
-                        # the device has entered configuration mode
-                        in_config_mode = True
-                else:
-                    in_config_mode = False
+                    # the device has entered configuration mode
+                    # if there is an existing cache, empty it
+                    if self._connection.get_cache():
+                        self._connection.get_cache().invalidate()
             except AnsibleConnectionFailure as e:
                 if check_rc is True:
                     raise
