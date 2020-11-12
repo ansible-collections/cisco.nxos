@@ -28,10 +28,17 @@ description:
 - This nxos plugin provides low level abstraction apis for sending and receiving CLI
   commands from Cisco NX-OS network devices.
 version_added: 1.0.0
+options:
+  config_prompt:
+    description:
+    - Specifies the config mode prompt for this platform.
+    default: ')#'
+    vars:
+    - name: ansible_network_nxos_config_prompt
 """
 
 import json
-import re
+import re, q
 
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
@@ -252,10 +259,6 @@ class Cliconf(CliconfBase):
         resp["request"] = requests
         resp["response"] = results
 
-        if commit or replace:
-            # invalidate the cache since configuration changes were made
-            self._connection.get_cache().invalidate()
-
         return resp
 
     def get(
@@ -300,11 +303,6 @@ class Cliconf(CliconfBase):
 
             try:
                 out = self._connection.send_command(**cmd)
-                if self.get_cli_prompt_context().endswith(")#"):
-                    # the device has entered configuration mode
-                    # if there is an existing cache, empty it
-                    if self._connection.get_cache():
-                        self._connection.get_cache().invalidate()
             except AnsibleConnectionFailure as e:
                 if check_rc is True:
                     raise
