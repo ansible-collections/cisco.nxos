@@ -34,7 +34,7 @@ options:
     - Specifies the config mode prompt for this platform.
     default: ')#'
     vars:
-    - name: ansible_network_nxos_config_prompt
+    - name: ansible_nxos_config_prompt
 """
 
 import json
