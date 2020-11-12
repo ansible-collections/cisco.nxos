@@ -28,6 +28,15 @@ description:
 - This nxos plugin provides low level abstraction apis for sending and receiving CLI
   commands from Cisco NX-OS network devices.
 version_added: 1.0.0
+options:
+  config_commands:
+    description:
+    - Specifies a list of commands that can make configuration changes
+      to the target device.
+    type: list
+    default: []
+    vars:
+    - name: ansible_nxos_config_commands
 """
 
 import json
