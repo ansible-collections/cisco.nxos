@@ -38,7 +38,7 @@ options:
 """
 
 import json
-import re, q
+import re
 
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
