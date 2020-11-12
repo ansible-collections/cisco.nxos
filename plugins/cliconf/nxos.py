@@ -33,6 +33,9 @@ options:
     description:
     - Specifies a list of commands that can make configuration changes
       to the target device.
+    - When `ansible_network_single_user_mode` is enabled, if a command sent
+      to the device is present in this list, the existing cache is invalidated.
+    version_added: 1.4.0
     type: list
     default: []
     vars:
