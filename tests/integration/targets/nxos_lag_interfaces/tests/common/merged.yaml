@@ -63,6 +63,39 @@
     - assert:
         that:
           - result.changed == false
+
+    - name: Add new port-channel with no members
+      ignore_errors: true
+      cisco.nxos.nxos_config:
+        lines:
+          - interface port-channel 11
+
+    - name: Merged - No Members
+      register: result
+      cisco.nxos.nxos_lag_interfaces: &id003
+        config:
+
+          - name: port-channel11
+            members:
+
+              - member: '{{ test_int1 }}'
+
+              - member: '{{ test_int2 }}'
+                mode: true
+        state: merged
+
+    - assert:
+        that:
+          - result.changed == true
+
+    - name: Idempotence - Merged - No Members
+      register: result
+      cisco.nxos.nxos_lag_interfaces: *id003
+
+    - assert:
+        that:
+          - result.changed == false
+
   always:
 
     - name: Teardown
