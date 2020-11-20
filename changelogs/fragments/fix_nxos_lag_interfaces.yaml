@@ -1,0 +1,2 @@
+bugfixes:
+  - Fix for nxos_lag_interfaces issue (https://github.com/ansible-collections/cisco.nxos/pull/194).

@@ -304,6 +304,8 @@ class Lag_interfaces(ConfigBase):
         if not obj_in_have:
             commands = self.add_commands(w["members"], w["name"])
         else:
+            if "members" not in obj_in_have:
+                obj_in_have["members"] = None
             diff = self.diff_list_of_dicts(
                 w["members"], obj_in_have["members"]
             )
