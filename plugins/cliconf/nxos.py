@@ -225,7 +225,7 @@ class Cliconf(CliconfBase):
             cmd += " ".join(to_list(flags))
         cmd = cmd.strip()
 
-        return self._connection.send_command(cmd, use_cache=True)
+        return self.send_command(cmd)
 
     def edit_config(
         self, candidate=None, commit=True, replace=None, comment=None
@@ -245,7 +245,7 @@ class Cliconf(CliconfBase):
             candidate = "config replace {0}".format(replace)
 
         if commit:
-            self._connection.send_command("configure terminal")
+            self.send_command("configure terminal")
 
             for line in to_list(candidate):
                 if not isinstance(line, Mapping):
@@ -253,16 +253,15 @@ class Cliconf(CliconfBase):
 
                 cmd = line["command"]
                 if cmd != "end":
-                    results.append(self._connection.send_command(**line))
+                    results.append(self.send_command(**line))
                     requests.append(cmd)
 
-            self._connection.send_command("end")
+            self.send_command("end")
         else:
             raise ValueError("check mode is not supported")
 
         resp["request"] = requests
         resp["response"] = results
-
         return resp
 
     def get(
@@ -277,14 +276,13 @@ class Cliconf(CliconfBase):
     ):
         if output:
             command = self._get_command_with_output(command, output)
-        return self._connection.send_command(
+        return self.send_command(
             command=command,
             prompt=prompt,
             answer=answer,
             sendonly=sendonly,
             newline=newline,
             check_all=check_all,
-            use_cache=True,
         )
 
     def run_commands(self, commands=None, check_rc=True):
@@ -302,11 +300,8 @@ class Cliconf(CliconfBase):
                     cmd["command"], output
                 )
 
-            if not cmd["prompt"]:
-                cmd["use_cache"] = True
-
             try:
-                out = self._connection.send_command(**cmd)
+                out = self.send_command(**cmd)
             except AnsibleConnectionFailure as e:
                 if check_rc is True:
                     raise
