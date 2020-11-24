@@ -304,7 +304,9 @@ def parse_roles(data):
 
 
 def map_config_to_obj(module):
-    out = run_commands(module, ["show user-account | json"])
+    out = run_commands(
+        module, [{"command": "show user-account", "output": "json"}]
+    )
     data = out[0]
 
     objects = list()

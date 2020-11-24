@@ -385,6 +385,9 @@ class Cliconf(CliconfBase):
             if platform.startswith("DS-") and "MDS" in model:
                 cmd = "%s | json native" % command
             else:
+                import q
+
+                q("Here1")
                 cmd = "%s | json" % command
         elif output == "text" and command.endswith("| json"):
             cmd = command.rsplit("|", 1)[0]
