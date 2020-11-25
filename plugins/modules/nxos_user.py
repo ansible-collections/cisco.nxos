@@ -157,10 +157,11 @@ EXAMPLES = """
     purge: yes
 
 - name: set multiple users role
-  aggregate:
-  - name: netop
-  - name: netend
-  role: network-operator
+  cisco.nxos.nxos_user:
+    aggregate:
+    - name: netop
+    - name: netend
+    role: network-operator
   state: present
 """
 
@@ -304,7 +305,9 @@ def parse_roles(data):
 
 
 def map_config_to_obj(module):
-    out = run_commands(module, ["show user-account | json"])
+    out = run_commands(
+        module, [{"command": "show user-account", "output": "json"}]
+    )
     data = out[0]
 
     objects = list()

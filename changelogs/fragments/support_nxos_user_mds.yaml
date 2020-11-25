@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Allow nxos_user to run with MDS (https://github.com/ansible-collections/cisco.nxos/issues/163).
