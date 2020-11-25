@@ -45,7 +45,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 from ansible.plugins.cliconf import CliconfBase, enable_mode
-import q
 
 
 class Cliconf(CliconfBase):
@@ -138,7 +137,7 @@ class Cliconf(CliconfBase):
                 device_info["network_os_platform"] = match_os_platform.group(1)
 
             self._device_info = device_info
-        q(device_info)
+
         return self._device_info
 
     def get_diff(
