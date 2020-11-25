@@ -253,7 +253,7 @@ class Ospfv2Template(NetworkTemplate):
             ),
             "setval": "router ospf {{ process_id }}",
             "result": {
-                "process_id": "{{ process_id|int }}",
+                "process_id": "{{ process_id }}",
             },
             "shared": True,
         },
