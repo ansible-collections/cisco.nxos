@@ -85,8 +85,12 @@ class TestNxosUserModule(TestNxosModule):
             }
         ]
         self.get_device_info.return_value = {
-            "network_os_model": "DS-",
-            "network_os_platform": "MDS",
+            "network_os": "nxos",
+            "network_os_version": "8.4(2b)",
+            "network_os_model": 'MDS 9148S 16G 48 FC (1 Slot) Chassis ("2/4/8/16 Gbps FC/Supervisor")',
+            "network_os_hostname": "sw109-Mini",
+            "network_os_image": "bootflash:///m9100-s5ek9-mz.8.4.2b.bin",
+            "network_os_platform": "DS-C9710",
         }
         set_module_args(
             dict(name="ansible-test-2", configured_password="ansible")

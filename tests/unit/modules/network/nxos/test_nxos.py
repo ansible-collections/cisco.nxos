@@ -93,15 +93,15 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
     def test_get_device_info_mds(self):
         """ Test get_device_info for mds
         """
+        self._prepare(platform="mds")
         device_info = self._cliconf.get_device_info()
-
         mock_device_info = {
             "network_os": "nxos",
-            "network_os_hostname": "nxos-9kv-933",
-            "network_os_image": "bootflash:///nxos.9.3.3.bin",
-            "network_os_model": "Nexus9000 C9300v Chassis",
-            "network_os_platform": "N9K-C9300v",
-            "network_os_version": "9.3(3)",
+            "network_os_version": "8.4(2b)",
+            "network_os_model": 'MDS 9148S 16G 48 FC (1 Slot) Chassis ("2/4/8/16 Gbps FC/Supervisor")',
+            "network_os_hostname": "sw109-Mini",
+            "network_os_image": "bootflash:///m9100-s5ek9-mz.8.4.2b.bin",
+            "network_os_platform": "DS-C9710",
         }
 
         self.assertEqual(device_info, mock_device_info)
@@ -109,6 +109,7 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
     def test_get_command_with_output_nxos(self):
         """ Test _get_command_with_output for nxos
         """
+        self._prepare()
         cmd = self._cliconf._get_command_with_output(
             command="show version", output="json"
         )
