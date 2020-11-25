@@ -2230,3 +2230,31 @@ class TestNxosOspfv3Module(TestNxosModule):
         }
         result = self.execute_module(changed=False)
         self.assertEqual(set(result["gathered"]), set(gathered))
+
+    def test_nxos_ospfv3_process_id_word(self):
+        self.get_config.return_value = dedent(
+            """\
+            router ospfv3 100
+              router-id 203.0.113.20
+            router ospfv3 TEST-1
+              router-id 198.51.100.1
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(process_id="100", router_id="203.0.113.20"),
+                        dict(process_id="TEST-1", router_id="198.51.100.1"),
+                        dict(process_id="TEST-2", router_id="198.52.200.1"),
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+
+        commands = ["router ospfv3 TEST-2", "router-id 198.52.200.1"]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))

@@ -203,7 +203,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "router ospfv3 {{ process_id }}",
             "result": {
-                "process_id": "{{ process_id|int }}",
+                "process_id": "{{ process_id }}",
             },
             "shared": True,
         },
