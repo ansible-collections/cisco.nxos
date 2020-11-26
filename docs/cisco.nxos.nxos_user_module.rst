@@ -540,10 +540,11 @@ Examples
         purge: yes
 
     - name: set multiple users role
-      aggregate:
-      - name: netop
-      - name: netend
-      role: network-operator
+      cisco.nxos.nxos_user:
+        aggregate:
+        - name: netop
+        - name: netend
+        role: network-operator
       state: present
 
 
