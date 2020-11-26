@@ -384,3 +384,17 @@ releases:
       name: nxos_ospf_interfaces
       namespace: ''
     release_date: '2020-10-29'
+  1.3.1:
+    changes:
+      bugfixes:
+      - Add version key to galaxy.yaml to work around ansible-galaxy bug
+      - Allow nxos_user to run with MDS (https://github.com/ansible-collections/cisco.nxos/issues/163).
+      - Fix for nxos_lag_interfaces issue (https://github.com/ansible-collections/cisco.nxos/pull/194).
+      - Make sure that the OSPF modules work properly when process_id is a string
+        (https://github.com/ansible-collections/cisco.nxos/issues/198).
+    fragments:
+    - fix_nxos_lag_interfaces_1.yaml
+    - fix_ospf_process_id.yaml
+    - galaxy-version.yaml
+    - support_nxos_user_mds.yaml
+    release_date: '2020-11-26'

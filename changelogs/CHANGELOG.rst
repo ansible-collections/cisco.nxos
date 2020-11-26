@@ -5,6 +5,17 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v1.3.1
+======
+
+Bugfixes
+--------
+
+- Add version key to galaxy.yaml to work around ansible-galaxy bug
+- Allow nxos_user to run with MDS (https://github.com/ansible-collections/cisco.nxos/issues/163).
+- Fix for nxos_lag_interfaces issue (https://github.com/ansible-collections/cisco.nxos/pull/194).
+- Make sure that the OSPF modules work properly when process_id is a string (https://github.com/ansible-collections/cisco.nxos/issues/198).
+
 v1.3.0
 ======
 
