@@ -79,7 +79,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Global multicast ip prefix for L2 VNIs or the keyword &#x27;default&#x27; This is available on NX-OS 9K series running 9.2.x or higher.</div>
+                        <div>Global multicast IP prefix for L2 VNIs or the keyword &#x27;default&#x27; This is available on NX-OS 9K series running 9.2.x or higher.</div>
                 </td>
             </tr>
             <tr>
@@ -94,7 +94,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Global multicast ip prefix for L3 VNIs or the keyword &#x27;default&#x27; This is available on NX-OS 9K series running 9.2.x or higher.</div>
+                        <div>Global multicast IP prefix for L3 VNIs or the keyword &#x27;default&#x27; This is available on NX-OS 9K series running 9.2.x or higher.</div>
                 </td>
             </tr>
             <tr>
