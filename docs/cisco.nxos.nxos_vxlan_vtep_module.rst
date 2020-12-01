@@ -132,7 +132,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Specify mechanism for host reachability advertisement.</div>
+                        <div>Specify mechanism for host reachability advertisement. A Boolean value of 'true' indicates that BGP will be used for host reachability advertisement. A Boolean value of 'false' indicates that no protocol is used for host reachability advertisement. Other host reachability advertisement protocols (e.g. OpenFlow, controller, etc.) are not supported.</div>
                 </td>
             </tr>
             <tr>
