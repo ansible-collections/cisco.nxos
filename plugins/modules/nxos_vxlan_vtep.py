@@ -103,7 +103,7 @@ EXAMPLES = """
 - cisco.nxos.nxos_vxlan_vtep:
     interface: nve1
     description: default
-    host_reachability: default
+    host_reachability: true
     source_interface: Loopback0
     source_interface_hold_down_time: 30
     shutdown: default
