@@ -632,3 +632,50 @@ class TestNxosInterfacesModule(TestNxosModule):
         playbook["state"] = "deleted"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=deleted)
+
+    def test_6_gathered(self):
+        # check for parsing correct contexts
+        sysdefs = dedent(
+            """\
+          !
+          ! Interfaces default to L3 !!
+          !
+          no system default switchport
+          no system default switchport shutdown
+        """
+        )
+        intf = dedent(
+            """\
+          interface nve1
+            no shutdown
+            source-interface loopback1
+          interface Ethernet1/1
+            switchport
+            description interface
+          interface Ethernet1/2
+            speed 1000
+            no shutdown
+          interface loopback1
+        """
+        )
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_RUN_INTF: intf
+        }
+        self.get_system_defaults.return_value = sysdefs
+
+        playbook = dict()
+        playbook["state"] = "gathered"
+
+        gathered_facts = [
+            {"name": "nve1", "enabled": True},
+            {
+                "name": "Ethernet1/1",
+                "mode": "layer2",
+                "description": "interface",
+            },
+            {"name": "Ethernet1/2", "enabled": True, "speed": "1000"},
+            {"name": "loopback1"},
+        ]
+        set_module_args(playbook, ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered_facts)

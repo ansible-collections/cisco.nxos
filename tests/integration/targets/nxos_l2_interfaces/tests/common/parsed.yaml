@@ -9,6 +9,11 @@
       register: result
       cisco.nxos.nxos_l2_interfaces:
         running_config: |
+          interface nve1
+            no shutdown
+            host-reachability protocol bgp
+            advertise virtual-rmac
+            source-interface loopback1
           interface Ethernet1/800
             switchport access vlan 18
             switchport trunk allowed vlan 210
@@ -16,6 +21,7 @@
             switchport trunk allowed vlan 2,4,15
           interface Ethernet1/802
             switchport mode fex-fabric
+          interface loopback1
         state: parsed
 
     - assert:

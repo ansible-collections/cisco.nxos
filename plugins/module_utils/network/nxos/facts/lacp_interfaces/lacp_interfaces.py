@@ -58,7 +58,7 @@ class Lacp_interfacesFacts(object):
         if not data:
             data = connection.get("show running-config | section ^interface")
 
-        resources = data.split("interface ")
+        resources = ("\n" + data).split("\ninterface ")
         for resource in resources:
             if resource and re.search(r"lacp", resource):
                 obj = self.render_config(self.generated_spec, resource)
