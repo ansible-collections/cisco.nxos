@@ -695,15 +695,24 @@ class Legacy(FactsBase):
         return objects
 
     def parse_structured_power_supply_info(self, data):
-        if data.get("powersup").get("TABLE_psinfo_n3k"):
-            fact = data["powersup"]["TABLE_psinfo_n3k"]["ROW_psinfo_n3k"]
+        ps_data = data.get("powersup", {})
+        if ps_data.get("TABLE_psinfo_n3k"):
+            fact = ps_data["TABLE_psinfo_n3k"]["ROW_psinfo_n3k"]
         else:
-            if isinstance(data["powersup"]["TABLE_psinfo"], list):
+            # {TABLE,ROW}_psinfo keys have been renamed to
+            # {TABLE,ROW}_ps_info in later NX-OS releases
+            tab_key, row_key = "TABLE_psinfo", "ROW_psinfo"
+            if not tab_key in ps_data:
+                tab_key, row_key = "TABLE_ps_info", "ROW_ps_info"
+
+            ps_tab_data = ps_data[tab_key]
+
+            if isinstance(ps_tab_data, list):
                 fact = []
-                for i in data["powersup"]["TABLE_psinfo"]:
-                    fact.append(i["ROW_psinfo"])
+                for i in ps_tab_data:
+                    fact.append(i[row_key])
             else:
-                fact = data["powersup"]["TABLE_psinfo"]["ROW_psinfo"]
+                fact = ps_tab_data[row_key]
 
         objects = list(self.transform_iterable(fact, self.POWERSUP_MAP))
         return objects
