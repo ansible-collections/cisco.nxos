@@ -702,7 +702,7 @@ class Legacy(FactsBase):
             # {TABLE,ROW}_psinfo keys have been renamed to
             # {TABLE,ROW}_ps_info in later NX-OS releases
             tab_key, row_key = "TABLE_psinfo", "ROW_psinfo"
-            if not tab_key in ps_data:
+            if tab_key not in ps_data:
                 tab_key, row_key = "TABLE_ps_info", "ROW_ps_info"
 
             ps_tab_data = ps_data[tab_key]
