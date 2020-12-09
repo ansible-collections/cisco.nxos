@@ -64,7 +64,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Configures ingress replication protocol as bgp for all VNIs This is available on NX-OS 9K series running 9.2.x or higher.</div>
+                        <div>Configures ingress replication protocol as bgp for all VNIs. This is available on Nexus 9000 series switches running NX-OS software release 9.2(x) or higher.</div>
                 </td>
             </tr>
             <tr>
@@ -79,7 +79,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Global multicast ip prefix for L2 VNIs or the keyword &#x27;default&#x27; This is available on NX-OS 9K series running 9.2.x or higher.</div>
+                        <div>Global multicast IP prefix for L2 VNIs or the keyword &#x27;default&#x27;. This is available on Nexus 9000 series switches running NX-OS software release 9.2(x) or higher.</div>
                 </td>
             </tr>
             <tr>
@@ -94,7 +94,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Global multicast ip prefix for L3 VNIs or the keyword &#x27;default&#x27; This is available on NX-OS 9K series running 9.2.x or higher.</div>
+                        <div>Global multicast IP prefix for L3 VNIs or the keyword &#x27;default&#x27;. This is available on Nexus 9000 series switches running NX-OS software release 9.2(x) or higher.</div>
                 </td>
             </tr>
             <tr>
@@ -113,7 +113,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Enables ARP suppression for all VNIs This is available on NX-OS 9K series running 9.2.x or higher.</div>
+                        <div>Enables ARP suppression for all VNIs. This is available on Nexus 9000 series switches running NX-OS software release 9.2(x) or higher.</div>
                 </td>
             </tr>
             <tr>
@@ -132,7 +132,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Specify mechanism for host reachability advertisement.</div>
+                        <div>Specify mechanism for host reachability advertisement. A Boolean value of 'true' indicates that BGP will be used for host reachability advertisement. A Boolean value of 'false' indicates that no protocol is used for host reachability advertisement. Other host reachability advertisement protocols (e.g. OpenFlow, controller, etc.) are not supported.</div>
                 </td>
             </tr>
             <tr>
@@ -164,7 +164,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specify the loopback interface whose IP address should be used for the NVE Multisite Border-gateway Interface. This is available on selected NX-OS 9K series running 7.0(3)I7 or higher. Specify &quot;default&quot; to remove an exiting gateway config.</div>
+                        <div>Specify the loopback interface whose IP address should be used for the NVE Multisite Border-gateway Interface. This is available on specific Nexus 9000 series switches running NX-OS 7.0(3)I7(x) or higher. Specify &quot;default&quot; to remove an exiting gateway config.</div>
                 </td>
             </tr>
             <tr>
@@ -495,7 +495,7 @@ Examples
     - cisco.nxos.nxos_vxlan_vtep:
         interface: nve1
         description: default
-        host_reachability: default
+        host_reachability: true
         source_interface: Loopback0
         source_interface_hold_down_time: 30
         shutdown: default

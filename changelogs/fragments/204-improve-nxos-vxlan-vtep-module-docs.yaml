@@ -1,0 +1,3 @@
+---
+doc_changes:
+  - Fix error in ``host_reachability`` parameter's example where a default value is used, which the ``host_reachability`` parameter does not support. Improve descriptions of some parameters to be more explicit. Correct spelling and grammar where errors were noticed.
