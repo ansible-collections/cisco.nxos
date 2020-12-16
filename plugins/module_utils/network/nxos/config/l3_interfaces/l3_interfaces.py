@@ -327,7 +327,8 @@ class L3_interfaces(ConfigBase):
         if pri_w:
             diff = dict(set(pri_w.items()) - set(pri_h.items()))
             if diff:
-                cmd = "ip address %s" % diff["address"]
+                addr = diff.get("address") or pri_w.get("address")
+                cmd = "ip address %s" % addr
                 tag = diff.get("tag")
                 cmd += " tag %s" % tag if tag else ""
                 cmds.append(cmd)

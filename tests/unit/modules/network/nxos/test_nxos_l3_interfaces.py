@@ -977,3 +977,32 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         playbook["state"] = "overridden"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=overridden)
+
+    def test_12(self):
+        # Use case specific
+        existing = dedent(
+            """\
+          interface mgmt0
+            ip address 10.0.0.254/24
+          interface Vlan99
+            no shutdown
+            ip address 192.168.1.1/24
+        """
+        )
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_CMD: existing
+        }
+        playbook = dict(
+            config=[
+                dict(
+                    name="Vlan99",
+                    ipv4=[
+                        {"address": "192.168.1.1/24", "tag": 500}
+                    ],  # adding a tag
+                )
+            ],
+            state="replaced",
+        )
+        cmds = ["interface Vlan99", "ip address 192.168.1.1/24 tag 500"]
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=cmds)
