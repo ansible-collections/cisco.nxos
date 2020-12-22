@@ -1,0 +1,3 @@
+---
+doc_changes:
+  - Fix static_routes module skip vlan interface bug.
