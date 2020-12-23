@@ -67,7 +67,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             ),
             "setval": "{{ 'ip' if afi == 'ipv4' else 'ipv6' }} "
                       "router {{ 'ospf' if afi == 'ipv4' else 'ospfv3' }} "
-                      "{{ process_id }} area {{ area.area_id }}{{ ' secondaries none' if area.secondaries|default('True') == False}}",
+                      "{{ process_id }} area {{ area.area_id }}{{ ' secondaries none' if area.secondaries|default('True') == False else '' }}",
             "result": {
                 "{{ name }}": {
                     "address_family": {

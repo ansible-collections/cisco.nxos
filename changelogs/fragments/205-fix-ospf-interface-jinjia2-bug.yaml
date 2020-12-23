@@ -1,0 +1,2 @@
+doc_changes:
+  - Fix ospf interface never come up with diff when configure area without secondaries bug.
