@@ -228,10 +228,8 @@ class Cliconf(CliconfBase):
 
         if replace:
             device_info = self.get_device_info()
-            if "9K" not in device_info.get("network_os_platform", ""):
-                raise ConnectionError(
-                    message=u"replace is supported only on Nexus 9K devices"
-                )
+            # not all NX-OS versions support `config replace`
+            # we let the device throw the invalid command error
             candidate = "config replace {0}".format(replace)
 
         if commit:

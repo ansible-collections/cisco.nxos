@@ -63,8 +63,8 @@ options:
       into the remote system. This argument is used to replace the entire config with
       a flat-file. This is used with argument I(replace) with value I(config). This
       is mutually exclusive with the I(lines) and I(src) arguments. This argument
-      is supported on Nexus 9K device. Use I(nxos_file_copy) module to copy the flat
-      file to remote device and then use the path with this argument.
+      will only work for NX-OS versions that support `config replace`. Use I(nxos_file_copy)
+      module to copy the flat file to remote device and then use the path with this argument.
     type: str
   before:
     description:
@@ -103,8 +103,8 @@ options:
       the replace argument is set to I(line) then the modified lines are pushed to
       the device in configuration mode.  If the replace argument is set to I(block)
       then the entire command block is pushed to the device in configuration mode
-      if any line is not correct. replace I(config) is supported only on Nexus 9K
-      device.
+      if any line is not correct. replace I(config) will only work for NX-OS versions
+      that support `config replace`.
     default: line
     choices:
     - line
