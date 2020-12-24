@@ -1006,7 +1006,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         cmds = ["interface Vlan99", "ip address 192.168.1.1/24 tag 500"]
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=cmds)
-    
+
     def test_12_gathered(self):
         # check for parsing correct contexts
         existing = dedent(
