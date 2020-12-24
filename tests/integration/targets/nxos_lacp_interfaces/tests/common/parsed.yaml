@@ -8,12 +8,15 @@
       register: result
       cisco.nxos.nxos_lacp_interfaces:
         running_config: |
+          interface nve1
+            source-interface Ethernet1/100
           interface port-channel10
             lacp min-links 10
             lacp max-bundle 15
           interface Ethernet1/800
             lacp port-priority 100
             lacp rate fast
+            description interface
         state: parsed
 
     - assert:

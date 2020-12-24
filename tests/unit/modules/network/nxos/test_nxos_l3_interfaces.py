@@ -1006,3 +1006,32 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         cmds = ["interface Vlan99", "ip address 192.168.1.1/24 tag 500"]
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=cmds)
+
+    def test_12_gathered(self):
+        # check for parsing correct contexts
+        existing = dedent(
+            """\
+          interface nve1
+            no shutdown
+            source-interface loopback1
+          interface Ethernet1/1
+            description
+            ip address 192.168.1.1/24
+          interface Ethernet1/2
+            ip address 192.168.2.1/24
+          interface loopback1
+        """
+        )
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_CMD: existing
+        }
+        playbook = dict(state="gathered")
+        gathered_facts = [
+            {"name": "nve1"},
+            {"name": "Ethernet1/1", "ipv4": [{"address": "192.168.1.1/24"}]},
+            {"name": "Ethernet1/2", "ipv4": [{"address": "192.168.2.1/24"}]},
+            {"name": "loopback1"},
+        ]
+        set_module_args(playbook, ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered_facts)

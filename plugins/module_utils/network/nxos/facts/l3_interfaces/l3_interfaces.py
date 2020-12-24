@@ -56,7 +56,7 @@ class L3_interfacesFacts(object):
         if not data:
             data = connection.get("show running-config | section ^interface")
 
-        config = data.split("interface ")
+        config = ("\n" + data).split("\ninterface ")
         for conf in config:
             conf = conf.strip()
             if conf:

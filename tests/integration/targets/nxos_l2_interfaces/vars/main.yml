@@ -10,6 +10,7 @@ gathered:
       native_vlan: 10
 
 parsed:
+  - name: nve1
   - name: Ethernet1/800
     access:
       vlan: 18
@@ -20,6 +21,7 @@ parsed:
       allowed_vlans: "2,4,15"
   - name: Ethernet1/802
     mode: fex-fabric
+  - name: loopback1
 
 rendered:
   - "interface Ethernet1/1"
