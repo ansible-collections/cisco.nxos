@@ -1,3 +1,3 @@
 ---
 bugfixes:
-  - `config replace` is actually supported for devices other than N9K and hence we shouldn't fail, and instead let the device handle it (https://github.com/ansible-collections/cisco.nxos/issues/215).
+  - "'config replace' is actually supported for devices other than N9K and hence we shouldn't fail, and instead let the device handle it (https://github.com/ansible-collections/cisco.nxos/issues/215)."
