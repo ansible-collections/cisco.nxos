@@ -510,7 +510,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Instructs the module on the way to perform the configuration on the device.  If the replace argument is set to <em>line</em> then the modified lines are pushed to the device in configuration mode.  If the replace argument is set to <em>block</em> then the entire command block is pushed to the device in configuration mode if any line is not correct. replace <em>config</em> is supported only on Nexus 9K device.</div>
+                        <div>Instructs the module on the way to perform the configuration on the device.  If the replace argument is set to <em>line</em> then the modified lines are pushed to the device in configuration mode.  If the replace argument is set to <em>block</em> then the entire command block is pushed to the device in configuration mode if any line is not correct. replace <em>config</em> will only work for NX-OS versions that support `config replace`.</div>
                 </td>
             </tr>
             <tr>
@@ -525,7 +525,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The <em>replace_src</em> argument provides path to the configuration file to load into the remote system. This argument is used to replace the entire config with a flat-file. This is used with argument <em>replace</em> with value <em>config</em>. This is mutually exclusive with the <em>lines</em> and <em>src</em> arguments. This argument is supported on Nexus 9K device. Use <em>nxos_file_copy</em> module to copy the flat file to remote device and then use the path with this argument.</div>
+                        <div>The <em>replace_src</em> argument provides path to the configuration file to load into the remote system. This argument is used to replace the entire config with a flat-file. This is used with argument <em>replace</em> with value <em>config</em>. This is mutually exclusive with the <em>lines</em> and <em>src</em> arguments. This argument will only work for NX-OS versions that support `config replace`. Use <em>nxos_file_copy</em> module to copy the flat file to remote device and then use the path with this argument.</div>
                 </td>
             </tr>
             <tr>
