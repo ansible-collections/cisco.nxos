@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fixes traceback while parsing power supply info in nxos_facts for newer NX-OS releases (https://github.com/ansible-collections/cisco.nxos/issues/192).
