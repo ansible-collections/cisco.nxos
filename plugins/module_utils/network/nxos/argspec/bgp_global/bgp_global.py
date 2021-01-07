@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2020 Red Hat
+# Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -437,8 +437,8 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
             "choices": [
                 "merged",
                 "replaced",
-                "overridden",
                 "deleted",
+                "parsed",
                 "gathered",
                 "parsed",
                 "rendered",

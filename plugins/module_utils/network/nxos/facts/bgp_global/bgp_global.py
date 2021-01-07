@@ -27,7 +27,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bg
     Bgp_globalArgs,
 )
 
-
+import q
 class Bgp_globalFacts(object):
     """ The nxos bgp_global facts class
     """
@@ -50,11 +50,13 @@ class Bgp_globalFacts(object):
         objs = []
 
         if not data:
-            data = connection.get("show running-config | section '^router bgp'")
+            data = connection.get(
+                "show running-config | section '^router bgp'"
+            )
 
         # parse native config using the Bgp_global template
         bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines())
-        objs = list(bgp_global_parser.parse().values())
+        objs = bgp_global_parser.parse()
 
         ansible_facts["ansible_network_resources"].pop("bgp_global", None)
 
