@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Add support for interfaces in mode 'fabricpath' to l2_interfaces (https://github.com/ansible-collections/cisco.nxos/issues/220).
