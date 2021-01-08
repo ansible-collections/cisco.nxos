@@ -21,6 +21,8 @@
             switchport trunk allowed vlan 2,4,15
           interface Ethernet1/802
             switchport mode fex-fabric
+          interface Ethernet1/803
+            switchport mode fabricpath
           interface loopback1
         state: parsed
 

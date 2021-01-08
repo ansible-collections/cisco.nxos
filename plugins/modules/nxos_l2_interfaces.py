@@ -94,6 +94,7 @@ options:
         - access
         - trunk
         - fex-fabric
+        - fabricpath
   state:
     description:
     - The state of the configuration after module completion.

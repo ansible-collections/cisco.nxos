@@ -21,6 +21,8 @@ parsed:
       allowed_vlans: "2,4,15"
   - name: Ethernet1/802
     mode: fex-fabric
+  - name: Ethernet1/803
+    mode: fabricpath
   - name: loopback1
 
 rendered:
@@ -34,3 +36,5 @@ rendered:
   - "switchport trunk native vlan 20"
   - "interface Ethernet1/4"
   - "switchport mode fex-fabric"
+  - "interface Ethernet1/5"
+  - "switchport mode fabricpath"
