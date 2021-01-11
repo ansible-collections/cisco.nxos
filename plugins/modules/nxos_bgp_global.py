@@ -150,26 +150,33 @@ options:
           helper:
             description: Configure Graceful Restart Helper mode functionality.
             type: bool
-          shutdown:
-            description: Graceful-shutdown for BGP protocol.
+      graceful_shutdown:
+        description: Graceful-shutdown for BGP protocol.
+        type: dict
+        suboptions:
+          activate:
+            description: Send graceful-shutdown community on all routes.
             type: dict
             suboptions:
-              activate:
-                description: Send graceful-shutdown community on all routes.
-                type: dict
-                suboptions:
-                  set:
-                    description: Activiate graceful-shutdown.
-                    type: bool
-                  route_map:
-                    description: Apply route-map to modify attributes for outbound.
-                    type: str
-              aware:
-                description: Lower preference of routes carrying graceful-shutdown community.
+              set:
+                description: Activiate graceful-shutdown.
                 type: bool
+              route_map:
+                description: Apply route-map to modify attributes for outbound.
+                type: str
+          aware:
+            description: Lower preference of routes carrying graceful-shutdown community.
+            type: bool
       isolate:
         description: Isolate this router from BGP perspective.
-        type: bool
+        type: dict
+        suboptions:
+          set:
+            description: Withdraw remote BGP routes to isolate this router.
+            type: bool
+          include_local:
+            description: Withdraw both local and remote BGP routes.
+            type: bool
       log_neighbor_changes: &log_nbr
         description: Log a message for neighbor up/down event.
         type: bool

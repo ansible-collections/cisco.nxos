@@ -47,24 +47,51 @@ class Bgp_globalFacts(object):
         :returns: facts
         """
         facts = {}
-        objs = []
 
         if not data:
             data = connection.get(
                 "show running-config | section '^router bgp'"
             )
+        data = self._flatten_config(data)
 
         # parse native config using the Bgp_global template
         bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines())
-        objs = bgp_global_parser.parse()
+        obj = bgp_global_parser.parse()
+        
+        # post parsing intermediate data structure
+        conf_peers = obj.get("confederation", {}).get("peers")
+        if conf_peers:
+            obj["confederation"]["peers"] = conf_peers.split()
+        
+        neighbors = obj.get("neighbors", {})
+        if neighbors:
+            obj["neighbors"] = list(neighbors.values())
 
         ansible_facts["ansible_network_resources"].pop("bgp_global", None)
 
         params = utils.remove_empties(
-            utils.validate_config(self.argument_spec, {"config": objs})
+            utils.validate_config(self.argument_spec, {"config": obj})
         )
 
         facts["bgp_global"] = params["config"]
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
+    
+    def _flatten_config(self, data):
+        data = data.split("\n")
+        in_nbr_cxt = False
+        cur_nbr = {}
+
+        for x in data:
+            cur_indent = len(x) - len(x.lstrip())
+            if x.strip().startswith("neighbor"):
+                in_nbr_cxt = True
+                cur_nbr["nbr"] = x
+                cur_nbr["indent"]  = cur_indent
+            elif cur_nbr and (cur_indent <= cur_nbr["indent"]):
+                in_nbr_cxt = False
+            elif in_nbr_cxt:
+                data[data.index(x)] = cur_nbr["nbr"] + " " + x.strip()
+                
+        return "\n".join(data)

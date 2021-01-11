@@ -100,22 +100,28 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "restart_time": {"type": "int"},
                         "stalepath_time": {"type": "int"},
                         "helper": {"type": "bool"},
-                        "shutdown": {
-                            "type": "dict",
-                            "options": {
-                                "activate": {
-                                    "type": "dict",
-                                    "options": {
-                                        "set": {"type": "bool"},
-                                        "route_map": {"type": "str"},
-                                    },
-                                },
-                                "aware": {"type": "bool"},
-                            },
-                        },
                     },
                 },
-                "isolate": {"type": "bool"},
+                "graceful_shutdown": {
+                    "type": "dict",
+                    "options": {
+                        "activate": {
+                            "type": "dict",
+                            "options": {
+                                "set": {"type": "bool"},
+                                "route_map": {"type": "str"},
+                            },
+                        },
+                        "aware": {"type": "bool"},
+                    },
+                },
+                "isolate": {
+                    "type": "dict",
+                    "options": {
+                        "set": {"type": "bool"},
+                        "include_local": {"type": "bool"},
+                    },
+                },
                 "log_neighbor_changes": {"type": "bool"},
                 "maxas_limit": {"type": "int"},
                 "neighbors": {
@@ -127,9 +133,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "bmp_activate_server": {"type": "int"},
                         "capability": {
                             "type": "dict",
-                            "options": {
-                                "suppress_4_byte_as": {"type": "bool"}
-                            },
+                            "options": {"suppress_4_byte_as": {"type": "bool"}},
                         },
                         "description": {"type": "str"},
                         "disable_connected_check": {"type": "bool"},
@@ -164,20 +168,14 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         },
                         "password": {
                             "type": "dict",
-                            "options": {
-                                "encryption": {},
-                                "key": {"type": "str"},
-                            },
+                            "options": {"encryption": {}, "key": {"type": "str"}},
                         },
                         "path_attribute": {
                             "type": "dict",
                             "options": {
                                 "action": {
                                     "type": "str",
-                                    "choices": [
-                                        "discard",
-                                        "treat-as-withdraw",
-                                    ],
+                                    "choices": ["discard", "treat-as-withdraw"],
                                 },
                                 "path_attribute_type": {"type": "int"},
                                 "range": {
@@ -220,9 +218,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                 },
                 "nexthop": {
                     "type": "dict",
-                    "options": {
-                        "suppress_default_resolution": {"type": "bool"}
-                    },
+                    "options": {"suppress_default_resolution": {"type": "bool"}},
                 },
                 "reconnect_interval": {"type": "int"},
                 "router_id": {"type": "str"},
