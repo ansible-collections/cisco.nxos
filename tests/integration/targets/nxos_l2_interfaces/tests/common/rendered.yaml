@@ -27,6 +27,8 @@
               allowed_vlans: 5-10, 15
           - name: Ethernet1/4
             mode: fex-fabric
+          - name: Ethernet1/5
+            mode: fabricpath
         state: rendered
         
     - assert:
