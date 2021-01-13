@@ -28,6 +28,8 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bg
 )
 
 import q
+
+
 class Bgp_globalFacts(object):
     """ The nxos bgp_global facts class
     """
@@ -56,13 +58,13 @@ class Bgp_globalFacts(object):
 
         # parse native config using the Bgp_global template
         bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines())
-        obj = bgp_global_parser.parse()
-        
+        obj = utils.remove_empties(bgp_global_parser.parse())
+
         # post parsing intermediate data structure
         conf_peers = obj.get("confederation", {}).get("peers")
         if conf_peers:
             obj["confederation"]["peers"] = conf_peers.split()
-        
+
         neighbors = obj.get("neighbors", {})
         if neighbors:
             obj["neighbors"] = list(neighbors.values())
@@ -77,7 +79,7 @@ class Bgp_globalFacts(object):
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
-    
+
     def _flatten_config(self, data):
         data = data.split("\n")
         in_nbr_cxt = False
@@ -88,10 +90,10 @@ class Bgp_globalFacts(object):
             if x.strip().startswith("neighbor"):
                 in_nbr_cxt = True
                 cur_nbr["nbr"] = x
-                cur_nbr["indent"]  = cur_indent
+                cur_nbr["indent"] = cur_indent
             elif cur_nbr and (cur_indent <= cur_nbr["indent"]):
                 in_nbr_cxt = False
             elif in_nbr_cxt:
                 data[data.index(x)] = cur_nbr["nbr"] + " " + x.strip()
-                
+
         return "\n".join(data)

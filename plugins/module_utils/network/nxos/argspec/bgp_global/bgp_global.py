@@ -129,11 +129,12 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "neighbor_address": {"type": "str", "required": True},
-                        "remote_as": {"type": "str"},
                         "bmp_activate_server": {"type": "int"},
                         "capability": {
                             "type": "dict",
-                            "options": {"suppress_4_byte_as": {"type": "bool"}},
+                            "options": {
+                                "suppress_4_byte_as": {"type": "bool"}
+                            },
                         },
                         "description": {"type": "str"},
                         "disable_connected_check": {"type": "bool"},
@@ -161,23 +162,37 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "local_as": {"type": "str"},
-                        "log_neighbor_changes": {"type": "str"},
+                        "log_neighbor_changes": {
+                            "type": "dict",
+                            "options": {
+                                "set": {"type": "bool"},
+                                "disable": {"type": "bool"},
+                            },
+                        },
                         "low_memory": {
                             "type": "dict",
                             "options": {"exempt": {"type": "bool"}},
                         },
                         "password": {
                             "type": "dict",
-                            "options": {"encryption": {}, "key": {"type": "str"}},
+                            "options": {
+                                "encryption": {},
+                                "key": {"type": "str"},
+                            },
                         },
                         "path_attribute": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
+                            "mutually_exclusive": [["type", "range"]],
                             "options": {
                                 "action": {
                                     "type": "str",
-                                    "choices": ["discard", "treat-as-withdraw"],
+                                    "choices": [
+                                        "discard",
+                                        "treat-as-withdraw",
+                                    ],
                                 },
-                                "path_attribute_type": {"type": "int"},
+                                "type": {"type": "int"},
                                 "range": {
                                     "type": "dict",
                                     "options": {
@@ -187,7 +202,15 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 },
                             },
                         },
-                        "remove_private_as": {"type": "str"},
+                        "remote_as": {"type": "str"},
+                        "remove_private_as": {
+                            "type": "dict",
+                            "options": {
+                                "set": {"type": "bool"},
+                                "replace_as": {"type": "bool"},
+                                "all": {"type": "bool"},
+                            },
+                        },
                         "shutdown": {"type": "bool"},
                         "timers": {
                             "type": "dict",
@@ -218,7 +241,9 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                 },
                 "nexthop": {
                     "type": "dict",
-                    "options": {"suppress_default_resolution": {"type": "bool"}},
+                    "options": {
+                        "suppress_default_resolution": {"type": "bool"}
+                    },
                 },
                 "reconnect_interval": {"type": "int"},
                 "router_id": {"type": "str"},
@@ -303,7 +328,6 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                     "type": "str",
                                     "required": True,
                                 },
-                                "remote_as": {"type": "str"},
                                 "bmp_activate_server": {"type": "int"},
                                 "capability": {
                                     "type": "dict",
@@ -337,7 +361,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "local_as": {"type": "str"},
-                                "log_neighbor_changes": {"type": "str"},
+                                "log_neighbor_changes": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "disable": {"type": "bool"},
+                                    },
+                                },
                                 "low_memory": {
                                     "type": "dict",
                                     "options": {"exempt": {"type": "bool"}},
@@ -350,7 +380,9 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "path_attribute": {
-                                    "type": "dict",
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "mutually_exclusive": [["type", "range"]],
                                     "options": {
                                         "action": {
                                             "type": "str",
@@ -359,7 +391,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                                 "treat-as-withdraw",
                                             ],
                                         },
-                                        "path_attribute_type": {"type": "int"},
+                                        "type": {"type": "int"},
                                         "range": {
                                             "type": "dict",
                                             "options": {
@@ -369,7 +401,15 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                         },
                                     },
                                 },
-                                "remove_private_as": {"type": "str"},
+                                "remote_as": {"type": "str"},
+                                "remove_private_as": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "replace_as": {"type": "bool"},
+                                        "all": {"type": "bool"},
+                                    },
+                                },
                                 "shutdown": {"type": "bool"},
                                 "timers": {
                                     "type": "dict",

@@ -23,8 +23,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 def _tmplt_confederation_peers(proc):
     pass
 
+
 def _tmplt_graceful_shutdown_activate(proc):
     pass
+
 
 class Bgp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None):
@@ -593,16 +595,407 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
-                \sdescription\s(?P<description>\S+)
+                \s(?P<disable_connected_check>disable-connected-check)
                 $""", re.VERBOSE
             ),
-            "setval": "description {{ description }}",
+            "setval": "disable-connected-check",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
-                        "description": "{{ description }}",
+                        "disable_connected_check": "{{ not not disable_connected_check }}",
                     }
                 }
+            }
+        },
+        {
+            "name": "neighbor.dont_capability_negotiate",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<dont_capability_negotiate>dont-capability-negotiate)
+                $""", re.VERBOSE
+            ),
+            "setval": "dont-capability-negotiate",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "dont_capability_negotiate": "{{ not not dont_capability_negotiate}}",
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.dscp",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \sdscp\s(?P<dscp>\S+)
+                $""", re.VERBOSE
+            ),
+            "setval": "dscp {{ dscp }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "dscp": "{{ dscp }}",
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.dynamic_capability",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<dynamic_capability>dynamic-capability)
+                $""", re.VERBOSE
+            ),
+            "setval": "dynamic-capability",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "dynamic_capability": "{{ not not dynamic_capability }}",
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.ebgp_multihop",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \sebgp-multihop\s(?P<ebgp_multihop>\d+)
+                $""", re.VERBOSE
+            ),
+            "setval": "ebgp-multihop {{ ebgp_multihop }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "ebgp_multihop": "{{ ebgp_multihop }}",
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.graceful_shutdown",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \sgraceful-shutdown
+                \s(?P<activate>activate)
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""", re.VERBOSE
+            ),
+            "setval": "graceful-shutdown{{ (' route-map ' + graceful_shutdown.route_map) if graceful_shutdown.route_map is defined }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "graceful_shutdown": {
+                            "activate": {
+                                "set": "{{ True if activate is defined and route_map is undefined else None }}",
+                                "route_map": "{{ route_map }}",
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.inherit.peer",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \sinherit
+                \speer\s(?P<peer>\S+)
+                $""", re.VERBOSE
+            ),
+            "setval": "inherit peer {{ inherit.peer }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "inherit": {
+                            "peer": "{{ peer }}",
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.inherit.peer_session",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \sinherit
+                \speer-session\s(?P<peer_session>\S+)
+                $""", re.VERBOSE
+            ),
+            "setval": "inherit peer-session {{ inherit.peer_session }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "inherit": {
+                            "peer_session": "{{ peer_session }}",
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.local_as",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \slocal-as\s(?P<local_as>\S+)
+                $""", re.VERBOSE
+            ),
+            "setval": "local-as {{ local_as }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "local_as": "{{ local_as }}",                    
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.local_as",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \slocal-as\s(?P<local_as>\S+)
+                $""", re.VERBOSE
+            ),
+            "setval": "local-as {{ local_as }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "local_as": "{{ local_as }}",                    
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.log_neighbor_changes",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<log_neighbor_changes>log-neighbor-changes)
+                (\s(?P<disable>disable))?
+                $""", re.VERBOSE
+            ),
+            "setval": "log-neighbor-changes{{ ' disable' if log_neighbor_changes.disable is defined }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "log_neighbor_changes": {
+                            "set": "{{ True if log_neighbor_changes is defined and disable is undefined }}",
+                            "disable": "{{ not not disable }}",
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.low_memory",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \slow-memory\s(?P<exempt>exempt)
+                $""", re.VERBOSE
+            ),
+            "setval": "low-memory exempt",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "low_memory": {
+                            "exempt": "{{ not not exempt }}",
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.password",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \spassword\s(?P<encryption>\d+)
+                \s(?P<key>\S+)
+                $""", re.VERBOSE
+            ),
+            "setval": "password{{ (' ' + password.encryption) if password.encryption is defined }} {{ password.key }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "password": {
+                            "encryption": "{{ encryption }}",
+                            "key": "{{ key }}",
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.path_attribute",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \spath-attribute\s(?P<action>\S+)\s
+                (?P<type>\d+)?
+                (range\s(?P<start>\d+)\s(?P<end>\d+))?
+                \sin
+                $""", re.VERBOSE
+            ),
+            "setval": "path-attribute {{ path_attribute.action }} "
+                      "{{ path_attribute.type if path_attribute.type is defined  }}"
+                      "{{ ('range ' + path_attribute.range.start|string + ' ' + path_attribute.range.end|string) if path_attribute.range is defined }}"
+                      " in",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "path_attribute": [
+                            {
+                                "action": "{{ action }}",
+                                "type": "{{ type if type is defined else None }}",
+                                "range": {
+                                    "start": "{{ start if start is defined }}",
+                                    "end": "{{ end if end is defined }}"
+                                },
+                            },
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.remove_private_as",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<remove_private_as>remove-private-as)
+                (\s(?P<all>all))?
+                (\s(?P<replace_as>replace-as))?
+                $""", re.VERBOSE
+            ),
+            "setval": "remove-private-as",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "remove_private_as": {
+                            "set": "{{ True if remove_private_as is defined and replace_as is undefined and all is undefined else None }}",
+                            "replace_as": "{{ not not replace_as }}",
+                            "all": "{{ not not all }}",
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.shutdown",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<shutdown>shutdown)
+                $""", re.VERBOSE
+            ),
+            "setval": "shutdown",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "shutdown": "{{ not not shutdown }}",
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.timers",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \stimers\s(?P<keepalive>\d+)\s(?P<holdtime>\d+)
+                $""", re.VERBOSE
+            ),
+            "setval": "shutdown",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "timers": {
+                            "keepalive": "{{ keepalive }}",
+                            "holdtime": "{{ holdtime }}",
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.transport",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \stransport\sconnection-mode
+                \s(?P<passive>passive)
+                $""", re.VERBOSE
+            ),
+            "setval": "transport connection-mode passive",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "transport": {
+                            "connection_mode": {
+                                "passive": "{{ not not passive }}",
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.ttl_security",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \sttl-security\shops\s(?P<hops>\d+)
+                $""", re.VERBOSE
+            ),
+            "setval": "ttl-security hops {{ ttl_security.hops }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "ttl_security": {
+                            "hops": "{{ hops }}",
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor.update_source",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \supdate-source\s(?P<update_source>\S+)
+                $""", re.VERBOSE
+            ),
+            "setval": "update-source {{ update_source }}",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "update_source": "{{ update_source }}",
+                    }
+                }
+            }
+        },
+        {
+            "name": "neighbor_down.fib_accelerate",
+            "getval": re.compile(
+                r"""
+                \s+neighbor-down\s(?P<fib_accelerate>fib-accelerate)
+                $""", re.VERBOSE
+            ),
+            "setval": "neighbor-down fib-accelerate",
+            "result": {
+                "neighbor_down": {
+                    "fib_accelerate": "{{ not not fib_accelerate }}",
+                }            
             }
         },
     ]

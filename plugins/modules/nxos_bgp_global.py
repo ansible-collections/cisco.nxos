@@ -192,9 +192,6 @@ options:
             description: IP address/Prefix of the neighbor or interface.
             type: str
             required: True
-          remote_as:
-            description: Remote ASN.
-            type: str
           bmp_activate_server:
             description: Specify server ID for activating BMP monitoring for the peer.
             type: int
@@ -252,7 +249,16 @@ options:
             type: str
           log_neighbor_changes:
             description: Log message for neighbor up/down event.
-            type: str
+            type: dict
+            suboptions:
+              set:
+                description:
+                - Set log-neighbor-changes.
+                type: bool
+              disable:
+                description:
+                - Disable logging of neighbor up/down event.
+                type: bool
           low_memory:
             description: Behaviour in low memory situations.
             type: dict
@@ -274,13 +280,15 @@ options:
                 type: str
           path_attribute:
             description: BGP path attribute optional filtering.
-            type: dict
+            type: list
+            elements: dict
+            mutually_exclusive: [["type", "range"]]
             suboptions:
               action:
                 description: Action.
                 type: str
                 choices: ["discard", "treat-as-withdraw"]
-              path_attribute_type:
+              type:
                 description: Path attribute type
                 type: int
               range:
@@ -298,7 +306,17 @@ options:
             type: str
           remove_private_as:
             description: Remove private AS number from outbound updates.
-            type: str
+            type: dict
+            suboptions:
+              set:
+                description: Remove private AS.
+                type: bool
+              replace_as:
+                description: Replace.
+                type: bool
+              all:
+                description: All.
+                type: bool
           shutdown:
             description: Administratively shutdown this neighbor.
             type: bool
