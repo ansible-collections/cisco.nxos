@@ -39,6 +39,13 @@ options:
       asn:
         description: Autonomous System Number of the router.
         type: str
+      affinity_group:
+        description: Configure an affinity group.
+        type: dict
+        suboptions:
+          group_id:
+            description: Affinity Group ID.
+            type: int
       bestpath: &bestpath
         description: Define the default bestpath selection algorithm.
         type: dict
@@ -128,13 +135,16 @@ options:
       enhanced_error:
         description: Enable BGP Enhanced error handling.
         type: bool
+      fabric_soo:
+        description: Fabric site of origin.
+        type: str
       fast_external_fallover:
         description: Immediately reset the session if the link to a directly connected BGP peer goes down.
         type: bool
       flush_routes:
         description: Flush routes in RIB upon controlled restart.
         type: bool
-      graceful_restart:
+      graceful_restart: &graceful_restart
         description: Configure Graceful Restart functionality.
         type: dict
         suboptions:
@@ -188,10 +198,17 @@ options:
         type: list
         elements: dict
         suboptions:
-          neighbor_address: 
+          neighbor_address:
             description: IP address/Prefix of the neighbor or interface.
             type: str
             required: True
+          affinity_group:
+            description: Configure an affinity group.
+            type: dict
+            suboptions:
+              group_id:
+                description: Affinity Group ID.
+                type: int
           bmp_activate_server:
             description: Specify server ID for activating BMP monitoring for the peer.
             type: int
@@ -263,7 +280,7 @@ options:
             description: Behaviour in low memory situations.
             type: dict
             suboptions:
-              exempt: 
+              exempt:
                 description: Do not shutdown this peer when under memory pressure.
                 type: bool
           password:
@@ -275,6 +292,7 @@ options:
                 - 0 specifies an UNENCRYPTED neighbor password.
                 - 3 specifies an 3DES ENCRYPTED neighbor password will follow.
                 - 7 specifies a Cisco type 7  ENCRYPTED neighbor password will follow.
+                type: int
               key:
                 description: Authentication password.
                 type: str
@@ -282,7 +300,6 @@ options:
             description: BGP path attribute optional filtering.
             type: list
             elements: dict
-            mutually_exclusive: [["type", "range"]]
             suboptions:
               action:
                 description: Action.
@@ -301,6 +318,10 @@ options:
                   end:
                     description: Path attribute range end value.
                     type: int
+          peer_type:
+            description: Neighbor facing
+            type: str
+            choices: ["fabric-border-leaf", "fabric-external"]
           remote_as:
             description: Specify Autonomous System Number of the neighbor.
             type: str
@@ -365,6 +386,16 @@ options:
           suppress_default_resolution:
             description: Prohibit use of default route for nexthop address resolution.
             type: bool
+      rd:
+        description: Secondary Route Distinguisher for vxlan multisite border gateway.
+        type: dict
+        suboptions:
+          dual:
+            description: Generate Secondary RD for all VRFs and L2VNIs.
+            type: bool
+          id:
+            description: Specify 2 byte value for ID.
+            type: int
       reconnect_interval: &reconn_intv
         description: Configure connection reconnect interval.
         type: int
@@ -412,28 +443,16 @@ options:
         type: list
         elements: dict
         suboptions:
-          vrf: 
+          vrf:
             description: VRF name.
             type: str
+          allocate_index:
+            description: Configure allocate-index.
+            type: int
           bestpath: *bestpath
           cluster_id: *cluster_id
           confederation: *confederation
-          graceful_restart:
-            description: Configure Graceful Restart functionality.
-            type: dict
-            suboptions:
-              set:
-                description: Enable graceful-restart.
-                type: bool
-              restart_time:
-                description: Maximum time for restart advertised to peers.
-                type: int
-              stalepath_time:
-                description: Maximum time to keep a restarting peer's stale routes.
-                type: int
-              helper:
-                description: Configure Graceful Restart Helper mode functionality.
-                type: bool
+          graceful_restart: *graceful_restart
           local_as:
             description: Specify the local-as for this vrf.
             type: str
@@ -443,7 +462,6 @@ options:
           neighbor_down: *nbr_down
           reconnect_interval: *reconn_intv
           router_id: *rtr_id
-          shutdown: *shtdwn
           timers: *timers
   state:
     description:
@@ -453,9 +471,9 @@ options:
     - merged
     - replaced
     - deleted
+    - purged
     - parsed
     - gathered
-    - parsed
     - rendered
     default: merged
 """

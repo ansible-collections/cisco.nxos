@@ -40,6 +40,10 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
             "type": "dict",
             "options": {
                 "asn": {"type": "str"},
+                "affinity_group": {
+                    "type": "dict",
+                    "options": {"group_id": {"type": "int"}},
+                },
                 "bestpath": {
                     "type": "dict",
                     "options": {
@@ -91,6 +95,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                 "dynamic_med_interval": {"type": "int"},
                 "enforce_first_as": {"type": "bool"},
                 "enhanced_error": {"type": "bool"},
+                "fabric_soo": {"type": "str"},
                 "fast_external_fallover": {"type": "bool"},
                 "flush_routes": {"type": "bool"},
                 "graceful_restart": {
@@ -129,6 +134,10 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "neighbor_address": {"type": "str", "required": True},
+                        "affinity_group": {
+                            "type": "dict",
+                            "options": {"group_id": {"type": "int"}},
+                        },
                         "bmp_activate_server": {"type": "int"},
                         "capability": {
                             "type": "dict",
@@ -176,14 +185,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "password": {
                             "type": "dict",
                             "options": {
-                                "encryption": {},
+                                "encryption": {"type": "int"},
                                 "key": {"type": "str"},
                             },
                         },
                         "path_attribute": {
                             "type": "list",
                             "elements": "dict",
-                            "mutually_exclusive": [["type", "range"]],
                             "options": {
                                 "action": {
                                     "type": "str",
@@ -201,6 +209,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                             },
+                        },
+                        "peer_type": {
+                            "type": "str",
+                            "choices": [
+                                "fabric-border-leaf",
+                                "fabric-external",
+                            ],
                         },
                         "remote_as": {"type": "str"},
                         "remove_private_as": {
@@ -245,6 +260,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "suppress_default_resolution": {"type": "bool"}
                     },
                 },
+                "rd": {
+                    "type": "dict",
+                    "options": {
+                        "dual": {"type": "bool"},
+                        "id": {"type": "int"},
+                    },
+                },
                 "reconnect_interval": {"type": "int"},
                 "router_id": {"type": "str"},
                 "shutdown": {"type": "bool"},
@@ -275,6 +297,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "vrf": {"type": "str"},
+                        "allocate_index": {"type": "int"},
                         "bestpath": {
                             "type": "dict",
                             "options": {
@@ -328,6 +351,10 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                     "type": "str",
                                     "required": True,
                                 },
+                                "affinity_group": {
+                                    "type": "dict",
+                                    "options": {"group_id": {"type": "int"}},
+                                },
                                 "bmp_activate_server": {"type": "int"},
                                 "capability": {
                                     "type": "dict",
@@ -375,14 +402,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "password": {
                                     "type": "dict",
                                     "options": {
-                                        "encryption": {},
+                                        "encryption": {"type": "int"},
                                         "key": {"type": "str"},
                                     },
                                 },
                                 "path_attribute": {
                                     "type": "list",
                                     "elements": "dict",
-                                    "mutually_exclusive": [["type", "range"]],
                                     "options": {
                                         "action": {
                                             "type": "str",
@@ -400,6 +426,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                     },
+                                },
+                                "peer_type": {
+                                    "type": "str",
+                                    "choices": [
+                                        "fabric-border-leaf",
+                                        "fabric-external",
+                                    ],
                                 },
                                 "remote_as": {"type": "str"},
                                 "remove_private_as": {
@@ -442,7 +475,6 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         },
                         "reconnect_interval": {"type": "int"},
                         "router_id": {"type": "str"},
-                        "shutdown": {"type": "bool"},
                         "timers": {
                             "type": "dict",
                             "options": {
@@ -474,9 +506,9 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                 "merged",
                 "replaced",
                 "deleted",
+                "purged",
                 "parsed",
                 "gathered",
-                "parsed",
                 "rendered",
             ],
             "default": "merged",

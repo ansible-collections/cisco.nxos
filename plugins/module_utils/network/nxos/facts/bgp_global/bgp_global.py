@@ -27,8 +27,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bg
     Bgp_globalArgs,
 )
 
-import q
-
 
 class Bgp_globalFacts(object):
     """ The nxos bgp_global facts class
@@ -60,14 +58,24 @@ class Bgp_globalFacts(object):
         bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines())
         obj = utils.remove_empties(bgp_global_parser.parse())
 
-        # post parsing intermediate data structure
-        conf_peers = obj.get("confederation", {}).get("peers")
-        if conf_peers:
-            obj["confederation"]["peers"] = conf_peers.split()
+        vrfs = obj.get("vrfs", {})
 
-        neighbors = obj.get("neighbors", {})
-        if neighbors:
-            obj["neighbors"] = list(neighbors.values())
+        # move global vals to their correct position in facts tree
+        # this is only needed for keys that are valid for both global
+        # and VRF contexts
+        global_vals = vrfs.pop("vrf_", {})
+        for key, value in iteritems(global_vals):
+            obj[key] = value
+
+        # transform vrfs into a list
+        if vrfs:
+            obj["vrfs"] = sorted(
+                list(obj["vrfs"].values()), key=lambda k, sk="vrf": k[sk]
+            )
+            for vrf in obj["vrfs"]:
+                self._post_parse(vrf)
+
+        self._post_parse(obj)
 
         ansible_facts["ansible_network_resources"].pop("bgp_global", None)
 
@@ -81,6 +89,11 @@ class Bgp_globalFacts(object):
         return ansible_facts
 
     def _flatten_config(self, data):
+        """ Flatten neighbor contexts in
+            the running-config for easier parsing.
+        :param obj: dict
+        :returns: flattened running config
+        """
         data = data.split("\n")
         in_nbr_cxt = False
         cur_nbr = {}
@@ -97,3 +110,20 @@ class Bgp_globalFacts(object):
                 data[data.index(x)] = cur_nbr["nbr"] + " " + x.strip()
 
         return "\n".join(data)
+
+    def _post_parse(self, obj):
+        """ Converts the intermediate data structure
+            to valid format as per argspec.
+        :param obj: dict
+        """
+        conf_peers = obj.get("confederation", {}).get("peers")
+        if conf_peers:
+            obj["confederation"]["peers"] = conf_peers.split()
+            obj["confederation"]["peers"].sort()
+
+        neighbors = obj.get("neighbors", {})
+        if neighbors:
+            obj["neighbors"] = sorted(
+                list(neighbors.values()),
+                key=lambda k, sk="neighbor_address": k[sk],
+            )
