@@ -19,7 +19,7 @@ description:
 - This module manages global BGP configuration on devices running Cisco NX-OS.
 version_added: 1.4.0
 notes:
-- Tested against NX-OS 9.3.3.
+- Tested against NX-OS 9.3.6.
 - This module works with connection C(network_cli) and C(httpapi).
 author: Nilashish Chakraborty (@NilashishC)
 options:
@@ -202,7 +202,7 @@ options:
             description: IP address/Prefix of the neighbor or interface.
             type: str
             required: True
-          affinity_group:
+          neighbor_affinity_group:
             description: Configure an affinity group.
             type: dict
             suboptions:

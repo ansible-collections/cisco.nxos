@@ -21,11 +21,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 
 def _tmplt_confederation_peers(proc):
-    pass
-
-
-def _tmplt_graceful_shutdown_activate(proc):
-    pass
+    cmd = "confederation peers"
+    for peer in proc["confederation"]["peers"]:
+        cmd += " {0}".format(peer)
+    return cmd
 
 
 class Bgp_globalTemplate(NetworkTemplate):
@@ -338,20 +337,6 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "disable_policy_batching",
-            "getval": re.compile(
-                r"""
-                \s+(?P<disable_policy_batching>disable-policy-batching)
-                $""", re.VERBOSE
-            ),
-            "setval": "disable-policy-batching",
-            "result": {
-                "disable_policy_batching": {
-                    "set": "{{ not not disable_policy_batching }}",
-                },
-            }
-        },
-        {
             "name": "disable_policy_batching.ipv4.prefix_list",
             "getval": re.compile(
                 r"""
@@ -541,7 +526,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 \s(?P<route_map>\S+))?
                 $""", re.VERBOSE
             ),
-            "setval": _tmplt_graceful_shutdown_activate,
+            "setval": "graceful-shutdown activate{{ ' route-map ' + graceful_shutdown.activate.route_map if graceful_shutdown.activate.route_map is defined }}",
             "result": {
                 "graceful_shutdown": {
                     "activate": {
@@ -614,8 +599,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 }
             }
         },
+        # start neighbor parsers
         {
-            "name": "neighbor.neighbor_address",
+            "name": "neighbor_address",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -635,7 +621,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.remote_as",
+            "name": "remote_as",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -656,20 +642,20 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.affinity_group",
+            "name": "neighbor_affinity_group.group_id",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
-                \saffinity-group\s(?P<affinity_group>\d+)
+                \saffinity-group\s(?P<group_id>\d+)
                 $""", re.VERBOSE
             ),
-            "setval": "affinity-group {{ neighbor.affinity_group }}",
+            "setval": "affinity-group {{ neighbor_affinity_group.group_id }}",
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
                         "neighbors": {
                             "{{ neighbor_address }}": {
-                                "affinity_group": {
+                                "neighbor_affinity_group": {
                                     "group_id": "{{ group_id }}",
                                 }
                             }
@@ -679,7 +665,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.bmp_activate_server",
+            "name": "bmp_activate_server",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -700,7 +686,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.capability",
+            "name": "capability",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -723,7 +709,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.description",
+            "name": "description",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -744,7 +730,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.disable_connected_check",
+            "name": "disable_connected_check",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -765,7 +751,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.dont_capability_negotiate",
+            "name": "dont_capability_negotiate",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -786,7 +772,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.dscp",
+            "name": "dscp",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -807,7 +793,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.dynamic_capability",
+            "name": "dynamic_capability",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -828,7 +814,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.ebgp_multihop",
+            "name": "ebgp_multihop",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -849,7 +835,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.graceful_shutdown",
+            "name": "graceful_shutdown",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -877,7 +863,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.inherit.peer",
+            "name": "inherit.peer",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -901,7 +887,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.inherit.peer_session",
+            "name": "inherit.peer_session",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -925,7 +911,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.local_as",
+            "name": "local_as",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -946,7 +932,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.log_neighbor_changes",
+            "name": "log_neighbor_changes",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -971,7 +957,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.low_memory",
+            "name": "low_memory",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -994,7 +980,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.password",
+            "name": "password",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1019,7 +1005,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.path_attribute",
+            "name": "path_attribute",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1055,7 +1041,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.peer_type",
+            "name": "peer_type",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1076,7 +1062,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.remove_private_as",
+            "name": "remove_private_as",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1103,7 +1089,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.shutdown",
+            "name": "shutdown",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1124,7 +1110,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.timers",
+            "name": "timers",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1148,7 +1134,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.transport",
+            "name": "transport",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1174,7 +1160,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.ttl_security",
+            "name": "ttl_security",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1197,7 +1183,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "neighbor.update_source",
+            "name": "update_source",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1217,6 +1203,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 }
             }
         },
+        # end neighbor parsers
         {
             "name": "neighbor_down.fib_accelerate",
             "getval": re.compile(

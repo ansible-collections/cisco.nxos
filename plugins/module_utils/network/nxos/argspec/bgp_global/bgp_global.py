@@ -134,7 +134,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "neighbor_address": {"type": "str", "required": True},
-                        "affinity_group": {
+                        "neighbor_affinity_group": {
                             "type": "dict",
                             "options": {"group_id": {"type": "int"}},
                         },
@@ -351,7 +351,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                     "type": "str",
                                     "required": True,
                                 },
-                                "affinity_group": {
+                                "neighbor_affinity_group": {
                                     "type": "dict",
                                     "options": {"group_id": {"type": "int"}},
                                 },
