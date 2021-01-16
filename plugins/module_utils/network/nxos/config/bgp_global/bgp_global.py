@@ -162,7 +162,7 @@ class Bgp_global(ResourceModule):
                 # if there are peers already configured
                 # we need to remove those before we pass
                 # the new ones otherwise the device appends
-                # them to the have list of peers
+                # them to the existing ones
                 if h_cpeers:
                     self.addcmd(have, "confederation.peers", True)
 

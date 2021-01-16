@@ -39,7 +39,7 @@ def _tmplt_log_adjacency_changes(proc):
 
 
 def _tmplt_area_authentication(area):
-    command = "area {area_iad} authentication".format(**area)
+    command = "area {area_id} authentication".format(**area)
     if area.get("authentication", {}).get("message_digest"):
         command += " message-digest"
     return command
