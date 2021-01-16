@@ -154,6 +154,11 @@ class Bgp_global(ResourceModule):
             )
 
     def _compare_confederation_peers(self, want, have):
+        """Custom handling of confederation.peers option
+
+        :params want: the want BGP dictionary
+        :params have: the have BGP dictionary
+        """
         w_cpeers = want.get("confederation", {}).get("peers", [])
         h_cpeers = have.get("confederation", {}).get("peers", [])
 
@@ -169,6 +174,11 @@ class Bgp_global(ResourceModule):
             self.addcmd(want, "confederation.peers", False)
 
     def _compare_neighbors(self, want, have):
+        """Custom handling of neighbors option
+
+        :params want: the want BGP dictionary
+        :params have: the have BGP dictionary
+        """
         nbr_parsers = [
             "remote_as",
             "neighbor_affinity_group.group_id",
@@ -214,6 +224,11 @@ class Bgp_global(ResourceModule):
             self.addcmd(entry, "neighbor_address", True)
 
     def _vrfs_compare(self, want, have):
+        """Custom handling of VRFs option
+
+        :params want: the want BGP dictionary
+        :params have: the have BGP dictionary
+        """
         wvrfs = want.get("vrfs", {})
         hvrfs = have.get("vrfs", {})
         for name, entry in iteritems(wvrfs):
@@ -226,6 +241,11 @@ class Bgp_global(ResourceModule):
             self._compare(want={}, have=entry)
 
     def _bgp_list_to_dict(self, entry):
+        """Convert list of items to dict of items
+           for efficient diff calculation.
+
+        :params entry: data dictionary
+        """
         if "neighbors" in entry:
             entry["neighbors"] = {
                 x["neighbor_address"]: x for x in entry.get("neighbors", [])
