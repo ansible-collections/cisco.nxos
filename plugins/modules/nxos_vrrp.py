@@ -349,7 +349,7 @@ def main():
             choices=["shutdown", "no shutdown", "default"],
             default="shutdown",
         ),
-        authentication=dict(required=False, type="str"),
+        authentication=dict(required=False, type="str", no_log=True),
         state=dict(
             choices=["absent", "present"], required=False, default="present"
         ),
