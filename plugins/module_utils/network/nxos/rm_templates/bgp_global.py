@@ -124,7 +124,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 \s+bestpath\sas-path\s(?P<multipath_relax>multipath-relax)
                 $""", re.VERBOSE
             ),
-            "setval": " bestpath as-path multipath-relax",
+            "setval": "bestpath as-path multipath-relax",
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
@@ -988,7 +988,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 \s(?P<key>\S+)
                 $""", re.VERBOSE
             ),
-            "setval": "password{{ (' ' + password.encryption) if password.encryption is defined }} {{ password.key }}",
+            "setval": "password{{ (' ' + password.encryption|string) if password.encryption is defined }} {{ password.key }}",
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {

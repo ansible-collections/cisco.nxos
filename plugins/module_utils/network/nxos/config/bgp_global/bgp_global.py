@@ -121,7 +121,8 @@ class Bgp_global(ResourceModule):
                 self._compare(want={}, have=self.have)
 
         elif self.state == "purged":
-            self.addcmd(self.have or {}, "asn", True)
+            if not self.want or (self.have.get("asn") == self.want.get("asn")):
+                self.addcmd(self.have or {}, "asn", True)
 
         else:
             wantd = self.want
@@ -197,7 +198,6 @@ class Bgp_global(ResourceModule):
             "log_neighbor_changes",
             "low_memory",
             "password",
-            "path_attribute",
             "peer_type",
             "remove_private_as",
             "shutdown",
@@ -219,6 +219,7 @@ class Bgp_global(ResourceModule):
                 self.commands.insert(
                     begin, self._tmplt.render(entry, "neighbor_address", False)
                 )
+
         # remove remaining items in have for replaced
         for name, entry in iteritems(hnbrs):
             self.addcmd(entry, "neighbor_address", True)

@@ -478,8 +478,1078 @@ options:
     default: merged
 """
 EXAMPLES = """
+# Using merged
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# Nexus9000v#
+
+- name: Merge the provided configuration with the exisiting running configuration
+  cisco.nxos.nxos_bgp_global:
+    config:
+      asn: 65563
+      router_id: 192.168.1.1
+      bestpath:
+        as_path:
+          multipath_relax: True
+        compare_neighborid: True
+        cost_community_ignore: True
+      confederation:
+        identifier: 42
+        peers:
+          - 65020
+          - 65030
+          - 65040
+      log_neighbor_changes: True
+      maxas_limit: 20
+      neighbors:
+        - neighbor_address: 192.168.1.100
+          neighbor_affinity_group:
+            group_id: 160
+          bmp_activate_server: 1
+          remote_as: 65563
+          description: NBR-1
+          low_memory:
+            exempt: True
+        - neighbor_address: 192.168.1.101
+          remote_as: 65563
+          password:
+            encryption: 7
+            key: 12090404011C03162E
+      neighbor_down:
+        fib_accelerate: True
+      vrfs:
+        - vrf: site-1
+          allocate_index: 5000
+          local_as: 200
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 198.51.100.1
+              description: site-1-nbr-1
+              password:
+                encryption: 3
+                key: 13D4D3549493D2877B1DC116EE27A6BE
+              remote_as: 65562
+            - neighbor_address: 198.51.100.2
+              remote_as: 65562
+              description: site-1-nbr-2
+        - vrf: site-2
+          local_as: 300
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 203.0.113.2
+              description: site-1-nbr-1
+              password:
+                encryption: 3
+                key: AF92F4C16A0A0EC5BDF56CF58BC030F6
+              remote_as: 65568
+          neighbor_down:
+            fib_accelerate: True
+
+# Task output
+# -------------
+# before: {}
+#
+# commands:
+#  - router bgp 65563
+#  - bestpath as-path multipath-relax
+#  - bestpath compare-neighborid
+#  - bestpath cost-community ignore
+#  - confederation identifier 42
+#  - log-neighbor-changes
+#  - maxas-limit 20
+#  - neighbor-down fib-accelerate
+#  - router-id 192.168.1.1
+#  - confederation peers 65020 65030 65040
+#  - neighbor 192.168.1.100
+#  - remote-as 65563
+#  - affinity-group 160
+#  - bmp-activate-server 1
+#  - description NBR-1
+#  - low-memory exempt
+#  - neighbor 192.168.1.101
+#  - remote-as 65563
+#  - password 7 12090404011C03162E
+#  - vrf site-1
+#  - allocate-index 5000
+#  - local-as 200
+#  - log-neighbor-changes
+#  - neighbor 198.51.100.1
+#  - remote-as 65562
+#  - description site-1-nbr-1
+#  - password 3 13D4D3549493D2877B1DC116EE27A6BE
+#  - neighbor 198.51.100.2
+#  - remote-as 65562
+#  - description site-1-nbr-2
+#  - vrf site-2
+#  - local-as 300
+#  - log-neighbor-changes
+#  - neighbor-down fib-accelerate
+#  - neighbor 203.0.113.2
+#  - remote-as 65568
+#  - description site-1-nbr-1
+#  - password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
+#
+# after:
+#    asn: '65563'
+#    bestpath:
+#      as_path:
+#        multipath_relax: true
+#      compare_neighborid: true
+#      cost_community_ignore: true
+#    confederation:
+#      identifier: '42'
+#      peers:
+#      - '65020'
+#      - '65030'
+#      - '65040'
+#    log_neighbor_changes: true
+#    maxas_limit: 20
+#    neighbor_down:
+#      fib_accelerate: true
+#    neighbors:
+#    - bmp_activate_server: 1
+#      description: NBR-1
+#      low_memory:
+#        exempt: true
+#      neighbor_address: 192.168.1.100
+#      neighbor_affinity_group:
+#        group_id: 160
+#      remote_as: '65563'
+#    - neighbor_address: 192.168.1.101
+#      password:
+#        encryption: 7
+#        key: 12090404011C03162E
+#      remote_as: '65563'
+#    router_id: 192.168.1.1
+#    vrfs:
+#    - allocate_index: 5000
+#      local_as: '200'
+#      log_neighbor_changes: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 198.51.100.1
+#        password:
+#          encryption: 3
+#          key: 13D4D3549493D2877B1DC116EE27A6BE
+#        remote_as: '65562'
+#      - description: site-1-nbr-2
+#        neighbor_address: 198.51.100.2
+#        remote_as: '65562'
+#      vrf: site-1
+#    - local_as: '300'
+#      log_neighbor_changes: true
+#      neighbor_down:
+#        fib_accelerate: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 203.0.113.2
+#        password:
+#          encryption: 3
+#          key: AF92F4C16A0A0EC5BDF56CF58BC030F6
+#        remote_as: '65568'
+#      vrf: site-2
+
+
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65563
+#   router-id 192.168.1.1
+#   confederation identifier 42
+#   confederation peers 65020 65030 65040
+#   bestpath as-path multipath-relax
+#   bestpath cost-community ignore
+#   bestpath compare-neighborid
+#   neighbor-down fib-accelerate
+#   maxas-limit 20
+#   log-neighbor-changes
+#   neighbor 192.168.1.100
+#     low-memory exempt
+#     bmp-activate-server 1
+#     remote-as 65563
+#     description NBR-1
+#     affinity-group 160
+#   neighbor 192.168.1.101
+#     remote-as 65563
+#     password 7 12090404011C03162E
+#   vrf site-1
+#     local-as 200
+#     log-neighbor-changes
+#     allocate-index 5000
+#     neighbor 198.51.100.1
+#       remote-as 65562
+#       description site-1-nbr-1
+#       password 3 13D4D3549493D2877B1DC116EE27A6BE
+#     neighbor 198.51.100.2
+#       remote-as 65562
+#       description site-1-nbr-2
+#   vrf site-2
+#     local-as 300
+#     neighbor-down fib-accelerate
+#     log-neighbor-changes
+#     neighbor 203.0.113.2
+#       remote-as 65568
+#       description site-1-nbr-1
+#       password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
+
+# Using replaced
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65563
+#   router-id 192.168.1.1
+#   confederation identifier 42
+#   confederation peers 65020 65030 65040
+#   bestpath as-path multipath-relax
+#   bestpath cost-community ignore
+#   bestpath compare-neighborid
+#   neighbor-down fib-accelerate
+#   maxas-limit 20
+#   log-neighbor-changes
+#   neighbor 192.168.1.100
+#     low-memory exempt
+#     bmp-activate-server 1
+#     remote-as 65563
+#     description NBR-1
+#     affinity-group 160
+#   neighbor 192.168.1.101
+#     remote-as 65563
+#     password 7 12090404011C03162E
+#   vrf site-1
+#     local-as 200
+#     log-neighbor-changes
+#     allocate-index 5000
+#     neighbor 198.51.100.1
+#       remote-as 65562
+#       description site-1-nbr-1
+#       password 3 13D4D3549493D2877B1DC116EE27A6BE
+#     neighbor 198.51.100.2
+#       remote-as 65562
+#       description site-1-nbr-2
+#   vrf site-2
+#     local-as 300
+#     neighbor-down fib-accelerate
+#     log-neighbor-changes
+#     neighbor 203.0.113.2
+#       remote-as 65568
+#       description site-1-nbr-1
+#       password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
+
+- name: Replace BGP configuration with provided configuration
+  cisco.nxos.nxos_bgp_global:
+    config:
+      asn: 65563
+      router_id: 192.168.1.1
+      bestpath:
+        compare_neighborid: True
+        cost_community_ignore: True
+      confederation:
+        identifier: 42
+        peers:
+          - 65020
+          - 65030
+          - 65050
+      maxas_limit: 40
+      neighbors:
+        - neighbor_address: 192.168.1.100
+          neighbor_affinity_group:
+            group_id: 160
+          bmp_activate_server: 1
+          remote_as: 65563
+          description: NBR-1
+          low_memory:
+            exempt: True
+      neighbor_down:
+        fib_accelerate: True
+      vrfs:
+        - vrf: site-2
+          local_as: 300
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 203.0.113.2
+              password:
+                encryption: 7
+                key: 12090404011C03162E
+              path_attribute:
+                - action: discard
+                  range:
+                    start: 11
+                    end: 20
+          neighbor_down:
+            fib_accelerate: True
+    state: replaced
+
+# Task output
+# -------------
+#  before:
+#    asn: '65563'
+#    bestpath:
+#      as_path:
+#        multipath_relax: true
+#      compare_neighborid: true
+#      cost_community_ignore: true
+#    confederation:
+#      identifier: '42'
+#      peers:
+#      - '65020'
+#      - '65030'
+#      - '65040'
+#    log_neighbor_changes: true
+#    maxas_limit: 20
+#    neighbor_down:
+#      fib_accelerate: true
+#    neighbors:
+#    - bmp_activate_server: 1
+#      description: NBR-1
+#      low_memory:
+#        exempt: true
+#      neighbor_address: 192.168.1.100
+#      neighbor_affinity_group:
+#        group_id: 160
+#      remote_as: '65563'
+#    - neighbor_address: 192.168.1.101
+#      password:
+#        encryption: 7
+#        key: 12090404011C03162E
+#      remote_as: '65563'
+#    router_id: 192.168.1.1
+#    vrfs:
+#    - allocate_index: 5000
+#      local_as: '200'
+#      log_neighbor_changes: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 198.51.100.1
+#        password:
+#          encryption: 3
+#          key: 13D4D3549493D2877B1DC116EE27A6BE
+#        remote_as: '65562'
+#      - description: site-1-nbr-2
+#        neighbor_address: 198.51.100.2
+#        remote_as: '65562'
+#      vrf: site-1
+#    - local_as: '300'
+#      log_neighbor_changes: true
+#      neighbor_down:
+#        fib_accelerate: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 203.0.113.2
+#        password:
+#          encryption: 3
+#          key: AF92F4C16A0A0EC5BDF56CF58BC030F6
+#        remote_as: '65568'
+#      vrf: site-2
+#
+# commands:
+#  - router bgp 65563
+#  - no bestpath as-path multipath-relax
+#  - no log-neighbor-changes
+#  - maxas-limit 40
+#  - no confederation peers 65020 65030 65040
+#  - confederation peers 65020 65030 65050
+#  - no neighbor 192.168.1.101
+#  - vrf site-2
+#  - neighbor 203.0.113.2
+#  - no remote-as 65568
+#  - no description site-1-nbr-1
+#  - password 7 12090404011C03162E
+#  - vrf site-1
+#  - no allocate-index 5000
+#  - no local-as 200
+#  - no log-neighbor-changes
+#  - no neighbor 198.51.100.1
+#  - no neighbor 198.51.100.2
+
+#  after:
+#    asn: '65563'
+#    bestpath:
+#      compare_neighborid: true
+#      cost_community_ignore: true
+#    confederation:
+#      identifier: '42'
+#      peers:
+#      - '65020'
+#      - '65030'
+#      - '65050'
+#    maxas_limit: 40
+#    neighbor_down:
+#      fib_accelerate: true
+#    neighbors:
+#    - bmp_activate_server: 1
+#      description: NBR-1
+#      low_memory:
+#        exempt: true
+#      neighbor_address: 192.168.1.100
+#      neighbor_affinity_group:
+#        group_id: 160
+#      remote_as: '65563'
+#    router_id: 192.168.1.1
+#    vrfs:
+#    - vrf: site-1
+#    - local_as: '300'
+#      log_neighbor_changes: true
+#      neighbor_down:
+#        fib_accelerate: true
+#      neighbors:
+#      - neighbor_address: 203.0.113.2
+#        password:
+#          encryption: 7
+#          key: 12090404011C03162E
+#      vrf: site-2
+#
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65563
+#   router-id 192.168.1.1
+#   confederation identifier 42
+#   confederation peers 65020 65030 65050
+#   bestpath cost-community ignore
+#   bestpath compare-neighborid
+#   neighbor-down fib-accelerate
+#   maxas-limit 40
+#   neighbor 192.168.1.100
+#     low-memory exempt
+#     bmp-activate-server 1
+#     remote-as 65563
+#     description NBR-1
+#     affinity-group 160
+#   vrf site-1
+#   vrf site-2
+#     local-as 300
+#     neighbor-down fib-accelerate
+#     log-neighbor-changes
+#     neighbor 203.0.113.2
+#       password 7 12090404011C03162E
+
+# Using deleted
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65563
+#   router-id 192.168.1.1
+#   confederation identifier 42
+#   confederation peers 65020 65030 65040
+#   bestpath as-path multipath-relax
+#   bestpath cost-community ignore
+#   bestpath compare-neighborid
+#   neighbor-down fib-accelerate
+#   maxas-limit 20
+#   log-neighbor-changes
+#   address-family ipv4 unicast
+#     default-metric 400
+#     suppress-inactive
+#     default-information originate
+#   address-family ipv6 multicast
+#     wait-igp-convergence
+#     redistribute eigrp eigrp-1 route-map site-1-rmap
+#   neighbor 192.168.1.100
+#     low-memory exempt
+#     bmp-activate-server 1
+#     remote-as 65563
+#     description NBR-1
+#     affinity-group 160
+#   neighbor 192.168.1.101
+#     remote-as 65563
+#     password 7 12090404011C03162E
+#   vrf site-1
+#     local-as 200
+#     log-neighbor-changes
+#     allocate-index 5000
+#     address-family ipv4 multicast
+#       maximum-paths 40
+#       dampen-igp-metric 1200
+#     neighbor 198.51.100.1
+#       remote-as 65562
+#       description site-1-nbr-1
+#       password 3 13D4D3549493D2877B1DC116EE27A6BE
+#     neighbor 198.51.100.2
+#       remote-as 65562
+#       description site-1-nbr-2
+#   vrf site-2
+#     local-as 300
+#     neighbor-down fib-accelerate
+#     log-neighbor-changes
+#     neighbor 203.0.113.2
+#       remote-as 65568
+#       description site-1-nbr-1
+#       password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
+
+- name: Delete BGP configurations handled by this module
+  cisco.nxos.nxos_bgp_global:
+    state: deleted
+
+# Task output
+# -------------
+
+# before:
+#    asn: '65563'
+#    bestpath:
+#      as_path:
+#        multipath_relax: true
+#      compare_neighborid: true
+#      cost_community_ignore: true
+#    confederation:
+#      identifier: '42'
+#      peers:
+#      - '65020'
+#      - '65030'
+#      - '65040'
+#    log_neighbor_changes: true
+#    maxas_limit: 20
+#    neighbor_down:
+#      fib_accelerate: true
+#    neighbors:
+#    - bmp_activate_server: 1
+#      description: NBR-1
+#      low_memory:
+#        exempt: true
+#      neighbor_address: 192.168.1.100
+#      neighbor_affinity_group:
+#        group_id: 160
+#      remote_as: '65563'
+#    - neighbor_address: 192.168.1.101
+#      password:
+#        encryption: 7
+#        key: 12090404011C03162E
+#      remote_as: '65563'
+#    router_id: 192.168.1.1
+#    vrfs:
+#    - allocate_index: 5000
+#      local_as: '200'
+#      log_neighbor_changes: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 198.51.100.1
+#        password:
+#          encryption: 3
+#          key: 13D4D3549493D2877B1DC116EE27A6BE
+#        remote_as: '65562'
+#      - description: site-1-nbr-2
+#        neighbor_address: 198.51.100.2
+#        remote_as: '65562'
+#      vrf: site-1
+#    - local_as: '300'
+#      log_neighbor_changes: true
+#      neighbor_down:
+#        fib_accelerate: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 203.0.113.2
+#        password:
+#          encryption: 3
+#          key: AF92F4C16A0A0EC5BDF56CF58BC030F6
+#        remote_as: '65568'
+#      vrf: site-2
+#
+# commands:
+#   - router bgp 65563
+#   - no bestpath as-path multipath-relax
+#   - no bestpath compare-neighborid
+#   - no bestpath cost-community ignore
+#   - no confederation identifier 42
+#   - no log-neighbor-changes
+#   - no maxas-limit 20
+#   - no neighbor-down fib-accelerate
+#   - no router-id 192.168.1.1
+#   - no confederation peers 65020 65030 65040
+#   - no neighbor 192.168.1.100
+#   - no neighbor 192.168.1.101
+#   - vrf site-1
+#   - no allocate-index 5000
+#   - no local-as 200
+#   - no log-neighbor-changes
+#   - no neighbor 198.51.100.1
+#   - no neighbor 198.51.100.2
+#   - vrf site-2
+#   - no local-as 300
+#   - no log-neighbor-changes
+#   - no neighbor-down fib-accelerate
+#   - no neighbor 203.0.113.2
+#
+#  after:
+#    asn: '65563'
+#    vrfs:
+#      - vrf: site-1
+#      - vrf: site-2
+#
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65563
+#   address-family ipv4 unicast
+#     default-metric 400
+#     suppress-inactive
+#     default-information originate
+#   address-family ipv6 multicast
+#     wait-igp-convergence
+#     redistribute eigrp eigrp-1 route-map site-1-rmap
+#   vrf site-1
+#     address-family ipv4 multicast
+#       maximum-paths 40
+#       dampen-igp-metric 1200
+#   vrf site-2
+
+# Using purged
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65563
+#   router-id 192.168.1.1
+#   confederation identifier 42
+#   confederation peers 65020 65030 65040
+#   bestpath as-path multipath-relax
+#   bestpath cost-community ignore
+#   bestpath compare-neighborid
+#   neighbor-down fib-accelerate
+#   maxas-limit 20
+#   log-neighbor-changes
+#   address-family ipv4 unicast
+#     default-metric 400
+#     suppress-inactive
+#     default-information originate
+#   address-family ipv6 multicast
+#     wait-igp-convergence
+#     redistribute eigrp eigrp-1 route-map site-1-rmap
+#   neighbor 192.168.1.100
+#     low-memory exempt
+#     bmp-activate-server 1
+#     remote-as 65563
+#     description NBR-1
+#     affinity-group 160
+#   neighbor 192.168.1.101
+#     remote-as 65563
+#     password 7 12090404011C03162E
+#   vrf site-1
+#     local-as 200
+#     log-neighbor-changes
+#     allocate-index 5000
+#     address-family ipv4 multicast
+#       maximum-paths 40
+#       dampen-igp-metric 1200
+#     neighbor 198.51.100.1
+#       remote-as 65562
+#       description site-1-nbr-1
+#       password 3 13D4D3549493D2877B1DC116EE27A6BE
+#     neighbor 198.51.100.2
+#       remote-as 65562
+#       description site-1-nbr-2
+#   vrf site-2
+#     local-as 300
+#     neighbor-down fib-accelerate
+#     log-neighbor-changes
+#     neighbor 203.0.113.2
+#       remote-as 65568
+#       description site-1-nbr-1
+#       password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
+
+- name: Purge all BGP configurations from the device
+  cisco.nxos.nxos_bgp_global:
+    state: purged
+
+# Task output
+# -------------
+
+# before:
+#    asn: '65563'
+#    bestpath:
+#      as_path:
+#        multipath_relax: true
+#      compare_neighborid: true
+#      cost_community_ignore: true
+#    confederation:
+#      identifier: '42'
+#      peers:
+#      - '65020'
+#      - '65030'
+#      - '65040'
+#    log_neighbor_changes: true
+#    maxas_limit: 20
+#    neighbor_down:
+#      fib_accelerate: true
+#    neighbors:
+#    - bmp_activate_server: 1
+#      description: NBR-1
+#      low_memory:
+#        exempt: true
+#      neighbor_address: 192.168.1.100
+#      neighbor_affinity_group:
+#        group_id: 160
+#      remote_as: '65563'
+#    - neighbor_address: 192.168.1.101
+#      password:
+#        encryption: 7
+#        key: 12090404011C03162E
+#      remote_as: '65563'
+#    router_id: 192.168.1.1
+#    vrfs:
+#    - allocate_index: 5000
+#      local_as: '200'
+#      log_neighbor_changes: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 198.51.100.1
+#        password:
+#          encryption: 3
+#          key: 13D4D3549493D2877B1DC116EE27A6BE
+#        remote_as: '65562'
+#      - description: site-1-nbr-2
+#        neighbor_address: 198.51.100.2
+#        remote_as: '65562'
+#      vrf: site-1
+#    - local_as: '300'
+#      log_neighbor_changes: true
+#      neighbor_down:
+#        fib_accelerate: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 203.0.113.2
+#        password:
+#          encryption: 3
+#          key: AF92F4C16A0A0EC5BDF56CF58BC030F6
+#        remote_as: '65568'
+#      vrf: site-2
+#
+# commands:
+#   - no router bgp 65563
+#
+#  after: {}
+#
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# Nexus9000v#
+
+# Using rendered
+
+- name: Render platform specific configuration lines (without connecting to the device)
+  cisco.nxos.nxos_bgp_global:
+    config:
+      asn: 65563
+      router_id: 192.168.1.1
+      bestpath:
+        as_path:
+          multipath_relax: True
+        compare_neighborid: True
+        cost_community_ignore: True
+      confederation:
+        identifier: 42
+        peers:
+          - 65020
+          - 65030
+          - 65040
+      log_neighbor_changes: True
+      maxas_limit: 20
+      neighbors:
+        - neighbor_address: 192.168.1.100
+          neighbor_affinity_group:
+            group_id: 160
+          bmp_activate_server: 1
+          remote_as: 65563
+          description: NBR-1
+          low_memory:
+            exempt: True
+        - neighbor_address: 192.168.1.101
+          remote_as: 65563
+          password:
+            encryption: 7
+            key: 12090404011C03162E
+      neighbor_down:
+        fib_accelerate: True
+      vrfs:
+        - vrf: site-1
+          allocate_index: 5000
+          local_as: 200
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 198.51.100.1
+              description: site-1-nbr-1
+              password:
+                encryption: 3
+                key: 13D4D3549493D2877B1DC116EE27A6BE
+              remote_as: 65562
+            - neighbor_address: 198.51.100.2
+              remote_as: 65562
+              description: site-1-nbr-2
+        - vrf: site-2
+          local_as: 300
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 203.0.113.2
+              description: site-1-nbr-1
+              password:
+                encryption: 3
+                key: AF92F4C16A0A0EC5BDF56CF58BC030F6
+              remote_as: 65568
+          neighbor_down:
+            fib_accelerate: True
+
+# Task Output (redacted)
+# -----------------------
+# rendered:
+#   - router bgp 65563
+#   - bestpath as-path multipath-relax
+#   - bestpath compare-neighborid
+#   - bestpath cost-community ignore
+#   - confederation identifier 42
+#   - log-neighbor-changes
+#   - maxas-limit 20
+#   - neighbor-down fib-accelerate
+#   - router-id 192.168.1.1
+#   - confederation peers 65020 65030 65040
+#   - neighbor 192.168.1.100
+#   - remote-as 65563
+#   - affinity-group 160
+#   - bmp-activate-server 1
+#   - description NBR-1
+#   - low-memory exempt
+#   - neighbor 192.168.1.101
+#   - remote-as 65563
+#   - password 7 12090404011C03162E
+#   - vrf site-1
+#   - allocate-index 5000
+#   - local-as 200
+#   - log-neighbor-changes
+#   - neighbor 198.51.100.1
+#   - remote-as 65562
+#   - description site-1-nbr-1
+#   - password 3 13D4D3549493D2877B1DC116EE27A6BE
+#   - neighbor 198.51.100.2
+#   - remote-as 65562
+#   - description site-1-nbr-2
+#   - vrf site-2
+#   - local-as 300
+#   - log-neighbor-changes
+#   - neighbor-down fib-accelerate
+#   - neighbor 203.0.113.2
+#   - remote-as 65568
+#   - description site-1-nbr-1
+#   - password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# router bgp 65563
+#   router-id 192.168.1.1
+#   confederation identifier 42
+#   confederation peers 65020 65030 65040
+#   bestpath as-path multipath-relax
+#   bestpath cost-community ignore
+#   bestpath compare-neighborid
+#   neighbor-down fib-accelerate
+#   maxas-limit 20
+#   log-neighbor-changes
+#   neighbor 192.168.1.100
+#     low-memory exempt
+#     bmp-activate-server 1
+#     remote-as 65563
+#     description NBR-1
+#     affinity-group 160
+#   neighbor 192.168.1.101
+#     remote-as 65563
+#     password 7 12090404011C03162E
+#   vrf site-1
+#     local-as 200
+#     log-neighbor-changes
+#     allocate-index 5000
+#     neighbor 198.51.100.1
+#       remote-as 65562
+#       description site-1-nbr-1
+#       password 3 13D4D3549493D2877B1DC116EE27A6BE
+#     neighbor 198.51.100.2
+#       remote-as 65562
+#       description site-1-nbr-2
+#   vrf site-2
+#     local-as 300
+#     neighbor-down fib-accelerate
+#     log-neighbor-changes
+#     neighbor 203.0.113.2
+#       remote-as 65568
+#       description site-1-nbr-1
+#       password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
+
+- name: Parse externally provided BGP config
+  cisco.nxos.nxos_bgp_global:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+#  parsed:
+#    asn: '65563'
+#    bestpath:
+#      as_path:
+#        multipath_relax: true
+#      compare_neighborid: true
+#      cost_community_ignore: true
+#    confederation:
+#      identifier: '42'
+#      peers:
+#      - '65020'
+#      - '65030'
+#      - '65040'
+#    log_neighbor_changes: true
+#    maxas_limit: 20
+#    neighbor_down:
+#      fib_accelerate: true
+#    neighbors:
+#    - bmp_activate_server: 1
+#      description: NBR-1
+#      low_memory:
+#        exempt: true
+#      neighbor_address: 192.168.1.100
+#      neighbor_affinity_group:
+#        group_id: 160
+#      remote_as: '65563'
+#    - neighbor_address: 192.168.1.101
+#      password:
+#        encryption: 7
+#        key: 12090404011C03162E
+#      remote_as: '65563'
+#    router_id: 192.168.1.1
+#    vrfs:
+#    - allocate_index: 5000
+#      local_as: '200'
+#      log_neighbor_changes: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 198.51.100.1
+#        password:
+#          encryption: 3
+#          key: 13D4D3549493D2877B1DC116EE27A6BE
+#        remote_as: '65562'
+#      - description: site-1-nbr-2
+#        neighbor_address: 198.51.100.2
+#        remote_as: '65562'
+#      vrf: site-1
+#    - local_as: '300'
+#      log_neighbor_changes: true
+#      neighbor_down:
+#        fib_accelerate: true
+#      neighbors:
+#      - description: site-1-nbr-1
+#        neighbor_address: 203.0.113.2
+#        password:
+#          encryption: 3
+#          key: AF92F4C16A0A0EC5BDF56CF58BC030F6
+#        remote_as: '65568'
+#      vrf: site-2
+
+# Using gathered
+
+# existing config
+#
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65563
+#   router-id 192.168.1.1
+#   confederation identifier 42
+#   confederation peers 65020 65030 65050
+#   bestpath cost-community ignore
+#   bestpath compare-neighborid
+#   neighbor-down fib-accelerate
+#   maxas-limit 40
+#   neighbor 192.168.1.100
+#     low-memory exempt
+#     bmp-activate-server 1
+#     remote-as 65563
+#     description NBR-1
+#     affinity-group 160
+#   vrf site-1
+#   vrf site-2
+#     local-as 300
+#     neighbor-down fib-accelerate
+#     log-neighbor-changes
+#     neighbor 203.0.113.2
+#       password 7 12090404011C03162E
+
+- name: Gather BGP facts using gathered
+  cisco.nxos.nxos_bgp_global:
+    state: gathered
+
+# Task output (redacted)
+# -----------------------
+#  gathered:
+#    asn: '65563'
+#    bestpath:
+#      compare_neighborid: true
+#      cost_community_ignore: true
+#    confederation:
+#      identifier: '42'
+#      peers:
+#      - '65020'
+#      - '65030'
+#      - '65050'
+#    maxas_limit: 40
+#    neighbor_down:
+#      fib_accelerate: true
+#    neighbors:
+#    - bmp_activate_server: 1
+#      description: NBR-1
+#      low_memory:
+#        exempt: true
+#      neighbor_address: 192.168.1.100
+#      neighbor_affinity_group:
+#        group_id: 160
+#      remote_as: '65563'
+#    router_id: 192.168.1.1
+#    vrfs:
+#    - vrf: site-1
+#    - local_as: '300'
+#      log_neighbor_changes: true
+#      neighbor_down:
+#        fib_accelerate: true
+#      neighbors:
+#      - neighbor_address: 203.0.113.2
+#        password:
+#          encryption: 7
+#          key: 12090404011C03162E
+#      vrf: site-2
 """
 
+RETURN = """
+before:
+  description: The configuration prior to the model invocation.
+  returned: always
+  type: dict
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+after:
+  description: The resulting configuration model invocation.
+  returned: when changed
+  type: dict
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: always
+  type: list
+  sample:
+    - router bgp 65563
+    - maxas-limit 20
+    - router-id 192.168.1.1
+    - confederation peers 65020 65030 65040
+    - neighbor 192.168.1.100
+    - remote-as 65563
+    - affinity-group 160
+    - bmp-activate-server 1
+    - description NBR-1
+    - low-memory exempt
+    - vrf site-1
+    - log-neighbor-changes
+    - neighbor 198.51.100.1
+    - remote-as 65562
+    - description site-1-nbr-1
+    - password 3 13D4D3549493D2877B1DC116EE27A6BE
+"""
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_global.bgp_global import (
     Bgp_globalArgs,
@@ -501,7 +1571,6 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
-            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],
