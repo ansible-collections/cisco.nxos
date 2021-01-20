@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Properly handle partial matches in community string (https://github.com/ansible-collections/cisco.nxos/issues/203).
