@@ -202,6 +202,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     ospf_vrf:
       redirect: cisco.nxos.nxos
+    nxos_bgp_global:
+      redirect: cisco.nxos.nxos
+    bgp_global:
+      redirect: cisco.nxos.nxos
     nxos_ospfv2:
       redirect: cisco.nxos.nxos
     ospfv2:
@@ -535,6 +539,8 @@ plugin_routing:
       deprecation:
         removal_date: '2022-10-01'
         warning_text: See the plugin documentation for more details
+    bgp_global:
+      redirect: cisco.nxos.nxos_bgp_global
     ospfv2:
       redirect: cisco.nxos.nxos_ospfv2
     ospfv3:

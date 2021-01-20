@@ -539,7 +539,7 @@ EXAMPLES = """
           log_neighbor_changes: True
           neighbors:
             - neighbor_address: 203.0.113.2
-              description: site-1-nbr-1
+              description: site-2-nbr-1
               password:
                 encryption: 3
                 key: AF92F4C16A0A0EC5BDF56CF58BC030F6
@@ -588,7 +588,7 @@ EXAMPLES = """
 #  - neighbor-down fib-accelerate
 #  - neighbor 203.0.113.2
 #  - remote-as 65568
-#  - description site-1-nbr-1
+#  - description site-2-nbr-1
 #  - password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
 #
 # after:
@@ -643,7 +643,7 @@ EXAMPLES = """
 #      neighbor_down:
 #        fib_accelerate: true
 #      neighbors:
-#      - description: site-1-nbr-1
+#      - description: site-2-nbr-1
 #        neighbor_address: 203.0.113.2
 #        password:
 #          encryption: 3
@@ -691,7 +691,7 @@ EXAMPLES = """
 #     log-neighbor-changes
 #     neighbor 203.0.113.2
 #       remote-as 65568
-#       description site-1-nbr-1
+#       description site-2-nbr-1
 #       password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
 
 # Using replaced
@@ -735,7 +735,7 @@ EXAMPLES = """
 #     log-neighbor-changes
 #     neighbor 203.0.113.2
 #       remote-as 65568
-#       description site-1-nbr-1
+#       description site-2-nbr-1
 #       password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
 
 - name: Replace BGP configuration with provided configuration
@@ -773,11 +773,6 @@ EXAMPLES = """
               password:
                 encryption: 7
                 key: 12090404011C03162E
-              path_attribute:
-                - action: discard
-                  range:
-                    start: 11
-                    end: 20
           neighbor_down:
             fib_accelerate: True
     state: replaced
@@ -836,7 +831,7 @@ EXAMPLES = """
 #      neighbor_down:
 #        fib_accelerate: true
 #      neighbors:
-#      - description: site-1-nbr-1
+#      - description: site-2-nbr-1
 #        neighbor_address: 203.0.113.2
 #        password:
 #          encryption: 3
@@ -855,7 +850,7 @@ EXAMPLES = """
 #  - vrf site-2
 #  - neighbor 203.0.113.2
 #  - no remote-as 65568
-#  - no description site-1-nbr-1
+#  - no description site-2-nbr-1
 #  - password 7 12090404011C03162E
 #  - vrf site-1
 #  - no allocate-index 5000
