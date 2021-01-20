@@ -2,8 +2,10 @@
 - debug: msg="START connection={{ ansible_connection }}/configure.yaml"
 
 - name: setup
-  cisco.nxos.nxos_config:
-    lines: no feature bgp
+  cisco.nxos.nxos_config: &teardown
+    lines: 
+      - no feature bgp
+      - no feature fabric forwarding
     match: none
 
 - name: enable bgp
@@ -46,9 +48,49 @@
     that:
       - result.changed == false
 
+- name: verify fabric forwarding
+  register: result
+  cisco.nxos.nxos_feature:
+    feature: fabric forwarding
+    state: enabled
+
+- assert:
+    that:
+      - result.changed == True
+      - "'feature fabric forwarding' in result.commands"
+
+- name: verify fabric forwarding (IDEMPOTENT)
+  register: result
+  cisco.nxos.nxos_feature:
+    feature: fabric forwarding
+    state: enabled
+
+- assert:
+    that:
+      - result.changed == False
+
+- name: verify fabric forwarding disable
+  register: result
+  cisco.nxos.nxos_feature:
+    feature: fabric forwarding
+    state: disabled
+
+- assert:
+    that:
+      - result.changed == True
+      - "'no feature fabric forwarding' in result.commands"
+
+- name: verify fabric forwarding disabled (IDEMPOTENT)
+  register: result
+  cisco.nxos.nxos_feature:
+    feature: fabric forwarding
+    state: disabled
+
+- assert:
+    that:
+      - result.changed == False
+
 - name: teardown
-  cisco.nxos.nxos_config:
-    lines: no feature bgp
-    match: none
+  cisco.nxos.nxos_config: *teardown
 
 - debug: msg="END connection={{ ansible_connection }}/configure.yaml"
