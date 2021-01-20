@@ -136,9 +136,9 @@
     - name: Idempotence Check
       register: result
       cisco.nxos.nxos_snmp_community: *id009
-    
+
     - assert: *id004
-    
+
     - name: Add partial match community
       register: result
       cisco.nxos.nxos_snmp_community:
@@ -146,7 +146,7 @@
         access: rw
         acl: default
         state: present
-    
+
     - assert:
         that:
           - result.changed == True
