@@ -46,7 +46,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "address": {"type": "str"},
-                        "secondary": {"type": "bool"},
+                        "secondary": {"type": "bool",},
                         "tag": {"type": "int"},
                     },
                     "type": "list",

@@ -88,16 +88,18 @@ nxos_provider_spec = {
         type="str", fallback=(env_fallback, ["ANSIBLE_NET_SSH_KEYFILE"])
     ),
     "authorize": dict(
-        type="bool", fallback=(env_fallback, ["ANSIBLE_NET_AUTHORIZE"])
+        type="bool",
+        default=False,
+        fallback=(env_fallback, ["ANSIBLE_NET_AUTHORIZE"]),
     ),
     "auth_pass": dict(
         type="str",
         no_log=True,
         fallback=(env_fallback, ["ANSIBLE_NET_AUTH_PASS"]),
     ),
-    "use_ssl": dict(type="bool"),
+    "use_ssl": dict(type="bool", default=False),
     "use_proxy": dict(type="bool", default=True),
-    "validate_certs": dict(type="bool"),
+    "validate_certs": dict(type="bool", default=False),
     "timeout": dict(type="int"),
     "transport": dict(type="str", default="cli", choices=["cli", "nxapi"]),
 }

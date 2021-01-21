@@ -396,7 +396,7 @@ def main():
         http_port=dict(type="int", default=80),
         https=dict(aliases=["enable_https"], type="bool", default=False),
         https_port=dict(type="int", default=443),
-        sandbox=dict(aliases=["enable_sandbox"], type="bool"),
+        sandbox=dict(aliases=["enable_sandbox"], type="bool", default=False),
         state=dict(default="present", choices=["present", "absent"]),
         ssl_strong_ciphers=dict(type="bool", default=False),
         tlsv1_0=dict(type="bool", default=True),

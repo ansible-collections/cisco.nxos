@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 
 DOCUMENTATION = """
 module: nxos_devicealias
-short_description: Configuration of device alias.
+short_description: Configuration of device alias for Cisco NXOS MDS Switches.
 description:
 - Configuration of device alias for Cisco MDS NXOS.
 version_added: 1.0.0
@@ -21,7 +21,6 @@ options:
     description:
     - Enable/Disable device-alias distribution
     type: bool
-    default: false
   mode:
     description:
     - Mode of devices-alias, basic or enhanced

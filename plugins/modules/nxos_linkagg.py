@@ -95,7 +95,6 @@ options:
         - When true it forces link aggregation group members to match what is declared
           in the members param. This can be used to remove members.
         type: bool
-        default: no
       state:
         description:
         - State of the link aggregation group.
