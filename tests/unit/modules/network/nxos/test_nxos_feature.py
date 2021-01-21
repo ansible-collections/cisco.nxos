@@ -44,6 +44,11 @@ class TestNxosFeatureModule(TestNxosModule):
         )
         self.load_config = self.mock_load_config.start()
 
+        self.mock_get_config = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_config"
+        )
+        self.get_config = self.mock_get_config.start()
+
         self.mock_get_capabilities = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_capabilities"
         )
@@ -54,6 +59,7 @@ class TestNxosFeatureModule(TestNxosModule):
         super(TestNxosFeatureModule, self).tearDown()
         self.mock_run_commands.stop()
         self.mock_load_config.stop()
+        self.mock_get_config.stop()
         self.mock_get_capabilities.stop()
 
     def load_fixtures(self, commands=None, device=""):
@@ -72,6 +78,7 @@ class TestNxosFeatureModule(TestNxosModule):
             return output
 
         self.run_commands.side_effect = load_from_file
+        self.get_config.return_value = ""
         self.load_config.return_value = None
 
     def test_nxos_feature_enable(self):
