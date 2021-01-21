@@ -32,6 +32,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_global import (
     Bgp_globalTemplate,
 )
+import q
 
 
 class Bgp_global(ResourceModule):
@@ -212,17 +213,48 @@ class Bgp_global(ResourceModule):
         # neighbors have separate contexts in NX-OS
         for name, entry in iteritems(wnbrs):
             begin = len(self.commands)
-            self.compare(
-                parsers=nbr_parsers, want=entry, have=hnbrs.pop(name, {})
-            )
+            have_nbr = hnbrs.pop(name, {})
+
+            self.compare(parsers=nbr_parsers, want=entry, have=have_nbr)
+            self._compare_path_attribute(entry, have_nbr)
+
             if len(self.commands) != begin:
                 self.commands.insert(
                     begin, self._tmplt.render(entry, "neighbor_address", False)
                 )
 
-        # remove remaining items in have for replaced
+        # cleanup remaining neighbors
+        # but do not negate it entirely
+        # instead remove only those attributes
+        # that this module manages
         for name, entry in iteritems(hnbrs):
-            self.addcmd(entry, "neighbor_address", True)
+            begin = len(self.commands)
+
+            self.compare(parsers=nbr_parsers, want={}, have=entry)
+            self._compare_path_attribute(want={}, have=entry)
+
+            if len(self.commands) != begin:
+                self.commands.insert(
+                    begin, self._tmplt.render(entry, "neighbor_address", False)
+                )
+
+    def _compare_path_attribute(self, want, have):
+        """Custom handling of neighbor path_attribute
+           option.
+
+        :params want: the want neighbor dictionary
+        :params have: the have neighbor dictionary
+        """
+        w_p_attr = want.get("path_attribute", {})
+        h_p_attr = have.get("path_attribute", {})
+
+        for wkey, wentry in iteritems(w_p_attr):
+            if wentry != h_p_attr.pop(wkey, {}):
+                self.addcmd(wentry, "path_attribute", False)
+
+        # remove remaining items in have for replaced
+        for hkey, hentry in iteritems(h_p_attr):
+            self.addcmd(hentry, "path_attribute", True)
 
     def _vrfs_compare(self, want, have):
         """Custom handling of VRFs option
@@ -247,10 +279,31 @@ class Bgp_global(ResourceModule):
 
         :params entry: data dictionary
         """
+
+        def _build_key(x):
+            """Build primary key for path_attribute
+               option.
+            :params x: path_attribute dictionary
+            """
+            key_1 = "start_{0}".format(x.get("range", {}).get("start", ""))
+            key_2 = "end_{0}".format(x.get("range", {}).get("end", ""))
+            key_3 = "type_{0}".format(x.get("type", ""))
+            key_4 = x["action"]
+
+            return (key_1, key_2, key_3, key_4)
+
         if "neighbors" in entry:
+            for x in entry["neighbors"]:
+                if "path_attribute" in x:
+                    x["path_attribute"] = {
+                        _build_key(item): item
+                        for item in x.get("path_attribute", [])
+                    }
+
             entry["neighbors"] = {
                 x["neighbor_address"]: x for x in entry.get("neighbors", [])
             }
+
         if "vrfs" in entry:
             entry["vrfs"] = {x["vrf"]: x for x in entry.get("vrfs", [])}
             for _k, vrf in iteritems(entry["vrfs"]):

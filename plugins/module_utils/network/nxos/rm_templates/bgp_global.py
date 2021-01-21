@@ -27,6 +27,18 @@ def _tmplt_confederation_peers(proc):
     return cmd
 
 
+def _tmplt_path_attribute(proc):
+    cmd = "path-attribute {action}".format(**proc)
+
+    if "type" in proc:
+        cmd += " {type}".format(**proc)
+    elif "range" in proc:
+        cmd += " range {start} {end}".format(**proc["range"])
+    cmd += " in"
+
+    return cmd
+
+
 class Bgp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None):
         super(Bgp_globalTemplate, self).__init__(lines=lines, tmplt=self)
@@ -1015,10 +1027,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 \sin
                 $""", re.VERBOSE
             ),
-            "setval": "path-attribute {{ path_attribute.action }} "
-                      "{{ path_attribute.type if path_attribute.type is defined  }}"
-                      "{{ ('range ' + path_attribute.range.start|string + ' ' + path_attribute.range.end|string) if path_attribute.range is defined }}"
-                      " in",
+            "setval": _tmplt_path_attribute,
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
