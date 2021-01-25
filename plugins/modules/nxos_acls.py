@@ -230,6 +230,9 @@ options:
                       echo_reply:
                         description: Echo reply
                         type: bool
+                      echo_request:
+                        description: Echo request (ping)
+                        type: bool
                       general_parameter_problem:
                         description: Parameter problem
                         type: bool

@@ -96,7 +96,19 @@ class TestNxosAclsModule(TestNxosModule):
                                         protocol_options=dict(
                                             tcp=dict(ack=True)
                                         ),
-                                    )
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        destination=dict(
+                                            prefix="2002:2:2:2::/64"
+                                        ),
+                                        source=dict(prefix="2002:1:1:1::/64"),
+                                        sequence=30,
+                                        protocol="icmp",
+                                        protocol_options=dict(
+                                            icmp=dict(echo_request=True)
+                                        ),
+                                    ),
                                 ],
                             )
                         ],
@@ -109,6 +121,7 @@ class TestNxosAclsModule(TestNxosModule):
         commands = [
             "ip access-list ACL2v4",
             "20 deny tcp any any ack fragments",
+            "30 deny icmp 2002:1:1:1::/64 2002:2:2:2::/64 echo-request",
             "ipv6 access-list ACL2v6",
         ]
         self.execute_module(changed=True, commands=commands)

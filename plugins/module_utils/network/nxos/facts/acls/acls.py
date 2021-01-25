@@ -158,6 +158,7 @@ class AclsFacts(object):
                 "conversion_error",
                 "dod_host_prohibited",
                 "dod_net_prohibited",
+                "echo_request",
                 "echo",
                 "echo_reply",
                 "general_parameter_problem",
@@ -266,6 +267,11 @@ class AclsFacts(object):
                             for option in protocol_options[pro]:
                                 option = re.sub("_", "-", option)
                                 if option in ace:
+                                    if (
+                                        option == "echo"
+                                        and "echo_request" in options
+                                    ):
+                                        continue
                                     option = re.sub("-", "_", option)
                                     options.update({option: True})
                             if options:

@@ -132,6 +132,9 @@ class AclsArgs(object):  # pylint: disable=R0903
                                                 },
                                                 "echo": {"type": "bool"},
                                                 "echo_reply": {"type": "bool"},
+                                                "echo_request": {
+                                                    "type": "bool"
+                                                },
                                                 "general_parameter_problem": {
                                                     "type": "bool"
                                                 },
