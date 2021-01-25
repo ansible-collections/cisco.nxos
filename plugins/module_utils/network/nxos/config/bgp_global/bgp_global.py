@@ -171,8 +171,8 @@ class Bgp_global(ResourceModule):
                 # them to the existing ones
                 if h_cpeers:
                     self.addcmd(have, "confederation.peers", True)
-
-            self.addcmd(want, "confederation.peers", False)
+            if w_cpeers:
+                self.addcmd(want, "confederation.peers", False)
 
     def _compare_neighbors(self, want, have):
         """Custom handling of neighbors option
@@ -283,6 +283,7 @@ class Bgp_global(ResourceModule):
             """Build primary key for path_attribute
                option.
             :params x: path_attribute dictionary
+            :returns: primary key as tuple
             """
             key_1 = "start_{0}".format(x.get("range", {}).get("start", ""))
             key_2 = "end_{0}".format(x.get("range", {}).get("end", ""))

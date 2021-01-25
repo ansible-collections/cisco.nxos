@@ -104,7 +104,9 @@ replaced:
     - maxas-limit 40
     - no confederation peers 65020 65030 65040
     - confederation peers 65020 65030 65050
-    - no neighbor 192.168.1.101
+    - neighbor 192.168.1.101
+    - no remote-as 65564
+    - no password 7 12090404011C03162E
     - vrf site-2
     - neighbor 203.0.113.2
     - no remote-as 65568
@@ -113,8 +115,13 @@ replaced:
     - vrf site-1
     - no local-as 200
     - no log-neighbor-changes
-    - no neighbor 198.51.100.1
-    - no neighbor 198.51.100.2
+    - neighbor 198.51.100.1
+    - no remote-as 65562
+    - no description site-1-nbr-1
+    - no password 3 13D4D3549493D2877B1DC116EE27A6BE
+    - neighbor 198.51.100.2
+    - no remote-as 65562
+    - no description site-1-nbr-2
 
   after:
     asn: '65563'
@@ -138,9 +145,13 @@ replaced:
       neighbor_affinity_group:
         group_id: 160
       remote_as: '65563'
+    - neighbor_address: 192.168.1.101
     router_id: 192.168.1.1
     vrfs:
     - vrf: site-1
+      neighbors:
+      - neighbor_address: 198.51.100.1
+      - neighbor_address: 198.51.100.2
     - local_as: '300'
       log_neighbor_changes: true
       neighbor_down:
@@ -164,21 +175,43 @@ deleted:
     - no neighbor-down fib-accelerate
     - no router-id 192.168.1.1
     - no confederation peers 65020 65030 65040
-    - no neighbor 192.168.1.100
-    - no neighbor 192.168.1.101
+    - neighbor 192.168.1.100
+    - no remote-as 65563
+    - no affinity-group 160
+    - no description NBR-1
+    - no low-memory exempt
+    - neighbor 192.168.1.101
+    - no remote-as 65564
+    - no password 7 12090404011C03162E
     - vrf site-1
     - no local-as 200
     - no log-neighbor-changes
-    - no neighbor 198.51.100.1
-    - no neighbor 198.51.100.2
+    - neighbor 198.51.100.1
+    - no remote-as 65562
+    - no description site-1-nbr-1
+    - no password 3 13D4D3549493D2877B1DC116EE27A6BE
+    - neighbor 198.51.100.2
+    - no remote-as 65562
+    - no description site-1-nbr-2
     - vrf site-2
     - no local-as 300
     - no log-neighbor-changes
     - no neighbor-down fib-accelerate
-    - no neighbor 203.0.113.2
+    - neighbor 203.0.113.2
+    - no remote-as 65568
+    - no description site-2-nbr-1
+    - no password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
 
   after:
     asn: '65563'
+    neighbors:
+    - neighbor_address: 192.168.1.100
+    - neighbor_address: 192.168.1.101
     vrfs:
     - vrf: site-1
+      neighbors:
+      - neighbor_address: 198.51.100.1
+      - neighbor_address: 198.51.100.2
     - vrf: site-2
+      neighbors:
+      - neighbor_address: 203.0.113.2

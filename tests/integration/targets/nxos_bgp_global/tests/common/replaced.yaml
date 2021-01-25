@@ -41,11 +41,6 @@
                   password:
                     encryption: 7
                     key: 12090404011C03162E
-                  path_attribute:
-                    - action: discard
-                      range:
-                        start: 11
-                        end: 20
               neighbor_down:
                 fib_accelerate: True
         state: replaced

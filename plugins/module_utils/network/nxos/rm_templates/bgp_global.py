@@ -22,7 +22,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 def _tmplt_confederation_peers(proc):
     cmd = "confederation peers"
-    for peer in proc["confederation"]["peers"]:
+    for peer in proc.get("confederation", {})["peers"]:
         cmd += " {0}".format(peer)
     return cmd
 
