@@ -36,6 +36,12 @@ class Bgp_globalFacts(object):
         self._module = module
         self.argument_spec = Bgp_globalArgs.argument_spec
 
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get("show running-config | section '^router bgp'")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Bgp_global network resource
 
@@ -49,9 +55,8 @@ class Bgp_globalFacts(object):
         facts = {}
 
         if not data:
-            data = connection.get(
-                "show running-config | section '^router bgp'"
-            )
+            data = self.get_config(connection)
+
         data = self._flatten_config(data)
 
         # parse native config using the Bgp_global template

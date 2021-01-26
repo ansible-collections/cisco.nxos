@@ -321,7 +321,7 @@ class Bgp_global(ResourceModule):
             for _k, vrf in iteritems(entry["vrfs"]):
                 self._bgp_list_to_dict(vrf)
 
-    def __get_config(self):
+    def _get_config(self):
         return self._connection.get(
             "show running-config | section '^router bgp'"
         )
@@ -343,7 +343,7 @@ class Bgp_global(ResourceModule):
                 }
             }
         """
-        data = self.__get_config().split("\n")
+        data = self._get_config().split("\n")
         cur_nbr = None
         cur_vrf = None
         gbl_data = set()
