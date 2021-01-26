@@ -466,6 +466,17 @@ options:
   state:
     description:
     - The state the configuration should be left in.
+    - State I(purged) removes all the BGP configurations from the
+      target device. Use caution with this state.
+    - State I(deleted) only removes BGP attributes that this modules
+      manages and does not negate the BGP process completely. Thereby, preserving
+      address-family related configurations under BGP context.
+    - Running states I(deleted) and I(replaced) will result in an error if there
+      are address-family configuration lines present under a neighbor,
+      or a vrf context that is to be removed. Please use the
+      M(cisco.nxos.nxos_bgp_af) or M(cisco.nxos.nxos_bgp_neighbor_af)
+      modules for prior cleanup.
+    - Refer to examples for more details.
     type: str
     choices:
     - merged
@@ -852,12 +863,7 @@ EXAMPLES = """
 #  - no remote-as 65568
 #  - no description site-2-nbr-1
 #  - password 7 12090404011C03162E
-#  - vrf site-1
-#  - no allocate-index 5000
-#  - no local-as 200
-#  - no log-neighbor-changes
-#  - no neighbor 198.51.100.1
-#  - no neighbor 198.51.100.2
+#  - no vrf site-1
 
 #  after:
 #    asn: '65563'
@@ -884,7 +890,6 @@ EXAMPLES = """
 #      remote_as: '65563'
 #    router_id: 192.168.1.1
 #    vrfs:
-#    - vrf: site-1
 #    - local_as: '300'
 #      log_neighbor_changes: true
 #      neighbor_down:
@@ -913,7 +918,6 @@ EXAMPLES = """
 #     remote-as 65563
 #     description NBR-1
 #     affinity-group 160
-#   vrf site-1
 #   vrf site-2
 #     local-as 300
 #     neighbor-down fib-accelerate
@@ -1055,23 +1059,11 @@ EXAMPLES = """
 #   - no confederation peers 65020 65030 65040
 #   - no neighbor 192.168.1.100
 #   - no neighbor 192.168.1.101
-#   - vrf site-1
-#   - no allocate-index 5000
-#   - no local-as 200
-#   - no log-neighbor-changes
-#   - no neighbor 198.51.100.1
-#   - no neighbor 198.51.100.2
-#   - vrf site-2
-#   - no local-as 300
-#   - no log-neighbor-changes
-#   - no neighbor-down fib-accelerate
-#   - no neighbor 203.0.113.2
+#   - no vrf site-1
+#   - no vrf site-2
 #
 #  after:
 #    asn: '65563'
-#    vrfs:
-#      - vrf: site-1
-#      - vrf: site-2
 #
 # After state:
 # -------------
@@ -1084,11 +1076,7 @@ EXAMPLES = """
 #   address-family ipv6 multicast
 #     wait-igp-convergence
 #     redistribute eigrp eigrp-1 route-map site-1-rmap
-#   vrf site-1
-#     address-family ipv4 multicast
-#       maximum-paths 40
-#       dampen-igp-metric 1200
-#   vrf site-2
+#
 
 # Using purged
 
@@ -1506,6 +1494,95 @@ EXAMPLES = """
 #          encryption: 7
 #          key: 12090404011C03162E
 #      vrf: site-2
+
+# Remove a neighbor having AF configurations with state replaced (will fail)
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   log-neighbor-changes
+#   maxas-limit 20
+#   router-id 198.51.100.2
+#   neighbor 203.0.113.2
+#     address-family ipv4 unicast
+#       next-hop-self
+#     remote-as 65538
+#     affinity-group 160
+#     description NBR-1
+#     low-memory exempt
+#   neighbor 192.0.2.1
+#     remote-as 65537
+#     password 7 12090404011C03162E
+
+- name: Remove a neighbor having AF configurations (should fail)
+  cisco.nxos.nxos_bgp_global:
+    config:
+      asn: 65536
+      router_id: 198.51.100.2
+      maxas_limit: 20
+      log_neighbor_changes: True
+      neighbors:
+        - neighbor_address: 192.0.2.1
+          remote_as: 65537
+          password:
+            encryption: 7
+            key: 12090404011C03162E
+    state: replaced
+
+# Task output (redacted)
+# -----------------------
+# fatal: [Nexus9000v]: FAILED! => changed=false
+#    msg: Neighbor 203.0.113.2 has address-family configurations.
+#         Please use the nxos_bgp_neighbor_af module to remove those first.
+
+# Remove a VRF having AF configurations with state replaced (will fail)
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   log-neighbor-changes
+#   maxas-limit 20
+#   router-id 198.51.100.2
+#   neighbor 192.0.2.1
+#     remote-as 65537
+#     password 7 12090404011C03162E
+#   vrf site-1
+#     address-family ipv4 unicast
+#       default-information originate
+#     neighbor 203.0.113.2
+#       remote-as 65538
+#       affinity-group 160
+#       description NBR-1
+#       low-memory exempt
+#   vrf site-2
+#     neighbor-down fib-accelerate
+
+- name: Remove a VRF having AF configurations (should fail)
+  cisco.nxos.nxos_bgp_global:
+    config:
+      asn: 65536
+      router_id: 198.51.100.2
+      maxas_limit: 20
+      log_neighbor_changes: True
+      neighbors:
+        - neighbor_address: 192.0.2.1
+          remote_as: 65537
+          password:
+            encryption: 7
+            key: 12090404011C03162E
+      vrfs:
+        - vrf: site-2
+          neighbor_down:
+            fib_accelerate: True
+    state: replaced
+
+# Task output (redacted)
+# -----------------------
+# fatal: [Nexus9000v]: FAILED! => changed=false
+#    msg: VRF site-1 has address-family configurations.
+#         Please use the nxos_bgp_af module to remove those first.
 """
 
 RETURN = """

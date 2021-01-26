@@ -96,6 +96,7 @@ class Bgp_global(ResourceModule):
             "fabric_soo",
             "rd",
         ]
+        self._af_data = {}
 
     def execute_module(self):
         """ Execute the module
@@ -112,6 +113,9 @@ class Bgp_global(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
+        if self.state in ["deleted", "replaced"]:
+            self._build_af_data()
+
         for entry in self.want, self.have:
             self._bgp_list_to_dict(entry)
 
@@ -132,7 +136,7 @@ class Bgp_global(ResourceModule):
 
             self._compare(want=wantd, have=self.have)
 
-    def _compare(self, want, have):
+    def _compare(self, want, have, vrf=None):
         """Leverages the base class `compare()` method and
            populates the list of commands to be run by comparing
            the `want` and `have` data with the `parsers` defined
@@ -141,7 +145,7 @@ class Bgp_global(ResourceModule):
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_confederation_peers(want, have)
-        self._compare_neighbors(want, have)
+        self._compare_neighbors(want, have, vrf=vrf)
         self._vrfs_compare(want=want, have=have)
 
         if len(self.commands) != begin:
@@ -174,7 +178,7 @@ class Bgp_global(ResourceModule):
             if w_cpeers:
                 self.addcmd(want, "confederation.peers", False)
 
-    def _compare_neighbors(self, want, have):
+    def _compare_neighbors(self, want, have, vrf=None):
         """Custom handling of neighbors option
 
         :params want: the want BGP dictionary
@@ -227,15 +231,15 @@ class Bgp_global(ResourceModule):
         # instead remove only those attributes
         # that this module manages
         for name, entry in iteritems(hnbrs):
-            begin = len(self.commands)
-
-            self.compare(parsers=nbr_parsers, want={}, have=entry)
-            self._compare_path_attribute(want={}, have=entry)
-
-            if len(self.commands) != begin:
-                self.commands.insert(
-                    begin, self._tmplt.render(entry, "neighbor_address", False)
+            if self._has_af(vrf=vrf, neighbor=name):
+                self._module.fail_json(
+                    "Neighbor {0} has address-family configurations. "
+                    "Please use the nxos_bgp_neighbor_af module to remove those first.".format(
+                        name
+                    )
                 )
+            else:
+                self.addcmd(entry, "neighbor_address", True)
 
     def _compare_path_attribute(self, want, have):
         """Custom handling of neighbor path_attribute
@@ -264,13 +268,21 @@ class Bgp_global(ResourceModule):
         wvrfs = want.get("vrfs", {})
         hvrfs = have.get("vrfs", {})
         for name, entry in iteritems(wvrfs):
-            self._compare(want=entry, have=hvrfs.pop(name, {}))
+            self._compare(want=entry, have=hvrfs.pop(name, {}), vrf=name)
         # cleanup remaining VRFs
         # but do not negate it entirely
         # instead remove only those attributes
         # that this module manages
         for name, entry in iteritems(hvrfs):
-            self._compare(want={}, have=entry)
+            if self._has_af(vrf=name):
+                self._module.fail_json(
+                    "VRF {0} has address-family configurations. "
+                    "Please use the nxos_bgp_af module to remove those first.".format(
+                        name
+                    )
+                )
+            else:
+                self.addcmd(entry, "vrf", True)
 
     def _bgp_list_to_dict(self, entry):
         """Convert list of items to dict of items
@@ -308,3 +320,87 @@ class Bgp_global(ResourceModule):
             entry["vrfs"] = {x["vrf"]: x for x in entry.get("vrfs", [])}
             for _k, vrf in iteritems(entry["vrfs"]):
                 self._bgp_list_to_dict(vrf)
+
+    def __get_config(self):
+        return self._connection.get(
+            "show running-config | section '^router bgp'"
+        )
+
+    def _build_af_data(self):
+        """Build a dictionary with AF related information
+           from fetched BGP config.
+            _af_data = {
+                gbl_data = {'192.168.1.100', '192.168.1.101'},
+                vrf_data = {
+                    'vrf_1': {
+                        'has_af': True,
+                        'nbrs': {'192.0.1.1', '192.8.1.1'}
+                    },
+                    'vrf_2': {
+                        'has_af': False,
+                        'nbrs': set()
+                    }
+                }
+            }
+        """
+        data = self.__get_config().split("\n")
+        cur_nbr = None
+        cur_vrf = None
+        gbl_data = set()
+        vrf_data = {}
+
+        for x in data:
+            if x.strip().startswith("vrf"):
+                cur_nbr = None
+                cur_vrf = x.split(" ")[-1]
+                vrf_data[cur_vrf] = {"nbrs": set(), "has_af": False}
+
+            elif x.strip().startswith("neighbor"):
+                cur_nbr = x.split(" ")[-1]
+
+            elif x.strip().startswith("address-family"):
+                if cur_nbr:
+                    if cur_vrf:
+                        vrf_data[cur_vrf]["nbrs"].add(cur_nbr)
+                    else:
+                        gbl_data.add(cur_nbr)
+                else:
+                    if cur_vrf:
+                        vrf_data[cur_vrf]["has_af"] = True
+
+        self._af_data["global"] = gbl_data
+        self._af_data["vrf"] = vrf_data
+
+    def _has_af(self, vrf=None, neighbor=None):
+        """Determine if the given vrf + neighbor
+           combination has AF configurations.
+
+        :params vrf: vrf name
+        :params neighbor: neighbor name
+        :returns: bool
+        """
+        has_af = False
+
+        if self._af_data:
+            vrf_af_data = self._af_data.get("vrf", {})
+            global_af_data = self._af_data.get("global", set())
+            if vrf:
+                vrf_nbr_has_af = vrf_af_data.get(vrf, {}).get("nbrs", set())
+                vrf_has_af = vrf_af_data.get(vrf, {}).get("has_af", False)
+                if neighbor and neighbor in vrf_nbr_has_af:
+                    # we are inspecting neighbor within a VRF
+                    # if the given neighbor has AF we return True
+                    has_af = True
+                else:
+                    # we are inspecting VRF as a whole
+                    # if there is at least one neighbor
+                    # with AF or VRF has AF itself return True
+                    if vrf_nbr_has_af or vrf_has_af:
+                        has_af = True
+            else:
+                # we are inspecting top level neighbors
+                # if the given neighbor has AF we return True
+                if neighbor and neighbor in global_af_data:
+                    has_af = True
+
+        return has_af

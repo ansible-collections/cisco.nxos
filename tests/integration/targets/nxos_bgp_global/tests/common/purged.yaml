@@ -20,7 +20,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "'no router bgp 65563' in result.commands"
+          - "'no router bgp 65536' in result.commands"
           - result.commands|length == 1
   
     - name: Assert that after dict is correctly generated

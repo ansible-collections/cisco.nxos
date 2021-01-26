@@ -8,8 +8,8 @@
     - name: Merge the provided configuration with the exisiting running configuration
       cisco.nxos.nxos_bgp_global: &id001
         config:
-          asn: 65563
-          router_id: 192.168.1.1
+          asn: 65536
+          router_id: 198.51.100.2
           bestpath:
             as_path:
               multipath_relax: True
@@ -24,15 +24,15 @@
           log_neighbor_changes: True
           maxas_limit: 20
           neighbors:
-            - neighbor_address: 192.168.1.100
+            - neighbor_address: 198.51.100.20
               neighbor_affinity_group:
                 group_id: 160
-              remote_as: 65563
+              remote_as: 65537
               description: NBR-1
               low_memory:
                 exempt: True
-            - neighbor_address: 192.168.1.101
-              remote_as: 65564
+            - neighbor_address: 198.51.100.21
+              remote_as: 65537
               password:
                 encryption: 7
                 key: 12090404011C03162E
@@ -43,14 +43,14 @@
               local_as: 200
               log_neighbor_changes: True
               neighbors:
-                - neighbor_address: 198.51.100.1
+                - neighbor_address: 192.0.2.10
                   description: site-1-nbr-1
                   password:
                     encryption: 3
                     key: 13D4D3549493D2877B1DC116EE27A6BE
-                  remote_as: 65562
-                - neighbor_address: 198.51.100.2
-                  remote_as: 65562
+                  remote_as: 65538
+                - neighbor_address: 192.0.2.11
+                  remote_as: 65538
                   description: site-1-nbr-2
             - vrf: site-2
               local_as: 300
@@ -61,7 +61,7 @@
                   password:
                     encryption: 3
                     key: AF92F4C16A0A0EC5BDF56CF58BC030F6
-                  remote_as: 65568
+                  remote_as: 65539
               neighbor_down:
                 fib_accelerate: True
       register: result

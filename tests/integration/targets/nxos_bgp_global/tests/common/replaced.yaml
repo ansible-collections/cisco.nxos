@@ -10,8 +10,8 @@
     - name: Replace BGP configuration with provided configuration
       cisco.nxos.nxos_bgp_global: &id002
         config:
-          asn: 65563
-          router_id: 192.168.1.1
+          asn: 65536
+          router_id: 198.51.100.2
           bestpath:
             compare_neighborid: True
             cost_community_ignore: True
@@ -23,10 +23,10 @@
               - 65050
           maxas_limit: 40
           neighbors:
-            - neighbor_address: 192.168.1.100
+            - neighbor_address: 198.51.100.20
               neighbor_affinity_group:
                 group_id: 160
-              remote_as: 65563
+              remote_as: 65537
               description: NBR-1
               low_memory:
                 exempt: True

@@ -1,7 +1,7 @@
 ---
 merged:
   commands:
-    - router bgp 65563
+    - router bgp 65536
     - bestpath as-path multipath-relax
     - bestpath compare-neighborid
     - bestpath cost-community ignore
@@ -9,37 +9,37 @@ merged:
     - log-neighbor-changes
     - maxas-limit 20
     - neighbor-down fib-accelerate
-    - router-id 192.168.1.1
+    - router-id 198.51.100.2
     - confederation peers 65020 65030 65040
-    - neighbor 192.168.1.100
-    - remote-as 65563
+    - neighbor 198.51.100.20
+    - remote-as 65537
     - affinity-group 160
     - description NBR-1
     - low-memory exempt
-    - neighbor 192.168.1.101
-    - remote-as 65564
+    - neighbor 198.51.100.21
+    - remote-as 65537
     - password 7 12090404011C03162E
     - vrf site-1
     - local-as 200
     - log-neighbor-changes
-    - neighbor 198.51.100.1
-    - remote-as 65562
+    - neighbor 192.0.2.10
+    - remote-as 65538
     - description site-1-nbr-1
     - password 3 13D4D3549493D2877B1DC116EE27A6BE
-    - neighbor 198.51.100.2
-    - remote-as 65562
+    - neighbor 192.0.2.11
+    - remote-as 65538
     - description site-1-nbr-2
     - vrf site-2
     - local-as 300
     - log-neighbor-changes
     - neighbor-down fib-accelerate
     - neighbor 203.0.113.2
-    - remote-as 65568
+    - remote-as 65539
     - description site-2-nbr-1
     - password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
 
   after:
-    asn: '65563'
+    asn: '65536'
     bestpath:
       as_path:
         multipath_relax: true
@@ -59,29 +59,29 @@ merged:
     - description: NBR-1
       low_memory:
        exempt: true
-      neighbor_address: 192.168.1.100
+      neighbor_address: 198.51.100.20
       neighbor_affinity_group:
         group_id: 160
-      remote_as: '65563'
-    - neighbor_address: 192.168.1.101
+      remote_as: '65537'
+    - neighbor_address: 198.51.100.21
       password:
         encryption: 7
         key: 12090404011C03162E
-      remote_as: '65564'
-    router_id: 192.168.1.1
+      remote_as: '65537'
+    router_id: 198.51.100.2
     vrfs:
     - local_as: '200'
       log_neighbor_changes: true
       neighbors:
       - description: site-1-nbr-1
-        neighbor_address: 198.51.100.1
+        neighbor_address: 192.0.2.10
         password:
           encryption: 3
           key: 13D4D3549493D2877B1DC116EE27A6BE
-        remote_as: '65562'
+        remote_as: '65538'
       - description: site-1-nbr-2
-        neighbor_address: 198.51.100.2
-        remote_as: '65562'
+        neighbor_address: 192.0.2.11
+        remote_as: '65538'
       vrf: site-1
     - local_as: '300'
       log_neighbor_changes: true
@@ -93,38 +93,27 @@ merged:
         password:
           encryption: 3
           key: AF92F4C16A0A0EC5BDF56CF58BC030F6
-        remote_as: '65568'
+        remote_as: '65539'
       vrf: site-2
     
 replaced:
   commands:
-    - router bgp 65563
+    - router bgp 65536
     - no bestpath as-path multipath-relax
     - no log-neighbor-changes
     - maxas-limit 40
     - no confederation peers 65020 65030 65040
     - confederation peers 65020 65030 65050
-    - neighbor 192.168.1.101
-    - no remote-as 65564
-    - no password 7 12090404011C03162E
+    - no neighbor 198.51.100.21
     - vrf site-2
     - neighbor 203.0.113.2
-    - no remote-as 65568
+    - no remote-as 65539
     - no description site-2-nbr-1
     - password 7 12090404011C03162E
-    - vrf site-1
-    - no local-as 200
-    - no log-neighbor-changes
-    - neighbor 198.51.100.1
-    - no remote-as 65562
-    - no description site-1-nbr-1
-    - no password 3 13D4D3549493D2877B1DC116EE27A6BE
-    - neighbor 198.51.100.2
-    - no remote-as 65562
-    - no description site-1-nbr-2
+    - no vrf site-1
 
   after:
-    asn: '65563'
+    asn: '65536'
     bestpath:
       compare_neighborid: true
       cost_community_ignore: true
@@ -141,17 +130,12 @@ replaced:
     - description: NBR-1
       low_memory:
         exempt: true
-      neighbor_address: 192.168.1.100
+      neighbor_address: 198.51.100.20
       neighbor_affinity_group:
         group_id: 160
-      remote_as: '65563'
-    - neighbor_address: 192.168.1.101
-    router_id: 192.168.1.1
+      remote_as: '65537'
+    router_id: 198.51.100.2
     vrfs:
-    - vrf: site-1
-      neighbors:
-      - neighbor_address: 198.51.100.1
-      - neighbor_address: 198.51.100.2
     - local_as: '300'
       log_neighbor_changes: true
       neighbor_down:
@@ -165,7 +149,7 @@ replaced:
 
 deleted:
   commands:
-    - router bgp 65563
+    - router bgp 65536
     - no bestpath as-path multipath-relax
     - no bestpath compare-neighborid
     - no bestpath cost-community ignore
@@ -173,45 +157,12 @@ deleted:
     - no log-neighbor-changes
     - no maxas-limit 20
     - no neighbor-down fib-accelerate
-    - no router-id 192.168.1.1
+    - no router-id 198.51.100.2
     - no confederation peers 65020 65030 65040
-    - neighbor 192.168.1.100
-    - no remote-as 65563
-    - no affinity-group 160
-    - no description NBR-1
-    - no low-memory exempt
-    - neighbor 192.168.1.101
-    - no remote-as 65564
-    - no password 7 12090404011C03162E
-    - vrf site-1
-    - no local-as 200
-    - no log-neighbor-changes
-    - neighbor 198.51.100.1
-    - no remote-as 65562
-    - no description site-1-nbr-1
-    - no password 3 13D4D3549493D2877B1DC116EE27A6BE
-    - neighbor 198.51.100.2
-    - no remote-as 65562
-    - no description site-1-nbr-2
-    - vrf site-2
-    - no local-as 300
-    - no log-neighbor-changes
-    - no neighbor-down fib-accelerate
-    - neighbor 203.0.113.2
-    - no remote-as 65568
-    - no description site-2-nbr-1
-    - no password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
+    - no neighbor 198.51.100.20
+    - no neighbor 198.51.100.21
+    - no vrf site-1
+    - no vrf site-2
 
   after:
-    asn: '65563'
-    neighbors:
-    - neighbor_address: 192.168.1.100
-    - neighbor_address: 192.168.1.101
-    vrfs:
-    - vrf: site-1
-      neighbors:
-      - neighbor_address: 198.51.100.1
-      - neighbor_address: 198.51.100.2
-    - vrf: site-2
-      neighbors:
-      - neighbor_address: 203.0.113.2
+    asn: '65536'
