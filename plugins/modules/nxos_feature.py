@@ -80,6 +80,7 @@ from ansible.module_utils.connection import ConnectionError
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
+    get_config,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
@@ -120,6 +121,17 @@ def get_available_features(feature, module):
                     and state == "enabled"
                 ):
                     available_features[feature] = state
+
+    # certain configurable features do not
+    # show up in the output of "show feature"
+    # but appear in running-config when set
+    run_cfg = get_config(module, flags=["| include ^feature"])
+    for item in re.findall(r"feature\s(.*)", run_cfg):
+        if item not in available_features:
+            available_features[item] = "enabled"
+
+    if "fabric forwarding" not in available_features:
+        available_features["fabric forwarding"] = "disabled"
 
     return available_features
 
