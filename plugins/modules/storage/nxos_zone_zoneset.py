@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 
 DOCUMENTATION = """
 module: nxos_zone_zoneset
-short_description: Configuration of zone/zoneset.
+short_description: Configuration of zone/zoneset for Cisco NXOS MDS Switches.
 description:
 - Configuration of zone/zoneset for Cisco MDS NXOS.
 version_added: 1.0.0
@@ -46,7 +46,6 @@ options:
         description:
         - Removes the vsan if True
         type: bool
-        default: false
       zone:
         description:
         - List of zone options for that vsan

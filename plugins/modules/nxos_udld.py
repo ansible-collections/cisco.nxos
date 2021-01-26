@@ -50,7 +50,6 @@ options:
     - Ability to reset all ports shut down by UDLD. 'state' parameter cannot be 'absent'
       when this is present.
     type: bool
-    default: no
   state:
     description:
     - Manage the state of the resource. When set to 'absent', aggressive and msg_time

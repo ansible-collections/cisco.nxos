@@ -51,6 +51,7 @@ options:
     description:
     - Restarts the igmp process (using an exec config command).
     type: bool
+    default: False
   state:
     description:
     - Manages desired state of the resource.

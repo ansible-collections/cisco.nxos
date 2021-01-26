@@ -81,7 +81,6 @@ options:
             description:
             - A boolean attribute to manage addition of secondary IP address.
             type: bool
-            default: false
       ipv6:
         description:
         - IPv6 address and attributes of the L3 interface.

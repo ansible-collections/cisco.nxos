@@ -8,7 +8,7 @@ from __future__ import absolute_import, division, print_function
 
 DOCUMENTATION = """
 module: nxos_vsan
-short_description: Configuration of vsan.
+short_description: Configuration of vsan for Cisco NXOS MDS Switches.
 description:
 - Configuration of vsan for Cisco MDS NXOS.
 version_added: 1.0.0
@@ -36,12 +36,10 @@ options:
         description:
         - suspend the vsan if True
         type: bool
-        default: false
       remove:
         description:
         - Removes the vsan if True
         type: bool
-        default: false
       interface:
         description:
         - List of vsan's interfaces to be added

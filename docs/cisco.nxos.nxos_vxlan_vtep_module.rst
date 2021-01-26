@@ -113,7 +113,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Enables ARP suppression for all VNIs. This is available on Nexus 9000 series switches running NX-OS software release 9.2(x) or higher.</div>
+                        <div>Enables ARP suppression for all VNIs. This is available on NX-OS 9K series running 9.2.x or higher.</div>
                 </td>
             </tr>
             <tr>
@@ -132,7 +132,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Specify mechanism for host reachability advertisement. A Boolean value of 'true' indicates that BGP will be used for host reachability advertisement. A Boolean value of 'false' indicates that no protocol is used for host reachability advertisement. Other host reachability advertisement protocols (e.g. OpenFlow, controller, etc.) are not supported.</div>
+                        <div>Specify mechanism for host reachability advertisement.  A Boolean value of &#x27;true&#x27; indicates that BGP will be used for host reachability advertisement. A Boolean value of &#x27;false&#x27; indicates that no protocol is used for host reachability advertisement. Other host reachability advertisement protocols (e.g. OpenFlow, controller, etc.) are not supported.</div>
                 </td>
             </tr>
             <tr>
@@ -164,7 +164,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specify the loopback interface whose IP address should be used for the NVE Multisite Border-gateway Interface. This is available on specific Nexus 9000 series switches running NX-OS 7.0(3)I7(x) or higher. Specify &quot;default&quot; to remove an exiting gateway config.</div>
+                        <div>Specify the loopback interface whose IP address should be used for the NVE Multisite Border-gateway Interface. This is available on specific Nexus 9000 series switches running NX-OS 7.0(3)I7(x) or higher. Specify &quot;default&quot; to remove an existing gateway config.</div>
                 </td>
             </tr>
             <tr>

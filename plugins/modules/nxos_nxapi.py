@@ -78,7 +78,6 @@ options:
       will accept requests and when the value is set to False, the sandbox URL is
       unavailable. This is supported on NX-OS 7K series.
     required: false
-    default: false
     type: bool
     aliases:
     - enable_sandbox

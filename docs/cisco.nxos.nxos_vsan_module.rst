@@ -5,7 +5,7 @@
 cisco.nxos.nxos_vsan
 ********************
 
-**Configuration of vsan.**
+**Configuration of vsan for Cisco NXOS MDS Switches.**
 
 
 Version added: 1.0.0
@@ -111,7 +111,7 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>no</li>
                                     <li>yes</li>
                         </ul>
                 </td>
@@ -131,7 +131,7 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>no</li>
                                     <li>yes</li>
                         </ul>
                 </td>
