@@ -34,10 +34,10 @@ version_added: 1.0.0
 options:
   lines:
     description:
-    - The ordered set of commands that should be configured in the section.  The commands
-      must be the exact same commands as found in the device running-config.  Be sure
-      to note the configuration command syntax as some commands are automatically
-      modified by the device config parser.
+    - The ordered set of commands that should be configured in the section. The commands
+      must be the exact same commands as found in the device running-config to ensure idempotency
+      and correct diff. Be sure to note the configuration command syntax as some commands are
+      automatically modified by the device config parser.
     type: list
     aliases:
     - commands
@@ -55,7 +55,9 @@ options:
       remote system.  The path can either be a full system path to the configuration
       file if the value starts with / or relative to the root of the implemented role
       or playbook. This argument is mutually exclusive with the I(lines) and I(parents)
-      arguments.
+      arguments. The configuration lines in the source file should be similar to how it
+      will appear if present in the running-configuration of the device including indentation
+      to ensure idempotency and correct diff.
     type: path
   replace_src:
     description:
@@ -65,6 +67,9 @@ options:
       is mutually exclusive with the I(lines) and I(src) arguments. This argument
       will only work for NX-OS versions that support `config replace`. Use I(nxos_file_copy)
       module to copy the flat file to remote device and then use the path with this argument.
+      The configuration lines in the file should be similar to how it
+      will appear if present in the running-configuration of the device including the indentation
+      to ensure idempotency and correct diff.
     type: str
   before:
     description:
@@ -127,6 +132,9 @@ options:
       are times when it is not desirable to have the task get the current running-config
       for every task in a playbook.  The I(running_config) argument allows the implementer
       to pass in the configuration to use as the base config for comparison.
+      The configuration lines for this option should be similar to how it will appear if present
+      in the running-configuration of the device including the indentation to ensure idempotency
+      and correct diff.
     aliases:
     - config
     type: str
@@ -185,11 +193,13 @@ options:
   intended_config:
     description:
     - The C(intended_config) provides the master configuration that the node should
-      conform to and is used to check the final running-config against.   This argument
+      conform to and is used to check the final running-config against. This argument
       will not modify any settings on the remote device and is strictly used to check
       the compliance of the current device's configuration against.  When specifying
       this argument, the task should also modify the C(diff_against) value and set
-      it to I(intended).
+      it to I(intended). The configuration lines for this value should be similar to how it
+      will appear if present in the running-configuration of the device including the indentation
+      to ensure correct diff.
     type: str
   backup_options:
     description:
@@ -217,6 +227,8 @@ options:
 notes:
 - Abbreviated commands are NOT idempotent, see
   L(Network FAQ,../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
+- To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they
+  appear if present in the running configuration on device including the indentation.
 """
 
 EXAMPLES = """
@@ -453,6 +465,13 @@ def main():
             result["__backup__"] = contents
 
     if any((module.params["src"], module.params["lines"], replace_src)):
+        msg = (
+            "To ensure idempotency and correct diff the input configuration lines should be"
+            " similar to how they appear if present in the running configuration on device"
+        )
+        if module.params["src"] or replace_src:
+            msg += " including the indentation"
+        warnings.append(msg)
         match = module.params["match"]
         replace = module.params["replace"]
 
