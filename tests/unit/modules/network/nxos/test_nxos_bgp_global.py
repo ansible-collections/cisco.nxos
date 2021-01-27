@@ -67,7 +67,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config=dict(
-                    asn="65536",
+                    as_number="65536",
                     router_id="198.51.100.2",
                     log_neighbor_changes=True,
                     maxas_limit=20,
@@ -180,7 +180,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config=dict(
-                    asn="65536",
+                    as_number="65536",
                     router_id="198.51.100.2",
                     log_neighbor_changes=True,
                     maxas_limit=20,
@@ -268,7 +268,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config=dict(
-                    asn="65536",
+                    as_number="65536",
                     router_id="198.51.100.212",
                     log_neighbor_changes=True,
                     maxas_limit=20,
@@ -345,7 +345,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config=dict(
-                    asn="65536",
+                    as_number="65536",
                     router_id="198.51.100.212",
                     log_neighbor_changes=True,
                     maxas_limit=20,
@@ -421,7 +421,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config=dict(
-                    asn="65536",
+                    as_number="65536",
                     router_id="198.51.100.212",
                     log_neighbor_changes=True,
                     maxas_limit=20,
@@ -496,7 +496,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config=dict(
-                    asn="65536",
+                    as_number="65536",
                     router_id="198.51.100.2",
                     log_neighbor_changes=True,
                     maxas_limit=20,
@@ -567,7 +567,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config=dict(
-                    asn="65536",
+                    as_number="65536",
                     router_id="198.51.100.2",
                     log_neighbor_changes=True,
                     maxas_limit=20,
@@ -700,7 +700,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = run_cfg
 
         set_module_args(
-            dict(config=dict(asn="65539"), state="deleted"),
+            dict(config=dict(as_number="65539"), state="deleted"),
             ignore_provider_arg,
         )
 

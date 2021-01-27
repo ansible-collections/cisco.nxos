@@ -5,7 +5,7 @@
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
   cisco.nxos.nxos_bgp_global:
     config:
-      asn: 65536
+      as_number: 65536
       router_id: 198.51.100.2
       bestpath:
         as_path:

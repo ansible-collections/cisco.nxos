@@ -46,15 +46,15 @@ class Bgp_globalTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "asn",
+            "name": "as_number",
             "getval": re.compile(
                 r"""
-                ^router\sbgp\s(?P<asn>\S+)
+                ^router\sbgp\s(?P<as_number>\S+)
                 $""", re.VERBOSE
             ),
-            "setval": "router bgp {{ asn }}",
+            "setval": "router bgp {{ as_number }}",
             "result": {
-                "asn": "{{ asn }}",
+                "as_number": "{{ as_number }}",
             },
             "shared": True
         },

@@ -39,7 +39,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "dict",
             "options": {
-                "asn": {"type": "str"},
+                "as_number": {"type": "str"},
                 "affinity_group": {
                     "type": "dict",
                     "options": {"group_id": {"type": "int"}},

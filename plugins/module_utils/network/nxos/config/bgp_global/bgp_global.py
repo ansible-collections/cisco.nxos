@@ -121,12 +121,16 @@ class Bgp_global(ResourceModule):
 
         # if state is deleted, clean up global params
         if self.state == "deleted":
-            if not self.want or (self.have.get("asn") == self.want.get("asn")):
+            if not self.want or (
+                self.have.get("as_number") == self.want.get("as_number")
+            ):
                 self._compare(want={}, have=self.have)
 
         elif self.state == "purged":
-            if not self.want or (self.have.get("asn") == self.want.get("asn")):
-                self.addcmd(self.have or {}, "asn", True)
+            if not self.want or (
+                self.have.get("as_number") == self.want.get("as_number")
+            ):
+                self.addcmd(self.have or {}, "as_number", True)
 
         else:
             wantd = self.want
@@ -153,7 +157,9 @@ class Bgp_global(ResourceModule):
                 begin,
                 self._tmplt.render(
                     want or have,
-                    "vrf" if "vrf" in (want.keys() or have.keys()) else "asn",
+                    "vrf"
+                    if "vrf" in (want.keys() or have.keys())
+                    else "as_number",
                     False,
                 ),
             )

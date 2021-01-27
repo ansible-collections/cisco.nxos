@@ -36,7 +36,7 @@ options:
     description: A list of BGP process configuration.
     type: dict
     suboptions:
-      asn:
+      as_number:
         description: Autonomous System Number of the router.
         type: str
       affinity_group:
@@ -499,7 +499,7 @@ EXAMPLES = """
 - name: Merge the provided configuration with the exisiting running configuration
   cisco.nxos.nxos_bgp_global:
     config:
-      asn: 65563
+      as_number: 65563
       router_id: 192.168.1.1
       bestpath:
         as_path:
@@ -603,7 +603,7 @@ EXAMPLES = """
 #  - password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
 #
 # after:
-#    asn: '65563'
+#    as_number: '65563'
 #    bestpath:
 #      as_path:
 #        multipath_relax: true
@@ -752,7 +752,7 @@ EXAMPLES = """
 - name: Replace BGP configuration with provided configuration
   cisco.nxos.nxos_bgp_global:
     config:
-      asn: 65563
+      as_number: 65563
       router_id: 192.168.1.1
       bestpath:
         compare_neighborid: True
@@ -791,7 +791,7 @@ EXAMPLES = """
 # Task output
 # -------------
 #  before:
-#    asn: '65563'
+#    as_number: '65563'
 #    bestpath:
 #      as_path:
 #        multipath_relax: true
@@ -866,7 +866,7 @@ EXAMPLES = """
 #  - no vrf site-1
 
 #  after:
-#    asn: '65563'
+#    as_number: '65563'
 #    bestpath:
 #      compare_neighborid: true
 #      cost_community_ignore: true
@@ -987,7 +987,7 @@ EXAMPLES = """
 # -------------
 
 # before:
-#    asn: '65563'
+#    as_number: '65563'
 #    bestpath:
 #      as_path:
 #        multipath_relax: true
@@ -1063,7 +1063,7 @@ EXAMPLES = """
 #   - no vrf site-2
 #
 #  after:
-#    asn: '65563'
+#    as_number: '65563'
 #
 # After state:
 # -------------
@@ -1140,7 +1140,7 @@ EXAMPLES = """
 # -------------
 
 # before:
-#    asn: '65563'
+#    as_number: '65563'
 #    bestpath:
 #      as_path:
 #        multipath_relax: true
@@ -1214,7 +1214,7 @@ EXAMPLES = """
 - name: Render platform specific configuration lines (without connecting to the device)
   cisco.nxos.nxos_bgp_global:
     config:
-      asn: 65563
+      as_number: 65563
       router_id: 192.168.1.1
       bestpath:
         as_path:
@@ -1366,7 +1366,7 @@ EXAMPLES = """
 # Task output (redacted)
 # -----------------------
 #  parsed:
-#    asn: '65563'
+#    as_number: '65563'
 #    bestpath:
 #      as_path:
 #        multipath_relax: true
@@ -1459,7 +1459,7 @@ EXAMPLES = """
 # Task output (redacted)
 # -----------------------
 #  gathered:
-#    asn: '65563'
+#    as_number: '65563'
 #    bestpath:
 #      compare_neighborid: true
 #      cost_community_ignore: true
@@ -1518,7 +1518,7 @@ EXAMPLES = """
 - name: Remove a neighbor having AF configurations (should fail)
   cisco.nxos.nxos_bgp_global:
     config:
-      asn: 65536
+      as_number: 65536
       router_id: 198.51.100.2
       maxas_limit: 20
       log_neighbor_changes: True
@@ -1562,7 +1562,7 @@ EXAMPLES = """
 - name: Remove a VRF having AF configurations (should fail)
   cisco.nxos.nxos_bgp_global:
     config:
-      asn: 65536
+      as_number: 65536
       router_id: 198.51.100.2
       maxas_limit: 20
       log_neighbor_changes: True
