@@ -1,0 +1,45 @@
+---
+- debug:
+    msg: Start nxos_bgp_global deleted integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete BGP configs handled by this module
+      cisco.nxos.nxos_bgp_global: &id003
+        state: deleted
+      register: result
+    
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - merged['after'] == result['before']
+
+    - debug:
+        msg: "{{ result['commands'] | symmetric_difference(deleted['commands']) }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ result['commands'] | symmetric_difference(deleted['commands']) |length\
+            \ == 0 }}"
+  
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - deleted['after'] == result['after']
+    
+    - name: Delete BGP configs handled by this module (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_bgp_global: *id003
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml

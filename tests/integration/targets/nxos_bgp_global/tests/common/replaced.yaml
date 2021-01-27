@@ -1,0 +1,81 @@
+---
+- debug:
+    msg: Start nxos_bgp_global replaced integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace BGP configuration with provided configuration
+      cisco.nxos.nxos_bgp_global: &id002
+        config:
+          as_number: 65536
+          router_id: 198.51.100.2
+          bestpath:
+            compare_neighborid: True
+            cost_community_ignore: True
+          confederation:
+            identifier: 42
+            peers:
+              - 65020
+              - 65030
+              - 65050
+          maxas_limit: 40
+          neighbors:
+            - neighbor_address: 198.51.100.20
+              neighbor_affinity_group:
+                group_id: 160
+              remote_as: 65537
+              description: NBR-1
+              low_memory:
+                exempt: True
+          neighbor_down:
+            fib_accelerate: True
+          vrfs:
+            - vrf: site-2
+              local_as: 300
+              log_neighbor_changes: True
+              neighbors:
+                - neighbor_address: 203.0.113.2
+                  password:
+                    encryption: 7
+                    key: 12090404011C03162E
+              neighbor_down:
+                fib_accelerate: True
+        state: replaced
+      register: result
+    
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
+            \ |length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - replaced['after'] == result['after']
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - merged['after'] == result['before']
+
+    - name: Replace device configurations of listed OSPF processes with provided configurarions
+        (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_bgp_global: *id002
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Assert that before dict is correctly generated
+      assert:
+        that:
+          - replaced['after'] == result['before']
+  always:
+    - include_tasks: _remove_config.yaml

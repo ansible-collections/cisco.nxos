@@ -1,0 +1,158 @@
+---
+- debug:
+    msg: Start nxos_bgp_global replaced_af integration tests connection={{ ansible_connection}}
+
+- name: Remove pre-existing BGP configurations
+  cisco.nxos.nxos_config: &remove
+    lines: 
+      - no router bgp 65536
+  ignore_errors: True
+
+- name: "Setup - 1 (Add neighbor with AF config)"
+  cisco.nxos.nxos_config:
+    lines:
+      - "router bgp 65536"
+      - "log-neighbor-changes"
+      - "maxas-limit 20"
+      - "router-id 198.51.100.2"
+      - "neighbor 203.0.113.2"
+      - "  address-family ipv4 unicast"
+      - "    next-hop-self"
+      - "  remote-as 65538"
+      - "  affinity-group 160"
+      - "  description NBR-1"
+      - "  low-memory exempt"
+      - "neighbor 192.0.2.1"
+      - "  remote-as 65537"
+      - "  password 7 12090404011C03162E"
+
+- block:
+    - name: Remove a neighbor having AF configurations (should fail)
+      cisco.nxos.nxos_bgp_global:
+        config:
+          as_number: 65536
+          router_id: 198.51.100.2
+          maxas_limit: 20
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: 65537
+              password:
+                encryption: 7
+                key: 12090404011C03162E
+        state: replaced
+      register: result
+      ignore_errors: True
+    
+    - name: Assert that the task failed
+      assert:
+        that:
+          - result.failed == True
+          - "'Neighbor 203.0.113.2 has address-family configurations. Please use the nxos_bgp_neighbor_af module to remove those first.' in result.msg"
+
+    - name: Remove pre-existing BGP configurations
+      cisco.nxos.nxos_config: *remove
+      ignore_errors: True
+    
+    - name: "Setup - 2 (Add neighbor with AF config under a VRF)"
+      cisco.nxos.nxos_config:
+        lines:
+          - "router bgp 65536"
+          - "log-neighbor-changes"
+          - "maxas-limit 20"
+          - "router-id 198.51.100.2"
+          - "neighbor 192.0.2.1"
+          - "  remote-as 65537"
+          - "  password 7 12090404011C03162E"
+          - "vrf site-1"
+          - "  neighbor 203.0.113.2"
+          - "    address-family ipv4 unicast"
+          - "      next-hop-self"
+          - "    remote-as 65538"
+          - "    affinity-group 160"
+          - "    description NBR-1"
+          - "    low-memory exempt"
+          - "  neighbor-down fib-accelerate"
+      
+    - name: Remove a neighbor under a VRF having AF configurations (should fail)
+      cisco.nxos.nxos_bgp_global:
+        config:
+          as_number: 65536
+          router_id: 198.51.100.2
+          maxas_limit: 20
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: 65537
+              password:
+                encryption: 7
+                key: 12090404011C03162E
+          vrfs:
+            - vrf: site-1
+              neighbor_down:
+                fib_accelerate: True
+        state: replaced
+      register: result
+      ignore_errors: True
+      
+    - name: Assert that the task failed
+      assert:
+        that:
+          - result.failed == True
+          - "'Neighbor 203.0.113.2 has address-family configurations. Please use the nxos_bgp_neighbor_af module to remove those first.' in result.msg"
+
+    - name: Remove pre-existing BGP configurations
+      cisco.nxos.nxos_config: *remove
+      ignore_errors: True
+
+    - name: "Setup - 3 (Add a VRF with AF config)"
+      cisco.nxos.nxos_config:
+        lines:
+          - "router bgp 65536"
+          - "log-neighbor-changes"
+          - "maxas-limit 20"
+          - "router-id 198.51.100.2"
+          - "neighbor 192.0.2.1"
+          - "  remote-as 65537"
+          - "  password 7 12090404011C03162E"
+          - "vrf site-1"
+          - "  address-family ipv4 unicast"
+          - "    default-information originate"
+          - "  neighbor 203.0.113.2"
+          - "    remote-as 65538"
+          - "    affinity-group 160"
+          - "    description NBR-1"
+          - "    low-memory exempt"
+          - "vrf site-2"
+          - "  neighbor-down fib-accelerate"
+      
+    - name: Remove a VRF having AF configurations (should fail)
+      cisco.nxos.nxos_bgp_global:
+        config:
+          as_number: 65536
+          router_id: 198.51.100.2
+          maxas_limit: 20
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: 65537
+              password:
+                encryption: 7
+                key: 12090404011C03162E
+          vrfs:
+            - vrf: site-2
+              neighbor_down:
+                fib_accelerate: True
+        state: replaced
+      register: result
+      ignore_errors: True
+      
+    - name: Assert that the task failed
+      assert:
+        that:
+          - result.failed == True
+          - "'VRF site-1 has address-family configurations. Please use the nxos_bgp_af module to remove those first.' in result.msg"
+
+  always:
+    - name: Remove pre-existing BGP configurations
+      cisco.nxos.nxos_config: *remove

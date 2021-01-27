@@ -1,0 +1,168 @@
+---
+merged:
+  commands:
+    - router bgp 65536
+    - bestpath as-path multipath-relax
+    - bestpath compare-neighborid
+    - bestpath cost-community ignore
+    - confederation identifier 42
+    - log-neighbor-changes
+    - maxas-limit 20
+    - neighbor-down fib-accelerate
+    - router-id 198.51.100.2
+    - confederation peers 65020 65030 65040
+    - neighbor 198.51.100.20
+    - remote-as 65537
+    - affinity-group 160
+    - description NBR-1
+    - low-memory exempt
+    - neighbor 198.51.100.21
+    - remote-as 65537
+    - password 7 12090404011C03162E
+    - vrf site-1
+    - local-as 200
+    - log-neighbor-changes
+    - neighbor 192.0.2.10
+    - remote-as 65538
+    - description site-1-nbr-1
+    - password 3 13D4D3549493D2877B1DC116EE27A6BE
+    - neighbor 192.0.2.11
+    - remote-as 65538
+    - description site-1-nbr-2
+    - vrf site-2
+    - local-as 300
+    - log-neighbor-changes
+    - neighbor-down fib-accelerate
+    - neighbor 203.0.113.2
+    - remote-as 65539
+    - description site-2-nbr-1
+    - password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
+
+  after:
+    as_number: '65536'
+    bestpath:
+      as_path:
+        multipath_relax: true
+      compare_neighborid: true
+      cost_community_ignore: true
+    confederation:
+      identifier: '42'
+      peers:
+      - '65020'
+      - '65030'
+      - '65040'
+    log_neighbor_changes: true
+    maxas_limit: 20
+    neighbor_down:
+      fib_accelerate: true
+    neighbors:
+    - description: NBR-1
+      low_memory:
+       exempt: true
+      neighbor_address: 198.51.100.20
+      neighbor_affinity_group:
+        group_id: 160
+      remote_as: '65537'
+    - neighbor_address: 198.51.100.21
+      password:
+        encryption: 7
+        key: 12090404011C03162E
+      remote_as: '65537'
+    router_id: 198.51.100.2
+    vrfs:
+    - local_as: '200'
+      log_neighbor_changes: true
+      neighbors:
+      - description: site-1-nbr-1
+        neighbor_address: 192.0.2.10
+        password:
+          encryption: 3
+          key: 13D4D3549493D2877B1DC116EE27A6BE
+        remote_as: '65538'
+      - description: site-1-nbr-2
+        neighbor_address: 192.0.2.11
+        remote_as: '65538'
+      vrf: site-1
+    - local_as: '300'
+      log_neighbor_changes: true
+      neighbor_down:
+        fib_accelerate: true
+      neighbors:
+      - description: site-2-nbr-1
+        neighbor_address: 203.0.113.2
+        password:
+          encryption: 3
+          key: AF92F4C16A0A0EC5BDF56CF58BC030F6
+        remote_as: '65539'
+      vrf: site-2
+    
+replaced:
+  commands:
+    - router bgp 65536
+    - no bestpath as-path multipath-relax
+    - no log-neighbor-changes
+    - maxas-limit 40
+    - no confederation peers 65020 65030 65040
+    - confederation peers 65020 65030 65050
+    - no neighbor 198.51.100.21
+    - vrf site-2
+    - neighbor 203.0.113.2
+    - no remote-as 65539
+    - no description site-2-nbr-1
+    - password 7 12090404011C03162E
+    - no vrf site-1
+
+  after:
+    as_number: '65536'
+    bestpath:
+      compare_neighborid: true
+      cost_community_ignore: true
+    confederation:
+      identifier: '42'
+      peers:
+      - '65020'
+      - '65030'
+      - '65050'
+    maxas_limit: 40
+    neighbor_down:
+      fib_accelerate: true
+    neighbors:
+    - description: NBR-1
+      low_memory:
+        exempt: true
+      neighbor_address: 198.51.100.20
+      neighbor_affinity_group:
+        group_id: 160
+      remote_as: '65537'
+    router_id: 198.51.100.2
+    vrfs:
+    - local_as: '300'
+      log_neighbor_changes: true
+      neighbor_down:
+        fib_accelerate: true
+      neighbors:
+      - neighbor_address: 203.0.113.2
+        password:
+          encryption: 7
+          key: 12090404011C03162E
+      vrf: site-2
+
+deleted:
+  commands:
+    - router bgp 65536
+    - no bestpath as-path multipath-relax
+    - no bestpath compare-neighborid
+    - no bestpath cost-community ignore
+    - no confederation identifier 42
+    - no log-neighbor-changes
+    - no maxas-limit 20
+    - no neighbor-down fib-accelerate
+    - no router-id 198.51.100.2
+    - no confederation peers 65020 65030 65040
+    - no neighbor 198.51.100.20
+    - no neighbor 198.51.100.21
+    - no vrf site-1
+    - no vrf site-2
+
+  after:
+    as_number: '65536'

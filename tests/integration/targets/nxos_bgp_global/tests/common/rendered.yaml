@@ -1,0 +1,80 @@
+---
+- debug:
+    msg: START nxos_bgp_global rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_bgp_global:
+    config:
+      as_number: 65536
+      router_id: 198.51.100.2
+      bestpath:
+        as_path:
+          multipath_relax: True
+        compare_neighborid: True
+        cost_community_ignore: True
+      confederation:
+        identifier: 42
+        peers:
+          - 65020
+          - 65030
+          - 65040
+      log_neighbor_changes: True
+      maxas_limit: 20
+      neighbors:
+        - neighbor_address: 198.51.100.20
+          neighbor_affinity_group:
+            group_id: 160
+          remote_as: 65537
+          description: NBR-1
+          low_memory:
+            exempt: True
+        - neighbor_address: 198.51.100.21
+          remote_as: 65537
+          password:
+            encryption: 7
+            key: 12090404011C03162E
+      neighbor_down:
+        fib_accelerate: True
+      vrfs:
+        - vrf: site-1
+          local_as: 200
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 192.0.2.10
+              description: site-1-nbr-1
+              password:
+                encryption: 3
+                key: 13D4D3549493D2877B1DC116EE27A6BE
+              remote_as: 65538
+            - neighbor_address: 192.0.2.11
+              remote_as: 65538
+              description: site-1-nbr-2
+        - vrf: site-2
+          local_as: 300
+          log_neighbor_changes: True
+          neighbors:
+            - neighbor_address: 203.0.113.2
+              description: site-2-nbr-1
+              password:
+                encryption: 3
+                key: AF92F4C16A0A0EC5BDF56CF58BC030F6
+              remote_as: 65539
+          neighbor_down:
+            fib_accelerate: True
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  assert:
+    that:
+      - merged['commands'] == result['rendered']
+
+- name: Gather BGP facts
+  cisco.nxos.nxos_bgp_global:
+    state: gathered
+  register: result
+
+- name: Ensure that no configuration changes were made
+  assert:
+    that:
+      - result.gathered == {}

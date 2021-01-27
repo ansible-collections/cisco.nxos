@@ -1,0 +1,7 @@
+- name: Remove pre-existing BGP configurations
+  cisco.nxos.nxos_config:
+    lines: 
+      - no router bgp 65536
+  ignore_errors: True
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

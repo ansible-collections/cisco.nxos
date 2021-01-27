@@ -1,0 +1,42 @@
+---
+- debug:
+    msg: Start nxos_bgp_global purged integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete all BGP config from the device
+      cisco.nxos.nxos_bgp_global: &id003
+        state: purged
+      register: result
+    
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+          - merged['after'] == result['before']
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "'no router bgp 65536' in result.commands"
+          - result.commands|length == 1
+  
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+          - result['after'] == {}
+    
+    - name: Delete all BGP config from the device (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_bgp_global: *id003
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml
