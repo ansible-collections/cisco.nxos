@@ -85,13 +85,13 @@ EXAMPLES = """
 
 - name: Test reachability to a few different public IPs using mgmt vrf
   cisco.nxos.nxos_ping:
-    dest: nxos_ping
+    dest: "{{ item }}"
     vrf: management
     host: 68.170.147.165
   with_items:
-  - 8.8.8.8
-  - 4.4.4.4
-  - 198.6.1.4
+    - 8.8.8.8
+    - 4.4.4.4
+    - 198.6.1.4
 
 - name: Test reachability to 8.8.8.8 using mgmt vrf, size and df-bit
   cisco.nxos.nxos_ping:
