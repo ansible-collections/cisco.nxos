@@ -1,0 +1,3 @@
+---
+deprecated_features:
+  - Deprecated `nxos_bgp` and `nxos_bgp_neighbor` modules in favor of `nxos_bgp_global` resource module.

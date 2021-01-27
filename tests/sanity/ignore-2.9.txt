@@ -25,3 +25,7 @@ plugins/modules/nxos_smu.py validate-modules:deprecation-mismatch # 2.9 expects 
 plugins/modules/nxos_smu.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/modules/nxos_interface_ospf.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
 plugins/modules/nxos_interface_ospf.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/modules/nxos_bgp.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_bgp.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/modules/nxos_bgp_neighbor.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_bgp_neighbor.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
