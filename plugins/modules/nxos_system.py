@@ -261,16 +261,12 @@ def parse_hostname(config):
 
 def parse_domain_name(config, vrf_config):
     objects = list()
-    match = re.search(r'^ip domain-name (\S+)',
-                      config,
-                      re.M)
+    match = re.search(r"^ip domain-name (\S+)", config, re.M)
     if match:
         objects.append({"name": match.group(1), "vrf": None})
 
     for vrf, cfg in iteritems(vrf_config):
-        match = re.search(r'ip domain-name (\S+)',
-                          cfg,
-                          re.M)
+        match = re.search(r"ip domain-name (\S+)", cfg, re.M)
         if match:
             objects.append({"name": match.group(1), "vrf": vrf})
 
