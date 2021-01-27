@@ -5,6 +5,49 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v1.4.0
+======
+
+Minor Changes
+-------------
+
+- Add `echo_request` option for ICMP.
+- Add nxos_bgp_global resource module.
+
+Deprecated Features
+-------------------
+
+- Deprecated `nxos_bgp` and `nxos_bgp_neighbor` modules in favor of `nxos_bgp_global` resource module.
+
+Security Fixes
+--------------
+
+- Enable no_log for sensitive parameters in argspec.
+
+Bugfixes
+--------
+
+- 'config replace' is actually supported for devices other than N9K and hence we shouldn't fail, and instead let the device handle it (https://github.com/ansible-collections/cisco.nxos/issues/215).
+- Add support for interfaces in mode 'fabricpath' to l2_interfaces (https://github.com/ansible-collections/cisco.nxos/issues/220).
+- Allow enabling `fabric forwarding` feature through nxos_feature (https://github.com/ansible-collections/cisco.nxos/issues/213).
+- Allow tag updates with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/197).
+- Fixes traceback while parsing power supply info in nxos_facts for newer NX-OS releases (https://github.com/ansible-collections/cisco.nxos/issues/192).
+- Handle domain-name properly with vrf contexts (https://github.com/ansible-collections/cisco.nxos/issues/234).
+- Parse interface contexts properly (https://github.com/ansible-collections/cisco.nxos/issues/195).
+- Properly handle partial matches in community string (https://github.com/ansible-collections/cisco.nxos/issues/203).
+- Update argspecs with default value for parameters.
+- Update docs to clarify the idemptonecy releated caveat and add it in the output warnings (https://github.com/ansible-collections/ansible.netcommon/pull/189)
+
+Documentation Changes
+---------------------
+
+- Fix error in ``host_reachability`` parameter's example where a default value is used, which the ``host_reachability`` parameter does not support. Improve descriptions of some parameters to be more explicit. Correct spelling and grammar where errors were noticed.
+
+New Modules
+-----------
+
+- nxos_bgp_global - BGP Global resource module.
+
 v1.3.1
 ======
 

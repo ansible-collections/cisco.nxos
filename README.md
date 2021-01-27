@@ -46,9 +46,10 @@ Name | Description
 [cisco.nxos.nxos_banner](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_banner_module.rst)|Manage multiline banners on Cisco NXOS devices
 [cisco.nxos.nxos_bfd_global](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_bfd_global_module.rst)|Bidirectional Forwarding Detection (BFD) global-level configuration
 [cisco.nxos.nxos_bfd_interfaces](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_bfd_interfaces_module.rst)|BFD interfaces resource module
-[cisco.nxos.nxos_bgp](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_bgp_module.rst)|Manages BGP configuration.
+[cisco.nxos.nxos_bgp](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_bgp_module.rst)|(deprecated, removed after 2023-01-27) Manages BGP configuration.
 [cisco.nxos.nxos_bgp_af](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_bgp_af_module.rst)|Manages BGP Address-family configuration.
-[cisco.nxos.nxos_bgp_neighbor](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_module.rst)|Manages BGP neighbors configurations.
+[cisco.nxos.nxos_bgp_global](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_bgp_global_module.rst)|BGP Global resource module.
+[cisco.nxos.nxos_bgp_neighbor](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_module.rst)|(deprecated, removed after 2023-01-27) Manages BGP neighbors configurations.
 [cisco.nxos.nxos_bgp_neighbor_af](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_af_module.rst)|Manages BGP address-family's neighbors configuration.
 [cisco.nxos.nxos_command](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_command_module.rst)|Run arbitrary command on Cisco NXOS devices
 [cisco.nxos.nxos_config](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_config_module.rst)|Manage Cisco NXOS configuration sections

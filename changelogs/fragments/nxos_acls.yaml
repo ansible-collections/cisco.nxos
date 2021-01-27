@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Add `echo_request` option for ICMP.

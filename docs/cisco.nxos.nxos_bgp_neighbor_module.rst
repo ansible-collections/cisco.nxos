@@ -5,7 +5,7 @@
 cisco.nxos.nxos_bgp_neighbor
 ****************************
 
-**Manages BGP neighbors configurations.**
+**(deprecated, removed after 2023-01-27) Manages BGP neighbors configurations.**
 
 
 Version added: 1.0.0
@@ -13,6 +13,13 @@ Version added: 1.0.0
 .. contents::
    :local:
    :depth: 1
+
+DEPRECATED
+----------
+:Removed in collection release after 2023-01-27
+:Why: Updated module released with more functionality.
+:Alternative: nxos_bgp_global
+
 
 
 Synopsis
@@ -775,6 +782,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
 
 Status
 ------
+
+
+- This module will be removed in version . *[deprecated]*
+- For more information see `DEPRECATED`_.
 
 
 Authors

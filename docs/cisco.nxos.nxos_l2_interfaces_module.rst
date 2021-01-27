@@ -98,6 +98,7 @@ Parameters
                                     <li>access</li>
                                     <li>trunk</li>
                                     <li>fex-fabric</li>
+                                    <li>fabricpath</li>
                         </ul>
                 </td>
                 <td>
