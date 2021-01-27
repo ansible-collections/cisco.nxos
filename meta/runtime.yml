@@ -401,10 +401,24 @@ plugin_routing:
       redirect: cisco.nxos.nxos_bfd_interfaces
     bgp:
       redirect: cisco.nxos.nxos_bgp
+      deprecation:
+        removal_date: '2023-01-27'
+        warning_text: See the plugin documentation for more details
+    nxos_bgp:
+      deprecation:
+        removal_date: '2023-01-27'
+        warning_text: See the plugin documentation for more details
     bgp_af:
       redirect: cisco.nxos.nxos_bgp_af
     bgp_neighbor:
       redirect: cisco.nxos.nxos_bgp_neighbor
+      deprecation:
+        removal_date: '2023-01-27'
+        warning_text: See the plugin documentation for more details
+    nxos_bgp_neighbor:
+      deprecation:
+        removal_date: '2023-01-27'
+        warning_text: See the plugin documentation for more details
     bgp_neighbor_af:
       redirect: cisco.nxos.nxos_bgp_neighbor_af
     command:

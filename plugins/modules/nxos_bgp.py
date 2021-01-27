@@ -24,13 +24,17 @@ DOCUMENTATION = """
 module: nxos_bgp
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages BGP configuration.
+short_description: (deprecated, removed after 2023-01-27) Manages BGP configuration.
 description:
 - Manages BGP configurations on NX-OS switches.
 version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
+deprecated:
+  alternative: nxos_bgp_global
+  why: Updated module released with more functionality.
+  removed_at_date: '2023-01-27'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - C(state=absent) removes the whole BGP ASN configuration when C(vrf=default) or the
