@@ -239,7 +239,7 @@ class Bgp_global(ResourceModule):
         for name, entry in iteritems(hnbrs):
             if self._has_af(vrf=vrf, neighbor=name):
                 self._module.fail_json(
-                    "Neighbor {0} has address-family configurations. "
+                    msg="Neighbor {0} has address-family configurations. "
                     "Please use the nxos_bgp_neighbor_af module to remove those first.".format(
                         name
                     )
@@ -282,7 +282,7 @@ class Bgp_global(ResourceModule):
         for name, entry in iteritems(hvrfs):
             if self._has_af(vrf=name):
                 self._module.fail_json(
-                    "VRF {0} has address-family configurations. "
+                    msg="VRF {0} has address-family configurations. "
                     "Please use the nxos_bgp_af module to remove those first.".format(
                         name
                     )
