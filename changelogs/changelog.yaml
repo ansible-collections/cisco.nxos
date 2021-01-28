@@ -401,8 +401,6 @@ releases:
   1.4.0:
     changes:
       bugfixes:
-      - '''config replace'' is actually supported for devices other than N9K and hence
-        we shouldn''t fail, and instead let the device handle it (https://github.com/ansible-collections/cisco.nxos/issues/215).'
       - Add support for interfaces in mode 'fabricpath' to l2_interfaces (https://github.com/ansible-collections/cisco.nxos/issues/220).
       - Allow enabling `fabric forwarding` feature through nxos_feature (https://github.com/ansible-collections/cisco.nxos/issues/213).
       - Allow tag updates with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/197).
