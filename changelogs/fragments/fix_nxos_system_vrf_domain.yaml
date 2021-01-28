@@ -1,2 +1,0 @@
-bugfixes:
-  - Handle domain-name properly with vrf contexts (https://github.com/ansible-collections/cisco.nxos/issues/234).

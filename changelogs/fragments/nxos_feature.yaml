@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Allow enabling `fabric forwarding` feature through nxos_feature (https://github.com/ansible-collections/cisco.nxos/issues/213).

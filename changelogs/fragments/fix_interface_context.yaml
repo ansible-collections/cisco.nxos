@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Parse interface contexts properly (https://github.com/ansible-collections/cisco.nxos/issues/195).

@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Allow tag updates with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/197).

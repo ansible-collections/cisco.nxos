@@ -202,7 +202,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The <code>intended_config</code> provides the master configuration that the node should conform to and is used to check the final running-config against.   This argument will not modify any settings on the remote device and is strictly used to check the compliance of the current device&#x27;s configuration against.  When specifying this argument, the task should also modify the <code>diff_against</code> value and set it to <em>intended</em>.</div>
+                        <div>The <code>intended_config</code> provides the master configuration that the node should conform to and is used to check the final running-config against. This argument will not modify any settings on the remote device and is strictly used to check the compliance of the current device&#x27;s configuration against.  When specifying this argument, the task should also modify the <code>diff_against</code> value and set it to <em>intended</em>. The configuration lines for this value should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure correct diff.</div>
                 </td>
             </tr>
             <tr>
@@ -218,7 +218,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The ordered set of commands that should be configured in the section.  The commands must be the exact same commands as found in the device running-config.  Be sure to note the configuration command syntax as some commands are automatically modified by the device config parser.</div>
+                        <div>The ordered set of commands that should be configured in the section. The commands must be the exact same commands as found in the device running-config to ensure idempotency and correct diff. Be sure to note the configuration command syntax as some commands are automatically modified by the device config parser.</div>
                         <div style="font-size: small; color: darkgreen"><br/>aliases: commands</div>
                 </td>
             </tr>
@@ -525,7 +525,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The <em>replace_src</em> argument provides path to the configuration file to load into the remote system. This argument is used to replace the entire config with a flat-file. This is used with argument <em>replace</em> with value <em>config</em>. This is mutually exclusive with the <em>lines</em> and <em>src</em> arguments. This argument will only work for NX-OS versions that support `config replace`. Use <em>nxos_file_copy</em> module to copy the flat file to remote device and then use the path with this argument.</div>
+                        <div>The <em>replace_src</em> argument provides path to the configuration file to load into the remote system. This argument is used to replace the entire config with a flat-file. This is used with argument <em>replace</em> with value <em>config</em>. This is mutually exclusive with the <em>lines</em> and <em>src</em> arguments. This argument will only work for NX-OS versions that support `config replace`. Use <em>nxos_file_copy</em> module to copy the flat file to remote device and then use the path with this argument. The configuration lines in the file should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff.</div>
                 </td>
             </tr>
             <tr>
@@ -540,7 +540,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The module, by default, will connect to the remote device and retrieve the current running-config to use as a base for comparing against the contents of source.  There are times when it is not desirable to have the task get the current running-config for every task in a playbook.  The <em>running_config</em> argument allows the implementer to pass in the configuration to use as the base config for comparison.</div>
+                        <div>The module, by default, will connect to the remote device and retrieve the current running-config to use as a base for comparing against the contents of source.  There are times when it is not desirable to have the task get the current running-config for every task in a playbook.  The <em>running_config</em> argument allows the implementer to pass in the configuration to use as the base config for comparison. The configuration lines for this option should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff.</div>
                         <div style="font-size: small; color: darkgreen"><br/>aliases: config</div>
                 </td>
             </tr>
@@ -577,7 +577,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The <em>src</em> argument provides a path to the configuration file to load into the remote system.  The path can either be a full system path to the configuration file if the value starts with / or relative to the root of the implemented role or playbook. This argument is mutually exclusive with the <em>lines</em> and <em>parents</em> arguments.</div>
+                        <div>The <em>src</em> argument provides a path to the configuration file to load into the remote system.  The path can either be a full system path to the configuration file if the value starts with / or relative to the root of the implemented role or playbook. This argument is mutually exclusive with the <em>lines</em> and <em>parents</em> arguments. The configuration lines in the source file should be similar to how it will appear if present in the running-configuration of the device including indentation to ensure idempotency and correct diff.</div>
                 </td>
             </tr>
     </table>
@@ -589,6 +589,7 @@ Notes
 
 .. note::
    - Abbreviated commands are NOT idempotent, see `Network FAQ <../network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands>`_.
+   - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they appear if present in the running configuration on device including the indentation.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
