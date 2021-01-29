@@ -192,6 +192,8 @@ class Bgp_global(ResourceModule):
         """
         nbr_parsers = [
             "remote_as",
+            "bfd",
+            "bfd.multihop.interval",
             "neighbor_affinity_group.group_id",
             "bmp_activate_server",
             "capability",

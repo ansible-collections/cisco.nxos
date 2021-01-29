@@ -202,6 +202,36 @@ options:
             description: IP address/Prefix of the neighbor or interface.
             type: str
             required: True
+          bfd:
+            description: Bidirectional Fast Detection for the neighbor.
+            type: dict
+            suboptions:
+              set:
+                description: Set BFD for this neighbor.
+                type: bool
+              singlehop:
+                description: Single-hop session.
+                type: bool
+              multihop:
+                description: Multihop session.
+                type: dict
+                suboptions:
+                  set:
+                    description: Set BFD multihop.
+                    type: bool
+                  interval:
+                    description: Configure BFD session interval parameters.
+                    type: dict
+                    suboptions:
+                      tx_interval:
+                        description: TX interval in milliseconds.
+                        type: int
+                      min_rx_interval:
+                        description: Minimum RX interval.
+                        type: int
+                      multiplier:
+                        description: Detect Multiplier.
+                        type: int
           neighbor_affinity_group:
             description: Configure an affinity group.
             type: dict
@@ -1622,6 +1652,7 @@ commands:
     - description site-1-nbr-1
     - password 3 13D4D3549493D2877B1DC116EE27A6BE
 """
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_global.bgp_global import (
     Bgp_globalArgs,

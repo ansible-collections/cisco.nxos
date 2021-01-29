@@ -134,6 +134,29 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "neighbor_address": {"type": "str", "required": True},
+                        "bfd": {
+                            "type": "dict",
+                            "options": {
+                                "set": {"type": "bool"},
+                                "singlehop": {"type": "bool"},
+                                "multihop": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "interval": {
+                                            "type": "dict",
+                                            "options": {
+                                                "tx_interval": {"type": "int"},
+                                                "min_rx_interval": {
+                                                    "type": "int"
+                                                },
+                                                "multiplier": {"type": "int"},
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                         "neighbor_affinity_group": {
                             "type": "dict",
                             "options": {"group_id": {"type": "int"}},
@@ -350,6 +373,33 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "neighbor_address": {
                                     "type": "str",
                                     "required": True,
+                                },
+                                "bfd": {
+                                    "type": "dict",
+                                    "options": {
+                                        "set": {"type": "bool"},
+                                        "singlehop": {"type": "bool"},
+                                        "multihop": {
+                                            "type": "dict",
+                                            "options": {
+                                                "set": {"type": "bool"},
+                                                "interval": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "tx_interval": {
+                                                            "type": "int"
+                                                        },
+                                                        "min_rx_interval": {
+                                                            "type": "int"
+                                                        },
+                                                        "multiplier": {
+                                                            "type": "int"
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                                 "neighbor_affinity_group": {
                                     "type": "dict",
