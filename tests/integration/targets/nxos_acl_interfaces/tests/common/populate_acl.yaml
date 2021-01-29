@@ -7,3 +7,5 @@
       - "ipv6 access-list ACL1v6"
       - "ipv6 access-list NewACLv6"
       - "ip access-list PortACL"
+      - "interface ethernet 1/6"
+      - "switchport"

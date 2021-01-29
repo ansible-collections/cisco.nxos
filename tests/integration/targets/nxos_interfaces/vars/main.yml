@@ -10,7 +10,7 @@ gathered:
 rendered:
   - "interface Ethernet1/1"
   - "description outbound-intf"
-  - "speed 100"
+  - "speed 1000"
   - "interface Ethernet1/2"
   - "switchport"
   - "duplex full"

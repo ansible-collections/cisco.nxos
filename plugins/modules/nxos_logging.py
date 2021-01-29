@@ -526,7 +526,7 @@ def parse_file_size(line, name, level):
     )
     if match:
         file_size = match.group(1)
-        if file_size == "8192":
+        if file_size == "8192" or file_size == "4194304":
             file_size = None
 
     return file_size

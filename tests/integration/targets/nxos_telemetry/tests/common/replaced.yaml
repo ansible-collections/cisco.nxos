@@ -54,7 +54,7 @@
         state: replaced
         config:
           certificate:
-            key: /file_dir/new_server.key
+            key: /bootflash/new_server.crt
             hostname: newhost.example.com
           vrf: management
           compression: gzip
@@ -125,7 +125,7 @@
           - "'data-source NX-API' in result.commands"
           - "'subscription 99' in result.commands"
           - "'snsr-grp 100 sample-interval 2000' in result.commands"
-          - "'certificate /file_dir/new_server.key newhost.example.com' in result.commands"
+          - "'certificate /bootflash/new_server.crt newhost.example.com' in result.commands"
           - "'destination-profile' in result.commands"
           - "'use-vrf management' in result.commands"
           - result.commands|length == {{ command_list_length }}

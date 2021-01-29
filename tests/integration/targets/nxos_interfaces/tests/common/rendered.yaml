@@ -17,7 +17,7 @@
           - name: Ethernet1/1
             description: outbound-intf
             mode: layer3 # Sys Default for rendered is assumed to be Layer3 - so no command should be sent
-            speed: 100
+            speed: 1000
           - name: Ethernet1/2
             mode: layer2
             enabled: True # Sys Default for rendered is assumed to be disabled - so command should be sent

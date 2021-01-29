@@ -38,8 +38,8 @@
           - '"no ip router ospf 100 area 1.1.1.1 secondaries none" in result.commands'
           - '"no ip router ospf multi-area 11.11.11.11" in result.commands'
           - '"no ipv6 router ospfv3 200 area 2.2.2.2" in result.commands'
-          - '"no ipv6 router ospfv3 200 multi-area 21.0.0.0" in result.commands'
-          - '"no ipv6 router ospfv3 300 multi-area 50.50.50.50" in result.commands'
+          - '"no ipv6 router ospfv3 multi-area 21.0.0.0" in result.commands'
+          - '"no ipv6 router ospfv3 multi-area 50.50.50.50" in result.commands'
           - '"no ipv6 router ospfv3 multi-area 16.10.10.10" in result.commands'
           - result.commands|length == 7        
   

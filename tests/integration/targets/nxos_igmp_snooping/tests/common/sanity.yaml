@@ -44,7 +44,8 @@
         - assert: &id004
             that:
               - result.changed == false
-      when: (imagetag and (imagetag is version_compare('D1', 'ne')))
+      when: (imagetag)
+#      when: (imagetag and (imagetag is version_compare('D1', 'ne')))
 
     - block:
 
@@ -94,7 +95,8 @@
           cisco.nxos.nxos_igmp_snooping: *id005
 
         - assert: *id004
-      when: gt_run or (imagetag and (imagetag is version_compare('D1', 'ne')))
+      when: gt_run or (imagetag)
+#      when: gt_run or (imagetag and (imagetag is version_compare('D1', 'ne')))
 
     - name: Configure igmp snooping with default values
       register: result
@@ -109,7 +111,8 @@
           cisco.nxos.nxos_igmp_snooping: *id006
 
         - assert: *id004
-      when: (imagetag and (imagetag is version_compare('D1', 'ne')))
+      when: (imagetag)
+#      when: (imagetag and (imagetag is version_compare('D1', 'ne')))
   always:
 
     - name: Configure igmp snooping with default values

@@ -84,14 +84,18 @@
       register: result
       when: platform is search('N9K') and imagetag is not search('I[2-6]')
       cisco.nxos.nxos_lacp:
+        config:
+          system:
+            priority: 1
         state: replaced
 
     - assert:
         that:
           - result.changed == true
-          - result.commands|length == 2
+          - result.commands|length == 3
           - "'no lacp system-mac' in result.commands"
           - "'no lacp system-priority' in result.commands"
+          - "'lacp system-priority 1' in result.commands"
       when: platform is search('N9K') and imagetag is not search('I[2-6]')
   always:
 

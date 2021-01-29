@@ -15,7 +15,6 @@
   cisco.nxos.nxos_config:
     lines:
       - no ip access-group ACL1v4 out
-      - no ip port access-group PortACL in
       - no ipv6 traffic-filter ACL1v6 in
     parents: interface Ethernet1/5
   ignore_errors: True
@@ -23,9 +22,7 @@
 - name: Remove config - 3
   cisco.nxos.nxos_config:
     lines:
-      - no ipv6 port traffic-filter NewACLv6 in
       - no ip access-group ACL1v4 out
-      - no ip port access-group PortACL in
     parents: interface Ethernet1/3
   ignore_errors: True
 
@@ -34,4 +31,13 @@
     lines:
       - no ip access-group NewACLv4 out
     parents: interface Ethernet1/4
+  ignore_errors: True
+
+- name: Remove config - 5
+  cisco.nxos.nxos_config:
+    lines:
+      - no switchport
+      - no ipv6 port traffic-filter NewACLv6 in
+      - no ip port access-group PortACL in
+    parents: interface Ethernet1/6
   ignore_errors: True
