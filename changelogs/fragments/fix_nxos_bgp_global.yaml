@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Properly configure neighbor timers and shutdown state (https://github.com/ansible-collections/cisco.nxos/issues/240).

@@ -97,10 +97,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                     neighbor_address="192.0.2.10",
                                     neighbor_affinity_group=dict(group_id=161),
                                     remote_as="65538",
-                                    timers=dict(
-                                        keepalive=5,
-                                        holdtime=15,
-                                    ),
+                                    timers=dict(keepalive=5, holdtime=15),
                                     description="site-1-nbr-1",
                                     password=dict(
                                         encryption=3,
