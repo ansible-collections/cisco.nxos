@@ -97,6 +97,10 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                     neighbor_address="192.0.2.10",
                                     neighbor_affinity_group=dict(group_id=161),
                                     remote_as="65538",
+                                    timers=dict(
+                                        keepalive=5,
+                                        holdtime=15,
+                                    ),
                                     description="site-1-nbr-1",
                                     password=dict(
                                         encryption=3,
@@ -138,6 +142,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "remote-as 65538",
             "description site-1-nbr-1",
             "password 3 13D4D3549493D2877B1DC116EE27A6BE",
+            "timers 5 15",
             "vrf site-2",
             "local-as 300",
             "log-neighbor-changes",
@@ -244,6 +249,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 remote-as 65537
                 affinity-group 161
                 description NBR-1
+                shutdown
                 low-memory exempt
               neighbor 198.51.100.21
                 remote-as 65537
@@ -308,6 +314,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         commands = [
             "router bgp 65536",
             "router-id 198.51.100.212",
+            "neighbor 198.51.100.20",
+            "no shutdown",
             "no neighbor 198.51.100.21",
             "vrf site-1",
             "neighbor 192.0.2.10",

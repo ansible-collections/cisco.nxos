@@ -1126,7 +1126,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 \stimers\s(?P<keepalive>\d+)\s(?P<holdtime>\d+)
                 $""", re.VERBOSE
             ),
-            "setval": "shutdown",
+            "setval": "timers {{ timers.keepalive }} {{ timers.holdtime }}",
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
