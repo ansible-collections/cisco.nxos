@@ -39,6 +39,21 @@ def _tmplt_path_attribute(proc):
     return cmd
 
 
+def _tmplt_bfd(proc):
+    bfd = proc.get("bfd", {})
+    cmd = None
+
+    if bfd.get("set"):
+        cmd = "bfd"
+    if bfd.get("singlehop"):
+        cmd = "bfd singlehop"
+    elif bfd.get("multihop", {}).get("set"):
+        cmd = "bfd multihop"
+
+    if cmd:
+        return cmd
+
+
 class Bgp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None):
         super(Bgp_globalTemplate, self).__init__(lines=lines, tmplt=self)
@@ -633,6 +648,70 @@ class Bgp_globalTemplate(NetworkTemplate):
             }
         },
         {
+            "name": "bfd",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \s(?P<bfd>bfd)
+                (\s(?P<singlehop>singlehop))?
+                (\s(?P<multihop>multihop))?
+                $""", re.VERBOSE
+            ),
+            "setval": _tmplt_bfd,
+            "result": {
+                "vrfs": {
+                    '{{ "vrf_" + vrf|d() }}': {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "bfd": {
+                                    "set": "{{ True if bfd is defined and singlehop is undefined and multihop is undefined else None }}",
+                                    "singlehop": "{{ not not singlehop }}",
+                                    "multihop": {
+                                        "set": "{{ not not multihop }}",
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "bfd.multihop.interval",
+            "getval": re.compile(
+                r"""
+                \s+neighbor\s(?P<neighbor_address>\S+)
+                \sbfd\smultihop\sinterval
+                \s(?P<tx_interval>\d+)
+                \smin_rx\s(?P<min_rx_interval>\d+)
+                \smultiplier\s(?P<multiplier>\d+)
+                $""", re.VERBOSE
+            ),
+            "setval": "bfd multihop interval"
+                      " {{ bfd.multihop.interval.tx_interval }}"
+                      " min_rx {{ bfd.multihop.interval.min_rx_interval }}"
+                      " multiplier {{ bfd.multihop.interval.multiplier }}",
+            "result": {
+                "vrfs": {
+                    '{{ "vrf_" + vrf|d() }}': {
+                        "neighbors": {
+                            "{{ neighbor_address }}": {
+                                "bfd": {
+                                    "multihop": {
+                                        "interval": {
+                                            "tx_interval": "{{ tx_interval }}",
+                                            "min_rx_interval": "{{ min_rx_interval }}",
+                                            "multiplier": "{{ multiplier }}",
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
             "name": "remote_as",
             "getval": re.compile(
                 r"""
@@ -1126,7 +1205,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 \stimers\s(?P<keepalive>\d+)\s(?P<holdtime>\d+)
                 $""", re.VERBOSE
             ),
-            "setval": "shutdown",
+            "setval": "timers {{ timers.keepalive }} {{ timers.holdtime }}",
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {

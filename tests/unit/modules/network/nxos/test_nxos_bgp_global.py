@@ -97,6 +97,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                     neighbor_address="192.0.2.10",
                                     neighbor_affinity_group=dict(group_id=161),
                                     remote_as="65538",
+                                    timers=dict(keepalive=5, holdtime=15),
                                     description="site-1-nbr-1",
                                     password=dict(
                                         encryption=3,
@@ -138,6 +139,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "remote-as 65538",
             "description site-1-nbr-1",
             "password 3 13D4D3549493D2877B1DC116EE27A6BE",
+            "timers 5 15",
             "vrf site-2",
             "local-as 300",
             "log-neighbor-changes",
@@ -145,6 +147,148 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_global_bfd(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    neighbors=[
+                        dict(
+                            neighbor_address="198.51.100.20",
+                            bfd=dict(
+                                set=True,
+                                multihop=dict(
+                                    interval=dict(
+                                        tx_interval=300,
+                                        min_rx_interval=258,
+                                        multiplier=12,
+                                    )
+                                ),
+                            ),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.21",
+                            bfd=dict(
+                                multihop=dict(
+                                    set=True,
+                                    interval=dict(
+                                        tx_interval=301,
+                                        min_rx_interval=260,
+                                        multiplier=15,
+                                    ),
+                                )
+                            ),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.22",
+                            bfd=dict(singlehop=True),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.23",
+                            bfd=dict(multihop=dict(set=True)),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.24",
+                            bfd=dict(set=True),
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "neighbor 198.51.100.20",
+            "bfd",
+            "bfd multihop interval 300 min_rx 258 multiplier 12",
+            "neighbor 198.51.100.21",
+            "bfd multihop",
+            "bfd multihop interval 301 min_rx 260 multiplier 15",
+            "neighbor 198.51.100.22",
+            "bfd singlehop",
+            "neighbor 198.51.100.23",
+            "bfd multihop",
+            "neighbor 198.51.100.24",
+            "bfd",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_global_bfd(self):
+        run_cfg = dedent(
+            """\
+            router bgp 65536
+              neighbor 198.51.100.20
+                bfd
+                bfd multihop interval 300 min_rx 258 multiplier 12
+              neighbor 198.51.100.21
+                bfd multihop
+                bfd multihop interval 301 min_rx 260 multiplier 15
+              neighbor 198.51.100.22
+                bfd singlehop
+              neighbor 198.51.100.23
+                bfd multihop
+              neighbor 198.51.100.24
+                bfd
+            """
+        )
+        self.get_config.return_value = run_cfg
+        self.cfg_get_config.return_value = run_cfg
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    neighbors=[
+                        dict(
+                            neighbor_address="198.51.100.20",
+                            bfd=dict(
+                                set=True,
+                                multihop=dict(
+                                    interval=dict(
+                                        tx_interval=300,
+                                        min_rx_interval=258,
+                                        multiplier=12,
+                                    )
+                                ),
+                            ),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.21",
+                            bfd=dict(
+                                multihop=dict(
+                                    set=True,
+                                    interval=dict(
+                                        tx_interval=301,
+                                        min_rx_interval=260,
+                                        multiplier=15,
+                                    ),
+                                )
+                            ),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.22",
+                            bfd=dict(singlehop=True),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.23",
+                            bfd=dict(multihop=dict(set=True)),
+                        ),
+                        dict(
+                            neighbor_address="198.51.100.24",
+                            bfd=dict(set=True),
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
 
     def test_nxos_bgp_global_merged_idempotent(self):
         run_cfg = dedent(
@@ -244,6 +388,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 remote-as 65537
                 affinity-group 161
                 description NBR-1
+                shutdown
                 low-memory exempt
               neighbor 198.51.100.21
                 remote-as 65537
@@ -308,6 +453,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         commands = [
             "router bgp 65536",
             "router-id 198.51.100.212",
+            "neighbor 198.51.100.20",
+            "no shutdown",
             "no neighbor 198.51.100.21",
             "vrf site-1",
             "neighbor 192.0.2.10",
