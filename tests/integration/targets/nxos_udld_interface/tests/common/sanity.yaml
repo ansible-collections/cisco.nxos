@@ -14,7 +14,7 @@
   when: titanium
 
 - set_fact: udld_enable="false"
-  when: imagetag and (imagetag is version_compare('N1', 'eq'))
+  when: imagetag and imagetag is search("N1")
 
 - set_fact: intname="{{ nxos_int1 }}"
 

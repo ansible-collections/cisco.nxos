@@ -19,12 +19,14 @@
     - bgp
     - bfd
     - nv overlay
+  ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: '{{ item }}'
     state: enabled
 
 - name: Enable nv overlay evpn - multisite
   when: platform is search('N9K')
+  ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - nv overlay evpn

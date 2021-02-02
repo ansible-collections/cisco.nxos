@@ -5,12 +5,10 @@
 - set_fact: intname="{{ nxos_int1 }}"
 
 - set_fact: log_neighbor_changese="enable"
-  when: (imagetag and (imagetag is version_compare('D1', 'ne')) and (imagetag is
-    version_compare('N1', 'ne')))
+  when: (imagetag and imagetag is not search("D1|N1"))
 
 - set_fact: log_neighbor_changesd="disable"
-  when: (imagetag and (imagetag is version_compare('D1', 'ne')) and (imagetag is
-    version_compare('N1', 'ne')))
+  when: (imagetag and imagetag is not search("D1|N1"))
 
 - debug:
     var: titanium
