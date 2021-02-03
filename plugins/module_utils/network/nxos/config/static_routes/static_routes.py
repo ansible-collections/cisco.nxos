@@ -465,6 +465,9 @@ class Static_routes(ConfigBase):
                 if "default" not in vrf:
                     commands.append("vrf context " + vrf)
                 else:
+                    # Default static routes are configured in global context.
+                    # "vrf context default" command throws error 9.X release onwards.
+                    # Changing the context to global is achieved by "configure terminal"
                     commands.append("configure terminal")
                 for af in h["address_families"]:
                     for route in af["routes"]:
@@ -602,6 +605,9 @@ class Static_routes(ConfigBase):
         if "default" not in vrf:
             string = "vrf context " + str(vrf)
         else:
+            # Default static routes are configured in global context.
+            # "vrf context default" command throws error 9.X release onwards.
+            # Changing the context to global is achieved by "configure terminal"
             string = "configure terminal"
         if string not in commands:
             commands.insert(0, string)
