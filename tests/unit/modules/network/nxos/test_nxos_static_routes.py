@@ -110,7 +110,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
             )
         )
         commands = [
-            "vrf context default",
+            "configure terminal",
             "ip route 192.0.2.32/28 Ethernet1/2 192.0.2.40 5",
         ]
         self.execute_module(changed=True, commands=commands)
@@ -171,7 +171,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
             )
         )
         commands = [
-            "vrf context default",
+            "configure terminal",
             "no ip route 192.0.2.16/28 192.0.2.24 name initial_route",
             "ip route 192.0.2.16/28 192.0.2.50 name replaced_route tag 12",
         ]
@@ -233,7 +233,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
             )
         )
         commands = [
-            "vrf context default",
+            "configure terminal",
             "no ip route 192.0.2.16/28 192.0.2.24 name initial_route",
             "ip route 192.0.2.112/28 192.0.2.68 vrf end_vrf name overridden_route",
             "vrf context test",
@@ -306,7 +306,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
             )
         )
         commands = [
-            "vrf context default",
+            "configure terminal",
             "no ip route 192.0.2.16/28 192.0.2.24 name initial_route",
         ]
         self.execute_module(changed=True, commands=commands)

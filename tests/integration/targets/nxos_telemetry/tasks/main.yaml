@@ -87,4 +87,3 @@
           - delete server.crt
           - delete new_server.crt
           - delete local_server.crt
-
