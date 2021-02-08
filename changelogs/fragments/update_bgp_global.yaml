@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fail gracefully when BGP is already configured with a different ASN when states merged or replaced is used.

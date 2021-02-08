@@ -113,6 +113,19 @@ class Bgp_global(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
+        # we fail early if state is merged or
+        # replaced and want ASN != have ASN
+        if self.state in ["merged", "replaced"]:
+            w_asn = self.want.get("as_number")
+            h_asn = self.have.get("as_number")
+
+            if h_asn and w_asn != h_asn:
+                self._module.fail_json(
+                    msg="BGP is already configured with ASN {0}. "
+                    "Please remove it with state purged before "
+                    "configuring new ASN".format(h_asn)
+                )
+
         if self.state in ["deleted", "replaced"]:
             self._build_af_data()
 
@@ -152,7 +165,7 @@ class Bgp_global(ResourceModule):
         self._compare_neighbors(want, have, vrf=vrf)
         self._vrfs_compare(want=want, have=have)
 
-        if len(self.commands) != begin:
+        if len(self.commands) != begin or (not have and want):
             self.commands.insert(
                 begin,
                 self._tmplt.render(

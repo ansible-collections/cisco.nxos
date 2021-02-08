@@ -1,0 +1,41 @@
+---
+- debug:
+    msg: Start nxos_bgp_global sanity integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace BGP configuration with different ASN (should fail)
+      cisco.nxos.nxos_bgp_global:
+        config:
+          as_number: "65538"
+          router_id: 198.51.100.2
+          bestpath:
+            compare_neighborid: True
+            cost_community_ignore: True
+        state: replaced
+      ignore_errors: True
+      register: result
+    
+    - assert:
+        that:
+          - result.failed == True
+          - "'BGP is already configured with ASN 65536. Please remove it with state purged before configuring new ASN' in result.msg"
+
+    - name: Merge BGP configuration with different ASN (should fail)
+      cisco.nxos.nxos_bgp_global:
+        config:
+          as_number: "65538"
+          router_id: 198.51.100.9
+        state: merged
+      ignore_errors: True
+      register: result
+    
+    - assert:
+        that:
+          - result.failed == True
+          - "'BGP is already configured with ASN 65536. Please remove it with state purged before configuring new ASN' in result.msg"
+  always:
+    - include_tasks: _remove_config.yaml

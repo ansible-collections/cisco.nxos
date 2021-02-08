@@ -506,6 +506,10 @@ options:
       or a vrf context that is to be removed. Please use the
       M(cisco.nxos.nxos_bgp_af) or M(cisco.nxos.nxos_bgp_neighbor_af)
       modules for prior cleanup.
+    - States I(merged) and I(replaced) will result in a failure if BGP with a
+      different ASN than what is provided in the task is already configured on
+      the device. In such cases, please use state I(purged) to remove
+      the existing BGP process and proceed further.
     - Refer to examples for more details.
     type: str
     choices:
