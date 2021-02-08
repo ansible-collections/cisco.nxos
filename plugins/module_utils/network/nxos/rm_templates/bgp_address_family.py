@@ -69,7 +69,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "address-family {{ afi }} {{ safi }}",
+            "setval": "address-family {{ afi }}{{ (' ' + safi) if safi is defined }}",
             "result": {
                 "address_family": {
                     '{{ afi + "_" + safi|d() + "_" + vrf|d() }}': {

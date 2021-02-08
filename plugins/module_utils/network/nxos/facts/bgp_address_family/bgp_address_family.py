@@ -87,7 +87,7 @@ class Bgp_address_familyFacts(object):
             utils.validate_config(self.argument_spec, {"config": objs})
         )
 
-        facts["bgp_address_family"] = params["config"]
+        facts["bgp_address_family"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
@@ -114,7 +114,8 @@ class Bgp_address_familyFacts(object):
                 in_vrf_cxt = False
             elif cur_vrf and x.strip().startswith("neighbor"):
                 # we entered a neighbor context within VRF which
-                # also has address-family lines
+                # also has address-family lines but we do not
+                # handle that in this module
                 in_nbr_cxt = True
             elif all(
                 (
