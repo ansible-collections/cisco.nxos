@@ -462,7 +462,13 @@ class Static_routes(ConfigBase):
         for h in have:
             if h != {"vrf": "default"}:
                 vrf = h["vrf"]
-                commands.append("vrf context " + vrf)
+                if "default" not in vrf:
+                    commands.append("vrf context " + vrf)
+                else:
+                    # Default static routes are configured in global context.
+                    # "vrf context default" command throws error 9.X release onwards.
+                    # Changing the context to global is achieved by "configure terminal"
+                    commands.append("configure terminal")
                 for af in h["address_families"]:
                     for route in af["routes"]:
                         for next_hop in route["next_hops"]:
@@ -600,7 +606,13 @@ class Static_routes(ConfigBase):
         else:
             com = "ipv6 route " + ro["dest"] + " " + self.add_commands(nh)
         commands.append(com.strip())
-        string = "vrf context " + str(vrf)
+        if "default" not in vrf:
+            string = "vrf context " + str(vrf)
+        else:
+            # Default static routes are configured in global context.
+            # "vrf context default" command throws error 9.X release onwards.
+            # Changing the context to global is achieved by "configure terminal"
+            string = "configure terminal"
         if string not in commands:
             commands.insert(0, string)
         return commands

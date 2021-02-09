@@ -1,6 +1,11 @@
 ---
 - debug: msg="END cli_config/backup.yaml on connection={{ ansible_connection }}"
 
+- set_fact: can_become="true"
+
+- set_fact: can_become="false"
+  when: platform is search('N9K') and (major_version is version('10.', 'ge'))
+
 - name: delete configurable backup file path
   file:
     path: '{{ item }}'
@@ -23,7 +28,7 @@
   with_items: '{{backup_files.files|default([])}}'
 
 - name: take config backup
-  become: true
+  become: '{{ can_become }}'
   register: result
   ansible.netcommon.cli_config:
     backup: true
@@ -44,7 +49,7 @@
       - backup_files.files is defined
 
 - name: take configuration backup in custom filename and directory path
-  become: true
+  become: '{{ can_become }}'
   register: result
   ansible.netcommon.cli_config:
     backup: true
@@ -67,7 +72,7 @@
       - backup_file.files is defined
 
 - name: take configuration backup in custom filename
-  become: true
+  become: '{{ can_become }}'
   register: result
   ansible.netcommon.cli_config:
     backup: true
@@ -89,7 +94,7 @@
       - backup_file.files is defined
 
 - name: take configuration backup in custom path and default filename
-  become: true
+  become: '{{ can_become }}'
   register: result
   ansible.netcommon.cli_config:
     backup: true

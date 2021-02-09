@@ -143,24 +143,34 @@ def get_igmp_snooping(module):
 
     if body:
         snooping = str(body.get("enabled")).lower()
-        if snooping == "true" or snooping == "enabled":
+        if "none" in snooping:
+            snooping = str(body.get("GlobalSnoopEnabled")).lower()
+        if snooping == "true" or snooping == "enabled" or snooping == "yes":
             existing["snooping"] = True
         else:
             existing["snooping"] = False
 
         report_supp = str(body.get("grepsup")).lower()
+        if "none" in report_supp:
+            report_supp = str(body.get("GlobalReportSupression")).lower()
         if report_supp == "true" or report_supp == "enabled":
             existing["report_supp"] = True
         else:
             existing["report_supp"] = False
 
         link_local_grp_supp = str(body.get("glinklocalgrpsup")).lower()
+        if "none" in link_local_grp_supp:
+            link_local_grp_supp = str(
+                body.get("GlobalLinkLocalGroupSupression")
+            ).lower()
         if link_local_grp_supp == "true" or link_local_grp_supp == "enabled":
             existing["link_local_grp_supp"] = True
         else:
             existing["link_local_grp_supp"] = False
 
         v3_report_supp = str(body.get("gv3repsup")).lower()
+        if "none" in v3_report_supp:
+            v3_report_supp = str(body.get("GlobalV3ReportSupression")).lower()
         if v3_report_supp == "true" or v3_report_supp == "enabled":
             existing["v3_report_supp"] = True
         else:

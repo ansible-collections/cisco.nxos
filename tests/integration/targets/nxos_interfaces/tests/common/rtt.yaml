@@ -11,7 +11,7 @@
         config:
           - name: "{{ nxos_int1 }}"
             description: TEST-INTF-1
-            speed: 100
+            speed: 1000
 
           - name: "{{ nxos_int2 }}"
             description: TEST-INTF-2
@@ -37,7 +37,7 @@
         config:
           - name: "{{ nxos_int1 }}"
             description: WRONG-TEST-INTF-1
-            speed: 1000
+            speed: 10000
 
           - name: "{{ nxos_int2 }}"
             description: WRONG-TEST-INTF-2
@@ -51,7 +51,7 @@
         that:
         - '"interface Ethernet1/1" in result.commands'
         - '"description WRONG-TEST-INTF-1" in result.commands'
-        - '"speed 1000" in result.commands'
+        - '"speed 10000" in result.commands'
         - '"interface Ethernet1/2" in result.commands'
         - '"no switchport" in result.commands'
         - '"description WRONG-TEST-INTF-2" in result.commands'

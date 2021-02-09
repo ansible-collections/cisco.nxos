@@ -20,12 +20,9 @@
           - process_id: "200"
             area:
               area_id: 2.2.2.2
-            multi_areas:
-            - 21.0.0.0
-          - process_id: "300"
-            multi_areas:
-            - 50.50.50.50
           multi_areas:
+          - 21.0.0.0
+          - 50.50.50.50
           - 16.10.10.10
       - name: "{{ nxos_int2 }}"
         address_family:

@@ -21,11 +21,11 @@
     state: merged
     config:
       certificate:
-        key: /bootflash/server.key
+        key: /bootflash/server.crt
         hostname: localhost
       compression: gzip
       source_interface: '{{source_interface|default(omit)}}'
-      vrf: management
+      vrf: RED
       destination_groups:
 
         - id: 2

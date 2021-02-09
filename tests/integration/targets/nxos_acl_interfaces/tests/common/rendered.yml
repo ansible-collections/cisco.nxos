@@ -17,7 +17,7 @@
               - name: ACL1v6
                 direction: in
 
-      - name: Ethernet1/5
+      - name: Ethernet1/6
         access_groups:
 
           - afi: ipv4
@@ -27,6 +27,11 @@
                 direction: in
                 port: true
 
+      - name: Ethernet1/5
+        access_groups:
+
+          - afi: ipv4
+            acls:
               - name: ACL1v4
                 direction: out
 
@@ -42,11 +47,12 @@
       - result.changed == false
       - "'interface Ethernet1/2' in result.rendered"
       - "'ipv6 traffic-filter ACL1v6 in' in result.rendered"
+      - "'interface Ethernet1/6' in result.rendered"
+      - "'ip port access-group PortACL in' in result.rendered"
       - "'interface Ethernet1/5' in result.rendered"
       - "'ipv6 traffic-filter ACL1v6 in' in result.rendered"
       - "'ip access-group ACL1v4 out' in result.rendered"
-      - "'ip port access-group PortACL in' in result.rendered"
-      - result.rendered | length == 6
+      - result.rendered | length == 7
 
 - name: Idempotence - Rendered
   register: result

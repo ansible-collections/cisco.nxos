@@ -58,7 +58,7 @@
       assert:
         that:
           - "result.changed == true"
-          - "'vrf context default' in result.commands"
+          - "'configure terminal' in result.commands"
           - "'no ip route 192.0.2.36/30 192.0.2.32 name test_route1 tag 14' in result.commands"
           - "'no ip route 192.0.2.36/30 192.0.2.48 name test_route2 2'"
           - "'ip route 192.0.2.44/30 192.0.2.55 tag 1 1' in result.commands"

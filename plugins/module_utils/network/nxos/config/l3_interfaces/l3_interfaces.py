@@ -416,7 +416,7 @@ class L3_interfaces(ConfigBase):
             commands.append("no encapsulation dot1q")
         if "redirects" in obj:
             if not self.check_existing(name, "has_secondary") or re.match(
-                "N[3567]", self.platform
+                "N[35679]", self.platform
             ):
                 # device auto-enables redirects when secondaries are removed;
                 # auto-enable may fail on legacy platforms so always do explicit enable

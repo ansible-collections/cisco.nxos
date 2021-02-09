@@ -24,6 +24,11 @@
                   - name: ACL1v4
                     direction: out
 
+          - name: Ethernet1/6
+            access_groups:
+
+              - afi: ipv4
+                acls:
                   - name: PortACL
                     port: true
                     direction: in
@@ -43,10 +48,10 @@
           - "'no ipv6 traffic-filter ACL1v6 in' in result.commands"
           - "'interface Ethernet1/5' in result.commands"
           - "'no ip access-group ACL1v4 out' in result.commands"
-          - "'no ip port access-group PortACL in' in result.commands"
           - "'no ipv6 traffic-filter ACL1v6 in' in result.commands"
           - "'interface Ethernet1/3' in result.commands"
           - "'ip access-group ACL1v4 out' in result.commands"
+          - "'interface Ethernet1/6' in result.commands"
           - "'ip port access-group PortACL in' in result.commands"
           - "'ipv6 port traffic-filter NewACLv6 in' in result.commands"
           - result.commands | length == 10
