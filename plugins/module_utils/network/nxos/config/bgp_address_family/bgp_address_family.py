@@ -36,7 +36,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_empties,
 )
-import q
 
 
 class Bgp_address_family(ResourceModule):

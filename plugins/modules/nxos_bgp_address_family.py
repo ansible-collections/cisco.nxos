@@ -59,7 +59,7 @@ options:
             description: Additional paths configuration.
             type: dict
             suboptions:
-              install_backup: 
+              install_backup:
                 description: Install backup path.
                 type: bool
               receive:
@@ -80,7 +80,7 @@ options:
             type: list
             elements: dict
             suboptions:
-              prefix: 
+              prefix:
                 description: Aggregate prefix.
                 type: str
               advertise_map:

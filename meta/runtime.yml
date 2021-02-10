@@ -206,6 +206,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     bgp_global:
       redirect: cisco.nxos.nxos
+    nxos_bgp_address_family:
+      redirect: cisco.nxos.nxos
+    bgp_address_family:
+      redirect: cisco.nxos.nxos
     nxos_ospfv2:
       redirect: cisco.nxos.nxos
     ospfv2:
@@ -555,6 +559,8 @@ plugin_routing:
         warning_text: See the plugin documentation for more details
     bgp_global:
       redirect: cisco.nxos.nxos_bgp_global
+    bgp_address_family:
+      redirect: cisco.nxos.nxos_bgp_address_family
     ospfv2:
       redirect: cisco.nxos.nxos_ospfv2
     ospfv3:

@@ -8,9 +8,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The Bgp_address_family parser templates file. This contains 
-a list of parser definitions and associated functions that 
-facilitates both facts gathering and native command generation for 
+The Bgp_address_family parser templates file. This contains
+a list of parser definitions and associated functions that
+facilitates both facts gathering and native command generation for
 the given network resource.
 """
 
@@ -280,12 +280,15 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     '{{ afi + "_" + safi + "_" + vrf|d() }}': {
                         "dampening": {
-                            "set": "{{ True if dampening is defined and ((not decay_half_life|d(False), not start_reuse_route|d(False), not start_suppress_route|d(False), not max_suppress_time|d(False), not route_map|d(""))|all) }}",
+                            "set": "{{ True if dampening is defined"
+                                   " and ((not decay_half_life|d(False),"
+                                   " not start_reuse_route|d(False), "
+                                   " not start_suppress_route|d(False), not max_suppress_time|d(False), not route_map|d(""))|all) }}",
                             "decay_half_life": "{{ decay_half_life }}",
                             "start_reuse_route": "{{ start_reuse_route }}",
                             "start_suppress_route": "{{ start_suppress_route }}",
                             "max_suppress_time": "{{ max_suppress_time }}",
-                            "route_map": "{{ route_map }}",                        
+                            "route_map": "{{ route_map }}",
                         }
                     }
                 }
@@ -637,7 +640,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                     '{{ afi + "_" + safi + "_" + vrf|d() }}': {
                         "retain": {
                             "route_target": {
-                            "route_map": "{{ route_map }}",
+                                "route_map": "{{ route_map }}",
                             }
                         }
                     }
