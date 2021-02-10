@@ -78,6 +78,7 @@ class Bgp_address_familyFacts(object):
         if objs:
             if "address_family" in objs:
                 objs["address_family"] = list(objs["address_family"].values())
+                # TO-DO sort all list of dictionaries
 
         ansible_facts["ansible_network_resources"].pop(
             "bgp_address_family", None

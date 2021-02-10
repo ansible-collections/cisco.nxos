@@ -20,12 +20,40 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 )
 
 
-def _tmplt_aggregate_address(proc):
-    pass
+def _tmplt_aggregate_address(aggaddr):
+    cmd = "aggregate-address {prefix}"
+
+    if aggaddr.get("advertise_map"):
+        cmd += " advertise-map {advertise_map}"
+    if aggaddr.get("as_set"):
+        cmd += " as-set"
+    if aggaddr.get("attribute_map"):
+        cmd += " attribute-map {attribute_map}"
+    if aggaddr.get("summary_only"):
+        cmd += " summary-only"
+    if aggaddr.get("suppress_map"):
+        cmd += " suppress-map {suppress_map}"
+
+    return cmd.format(**aggaddr)
 
 
 def _tmplt_dampening(proc):
-    pass
+    damp = proc.get("dampening", {})
+    cmd = "dampening"
+
+    if damp.get("set") is False:
+        return "no {0}".format(cmd)
+    if damp.get("route_map"):
+        cmd += " route-map {route_map}".format(**damp)
+    for x in (
+        "decay_half_life",
+        "start_reuse_route",
+        "start_suppress_route",
+        "max_suppress_time",
+    ):
+        if x in damp:
+            cmd += " {0}".format(damp[x])
+    return cmd
 
 
 def _tmplt_redistribute(redis):
@@ -369,7 +397,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "maximum_paths",
+            "name": "maximum_paths.parallel_paths",
             "getval": re.compile(
                 r"""
                 \s+maximum-paths
@@ -389,7 +417,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "maximum_paths.ibgp",
+            "name": "maximum_paths.ibgp.parallel_paths",
             "getval": re.compile(
                 r"""
                 \s+maximum-paths
@@ -397,7 +425,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "maximum-paths ibgp {{ ibgp.maximum_paths.parallel_paths }}",
+            "setval": "maximum-paths ibgp {{ maximum_paths.ibgp.parallel_paths }}",
             "result": {
                 "address_family": {
                     '{{ afi + "_" + safi + "_" + vrf|d() }}': {
@@ -411,7 +439,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "maximum_paths.eibgp",
+            "name": "maximum_paths.eibgp.parallel_paths",
             "getval": re.compile(
                 r"""
                 \s+maximum-paths
@@ -419,7 +447,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "maximum-paths eibgp {{ eibgp.maximum_paths.parallel_paths }}",
+            "setval": "maximum-paths eibgp {{ maximum_paths.eibgp.parallel_paths }}",
             "result": {
                 "address_family": {
                     '{{ afi + "_" + safi + "_" + vrf|d() }}': {
@@ -433,7 +461,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "maximum_paths.local",
+            "name": "maximum_paths.local.parallel_paths",
             "getval": re.compile(
                 r"""
                 \s+maximum-paths
@@ -441,7 +469,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "maximum-paths local {{ local.maximum_paths.parallel_paths }}",
+            "setval": "maximum-paths local {{ maximum_paths.local.parallel_paths }}",
             "result": {
                 "address_family": {
                     '{{ afi + "_" + safi + "_" + vrf|d() }}': {
@@ -455,7 +483,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "maximum_paths.mixed",
+            "name": "maximum_paths.mixed.parallel_paths",
             "getval": re.compile(
                 r"""
                 \s+maximum-paths
@@ -463,7 +491,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "maximum-paths mixed {{ mixed.maximum_paths.parallel_paths }}",
+            "setval": "maximum-paths mixed {{ maximum_paths.mixed.parallel_paths }}",
             "result": {
                 "address_family": {
                     '{{ afi + "_" + safi + "_" + vrf|d() }}': {
@@ -545,31 +573,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 }
             },
         },
-        {
-            "name": "nexthop.trigger_delay",
-            "getval": re.compile(
-                r"""
-                \s+nexthop
-                \strigger-delay
-                \scritical\s(?P<critical_delay>\d+)
-                \snon-critical\s(?P<non_critical_delay>\d+)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "nexthop trigger-delay critical {{ nexthop.trigger_delay.critical_delay }} non-critical {{ nexthop.trigger_delay.non_critical_delay }}",
-            "result": {
-                "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
-                        "nexthop": {
-                            "trigger_delay": {
-                                "critical_delay": "{{ critical_delay }}",
-                                "non_critical_delay": "{{ non_critical_delay }}",
-                            }
-                        }
-                    }
-                }
-            },
-        },
+        # to do
         {
             "name": "redistribute",
             "getval": re.compile(

@@ -19,6 +19,7 @@ created.
 
 from copy import deepcopy
 
+import re
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -31,6 +32,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_address_family import (
     Bgp_address_familyTemplate,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    remove_empties,
 )
 import q
 
@@ -48,7 +52,32 @@ class Bgp_address_family(ResourceModule):
             resource="bgp_address_family",
             tmplt=Bgp_address_familyTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "additional_paths.install_backup",
+            "additional_paths.receive",
+            "additional_paths.selection.route_map",
+            "additional_paths.send",
+            "client_to_client.reflection",
+            "dampen_igp_metric",
+            "dampening",
+            "default_information.originate",
+            "default_metric",
+            "distance",
+            "export_gateway_ip",
+            "maximum_paths.parallel_paths",
+            "maximum_paths.ibgp.parallel_paths",
+            "maximum_paths.eibgp.parallel_paths",
+            "maximum_paths.local.parallel_paths",
+            "maximum_paths.mixed.parallel_paths",
+            "nexthop.route_map",
+            "nexthop.trigger_delay",
+            "retain.route_target.retain_all",
+            "retain.route_target.route_map",
+            "suppress_inactive",
+            "table_map",
+            "timers",
+            "wait_igp_convergence",
+        ]
 
     def execute_module(self):
         """ Execute the module
@@ -75,34 +104,48 @@ class Bgp_address_family(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
+        wantd = remove_empties(wantd)
+        haved = remove_empties(haved)
+
+        have_af = haved.get("address_family", {})
+        want_af = wantd.get("address_family", {})
+        wvrfs = wantd.get("vrfs", {})
+        hvrfs = haved.get("vrfs", {})
+
         # if state is overridden or deleted, remove superfluos config
         if self.state in ["deleted", "overridden"]:
-            # for empty want we remove all AF configs
-            if not self.want and self.state == "deleted":
-                wantd = deepcopy(haved)
-
-            # we should not delete anything in case of ASN mismatch
-            if haved and haved["as_number"] == wantd.get("as_number"):
+            if (
+                haved and haved["as_number"] == wantd.get("as_number")
+            ) or not wantd:
                 remove = True if self.state == "deleted" else False
-
-                have_af = haved.get("address_family", {})
-                want_af = wantd.get("address_family", {})
-                self._remove_af(want_af, have_af, remove=remove)
-
-                wvrfs = wantd.get("vrfs", {})
-                hvrfs = haved.get("vrfs", {})
+                purge = True if not wantd else False
+                self._remove_af(want_af, have_af, remove=remove, purge=purge)
 
                 for k, hvrf in iteritems(hvrfs):
-                    wvrf = wvrfs.pop(k, {})
-                    self._remove_af(wvrf, hvrf, vrf=k, remove=remove)
+                    wvrf = wvrfs.get(k, {})
+                    self._remove_af(
+                        wvrf, hvrf, vrf=k, remove=remove, purge=purge
+                    )
 
-        if self.state in ["merged", "replaced", "overridden"]:
-            for k, want in iteritems(wantd):
-                self._compare(want=want, have=haved.pop(k, {}))
+        if self.state in ["merged", "replaced", "overridden", "rendered"]:
+            for k, want in iteritems(want_af):
+                self._compare(want=want, have=have_af.pop(k, {}))
+
+            # handle vrf->af
+            for wk, wvrf in iteritems(wvrfs):
+                cur_ptr = len(self.commands)
+
+                hvrf = hvrfs.pop(wk, {})
+                for k, want in iteritems(wvrf):
+                    self._compare(want=want, have=hvrf.pop(k, {}))
+
+                # add VRF command at correct position once
+                if cur_ptr != len(self.commands):
+                    self.commands.insert(cur_ptr, "vrf {0}".format(wk))
 
         if self.commands and not self.commands[0].startswith("router bgp"):
             self.commands.insert(
-                0, "router bgp {0}".format(haved["as_number"])
+                0, "router bgp {as_number}".format(**haved or wantd)
             )
 
     def _compare(self, want, have):
@@ -111,8 +154,33 @@ class Bgp_address_family(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Bgp_address_family network resource.
         """
-        # self.compare(parsers=self.parsers, want=want, have=have)
-        pass
+        begin = len(self.commands)
+
+        self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_lists(want=want, have=have)
+
+        if len(self.commands) != begin or (not have and want):
+            self.commands.insert(
+                begin,
+                self._tmplt.render(want or have, "address_family", False),
+            )
+
+    def _compare_lists(self, want, have):
+        for attrib in [
+            "aggregate_address",
+            "inject_map",
+            "network",
+            "redistribute",
+        ]:
+            wdict = want.get(attrib, {})
+            hdict = have.get(attrib, {})
+            for key, entry in iteritems(wdict):
+                if entry != hdict.pop(key, {}):
+                    self.addcmd(entry, attrib.format(attrib), False)
+
+            # remove remaining items in have for replaced
+            for entry in hdict.values():
+                self.addcmd(entry, attrib.format(attrib), True)
 
     def _bgp_af_list_to_dict(self, entry):
         def _build_key(data):
@@ -131,6 +199,24 @@ class Bgp_address_family(ResourceModule):
 
             return (afi, safi, vrf)
 
+        # transform parameters which are
+        # list of dicts to dict of dicts
+        for item in entry.get("address_family", []):
+            item["aggregate_address"] = {
+                x["prefix"]: x for x in item.get("aggregate_address", [])
+            }
+            item["inject_map"] = {
+                (x["route_map"], x["exist_map"]): x
+                for x in item.get("inject_map", [])
+            }
+            item["network"] = {x["prefix"]: x for x in item.get("network", [])}
+            item["redistribute"] = {
+                (x.get("id"), x["protocol"]): x
+                for x in item.get("redistribute", [])
+            }
+
+        # transform all entries under
+        # config->address_family to dict of dicts
         af = {_build_key(x): x for x in entry.get("address_family", [])}
 
         temp = {}
@@ -152,18 +238,27 @@ class Bgp_address_family(ResourceModule):
                 entry["address_family"][k] = temp[k]
             else:
                 # populate VRF AFs
-                entry["vrfs"][k] = temp[k]
+                entry["vrfs"][k.replace("vrf_", "", 1)] = temp[k]
 
         entry["address_family"] = entry["address_family"].get("vrf_", {})
 
         # final structure: https://gist.github.com/NilashishC/628dae5fe39a4908e87c9e833bfbe57d
 
-    def _remove_af(self, want_af, have_af, vrf=None, remove=False):
+    def _remove_af(
+        self, want_af, have_af, vrf=None, remove=False, purge=False
+    ):
         cur_ptr = len(self.commands)
         for k, v in iteritems(have_af):
-            # first conditional is for deleted
+            # first conditional is for deleted with config provided
             # second conditional is for overridden
-            if (remove and k in want_af) or (not remove and k not in want_af):
+            # third condition is for deleted with empty config
+            if any(
+                (
+                    (remove and k in want_af),
+                    (not remove and k not in want_af),
+                    purge,
+                )
+            ):
                 self.addcmd(v, "address_family", True)
         if cur_ptr < len(self.commands) and vrf:
             self.commands.insert(cur_ptr, "vrf {0}".format(vrf))
