@@ -85,7 +85,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                         },
                         "client_to_client": {
                             "type": "dict",
-                            "options": {"reflection": {"type": "bool"}},
+                            "options": {"no_reflection": {"type": "bool"}},
                         },
                         "dampen_igp_metric": {"type": "int"},
                         "dampening": {

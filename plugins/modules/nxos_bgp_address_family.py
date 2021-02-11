@@ -102,7 +102,7 @@ options:
             description: Configure client-to-client route reflection.
             type: dict
             suboptions:
-              reflection:
+              no_reflection:
                 description: Reflection of routes permitted.
                 type: bool
           dampen_igp_metric:

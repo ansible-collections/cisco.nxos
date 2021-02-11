@@ -225,7 +225,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "client_to_client.reflection",
+            "name": "client_to_client.no_reflection",
             "getval": re.compile(
                 r"""
                 \s+no\sclient-to-client
@@ -238,7 +238,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     '{{ afi + "_" + safi + "_" + vrf|d() }}': {
                         "client_to_client": {
-                            "reflection": "{{ not reflection }}",
+                            "no_reflection": "{{ not not reflection }}",
                         }
                     }
                 }
@@ -562,7 +562,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "nexthop trigger-delay critical {{ nexthop.trigger_delay.critical }} non-critical {{ nexthop.trigger_delay.non_critical }}",
+            "setval": "nexthop trigger-delay critical {{ nexthop.trigger_delay.critical_delay }} non-critical {{ nexthop.trigger_delay.non_critical_delay }}",
             "result": {
                 "address_family": {
                     '{{ afi + "_" + safi + "_" + vrf|d() }}': {
@@ -687,7 +687,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "timers",
+            "name": "timers.bestpath_defer",
             "getval": re.compile(
                 r"""
                 \s+timers
@@ -696,7 +696,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "timers bestpath-defer {{ timers.bestpath_defer.defer_time }} {{ timers.bestpath_defer.maximum_defer_timer }}",
+            "setval": "timers bestpath-defer {{ timers.bestpath_defer.defer_time }} maximum {{ timers.bestpath_defer.maximum_defer_time }}",
             "result": {
                 "address_family": {
                     '{{ afi + "_" + safi + "_" + vrf|d() }}': {

@@ -56,7 +56,7 @@ class Bgp_address_family(ResourceModule):
             "additional_paths.receive",
             "additional_paths.selection.route_map",
             "additional_paths.send",
-            "client_to_client.reflection",
+            "client_to_client.no_reflection",
             "dampen_igp_metric",
             "dampening",
             "default_information.originate",
@@ -74,7 +74,7 @@ class Bgp_address_family(ResourceModule):
             "retain.route_target.route_map",
             "suppress_inactive",
             "table_map",
-            "timers",
+            "timers.bestpath_defer",
             "wait_igp_convergence",
         ]
 
