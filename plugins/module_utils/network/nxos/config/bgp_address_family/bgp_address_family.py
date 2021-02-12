@@ -261,3 +261,4 @@ class Bgp_address_family(ResourceModule):
                 self.addcmd(v, "address_family", True)
         if cur_ptr < len(self.commands) and vrf:
             self.commands.insert(cur_ptr, "vrf {0}".format(vrf))
+            self.commands.append("exit")
