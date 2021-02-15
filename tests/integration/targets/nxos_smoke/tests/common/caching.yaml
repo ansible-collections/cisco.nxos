@@ -1,17 +1,17 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} common/caching.yaml"
-
-- name: Set system defaults for switchports
-  cisco.nxos.nxos_config:
-    lines: "no system default switchport\nsystem default switchport shutdown\n"
-
-- name: setup
-  cisco.nxos.nxos_config: &rem
-    lines: 
-      - "default interface {{ nxos_int1 }}"
-      - "default interface {{ nxos_int2 }}"
-
 - block:
+  - debug: msg="START connection={{ ansible_connection }} common/caching.yaml"
+
+  - name: Set system defaults for switchports
+    cisco.nxos.nxos_config:
+      lines: "no system default switchport\nsystem default switchport shutdown\n"
+
+  - name: setup
+    cisco.nxos.nxos_config: &rem
+      lines: 
+        - "default interface {{ nxos_int1 }}"
+        - "default interface {{ nxos_int2 }}"
+
   - name: Merge base interfaces configuration
     register: result
     cisco.nxos.nxos_interfaces: &merged
@@ -92,3 +92,4 @@
   always:
     - name: cleanup
       cisco.nxos.nxos_config: *rem
+  when: ansible_connection == "network_cli" and ansible_network_single_user_mode|d(False)
