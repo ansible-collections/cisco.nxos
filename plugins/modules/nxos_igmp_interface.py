@@ -301,7 +301,7 @@ def get_igmp_interface(module, interface):
     if body:
         split_body = body.split("\n")
         route_map_regex = (
-            r".*ip igmp static-oif route-map\s+" r"(?P<route_map>\S+).*"
+            r".*ip igmp static-oif route-map\s+(?P<route_map>\S+).*"
         )
         prefix_source_regex = (
             r".*ip igmp static-oif\s+(?P<prefix>"

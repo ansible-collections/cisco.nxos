@@ -332,7 +332,7 @@ def state_present(module, existing, proposed, candidate):
             candidate.add(static_level_cmds, parents=parents)
 
         elif "peer-ip" in commands[0]:
-            static_level_cmds = [cmd for cmd in commands]
+            static_level_cmds = list(commands)
             parents = [
                 interface_command,
                 vni_command,

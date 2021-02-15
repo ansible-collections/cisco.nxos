@@ -656,7 +656,7 @@ class Acls(ConfigBase):
                                         # remove existing rule to update it
                             elif w_acl.get("aces"):
                                 # 'have' has ACL defined without any ACE
-                                ace_list = [item for item in w_acl["aces"]]
+                                ace_list = list(w_acl["aces"])
                             for w_ace in ace_list:
                                 ace_commands.append(
                                     self.process_ace(w_ace).strip()

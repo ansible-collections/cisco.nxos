@@ -197,9 +197,9 @@ class Static_routes(ConfigBase):
                                     )
                                     want_next_hops = []
                                     if "next_hops" in want_dest.keys():
-                                        want_next_hops = [
-                                            nh for nh in want_dest["next_hops"]
-                                        ]
+                                        want_next_hops = list(
+                                            want_dest["next_hops"]
+                                        )
                                     if len(want_next_hops) > 0:
                                         for next_hop in ro["next_hops"]:
                                             if next_hop not in want_next_hops:
@@ -300,12 +300,9 @@ class Static_routes(ConfigBase):
                         self.del_commands(
                             [
                                 {
-                                    "address_families": [
-                                        h
-                                        for h in obj_in_have[
-                                            "address_families"
-                                        ]
-                                    ],
+                                    "address_families": list(
+                                        obj_in_have["address_families"]
+                                    ),
                                     "vrf": obj_in_have["vrf"],
                                 }
                             ]
@@ -550,9 +547,7 @@ class Static_routes(ConfigBase):
                                                 h3 = (
                                                     x
                                                 )  # this has the have dict with same vrf, afi and dest as want
-                                        next_hop_list = [
-                                            h for h in h3["next_hops"]
-                                        ]
+                                        next_hop_list = list(h3["next_hops"])
                                         if "next_hops" in ro.keys():
                                             for nh in ro["next_hops"]:
                                                 if "interface" in nh.keys():
