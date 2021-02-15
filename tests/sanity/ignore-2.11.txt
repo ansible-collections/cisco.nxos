@@ -7,3 +7,7 @@ plugins/module_utils/network/nxos/config/bgp_global/bgp_global.py import-2.6!ski
 plugins/module_utils/network/nxos/config/ospf_interfaces/ospf_interfaces.py import-2.6!skip
 plugins/module_utils/network/nxos/config/ospfv2/ospfv2.py import-2.6!skip
 plugins/module_utils/network/nxos/config/ospfv3/ospfv3.py import-2.6!skip
+plugins/modules/nxos_bgp_global.py import-2.6!skip
+plugins/modules/nxos_ospf_interfaces.py import-2.6!skip
+plugins/modules/nxos_ospfv2.py import-2.6!skip
+plugins/modules/nxos_ospfv3.py import-2.6!skip
