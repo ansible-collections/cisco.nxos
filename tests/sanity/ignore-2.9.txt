@@ -29,3 +29,11 @@ plugins/modules/nxos_bgp.py validate-modules:deprecation-mismatch # 2.9 expects 
 plugins/modules/nxos_bgp.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/modules/nxos_bgp_neighbor.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
 plugins/modules/nxos_bgp_neighbor.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/module_utils/network/nxos/config/bgp_global/bgp_global.py compile-2.6!skip
+plugins/module_utils/network/nxos/config/ospf_interfaces/ospf_interfaces.py compile-2.6!skip
+plugins/module_utils/network/nxos/config/ospfv2/ospfv2.py compile-2.6!skip
+plugins/module_utils/network/nxos/config/ospfv3/ospfv3.py compile-2.6!skip
+plugins/module_utils/network/nxos/config/bgp_global/bgp_global.py import-2.6!skip
+plugins/module_utils/network/nxos/config/ospf_interfaces/ospf_interfaces.py import-2.6!skip
+plugins/module_utils/network/nxos/config/ospfv2/ospfv2.py import-2.6!skip
+plugins/module_utils/network/nxos/config/ospfv3/ospfv3.py import-2.6!skip
