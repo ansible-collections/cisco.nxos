@@ -142,7 +142,7 @@ class Bgp_address_family(ResourceModule):
                 if cur_ptr != len(self.commands):
                     self.commands.insert(cur_ptr, "vrf {0}".format(wk))
 
-        if self.commands and not self.commands[0].startswith("router bgp"):
+        if self.commands:
             self.commands.insert(
                 0, "router bgp {as_number}".format(**haved or wantd)
             )

@@ -26,6 +26,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
 )
+import q
 
 
 class Bgp_address_familyFacts(object):
@@ -66,7 +67,14 @@ class Bgp_address_familyFacts(object):
         )
         objs = bgp_address_family_parser.parse()
         if objs:
+            nbr = []
             if "address_family" in objs:
+                # remove neighbor AF entries
+                for k, v in iteritems(objs["address_family"]):
+                    if not k.startswith("nbr_"):
+                        nbr.append(k)
+                for x in nbr:
+                    del objs["address_family"][x]
                 objs["address_family"] = list(objs["address_family"].values())
                 # TO-DO sort all list of dictionaries
 
@@ -84,8 +92,8 @@ class Bgp_address_familyFacts(object):
         return ansible_facts
 
     def _flatten_config(self, data):
-        """ Flatten neighbor contexts in
-            the running-config for easier parsing.
+        """ Flatten contexts in the BGP
+            running-config for easier parsing.
         :param obj: dict
         :returns: flattened running config
         """
@@ -103,18 +111,20 @@ class Bgp_address_familyFacts(object):
                 cur_vrf["indent"] = cur_indent
             elif cur_vrf and (cur_indent <= cur_vrf["indent"]):
                 in_vrf_cxt = False
-            elif cur_vrf and x.strip().startswith("neighbor"):
-                # we entered a neighbor context within VRF which
-                # also has address-family lines but we do not
-                # handle that in this module
+            elif x.strip().startswith("neighbor"):
+                # we entered a neighbor context which
+                # also has address-family lines
                 in_nbr_cxt = True
-            elif all(
-                (
-                    in_vrf_cxt,
-                    not in_nbr_cxt,
-                    x.strip().startswith("address-family"),
-                )
-            ):
-                data[data.index(x)] = cur_vrf["vrf"] + " " + x.strip()
+                nbr = x
+            elif x.strip().startswith("address-family"):
+                if in_vrf_cxt or in_nbr_cxt:
+                    prepend = ""
+                    if in_vrf_cxt:
+                        prepend += cur_vrf["vrf"]
+                    if in_nbr_cxt:
+                        if in_vrf_cxt:
+                            nbr = " " + nbr.strip()
+                        prepend += nbr
+                    data[data.index(x)] = prepend + " " + x.strip()
 
         return "\n".join(data)

@@ -33,9 +33,6 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
     """The arg spec for the nxos_l3_interfaces module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "running_config": {"type": "str"},
         "config": {

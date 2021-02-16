@@ -34,9 +34,6 @@ class TelemetryArgs(object):  # pylint: disable=R0903
     """The arg spec for the nxos_telemetry module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "config": {
             "options": {

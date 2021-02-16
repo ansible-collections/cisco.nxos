@@ -91,6 +91,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 (\s+vrf\s(?P<vrf>\S+))?
+                (\s+neighbor\s(?P<nbr>\S+))?
                 \s+address-family
                 \s(?P<afi>\S+)
                 (\s(?P<safi>\S+))?
@@ -100,7 +101,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "address-family {{ afi }}{{ (' ' + safi) if safi is defined }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi|d() + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "vrf": "{{ vrf }}",
                         "afi": "{{ afi }}",
                         "safi": "{{ safi }}",
@@ -121,7 +122,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "additional-paths install backup",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "additional_paths": {
                             "install_backup": "{{ not not backup }}",
                         }
@@ -141,7 +142,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "additional-paths receive",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "additional_paths": {
                             "receive": "{{ not not receive }}",
                         }
@@ -162,7 +163,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "additional-paths selection route-map {{ additional_paths.selection.route_map }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "additional_paths": {
                             "selection": {
                                 "route_map": "{{ route_map }}",
@@ -184,7 +185,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "additional-paths send",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "additional_paths": {
                             "send": "{{ not not send }}",
                         }
@@ -209,7 +210,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": _tmplt_aggregate_address,
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "aggregate_address": [
                             {
                                 "prefix": "{{ prefix }}",
@@ -236,7 +237,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "client-to-client reflection",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "client_to_client": {
                             "no_reflection": "{{ not not reflection }}",
                         }
@@ -256,7 +257,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "dampen-igp-metric {{ dampen_igp_metric }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "dampen_igp_metric": "{{ dampen_igp_metric }}",
                     }
                 }
@@ -278,7 +279,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": _tmplt_dampening,
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "dampening": {
                             "set": "{{ True if dampening is defined"
                                    " and ((not decay_half_life|d(False),"
@@ -306,7 +307,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "default-information originate",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "default_information": {
                             "originate": "{{ not not originate }}",
                         }
@@ -326,7 +327,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "default-metric {{ default_metric }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "default_metric": "{{ default_metric }}",
                     }
                 }
@@ -346,7 +347,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "distance {{ distance.ebgp_routes }} {{ distance.ibgp_routes }} {{ distance.local_routes }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "distance": {
                             "ebgp_routes": "{{ ebgp_routes }}",
                             "ibgp_routes": "{{ ibgp_routes }}",
@@ -367,7 +368,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "export-gateway-ip",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "export_gateway_ip": "{{ not not export_gateway_ip }}",
                     }
                 }
@@ -387,7 +388,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "inject-map {{ route_map }} exist-map {{ exist_map }}{{ ' copy-attributes' if copy_attributes|d(False) }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "inject_map": [
                             {
                                 "route_map": "{{ route_map }}",
@@ -411,7 +412,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "maximum-paths {{ maximum_paths.parallel_paths }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "maximum_paths": {
                             "parallel_paths": "{{ parallel_paths }}",
                         }
@@ -431,7 +432,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "maximum-paths ibgp {{ maximum_paths.ibgp.parallel_paths }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "maximum_paths": {
                             "ibgp": {
                                 "parallel_paths": "{{ parallel_paths }}",
@@ -453,7 +454,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "maximum-paths eibgp {{ maximum_paths.eibgp.parallel_paths }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "maximum_paths": {
                             "eibgp": {
                                 "parallel_paths": "{{ parallel_paths }}",
@@ -475,7 +476,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "maximum-paths local {{ maximum_paths.local.parallel_paths }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "maximum_paths": {
                             "local": {
                                 "parallel_paths": "{{ parallel_paths }}",
@@ -497,7 +498,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "maximum-paths mixed {{ maximum_paths.mixed.parallel_paths }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "maximum_paths": {
                             "mixed": {
                                 "parallel_paths": "{{ parallel_paths }}",
@@ -520,7 +521,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "network {{ prefix }}{{ (' route-map ' + route_map) if route_map is defined }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "network": [
                             {
                                 "prefix": "{{ prefix }}",
@@ -543,7 +544,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "nexthop route-map {{ nexthop.route_map }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "nexthop": {
                             "route_map": "{{ route_map }}",
                         }
@@ -565,7 +566,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "nexthop trigger-delay critical {{ nexthop.trigger_delay.critical_delay }} non-critical {{ nexthop.trigger_delay.non_critical_delay }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "nexthop": {
                             "trigger_delay": {
                                 "critical_delay": "{{ critical_delay }}",
@@ -591,7 +592,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": _tmplt_redistribute,
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "redistribute": [
                             {
                                 "protocol": "{{ protocol }}",
@@ -615,7 +616,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "retain route-target all",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "retain": {
                             "route_target": {
                                 "retain_all": "{{ not not retain_all }}",
@@ -637,7 +638,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "retain route-target route-map {{ retain.route_target.route_map }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "retain": {
                             "route_target": {
                                 "route_map": "{{ route_map }}",
@@ -658,7 +659,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "suppress-inactive",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "suppress_inactive": "{{ not not suppress_inactive }}",
                     }
                 }
@@ -677,7 +678,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "table-map {{ table_map.name }}{{ ' filter' if table_map.filter|d(False) }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "table_map": {
                             "name": "{{ name }}",
                             "filter": "{{ not not filter }}",
@@ -699,7 +700,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "timers bestpath-defer {{ timers.bestpath_defer.defer_time }} maximum {{ timers.bestpath_defer.maximum_defer_time }}",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "timers": {
                             "bestpath_defer": {
                                 "defer_time": "{{ defer_time }}",
@@ -721,7 +722,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "setval": "wait-igp-convergence",
             "result": {
                 "address_family": {
-                    '{{ afi + "_" + safi + "_" + vrf|d() }}': {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
                         "wait_igp_convergence": "{{ not not wait_igp_convergence }}",
                     }
                 }

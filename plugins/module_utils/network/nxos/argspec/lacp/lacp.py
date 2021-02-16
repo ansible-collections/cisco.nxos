@@ -33,9 +33,6 @@ class LacpArgs(object):
     """The arg spec for the nxos_lacp module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "running_config": {"type": "str"},
         "config": {

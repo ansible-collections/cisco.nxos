@@ -2016,3 +2016,302 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_af_parsed(self):
+        # test parsed
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    router bgp 65563
+                      address-family ipv4 multicast
+                        wait-igp-convergence
+                      vrf site-1
+                        address-family ipv4 unicast
+                          timers bestpath-defer 100 maximum 350
+                    """
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = dict(
+            as_number="65563",
+            address_family=[
+                dict(afi="ipv4", safi="multicast", wait_igp_convergence=True),
+                dict(
+                    vrf="site-1",
+                    afi="ipv4",
+                    safi="unicast",
+                    timers=dict(
+                        bestpath_defer=dict(
+                            defer_time=100, maximum_defer_time=350
+                        )
+                    ),
+                ),
+            ],
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)
+
+    def test_nxos_bgp_af_gathered(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65563
+              address-family ipv4 multicast
+                wait-igp-convergence
+              neighbor 192.168.1.0
+                address-family ipv6 unicast
+              neighbor 192.168.2.0
+                address-family ipv6 multicast
+              vrf site-1
+                address-family ipv4 unicast
+                  timers bestpath-defer 100 maximum 350
+                neighbor 192.168.3.0
+                  address-family ipv6 multicast
+            """
+        )
+
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        gathered = dict(
+            as_number="65563",
+            address_family=[
+                dict(afi="ipv4", safi="multicast", wait_igp_convergence=True),
+                dict(
+                    vrf="site-1",
+                    afi="ipv4",
+                    safi="unicast",
+                    timers=dict(
+                        bestpath_defer=dict(
+                            defer_time=100, maximum_defer_time=350
+                        )
+                    ),
+                ),
+            ],
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_bgp_af_rendered(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number=65563,
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                            redistribute=[
+                                dict(
+                                    protocol="eigrp",
+                                    id="100",
+                                    route_map="test-1",
+                                ),
+                                dict(protocol="static", route_map="test-5"),
+                            ],
+                        ),
+                        dict(
+                            vrf="site-1",
+                            afi="ipv4",
+                            safi="unicast",
+                            redistribute=[
+                                dict(
+                                    protocol="ospf",
+                                    id="101",
+                                    route_map="test-2",
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+                state="rendered",
+            ),
+            ignore_provider_arg,
+        )
+        rendered = [
+            "router bgp 65563",
+            "address-family ipv4 multicast",
+            "redistribute eigrp 100 route-map test-1",
+            "redistribute static route-map test-5",
+            "vrf site-1",
+            "address-family ipv4 unicast",
+            "redistribute ospf 101 route-map test-2",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(set(result["rendered"]), set(rendered))
+
+    def test_nxos_bgp_af_delete(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65563
+              address-family ipv4 multicast
+                wait-igp-convergence
+              neighbor 192.168.1.0
+                address-family ipv6 unicast
+              neighbor 192.168.2.0
+                address-family ipv6 multicast
+              vrf site-1
+                address-family ipv4 unicast
+                  timers bestpath-defer 100 maximum 350
+                address-family ipv6 multicast
+                neighbor 192.168.3.0
+                  address-family ipv6 multicast
+              vrf site-2
+                address-family ipv6 unicast
+            """
+        )
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65563",
+                    address_family=[
+                        dict(afi="ipv4", safi="multicast"),
+                        dict(vrf="site-1", afi="ipv4", safi="unicast"),
+                        dict(vrf="site-1", afi="ipv6", safi="multicast"),
+                        dict(vrf="site-2", afi="ipv6", safi="unicast"),
+                    ],
+                ),
+                state="deleted",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65563",
+            "no address-family ipv4 multicast",
+            "vrf site-1",
+            "no address-family ipv4 unicast",
+            "no address-family ipv6 multicast",
+            "exit",
+            "vrf site-2",
+            "no address-family ipv6 unicast",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_af_idempotent(self):
+        # test idempotent
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65563
+              address-family ipv4 multicast
+                wait-igp-convergence
+            """
+        )
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65563",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                            wait_igp_convergence=True,
+                        )
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        self.execute_module(changed=False)
+
+    def test_nxos_bgp_af_overridden(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65563
+              address-family ipv4 multicast
+                wait-igp-convergence
+              neighbor 192.168.1.0
+                address-family ipv6 unicast
+              neighbor 192.168.2.0
+                address-family ipv6 multicast
+              vrf site-1
+                address-family ipv4 unicast
+                  timers bestpath-defer 100 maximum 350
+                address-family ipv6 multicast
+                neighbor 192.168.3.0
+                  address-family ipv6 multicast
+              vrf site-2
+                address-family ipv6 unicast
+            """
+        )
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65563",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="multicast",
+                            wait_igp_convergence=False,
+                        )
+                    ],
+                ),
+                state="overridden",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65563",
+            "vrf site-1",
+            "no address-family ipv4 unicast",
+            "no address-family ipv6 multicast",
+            "exit",
+            "vrf site-2",
+            "no address-family ipv6 unicast",
+            "exit",
+            "address-family ipv4 multicast",
+            "no wait-igp-convergence",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_af_delete(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65563
+              address-family ipv4 multicast
+                wait-igp-convergence
+              address-family ipv6 unicast
+              neighbor 192.168.1.0
+                address-family ipv6 unicast
+              neighbor 192.168.2.0
+                address-family ipv6 multicast
+              vrf site-1
+                address-family ipv4 unicast
+                  timers bestpath-defer 100 maximum 350
+                address-family ipv6 multicast
+                neighbor 192.168.3.0
+                  address-family ipv6 multicast
+              vrf site-2
+                address-family ipv6 unicast
+            """
+        )
+
+        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        commands = [
+            "router bgp 65563",
+            "no address-family ipv4 multicast",
+            "no address-family ipv6 unicast",
+            "vrf site-1",
+            "no address-family ipv4 unicast",
+            "no address-family ipv6 multicast",
+            "exit",
+            "vrf site-2",
+            "no address-family ipv6 unicast",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))

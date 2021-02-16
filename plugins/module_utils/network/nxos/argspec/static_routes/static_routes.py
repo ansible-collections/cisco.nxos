@@ -33,9 +33,6 @@ class Static_routesArgs(object):  # pylint: disable=R0903
     """The arg spec for the nxos_static_routes module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "config": {
             "elements": "dict",
