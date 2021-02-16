@@ -26,7 +26,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
 )
-import q
 
 
 class Bgp_address_familyFacts(object):
