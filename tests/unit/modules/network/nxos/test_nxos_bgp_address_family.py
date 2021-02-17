@@ -495,6 +495,8 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             router bgp 65563
+              address-family ipv4 unicast
+                dampening
               vrf site-1
                 address-family ipv4 unicast
                   dampening 3 22 23 23
@@ -505,6 +507,13 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                 config=dict(
                     as_number="65563",
                     address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="unicast",
+                            dampening=dict(
+                                set=False,
+                            )
+                        ),
                         dict(
                             afi="ipv4",
                             safi="multicast",
@@ -534,6 +543,8 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         )
         commands = [
             "router bgp 65563",
+            "address-family ipv4 unicast",
+            "no dampening",
             "address-family ipv4 multicast",
             "dampening 4 23 24 25",
             "vrf site-1",
@@ -2092,6 +2103,17 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered)
+    
+    def test_nxos_bgp_af_gathered_empty(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], {})
 
     def test_nxos_bgp_af_rendered(self):
         # test gathered

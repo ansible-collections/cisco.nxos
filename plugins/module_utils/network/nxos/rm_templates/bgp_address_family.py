@@ -60,8 +60,7 @@ def _tmplt_redistribute(redis):
     command = "redistribute {protocol}".format(**redis)
     if redis.get("id"):
         command += " {id}".format(**redis)
-    if redis.get("route_map"):
-        command += " route-map {route_map}".format(**redis)
+    command += " route-map {route_map}".format(**redis)
     return command
 
 
