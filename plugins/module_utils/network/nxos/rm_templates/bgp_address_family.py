@@ -193,6 +193,57 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "advertise_pip",
+            "getval": re.compile(
+                r"""
+                \s+(?P<advertise_pip>advertise-pip)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "advertise-pip",
+            "result": {
+                "address_family": {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
+                        "advertise_pip": "{{ not not advertise_pip }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "advertise_system_mac",
+            "getval": re.compile(
+                r"""
+                \s+(?P<advertise_system_mac>advertise-system-mac)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "advertise-system-mac",
+            "result": {
+                "address_family": {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
+                        "advertise_system_mac": "{{ not not advertise_system_mac }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "allow_vni_in_ethertag",
+            "getval": re.compile(
+                r"""
+                \s+(?P<allow_vni_in_ethertag>allow-vni-in-ethertag)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "allow-vni-in-ethertag",
+            "result": {
+                "address_family": {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
+                        "allow_vni_in_ethertag": "{{ not not allow_vni_in_ethertag }}",
+                    }
+                }
+            },
+        },
+        {
             "name": "aggregate_address",
             "getval": re.compile(
                 r"""

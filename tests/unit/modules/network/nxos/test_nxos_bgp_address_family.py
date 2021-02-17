@@ -186,6 +186,79 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def test_nxos_bgp_l2vpn_keys_merged(self):
+        # test merged for config->address_family->advertise_pip, advertise_system_mac, allow_vni_in_ethertag
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65563
+              address-family l2vpn evpn
+                advertise-pip
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65563",
+                    address_family=[
+                        dict(
+                            afi="l2vpn",
+                            safi="evpn",
+                            advertise_pip=False,
+                            advertise_system_mac=True,
+                            allow_vni_in_ethertag=True,
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65563",
+            "address-family l2vpn evpn",
+            "no advertise-pip",
+            "advertise-system-mac",
+            "allow-vni-in-ethertag",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_l2vpn_keys_replaced(self):
+        # test replaced for config->address_family->advertise_pip, advertise_system_mac, allow_vni_in_ethertag
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65563
+              address-family l2vpn evpn
+                advertise-system-mac
+                allow-vni-in-ethertag
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65563",
+                    address_family=[
+                        dict(
+                            afi="l2vpn",
+                            safi="evpn",
+                            advertise_pip=True,
+                        ),
+                    ],
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65563",
+            "address-family l2vpn evpn",
+            "advertise-pip",
+            "no advertise-system-mac",
+            "no allow-vni-in-ethertag",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
     def test_nxos_bgp_client_to_client_merged(self):
         # test merged for config->address_family->client_to_client
         self.get_config.return_value = dedent(

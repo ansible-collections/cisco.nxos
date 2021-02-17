@@ -49,12 +49,18 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "link-state",
                                 "vpnv4",
                                 "vpnv6",
+                                "l2vpn",
                             ],
                             "required": True,
                         },
                         "safi": {
                             "type": "str",
-                            "choices": ["unicast", "multicast", "mvpn"],
+                            "choices": [
+                                "unicast",
+                                "multicast",
+                                "mvpn",
+                                "evpn",
+                            ],
                         },
                         "additional_paths": {
                             "type": "dict",
@@ -68,6 +74,9 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "send": {"type": "bool"},
                             },
                         },
+                        "advertise_pip": {"type": "bool"},
+                        "advertise_system_mac": {"type": "bool"},
+                        "allow_vni_in_ethertag": {"type": "bool"},
                         "aggregate_address": {
                             "type": "list",
                             "elements": "dict",

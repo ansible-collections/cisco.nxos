@@ -49,12 +49,12 @@ options:
           afi:
             description: Address Family indicator.
             type: str
-            choices: ["ipv4", "ipv6", "link-state", "vpnv4", "vpnv6"]
+            choices: ["ipv4", "ipv6", "link-state", "vpnv4", "vpnv6", "l2vpn"]
             required: True
           safi:
             description: Sub Address Family indicator.
             type: str
-            choices: ["unicast", "multicast", "mvpn"]
+            choices: ["unicast", "multicast", "mvpn", "evpn"]
           additional_paths:
             description: Additional paths configuration.
             type: dict
@@ -75,6 +75,15 @@ options:
               send:
                 description: Additional paths Send capability
                 type: bool
+          advertise_pip:
+            description: Advertise physical ip for type-5 route.
+            type: bool
+          advertise_system_mac:
+            description: Advertise extra EVPN RT-2 with system MAC.
+            type: bool
+          allow_vni_in_ethertag:
+            description: Allow VNI in Ethernet Tag field in EVPN route.
+            type: bool
           aggregate_address:
             description: Configure BGP aggregate prefixes
             type: list
