@@ -63,6 +63,14 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.get_config.stop()
         self.cfg_get_config.stop()
 
+    def test_nxos_bgp_global_merged_basic(self):
+        set_module_args(
+            dict(config=dict(as_number="65563"), state="merged"),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["router bgp 65563"])
+
     def test_nxos_bgp_global_merged(self):
         set_module_args(
             dict(
