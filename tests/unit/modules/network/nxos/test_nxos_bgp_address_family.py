@@ -510,9 +510,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                         dict(
                             afi="ipv4",
                             safi="unicast",
-                            dampening=dict(
-                                set=False,
-                            )
+                            dampening=dict(set=False),
                         ),
                         dict(
                             afi="ipv4",
@@ -2103,7 +2101,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered)
-    
+
     def test_nxos_bgp_af_gathered_empty(self):
         # test gathered
         self.get_config.return_value = dedent(
