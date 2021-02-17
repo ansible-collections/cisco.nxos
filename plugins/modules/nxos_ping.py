@@ -53,6 +53,15 @@ options:
     description:
     - Outgoing VRF.
     type: str
+  df_bit:
+    description:
+    - Set the DF bit.
+    default: false
+    type: bool
+  size:
+    description:
+    - Size of packets to send.
+    type: int
   state:
     description:
     - Determines if the expected result is success or fail.
@@ -76,13 +85,20 @@ EXAMPLES = """
 
 - name: Test reachability to a few different public IPs using mgmt vrf
   cisco.nxos.nxos_ping:
-    dest: nxos_ping
+    dest: "{{ item }}"
     vrf: management
     host: 68.170.147.165
   with_items:
-  - 8.8.8.8
-  - 4.4.4.4
-  - 198.6.1.4
+    - 8.8.8.8
+    - 4.4.4.4
+    - 198.6.1.4
+
+- name: Test reachability to 8.8.8.8 using mgmt vrf, size and df-bit
+  cisco.nxos.nxos_ping:
+    dest: 8.8.8.8
+    df_bit: true
+    size: 1400
+    vrf: management
 """
 
 RETURN = """
@@ -172,6 +188,8 @@ def get_ping_results(command, module):
             destination=module.params["dest"],
             vrf=module.params["vrf"],
             source=module.params["source"],
+            size=module.params["size"],
+            df_bit=module.params["df_bit"],
         )
 
     elif "can't bind to address" in ping:
@@ -199,6 +217,8 @@ def main():
         count=dict(required=False, default=5, type="int"),
         vrf=dict(required=False),
         source=dict(required=False),
+        size=dict(required=False, type="int"),
+        df_bit=dict(required=False, default=False, type="bool"),
         state=dict(
             required=False, choices=["present", "absent"], default="present"
         ),
@@ -212,12 +232,20 @@ def main():
 
     destination = module.params["dest"]
     state = module.params["state"]
+    size = module.params["size"]
+    df_bit = module.params["df_bit"]
 
     ping_command = "ping {0}".format(destination)
     for command in ["count", "source", "vrf"]:
         arg = module.params[command]
         if arg:
             ping_command += " {0} {1}".format(command, arg)
+
+    if size:
+        ping_command += " packet-size {0}".format(size)
+
+    if df_bit:
+        ping_command += " df-bit"
 
     summary, rtt, ping_pass = get_ping_results(ping_command, module)
 
