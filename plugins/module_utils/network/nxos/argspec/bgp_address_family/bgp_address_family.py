@@ -149,7 +149,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 },
                             },
                         },
-                        "network": {
+                        "networks": {
                             "type": "list",
                             "elements": "dict",
                             "options": {
@@ -183,6 +183,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "isis",
                                         "lisp",
                                         "ospf",
+                                        "ospfv3",
                                         "rip",
                                         "static",
                                     ],

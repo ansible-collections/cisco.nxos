@@ -508,7 +508,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "network",
+            "name": "networks",
             "getval": re.compile(
                 r"""
                 \s+network
@@ -521,7 +521,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "result": {
                 "address_family": {
                     '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
-                        "network": [
+                        "networks": [
                             {
                                 "prefix": "{{ prefix }}",
                                 "route_map": "{{ route_map }}",

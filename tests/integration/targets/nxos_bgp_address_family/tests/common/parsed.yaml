@@ -1,0 +1,16 @@
+---
+- debug:
+    msg: START nxos_bgp_address_family parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided BGP config
+  register: result
+  cisco.nxos.nxos_bgp_address_family:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+- name: Assert that config was correctly parsed
+  assert:
+    that:
+      - "{{ merged['after']['address_family'] | symmetric_difference(result['parsed']['address_family']) |length\
+            \ == 0 }}"
+      - merged['after']['as_number'] == result['parsed']['as_number']

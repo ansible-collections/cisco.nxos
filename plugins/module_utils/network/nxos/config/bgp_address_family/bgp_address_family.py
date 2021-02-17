@@ -168,7 +168,7 @@ class Bgp_address_family(ResourceModule):
         for attrib in [
             "aggregate_address",
             "inject_map",
-            "network",
+            "networks",
             "redistribute",
         ]:
             wdict = want.get(attrib, {})
@@ -208,7 +208,9 @@ class Bgp_address_family(ResourceModule):
                 (x["route_map"], x["exist_map"]): x
                 for x in item.get("inject_map", [])
             }
-            item["network"] = {x["prefix"]: x for x in item.get("network", [])}
+            item["networks"] = {
+                x["prefix"]: x for x in item.get("networks", [])
+            }
             item["redistribute"] = {
                 (x.get("id"), x["protocol"]): x
                 for x in item.get("redistribute", [])

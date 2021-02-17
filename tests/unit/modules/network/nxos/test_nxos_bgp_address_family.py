@@ -1275,7 +1275,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            network=[
+                            networks=[
                                 dict(
                                     prefix="192.168.1.0/24", route_map="rmap2"
                                 ),
@@ -1289,7 +1289,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             vrf="site-1",
                             afi="ipv4",
                             safi="unicast",
-                            network=[
+                            networks=[
                                 dict(prefix="10.0.0.0/8"),
                                 dict(prefix="11.0.0.0/8", route_map="rmap2"),
                             ],
@@ -1338,7 +1338,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            network=[
+                            networks=[
                                 dict(
                                     prefix="192.168.3.0/24", route_map="rmap4"
                                 )
@@ -1348,7 +1348,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             vrf="site-1",
                             afi="ipv4",
                             safi="unicast",
-                            network=[
+                            networks=[
                                 dict(prefix="11.0.0.0/8", route_map="rmap2")
                             ],
                         ),

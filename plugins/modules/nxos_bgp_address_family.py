@@ -205,7 +205,7 @@ options:
                   parallel_paths:
                     description:  Number of parallel paths.
                     type: int
-          network:
+          networks:
             description: Configure an IP prefix to advertise.
             type: list
             elements: dict
@@ -246,7 +246,7 @@ options:
                 description:
                 - The name of the protocol.
                 type: str
-                choices: ["am", "direct", "eigrp", "isis", "lisp", "ospf", "rip", "static"]
+                choices: ["am", "direct", "eigrp", "isis", "lisp", "ospf", "ospfv3", "rip", "static"]
                 required: true
               id:
                 description:
@@ -326,6 +326,658 @@ options:
     default: merged
 """
 EXAMPLES = """
+# Using merged
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# Nexus9000v#
+
+- name: Merge the provided configuration with the exisiting running configuration
+  cisco.nxos.nxos_bgp_address_family:
+    config:
+      as_number: 65536
+      address_family:
+        - afi: ipv4
+          safi: multicast
+          networks:
+            - prefix: 192.0.2.32/27
+            - prefix: 192.0.2.64/27
+              route_map: rmap1
+          nexthop:
+            route_map: rmap2
+            trigger_delay:
+              critical_delay: 120
+              non_critical_delay: 180
+        - afi: ipv4
+          safi: unicast
+          vrf: site-1
+          default_information:
+            originate: True
+          aggregate_address:
+            - prefix: 203.0.113.0/24
+              as_set: True
+              summary_only: True
+        - afi: ipv6
+          safi: multicast
+          vrf: site-1
+          redistribute:
+            - protocol: ospfv3
+              id: 100
+              route_map: rmap-ospf-1
+            - protocol: eigrp
+              id: 101
+              route_map: rmap-eigrp-1
+
+# Task output
+# -------------
+#  before: {}
+#
+#  commands:
+#  - router bgp 65536
+#  - address-family ipv4 multicast
+#  - nexthop route-map rmap2
+#  - nexthop trigger-delay critical 120 non-critical 180
+#  - network 192.0.2.32/27
+#  - network 192.0.2.64/27 route-map rmap1
+#  - vrf site-1
+#  - address-family ipv4 unicast
+#  - default-information originate
+#  - aggregate-address 203.0.113.0/24 as-set summary-only
+#  - address-family ipv6 multicast
+#  - redistribute ospfv3 100 route-map rmap-ospf-1
+#  - redistribute eigrp 101 route-map rmap-eigrp-1
+#
+#  after:
+#    as_number: "65536"
+#    address_family:
+#      - afi: ipv4
+#        safi: multicast
+#        networks:
+#          - prefix: 192.0.2.32/27
+#          - prefix: 192.0.2.64/27
+#            route_map: rmap1
+#        nexthop:
+#          route_map: rmap2
+#          trigger_delay:
+#            critical_delay: 120
+#            non_critical_delay: 180
+#      - afi: ipv4
+#        safi: unicast
+#        vrf: site-1
+#        default_information:
+#          originate: True
+#        aggregate_address:
+#          - prefix: 203.0.113.0/24
+#            as_set: True
+#            summary_only: True
+#      - afi: ipv6
+#        safi: multicast
+#        vrf: site-1
+#        redistribute:
+#          - id: "100"
+#            protocol: ospfv3
+#            route_map: rmap-ospf-1
+#          - id: "101"
+#            protocol: eigrp
+#            route_map: rmap-eigrp-1
+
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   address-family ipv4 multicast
+#     nexthop route-map rmap2
+#     nexthop trigger-delay critical 120 non-critical 180
+#     network 192.0.2.32/27
+#     network 192.0.2.64/27 route-map rmap1
+#   vrf site-1
+#     address-family ipv4 unicast
+#       default-information originate
+#       aggregate-address 203.0.113.0/24 as-set summary-only
+#     address-family ipv6 multicast
+#       redistribute ospfv3 100 route-map rmap-ospf-1
+#       redistribute eigrp 101 route-map rmap-eigrp-1
+#
+
+# Using replaced
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   address-family ipv4 multicast
+#     nexthop route-map rmap2
+#     nexthop trigger-delay critical 120 non-critical 180
+#     network 192.0.2.32/27
+#     network 192.0.2.64/27 route-map rmap1
+#   vrf site-1
+#     address-family ipv4 unicast
+#       default-information originate
+#       aggregate-address 203.0.113.0/24 as-set summary-only
+#     address-family ipv6 multicast
+#       redistribute ospfv3 100 route-map rmap-ospf-1
+#       redistribute eigrp 101 route-map rmap-eigrp-1
+
+- name: Replace configuration of specified AFs
+  cisco.nxos.nxos_bgp_address_family:
+    config:
+      as_number: 65536
+      address_family:
+        - afi: ipv4
+          safi: multicast
+          networks:
+            - prefix: 192.0.2.64/27
+              route_map: rmap1
+          nexthop:
+            route_map: rmap2
+            trigger_delay:
+              critical_delay: 120
+              non_critical_delay: 180
+          aggregate_address:
+            - prefix: 203.0.113.0/24
+              as_set: True
+              summary_only: True
+        - afi: ipv4
+          safi: unicast
+          vrf: site-1
+    state: replaced
+
+# Task output
+# -------------
+#  before:
+#    as_number: "65536"
+#    address_family:
+#      - afi: ipv4
+#        safi: multicast
+#        networks:
+#          - prefix: 192.0.2.32/27
+#          - prefix: 192.0.2.64/27
+#            route_map: rmap1
+#        nexthop:
+#          route_map: rmap2
+#          trigger_delay:
+#            critical_delay: 120
+#            non_critical_delay: 180
+#      - afi: ipv4
+#        safi: unicast
+#        vrf: site-1
+#        default_information:
+#          originate: True
+#        aggregate_address:
+#          - prefix: 203.0.113.0/24
+#            as_set: True
+#            summary_only: True
+#      - afi: ipv6
+#        safi: multicast
+#        vrf: site-1
+#        redistribute:
+#          - id: "100"
+#            protocol: ospfv3
+#            route_map: rmap-ospf-1
+#          - id: "101"
+#            protocol: eigrp
+#            route_map: rmap-eigrp-1
+#
+#  commands:
+#  - router bgp 65536
+#  - address-family ipv4 multicast
+#  - no network 192.0.2.32/27
+#  - aggregate-address 203.0.113.0/24 as-set summary-only
+#  - vrf site-1
+#  - address-family ipv4 unicast
+#  - no default-information originate
+#  - no aggregate-address 203.0.113.0/24 as-set summary-only
+#
+#  after:
+#    as_number: "65536"
+#    address_family:
+#      - afi: ipv4
+#        safi: multicast
+#        networks:
+#          - prefix: 192.0.2.64/27
+#            route_map: rmap1
+#        nexthop:
+#          route_map: rmap2
+#          trigger_delay:
+#            critical_delay: 120
+#            non_critical_delay: 180
+#        aggregate_address:
+#          - prefix: 203.0.113.0/24
+#            as_set: True
+#            summary_only: True
+#
+#      - afi: ipv4
+#        safi: unicast
+#        vrf: site-1
+#
+#      - afi: ipv6
+#        safi: multicast
+#        vrf: site-1
+#        redistribute:
+#          - protocol: ospfv3
+#            id: "100"
+#            route_map: rmap-ospf-1
+#          - protocol: eigrp
+#            id: "101"
+#            route_map: rmap-eigrp-1
+
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   address-family ipv4 multicast
+#     nexthop route-map rmap2
+#     nexthop trigger-delay critical 120 non-critical 180
+#     network 192.0.2.64/27 route-map rmap1
+#     aggregate-address 203.0.113.0/24 as-set summary-only
+#   vrf site-1
+#     address-family ipv4 unicast
+#     address-family ipv6 multicast
+#       redistribute ospfv3 100 route-map rmap-ospf-1
+#       redistribute eigrp 101 route-map rmap-eigrp-1
+
+# Using overridden
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   address-family ipv4 multicast
+#     nexthop route-map rmap2
+#     nexthop trigger-delay critical 120 non-critical 180
+#     network 192.0.2.32/27
+#     network 192.0.2.64/27 route-map rmap1
+#   vrf site-1
+#     address-family ipv4 unicast
+#       default-information originate
+#       aggregate-address 203.0.113.0/24 as-set summary-only
+#     address-family ipv6 multicast
+#       redistribute ospfv3 100 route-map rmap-ospf-1
+#       redistribute eigrp 101 route-map rmap-eigrp-1
+
+- name: Override all BGP AF configuration with provided configuration
+  cisco.nxos.nxos_bgp_address_family: &overridden
+    config:
+      as_number: 65536
+      address_family:
+        - afi: ipv4
+          safi: multicast
+          networks:
+            - prefix: 192.0.2.64/27
+              route_map: rmap1
+          aggregate_address:
+            - prefix: 203.0.113.0/24
+              as_set: True
+              summary_only: True
+        - afi: ipv4
+          safi: unicast
+          vrf: site-1
+    state: overridden
+
+# Task output
+# -------------
+#  before:
+#    as_number: "65536"
+#    address_family:
+#      - afi: ipv4
+#        safi: multicast
+#        networks:
+#          - prefix: 192.0.2.32/27
+#          - prefix: 192.0.2.64/27
+#            route_map: rmap1
+#        nexthop:
+#          route_map: rmap2
+#          trigger_delay:
+#            critical_delay: 120
+#            non_critical_delay: 180
+#      - afi: ipv4
+#        safi: unicast
+#        vrf: site-1
+#        default_information:
+#          originate: True
+#        aggregate_address:
+#          - prefix: 203.0.113.0/24
+#            as_set: True
+#            summary_only: True
+#      - afi: ipv6
+#        safi: multicast
+#        vrf: site-1
+#        redistribute:
+#          - id: "100"
+#            protocol: ospfv3
+#            route_map: rmap-ospf-1
+#          - id: "101"
+#            protocol: eigrp
+#            route_map: rmap-eigrp-1
+#
+#  commands:
+#  - router bgp 65536
+#  - vrf site-1
+#  - no address-family ipv6 multicast
+#  - exit
+#  - address-family ipv4 multicast
+#  - no nexthop route-map rmap2
+#  - no nexthop trigger-delay critical 120 non-critical 180
+#  - aggregate-address 203.0.113.0/24 as-set summary-only
+#  - no network 192.0.2.32/27
+#  - vrf site-1
+#  - address-family ipv4 unicast
+#  - no default-information originate
+#  - no aggregate-address 203.0.113.0/24 as-set summary-only
+#
+#  after:
+#    as_number: "65536"
+#    address_family:
+#      - afi: ipv4
+#        safi: multicast
+#        networks:
+#          - prefix: 192.0.2.64/27
+#            route_map: rmap1
+#        aggregate_address:
+#          - prefix: 203.0.113.0/24
+#            as_set: True
+#            summary_only: True
+#      - afi: ipv4
+#        safi: unicast
+#        vrf: site-1
+
+#
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   address-family ipv4 multicast
+#     network 192.0.2.64/27 route-map rmap1
+#     aggregate-address 203.0.113.0/24 as-set summary-only
+#   vrf site-1
+#     address-family ipv4 unicast
+#
+
+# Using deleted to remove specified AFs
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   address-family ipv4 multicast
+#     nexthop route-map rmap2
+#     nexthop trigger-delay critical 120 non-critical 180
+#     network 192.0.2.32/27
+#     network 192.0.2.64/27 route-map rmap1
+#   vrf site-1
+#     address-family ipv4 unicast
+#       default-information originate
+#       aggregate-address 203.0.113.0/24 as-set summary-only
+#     address-family ipv6 multicast
+#       redistribute ospfv3 100 route-map rmap-ospf-1
+#       redistribute eigrp 101 route-map rmap-eigrp-1
+
+- name: Delete specified BGP AFs
+  cisco.nxos.nxos_bgp_address_family:
+    config:
+      as_number: 65536
+      address_family:
+        - afi: ipv4
+          safi: multicast
+        - vrf: site-1
+          afi: ipv6
+          safi: multicast
+    state: deleted
+
+# Task output
+# -------------
+#  before:
+#    as_number: "65536"
+#    address_family:
+#      - afi: ipv4
+#        safi: multicast
+#        networks:
+#          - prefix: 192.0.2.32/27
+#          - prefix: 192.0.2.64/27
+#            route_map: rmap1
+#        nexthop:
+#          route_map: rmap2
+#          trigger_delay:
+#            critical_delay: 120
+#            non_critical_delay: 180
+#      - afi: ipv4
+#        safi: unicast
+#        vrf: site-1
+#        default_information:
+#          originate: True
+#        aggregate_address:
+#          - prefix: 203.0.113.0/24
+#            as_set: True
+#            summary_only: True
+#      - afi: ipv6
+#        safi: multicast
+#        vrf: site-1
+#        redistribute:
+#          - id: "100"
+#            protocol: ospfv3
+#            route_map: rmap-ospf-1
+#          - id: "101"
+#            protocol: eigrp
+#            route_map: rmap-eigrp-1
+#
+#  commands:
+#  - router bgp 65563
+#  - no address-family ipv4 multicast
+#  - vrf site-1
+#  - no address-family ipv6 multicast
+#
+#  after:
+#    as_number: "65536"
+#    address_family:
+#      - afi: ipv4
+#        safi: unicast
+#        vrf: site-1
+#        default_information:
+#          originate: True
+#        aggregate_address:
+#          - prefix: 203.0.113.0/24
+#            as_set: True
+#            summary_only: True
+
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   vrf site-1
+#     address-family ipv4 unicast
+#       default-information originate
+#       aggregate-address 203.0.113.0/24 as-set summary-only
+
+# Using deleted to remove all BGP AFs
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   address-family ipv4 multicast
+#     nexthop route-map rmap2
+#     nexthop trigger-delay critical 120 non-critical 180
+#     network 192.0.2.32/27
+#     network 192.0.2.64/27 route-map rmap1
+#   vrf site-1
+#     address-family ipv4 unicast
+#       default-information originate
+#       aggregate-address 203.0.113.0/24 as-set summary-only
+#     address-family ipv6 multicast
+#       redistribute ospfv3 100 route-map rmap-ospf-1
+#       redistribute eigrp 101 route-map rmap-eigrp-1
+
+- name: Delete specified BGP AFs
+  cisco.nxos.nxos_bgp_address_family:
+    state: deleted
+
+# Task output
+# -------------
+#  before:
+#    as_number: "65536"
+#    address_family:
+#      - afi: ipv4
+#        safi: multicast
+#        networks:
+#          - prefix: 192.0.2.32/27
+#          - prefix: 192.0.2.64/27
+#            route_map: rmap1
+#        nexthop:
+#          route_map: rmap2
+#          trigger_delay:
+#            critical_delay: 120
+#            non_critical_delay: 180
+#      - afi: ipv4
+#        safi: unicast
+#        vrf: site-1
+#        default_information:
+#          originate: True
+#        aggregate_address:
+#          - prefix: 203.0.113.0/24
+#            as_set: True
+#            summary_only: True
+#      - afi: ipv6
+#        safi: multicast
+#        vrf: site-1
+#        redistribute:
+#          - id: "100"
+#            protocol: ospfv3
+#            route_map: rmap-ospf-1
+#          - id: "101"
+#            protocol: eigrp
+#            route_map: rmap-eigrp-1
+#
+#  commands:
+#  - router bgp 65563
+#  - no address-family ipv4 multicast
+#  - vrf site-1
+#  - no address-family ipv4 unicast
+#  - no address-family ipv6 multicast
+#
+#  after:
+#    as_number: "65536"
+
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+# Nexus9000v#
+
+# Using rendered
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_bgp_address_family:
+    config:
+      as_number: 65536
+      address_family:
+        - afi: ipv4
+          safi: multicast
+          networks:
+            - prefix: 192.0.2.32/27
+            - prefix: 192.0.2.64/27
+              route_map: rmap1
+          nexthop:
+            route_map: rmap2
+            trigger_delay:
+              critical_delay: 120
+              non_critical_delay: 180
+        - afi: ipv4
+          safi: unicast
+          vrf: site-1
+          default_information:
+            originate: True
+          aggregate_address:
+            - prefix: 203.0.113.0/24
+              as_set: True
+              summary_only: True
+        - afi: ipv6
+          safi: multicast
+          vrf: site-1
+          redistribute:
+            - protocol: ospfv3
+              id: 100
+              route_map: rmap-ospf-1
+            - protocol: eigrp
+              id: 101
+              route_map: rmap-eigrp-1
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+# rendered:
+# - router bgp 65536
+# - address-family ipv4 multicast
+# - nexthop route-map rmap2
+# - nexthop trigger-delay critical 120 non-critical 180
+# - network 192.0.2.32/27
+# - network 192.0.2.64/27 route-map rmap1
+# - vrf site-1
+# - address-family ipv4 unicast
+# - default-information originate
+# - aggregate-address 203.0.113.0/24 as-set summary-only
+# - address-family ipv6 multicast
+# - redistribute ospfv3 100 route-map rmap-ospf-1
+# - redistribute eigrp 101 route-map rmap-eigrp-1
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# router bgp 65536
+#   address-family ipv4 multicast
+#     nexthop route-map rmap2
+#     nexthop trigger-delay critical 120 non-critical 180
+#     network 192.0.2.32/27
+#    network 192.0.2.64/27 route-map rmap1
+#  vrf site-1
+#    address-family ipv4 unicast
+#      default-information originate
+#      aggregate-address 203.0.113.0/24 as-set summary-only
+#    address-family ipv6 multicast
+#      redistribute ospfv3 100 route-map rmap-ospf-1
+#      redistribute eigrp 101 route-map rmap-eigrp-1
+
+- name: Parse externally provided BGP AF config
+  cisco.nxos.nxos_bgp_address_family:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+#  parsed:
+#    as_number: "65536"
+#    address_family:
+#      - afi: ipv4
+#        safi: multicast
+#        networks:
+#          - prefix: 192.0.2.32/27
+#          - prefix: 192.0.2.64/27
+#            route_map: rmap1
+#        nexthop:
+#          route_map: rmap2
+#          trigger_delay:
+#            critical_delay: 120
+#            non_critical_delay: 180
+#      - afi: ipv4
+#        safi: unicast
+#        vrf: site-1
+#        default_information:
+#          originate: True
+#        aggregate_address:
+#          - prefix: 203.0.113.0/24
+#            as_set: True
+#            summary_only: True
+#      - afi: ipv6
+#        safi: multicast
+#        vrf: site-1
+#        redistribute:
+#          - id: "100"
+#            protocol: ospfv3
+#            route_map: rmap-ospf-1
+#          - id: "101"
+#            protocol: eigrp
+#            route_map: rmap-eigrp-1
 """
 
 from ansible.module_utils.basic import AnsibleModule
