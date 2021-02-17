@@ -50,7 +50,6 @@ class TestNxosPingModule(TestNxosModule):
         self.mock_run_commands.stop()
 
     def test_nxos_ping_expected_success(self):
-        """ Test for successful pings when destination should be reachable """
         self.run_commands.return_value = [
             """
             PING 172.28.128.7 (172.28.128.7): 56 data bytes
@@ -78,7 +77,6 @@ class TestNxosPingModule(TestNxosModule):
         self.assertEqual(result["rtt"]["max"], 4.197)
 
     def test_nxos_ping_expected_failure(self):
-        """ Test for failed pings"""
         self.run_commands.return_value = [
             """
             PING 172.28.128.8 (172.28.128.8): 56 data bytes
@@ -98,7 +96,6 @@ class TestNxosPingModule(TestNxosModule):
         self.execute_module(failed=False)
 
     def test_nxos_ping_expected_success_but_failed(self):
-        """ Test for failed pings"""
         self.run_commands.return_value = [
             """
             PING 172.28.128.8 (172.28.128.8): 56 data bytes
@@ -117,7 +114,6 @@ class TestNxosPingModule(TestNxosModule):
         self.assertEqual(result["msg"], "Ping failed unexpectedly")
 
     def test_nxos_ping_expected_failure_but_succeeded(self):
-        """ Test for successful pings when destination should be reachable """
         self.run_commands.return_value = [
             """
             PING 172.28.128.7 (172.28.128.7): 56 data bytes
@@ -139,7 +135,6 @@ class TestNxosPingModule(TestNxosModule):
         self.assertEqual(result["msg"], "Ping succeeded unexpectedly")
 
     def test_nxos_ping_expected_success_source(self):
-        """ Test for successful pings when destination should be reachable """
         self.run_commands.return_value = [
             """
             PING 172.28.128.7 (172.28.128.7): 56 data bytes
@@ -168,7 +163,6 @@ class TestNxosPingModule(TestNxosModule):
         self.assertEqual(result["rtt"]["max"], 4.197)
 
     def test_nxos_ping_expected_success_df_bit(self):
-        """ Test for successful pings when destination should be reachable """
         self.run_commands.return_value = [
             """
             PING 172.28.128.7 (172.28.128.7): 56 data bytes
@@ -190,7 +184,6 @@ class TestNxosPingModule(TestNxosModule):
         )
 
     def test_nxos_ping_expected_success_size(self):
-        """ Test for successful pings when destination should be reachable """
         self.run_commands.return_value = [
             """
             PING 172.28.128.7 (172.28.128.7): 56 data bytes
@@ -212,7 +205,6 @@ class TestNxosPingModule(TestNxosModule):
         )
 
     def test_nxos_ping_expected_success_all(self):
-        """ Test for successful pings when destination should be reachable """
         self.run_commands.return_value = [
             """
             PING 172.28.128.7 (172.28.128.7): 56 data bytes
@@ -243,4 +235,42 @@ class TestNxosPingModule(TestNxosModule):
             [
                 "ping 172.28.128.7 count 10 source 192.168.1.1 vrf management packet-size 65468 df-bit"
             ],
+        )
+
+    def test_nxos_ping_failed_cant_bind(self):
+        self.run_commands.return_value = [
+            """
+            ping: can't bind to address 192.168.1.10
+        """
+        ]
+        set_module_args(
+            dict(
+                dest="172.28.128.7",
+                count=10,
+                size=65468,
+                df_bit=True,
+                source="192.168.1.1",
+                vrf="management",
+            )
+        )
+        result = self.execute_module(failed=True)
+        self.assertEqual(result["msg"], "Can't bind to source address.")
+
+    def test_nxos_ping_failed_bad_context(self):
+        self.run_commands.return_value = [
+            """
+            ping: bad context site-1
+        """
+        ]
+        set_module_args(dict(dest="172.28.128.7", count=10, vrf="site-1"))
+        result = self.execute_module(failed=True)
+        self.assertEqual(result["msg"], "Wrong VRF name inserted.")
+
+    def test_nxos_ping_failed_error(self):
+        """ Test for successful pings when destination should be reachable """
+        self.run_commands.return_value = [""""""]
+        set_module_args(dict(dest="172.28.128.7", count=10, vrf="site-1"))
+        result = self.execute_module(failed=True)
+        self.assertEqual(
+            result["msg"], "An unexpected error occurred. Check all params."
         )
