@@ -1,0 +1,95 @@
+---
+- block:
+  - debug: msg="START connection={{ ansible_connection }} common/caching.yaml"
+
+  - name: Set system defaults for switchports
+    cisco.nxos.nxos_config:
+      lines: "no system default switchport\nsystem default switchport shutdown\n"
+
+  - name: setup
+    cisco.nxos.nxos_config: &rem
+      lines: 
+        - "default interface {{ nxos_int1 }}"
+        - "default interface {{ nxos_int2 }}"
+
+  - name: Merge base interfaces configuration
+    register: result
+    cisco.nxos.nxos_interfaces: &merged
+      config:
+        - name: '{{ nxos_int1 }}'
+          description: Configured by Ansible (L2)
+          mode: layer2
+        - name: '{{ nxos_int2 }}'
+          description: Configured by Ansible (L3)
+          mode: layer3
+      state: merged
+
+  - assert:
+      that:
+        - '"interface {{ nxos_int1 }}" in result.commands'
+        - '"description Configured by Ansible (L2)" in result.commands'
+        - '"switchport" in result.commands'
+        - '"interface {{ nxos_int2 }}" in result.commands'
+        - '"description Configured by Ansible (L3)" in result.commands'
+        - result.commands|length == 5
+
+  - name: Merge base interfaces configuration (IDEMPOTENT)
+    register: result
+    cisco.nxos.nxos_interfaces: *merged
+
+  - assert:
+      that:
+        - result.changed == False
+
+  - name: Merge L2 interfaces configuration
+    register: result
+    cisco.nxos.nxos_l2_interfaces: &mergedl2
+      config:
+        - name: '{{ nxos_int1 }}'
+          trunk:
+            native_vlan: 10
+            allowed_vlans: 2,4,15
+      state: merged
+    
+  - assert:
+      that:
+        - '"interface {{ nxos_int1 }}" in result.commands'
+        - '"switchport trunk native vlan 10" in result.commands'
+        - '"switchport trunk allowed vlan 2,4,15" in result.commands'
+        - result.commands|length == 3
+
+  - name: Merge L2 interfaces configuration (IDEMPOTENT)
+    register: result
+    cisco.nxos.nxos_l2_interfaces: *mergedl2
+
+  - assert:
+      that:
+        - result.changed == False
+  
+  - name: Merge L3 interfaces configuration
+    register: result
+    cisco.nxos.nxos_l3_interfaces: &mergedl3
+      config:
+        - name: '{{ nxos_int2 }}'
+          ipv4:
+          - address: 203.0.113.1/24
+      state: merged
+    
+  - assert:
+      that:
+        - '"interface {{ nxos_int2 }}" in result.commands'
+        - '"ip address 203.0.113.1/24" in result.commands'
+        - result.commands|length == 2
+
+  - name: Merge L3 interfaces configuration (IDEMPOTENT)
+    register: result
+    cisco.nxos.nxos_l3_interfaces: *mergedl3
+
+  - assert:
+      that:
+        - result.changed == False
+
+  always:
+    - name: cleanup
+      cisco.nxos.nxos_config: *rem
+  when: ansible_connection == "network_cli" and ansible_network_single_user_mode|d(False)

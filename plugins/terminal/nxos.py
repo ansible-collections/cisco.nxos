@@ -66,6 +66,8 @@ class TerminalModule(TerminalBase):
         ),
     ]
 
+    terminal_config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
+
     def on_become(self, passwd=None):
         if self._get_prompt().strip().endswith(b"enable#"):
             return
