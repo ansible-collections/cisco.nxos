@@ -206,7 +206,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             advertise_pip=False,
                             advertise_system_mac=True,
                             allow_vni_in_ethertag=True,
-                        ),
+                        )
                     ],
                 ),
                 state="merged",
@@ -238,11 +238,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                 config=dict(
                     as_number="65563",
                     address_family=[
-                        dict(
-                            afi="l2vpn",
-                            safi="evpn",
-                            advertise_pip=True,
-                        ),
+                        dict(afi="l2vpn", safi="evpn", advertise_pip=True)
                     ],
                 ),
                 state="replaced",
