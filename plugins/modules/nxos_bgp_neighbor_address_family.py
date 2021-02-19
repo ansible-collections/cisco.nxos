@@ -159,7 +159,7 @@ options:
                   generate_warning_threshold:
                     description: Threshold percentage at which to generate a warning.
                     type: int
-                  restart:
+                  restart_interval:
                     description: Restart bgp connection after limit is exceeded.
                     type: int
                   warning_only:
@@ -172,9 +172,9 @@ options:
                   set:
                     description: Set next-hop-self attribute.
                     type: bool
-                  all:
+                  all_routes:
                     description: Set our address as nexthop for all routes.
-                    type: bool.
+                    type: bool
               next_hop_third_party:
                 description: Compute a third-party nexthop if possible.
                 type: bool
@@ -241,7 +241,7 @@ options:
                 type: str
               weight:
                 description: Set default weight for routes from this neighbor.
-                type: int       
+                type: int
       vrfs:
         description: Virtual Router Context.
         type: list

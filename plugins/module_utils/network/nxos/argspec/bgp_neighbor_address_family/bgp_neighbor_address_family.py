@@ -144,7 +144,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                         "generate_warning_threshold": {
                                             "type": "int"
                                         },
-                                        "restart": {"type": "int"},
+                                        "restart_interval": {"type": "int"},
                                         "warning_only": {"type": "bool"},
                                     },
                                 },
@@ -152,7 +152,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                     "type": "dict",
                                     "options": {
                                         "set": {"type": "bool"},
-                                        "all": {"type": "bool."},
+                                        "all_routes": {"type": "bool"},
                                     },
                                 },
                                 "next_hop_third_party": {"type": "bool"},
@@ -321,7 +321,9 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                                 "generate_warning_threshold": {
                                                     "type": "int"
                                                 },
-                                                "restart": {"type": "int"},
+                                                "restart_interval": {
+                                                    "type": "int"
+                                                },
                                                 "warning_only": {
                                                     "type": "bool"
                                                 },
@@ -331,7 +333,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "set": {"type": "bool"},
-                                                "all": {"type": "bool."},
+                                                "all_routes": {"type": "bool"},
                                             },
                                         },
                                         "next_hop_third_party": {
