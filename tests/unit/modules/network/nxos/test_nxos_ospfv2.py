@@ -41,7 +41,7 @@ class TestNxosOspfv2Module(TestNxosModule):
         super(TestNxosOspfv2Module, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
         )
         self.get_resource_connection = (
             self.mock_get_resource_connection.start()
