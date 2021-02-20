@@ -61,6 +61,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
+                        "vrf": "{{ vrf }}",
                         "neighbors": {
                             "{{ neighbor }}": {
                                 "neighbor": "{{ neighbor }}",
@@ -115,7 +116,9 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "advertise-map {{ advertise_map.route_map }}{{ ' ' + advertise_map.exist_map if advertise_map.exist_map is defined else ' ' + advertise_map.non_exist_map}}",
+            "setval": "advertise-map {{ advertise_map.route_map }}"
+                      "{{ ' ' + advertise_map.exist_map if advertise_map.exist_map"
+                      " is defined else ' ' + advertise_map.non_exist_map }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -725,7 +728,9 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "send-community{{ ' extended' if send_community.extended is defined }}{{  ' both' if send_community.both is defined' }}{{' standard' if send_community.standard is defined }}",
+            "setval": "send-community{{ ' extended' if send_community.extended is defined }}"
+                      "{{  ' both' if send_community.both is defined' }}"
+                      "{{' standard' if send_community.standard is defined }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {

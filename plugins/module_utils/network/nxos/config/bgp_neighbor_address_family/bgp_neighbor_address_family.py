@@ -64,28 +64,23 @@ class Bgp_neighbor_address_family(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        for entry in self.want, self.have:
+            self._bgp_list_to_dict(entry)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
-            wantd = dict_merge(haved, wantd)
+            wantd = dict_merge(self.have, self.want)
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
-            wantd = {}
+            pass
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd:
-                    self._compare(want={}, have=have)
+            pass
 
         for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+            self._compare(want=want, have=self.have.pop(k, {}))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -94,3 +89,18 @@ class Bgp_neighbor_address_family(ResourceModule):
            for the Bgp_neighbor_address_family network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+
+    def _bgp_list_to_dict(self, data):
+        if "neighbors" in data:
+            for nbr in data["neighbors"]:
+                if "address_family" in nbr:
+                    nbr["address_family"] = {
+                        (x["afi"], x.get("safi")): x
+                        for x in nbr["address_family"]
+                    }
+            data["neighbors"] = {x["neighbor"]: x for x in data["neighbors"]}
+
+        if "vrfs" in data:
+            for vrf in data["vrfs"]:
+                self._bgp_list_to_dict(vrf)
+            data["vrfs"] = {x["vrf"]: x for x in data["vrfs"]}

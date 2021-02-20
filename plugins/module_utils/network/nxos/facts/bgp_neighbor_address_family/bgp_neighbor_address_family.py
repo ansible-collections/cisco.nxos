@@ -27,7 +27,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_neighbor_address_family.bgp_neighbor_address_family import (
     Bgp_neighbor_address_familyArgs,
 )
-import q
 
 
 class Bgp_neighbor_address_familyFacts(object):
@@ -70,7 +69,9 @@ class Bgp_neighbor_address_familyFacts(object):
 
         if objs:
             top_lvl_nbrs = objs.get("vrfs", {}).pop("vrf_", {})
-            objs["neighbors"] = self._post_parse(top_lvl_nbrs)["neighbors"]
+            objs["neighbors"] = self._post_parse(top_lvl_nbrs).get(
+                "neighbors", []
+            )
 
             if "vrfs" in objs:
                 for vrf in objs["vrfs"].values():

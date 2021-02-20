@@ -76,7 +76,10 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                 "advertise_map": {
                                     "type": "dict",
                                     "options": {
-                                        "route_map": {"type": "str"},
+                                        "route_map": {
+                                            "type": "str",
+                                            "required": True,
+                                        },
                                         "exist_map": {"type": "str"},
                                         "non_exist_map": {"type": "str"},
                                     },
