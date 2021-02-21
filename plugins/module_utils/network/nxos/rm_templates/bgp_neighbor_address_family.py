@@ -87,7 +87,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "advertise local-labeled-route",
+            "setval": "no advertise local-labeled-route",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -149,7 +149,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "advertisement_interval {{ advertisement_interval }}",
+            "setval": "advertisement-interval {{ advertisement_interval }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {

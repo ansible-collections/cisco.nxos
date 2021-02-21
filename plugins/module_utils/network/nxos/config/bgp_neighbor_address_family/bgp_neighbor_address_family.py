@@ -47,7 +47,36 @@ class Bgp_neighbor_address_family(ResourceModule):
             resource="bgp_neighbor_address_family",
             tmplt=Bgp_neighbor_address_familyTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "no_advertise_local_labeled_route",
+            "advertise_map",
+            "advertisement_interval",
+            "allowas_in",
+            "no_advertise_gw_ip",
+            "as_override",
+            "capability.receive",
+            "capability.send",
+            "default_originate",
+            "disable_peer_as_check",
+            "filter_list.in",
+            "filter_list.out",
+            "inherit",
+            "maximum_prefix",
+            "next_hop_self",
+            "next_hop_third_party",
+            "prefix_list.in",
+            "prefix_list.out",
+            "rewrite_evpn_rt_asn",
+            "route_map.in",
+            "route_map.out",
+            "route_reflector_client",
+            "send_community",
+            "soft_reconfiguration_inbound",
+            "soo",
+            "suppress_inactive",
+            "unsuppress_map",
+            "weight",
+        ]
 
     def execute_module(self):
         """ Execute the module
@@ -64,23 +93,26 @@ class Bgp_neighbor_address_family(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        for entry in self.want, self.have:
+        wantd = deepcopy(self.want)
+        haved = deepcopy(self.have)
+
+        for entry in wantd, haved:
             self._bgp_list_to_dict(entry)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
-            wantd = dict_merge(self.have, self.want)
+            wantd = dict_merge(wantd, haved)
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
             pass
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
-            pass
+        self._compare(want=wantd, have=haved)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=self.have.pop(k, {}))
+        if self.commands:
+            self.commands.insert(
+                0, "router bgp {as_number}".format(**haved or wantd)
+            )
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -88,7 +120,47 @@ class Bgp_neighbor_address_family(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Bgp_neighbor_address_family network resource.
         """
-        self.compare(parsers=self.parsers, want=want, have=have)
+        w_nbrs = want.get("neighbors", {})
+        h_nbrs = have.get("neighbors", {})
+
+        for k, w_nbr in iteritems(w_nbrs):
+            begin = len(self.commands)
+            h_nbr = h_nbrs.pop(k, {})
+            want_afs = w_nbr.get("address_family", {})
+            have_afs = h_nbr.get("address_family", {})
+
+            for k, want_af in iteritems(want_afs):
+                begin_af = len(self.commands)
+                have_af = have_afs.pop(k, {})
+
+                self.compare(parsers=self.parsers, want=want_af, have=have_af)
+
+                if len(self.commands) != begin_af or (not have_af and want_af):
+                    self.commands.insert(
+                        begin_af,
+                        self._tmplt.render(want_af, "address_family", False),
+                    )
+
+            # remove remaining items in have for replaced
+            for k, have_af in iteritems(have_afs):
+                self.addcmd(have_af, "address_family", True)
+
+            if len(self.commands) != begin:
+                self.commands.insert(
+                    begin, "neighbor {0}".format(w_nbr["neighbor"])
+                )
+
+        if self.state == "overridden":
+            for k, h_nbr in iteritems(h_nbrs):
+                begin = len(self.commands)
+                if not w_nbrs.pop(k, {}):
+                    have_afs = h_nbr.get("address_family", {})
+                    for k, have_af in iteritems(have_afs):
+                        self.addcmd(have_af, "address_family", True)
+                if len(self.commands) != begin:
+                    self.commands.insert(
+                        begin, "neighbor {0}".format(h_nbr["neighbor"])
+                    )
 
     def _bgp_list_to_dict(self, data):
         if "neighbors" in data:
