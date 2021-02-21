@@ -32,7 +32,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_neighbor_address_family import (
     Bgp_neighbor_address_familyTemplate,
 )
-import q
 
 
 class Bgp_neighbor_address_family(ResourceModule):
