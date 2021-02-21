@@ -114,7 +114,7 @@ class Bgp_neighbor_address_family(ResourceModule):
                 0, "router bgp {as_number}".format(**haved or wantd)
             )
 
-    def _compare(self, want, have):
+    def _compare(self, want, have, vrf=""):
         """Leverages the base class `compare()` method and
            populates the list of commands to be run by comparing
            the `want` and `have` data with the `parsers` defined
@@ -122,6 +122,9 @@ class Bgp_neighbor_address_family(ResourceModule):
         """
         w_nbrs = want.get("neighbors", {})
         h_nbrs = have.get("neighbors", {})
+
+        if vrf:
+            begin_vrf = len(self.commands)
 
         for k, w_nbr in iteritems(w_nbrs):
             begin = len(self.commands)
@@ -161,6 +164,22 @@ class Bgp_neighbor_address_family(ResourceModule):
                     self.commands.insert(
                         begin, "neighbor {0}".format(h_nbr["neighbor"])
                     )
+
+        if vrf:
+            if len(self.commands) != begin_vrf:
+                self.commands.insert(begin, "vrf {0}".format(vrf))
+        else:
+            self._vrfs_compare(want, have)
+
+    def _vrfs_compare(self, want, have):
+        wvrfs = want.get("vrfs", {})
+        hvrfs = have.get("vrfs", {})
+        for k, wvrf in iteritems(wvrfs):
+            h_vrf = hvrfs.pop(k, {})
+            self._compare(want=wvrf, have=h_vrf, vrf=k)
+        # remove remaining items in have
+        for k, h_vrf in iteritems(hvrfs):
+            self._compare(want={}, have=h_vrf, vrf=k)
 
     def _bgp_list_to_dict(self, data):
         if "neighbors" in data:
