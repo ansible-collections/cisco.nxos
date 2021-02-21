@@ -32,6 +32,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_neighbor_address_family import (
     Bgp_neighbor_address_familyTemplate,
 )
+import q
 
 
 class Bgp_neighbor_address_family(ResourceModule):
@@ -103,9 +104,23 @@ class Bgp_neighbor_address_family(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(wantd, haved)
 
-        # if state is deleted, empty out wantd and set haved to wantd
+        # if state is deleted, empty out wantd and set haved to elements to delete
         if self.state == "deleted":
-            pass
+            if wantd:
+                to_del = {
+                    "neighbors": self._set_to_delete(haved, wantd),
+                    "vrfs": {},
+                }
+
+                for k, hvrf in iteritems(haved.get("vrfs", {})):
+                    wvrf = wantd.get("vrfs", {}).get(k, {})
+                    to_del["vrfs"][k] = {
+                        "neighbors": self._set_to_delete(hvrf, wvrf),
+                        "vrf": k,
+                    }
+                haved.update(to_del)
+
+            wantd = {}
 
         self._compare(want=wantd, have=haved)
 
@@ -121,6 +136,8 @@ class Bgp_neighbor_address_family(ResourceModule):
            for the Bgp_neighbor_address_family network resource.
         """
         w_nbrs = want.get("neighbors", {})
+        q(want)
+        q(have)
         h_nbrs = have.get("neighbors", {})
 
         if vrf:
@@ -153,7 +170,7 @@ class Bgp_neighbor_address_family(ResourceModule):
                     begin, "neighbor {0}".format(w_nbr["neighbor"])
                 )
 
-        if self.state == "overridden":
+        if self.state in ["overridden", "deleted"]:
             for k, h_nbr in iteritems(h_nbrs):
                 begin = len(self.commands)
                 if not w_nbrs.pop(k, {}):
@@ -195,3 +212,22 @@ class Bgp_neighbor_address_family(ResourceModule):
             for vrf in data["vrfs"]:
                 self._bgp_list_to_dict(vrf)
             data["vrfs"] = {x["vrf"]: x for x in data["vrfs"]}
+
+    def _set_to_delete(self, haved, wantd):
+        neighbors = {}
+        h_nbrs = haved.get("neighbors", {})
+        w_nbrs = wantd.get("neighbors", {})
+
+        for k, h_nbr in iteritems(h_nbrs):
+            w_nbr = w_nbrs.pop(k, {})
+            if w_nbr:
+                neighbors[k] = h_nbr
+                afs_to_del = {}
+                h_addrs = h_nbr.get("address_family", {})
+                w_addrs = w_nbr.get("address_family", {})
+                for af, h_addr in iteritems(h_addrs):
+                    if af in w_addrs:
+                        afs_to_del[af] = h_addr
+                neighbors[k]["address_family"] = afs_to_del
+
+        return neighbors
