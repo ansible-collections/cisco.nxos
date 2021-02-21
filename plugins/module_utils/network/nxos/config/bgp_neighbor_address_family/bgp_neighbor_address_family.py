@@ -135,8 +135,6 @@ class Bgp_neighbor_address_family(ResourceModule):
            for the Bgp_neighbor_address_family network resource.
         """
         w_nbrs = want.get("neighbors", {})
-        q(want)
-        q(have)
         h_nbrs = have.get("neighbors", {})
 
         if vrf:
