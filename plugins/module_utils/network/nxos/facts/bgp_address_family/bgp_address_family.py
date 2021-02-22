@@ -74,8 +74,24 @@ class Bgp_address_familyFacts(object):
                         nbr.append(k)
                 for x in nbr:
                     del objs["address_family"][x]
+
                 objs["address_family"] = list(objs["address_family"].values())
-                # TO-DO sort all list of dictionaries
+                # sort list of dictionaries
+                for x in objs["address_family"]:
+                    if "aggregate_address" in x:
+                        x["aggregate_address"] = sorted(
+                            x["aggregate_address"],
+                            key=lambda k, s="prefix": k[s],
+                        )
+                    if "networks" in x:
+                        x["networks"] = sorted(
+                            x["networks"], key=lambda k, s="prefix": k[s]
+                        )
+                    if "redistribute" in x:
+                        x["redistribute"] = sorted(
+                            x["redistribute"],
+                            key=lambda k: (k.get("id", -1), k["protocol"]),
+                        )
 
         ansible_facts["ansible_network_resources"].pop(
             "bgp_address_family", None
