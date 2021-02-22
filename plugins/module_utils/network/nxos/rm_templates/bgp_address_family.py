@@ -627,7 +627,6 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 }
             },
         },
-        # to do
         {
             "name": "redistribute",
             "getval": re.compile(
