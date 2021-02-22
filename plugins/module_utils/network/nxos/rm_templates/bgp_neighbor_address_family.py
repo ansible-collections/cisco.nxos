@@ -79,33 +79,6 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             "shared": True,
         },
         {
-            "name": "no_advertise_local_labeled_route",
-            "getval": re.compile(
-                r"""
-                no\sadvertise
-                \s(?P<local_labeled_route>local-labeled-route)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "no advertise local-labeled-route",
-            "result": {
-                "vrfs": {
-                    "{{ 'vrf_' + vrf|d() }}": {
-                        "vrf": "{{ vrf }}",
-                        "neighbors": {
-                            "{{ neighbor }}": {
-                                "address_family": {
-                                    '{{ afi + "_" + safi|d() }}': {
-                                        "no_advertise_local_labeled_route": "{{ not not local_labeled_route }}"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
             "name": "advertise_map",
             "getval": re.compile(
                 r"""

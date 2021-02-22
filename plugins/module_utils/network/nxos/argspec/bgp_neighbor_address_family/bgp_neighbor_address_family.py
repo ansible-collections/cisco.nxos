@@ -70,9 +70,6 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                         "evpn",
                                     ],
                                 },
-                                "no_advertise_local_labeled_route": {
-                                    "type": "bool"
-                                },
                                 "advertise_map": {
                                     "type": "dict",
                                     "options": {
@@ -92,7 +89,6 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                         "max_occurences": {"type": "int"},
                                     },
                                 },
-                                "no_advertise_gw_ip": {"type": "bool"},
                                 "as_override": {"type": "bool"},
                                 "capability": {
                                     "type": "dict",
@@ -234,9 +230,6 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                                 "evpn",
                                             ],
                                         },
-                                        "no_advertise_local_labeled_route": {
-                                            "type": "bool"
-                                        },
                                         "advertise_map": {
                                             "type": "dict",
                                             "required_one_of": [
@@ -265,7 +258,6 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                                 },
                                             },
                                         },
-                                        "no_advertise_gw_ip": {"type": "bool"},
                                         "as_override": {"type": "bool"},
                                         "capability": {
                                             "type": "dict",

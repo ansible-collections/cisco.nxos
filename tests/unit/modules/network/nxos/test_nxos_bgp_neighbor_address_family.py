@@ -61,7 +61,8 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         )
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_neighbor_address_family.bgp_neighbor_address_family.Bgp_neighbor_address_familyFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_neighbor_address_family."
+            "bgp_neighbor_address_family.Bgp_neighbor_address_familyFacts.get_config"
         )
         self.get_config = self.mock_get_config.start()
 
@@ -69,51 +70,3 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         super(TestNxosBGPNeighborAddressFamilyModule, self).tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
-
-    def test_nxos_bgp_additional_paths_merged(self):
-        # test merged for config->address_family->additional_paths
-        self.get_config.return_value = dedent(
-            """\
-            router bgp 65563
-              neighbor 192.168.1.1
-                address-family ipv4 unicast
-                  no advertise local-labeled-route
-            """
-        )
-        set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            
-                        ),
-                        dict(
-                            afi="ipv4",
-                            safi="unicast",
-                            
-                        ),
-                    ],
-                ),
-                state="merged",
-            ),
-            ignore_provider_arg,
-        )
-        commands = [
-            "router bgp 65563",
-            "address-family ipv4 multicast",
-            "additional-paths install backup",
-            "additional-paths receive",
-            "additional-paths selection route-map rmap1",
-            "additional-paths send",
-            "vrf site-1",
-            "address-family ipv4 unicast",
-            "no additional-paths install backup",
-            "additional-paths receive",
-            "additional-paths selection route-map rmap2",
-            "no additional-paths send",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))

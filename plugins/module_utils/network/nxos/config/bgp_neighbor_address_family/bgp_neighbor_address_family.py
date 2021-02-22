@@ -48,7 +48,6 @@ class Bgp_neighbor_address_family(ResourceModule):
             tmplt=Bgp_neighbor_address_familyTemplate(),
         )
         self.parsers = [
-            "no_advertise_local_labeled_route",
             "advertise_map",
             "advertisement_interval",
             "allowas_in",
@@ -150,6 +149,7 @@ class Bgp_neighbor_address_family(ResourceModule):
                 begin_af = len(self.commands)
                 have_af = have_afs.pop(k, {})
 
+                self._handle_keys(want, have)
                 self.compare(parsers=self.parsers, want=want_af, have=have_af)
 
                 if len(self.commands) != begin_af or (not have_af and want_af):

@@ -64,9 +64,6 @@ options:
                 description: Sub Address Family indicator.
                 type: str
                 choices: ["unicast", "multicast", "mvpn", "evpn"]
-              no_advertise_local_labeled_route:
-                description: Advertise a route with local label to peer.
-                type: bool
               advertise_map:
                 description: Specify route-map for conditional advertisement.
                 type: dict
@@ -94,9 +91,6 @@ options:
                   max_occurences:
                     description: Number of occurrences of AS number, default is 3.
                     type: int
-              no_advertise_gw_ip:
-                description: Advertise Gateway IP in Type-5 routes to neighbor.
-                type: bool
               as_override:
                 description: Override matching AS-number while sending update.
                 type: bool
