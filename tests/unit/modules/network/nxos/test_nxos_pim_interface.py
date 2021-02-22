@@ -263,3 +263,42 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
             changed=True,
             commands=["interface Ethernet9/3", "no ip pim bfd-instance"],
         )
+
+    def test_bfd_4(self):
+        self.get_config.return_value = """
+            interface Ethernet9/2
+              ip pim hello-interval 1000
+        """
+        # update hello-interval (as milliseconds)
+        set_module_args(
+            dict(
+                interface="Ethernet9/2",
+                hello_interval=1,
+                hello_interval_ms=True,
+            )
+        )
+        self.execute_module(
+            changed=True,
+            commands=["interface Ethernet9/2", "ip pim hello-interval 1"],
+        )
+
+        # idempotent (as milliseconds)
+        set_module_args(
+            dict(
+                interface="Ethernet9/2",
+                hello_interval=1000,
+                hello_interval_ms=True,
+            )
+        )
+        self.execute_module(changed=False, commands=[])
+
+        # update hello-interval (default seconds)
+        set_module_args(dict(interface="Ethernet9/2", hello_interval=2))
+        self.execute_module(
+            changed=True,
+            commands=["interface Ethernet9/2", "ip pim hello-interval 2000"],
+        )
+
+        # idempotent (default seconds)
+        set_module_args(dict(interface="Ethernet9/2", hello_interval=1))
+        self.execute_module(changed=False, commands=[])
