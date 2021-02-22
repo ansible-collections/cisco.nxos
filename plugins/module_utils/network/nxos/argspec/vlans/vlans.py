@@ -34,9 +34,6 @@ class VlansArgs(object):
     """The arg spec for the nxos_vlans module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "running_config": {"type": "str"},
         "config": {
