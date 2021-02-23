@@ -2641,3 +2641,32 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         gathered = dict(as_number="65563")
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_bgp_nbr_af_no_cmd(self):
+        # test merged for rewrite_evpn_rt_asn, route_map
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65536
+              neighbor 10.0.0.2
+                address-family ipv4 multicast
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    neighbors=[
+                        dict(
+                            neighbor_address="10.0.0.2",
+                            address_family=[
+                                dict(afi="ipv4", safi="multicast")
+                            ],
+                        )
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])

@@ -31,9 +31,6 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
     """The arg spec for the nxos_bgp_neighbor_address_family module
     """
 
-    def __init__(self, **kwargs):
-        pass
-
     argument_spec = {
         "running_config": {"type": "str"},
         "config": {
