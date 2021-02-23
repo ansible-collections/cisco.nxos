@@ -24,11 +24,15 @@ DOCUMENTATION = """
 module: nxos_bgp_af
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages BGP Address-family configuration.
+short_description: (deprecated, removed after 2023-02-24) Manages BGP Address-family configuration.
 description:
 - Manages BGP Address-family configurations on NX-OS switches.
 version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
+deprecated:
+  alternative: nxos_bgp_address_family
+  why: Updated module released with more functionality.
+  removed_at_date: '2023-02-24'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - C(state=absent) removes the whole BGP ASN configuration

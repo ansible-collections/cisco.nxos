@@ -46,7 +46,7 @@ options:
         type: list
         elements: dict
         suboptions:
-          neighbor:
+          neighbor_address:
             description: IP/IPv6 address of the neighbor.
             type: str
             required: True
@@ -127,10 +127,10 @@ options:
                 description: Name of filter-list.
                 type: dict
                 suboptions:
-                  in:
+                  inbound:
                     description: Apply policy to incoming routes.
                     type: str
-                  out:
+                  outbound:
                     description: Apply policy to outgoing routes.
                     type: str
               inherit:
@@ -176,10 +176,10 @@ options:
                 description: Apply prefix-list.
                 type: dict
                 suboptions:
-                  in:
+                  inbound:
                     description: Apply policy to incoming routes.
                     type: str
-                  out:
+                  outbound:
                     description: Apply policy to outgoing routes.
                     type: str
               rewrite_evpn_rt_asn:
@@ -189,10 +189,10 @@ options:
                 description: Apply route-map to neighbor.
                 type: dict
                 suboptions:
-                  in:
+                  inbound:
                     description: Apply policy to incoming routes.
                     type: str
-                  out:
+                  outbound:
                     description: Apply policy to outgoing routes.
                     type: str
               route_reflector_client:

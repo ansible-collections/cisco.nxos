@@ -21,6 +21,18 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 
 def _tmplt_maximum_prefix(data):
+    data = data["maximum_prefix"]
+    cmd = "maximum-prefix {max_prefix_limit}".format(**data)
+    if "generate_warning_threshold" in data:
+        cmd += " {generate_warning_threshold}".format(**data)
+    if "restart_interval" in data:
+        cmd += " restart {restart_interval}".format(**data)
+    if data.get("warning_only"):
+        cmd += " warning-only"
+    return cmd
+
+
+def _tmplt_next_hop_third_party(data):
     pass
 
 
@@ -64,7 +76,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                         "vrf": "{{ vrf }}",
                         "neighbors": {
                             "{{ neighbor }}": {
-                                "neighbor": "{{ neighbor }}",
+                                "neighbor_address": "{{ neighbor }}",
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "afi": "{{ afi }}",
@@ -79,19 +91,16 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             "shared": True,
         },
         {
-            "name": "advertise_map",
+            "name": "advertise_map.exist_map",
             "getval": re.compile(
                 r"""
                 advertise-map
                 \s(?P<route_map>\S+)
-                (\sexist-map\s(?P<exist_map>\S+))?
-                (\snon-exist-map\s(?P<non_exist_map>\S+))?
+                \sexist-map\s(?P<exist_map>\S+)
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "advertise-map {{ advertise_map.route_map }}"
-                      "{{ ' ' + advertise_map.exist_map if advertise_map.exist_map"
-                      " is defined else ' ' + advertise_map.non_exist_map }}",
+            "setval": "advertise-map {{ advertise_map.route_map }} exist-map {{ advertise_map.exist_map }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -103,6 +112,36 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                         "advertise_map": {
                                             "route_map": "{{ route_map }}",
                                             "exist_map": "{{ exist_map }}",
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "advertise_map.non_exist_map",
+            "getval": re.compile(
+                r"""
+                advertise-map
+                \s(?P<route_map>\S+)
+                \snon-exist-map\s(?P<non_exist_map>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "advertise-map {{ advertise_map.route_map }} non-exist-map {{ advertise_map.non_exist_map }}",
+            "result": {
+                "vrfs": {
+                    "{{ 'vrf_' + vrf|d() }}": {
+                        "vrf": "{{ vrf }}",
+                        "neighbors": {
+                            "{{ neighbor }}": {
+                                "address_family": {
+                                    '{{ afi + "_" + safi|d() }}': {
+                                        "advertise_map": {
+                                            "route_map": "{{ route_map }}",
                                             "non_exist_map": "{{ non_exist_map }}",
                                         }
                                     }
@@ -149,7 +188,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "allowas-in{{ ' ' + allowas_in.max_occurences if allowas_in.max_occurences is defined }}",
+            "setval": "allowas-in{{ ' ' + allowas_in.max_occurences|string if allowas_in.max_occurences is defined }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -162,32 +201,6 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                             "set": "{{ True if allowas_in is defined and max_occurences is undefined }}",
                                             "max_occurences": "{{ max_occurences }}",
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "name": "no_advertise_gw_ip",
-            "getval": re.compile(
-                r"""
-                no\s(?P<no_advertise_gw_ip>advertise-gw-ip)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "advertise-gw-ip",
-            "result": {
-                "vrfs": {
-                    "{{ 'vrf_' + vrf|d() }}": {
-                        "vrf": "{{ vrf }}",
-                        "neighbors": {
-                            "{{ neighbor }}": {
-                                "address_family": {
-                                    '{{ afi + "_" + safi|d() }}': {
-                                        "no_advertise_gw_ip": "{{ not not no_advertise_gw_ip }}",
                                     }
                                 }
                             }
@@ -223,7 +236,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "capability.receive",
+            "name": "capability.additional_paths.receive",
             "getval": re.compile(
                 r"""
                 capability\sadditional-paths
@@ -232,7 +245,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "capability additional-paths receive{{ ' disable' if capability.receive == 'disable' }}",
+            "setval": "capability additional-paths receive{{ ' disable' if capability.additional_paths.receive == 'disable' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -255,7 +268,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "capability.send",
+            "name": "capability.additional_paths.send",
             "getval": re.compile(
                 r"""
                 capability\sadditional-paths
@@ -264,7 +277,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "capability additional-paths send{{ ' disable' if capability.send == 'disable' }}",
+            "setval": "capability additional-paths send{{ ' disable' if capability.additional_paths.send == 'disable' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -343,7 +356,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "filter_list.in",
+            "name": "filter_list.inbound",
             "getval": re.compile(
                 r"""
                 filter-list
@@ -351,7 +364,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "filter-list {{ filter_list.in }} in",
+            "setval": "filter-list {{ filter_list.inbound }} in",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -361,7 +374,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "filter_list": {
-                                            "in": "{{ in }}",
+                                            "inbound": "{{ in }}",
                                         }
                                     }
                                 }
@@ -372,7 +385,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "filter_list.out",
+            "name": "filter_list.outbound",
             "getval": re.compile(
                 r"""
                 filter-list
@@ -380,7 +393,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "filter-list {{ filter_list.out }} out",
+            "setval": "filter-list {{ filter_list.outbound }} out",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -390,7 +403,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "filter_list": {
-                                            "out": "{{ out }}",
+                                            "outbound": "{{ out }}",
                                         }
                                     }
                                 }
@@ -475,7 +488,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "next-hop-self{{ ' all' if next_hop_self.all|d(False) }}",
+            "setval": "next-hop-self{{ ' all' if next_hop_self.all_routes|d(False) }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -500,7 +513,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             "name": "next_hop_third_party",
             "getval": re.compile(
                 r"""
-                (?P<next_hop_third_party>next-hop-third-party)
+                no\s(?P<next_hop_third_party>next-hop-third-party)
                 $""",
                 re.VERBOSE,
             ),
@@ -513,7 +526,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                             "{{ neighbor }}": {
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
-                                        "next_hop_third_party": "{{ not not next_hop_third_party }}",
+                                        "next_hop_third_party": "{{ not next_hop_third_party }}",
                                     }
                                 }
                             }
@@ -523,7 +536,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "prefix_list.in",
+            "name": "prefix_list.inbound",
             "getval": re.compile(
                 r"""
                 prefix-list
@@ -531,7 +544,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "prefix-list {{ prefix_list.in }} in",
+            "setval": "prefix-list {{ prefix_list.inbound }} in",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -541,7 +554,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "prefix_list": {
-                                            "in": "{{ in }}",
+                                            "inbound": "{{ in }}",
                                         }
                                     }
                                 }
@@ -552,7 +565,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "prefix_list.out",
+            "name": "prefix_list.outbound",
             "getval": re.compile(
                 r"""
                 prefix-list
@@ -560,7 +573,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "prefix-list {{ prefix_list.out }} out",
+            "setval": "prefix-list {{ prefix_list.outbound }} out",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -570,7 +583,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "prefix_list": {
-                                            "out": "{{ out }}",
+                                            "outbound": "{{ out }}",
                                         }
                                     }
                                 }
@@ -607,7 +620,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "route_map.in",
+            "name": "route_map.inbound",
             "getval": re.compile(
                 r"""
                 route-map
@@ -615,7 +628,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "route-map {{ route-map.in }} in",
+            "setval": "route-map {{ route_map.inbound }} in",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -625,7 +638,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "route_map": {
-                                            "in": "{{ in }}",
+                                            "inbound": "{{ in }}",
                                         }
                                     }
                                 }
@@ -636,7 +649,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "route_map.out",
+            "name": "route_map.outbound",
             "getval": re.compile(
                 r"""
                 route-map
@@ -644,7 +657,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "route-map {{ route-map.out }} out",
+            "setval": "route-map {{ route_map.outbound }} out",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -654,7 +667,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "route_map": {
-                                            "out": "{{ out }}",
+                                            "outbound": "{{ out }}",
                                         }
                                     }
                                 }
@@ -701,9 +714,9 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "send-community{{ ' extended' if send_community.extended is defined }}"
-                      "{{  ' both' if send_community.both is defined' }}"
-                      "{{' standard' if send_community.standard is defined }}",
+            "setval": "send-community{{ ' extended' if send_community.extended|d(False) }}"
+                      "{{  ' both' if send_community.both|d(False) }}"
+                      "{{ ' standard' if send_community.standard|d(False) }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {

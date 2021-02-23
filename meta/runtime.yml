@@ -414,6 +414,13 @@ plugin_routing:
         warning_text: See the plugin documentation for more details
     bgp_af:
       redirect: cisco.nxos.nxos_bgp_af
+      deprecation:
+        removal_date: '2023-02-24'
+        warning_text: See the plugin documentation for more details
+    nxos_bgp_af:
+      deprecation:
+        removal_date: '2023-02-24'
+        warning_text: See the plugin documentation for more details
     bgp_neighbor:
       redirect: cisco.nxos.nxos_bgp_neighbor
       deprecation:
@@ -425,6 +432,13 @@ plugin_routing:
         warning_text: See the plugin documentation for more details
     bgp_neighbor_af:
       redirect: cisco.nxos.nxos_bgp_neighbor_af
+      deprecation:
+        removal_date: '2023-02-24'
+        warning_text: See the plugin documentation for more details
+    nxos_bgp_neighbor_af:
+      deprecation:
+        removal_date: '2023-02-24'
+        warning_text: See the plugin documentation for more details
     command:
       redirect: cisco.nxos.nxos_command
     config:

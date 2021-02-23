@@ -48,26 +48,26 @@ class Bgp_neighbor_address_family(ResourceModule):
             tmplt=Bgp_neighbor_address_familyTemplate(),
         )
         self.parsers = [
-            "advertise_map",
+            "advertise_map.exist_map",
+            "advertise_map.non_exist_map",
             "advertisement_interval",
             "allowas_in",
-            "no_advertise_gw_ip",
             "as_override",
-            "capability.receive",
-            "capability.send",
+            "capability.additional_paths.receive",
+            "capability.additional_paths.send",
             "default_originate",
             "disable_peer_as_check",
-            "filter_list.in",
-            "filter_list.out",
+            "filter_list.inbound",
+            "filter_list.outbound",
             "inherit",
             "maximum_prefix",
             "next_hop_self",
             "next_hop_third_party",
-            "prefix_list.in",
-            "prefix_list.out",
+            "prefix_list.inbound",
+            "prefix_list.outbound",
             "rewrite_evpn_rt_asn",
-            "route_map.in",
-            "route_map.out",
+            "route_map.inbound",
+            "route_map.outbound",
             "route_reflector_client",
             "send_community",
             "soft_reconfiguration_inbound",
@@ -100,7 +100,7 @@ class Bgp_neighbor_address_family(ResourceModule):
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
-            wantd = dict_merge(wantd, haved)
+            wantd = dict_merge(haved, wantd)
 
         # if state is deleted, empty out wantd and set haved to elements to delete
         if self.state == "deleted":
@@ -149,7 +149,6 @@ class Bgp_neighbor_address_family(ResourceModule):
                 begin_af = len(self.commands)
                 have_af = have_afs.pop(k, {})
 
-                self._handle_keys(want, have)
                 self.compare(parsers=self.parsers, want=want_af, have=have_af)
 
                 if len(self.commands) != begin_af or (not have_af and want_af):
@@ -164,7 +163,7 @@ class Bgp_neighbor_address_family(ResourceModule):
 
             if len(self.commands) != begin:
                 self.commands.insert(
-                    begin, "neighbor {0}".format(w_nbr["neighbor"])
+                    begin, "neighbor {0}".format(w_nbr["neighbor_address"])
                 )
 
         if self.state in ["overridden", "deleted"]:
@@ -176,7 +175,7 @@ class Bgp_neighbor_address_family(ResourceModule):
                         self.addcmd(have_af, "address_family", True)
                 if len(self.commands) != begin:
                     self.commands.insert(
-                        begin, "neighbor {0}".format(h_nbr["neighbor"])
+                        begin, "neighbor {0}".format(h_nbr["neighbor_address"])
                     )
 
         if vrf:
@@ -203,7 +202,9 @@ class Bgp_neighbor_address_family(ResourceModule):
                         (x["afi"], x.get("safi")): x
                         for x in nbr["address_family"]
                     }
-            data["neighbors"] = {x["neighbor"]: x for x in data["neighbors"]}
+            data["neighbors"] = {
+                x["neighbor_address"]: x for x in data["neighbors"]
+            }
 
         if "vrfs" in data:
             for vrf in data["vrfs"]:

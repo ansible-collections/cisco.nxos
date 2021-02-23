@@ -44,7 +44,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "neighbor": {"type": "str", "required": True},
+                        "neighbor_address": {"type": "str", "required": True},
                         "address_family": {
                             "type": "list",
                             "elements": "dict",
@@ -125,8 +125,8 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                 "filter_list": {
                                     "type": "dict",
                                     "options": {
-                                        "in": {"type": "str"},
-                                        "out": {"type": "str"},
+                                        "inbound": {"type": "str"},
+                                        "outbound": {"type": "str"},
                                     },
                                 },
                                 "inherit": {
@@ -158,16 +158,16 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                 "prefix_list": {
                                     "type": "dict",
                                     "options": {
-                                        "in": {"type": "str"},
-                                        "out": {"type": "str"},
+                                        "inbound": {"type": "str"},
+                                        "outbound": {"type": "str"},
                                     },
                                 },
                                 "rewrite_evpn_rt_asn": {"type": "bool"},
                                 "route_map": {
                                     "type": "dict",
                                     "options": {
-                                        "in": {"type": "str"},
-                                        "out": {"type": "str"},
+                                        "inbound": {"type": "str"},
+                                        "outbound": {"type": "str"},
                                     },
                                 },
                                 "route_reflector_client": {"type": "bool"},
@@ -204,7 +204,10 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                             "type": "list",
                             "elements": "dict",
                             "options": {
-                                "neighbor": {"type": "str", "required": True},
+                                "neighbor_address": {
+                                    "type": "str",
+                                    "required": True,
+                                },
                                 "address_family": {
                                     "type": "list",
                                     "elements": "dict",
@@ -232,9 +235,6 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                         },
                                         "advertise_map": {
                                             "type": "dict",
-                                            "required_one_of": [
-                                                ("exist_map", "non_exist_map")
-                                            ],
                                             "options": {
                                                 "route_map": {
                                                     "type": "str",
@@ -296,8 +296,8 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                         "filter_list": {
                                             "type": "dict",
                                             "options": {
-                                                "in": {"type": "str"},
-                                                "out": {"type": "str"},
+                                                "inbound": {"type": "str"},
+                                                "outbound": {"type": "str"},
                                             },
                                         },
                                         "inherit": {
@@ -337,8 +337,8 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                         "prefix_list": {
                                             "type": "dict",
                                             "options": {
-                                                "in": {"type": "str"},
-                                                "out": {"type": "str"},
+                                                "inbound": {"type": "str"},
+                                                "outbound": {"type": "str"},
                                             },
                                         },
                                         "rewrite_evpn_rt_asn": {
@@ -347,8 +347,8 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                         "route_map": {
                                             "type": "dict",
                                             "options": {
-                                                "in": {"type": "str"},
-                                                "out": {"type": "str"},
+                                                "inbound": {"type": "str"},
+                                                "outbound": {"type": "str"},
                                             },
                                         },
                                         "route_reflector_client": {

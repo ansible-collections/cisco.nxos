@@ -95,7 +95,7 @@ class Bgp_neighbor_address_familyFacts(object):
         if "neighbors" in data:
             data["neighbors"] = sorted(
                 list(data["neighbors"].values()),
-                key=lambda k, s="neighbor": k[s],
+                key=lambda k, s="neighbor_address": k[s],
             )
             for nbr in data["neighbors"]:
                 nbr["address_family"] = list(nbr["address_family"].values())
