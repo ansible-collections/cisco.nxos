@@ -67,6 +67,8 @@ options:
   hello_interval_ms:
     description:
     - Specifies that the hello_interval is in milliseconds.
+    - When set to True, this indicates that the user is providing the
+      hello_interval in milliseconds and hence, no conversion is required.
     type: bool
   jp_policy_out:
     description:
