@@ -263,6 +263,857 @@ options:
     default: merged
 """
 EXAMPLES = """
+# Using merged
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# Nexus9000v#
+
+- name: Merge the provided configuration with the exisiting running configuration
+  cisco.nxos.nxos_bgp_neighbor_address_family: &id001
+    config:
+      as_number: 65536
+      neighbors:
+        - neighbor_address: 192.0.2.32
+          address_family:
+            - afi: ipv4
+              safi: unicast
+              maximum_prefix:
+                max_prefix_limit: 20
+                generate_warning_threshold: 75
+              weight: 100
+              prefix_list:
+                inbound: rmap1
+                outbound: rmap2
+            - afi: ipv6
+              safi: unicast
+        - neighbor_address: 192.0.2.33
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              inherit:
+                template: BasePolicy
+                sequence: 200
+      vrfs:
+        - vrf: site-1
+          neighbors:
+            - neighbor_address: 203.0.113.1
+              address_family:
+                - afi: ipv4
+                  safi: unicast
+                  suppress_inactive: True
+                  next_hop_self:
+                    set: True
+            - neighbor_address: 203.0.113.2
+              address_family:
+                - afi: ipv6
+                  safi: unicast
+                - afi: ipv4
+                  safi: multicast
+                  send_community:
+                    set: True
+
+# Task output
+# -------------
+#  before: {}
+#
+#  commands:
+#  - router bgp 65536
+#  - neighbor 192.0.2.32
+#  - address-family ipv4 unicast
+#  - maximum-prefix 20 75
+#  - weight 100
+#  - prefix-list rmap1 in
+#  - prefix-list rmap2 out
+#  - address-family ipv6 unicast
+#  - neighbor 192.0.2.33
+#  - address-family ipv4 multicast
+#  - inherit peer-policy BasePolicy 200
+#  - vrf site-1
+#  - neighbor 203.0.113.1
+#  - address-family ipv4 unicast
+#  - suppress-inactive
+#  - next-hop-self
+#  - neighbor 203.0.113.2
+#  - address-family ipv6 unicast
+#  - address-family ipv4 multicast
+#  - send-community
+#
+#  after:
+#    as_number: "65536"
+#    neighbors:
+#      - neighbor_address: 192.0.2.32
+#        address_family:
+#          - afi: ipv4
+#            safi: unicast
+#            maximum_prefix:
+#              max_prefix_limit: 20
+#              generate_warning_threshold: 75
+#            weight: 100
+#            prefix_list:
+#              inbound: rmap1
+#              outbound: rmap2
+#          - afi: ipv6
+#            safi: unicast
+#      - neighbor_address: 192.0.2.33
+#        address_family:
+#          - afi: ipv4
+#            safi: multicast
+#            inherit:
+#              template: BasePolicy
+#              sequence: 200
+#    vrfs:
+#      - vrf: site-1
+#        neighbors:
+#          - neighbor_address: 203.0.113.1
+#            address_family:
+#              - afi: ipv4
+#                safi: unicast
+#                suppress_inactive: true
+#                next_hop_self:
+#                  set: true
+#          - neighbor_address: 203.0.113.2
+#            address_family:
+#              - afi: ipv4
+#                safi: multicast
+#                send_community:
+#                  set: True
+#              - afi: ipv6
+#                safi: unicast
+
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   neighbor 192.0.2.32
+#     address-family ipv4 unicast
+#       maximum-prefix 20 75
+#       weight 100
+#       prefix-list rmap1 in
+#       prefix-list rmap2 out
+#     address-family ipv6 unicast
+#   neighbor 192.0.2.33
+#     address-family ipv4 multicast
+#       inherit peer-policy BasePolicy 200
+#   vrf site-1
+#     neighbor 203.0.113.1
+#       address-family ipv4 unicast
+#         suppress-inactive
+#         next-hop-self
+#     neighbor 203.0.113.2
+#       address-family ipv4 multicast
+#         send-community
+#       address-family ipv6 unicast
+#
+
+# Using replaced
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   neighbor 192.0.2.32
+#     address-family ipv4 unicast
+#       maximum-prefix 20 75
+#       weight 100
+#       prefix-list rmap1 in
+#       prefix-list rmap2 out
+#     address-family ipv6 unicast
+#   neighbor 192.0.2.33
+#     address-family ipv4 multicast
+#       inherit peer-policy BasePolicy 200
+#   vrf site-1
+#     neighbor 203.0.113.1
+#       address-family ipv4 unicast
+#         suppress-inactive
+#         next-hop-self
+#     neighbor 203.0.113.2
+#       address-family ipv4 multicast
+#         send-community
+#       address-family ipv6 unicast
+#
+
+- name: Replace specified neighbor AFs with given configuration
+  cisco.nxos.nxos_bgp_neighbor_address_family: &replaced
+    config:
+      as_number: 65536
+      neighbors:
+        - neighbor_address: 192.0.2.32
+          address_family:
+            - afi: ipv4
+              safi: unicast
+              weight: 110
+            - afi: ipv6
+              safi: unicast
+        - neighbor_address: 192.0.2.33
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              inherit:
+                template: BasePolicy
+                sequence: 200
+      vrfs:
+        - vrf: site-1
+          neighbors:
+            - neighbor_address: 203.0.113.1
+              address_family:
+                - afi: ipv4
+                  safi: unicast
+            - neighbor_address: 203.0.113.2
+              address_family:
+                - afi: ipv6
+                  safi: unicast
+                - afi: ipv4
+                  safi: multicast
+                  send_community:
+                    set: True
+    state: replaced
+
+# Task output
+# -------------
+#  before:
+#    as_number: "65536"
+#    neighbors:
+#      - neighbor_address: 192.0.2.32
+#        address_family:
+#          - afi: ipv4
+#            safi: unicast
+#            maximum_prefix:
+#              max_prefix_limit: 20
+#              generate_warning_threshold: 75
+#            weight: 100
+#            prefix_list:
+#              inbound: rmap1
+#              outbound: rmap2
+#          - afi: ipv6
+#            safi: unicast
+#      - neighbor_address: 192.0.2.33
+#        address_family:
+#          - afi: ipv4
+#            safi: multicast
+#            inherit:
+#              template: BasePolicy
+#              sequence: 200
+#    vrfs:
+#      - vrf: site-1
+#        neighbors:
+#          - neighbor_address: 203.0.113.1
+#            address_family:
+#              - afi: ipv4
+#                safi: unicast
+#                suppress_inactive: true
+#                next_hop_self:
+#                  set: true
+#          - neighbor_address: 203.0.113.2
+#            address_family:
+#              - afi: ipv4
+#                safi: multicast
+#                send_community:
+#                  set: True
+#              - afi: ipv6
+#                safi: unicast
+#
+#  commands:
+#    - router bgp 65536
+#    - neighbor 192.0.2.32
+#    - address-family ipv4 unicast
+#    - no maximum-prefix 20 75
+#    - weight 110
+#    - no prefix-list rmap1 in
+#    - no prefix-list rmap2 out
+#    - vrf site-1
+#    - neighbor 203.0.113.1
+#    - address-family ipv4 unicast
+#    - no suppress-inactive
+#    - no next-hop-self
+#
+#  after:
+#    as_number: "65536"
+#    neighbors:
+#      - neighbor_address: 192.0.2.32
+#        address_family:
+#          - afi: ipv4
+#            safi: unicast
+#            weight: 110
+#          - afi: ipv6
+#            safi: unicast
+#      - neighbor_address: 192.0.2.33
+#        address_family:
+#          - afi: ipv4
+#            safi: multicast
+#            inherit:
+#              template: BasePolicy
+#              sequence: 200
+#    vrfs:
+#      - vrf: site-1
+#        neighbors:
+#          - neighbor_address: 203.0.113.1
+#            address_family:
+#              - afi: ipv4
+#                safi: unicast
+#          - neighbor_address: 203.0.113.2
+#            address_family:
+#              - afi: ipv4
+#                safi: multicast
+#                send_community:
+#                  set: True
+#              - afi: ipv6
+#                safi: unicast
+
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   neighbor 192.0.2.32
+#     address-family ipv4 unicast
+#       weight 110
+#     address-family ipv6 unicast
+#   neighbor 192.0.2.33
+#     address-family ipv4 multicast
+#       inherit peer-policy BasePolicy 200
+#   vrf site-1
+#     neighbor 203.0.113.1
+#       address-family ipv4 unicast
+#     neighbor 203.0.113.2
+#       address-family ipv4 multicast
+#         send-community
+#       address-family ipv6 unicast
+#
+
+# Using overridden
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   neighbor 192.0.2.32
+#     address-family ipv4 unicast
+#       maximum-prefix 20 75
+#       weight 100
+#       prefix-list rmap1 in
+#       prefix-list rmap2 out
+#     address-family ipv6 unicast
+#   neighbor 192.0.2.33
+#     address-family ipv4 multicast
+#       inherit peer-policy BasePolicy 200
+#   vrf site-1
+#     neighbor 203.0.113.1
+#       address-family ipv4 unicast
+#         suppress-inactive
+#         next-hop-self
+#     neighbor 203.0.113.2
+#       address-family ipv4 multicast
+#         send-community
+#       address-family ipv6 unicast
+#
+
+- name: Overridde all BGP AF configuration with provided configuration
+  cisco.nxos.nxos_bgp_neighbor_address_family:
+    config:
+      as_number: 65536
+      neighbors:
+        - neighbor_address: 192.0.2.32
+          address_family:
+            - afi: ipv4
+              safi: unicast
+      vrfs:
+        - vrf: site-1
+          neighbors:
+            - neighbor_address: 203.0.113.1
+              address_family:
+                - afi: ipv4
+                  safi: unicast
+                  suppress_inactive: True
+                  next_hop_self:
+                    set: True
+    state: overridden
+
+# Task output
+# -------------
+#  before:
+#    as_number: "65536"
+#    neighbors:
+#      - neighbor_address: 192.0.2.32
+#        address_family:
+#          - afi: ipv4
+#            safi: unicast
+#            maximum_prefix:
+#              max_prefix_limit: 20
+#              generate_warning_threshold: 75
+#            weight: 100
+#            prefix_list:
+#              inbound: rmap1
+#              outbound: rmap2
+#          - afi: ipv6
+#            safi: unicast
+#      - neighbor_address: 192.0.2.33
+#        address_family:
+#          - afi: ipv4
+#            safi: multicast
+#            inherit:
+#              template: BasePolicy
+#              sequence: 200
+#    vrfs:
+#      - vrf: site-1
+#        neighbors:
+#          - neighbor_address: 203.0.113.1
+#            address_family:
+#              - afi: ipv4
+#                safi: unicast
+#                suppress_inactive: true
+#                next_hop_self:
+#                  set: true
+#          - neighbor_address: 203.0.113.2
+#            address_family:
+#              - afi: ipv4
+#                safi: multicast
+#                send_community:
+#                  set: True
+#              - afi: ipv6
+#                safi: unicast
+#
+#  commands:
+#    - router bgp 65536
+#    - neighbor 192.0.2.32
+#    - address-family ipv4 unicast
+#    - no maximum-prefix 20 75
+#    - no weight 100
+#    - no prefix-list rmap1 in
+#    - no prefix-list rmap2 out
+#    - no address-family ipv6 unicast
+#    - neighbor 192.0.2.33
+#    - no address-family ipv4 multicast
+#    - vrf site-1
+#    - neighbor 203.0.113.2
+#    - no address-family ipv4 multicast
+#    - no address-family ipv6 unicast
+#
+#  after:
+#    as_number: "65536"
+#    neighbors:
+#      - neighbor_address: 192.0.2.32
+#        address_family:
+#          - afi: ipv4
+#            safi: unicast
+#    vrfs:
+#      - vrf: site-1
+#        neighbors:
+#          - neighbor_address: 203.0.113.1
+#            address_family:
+#              - afi: ipv4
+#                safi: unicast
+#                suppress_inactive: True
+#                next_hop_self:
+#                  set: True
+
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   neighbor 192.0.2.32
+#     address-family ipv4 unicast
+#   vrf site-1
+#     neighbor 203.0.113.1
+#       address-family ipv4 unicast
+#         suppress-inactive
+#         next-hop-self
+
+# Using deleted to remove specified neighbor AFs
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   neighbor 192.0.2.32
+#     address-family ipv4 unicast
+#       maximum-prefix 20 75
+#       weight 100
+#       prefix-list rmap1 in
+#       prefix-list rmap2 out
+#     address-family ipv6 unicast
+#   neighbor 192.0.2.33
+#     address-family ipv4 multicast
+#       inherit peer-policy BasePolicy 200
+#   vrf site-1
+#     neighbor 203.0.113.1
+#       address-family ipv4 unicast
+#         suppress-inactive
+#         next-hop-self
+#     neighbor 203.0.113.2
+#       address-family ipv4 multicast
+#         send-community
+#       address-family ipv6 unicast
+#
+
+- name: Delete BGP configs handled by this module
+  cisco.nxos.nxos_bgp_neighbor_address_family:
+    config:
+      as_number: 65536
+      neighbors:
+        - neighbor_address: 192.0.2.32
+          address_family:
+            - afi: ipv4
+              safi: unicast
+      vrfs:
+        - vrf: site-1
+          neighbors:
+            - neighbor_address: 203.0.113.2
+              address_family:
+                - afi: ipv6
+                  safi: unicast
+    state: deleted
+
+# Task output
+# -------------
+#  before:
+#    as_number: "65536"
+#    neighbors:
+#      - neighbor_address: 192.0.2.32
+#        address_family:
+#          - afi: ipv4
+#            safi: unicast
+#            maximum_prefix:
+#              max_prefix_limit: 20
+#              generate_warning_threshold: 75
+#            weight: 100
+#            prefix_list:
+#              inbound: rmap1
+#              outbound: rmap2
+#          - afi: ipv6
+#            safi: unicast
+#      - neighbor_address: 192.0.2.33
+#        address_family:
+#          - afi: ipv4
+#            safi: multicast
+#            inherit:
+#              template: BasePolicy
+#              sequence: 200
+#    vrfs:
+#      - vrf: site-1
+#        neighbors:
+#          - neighbor_address: 203.0.113.1
+#            address_family:
+#              - afi: ipv4
+#                safi: unicast
+#                suppress_inactive: true
+#                next_hop_self:
+#                  set: true
+#          - neighbor_address: 203.0.113.2
+#            address_family:
+#              - afi: ipv4
+#                safi: multicast
+#                send_community:
+#                  set: True
+#              - afi: ipv6
+#                safi: unicast
+#
+#  commands:
+#    - router bgp 65536
+#    - neighbor 192.0.2.32
+#    - no address-family ipv4 unicast
+#    - vrf site-1
+#    - neighbor 203.0.113.2
+#    - no address-family ipv6 unicast
+#
+#  after:
+#    as_number: "65536"
+#    neighbors:
+#      - neighbor_address: 192.0.2.32
+#        address_family:
+#          - afi: ipv6
+#            safi: unicast
+#      - neighbor_address: 192.0.2.33
+#        address_family:
+#          - afi: ipv4
+#            safi: multicast
+#            inherit:
+#              template: BasePolicy
+#              sequence: 200
+#    vrfs:
+#      - vrf: site-1
+#        neighbors:
+#          - neighbor_address: 203.0.113.1
+#            address_family:
+#              - afi: ipv4
+#                safi: unicast
+#                suppress_inactive: true
+#                next_hop_self:
+#                  set: true
+#          - neighbor_address: 203.0.113.2
+#            address_family:
+#              - afi: ipv4
+#                safi: multicast
+#                send_community:
+#                  set: True
+#
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   neighbor 192.0.2.32
+#     address-family ipv6 unicast
+#   neighbor 192.0.2.33
+#     address-family ipv4 multicast
+#       inherit peer-policy BasePolicy 200
+#   vrf site-1
+#     neighbor 203.0.113.1
+#       address-family ipv4 unicast
+#         suppress-inactive
+#         next-hop-self
+#     neighbor 203.0.113.2
+#       address-family ipv4 multicast
+#         send-community
+#
+
+# Using deleted to remove all neighbor AFs
+
+# Before state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   neighbor 192.0.2.32
+#     address-family ipv4 unicast
+#       maximum-prefix 20 75
+#       weight 100
+#       prefix-list rmap1 in
+#       prefix-list rmap2 out
+#     address-family ipv6 unicast
+#   neighbor 192.0.2.33
+#     address-family ipv4 multicast
+#       inherit peer-policy BasePolicy 200
+#   vrf site-1
+#     neighbor 203.0.113.1
+#       address-family ipv4 unicast
+#         suppress-inactive
+#         next-hop-self
+#     neighbor 203.0.113.2
+#       address-family ipv4 multicast
+#         send-community
+#       address-family ipv6 unicast
+#
+
+- name: Delete all BGP neighbor AF configs handled by this module
+  cisco.nxos.nxos_bgp_neighbor_address_family:
+    state: deleted
+
+# Task output
+# -------------
+#  before:
+#    as_number: "65536"
+#    neighbors:
+#      - neighbor_address: 192.0.2.32
+#        address_family:
+#          - afi: ipv4
+#            safi: unicast
+#            maximum_prefix:
+#              max_prefix_limit: 20
+#              generate_warning_threshold: 75
+#            weight: 100
+#            prefix_list:
+#              inbound: rmap1
+#              outbound: rmap2
+#          - afi: ipv6
+#            safi: unicast
+#      - neighbor_address: 192.0.2.33
+#        address_family:
+#          - afi: ipv4
+#            safi: multicast
+#            inherit:
+#              template: BasePolicy
+#              sequence: 200
+#    vrfs:
+#      - vrf: site-1
+#        neighbors:
+#          - neighbor_address: 203.0.113.1
+#            address_family:
+#              - afi: ipv4
+#                safi: unicast
+#                suppress_inactive: true
+#                next_hop_self:
+#                  set: true
+#          - neighbor_address: 203.0.113.2
+#            address_family:
+#              - afi: ipv4
+#                safi: multicast
+#                send_community:
+#                  set: True
+#              - afi: ipv6
+#                safi: unicast
+#
+#  commands:
+#    - router bgp 65536
+#    - neighbor 192.0.2.32
+#    - no address-family ipv4 unicast
+#    - no address-family ipv6 unicast
+#    - neighbor 192.0.2.33
+#    - no address-family ipv4 multicast
+#    - vrf site-1
+#    - neighbor 203.0.113.1
+#    - no address-family ipv4 unicast
+#    - neighbor 203.0.113.2
+#    - no address-family ipv6 unicast
+#    - no address-family ipv4 multicast
+#
+#  after:
+#    as_number: "65536"
+#
+# After state:
+# -------------
+# Nexus9000v# show running-config | section "^router bgp"
+# router bgp 65536
+#   neighbor 192.0.2.32
+#   neighbor 192.0.2.33
+#   vrf site-1
+#     neighbor 203.0.113.1
+#     neighbor 203.0.113.2
+#
+
+# Using rendered
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_bgp_neighbor_address_family:
+    config:
+      as_number: 65536
+      neighbors:
+        - neighbor_address: 192.0.2.32
+          address_family:
+            - afi: ipv4
+              safi: unicast
+              maximum_prefix:
+                max_prefix_limit: 20
+                generate_warning_threshold: 75
+              weight: 100
+              prefix_list:
+                inbound: rmap1
+                outbound: rmap2
+            - afi: ipv6
+              safi: unicast
+        - neighbor_address: 192.0.2.33
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              inherit:
+                template: BasePolicy
+                sequence: 200
+      vrfs:
+        - vrf: site-1
+          neighbors:
+            - neighbor_address: 203.0.113.1
+              address_family:
+                - afi: ipv4
+                  safi: unicast
+                  suppress_inactive: True
+                  next_hop_self:
+                    set: True
+            - neighbor_address: 203.0.113.2
+              address_family:
+                - afi: ipv6
+                  safi: unicast
+                - afi: ipv4
+                  safi: multicast
+                  send_community:
+                    set: True
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+#  rendered:
+#    - router bgp 65536
+#    - neighbor 192.0.2.32
+#    - address-family ipv4 unicast
+#    - maximum-prefix 20 75
+#    - weight 100
+#    - prefix-list rmap1 in
+#    - prefix-list rmap2 out
+#    - address-family ipv6 unicast
+#    - neighbor 192.0.2.33
+#    - address-family ipv4 multicast
+#    - inherit peer-policy BasePolicy 200
+#    - vrf site-1
+#    - neighbor 203.0.113.1
+#    - address-family ipv4 unicast
+#    - suppress-inactive
+#    - next-hop-self
+#    - neighbor 203.0.113.2
+#    - address-family ipv6 unicast
+#    - address-family ipv4 multicast
+#    - send-community
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# router bgp 65536
+#   neighbor 192.0.2.32
+#     address-family ipv4 unicast
+#       maximum-prefix 20 75
+#       weight 100
+#       prefix-list rmap1 in
+#       prefix-list rmap2 out
+#     address-family ipv6 unicast
+#   neighbor 192.0.2.33
+#     address-family ipv4 multicast
+#       inherit peer-policy BasePolicy 200
+#   vrf site-1
+#     neighbor 203.0.113.1
+#       address-family ipv4 unicast
+#         suppress-inactive
+#         next-hop-self
+#     neighbor 203.0.113.2
+#       address-family ipv4 multicast
+#         send-community
+#       address-family ipv6 unicast
+
+- name: Parse externally provided BGP neighbor AF config
+  register: result
+  cisco.nxos.nxos_bgp_neighbor_address_family:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+#  parsed:
+#    as_number: "65536"
+#    neighbors:
+#      - neighbor_address: 192.0.2.32
+#        address_family:
+#          - afi: ipv4
+#           safi: unicast
+#           maximum_prefix:
+#              max_prefix_limit: 20
+#              generate_warning_threshold: 75
+#           weight: 100
+#            prefix_list:
+#              inbound: rmap1
+#              outbound: rmap2
+#          - afi: ipv6
+#            safi: unicast
+#      - neighbor_address: 192.0.2.33
+#        address_family:
+#          - afi: ipv4
+#            safi: multicast
+#            inherit:
+#              template: BasePolicy
+#              sequence: 200
+#    vrfs:
+#      - vrf: site-1
+#        neighbors:
+#          - neighbor_address: 203.0.113.1
+#            address_family:
+#              - afi: ipv4
+#                safi: unicast
+#                suppress_inactive: true
+#                next_hop_self:
+#                  set: true
+#          - neighbor_address: 203.0.113.2
+#            address_family:
+#              - afi: ipv4
+#                safi: multicast
+#                send_community:
+#                  set: True
+#              - afi: ipv6
+#                safi: unicast
 """
 
 from ansible.module_utils.basic import AnsibleModule
