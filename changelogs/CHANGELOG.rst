@@ -24,6 +24,12 @@ Minor Changes
 - Adds support for `single_user_mode` command output caching.
 - Move nxos_config idempotent warning message with the task response under `warnings` key if `changed` is `True`
 
+Deprecated Features
+-------------------
+
+- Deprecated nxos_bgp_af in favour of nxos_bgp_address_family resource module.
+- Deprecated nxos_bgp_neighbor_af in favour of nxos_bgp_neighbor_address_family resource module.
+
 Bugfixes
 --------
 

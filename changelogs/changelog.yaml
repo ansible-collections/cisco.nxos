@@ -456,6 +456,10 @@ releases:
       - Fixes to nxos_logging, nxos_igmp_snooping, nxos_l3_interfaces, nxos_ospf_interfaces
         and nxos_static_routes to conform with latest CLI behaviour.
       - Properly configure neighbor timers and shutdown state (https://github.com/ansible-collections/cisco.nxos/issues/240).
+      deprecated_features:
+      - Deprecated nxos_bgp_af in favour of nxos_bgp_address_family resource module.
+      - Deprecated nxos_bgp_neighbor_af in favour of nxos_bgp_neighbor_address_family
+        resource module.
       major_changes:
       - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
         for more details.
@@ -475,6 +479,7 @@ releases:
     - add_nxos_bgp_address_family.yaml
     - add_nxos_bgp_nbr_af.yaml
     - config_module_warning_msg.yaml
+    - deprecate.yaml
     - fix_nxos_bgp_global.yaml
     - fix_nxos_multi_module.yaml
     - major_release.yaml
