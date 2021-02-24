@@ -98,7 +98,10 @@ class Bgp_neighbor_address_familyFacts(object):
                 key=lambda k, s="neighbor_address": k[s],
             )
             for nbr in data["neighbors"]:
-                nbr["address_family"] = list(nbr["address_family"].values())
+                nbr["address_family"] = sorted(
+                    list(nbr["address_family"].values()),
+                    key=lambda k: (k["afi"], k.get("safi", "")),
+                )
         return data
 
     def _flatten_config(self, data):

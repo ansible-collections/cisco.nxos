@@ -180,7 +180,7 @@ class Bgp_neighbor_address_family(ResourceModule):
 
         if vrf:
             if len(self.commands) != begin_vrf:
-                self.commands.insert(begin, "vrf {0}".format(vrf))
+                self.commands.insert(begin_vrf, "vrf {0}".format(vrf))
         else:
             self._vrfs_compare(want, have)
 
