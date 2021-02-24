@@ -60,8 +60,16 @@ options:
     type: str
   hello_interval:
     description:
-    - Hello interval in milliseconds for this interface.
+    - Hello interval in milliseconds or seconds for this interface.
+    - Use the option I(hello_interval_ms) to specify if the given value is in
+      milliseconds or seconds. The default is seconds.
     type: int
+  hello_interval_ms:
+    description:
+    - Specifies that the hello_interval is in milliseconds.
+    - When set to True, this indicates that the user is providing the
+      hello_interval in milliseconds and hence, no conversion is required.
+    type: bool
   jp_policy_out:
     description:
     - Policy for join-prune messages (outbound).
@@ -511,13 +519,16 @@ def config_pim_interface_defaults(existing, jp_bidir, isauth):
     return command
 
 
-def normalize_proposed_values(proposed):
+def normalize_proposed_values(proposed, module):
     keys = proposed.keys()
     if "bfd" in keys:
         # bfd is a tri-state string: enable, disable, default
         proposed["bfd"] = proposed["bfd"].lower()
     if "hello_interval" in keys:
-        proposed["hello_interval"] = str(proposed["hello_interval"] * 1000)
+        hello_interval = proposed["hello_interval"]
+        if not module.params["hello_interval_ms"]:
+            hello_interval = hello_interval * 1000
+        proposed["hello_interval"] = str(hello_interval)
 
 
 def main():
@@ -527,6 +538,7 @@ def main():
         dr_prio=dict(type="str"),
         hello_auth_key=dict(type="str", no_log=True),
         hello_interval=dict(type="int"),
+        hello_interval_ms=dict(type="bool"),
         jp_policy_out=dict(type="str"),
         jp_policy_in=dict(type="str"),
         jp_type_out=dict(type="str", choices=["prefix", "routemap"]),
@@ -543,8 +555,11 @@ def main():
     )
     argument_spec.update(nxos_argument_spec)
 
+    required_by = {"hello_interval_ms": "hello_interval"}
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
+        required_by=required_by,
     )
 
     warnings = list()
@@ -586,7 +601,7 @@ def main():
     proposed = dict(
         (k, v) for k, v in module.params.items() if v is not None and k in args
     )
-    normalize_proposed_values(proposed)
+    normalize_proposed_values(proposed, module)
 
     delta = dict(set(proposed.items()).difference(existing.items()))
 
