@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Add nxos_bgp_neighbor_address_family Resource Module.

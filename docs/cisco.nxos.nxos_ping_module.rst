@@ -71,6 +71,25 @@ Parameters
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>df_bit</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set the DF bit.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>provider</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -305,6 +324,21 @@ Parameters
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>size</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Size of packets to send.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>source</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -381,13 +415,20 @@ Examples
 
     - name: Test reachability to a few different public IPs using mgmt vrf
       cisco.nxos.nxos_ping:
-        dest: nxos_ping
+        dest: "{{ item }}"
         vrf: management
         host: 68.170.147.165
       with_items:
-      - 8.8.8.8
-      - 4.4.4.4
-      - 198.6.1.4
+        - 8.8.8.8
+        - 4.4.4.4
+        - 198.6.1.4
+
+    - name: Test reachability to 8.8.8.8 using mgmt vrf, size and df-bit
+      cisco.nxos.nxos_ping:
+        dest: 8.8.8.8
+        df_bit: true
+        size: 1400
+        vrf: management
 
 
 

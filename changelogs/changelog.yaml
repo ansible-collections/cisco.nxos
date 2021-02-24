@@ -401,8 +401,6 @@ releases:
   1.4.0:
     changes:
       bugfixes:
-      - config replace is actually supported for devices other than N9K and hence
-        we should not fail, and instead let the device handle it (https://github.com/ansible-collections/cisco.nxos/issues/215).
       - Add support for interfaces in mode 'fabricpath' to l2_interfaces (https://github.com/ansible-collections/cisco.nxos/issues/220).
       - Allow enabling `fabric forwarding` feature through nxos_feature (https://github.com/ansible-collections/cisco.nxos/issues/213).
       - Allow tag updates with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/197).
@@ -414,8 +412,11 @@ releases:
       - Update argspecs with default value for parameters.
       - Update docs to clarify the idemptonecy releated caveat and add it in the output
         warnings (https://github.com/ansible-collections/ansible.netcommon/pull/189)
+      - config replace is actually supported for devices other than N9K and hence
+        we should not fail, and instead let the device handle it (https://github.com/ansible-collections/cisco.nxos/issues/215).
       deprecated_features:
-      - Deprecated `nxos_bgp` and `nxos_bgp_neighbor` modules in favor of `nxos_bgp_global` resource module.
+      - Deprecated `nxos_bgp` and `nxos_bgp_neighbor` modules in favor of `nxos_bgp_global`
+        resource module.
       doc_changes:
       - Fix error in ``host_reachability`` parameter's example where a default value
         is used, which the ``host_reachability`` parameter does not support. Improve
@@ -430,6 +431,7 @@ releases:
     - 204-improve-nxos-vxlan-vtep-module-docs.yaml
     - add_default_options.yaml
     - add_nxos_bgp_global.yaml
+    - depr_bgp.yaml
     - fix_interface_context.yaml
     - fix_l2_interfaces_mode_fabricpath.yaml
     - fix_nxos_facts.yaml
@@ -441,9 +443,47 @@ releases:
     - nxos_config_replace.yaml
     - nxos_feature.yaml
     - nxos_snmp_community.yaml
-    - depr_bgp.yaml
     modules:
     - description: BGP Global resource module.
       name: nxos_bgp_global
       namespace: ''
     release_date: '2021-01-29'
+  2.0.0:
+    changes:
+      bugfixes:
+      - Fail gracefully when BGP is already configured with a different ASN when states
+        merged or replaced is used.
+      - Fixes to nxos_logging, nxos_igmp_snooping, nxos_l3_interfaces, nxos_ospf_interfaces
+        and nxos_static_routes to conform with latest CLI behaviour.
+      - Properly configure neighbor timers and shutdown state (https://github.com/ansible-collections/cisco.nxos/issues/240).
+      major_changes:
+      - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
+        for more details.
+      - Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode`
+        and `ansible_network_import_modules`.
+      minor_changes:
+      - Add bfd option for neighbors (https://github.com/ansible-collections/cisco.nxos/issues/241).
+      - Add nxos_bgp_address_family Resource Module.
+      - Add nxos_bgp_neighbor_address_family Resource Module.
+      - Add support df_bit and size option for nxos_ping (https://github.com/ansible-collections/cisco.nxos/pull/237).
+      - Adds support for `single_user_mode` command output caching.
+      - Move nxos_config idempotent warning message with the task response under `warnings`
+        key if `changed` is `True`
+    fragments:
+    - 237_nxos_ping_df_size.yaml
+    - add_caching_support.yaml
+    - add_nxos_bgp_address_family.yaml
+    - add_nxos_bgp_nbr_af.yaml
+    - config_module_warning_msg.yaml
+    - fix_nxos_bgp_global.yaml
+    - fix_nxos_multi_module.yaml
+    - major_release.yaml
+    - update_bgp_global.yaml
+    modules:
+    - description: BGP Address Family resource module.
+      name: nxos_bgp_address_family
+      namespace: ''
+    - description: BGP Neighbor Address Family resource module.
+      name: nxos_bgp_neighbor_address_family
+      namespace: ''
+    release_date: '2021-02-24'
