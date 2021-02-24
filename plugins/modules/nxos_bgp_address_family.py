@@ -817,7 +817,7 @@ EXAMPLES = """
 #       redistribute ospfv3 100 route-map rmap-ospf-1
 #       redistribute eigrp 101 route-map rmap-eigrp-1
 
-- name: Delete specified BGP AFs
+- name: Delete all BGP AFs
   cisco.nxos.nxos_bgp_address_family:
     state: deleted
 

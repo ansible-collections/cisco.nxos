@@ -1,0 +1,18 @@
+---
+- debug:
+    msg: START nxos_bgp_neighbor_address_family parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided BGP config
+  register: result
+  cisco.nxos.nxos_bgp_neighbor_address_family:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+- name: Assert that config was correctly parsed
+  assert:
+    that:
+      - "{{ merged['after']['neighbors'] | symmetric_difference(result['parsed']['neighbors']) |length\
+            \ == 0 }}"
+      - "{{ merged['after']['vrfs'] | symmetric_difference(result['parsed']['vrfs']) |length\
+        \ == 0 }}"
+      - merged['after']['as_number'] == result['parsed']['as_number']
