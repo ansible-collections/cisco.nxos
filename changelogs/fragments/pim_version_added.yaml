@@ -1,0 +1,3 @@
+---
+trivial:
+  - Add version_added to hello_interval_ms option in nxos_pim_interface.
