@@ -461,10 +461,10 @@ releases:
       - Deprecated nxos_bgp_neighbor_af in favour of nxos_bgp_neighbor_address_family
         resource module.
       major_changes:
-      - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
-        for more details.
       - Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode`
         and `ansible_network_import_modules`.
+      - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
+        for more details.
       minor_changes:
       - Add bfd option for neighbors (https://github.com/ansible-collections/cisco.nxos/issues/241).
       - Add hello_interval_ms option in nxos_pim_interface module to support sub-second
