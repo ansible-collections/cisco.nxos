@@ -467,6 +467,8 @@ releases:
         and `ansible_network_import_modules`.
       minor_changes:
       - Add bfd option for neighbors (https://github.com/ansible-collections/cisco.nxos/issues/241).
+      - Add hello_interval_ms option in nxos_pim_interface module to support sub-second
+        intervals (https://github.com/ansible-collections/cisco.nxos/issues/226).
       - Add nxos_bgp_address_family Resource Module.
       - Add nxos_bgp_neighbor_address_family Resource Module.
       - Add support df_bit and size option for nxos_ping (https://github.com/ansible-collections/cisco.nxos/pull/237).
@@ -480,6 +482,7 @@ releases:
     - add_nxos_bgp_nbr_af.yaml
     - config_module_warning_msg.yaml
     - deprecate.yaml
+    - fix_hello_interval.yaml
     - fix_nxos_bgp_global.yaml
     - fix_nxos_multi_module.yaml
     - major_release.yaml

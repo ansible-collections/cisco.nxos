@@ -18,6 +18,7 @@ Minor Changes
 -------------
 
 - Add bfd option for neighbors (https://github.com/ansible-collections/cisco.nxos/issues/241).
+- Add hello_interval_ms option in nxos_pim_interface module to support sub-second intervals (https://github.com/ansible-collections/cisco.nxos/issues/226).
 - Add nxos_bgp_address_family Resource Module.
 - Add nxos_bgp_neighbor_address_family Resource Module.
 - Add support df_bit and size option for nxos_ping (https://github.com/ansible-collections/cisco.nxos/pull/237).

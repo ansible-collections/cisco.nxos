@@ -70,7 +70,7 @@ options:
     - When set to True, this indicates that the user is providing the
       hello_interval in milliseconds and hence, no conversion is required.
     type: bool
-    version_added: 2.0.0
+    version_added: "2.0.0"
   jp_policy_out:
     description:
     - Policy for join-prune messages (outbound).

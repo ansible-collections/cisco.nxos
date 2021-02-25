@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Add hello_interval_ms option in nxos_pim_interface module to support sub-second intervals (https://github.com/ansible-collections/cisco.nxos/issues/226).
