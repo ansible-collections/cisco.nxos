@@ -1,5 +1,0 @@
----
-bugfixes:
-  - Properly configure neighbor timers and shutdown state (https://github.com/ansible-collections/cisco.nxos/issues/240).
-minor_changes:
-  - Add bfd option for neighbors (https://github.com/ansible-collections/cisco.nxos/issues/241).

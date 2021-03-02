@@ -456,14 +456,14 @@ Examples
     - name: Set IP addresses on aggregate
       cisco.nxos.nxos_l3_interface:
         aggregate:
-        - {name: Ethernet2/1, ipv4: 192.168.2.10/24}
-        - {name: Ethernet2/5, ipv4: 192.168.3.10/24, ipv6: fd5d:12c9:2201:1::1/64}
+        - {name: "Ethernet2/1", ipv4: "192.168.2.10/24"}
+        - {name: "Ethernet2/5", ipv4: "192.168.3.10/24", ipv6: "fd5d:12c9:2201:1::1/64"}
 
     - name: Remove IP addresses on aggregate
       cisco.nxos.nxos_l3_interface:
         aggregate:
-        - {name: Ethernet2/1, ipv4: 192.168.2.10/24}
-        - {name: Ethernet2/5, ipv4: 192.168.3.10/24, ipv6: fd5d:12c9:2201:1::1/64}
+        - {name: "Ethernet2/1", ipv4: "192.168.2.10/24"}
+        - {name: "Ethernet2/5", ipv4: "192.168.3.10/24", ipv6: "fd5d:12c9:2201:1::1/64"}
         state: absent
 
 

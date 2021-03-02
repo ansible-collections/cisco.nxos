@@ -116,7 +116,29 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Hello interval in milliseconds for this interface.</div>
+                        <div>Hello interval in milliseconds or seconds for this interface.</div>
+                        <div>Use the option <em>hello_interval_ms</em> to specify if the given value is in milliseconds or seconds. The default is seconds.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>hello_interval_ms</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 2.0.0</div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Specifies that the hello_interval is in milliseconds.</div>
+                        <div>When set to True, this indicates that the user is providing the hello_interval in milliseconds and hence, no conversion is required.</div>
                 </td>
             </tr>
             <tr>

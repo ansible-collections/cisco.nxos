@@ -1,2 +1,0 @@
-minor_changes:
-  - Adds support for `single_user_mode` command output caching.

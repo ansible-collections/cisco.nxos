@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Add support df_bit and size option for nxos_ping (https://github.com/ansible-collections/cisco.nxos/pull/237).

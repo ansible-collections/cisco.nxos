@@ -5,6 +5,45 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.0.0
+======
+
+Major Changes
+-------------
+
+- Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode` and `ansible_network_import_modules`.
+- Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_ for more details.
+
+Minor Changes
+-------------
+
+- Add bfd option for neighbors (https://github.com/ansible-collections/cisco.nxos/issues/241).
+- Add hello_interval_ms option in nxos_pim_interface module to support sub-second intervals (https://github.com/ansible-collections/cisco.nxos/issues/226).
+- Add nxos_bgp_address_family Resource Module.
+- Add nxos_bgp_neighbor_address_family Resource Module.
+- Add support df_bit and size option for nxos_ping (https://github.com/ansible-collections/cisco.nxos/pull/237).
+- Adds support for `single_user_mode` command output caching.
+- Move nxos_config idempotent warning message with the task response under `warnings` key if `changed` is `True`
+
+Deprecated Features
+-------------------
+
+- Deprecated nxos_bgp_af in favour of nxos_bgp_address_family resource module.
+- Deprecated nxos_bgp_neighbor_af in favour of nxos_bgp_neighbor_address_family resource module.
+
+Bugfixes
+--------
+
+- Fail gracefully when BGP is already configured with a different ASN when states merged or replaced is used.
+- Fixes to nxos_logging, nxos_igmp_snooping, nxos_l3_interfaces, nxos_ospf_interfaces and nxos_static_routes to conform with latest CLI behaviour.
+- Properly configure neighbor timers and shutdown state (https://github.com/ansible-collections/cisco.nxos/issues/240).
+
+New Modules
+-----------
+
+- nxos_bgp_address_family - BGP Address Family resource module.
+- nxos_bgp_neighbor_address_family - BGP Neighbor Address Family resource module.
+
 v1.4.0
 ======
 
@@ -27,7 +66,6 @@ Security Fixes
 Bugfixes
 --------
 
-- 'config replace' is actually supported for devices other than N9K and hence we should not fail, and instead let the device handle it (https://github.com/ansible-collections/cisco.nxos/issues/215).
 - Add support for interfaces in mode 'fabricpath' to l2_interfaces (https://github.com/ansible-collections/cisco.nxos/issues/220).
 - Allow enabling `fabric forwarding` feature through nxos_feature (https://github.com/ansible-collections/cisco.nxos/issues/213).
 - Allow tag updates with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/197).
@@ -37,6 +75,7 @@ Bugfixes
 - Properly handle partial matches in community string (https://github.com/ansible-collections/cisco.nxos/issues/203).
 - Update argspecs with default value for parameters.
 - Update docs to clarify the idemptonecy releated caveat and add it in the output warnings (https://github.com/ansible-collections/ansible.netcommon/pull/189)
+- config replace is actually supported for devices other than N9K and hence we should not fail, and instead let the device handle it (https://github.com/ansible-collections/cisco.nxos/issues/215).
 
 Documentation Changes
 ---------------------
