@@ -1,0 +1,2 @@
+trivial:
+- sanity tests - remove unnecessary requirements.txt file (https://github.com/ansible-collections/cisco.nxos/pull/259).
