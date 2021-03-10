@@ -188,6 +188,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxos_argument_spec,
 )
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.parameters import get_type_validator
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
@@ -333,7 +334,7 @@ def get_param_value(key, item, module):
     # if key does exist, do a type check on it to validate it
     else:
         value_type = module.argument_spec[key].get("type", "str")
-        type_checker = module._CHECK_ARGUMENT_TYPES_DISPATCHER[value_type]
+        type_checker, _unused = get_type_validator(value_type)
         type_checker(item[key])
         value = item[key]
 
