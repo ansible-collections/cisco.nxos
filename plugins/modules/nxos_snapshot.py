@@ -338,8 +338,8 @@ def main():
         section=dict(type="str"),
         show_command=dict(type="str"),
         row_id=dict(type="str"),
-        element_key1=dict(type="str"),
-        element_key2=dict(type="str"),
+        element_key1=dict(type="str", no_log=False),
+        element_key2=dict(type="str", no_log=False),
         save_snapshot_locally=dict(type="bool", default=False),
         path=dict(type="str", default="./"),
     )

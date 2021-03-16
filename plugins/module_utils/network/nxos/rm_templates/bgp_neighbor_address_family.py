@@ -65,7 +65,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "address-family {{ afi }}{{ (' ' + safi) if safi is defined }}",
+            "setval": "address-family {{ afi }}{{ (' ' + safi) if safi is defined else '' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -184,7 +184,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "allowas-in{{ ' ' + allowas_in.max_occurences|string if allowas_in.max_occurences is defined }}",
+            "setval": "allowas-in{{ ' ' + allowas_in.max_occurences|string if allowas_in.max_occurences is defined else '' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -241,7 +241,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "capability additional-paths receive{{ ' disable' if capability.additional_paths.receive == 'disable' }}",
+            "setval": "capability additional-paths receive{{ ' disable' if capability.additional_paths.receive == 'disable' else '' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -273,7 +273,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "capability additional-paths send{{ ' disable' if capability.additional_paths.send == 'disable' }}",
+            "setval": "capability additional-paths send{{ ' disable' if capability.additional_paths.send == 'disable' else '' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -304,7 +304,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "default-originate{{ ' route-map ' + default_originate.route_map if default_originate.route_map is defined }}",
+            "setval": "default-originate{{ ' route-map ' + default_originate.route_map if default_originate.route_map is defined else '' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -484,7 +484,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "next-hop-self{{ ' all' if next_hop_self.all_routes|d(False) }}",
+            "setval": "next-hop-self{{ ' all' if next_hop_self.all_routes|d(False) else '' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -710,9 +710,9 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "send-community{{ ' extended' if send_community.extended|d(False) }}"
-                      "{{  ' both' if send_community.both|d(False) }}"
-                      "{{ ' standard' if send_community.standard|d(False) }}",
+            "setval": "send-community{{ ' extended' if send_community.extended|d(False) else '' }}"
+                      "{{  ' both' if send_community.both|d(False) else '' }}"
+                      "{{ ' standard' if send_community.standard|d(False) else '' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -744,7 +744,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "soft-reconfiguration inbound{{ ' always' if soft_reconfiguration_inbound.always|d(False) }}",
+            "setval": "soft-reconfiguration inbound{{ ' always' if soft_reconfiguration_inbound.always|d(False) else '' }}",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {

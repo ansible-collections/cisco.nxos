@@ -276,7 +276,7 @@ def main():
     argument_spec = dict(
         server_type=dict(choices=["radius", "tacacs"], required=True),
         address=dict(type="str", required=True),
-        key=dict(type="str"),
+        key=dict(type="str", no_log=False),
         encrypt_type=dict(type="str", choices=["0", "7"]),
         host_timeout=dict(type="str"),
         auth_port=dict(type="str"),

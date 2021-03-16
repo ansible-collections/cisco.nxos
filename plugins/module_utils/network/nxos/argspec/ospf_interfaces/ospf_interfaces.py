@@ -75,7 +75,7 @@ class Ospf_interfacesArgs(object):  # pylint: disable=R0903
                         "authentication": {
                             "type": "dict",
                             "options": {
-                                "key_chain": {"type": "str"},
+                                "key_chain": {"type": "str", "no_log": False},
                                 "message_digest": {"type": "bool"},
                                 "enable": {"type": "bool"},
                                 "null_auth": {"type": "bool"},
@@ -83,17 +83,27 @@ class Ospf_interfacesArgs(object):  # pylint: disable=R0903
                         },
                         "authentication_key": {
                             "type": "dict",
+                            "no_log": False,
                             "options": {
                                 "encryption": {"type": "int"},
-                                "key": {"type": "str", "required": True},
+                                "key": {
+                                    "type": "str",
+                                    "required": True,
+                                    "no_log": False,
+                                },
                             },
                         },
                         "message_digest_key": {
                             "type": "dict",
+                            "no_log": False,
                             "options": {
                                 "key_id": {"type": "int", "required": True},
                                 "encryption": {"type": "int"},
-                                "key": {"type": "str", "required": True},
+                                "key": {
+                                    "type": "str",
+                                    "required": True,
+                                    "no_log": False,
+                                },
                             },
                         },
                         "cost": {"type": "int"},

@@ -204,9 +204,10 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         },
                         "password": {
                             "type": "dict",
+                            "no_log": False,
                             "options": {
                                 "encryption": {"type": "int"},
-                                "key": {"type": "str"},
+                                "key": {"type": "str", "no_log": False},
                             },
                         },
                         "path_attribute": {
@@ -448,9 +449,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 },
                                 "password": {
                                     "type": "dict",
+                                    "no_log": False,
                                     "options": {
                                         "encryption": {"type": "int"},
-                                        "key": {"type": "str"},
+                                        "key": {
+                                            "type": "str",
+                                            "no_log": False,
+                                        },
                                     },
                                 },
                                 "path_attribute": {

@@ -407,7 +407,7 @@ def main():
             default="always", choices=["on_create", "always"]
         ),
         roles=dict(type="list", aliases=["role"], elements="str"),
-        sshkey=dict(),
+        sshkey=dict(no_log=False),
         state=dict(default="present", choices=["present", "absent"]),
     )
 

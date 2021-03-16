@@ -97,7 +97,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "address-family {{ afi }}{{ (' ' + safi) if safi is defined }}",
+            "setval": "address-family {{ afi }}{{ (' ' + safi) if safi is defined else ''}}",
             "result": {
                 "address_family": {
                     '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
@@ -435,7 +435,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "inject-map {{ route_map }} exist-map {{ exist_map }}{{ ' copy-attributes' if copy_attributes|d(False) }}",
+            "setval": "inject-map {{ route_map }} exist-map {{ exist_map }}{{ ' copy-attributes' if copy_attributes|d(False) else '' }}",
             "result": {
                 "address_family": {
                     '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
@@ -568,7 +568,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "network {{ prefix }}{{ (' route-map ' + route_map) if route_map is defined }}",
+            "setval": "network {{ prefix }}{{ (' route-map ' + route_map) if route_map is defined else '' }}",
             "result": {
                 "address_family": {
                     '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
