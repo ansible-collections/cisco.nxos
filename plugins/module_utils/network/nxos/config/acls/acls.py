@@ -220,9 +220,10 @@ class Acls(ConfigBase):
                     if "aces" in acl.keys():
                         for ace in acl["aces"]:
                             if "dscp" in ace.keys():
-                                if ace["dscp"].isdigit():
+                                if ace["dscp"] in dscp:
                                     ace["dscp"] = dscp[int(ace["dscp"])]
-                                ace["dscp"] = ace["dscp"].lower()
+                                if not ace["dscp"].isdigit():
+                                    ace["dscp"] = ace["dscp"].lower()
                             if "precedence" in ace.keys():
                                 if ace["precedence"].isdigit():
                                     ace["precedence"] = precedence[

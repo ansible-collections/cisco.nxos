@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Allow integer values to be set for dscp key (https://github.com/ansible-collections/cisco.nxos/issues/253).
