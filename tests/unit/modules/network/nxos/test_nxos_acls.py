@@ -16,6 +16,7 @@ from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
     set_module_args,
 )
 from .nxos_module import TestNxosModule, load_fixture
+from textwrap import dedent
 
 
 class TestNxosAclsModule(TestNxosModule):
@@ -448,7 +449,14 @@ class TestNxosAclsModule(TestNxosModule):
     def test_nxos_acls_parsed(self):
         set_module_args(
             dict(
-                running_config="""\nip access-list ACL1v4\n 10 permit ip any any\n 20 deny udp any any dscp AF23 precedence critical""",
+                running_config=dedent(
+                    """
+                    ip access-list ACL1v4
+                      statistics per-entry
+                      10 permit ip any any
+                      20 deny udp any any dscp AF23 precedence critical
+                    """
+                ),
                 state="parsed",
             )
         )
