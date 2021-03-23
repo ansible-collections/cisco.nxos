@@ -89,7 +89,7 @@ class Ospf_interfacesArgs(object):  # pylint: disable=R0903
                                 "key": {
                                     "type": "str",
                                     "required": True,
-                                    "no_log": False,
+                                    "no_log": True,
                                 },
                             },
                         },
@@ -102,7 +102,7 @@ class Ospf_interfacesArgs(object):  # pylint: disable=R0903
                                 "key": {
                                     "type": "str",
                                     "required": True,
-                                    "no_log": False,
+                                    "no_log": True,
                                 },
                             },
                         },

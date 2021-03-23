@@ -15,12 +15,11 @@ merged:
     - "interface {{ nxos_int2 }}"
     - "ip ospf authentication"
     - "ip ospf authentication key-chain test-1"
-    - "ip ospf message-digest-key 10 md5 3 abc01d272be25d29"
     - "ip ospf cost 100"
     - "ospfv3 network broadcast"
     - "ospfv3 shutdown"
     - "interface {{ nxos_int3 }}"
-    - "ip ospf authentication-key 7 12090404011C03162E"
+    - "ip ospf cost 101"
   after:
     - name: "{{ nxos_int1 }}"
       address_family:
@@ -30,7 +29,7 @@ merged:
         processes:
         - area:
             area_id: 1.1.1.1
-            secondaries: false 
+            secondaries: false
           process_id: "100"
       - afi: ipv6
         multi_areas:
@@ -47,10 +46,6 @@ merged:
         authentication:
           enable: True
           key_chain: test-1
-        message_digest_key:
-          key_id: 10
-          encryption: 3
-          key: abc01d272be25d29
         cost: 100
       - afi: ipv6
         network: broadcast
@@ -58,10 +53,8 @@ merged:
     - name: "{{ nxos_int3 }}"
       address_family:
       - afi: ipv4
-        authentication_key:
-          encryption: 7
-          key: 12090404011C03162E
-    
+        cost: 101
+
 replaced:
   commands:
     - "interface {{ nxos_int1 }}"
@@ -72,7 +65,7 @@ replaced:
     - "no ipv6 router ospfv3 multi-area 21.0.0.0"
     - "no ipv6 router ospfv3 multi-area 50.50.50.50"
     - "interface {{ nxos_int3 }}"
-    - "no ip ospf authentication-key 7 12090404011C03162E"
+    - "no ip ospf cost 101"
   after:
     - name: "{{ nxos_int1 }}"
       address_family:
@@ -90,10 +83,6 @@ replaced:
         authentication:
           enable: True
           key_chain: test-1
-        message_digest_key:
-          key_id: 10
-          encryption: 3
-          key: abc01d272be25d29
         cost: 100
       - afi: ipv6
         network: broadcast
@@ -111,12 +100,11 @@ overridden:
     - "interface {{ nxos_int2 }}"
     - "no ip ospf authentication"
     - "no ip ospf authentication key-chain test-1"
-    - "no ip ospf message-digest-key 10 md5 3 abc01d272be25d29"
     - "no ip ospf cost 100"
     - "no ospfv3 network broadcast"
     - "no ospfv3 shutdown"
     - "interface {{ nxos_int3 }}"
-    - "no ip ospf authentication-key 7 12090404011C03162E"
+    - "no ip ospf cost 101"
   after:
     - name: "{{ nxos_int1 }}"
       address_family:
@@ -142,9 +130,8 @@ deleted:
   - "interface {{ nxos_int2 }}"
   - "no ip ospf authentication"
   - "no ip ospf authentication key-chain test-1"
-  - "no ip ospf message-digest-key 10 md5 3 abc01d272be25d29"
   - "no ip ospf cost 100"
   - "no ospfv3 network broadcast"
   - "no ospfv3 shutdown"
   - "interface {{ nxos_int3 }}"
-  - "no ip ospf authentication-key 7 12090404011C03162E"
+  - "no ip ospf cost 101"

@@ -35,10 +35,6 @@
               authentication:
                 enable: True
                 key_chain: test-1
-              message_digest_key:
-                key_id: 10
-                encryption: 3
-                key: abc01d272be25d29
               cost: 100
             - afi: ipv6
               network: broadcast
@@ -46,9 +42,7 @@
           - name: "{{ nxos_int3 }}"
             address_family:
             - afi: ipv4
-              authentication_key:
-                encryption: 7
-                key: 12090404011C03162E
+              cost: 101
         state: merged
       register: result
 
