@@ -24,7 +24,6 @@
     lines:
       - "neighbor 198.51.100.21"
       - "  remote-as 65537"
-      - "  password 7 12090404011C03162E"
       - "vrf site-2"
       - "  local-as 300"
       - "  log-neighbor-changes"
@@ -32,7 +31,6 @@
       - "  neighbor 203.0.113.2"
       - "    remote-as 65539"
       - "    description site-2-nbr-1"
-      - "    password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6"
     parents: "router bgp 65536"
   vars:
     ansible_connection: ansible.netcommon.network_cli
@@ -46,7 +44,6 @@
       - "  neighbor 192.0.2.10"
       - "    remote-as 65538"
       - "    description site-1-nbr-1"
-      - "    password 3 13D4D3549493D2877B1DC116EE27A6BE"
     parents: "router bgp 65536"
   vars:
     ansible_connection: ansible.netcommon.network_cli

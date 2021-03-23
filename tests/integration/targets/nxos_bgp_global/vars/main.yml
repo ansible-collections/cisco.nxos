@@ -18,14 +18,12 @@ merged:
     - low-memory exempt
     - neighbor 198.51.100.21
     - remote-as 65537
-    - password 7 12090404011C03162E
     - vrf site-1
     - local-as 200
     - log-neighbor-changes
     - neighbor 192.0.2.10
     - remote-as 65538
     - description site-1-nbr-1
-    - password 3 13D4D3549493D2877B1DC116EE27A6BE
     - neighbor 192.0.2.11
     - remote-as 65538
     - description site-1-nbr-2
@@ -36,7 +34,6 @@ merged:
     - neighbor 203.0.113.2
     - remote-as 65539
     - description site-2-nbr-1
-    - password 3 AF92F4C16A0A0EC5BDF56CF58BC030F6
 
   after:
     as_number: '65536'
@@ -64,9 +61,6 @@ merged:
         group_id: 160
       remote_as: '65537'
     - neighbor_address: 198.51.100.21
-      password:
-        encryption: 7
-        key: 12090404011C03162E
       remote_as: '65537'
     router_id: 198.51.100.2
     vrfs:
@@ -75,9 +69,6 @@ merged:
       neighbors:
       - description: site-1-nbr-1
         neighbor_address: 192.0.2.10
-        password:
-          encryption: 3
-          key: 13D4D3549493D2877B1DC116EE27A6BE
         remote_as: '65538'
       - description: site-1-nbr-2
         neighbor_address: 192.0.2.11
@@ -90,12 +81,9 @@ merged:
       neighbors:
       - description: site-2-nbr-1
         neighbor_address: 203.0.113.2
-        password:
-          encryption: 3
-          key: AF92F4C16A0A0EC5BDF56CF58BC030F6
         remote_as: '65539'
       vrf: site-2
-    
+
 replaced:
   commands:
     - router bgp 65536
@@ -109,7 +97,6 @@ replaced:
     - neighbor 203.0.113.2
     - no remote-as 65539
     - no description site-2-nbr-1
-    - password 7 12090404011C03162E
     - no vrf site-1
 
   after:
@@ -142,9 +129,6 @@ replaced:
         fib_accelerate: true
       neighbors:
       - neighbor_address: 203.0.113.2
-        password:
-          encryption: 7
-          key: 12090404011C03162E
       vrf: site-2
 
 deleted:
