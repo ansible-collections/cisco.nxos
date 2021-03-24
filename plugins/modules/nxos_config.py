@@ -223,6 +223,15 @@ options:
           working directory and backup configuration will be copied in C(filename)
           within I(backup) directory.
         type: path
+      non_config_lines:
+        description:
+        - A list of regexes that match lines to be removed from running-config
+          when taking backup. If this key is not set, the list of default regexes is used.
+        type: list
+        default:
+          - "!Command:.+"
+          - "!Time:.+"
+          - "!Running configuration last done at:.+"
     type: dict
 notes:
 - Abbreviated commands are NOT idempotent, see
@@ -341,6 +350,12 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 
+NON_CONFIG_LINES = [
+    "!Command:.+",
+    "!Time:.+",
+    "!Running configuration last done at:.+",
+]
+
 
 def get_running_config(module, config=None, flags=None):
     contents = module.params["running_config"]
@@ -395,7 +410,11 @@ def save_config(module, result):
 def main():
     """ main entry point for module execution
     """
-    backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
+    backup_spec = dict(
+        filename=dict(),
+        dir_path=dict(type="path"),
+        non_config_lines=dict(type="list", default=NON_CONFIG_LINES),
+    )
     argument_spec = dict(
         src=dict(type="path"),
         replace_src=dict(),
@@ -463,6 +482,13 @@ def main():
         config = NetworkConfig(indent=2, contents=contents)
         if module.params["backup"]:
             result["__backup__"] = contents
+            if module.params["backup_options"]:
+                non_config_lines = module.params["backup_options"][
+                    "non_config_lines"
+                ]
+            else:
+                non_config_lines = NON_CONFIG_LINES
+            result["__non_config_lines__"] = non_config_lines
 
     if any((module.params["src"], module.params["lines"], replace_src)):
         match = module.params["match"]

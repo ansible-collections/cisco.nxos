@@ -115,6 +115,23 @@ Parameters
                         <div>The filename to be used to store the backup configuration. If the filename is not given it will be generated based on the hostname, current time and date in format defined by &lt;hostname&gt;_config.&lt;current-date&gt;@&lt;current-time&gt;</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>non_config_lines</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">["!Command:.+", "!Time:.+", "!Running configuration last done at:.+"]</div>
+                </td>
+                <td>
+                        <div>A list of regexes that match lines to be removed from running-config when taking backup. If this key is not set, the list of default regexes is used.</div>
+                </td>
+            </tr>
 
             <tr>
                 <td colspan="2">
