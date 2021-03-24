@@ -30,9 +30,6 @@
             exempt: True
         - neighbor_address: 198.51.100.21
           remote_as: 65537
-          password:
-            encryption: 7
-            key: 12090404011C03162E
       neighbor_down:
         fib_accelerate: True
       vrfs:
@@ -42,9 +39,6 @@
           neighbors:
             - neighbor_address: 192.0.2.10
               description: site-1-nbr-1
-              password:
-                encryption: 3
-                key: 13D4D3549493D2877B1DC116EE27A6BE
               remote_as: 65538
             - neighbor_address: 192.0.2.11
               remote_as: 65538
@@ -55,9 +49,6 @@
           neighbors:
             - neighbor_address: 203.0.113.2
               description: site-2-nbr-1
-              password:
-                encryption: 3
-                key: AF92F4C16A0A0EC5BDF56CF58BC030F6
               remote_as: 65539
           neighbor_down:
             fib_accelerate: True

@@ -85,7 +85,9 @@ nxos_provider_spec = {
         fallback=(env_fallback, ["ANSIBLE_NET_PASSWORD"]),
     ),
     "ssh_keyfile": dict(
-        type="str", fallback=(env_fallback, ["ANSIBLE_NET_SSH_KEYFILE"])
+        type="str",
+        fallback=(env_fallback, ["ANSIBLE_NET_SSH_KEYFILE"]),
+        no_log=False,
     ),
     "authorize": dict(
         type="bool",

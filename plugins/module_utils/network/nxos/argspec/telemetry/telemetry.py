@@ -40,7 +40,7 @@ class TelemetryArgs(object):  # pylint: disable=R0903
                 "certificate": {
                     "options": {
                         "hostname": {"type": "str"},
-                        "key": {"type": "str"},
+                        "key": {"type": "str", "no_log": False},
                     },
                     "type": "dict",
                 },

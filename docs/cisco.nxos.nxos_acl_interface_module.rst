@@ -399,7 +399,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>list of interfaces the ACL is applied to</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[{&#x27;acl_type&#x27;: &#x27;Router ACL&#x27;, &#x27;direction&#x27;: &#x27;egress&#x27;, &#x27;interface&#x27;: &#x27;Ethernet1/41&#x27;, &#x27;name&#x27;: &#x27;ANSIBLE&#x27;}]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[AnsibleMapping([(&#x27;acl_type&#x27;, &#x27;Router ACL&#x27;), (&#x27;direction&#x27;, &#x27;egress&#x27;), (&#x27;interface&#x27;, &#x27;Ethernet1/41&#x27;), (&#x27;name&#x27;, &#x27;ANSIBLE&#x27;)])]</div>
                 </td>
             </tr>
             <tr>

@@ -49,6 +49,7 @@ class ActionModule(ActionNetworkModule):
             True if module_name in ["nxos_config", "config"] else False
         )
         persistent_connection = self._play_context.connection.split(".")[-1]
+
         warnings = []
 
         if (

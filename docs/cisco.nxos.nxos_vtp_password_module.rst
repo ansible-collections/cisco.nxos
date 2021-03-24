@@ -386,7 +386,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of vtp after module execution</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;domain&#x27;: &#x27;ntc&#x27;, &#x27;version&#x27;: &#x27;1&#x27;, &#x27;vtp_password&#x27;: &#x27;new_ntc&#x27;}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;domain&#x27;, &#x27;ntc&#x27;), (&#x27;version&#x27;, &#x27;1&#x27;), (&#x27;vtp_password&#x27;, &#x27;new_ntc&#x27;)])</div>
                 </td>
             </tr>
             <tr>
@@ -403,7 +403,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of existing vtp</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;domain&#x27;: &#x27;ntc&#x27;, &#x27;version&#x27;: &#x27;1&#x27;, &#x27;vtp_password&#x27;: &#x27;ntc&#x27;}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;domain&#x27;, &#x27;ntc&#x27;), (&#x27;version&#x27;, &#x27;1&#x27;), (&#x27;vtp_password&#x27;, &#x27;ntc&#x27;)])</div>
                 </td>
             </tr>
             <tr>
@@ -420,7 +420,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of parameters passed into module</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;vtp_password&#x27;: &#x27;new_ntc&#x27;}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;vtp_password&#x27;, &#x27;new_ntc&#x27;)])</div>
                 </td>
             </tr>
             <tr>

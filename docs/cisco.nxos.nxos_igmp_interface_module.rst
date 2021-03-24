@@ -624,7 +624,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of igmp interface configuration after module execution</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;startup_query_count&#x27;: &#x27;30&#x27;, &#x27;oif_ps&#x27;: [{&#x27;prefix&#x27;: &#x27;238.2.2.6&#x27;}, {&#x27;source&#x27;: &#x27;192.168.0.1&#x27;, &#x27;prefix&#x27;: &#x27;238.2.2.5&#x27;}]}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;startup_query_count&#x27;, &#x27;30&#x27;), (&#x27;oif_ps&#x27;, [AnsibleMapping([(&#x27;prefix&#x27;, &#x27;238.2.2.6&#x27;)]), AnsibleMapping([(&#x27;source&#x27;, &#x27;192.168.0.1&#x27;), (&#x27;prefix&#x27;, &#x27;238.2.2.5&#x27;)])])])</div>
                 </td>
             </tr>
             <tr>
@@ -641,7 +641,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of existing igmp_interface configuration</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;startup_query_count&#x27;: &#x27;2&#x27;, &#x27;oif_ps&#x27;: []}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;startup_query_count&#x27;, &#x27;2&#x27;), (&#x27;oif_ps&#x27;, [])])</div>
                 </td>
             </tr>
             <tr>
@@ -658,7 +658,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of parameters passed into module</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;startup_query_count&#x27;: &#x27;30&#x27;, &#x27;oif_ps&#x27;: [{&#x27;prefix&#x27;: &#x27;238.2.2.6&#x27;}, {&#x27;source&#x27;: &#x27;192.168.0.1&#x27;, &#x27;prefix&#x27;: &#x27;238.2.2.5&#x27;}]}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;startup_query_count&#x27;, &#x27;30&#x27;), (&#x27;oif_ps&#x27;, [AnsibleMapping([(&#x27;prefix&#x27;, &#x27;238.2.2.6&#x27;)]), AnsibleMapping([(&#x27;source&#x27;, &#x27;192.168.0.1&#x27;), (&#x27;prefix&#x27;, &#x27;238.2.2.5&#x27;)])])])</div>
                 </td>
             </tr>
             <tr>

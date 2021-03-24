@@ -421,7 +421,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of udld configuration after module execution</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;aggressive&#x27;: &#x27;enabled&#x27;, &#x27;msg_time&#x27;: &#x27;40&#x27;}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;aggressive&#x27;, &#x27;enabled&#x27;), (&#x27;msg_time&#x27;, &#x27;40&#x27;)])</div>
                 </td>
             </tr>
             <tr>
@@ -438,7 +438,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of existing udld configuration</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;aggressive&#x27;: &#x27;disabled&#x27;, &#x27;msg_time&#x27;: &#x27;15&#x27;}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;aggressive&#x27;, &#x27;disabled&#x27;), (&#x27;msg_time&#x27;, &#x27;15&#x27;)])</div>
                 </td>
             </tr>
             <tr>
@@ -455,7 +455,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of parameters passed into module</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;aggressive&#x27;: &#x27;enabled&#x27;, &#x27;msg_time&#x27;: &#x27;40&#x27;}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;aggressive&#x27;, &#x27;enabled&#x27;), (&#x27;msg_time&#x27;, &#x27;40&#x27;)])</div>
                 </td>
             </tr>
             <tr>

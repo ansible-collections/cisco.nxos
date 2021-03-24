@@ -468,7 +468,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of ntp info after module execution</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;address&#x27;: &#x27;192.0.2.2&#x27;, &#x27;key_id&#x27;: &#x27;48&#x27;, &#x27;peer_type&#x27;: &#x27;server&#x27;, &#x27;prefer&#x27;: &#x27;enabled&#x27;, &#x27;source&#x27;: &#x27;192.0.2.3&#x27;, &#x27;source_type&#x27;: &#x27;source&#x27;}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;address&#x27;, &#x27;192.0.2.2&#x27;), (&#x27;key_id&#x27;, &#x27;48&#x27;), (&#x27;peer_type&#x27;, &#x27;server&#x27;), (&#x27;prefer&#x27;, &#x27;enabled&#x27;), (&#x27;source&#x27;, &#x27;192.0.2.3&#x27;), (&#x27;source_type&#x27;, &#x27;source&#x27;)])</div>
                 </td>
             </tr>
             <tr>
@@ -485,7 +485,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of existing ntp server/peer</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;address&#x27;: &#x27;192.0.2.2&#x27;, &#x27;key_id&#x27;: &#x27;32&#x27;, &#x27;peer_type&#x27;: &#x27;server&#x27;, &#x27;prefer&#x27;: &#x27;enabled&#x27;, &#x27;source&#x27;: &#x27;ethernet2/1&#x27;, &#x27;source_type&#x27;: &#x27;source-interface&#x27;}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;address&#x27;, &#x27;192.0.2.2&#x27;), (&#x27;key_id&#x27;, &#x27;32&#x27;), (&#x27;peer_type&#x27;, &#x27;server&#x27;), (&#x27;prefer&#x27;, &#x27;enabled&#x27;), (&#x27;source&#x27;, &#x27;ethernet2/1&#x27;), (&#x27;source_type&#x27;, &#x27;source-interface&#x27;)])</div>
                 </td>
             </tr>
             <tr>
@@ -502,7 +502,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of parameters passed into module</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;address&#x27;: &#x27;192.0.2.2&#x27;, &#x27;key_id&#x27;: &#x27;48&#x27;, &#x27;peer_type&#x27;: &#x27;server&#x27;, &#x27;prefer&#x27;: &#x27;enabled&#x27;, &#x27;source&#x27;: &#x27;192.0.2.3&#x27;, &#x27;source_type&#x27;: &#x27;source&#x27;}</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;address&#x27;, &#x27;192.0.2.2&#x27;), (&#x27;key_id&#x27;, &#x27;48&#x27;), (&#x27;peer_type&#x27;, &#x27;server&#x27;), (&#x27;prefer&#x27;, &#x27;enabled&#x27;), (&#x27;source&#x27;, &#x27;192.0.2.3&#x27;), (&#x27;source_type&#x27;, &#x27;source&#x27;)])</div>
                 </td>
             </tr>
             <tr>

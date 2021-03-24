@@ -38,14 +38,11 @@
               log_neighbor_changes: True
               neighbors:
                 - neighbor_address: 203.0.113.2
-                  password:
-                    encryption: 7
-                    key: 12090404011C03162E
               neighbor_down:
                 fib_accelerate: True
         state: replaced
       register: result
-    
+
     - name: Assert that correct set of commands were generated
       assert:
         that:
