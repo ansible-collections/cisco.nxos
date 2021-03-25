@@ -228,6 +228,7 @@ options:
         - A list of regexes that match lines to be removed from running-config
           when taking backup. If this key is not set, the list of default regexes is used.
         type: list
+        elements: str
         default:
           - "!Command:.+"
           - "!Time:.+"
@@ -413,7 +414,9 @@ def main():
     backup_spec = dict(
         filename=dict(),
         dir_path=dict(type="path"),
-        non_config_lines=dict(type="list", default=NON_CONFIG_LINES),
+        non_config_lines=dict(
+            type="list", default=NON_CONFIG_LINES, elements="str"
+        ),
     )
     argument_spec = dict(
         src=dict(type="path"),
