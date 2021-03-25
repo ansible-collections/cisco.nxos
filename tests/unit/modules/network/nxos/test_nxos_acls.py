@@ -16,6 +16,7 @@ from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
     set_module_args,
 )
 from .nxos_module import TestNxosModule, load_fixture
+from textwrap import dedent
 
 
 class TestNxosAclsModule(TestNxosModule):
@@ -98,6 +99,20 @@ class TestNxosAclsModule(TestNxosModule):
                                         ),
                                     ),
                                     dict(
+                                        destination=dict(
+                                            address="1.2.2.2",
+                                            wildcard_bits="0.0.255.255",
+                                        ),
+                                        dscp="31",
+                                        grant="permit",
+                                        protocol="ip",
+                                        sequence="25",
+                                        source=dict(
+                                            address="1.1.1.1",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                    ),
+                                    dict(
                                         grant="deny",
                                         destination=dict(
                                             prefix="2002:2:2:2::/64"
@@ -121,6 +136,7 @@ class TestNxosAclsModule(TestNxosModule):
         commands = [
             "ip access-list ACL2v4",
             "20 deny tcp any any ack fragments",
+            "25 permit ip 1.1.1.1 0.0.0.255 1.2.2.2 0.0.255.255 dscp 31",
             "30 deny icmp 2002:1:1:1::/64 2002:2:2:2::/64 echo-request",
             "ipv6 access-list ACL2v6",
         ]
@@ -433,7 +449,14 @@ class TestNxosAclsModule(TestNxosModule):
     def test_nxos_acls_parsed(self):
         set_module_args(
             dict(
-                running_config="""\nip access-list ACL1v4\n 10 permit ip any any\n 20 deny udp any any dscp AF23 precedence critical""",
+                running_config=dedent(
+                    """
+                    ip access-list ACL1v4
+                      statistics per-entry
+                      10 permit ip any any
+                      20 deny udp any any dscp AF23 precedence critical
+                    """
+                ),
                 state="parsed",
             )
         )

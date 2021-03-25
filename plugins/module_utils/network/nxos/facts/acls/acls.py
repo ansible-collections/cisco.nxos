@@ -222,20 +222,22 @@ class AclsFacts(object):
                 for ace in list(filter(None, acl[1:])):
                     if re.search(r"ip(.*)access-list.*", ace):
                         break
-                    entry = {}
                     ace = ace.strip()
-                    seq = re.match(r"(\d*)", ace).group(0)
-                    entry.update({"sequence": seq})
-                    ace = re.sub(seq, "", ace, 1)
-                    grant = ace.split()[0]
+                    seq = re.match(r"(\d+)", ace)
                     rem = ""
-                    if grant != "remark":
-                        entry.update({"grant": grant})
-                    else:
-                        rem = re.match(".*remark (.*)", ace).group(1)
-                        entry.update({"remark": rem})
+                    entry = {}
+                    if seq:
+                        seq = seq.group(0)
+                        entry.update({"sequence": seq})
+                        ace = re.sub(seq, "", ace, 1)
+                        grant = ace.split()[0]
+                        if grant != "remark":
+                            entry.update({"grant": grant})
+                        else:
+                            rem = re.match(".*remark (.*)", ace).group(1)
+                            entry.update({"remark": rem})
 
-                    if not rem:
+                    if not rem and seq:
                         ace = re.sub(grant, "", ace, 1)
                         pro = ace.split()[0]
                         entry.update({"protocol": pro})
@@ -278,6 +280,7 @@ class AclsFacts(object):
                                 pro_options.update({pro: options})
                             if pro_options:
                                 entry.update({"protocol_options": pro_options})
-                    acls["aces"].append(entry)
+                    if entry:
+                        acls["aces"].append(entry)
                 config["acls"].append(acls)
         return utils.remove_empties(config)
