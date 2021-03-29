@@ -60,7 +60,9 @@ class Bgp_globalFacts(object):
         data = self._flatten_config(data)
 
         # parse native config using the Bgp_global template
-        bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines())
+        bgp_global_parser = Bgp_globalTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         obj = bgp_global_parser.parse()
 
         vrfs = obj.get("vrfs", {})
@@ -86,7 +88,9 @@ class Bgp_globalFacts(object):
 
         ansible_facts["ansible_network_resources"].pop("bgp_global", None)
         params = utils.remove_empties(
-            utils.validate_config(self.argument_spec, {"config": obj})
+            bgp_global_parser.validate_config(
+                self.argument_spec, {"config": obj}, redact=True
+            )
         )
 
         facts["bgp_global"] = params.get("config", {})
