@@ -200,6 +200,8 @@ class Interfaces(ConfigBase):
             commands.extend(self._state_overridden(want, have))
         elif state == "deleted":
             commands.extend(self._state_deleted(want, have))
+        elif state == "purged":
+            commands.extend(self._state_purged(want, have))
         else:
             for w in want:
                 if state in ["merged", "rendered"]:
@@ -311,6 +313,21 @@ class Interfaces(ConfigBase):
                 return commands
             for h in have:
                 commands.extend(self.del_attribs(h))
+        return commands
+
+    def _state_purged(self, want, have):
+        """ The command generator when state is purged
+
+        :rtype: A list
+        :returns: the commands necessary to purge interfaces from running
+                  configuration
+        """
+        commands = []
+        if want:
+            for w in want:
+                obj_in_have = search_obj_in_list(w["name"], have, "name")
+                if obj_in_have:
+                    commands.append("no interface {0}".format(w["name"]))
         return commands
 
     def default_enabled(self, want=None, have=None, action=""):

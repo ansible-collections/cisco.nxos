@@ -59,6 +59,7 @@ class InterfacesArgs(object):  # pylint: disable=R0903
                 "gathered",
                 "rendered",
                 "parsed",
+                "purged",
             ],
             "default": "merged",
             "type": "str",
