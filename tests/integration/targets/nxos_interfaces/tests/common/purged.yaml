@@ -37,8 +37,9 @@
   always:
     - name: Teardown
       cisco.nxos.nxos_config:
-        lines:
-          - "no interface {{ nxos_int1 }}.100"
-          - "no interface port-channel10"
-          - "no interface port-channel11"
+        lines: "{{ item }}"
+      loop:
+        - "no interface {{ nxos_int1 }}.100"
+        - "no interface port-channel10"
+        - "no interface port-channel11"
       ignore_errors: True
