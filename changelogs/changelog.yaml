@@ -495,3 +495,22 @@ releases:
       name: nxos_bgp_neighbor_address_family
       namespace: ''
     release_date: '2021-02-24'
+  2.1.0:
+    changes:
+      bugfixes:
+      - Allow commands to be properly generated with Jinja2 2.10.3 (workaround for
+        https://github.com/pallets/jinja/issues/710).
+      - Allow integer values to be set for dscp key (https://github.com/ansible-collections/cisco.nxos/issues/253).
+      - Do not fail when parsing non rule entries in access-list config (https://github.com/ansible-collections/cisco.nxos/issues/262).
+      minor_changes:
+      - Add support for state purged in nxos_interfaces.
+      security_fixes:
+      - Properly mask values of sensitive keys in module result.
+    fragments:
+    - 259-remove_tests_sanity_requirements.yml
+    - add_state_purged.yaml
+    - fix_j2_2_10.yaml
+    - fix_nxos_acls.yaml
+    - no_log_fix.yaml
+    - pim_version_added.yaml
+    release_date: '2021-03-30'
