@@ -1,0 +1,45 @@
+- debug:
+    msg: "Start nxos_interfaces purged integration tests connection={{ ansible_connection }}"
+
+- block:
+    - name: setup2
+      cisco.nxos.nxos_config:
+        lines:
+          - "interface {{ nxos_int1 }}.100"
+          - "  description test-sub-interface"
+          - "interface port-channel10"
+          - "  description test-port-channel-10"
+          - "interface port-channel11"
+          - "  description test-port-channel-11"
+
+    - name: Purge virtual interfaces from running-config
+      cisco.nxos.nxos_interfaces: &purged
+        config:
+          - name: "{{ nxos_int1 }}.100"
+          - name: port-channel10
+        state: purged
+      register: result
+
+    - assert:
+        that:
+          - '"no interface {{ nxos_int1 }}.100" in result.commands'
+          - '"no interface port-channel10" in result.commands'
+          - result.commands|length == 2
+          - result.changed == True
+
+    - name: Purge virtual interfaces from running-config (IDEMPOTENT)
+      cisco.nxos.nxos_interfaces: *purged
+      register: result
+
+    - assert:
+        that:
+          - result.changed == False
+  always:
+    - name: Teardown
+      cisco.nxos.nxos_config:
+        lines: "{{ item }}"
+      loop:
+        - "no interface {{ nxos_int1 }}.100"
+        - "no interface port-channel10"
+        - "no interface port-channel11"
+      ignore_errors: True

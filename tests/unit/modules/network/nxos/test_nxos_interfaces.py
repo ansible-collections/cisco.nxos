@@ -679,3 +679,48 @@ class TestNxosInterfacesModule(TestNxosModule):
         set_module_args(playbook, ignore_provider_arg)
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered_facts)
+
+    def test_7_purged(self):
+        # check for parsing correct contexts
+        sysdefs = dedent(
+            """\
+          no system default switchport
+          no system default switchport shutdown
+        """
+        )
+        intf = dedent(
+            """\
+          interface Vlan1
+          interface Vlan42
+            mtu 1800
+          interface port-channel10
+          interface port-channel11
+          interface Ethernet1/1
+          interface Ethernet1/2
+          interface Ethernet1/2.100
+            description sub-intf
+        """
+        )
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_RUN_INTF: intf
+        }
+        self.get_system_defaults.return_value = sysdefs
+
+        playbook = dict(
+            config=[
+                dict(name="Vlan42"),
+                dict(name="port-channel10"),
+                dict(name="Ethernet1/2.100"),
+            ]
+        )
+        playbook["state"] = "purged"
+
+        commands = [
+            "no interface port-channel10",
+            "no interface Ethernet1/2.100",
+            "no interface Vlan42",
+        ]
+
+        set_module_args(playbook, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

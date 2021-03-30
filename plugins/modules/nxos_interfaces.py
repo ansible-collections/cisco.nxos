@@ -108,6 +108,8 @@ options:
     - The state of the configuration after module completion
     - The state I(rendered) considers the system default mode for interfaces to be
       "Layer 3" and the system default state for interfaces to be shutdown.
+    - The state I(purged) negates virtual interfaces that are specified in task
+      from running-config.
     type: str
     choices:
     - merged
@@ -117,6 +119,7 @@ options:
     - gathered
     - rendered
     - parsed
+    - purged
     default: merged
 
 """
@@ -340,6 +343,52 @@ EXAMPLES = """
 # - name: Ethernet1/2
 #   description: intf-l3
 #   speed: "1000"
+
+# Using purged
+
+# Existing device config state
+# -----------------------------
+# interface Vlan1
+# interface Vlan42
+#   mtu 1800
+# interface port-channel10
+# interface port-channel11
+# interface Ethernet1/1
+# interface Ethernet1/2
+# interface Ethernet1/2.100
+#   description sub-intf
+
+- name: Purge virtual interfaces from running-config
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: Vlan42
+      - name: port-channel10
+      - name: Ethernet1/2.100
+    state: purged
+
+# Task output
+# ------------
+# before:
+#   - name: Vlan1
+#   - mtu: '1800'
+#     name: Vlan42
+#   - name: port-channel10
+#   - name: port-channel11
+#   - name: Ethernet1/1
+#   - name: Ethernet1/2
+#   - description: sub-intf
+#     name: Ethernet1/2.100
+#
+# commands:
+#   - no interface port-channel10
+#   - no interface Ethernet1/2.100
+#   - no interface Vlan42
+#
+# after:
+#   - name: Vlan1
+#   - name: port-channel11
+#   - name: Ethernet1/1
+#   - name: Ethernet1/2
 """
 RETURN = """
 before:
