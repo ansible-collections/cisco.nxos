@@ -5,14 +5,34 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.1.0
+======
+
+Minor Changes
+-------------
+
+- Add support for state purged in nxos_interfaces.
+
+Security Fixes
+--------------
+
+- Properly mask values of sensitive keys in module result.
+
+Bugfixes
+--------
+
+- Allow commands to be properly generated with Jinja2 2.10.3 (workaround for https://github.com/pallets/jinja/issues/710).
+- Allow integer values to be set for dscp key (https://github.com/ansible-collections/cisco.nxos/issues/253).
+- Do not fail when parsing non rule entries in access-list config (https://github.com/ansible-collections/cisco.nxos/issues/262).
+
 v2.0.0
 ======
 
 Major Changes
 -------------
 
-- Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode` and `ansible_network_import_modules`.
 - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_ for more details.
+- Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode` and `ansible_network_import_modules`.
 
 Minor Changes
 -------------

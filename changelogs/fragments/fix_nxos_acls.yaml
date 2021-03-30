@@ -1,4 +1,0 @@
----
-bugfixes:
-  - Allow integer values to be set for dscp key (https://github.com/ansible-collections/cisco.nxos/issues/253).
-  - Do not fail when parsing non rule entries in access-list config (https://github.com/ansible-collections/cisco.nxos/issues/262).
