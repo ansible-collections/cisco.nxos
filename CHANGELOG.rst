@@ -5,6 +5,15 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.1.1
+======
+
+Bugfixes
+--------
+
+- For versions >=2.1.0, this collection requires ansible.netcommon >=2.0.1.
+- Re-releasing this collection with ansible.netcommon dependency requirements updated.
+
 v2.1.0
 ======
 
