@@ -1,0 +1,3 @@
+---
+trivial:
+  - Use FQCN in caching tests.
