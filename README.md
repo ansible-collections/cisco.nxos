@@ -100,6 +100,7 @@ Name | Description
 [cisco.nxos.nxos_ping](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ping_module.rst)|Tests reachability using ping from Nexus switch.
 [cisco.nxos.nxos_reboot](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_reboot_module.rst)|Reboot a network device.
 [cisco.nxos.nxos_rollback](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_rollback_module.rst)|Set a checkpoint or rollback to a checkpoint.
+[cisco.nxos.nxos_route_maps](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_route_maps_module.rst)|Route Maps resource module.
 [cisco.nxos.nxos_rpm](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_rpm_module.rst)|Install patch or feature rpms on Cisco NX-OS devices.
 [cisco.nxos.nxos_smu](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_smu_module.rst)|(deprecated, removed after 2022-10-01) Perform SMUs on Cisco NX-OS devices.
 [cisco.nxos.nxos_snapshot](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_snapshot_module.rst)|Manage snapshots of the running states of selected features.
