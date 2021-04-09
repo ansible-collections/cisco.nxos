@@ -514,3 +514,13 @@ releases:
     - no_log_fix.yaml
     - pim_version_added.yaml
     release_date: '2021-03-30'
+  2.1.1:
+    changes:
+      bugfixes:
+      - For versions >=2.1.0, this collection requires ansible.netcommon >=2.0.1.
+      - Re-releasing this collection with ansible.netcommon dependency requirements
+        updated.
+    fragments:
+    - 275-add_ignore_txt.yml
+    - update_requirement.yaml
+    release_date: '2021-04-09'

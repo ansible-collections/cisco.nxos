@@ -1,4 +1,0 @@
----
-bugfixes:
-  - For versions >=2.1.0, this collection requires ansible.netcommon >=2.0.1.
-  - Re-releasing this collection with ansible.netcommon dependency requirements updated.
