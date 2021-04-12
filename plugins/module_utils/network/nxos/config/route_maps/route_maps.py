@@ -47,7 +47,7 @@ class Route_maps(ResourceModule):
             resource="route_maps",
             tmplt=Route_mapsTemplate(),
         )
-        self.parsers = []
+        self.parsers = ["description", "continue", "match.as_number.asn"]
 
     def execute_module(self):
         """ Execute the module
@@ -64,8 +64,8 @@ class Route_maps(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        wantd = self._route_maps_list_to_dict(self.want)
+        haved = self._route_maps_list_to_dict(self.have)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -84,8 +84,10 @@ class Route_maps(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        for wk, want in iteritems(wantd):
+            self._compare(want=want, have=haved.pop(wk, {}))
+        for _, have in iteritems(haved):
+            self.commands.append(self._tmplt.render(have, "route_map", True))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -93,4 +95,23 @@ class Route_maps(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Route_maps network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        if len(self.commands) != begin or (not have and want):
+            self.commands.insert(
+                begin, self._tmplt.render(want or have, "route_map", False)
+            )
+
+    def _route_maps_list_to_dict(self, entry):
+        entry = {x["route_map"]: x for x in entry}
+        modified = {}
+        for rmap, data in iteritems(entry):
+            if "entries" in data:
+                for x in data["entries"]:
+                    x.update({"route_map": rmap})
+                data["entries"] = {
+                    (rmap, entry["action"], entry.get("sequence")): entry
+                    for entry in data["entries"]
+                }
+                modified.update(data["entries"])
+        return modified

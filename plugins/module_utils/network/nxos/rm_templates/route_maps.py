@@ -34,7 +34,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 r"""
                 ^route-map\s(?P<route_map>\S+)\s(?P<action>\S+)\s(?P<sequence>\d+)
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "route-map {{ route_map }} {{ action }}{{ ' ' + sequence|string if sequence is defined else '' }}",
             "result": {
                 "{{ route_map }}": {
                     "route_map": "{{ route_map }}",
