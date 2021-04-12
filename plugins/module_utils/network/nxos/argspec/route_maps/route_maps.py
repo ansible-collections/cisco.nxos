@@ -118,7 +118,21 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                         "prefix": {
                                                             "type": "str"
                                                         },
-                                                        "rp": {"type": "dict"},
+                                                        "rp": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "prefix": {
+                                                                    "type": "str"
+                                                                },
+                                                                "rp_type": {
+                                                                    "type": "str",
+                                                                    "choices": [
+                                                                        "ASM",
+                                                                        "Bidir",
+                                                                    ],
+                                                                },
+                                                            },
+                                                        },
                                                         "source": {
                                                             "type": "str"
                                                         },
@@ -133,7 +147,21 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                         "last": {
                                                             "type": "str"
                                                         },
-                                                        "rp": {"type": "dict"},
+                                                        "rp": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "prefix": {
+                                                                    "type": "str"
+                                                                },
+                                                                "rp_type": {
+                                                                    "type": "str",
+                                                                    "choices": [
+                                                                        "ASM",
+                                                                        "Bidir",
+                                                                    ],
+                                                                },
+                                                            },
+                                                        },
                                                         "source": {
                                                             "type": "str"
                                                         },
@@ -183,7 +211,21 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                         "prefix": {
                                                             "type": "str"
                                                         },
-                                                        "rp": {"type": "dict"},
+                                                        "rp": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "prefix": {
+                                                                    "type": "str"
+                                                                },
+                                                                "rp_type": {
+                                                                    "type": "str",
+                                                                    "choices": [
+                                                                        "ASM",
+                                                                        "Bidir",
+                                                                    ],
+                                                                },
+                                                            },
+                                                        },
                                                         "source": {
                                                             "type": "str"
                                                         },
@@ -198,7 +240,21 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                         "last": {
                                                             "type": "str"
                                                         },
-                                                        "rp": {"type": "dict"},
+                                                        "rp": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "prefix": {
+                                                                    "type": "str"
+                                                                },
+                                                                "rp_type": {
+                                                                    "type": "str",
+                                                                    "choices": [
+                                                                        "ASM",
+                                                                        "Bidir",
+                                                                    ],
+                                                                },
+                                                            },
+                                                        },
                                                         "source": {
                                                             "type": "str"
                                                         },
@@ -338,12 +394,6 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "prefix_list": {"type": "str"}
                                             },
                                         },
-                                        "next_hop": {
-                                            "type": "dict",
-                                            "options": {
-                                                "address": {"type": "str"}
-                                            },
-                                        },
                                         "precedence": {"type": "str"},
                                     },
                                 },
@@ -354,12 +404,6 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "prefix_list": {"type": "str"}
-                                            },
-                                        },
-                                        "next_hop": {
-                                            "type": "dict",
-                                            "options": {
-                                                "address": {"type": "str"}
                                             },
                                         },
                                         "precedence": {"type": "str"},

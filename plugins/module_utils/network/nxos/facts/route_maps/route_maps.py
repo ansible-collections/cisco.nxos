@@ -70,7 +70,7 @@ class Route_mapsFacts(object):
             )
         )
 
-        facts["route_maps"] = params["config"]
+        facts["route_maps"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

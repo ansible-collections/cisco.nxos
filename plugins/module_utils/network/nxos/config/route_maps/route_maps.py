@@ -41,12 +41,13 @@ class Route_maps(ResourceModule):
 
     def __init__(self, module):
         super(Route_maps, self).__init__(
-            empty_fact_val={},
+            empty_fact_val=[],
             facts_module=Facts(module),
             module=module,
             resource="route_maps",
             tmplt=Route_mapsTemplate(),
         )
+        # TO-DO: populate all parsers
         self.parsers = ["description", "continue", "match.as_number.asn"]
 
     def execute_module(self):
@@ -82,12 +83,13 @@ class Route_maps(ResourceModule):
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
                 if k not in wantd:
-                    self._compare(want={}, have=have)
+                    for _hk, hentry in iteritems(have.get("entries", {})):
+                        self.commands.append(
+                            self._tmplt.render(hentry, "route_map", True)
+                        )
 
         for wk, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(wk, {}))
-        for _, have in iteritems(haved):
-            self.commands.append(self._tmplt.render(have, "route_map", True))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -95,16 +97,26 @@ class Route_maps(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Route_maps network resource.
         """
-        begin = len(self.commands)
-        self.compare(parsers=self.parsers, want=want, have=have)
-        if len(self.commands) != begin or (not have and want):
-            self.commands.insert(
-                begin, self._tmplt.render(want or have, "route_map", False)
+        w_entries = want.get("entries", {})
+        h_entries = have.get("entries", {})
+        self._compare_entries(want=w_entries, have=h_entries)
+
+    def _compare_entries(self, want, have):
+        for wk, wentry in iteritems(want):
+            begin = len(self.commands)
+            self.compare(
+                parsers=self.parsers, want=wentry, have=have.pop(wk, {})
             )
+            if len(self.commands) != begin:
+                self.commands.insert(
+                    begin, self._tmplt.render(wentry, "route_map", False)
+                )
+        # remove superfluos entries from have
+        for _hk, hentry in iteritems(have):
+            self.commands.append(self._tmplt.render(hentry, "route_map", True))
 
     def _route_maps_list_to_dict(self, entry):
         entry = {x["route_map"]: x for x in entry}
-        modified = {}
         for rmap, data in iteritems(entry):
             if "entries" in data:
                 for x in data["entries"]:
@@ -113,5 +125,4 @@ class Route_maps(ResourceModule):
                     (rmap, entry["action"], entry.get("sequence")): entry
                     for entry in data["entries"]
                 }
-                modified.update(data["entries"])
-        return modified
+        return entry

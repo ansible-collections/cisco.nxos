@@ -139,7 +139,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "as_path": "{{ as_path }}",
+                                "as_path": "{{ as_path }}",
                             }
                         }
                     }
@@ -161,10 +161,10 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "community": {
-                                   "community_list": "{{ community_list.split() }}",
-                                   "exact_match": "{{ not not exact_match }}",
-                               }
+                                "community": {
+                                    "community_list": "{{ community_list.split() }}",
+                                    "exact_match": "{{ not not exact_match }}",
+                                }
                             }
                         }
                     }
@@ -185,9 +185,9 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "evpn": {
-                                   "route_type": "{{ route_type.split() }}",
-                               }
+                                "evpn": {
+                                    "route_type": "{{ route_type.split() }}",
+                                }
                             }
                         }
                     }
@@ -209,10 +209,10 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "extcommunity": {
-                                   "extcommunity_list": "{{ extcommunity_list.split() }}",
-                                   "exact_match": "{{ not not exact_match }}",
-                               }
+                                "extcommunity": {
+                                    "extcommunity_list": "{{ extcommunity_list.split() }}",
+                                    "exact_match": "{{ not not exact_match }}",
+                                }
                             }
                         }
                     }
@@ -233,7 +233,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "interfaces": "{{ interfaces.split() }}"
+                                "interfaces": "{{ interfaces.split() }}"
                             }
                         }
                     }
@@ -254,11 +254,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ip": {
-                                   "address": {
-                                       "access_list": "{{ access_list }}",
-                                   }
-                               }
+                                "ip": {
+                                    "address": {
+                                        "access_list": "{{ access_list }}",
+                                    }
+                                }
                             }
                         }
                     }
@@ -280,11 +280,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ip": {
-                                   "address": {
-                                       "prefix_lists": "{{ prefix_lists.split() }}",
+                                "ip": {
+                                    "address": {
+                                        "prefix_lists": "{{ prefix_lists.split() }}",
                                     }
-                               }
+                                }
                             }
                         }
                     }
@@ -310,18 +310,18 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ip": {
-                                   "multicast": {
-                                       "group": {
-                                           "prefix": "{{ prefix }}",
-                                           "rp": {
-                                              "prefix": "{{ rp }}",
-                                              "rp_type": "{{ rp_type }}",
-                                           },
-                                           "source": "{{ source }}",
-                                       }
-                                   }
-                               }
+                                "ip": {
+                                    "multicast": {
+                                        "group": {
+                                            "prefix": "{{ prefix }}",
+                                            "rp": {
+                                                "prefix": "{{ rp }}",
+                                                "rp_type": "{{ rp_type }}",
+                                            },
+                                            "source": "{{ source }}",
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -348,19 +348,19 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ip": {
-                                   "multicast": {
-                                       "group_range": {
-                                           "first": "{{ first }}",
-                                           "last": "{{ last }}",
-                                           "rp": {
-                                              "prefix": "{{ rp }}",
-                                              "rp_type": "{{ rp_type }}",
-                                           },
-                                           "source": "{{ source }}",
-                                       },
-                                   }
-                               }
+                                "ip": {
+                                    "multicast": {
+                                        "group_range": {
+                                            "first": "{{ first }}",
+                                            "last": "{{ last }}",
+                                            "rp": {
+                                                "prefix": "{{ rp }}",
+                                                "rp_type": "{{ rp_type }}",
+                                            },
+                                            "source": "{{ source }}",
+                                        },
+                                    }
+                                }
                             }
                         }
                     }
@@ -381,11 +381,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ip": {
-                                   "next_hop": {
-                                       "prefix_lists": "{{ prefix_lists.split() }}",
-                                   }
-                               }
+                                "ip": {
+                                    "next_hop": {
+                                        "prefix_lists": "{{ prefix_lists.split() }}",
+                                    }
+                                }
                             }
                         }
                     }
@@ -406,11 +406,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ipv6": {
-                                   "route_source": {
-                                       "prefix_lists": "{{ prefix_lists.split() }}",
-                                   }
-                               }
+                                "ipv6": {
+                                    "route_source": {
+                                        "prefix_lists": "{{ prefix_lists.split() }}",
+                                    }
+                                }
                             }
                         }
                     }
@@ -431,11 +431,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ipv6": {
-                                   "address": {
-                                       "access_list": "{{ access_list }}",
-                                   }
-                               }
+                                "ipv6": {
+                                    "address": {
+                                        "access_list": "{{ access_list }}",
+                                    }
+                                }
                             }
                         }
                     }
@@ -457,11 +457,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ipv6": {
-                                   "address": {
-                                       "prefix_lists": "{{ prefix_lists.split() }}",
+                                "ipv6": {
+                                    "address": {
+                                        "prefix_lists": "{{ prefix_lists.split() }}",
                                     }
-                               }
+                                }
                             }
                         }
                     }
@@ -486,18 +486,18 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ipv6": {
-                                   "multicast": {
-                                       "group": {
-                                           "prefix": "{{ prefix }}",
-                                           "rp": {
-                                              "prefix": "{{ rp }}",
-                                              "rp_type": "{{ rp_type }}",
-                                           },
-                                           "source": "{{ source }}",
-                                       }
-                                   }
-                               }
+                                "ipv6": {
+                                    "multicast": {
+                                        "group": {
+                                            "prefix": "{{ prefix }}",
+                                            "rp": {
+                                                "prefix": "{{ rp }}",
+                                                "rp_type": "{{ rp_type }}",
+                                            },
+                                            "source": "{{ source }}",
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -524,19 +524,19 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ipv6": {
-                                   "multicast": {
-                                       "group_range": {
-                                           "first": "{{ first }}",
-                                           "last": "{{ last }}",
-                                           "rp": {
-                                              "prefix": "{{ rp }}",
-                                              "rp_type": "{{ rp_type }}",
-                                           },
-                                           "source": "{{ source }}",
-                                       },
-                                   }
-                               }
+                                "ipv6": {
+                                    "multicast": {
+                                        "group_range": {
+                                            "first": "{{ first }}",
+                                            "last": "{{ last }}",
+                                            "rp": {
+                                                "prefix": "{{ rp }}",
+                                                "rp_type": "{{ rp_type }}",
+                                            },
+                                            "source": "{{ source }}",
+                                        },
+                                    }
+                                }
                             }
                         }
                     }
@@ -557,11 +557,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ipv6": {
-                                   "next_hop": {
-                                       "prefix_lists": "{{ prefix_lists.split() }}",
-                                   }
-                               }
+                                "ipv6": {
+                                    "next_hop": {
+                                        "prefix_lists": "{{ prefix_lists.split() }}",
+                                    }
+                                }
                             }
                         }
                     }
@@ -582,11 +582,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ipv6": {
-                                   "route_source": {
-                                       "prefix_lists": "{{ prefix_lists.split() }}",
-                                   }
-                               }
+                                "ipv6": {
+                                    "route_source": {
+                                        "prefix_lists": "{{ prefix_lists.split() }}",
+                                    }
+                                }
                             }
                         }
                     }
@@ -607,7 +607,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "mac_list": "{{ mac_list.split() }}",
+                                "mac_list": "{{ mac_list.split() }}",
                             }
                         }
                     }
@@ -628,7 +628,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "metric": "{{ metric.split() }}",
+                                "metric": "{{ metric.split() }}",
                             }
                         }
                     }
@@ -649,7 +649,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "ospf_area": "{{ ospf_area.split() }}",
+                                "ospf_area": "{{ ospf_area.split() }}",
                             }
                         }
                     }
@@ -670,7 +670,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "route_type": "{{ route_type.split() }}",
+                                "route_type": "{{ route_type.split() }}",
                             }
                         }
                     }
@@ -691,7 +691,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "source_protocol": "{{ source_protocol.split() }}",
+                                "source_protocol": "{{ source_protocol.split() }}",
                             }
                         }
                     }
@@ -712,7 +712,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                               "tags": "{{ tags.split() }}",
+                                "tags": "{{ tags.split() }}",
                             }
                         }
                     }
@@ -733,11 +733,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "as_path": {
-                                   "prepend": {
-                                       "as_number": "{{ as_number.split() }}",
+                                "as_path": {
+                                    "prepend": {
+                                        "as_number": "{{ as_number.split() }}",
                                     }
-                               }
+                                }
                             }
                         }
                     }
@@ -758,11 +758,11 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "as_path": {
-                                   "prepend": {
-                                       "last_as": "{{ last_as }}",
+                                "as_path": {
+                                    "prepend": {
+                                        "last_as": "{{ last_as }}",
                                     }
-                               }
+                                }
                             }
                         }
                     }
@@ -783,9 +783,9 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "as_path": {
-                                   "tag": "{{ not not tag }}",
-                               }
+                                "as_path": {
+                                    "tag": "{{ not not tag }}",
+                                }
                             }
                         }
                     }
@@ -806,7 +806,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "comm_list": "{{ comm_list }}",
+                                "comm_list": "{{ comm_list }}",
                             }
                         }
                     }
@@ -832,15 +832,15 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "community": {
-                                   "internet": "{{ not not internet }}",
-                                   "number": "{{ number.split() }}",
-                                   "no_export": "{{ not not no_export }}",
-                                   "no_advertise": "{{ not not no_advertise }}",
-                                   "local_as": "{{ not not local_as }}",
-                                   "graceful_shutdown": "{{ not not graceful_shutdown }}",
-                                   "additive": "{{ not not additive }}",
-                               }
+                                "community": {
+                                    "internet": "{{ not not internet }}",
+                                    "number": "{{ number.split() }}",
+                                    "no_export": "{{ not not no_export }}",
+                                    "no_advertise": "{{ not not no_advertise }}",
+                                    "local_as": "{{ not not local_as }}",
+                                    "graceful_shutdown": "{{ not not graceful_shutdown }}",
+                                    "additive": "{{ not not additive }}",
+                                }
                             }
                         }
                     }
@@ -865,12 +865,12 @@ class Route_mapsTemplate(NetworkTemplate):
                         "{{ sequence }}": {
                             "set": {
                                 "dampening": {
-                                        "half_life": "{{ half_life }}",
-                                        "start_reuse_route": "{{ start_reuse_route }}",
-                                        "start_suppress_route": "{{ start_suppress_route }}",
-                                        "max_suppress_time": "{{ max_suppress_time }}",
-                                    }
+                                    "half_life": "{{ half_life }}",
+                                    "start_reuse_route": "{{ start_reuse_route }}",
+                                    "start_suppress_route": "{{ start_suppress_route }}",
+                                    "max_suppress_time": "{{ max_suppress_time }}",
                                 }
+                            }
                         }
                     }
                 }
@@ -945,7 +945,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "extcomm_list": "{{ extcomm_list }}",
+                                "extcomm_list": "{{ extcomm_list }}",
                             }
                         }
                     }
@@ -965,7 +965,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "forwarding_address": "{{ not not forwarding_address }}",
+                                "forwarding_address": "{{ not not forwarding_address }}",
                             }
                         }
                     }
@@ -985,7 +985,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "null_interface": "{{ interface }}",
+                                "null_interface": "{{ interface }}",
                             }
                         }
                     }
@@ -1005,10 +1005,10 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "ip": {
-                                   "address": {
-                                       "prefix_list": "{{ prefix_list }}",
-                                   }
+                                "ip": {
+                                    "address": {
+                                        "prefix_list": "{{ prefix_list }}",
+                                    }
                                 }
                             }
                         }
@@ -1029,8 +1029,8 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "ip": {
-                                   "precedence": "{{ precedence }}",
+                                "ip": {
+                                    "precedence": "{{ precedence }}",
                                 }
                             }
                         }
@@ -1051,10 +1051,10 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "ipv6": {
-                                   "address": {
-                                       "prefix_list": "{{ prefix_list }}",
-                                   }
+                                "ipv6": {
+                                    "address": {
+                                        "prefix_list": "{{ prefix_list }}",
+                                    }
                                 }
                             }
                         }
@@ -1075,8 +1075,8 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "ipv6": {
-                                   "precedence": "{{ precedence }}",
+                                "ipv6": {
+                                    "precedence": "{{ precedence }}",
                                 }
                             }
                         }
@@ -1097,7 +1097,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "label_index": "{{ label_index }}",
+                                "label_index": "{{ label_index }}",
                             }
                         }
                     }
@@ -1117,7 +1117,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "level": "{{ level }}",
+                                "level": "{{ level }}",
                             }
                         }
                     }
@@ -1137,7 +1137,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "local_preference": "{{ local_preference }}",
+                                "local_preference": "{{ local_preference }}",
                             }
                         }
                     }
@@ -1161,13 +1161,13 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "metric": {
-                                   "bandwidth": "{{ bandwidth }}",
-                                   "igrp_delay_metric": "{{ igrp_delay_metric }}",
-                                   "igrp_reliability_metric": "{{ igrp_reliability_metric }}",
-                                   "igrp_effective_bandwidth_metric": "{{ igrp_effective_bandwidth_metric }}",
-                                   "igrp_mtu": "{{ igrp_mtu }}",
-                               }
+                                "metric": {
+                                    "bandwidth": "{{ bandwidth }}",
+                                    "igrp_delay_metric": "{{ igrp_delay_metric }}",
+                                    "igrp_reliability_metric": "{{ igrp_reliability_metric }}",
+                                    "igrp_effective_bandwidth_metric": "{{ igrp_effective_bandwidth_metric }}",
+                                    "igrp_mtu": "{{ igrp_mtu }}",
+                                }
                             }
                         }
                     }
@@ -1187,7 +1187,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "metric_type": "{{ metric_type }}",
+                                "metric_type": "{{ metric_type }}",
                             }
                         }
                     }
@@ -1207,7 +1207,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "nssa_only": "{{ not not nssa_only }}",
+                                "nssa_only": "{{ not not nssa_only }}",
                             }
                         }
                     }
@@ -1227,7 +1227,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "origin": "{{ origin }}",
+                                "origin": "{{ origin }}",
                             }
                         }
                     }
@@ -1248,7 +1248,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "path_selection": "{{ path_selection }}",
+                                "path_selection": "{{ path_selection }}",
                             }
                         }
                     }
@@ -1268,7 +1268,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "tag": "{{ tag }}",
+                                "tag": "{{ tag }}",
                             }
                         }
                     }
@@ -1288,7 +1288,7 @@ class Route_mapsTemplate(NetworkTemplate):
                     "entries": {
                         "{{ sequence }}": {
                             "set": {
-                               "weight": "{{ weight }}",
+                                "weight": "{{ weight }}",
                             }
                         }
                     }

@@ -138,7 +138,7 @@ options:
                           rp: &rp
                             description: Rendezvous point.
                             type: dict
-                            suboption:
+                            suboptions:
                               prefix:
                                 description: IPv4 rendezvous prefix.
                                 type: str

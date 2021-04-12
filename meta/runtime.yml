@@ -246,6 +246,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     rollback:
       redirect: cisco.nxos.nxos
+    nxos_route_maps:
+      redirect: cisco.nxos.nxos
+    route_maps:
+      redirect: cisco.nxos.nxos
     nxos_rpm:
       redirect: cisco.nxos.nxos
     rpm:
@@ -593,6 +597,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_reboot
     rollback:
       redirect: cisco.nxos.nxos_rollback
+    route_maps:
+      redirect: cisco.nxos.nxos_route_maps
     rpm:
       redirect: cisco.nxos.nxos_rpm
     smu:
