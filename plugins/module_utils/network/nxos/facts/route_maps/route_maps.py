@@ -56,6 +56,7 @@ class Route_mapsFacts(object):
         route_maps_parser = Route_mapsTemplate(
             lines=data.splitlines(), module=self._module
         )
+
         objs = list(route_maps_parser.parse().values())
 
         for item in objs:

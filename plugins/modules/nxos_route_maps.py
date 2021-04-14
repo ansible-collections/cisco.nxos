@@ -68,13 +68,16 @@ options:
                 suboptions:
                   asn:
                     description: AS number.
-                    type: str
+                    type: list
+                    elements: str
                   as_path_list:
                     description: AS path access list name.
-                    type: str
+                    type: list
+                    elements: str
               as_path:
                 description: Match BGP AS path list.
-                type: str
+                type: list
+                elements: str
               community:
                 description: Match BGP community list.
                 type: dict
@@ -128,29 +131,22 @@ options:
                     description: Match multicast attributes.
                     type: dict
                     suboptions:
+                      source:
+                        description: Multicast source address.
+                        type: str
                       group:
-                        description: Multicast Group prefix.
+                        description:
+                          - Multicast Group prefix.
+                          - Mutually exclusive with group_range.
                         type: dict
                         suboptions:
                           prefix:
                             description: IPv4 group prefix.
                             type: str
-                          rp: &rp
-                            description: Rendezvous point.
-                            type: dict
-                            suboptions:
-                              prefix:
-                                description: IPv4 rendezvous prefix.
-                                type: str
-                              rp_type:
-                                description: Multicast rendezvous point type.
-                                type: str
-                                choices: ["ASM", "Bidir"]
-                          source: &source
-                            description: Multicast source address.
-                            type: str
                       group_range:
-                        description: Multicast Group address range.
+                        description:
+                          - Multicast Group address range.
+                          - Mutually exclusive with group.
                         type: dict
                         suboptions:
                           first:
@@ -159,8 +155,17 @@ options:
                           last:
                             description: Last Group address.
                             type: str
-                          rp: *rp
-                          source: *source
+                      rp:
+                        description: Rendezvous point.
+                        type: dict
+                        suboptions:
+                          prefix:
+                            description: IPv4 rendezvous prefix.
+                            type: str
+                          rp_type:
+                            description: Multicast rendezvous point type.
+                            type: str
+                            choices: ["ASM", "Bidir"]
                   next_hop:
                     description: Match next-hop address of route.
                     type: dict
@@ -293,7 +298,7 @@ options:
                   gateway_ip:
                     description:
                       - Set gateway IP for type 5 EVPN routes.
-                      - Cannot set ip and use-nexthop gateway-ip in the same route-map sequence.
+                      - Cannot set ip and use-nexthop in the same route-map sequence.
                     type: dict
                     suboptions:
                       ip:

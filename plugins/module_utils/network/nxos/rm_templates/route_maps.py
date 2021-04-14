@@ -20,6 +20,52 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 )
 
 
+def _tmplt_match_ip_multicast(data):
+    cmd = "match ip multicast"
+    multicast = data["match"]["ip"]["multicast"]
+
+    if "source" in multicast:
+        cmd += " source {source}".format(**multicast)
+
+    if "prefix" in multicast.get("group", {}):
+        cmd += " group {prefix}".format(**multicast["group"])
+    else:
+        if "first" in multicast.get("group_range", {}):
+            cmd += " group-range {first}".format(**multicast["group_range"])
+        if "last" in multicast.get("group_range", {}):
+            cmd += " to {last}".format(**multicast["group_range"])
+
+    if "rp" in multicast:
+        cmd += " rp {prefix}".format(**multicast["rp"])
+        if "rp_type" in multicast["rp"]:
+            cmd += " rp-type {rp_type}".format(**multicast["rp"])
+
+    return cmd
+
+
+def _tmplt_match_ipv6_multicast(data):
+    cmd = "match ip multicast"
+    multicast = data["match"]["ip"]["multicast"]
+
+    if "source" in multicast:
+        cmd += " source {source}".format(**multicast)
+
+    if "prefix" in multicast.get("group", {}):
+        cmd += " group {prefix}".format(**multicast["group"])
+    else:
+        if "first" in multicast.get("group_range", {}):
+            cmd += " group-range {first}".format(**multicast["group_range"])
+        if "last" in multicast.get("group_range", {}):
+            cmd += " to {last}".format(**multicast["group_range"])
+
+    if "rp" in multicast:
+        cmd += " rp {prefix}".format(**multicast["rp"])
+        if "rp_type" in multicast["rp"]:
+            cmd += " rp-type {rp_type}".format(**multicast["rp"])
+
+    return cmd
+
+
 class Route_mapsTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Route_mapsTemplate, self).__init__(
@@ -87,9 +133,10 @@ class Route_mapsTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+match\sas-number
-                \s(?P<asn>\S+)\s*
+                (?!\sas-path-list)
+                \s(?P<asn>.+)\s*
                 $""", re.VERBOSE),
-            "setval": "match as-number {{ asn }}",
+            "setval": "match as-number {{ match.as_number.asn|join(', ') }}",
             "result": {
                 "{{ route_map }}": {
                     "route_map": "{{ route_map }}",
@@ -97,7 +144,7 @@ class Route_mapsTemplate(NetworkTemplate):
                         "{{ sequence }}": {
                             "match": {
                                 "as_number": {
-                                    "asn": "{{ asn }}",
+                                    "asn": "{{ asn.rstrip().split(', ') }}",
                                 }
                             }
                         }
@@ -110,16 +157,16 @@ class Route_mapsTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+match\sas-number
-                \sas-path-list\s(?P<as_path_list>\S+)\s*
+                \sas-path-list\s(?P<as_path_list>.+)\s*
                 $""", re.VERBOSE),
-            "setval": "match as-number as-path-list {{ as_path_list }}",
+            "setval": "match as-number as-path-list {{ match.as_number.as_path_list|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
                                 "as_number": {
-                                    "as_path_list": "{{ as_path_list }}",
+                                    "as_path_list": "{{ as_path_list.split() }}",
                                 }
                             }
                         }
@@ -128,18 +175,18 @@ class Route_mapsTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "match.as_number.as_path",
+            "name": "match.as_path",
             "getval": re.compile(
                 r"""
-                \s+match\sas-path\s(?P<as_path>\S+)\s*
+                \s+match\sas-path\s(?P<as_path>.+)\s*
                 $""", re.VERBOSE),
-            "setval": "match as-path {{ as_path }}",
+            "setval": "match as-path {{ match.as_path|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                                "as_path": "{{ as_path }}",
+                                "as_path": "{{ as_path.split() }}",
                             }
                         }
                     }
@@ -147,7 +194,7 @@ class Route_mapsTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "match.community",
+            "name": "match.community.community_list",
             "getval": re.compile(
                 r"""
                 \s+match\scommunity
@@ -155,7 +202,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<exact_match>exact-match)?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match community {{ match.community.community_list|join(' ') }}{{ ' exact-match' if match.community.exact_match|d(False) else '' }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -179,7 +226,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \sroute-type
                 \s(?P<route_type>.+)\s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match evpn route-type {{ match.evpn.route_type|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -195,7 +242,7 @@ class Route_mapsTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "match.extcommunity",
+            "name": "match.extcommunity.extcommunity_list",
             "getval": re.compile(
                 r"""
                 \s+match\sextcommunity
@@ -203,7 +250,8 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<exact_match>exact-match)?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "match as-path {{ as_path }}",
+            "setval": "match extcommunity {{ match.extcommunity.extcommunity_list|join(' ') }}"
+                      "{{ ' exact-match' if match.extcommunity.exact_match|d(False) else '' }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -227,7 +275,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<interfaces>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match interface {{ match.interfaces|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -248,7 +296,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match ip address {{ match.ip.address.access_list }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -274,7 +322,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<prefix_lists>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match ip address prefix-list {{ match.ip.address.prefix_lists|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -293,18 +341,21 @@ class Route_mapsTemplate(NetworkTemplate):
         },
         # match ip multicast source 192.1.2.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 209.165.201.0/27 rp-type Bidir
         {
-            "name": "match.ip.multicast.group",
+            "name": "match.ip.multicast",
             "getval": re.compile(
                 r"""
                 \s+match\sip\smulticast
                 (\ssource\s(?P<source>\S+))?
-                \sgroup
-                \s(?P<prefix>\S+)
+                (\sgroup\s(?P<prefix>\S+))?
+                (\sgroup-range)?
+                (\s(?P<first>\S+))?
+                (\sto)?
+                (\s(?P<last>\S+))?
                 (\srp\s(?P<rp>\S+))?
                 (\srp-type\s(?P<rp_type>\S+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": _tmplt_match_ip_multicast,
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -314,52 +365,17 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "multicast": {
                                         "group": {
                                             "prefix": "{{ prefix }}",
-                                            "rp": {
-                                                "prefix": "{{ rp }}",
-                                                "rp_type": "{{ rp_type }}",
-                                            },
-                                            "source": "{{ source }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "match.ip.multicast.group_range",
-            "getval": re.compile(
-                r"""
-                \s+match\sip\smulticast
-                (\ssource\s(?P<source>\S+))?
-                \sgroup-range
-                \s(?P<first>\S+)
-                \sto
-                \s(?P<last>\S+)
-                (\srp\s(?P<rp>\S+))?
-                (\srp-type\s(?P<rp_type>\S+))?
-                \s*
-                $""", re.VERBOSE),
-            "setval": "",
-            "result": {
-                "{{ route_map }}": {
-                    "entries": {
-                        "{{ sequence }}": {
-                            "match": {
-                                "ip": {
-                                    "multicast": {
+                                        },
                                         "group_range": {
                                             "first": "{{ first }}",
                                             "last": "{{ last }}",
-                                            "rp": {
-                                                "prefix": "{{ rp }}",
-                                                "rp_type": "{{ rp_type }}",
-                                            },
-                                            "source": "{{ source }}",
                                         },
-                                    }
+                                        "rp": {
+                                            "prefix": "{{ rp }}",
+                                            "rp_type": "{{ rp_type }}",
+                                        },
+                                        "source": "{{ source }}",
+                                    },
                                 }
                             }
                         }
@@ -375,7 +391,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \sprefix-list\s(?P<prefix_lists>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match ip next-hop prefix-list {{ match.ip.next_hop.prefix_lists|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -396,17 +412,17 @@ class Route_mapsTemplate(NetworkTemplate):
             "name": "match.ip.route_source.prefix_lists",
             "getval": re.compile(
                 r"""
-                \s+match\sipv6\sroute-source
+                \s+match\sip\sroute-source
                 \sprefix-list\s(?P<prefix_lists>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match ip route-source prefix-list {{ match.ip.route_source.prefix_lists|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                                "ipv6": {
+                                "ip": {
                                     "route_source": {
                                         "prefix_lists": "{{ prefix_lists.split() }}",
                                     }
@@ -425,7 +441,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<access_list>\S+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match ipv6 address {{ match.ipv6.address.access_list }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -451,7 +467,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<prefix_lists>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match ipv6 address prefix-list {{ match.ipv6.address.prefix_lists|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -469,18 +485,21 @@ class Route_mapsTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "match.ipv6.multicast.group",
+            "name": "match.ipv6.multicast",
             "getval": re.compile(
                 r"""
                 \s+match\sipv6\smulticast
                 (\ssource\s(?P<source>\S+))?
-                \sgroup
-                \s(?P<prefix>\S+)
+                (\sgroup\s(?P<prefix>\S+))?
+                (\sgroup-range)?
+                (\s(?P<first>\S+))?
+                (\sto)?
+                (\s(?P<last>\S+))?
                 (\srp\s(?P<rp>\S+))?
                 (\srp-type\s(?P<rp_type>\S+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": _tmplt_match_ipv6_multicast,
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -490,52 +509,17 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "multicast": {
                                         "group": {
                                             "prefix": "{{ prefix }}",
-                                            "rp": {
-                                                "prefix": "{{ rp }}",
-                                                "rp_type": "{{ rp_type }}",
-                                            },
-                                            "source": "{{ source }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        {
-            "name": "match.ipv6.multicast.group_range",
-            "getval": re.compile(
-                r"""
-                \s+match\sipv6\smulticast
-                (\ssource\s(?P<source>\S+))?
-                \sgroup-range
-                \s(?P<first>\S+)
-                \sto
-                \s(?P<last>\S+)
-                (\srp\s(?P<rp>\S+))?
-                (\srp-type\s(?P<rp_type>\S+))?
-                \s*
-                $""", re.VERBOSE),
-            "setval": "",
-            "result": {
-                "{{ route_map }}": {
-                    "entries": {
-                        "{{ sequence }}": {
-                            "match": {
-                                "ipv6": {
-                                    "multicast": {
+                                        },
                                         "group_range": {
                                             "first": "{{ first }}",
                                             "last": "{{ last }}",
-                                            "rp": {
-                                                "prefix": "{{ rp }}",
-                                                "rp_type": "{{ rp_type }}",
-                                            },
-                                            "source": "{{ source }}",
                                         },
-                                    }
+                                        "rp": {
+                                            "prefix": "{{ rp }}",
+                                            "rp_type": "{{ rp_type }}",
+                                        },
+                                        "source": "{{ source }}",
+                                    },
                                 }
                             }
                         }
@@ -551,7 +535,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \sprefix-list\s(?P<prefix_lists>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match ipv6 next-hop {{ 'match.ipv6.next_hop.prefix_lists|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -576,7 +560,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \sprefix-list\s(?P<prefix_lists>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match ipv6 route-source prefix-list {{ match.ipv6.route_source.prefix_lists|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -601,7 +585,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<mac_list>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match mac-list {{ match.mac_list|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -622,7 +606,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<metric>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match metric {{ match.metric|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -643,7 +627,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<ospf_area>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match ospf-area {{ match.ospf_area|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -664,7 +648,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<route_type>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match route-type {{ match.route_type|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -685,7 +669,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<route_type>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match source-protocol {{ match.source_protocol|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -706,7 +690,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<tags>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "match tag {{ match.tags|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -727,7 +711,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<as_number>(?!last-as).+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "set as-path prepend {{ set.as_path.prepend.as_number|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -752,7 +736,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \slast-as\s(?P<last_as>\d+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "set as-path prepend {{ last_as|string }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -777,7 +761,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<tag>tag)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "set as-path tag",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -800,7 +784,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<comm_list>\S+)
                 \s*delete
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set comm-list {{ set.comm_list }} delete",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -813,6 +797,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 }
             },
         },
+        # TO-DO
         {
             "name": "set.community",
             "getval": re.compile(
@@ -858,7 +843,10 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<max_suppress_time>\d+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "set dampening {{ set.dampening.half_life }}"
+                      " {{ set.dampening.start_reuse_route }}"
+                      " {{ set.dampening.start_suppress_route }}"
+                      " {{ set.dampening.max_suppress_time }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -882,11 +870,13 @@ class Route_mapsTemplate(NetworkTemplate):
                 r"""
                 \s+set\sdistance
                 \s(?P<igp_ebgp_routes>\d+)
-                \s(?P<internal_routes>\d+)
-                \s(?P<local_routes>\d+)
+                (\s(?P<internal_routes>\d+))?
+                (\s(?P<local_routes>\d+))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "set distance {{ set.distance.igp_ebgp_routes }}"
+                      "{{ ' ' + set.distance.internal_routes|string if set.distance.internal_routes|d(False) else '' }}"
+                      "{{ ' ' + set.distance.local_routes|string if set.distance.internal_routes|d(False) else '' }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -913,7 +903,9 @@ class Route_mapsTemplate(NetworkTemplate):
                 (\s(?P<use_nexthop>use-nexthop))?
                 \s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "set evpn gateway-ip"
+                      "{{ ' ' + set.evpn.gateway_ip.ip if set.evpn.gateway_ip.ip|d(False) else ''}}"
+                      "{{ ' use-nexthop' if set.evpn.gateway_ip.use_nexthop|d(False) else '' }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -939,7 +931,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<extcomm_list>\S+)
                 \s*delete
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set extcomm-list {{ set.extcomm_list }} delete",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -959,7 +951,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set
                 \s(?P<forwarding_address>forwarding-address)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set forwarding-address",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -979,7 +971,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\sinterface
                 \s(?P<interface>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set interface {{ set.null_interface }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -999,7 +991,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\sip\saddress
                 \sprefix-list\s(?P<prefix_list>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set ip address prefix-list {{ set.ip.address.prefix_list }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1023,7 +1015,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\sip
                 \sprecedence\s(?P<precedence>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set ip {{ set.ip.precedence }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1045,7 +1037,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\sipv6\saddress
                 \sprefix-list\s(?P<prefix_list>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set ipv6 address prefix-list {{ set.ipv6.address.prefix_list }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1069,7 +1061,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\sipv6
                 \sprecedence\s(?P<precedence>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set ipv6 {{ set.ipv6.precedence }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1091,7 +1083,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\slabel-index
                 \s(?P<label_index>\d+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set label-index {{ set.label_index }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1111,7 +1103,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\slevel
                 \s(?P<level>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set level {{ set.level }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1131,7 +1123,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\slocal-preference
                 \s(?P<local_preference>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set local-preference {{ set.local_preference }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {

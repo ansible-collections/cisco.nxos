@@ -22,6 +22,7 @@ from copy import deepcopy
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
+    get_from_dict,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
@@ -48,7 +49,51 @@ class Route_maps(ResourceModule):
             tmplt=Route_mapsTemplate(),
         )
         # TO-DO: populate all parsers
-        self.parsers = ["description", "continue", "match.as_number.asn"]
+        self.parsers = [
+            "description",
+            "continue",
+            "set.as_path.prepend.last_as",
+            "set.as_path.tag",
+            "set.comm_list",
+            "set.dampening",
+            "set.extcomm_list",
+            "set.forwarding_address",
+            "set.null_interface",
+            "set.ip.address.prefix_list",
+            "set.ip.precedence",
+            "set.ipv6.address.prefix_list",
+            "set.ipv6.precedence",
+            "set.label_index",
+            "set.level",
+            "set.local_preference",
+            # lists
+            "match.as_number.asn",
+            "match.as_number.as_path_list",
+            "match.as_path",
+            "match.community.community_list",
+            "match.evpn.route_type",
+            "match.extcommunity.extcommunity_list",
+            "match.interfaces",
+            "match.ip.address.access_list",
+            "match.ip.address.prefix_lists",
+            "match.ip.multicast",
+            "match.ip.next_hop.prefix_lists",
+            "match.ip.route_source.prefix_lists"
+            "match.ipv6.address.access_list",
+            "match.ipv6.address.prefix_lists",
+            "match.ipv6.multicast",
+            "match.ipv6.next_hop.prefix_lists",
+            "match.ipv6.route_source.prefix_lists",
+            "match.mac_list",
+            "match.metric",
+            "match.ospf_area",
+            "match.route_type",
+            "match.source_protocol",
+            "match.tags",
+            "set.as_path.prepend.as_number",
+            "set.distance",
+            "set.evpn.gateway_ip",
+        ]
 
     def execute_module(self):
         """ Execute the module
@@ -103,10 +148,12 @@ class Route_maps(ResourceModule):
 
     def _compare_entries(self, want, have):
         for wk, wentry in iteritems(want):
+            hentry = have.pop(wk, {})
             begin = len(self.commands)
-            self.compare(
-                parsers=self.parsers, want=wentry, have=have.pop(wk, {})
-            )
+
+            self._compare_lists(wentry, hentry)
+            self.compare(parsers=self.parsers[0:8], want=wentry, have=hentry)
+
             if len(self.commands) != begin:
                 self.commands.insert(
                     begin, self._tmplt.render(wentry, "route_map", False)
@@ -114,6 +161,23 @@ class Route_maps(ResourceModule):
         # remove superfluos entries from have
         for _hk, hentry in iteritems(have):
             self.commands.append(self._tmplt.render(hentry, "route_map", True))
+
+    def _compare_lists(self, want, have):
+        for x in self.parsers[7:]:
+            wx = get_from_dict(want, x) or []
+            hx = get_from_dict(have, x) or []
+
+            if isinstance(wx, list):
+                wx = set(wx)
+            if isinstance(hx, list):
+                hx = set(hx)
+
+            if wx != hx:
+                # negate existing config so that want is not appended
+                # in case of replaced or overridden
+                if self.state in ["replaced", "overridden"] and hx:
+                    self.addcmd(have, x, negate=True)
+                self.addcmd(want, x)
 
     def _route_maps_list_to_dict(self, entry):
         entry = {x["route_map"]: x for x in entry}

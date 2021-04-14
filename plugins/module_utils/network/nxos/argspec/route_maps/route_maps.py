@@ -58,11 +58,17 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                 "as_number": {
                                     "type": "dict",
                                     "options": {
-                                        "asn": {"type": "str"},
-                                        "as_path_list": {"type": "str"},
+                                        "asn": {
+                                            "type": "list",
+                                            "elements": "str",
+                                        },
+                                        "as_path_list": {
+                                            "type": "list",
+                                            "elements": "str",
+                                        },
                                     },
                                 },
-                                "as_path": {"type": "str"},
+                                "as_path": {"type": "list", "elements": "str"},
                                 "community": {
                                     "type": "dict",
                                     "options": {
@@ -112,30 +118,13 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                         "multicast": {
                                             "type": "dict",
                                             "options": {
+                                                "source": {"type": "str"},
                                                 "group": {
                                                     "type": "dict",
                                                     "options": {
                                                         "prefix": {
                                                             "type": "str"
-                                                        },
-                                                        "rp": {
-                                                            "type": "dict",
-                                                            "options": {
-                                                                "prefix": {
-                                                                    "type": "str"
-                                                                },
-                                                                "rp_type": {
-                                                                    "type": "str",
-                                                                    "choices": [
-                                                                        "ASM",
-                                                                        "Bidir",
-                                                                    ],
-                                                                },
-                                                            },
-                                                        },
-                                                        "source": {
-                                                            "type": "str"
-                                                        },
+                                                        }
                                                     },
                                                 },
                                                 "group_range": {
@@ -147,23 +136,20 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                         "last": {
                                                             "type": "str"
                                                         },
-                                                        "rp": {
-                                                            "type": "dict",
-                                                            "options": {
-                                                                "prefix": {
-                                                                    "type": "str"
-                                                                },
-                                                                "rp_type": {
-                                                                    "type": "str",
-                                                                    "choices": [
-                                                                        "ASM",
-                                                                        "Bidir",
-                                                                    ],
-                                                                },
-                                                            },
-                                                        },
-                                                        "source": {
+                                                    },
+                                                },
+                                                "rp": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "prefix": {
                                                             "type": "str"
+                                                        },
+                                                        "rp_type": {
+                                                            "type": "str",
+                                                            "choices": [
+                                                                "ASM",
+                                                                "Bidir",
+                                                            ],
                                                         },
                                                     },
                                                 },
@@ -205,30 +191,13 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                         "multicast": {
                                             "type": "dict",
                                             "options": {
+                                                "source": {"type": "str"},
                                                 "group": {
                                                     "type": "dict",
                                                     "options": {
                                                         "prefix": {
                                                             "type": "str"
-                                                        },
-                                                        "rp": {
-                                                            "type": "dict",
-                                                            "options": {
-                                                                "prefix": {
-                                                                    "type": "str"
-                                                                },
-                                                                "rp_type": {
-                                                                    "type": "str",
-                                                                    "choices": [
-                                                                        "ASM",
-                                                                        "Bidir",
-                                                                    ],
-                                                                },
-                                                            },
-                                                        },
-                                                        "source": {
-                                                            "type": "str"
-                                                        },
+                                                        }
                                                     },
                                                 },
                                                 "group_range": {
@@ -240,23 +209,20 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                         "last": {
                                                             "type": "str"
                                                         },
-                                                        "rp": {
-                                                            "type": "dict",
-                                                            "options": {
-                                                                "prefix": {
-                                                                    "type": "str"
-                                                                },
-                                                                "rp_type": {
-                                                                    "type": "str",
-                                                                    "choices": [
-                                                                        "ASM",
-                                                                        "Bidir",
-                                                                    ],
-                                                                },
-                                                            },
-                                                        },
-                                                        "source": {
+                                                    },
+                                                },
+                                                "rp": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "prefix": {
                                                             "type": "str"
+                                                        },
+                                                        "rp_type": {
+                                                            "type": "str",
+                                                            "choices": [
+                                                                "ASM",
+                                                                "Bidir",
+                                                            ],
                                                         },
                                                     },
                                                 },
@@ -373,6 +339,9 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "gateway_ip": {
                                             "type": "dict",
+                                            "mutually_exclusive": [
+                                                ["ip", "use_nexthop"]
+                                            ],
                                             "options": {
                                                 "ip": {"type": "str"},
                                                 "use_nexthop": {
