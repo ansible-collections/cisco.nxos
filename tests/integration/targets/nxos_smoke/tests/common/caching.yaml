@@ -8,7 +8,7 @@
 
   - name: setup
     cisco.nxos.nxos_config: &rem
-      lines: 
+      lines:
         - "default interface {{ nxos_int1 }}"
         - "default interface {{ nxos_int2 }}"
 
@@ -50,7 +50,7 @@
             native_vlan: 10
             allowed_vlans: 2,4,15
       state: merged
-    
+
   - assert:
       that:
         - '"interface {{ nxos_int1 }}" in result.commands'
@@ -65,7 +65,7 @@
   - assert:
       that:
         - result.changed == False
-  
+
   - name: Merge L3 interfaces configuration
     register: result
     cisco.nxos.nxos_l3_interfaces: &mergedl3
@@ -74,7 +74,7 @@
           ipv4:
           - address: 203.0.113.1/24
       state: merged
-    
+
   - assert:
       that:
         - '"interface {{ nxos_int2 }}" in result.commands'
@@ -92,4 +92,4 @@
   always:
     - name: cleanup
       cisco.nxos.nxos_config: *rem
-  when: ansible_connection == "network_cli" and ansible_network_single_user_mode|d(False)
+  when: ansible_connection == "ansible.netcommon.network_cli" and ansible_network_single_user_mode|d(False)
