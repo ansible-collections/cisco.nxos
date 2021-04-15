@@ -48,8 +48,7 @@ class Route_maps(ResourceModule):
             resource="route_maps",
             tmplt=Route_mapsTemplate(),
         )
-        # TO-DO: populate all parsers
-        self.parsers = [
+        self.linear_parsers = [
             "description",
             "continue",
             "set.as_path.prepend.last_as",
@@ -66,7 +65,15 @@ class Route_maps(ResourceModule):
             "set.label_index",
             "set.level",
             "set.local_preference",
-            # lists
+            "set.metric",
+            "set.metric_type",
+            "set.nssa_only",
+            "set.origin",
+            "set.path_selection",
+            "set.tag",
+            "set.weight",
+        ]
+        self.complex_parsers = [
             "match.as_number.asn",
             "match.as_number.as_path_list",
             "match.as_path",
@@ -93,6 +100,7 @@ class Route_maps(ResourceModule):
             "set.as_path.prepend.as_number",
             "set.distance",
             "set.evpn.gateway_ip",
+            "set.community",
         ]
 
     def execute_module(self):
@@ -152,7 +160,7 @@ class Route_maps(ResourceModule):
             begin = len(self.commands)
 
             self._compare_lists(wentry, hentry)
-            self.compare(parsers=self.parsers[0:8], want=wentry, have=hentry)
+            self.compare(parsers=self.linear_parsers, want=wentry, have=hentry)
 
             if len(self.commands) != begin:
                 self.commands.insert(
@@ -163,7 +171,7 @@ class Route_maps(ResourceModule):
             self.commands.append(self._tmplt.render(hentry, "route_map", True))
 
     def _compare_lists(self, want, have):
-        for x in self.parsers[7:]:
+        for x in self.complex_parsers:
             wx = get_from_dict(want, x) or []
             hx = get_from_dict(have, x) or []
 

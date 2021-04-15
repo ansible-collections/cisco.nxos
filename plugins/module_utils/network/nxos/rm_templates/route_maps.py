@@ -66,6 +66,28 @@ def _tmplt_match_ipv6_multicast(data):
     return cmd
 
 
+def _tmplt_set_metric(data):
+    cmd = "set metric"
+    metric = data["set"]["metric"]
+
+    for x in [
+        "bandwidth",
+        "igrp_delay_metric",
+        "igrp_reliability_metric",
+        "igrp_effective_bandwidth_metric",
+        "igrp_mtu",
+    ]:
+        if x in metric:
+            cmd += " {0}".format(metric[x])
+
+    return cmd
+
+
+def _tmplt_set_community(data):
+    cmd = "set community"
+    community = data["community"]
+
+
 class Route_mapsTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Route_mapsTemplate, self).__init__(
@@ -797,7 +819,6 @@ class Route_mapsTemplate(NetworkTemplate):
                 }
             },
         },
-        # TO-DO
         {
             "name": "set.community",
             "getval": re.compile(
@@ -811,7 +832,14 @@ class Route_mapsTemplate(NetworkTemplate):
                 (\s(?P<graceful_shutdown>graceful-shutdown))?
                 (\s(?P<additive>additive))?\s*
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "set community"
+                      "{{ ' internet' if set.community.internet|d(False) else '' }}"
+                      "{{ ' ' + set.community.number|join(' ') if set.community.number|d(False) else '' }}"
+                      "{{ ' no-export' if set.community.no_export|d(False) else '' }}"
+                      "{{ ' no-advertise' if set.community.no_advertise|d(False) else '' }}"
+                      "{{ ' local-AS' if set.community.local_as|d(False) else '' }}"
+                      "{{ ' graceful-shutdown' if set.community.graceful_shutdown|d(False) else '' }}"
+                      "{{ ' additive' if set.community.additive|d(False) else '' }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1015,7 +1043,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\sip
                 \sprecedence\s(?P<precedence>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "set ip {{ set.ip.precedence }}",
+            "setval": "set ip precedence {{ set.ip.precedence }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1061,7 +1089,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\sipv6
                 \sprecedence\s(?P<precedence>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "set ipv6 {{ set.ipv6.precedence }}",
+            "setval": "set ipv6 precedence {{ set.ipv6.precedence }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1142,12 +1170,12 @@ class Route_mapsTemplate(NetworkTemplate):
                 r"""
                 \s+set\smetric
                 \s(?P<bandwidth>\d+)
-                \s(?P<igrp_delay_metric>\d+)
-                \s(?P<igrp_reliability_metric>\d+)
-                \s(?P<igrp_effective_bandwidth_metric>\d+)
-                \s(?P<igrp_mtu>\d+)
+                (\s(?P<igrp_delay_metric>\d+))?
+                (\s(?P<igrp_reliability_metric>\d+))?
+                (\s(?P<igrp_effective_bandwidth_metric>\d+))?
+                (\s(?P<igrp_mtu>\d+))?
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": _tmplt_set_metric,
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1173,7 +1201,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\smetric-type
                 \s(?P<metric_type>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set metric-type {{ set.metric_type }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1193,7 +1221,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set
                 \s(?P<nssa_only>nssa-only)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set nssa-only",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1213,7 +1241,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\sorigin
                 \s(?P<origin>\S+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set origin {{ set.origin }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1234,7 +1262,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s(?P<path_selection>\S+)
                 \sadvertise
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set path-selection {{ set.path_selection }} advertise",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1254,7 +1282,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\stag
                 \s(?P<tag>\d+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set tag {{ set.tag }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1274,7 +1302,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+set\sweight
                 \s(?P<weight>\d+)
                 \s*$""", re.VERBOSE),
-            "setval": "",
+            "setval": "set weight {{ set.weight }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
