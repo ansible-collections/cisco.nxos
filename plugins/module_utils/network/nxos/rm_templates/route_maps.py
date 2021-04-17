@@ -221,7 +221,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 r"""
                 \s+match\scommunity
                 \s(?P<community_list>.+)
-                \s(?P<exact_match>exact-match)?
+                (\s(?P<exact_match>exact-match))?
                 \s*
                 $""", re.VERBOSE),
             "setval": "match community {{ match.community.community_list|join(' ') }}{{ ' exact-match' if match.community.exact_match|d(False) else '' }}",
@@ -241,21 +241,21 @@ class Route_mapsTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "match.evpn.route_type",
+            "name": "match.evpn.route_types",
             "getval": re.compile(
                 r"""
                 \s+match\sevpn
                 \sroute-type
-                \s(?P<route_type>.+)\s*
+                \s(?P<route_types>.+)\s*
                 $""", re.VERBOSE),
-            "setval": "match evpn route-type {{ match.evpn.route_type|join(' ') }}",
+            "setval": "match evpn route-type {{ match.evpn.route_types|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
                                 "evpn": {
-                                    "route_type": "{{ route_type.split() }}",
+                                    "route_types": "{{ route_types.split() }}",
                                 }
                             }
                         }
@@ -663,20 +663,20 @@ class Route_mapsTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "match.route_type",
+            "name": "match.route_types",
             "getval": re.compile(
                 r"""
                 \s+match\sroute-type
-                \s(?P<route_type>.+)
+                \s(?P<route_types>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "match route-type {{ match.route_type|join(' ') }}",
+            "setval": "match route-type {{ match.route_types|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
                         "{{ sequence }}": {
                             "match": {
-                                "route_type": "{{ route_type.split() }}",
+                                "route_types": "{{ route_types.split() }}",
                             }
                         }
                     }

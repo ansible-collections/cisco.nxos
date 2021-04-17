@@ -1,0 +1,8 @@
+- name: Remove existing route-maps
+  cisco.nxos.nxos_config:
+    lines:
+      - "no route-map rmap1"
+      - "no route-map rmap2"
+  ignore_errors: True
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

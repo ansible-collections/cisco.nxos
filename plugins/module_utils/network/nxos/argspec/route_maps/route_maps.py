@@ -82,7 +82,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                 "evpn": {
                                     "type": "dict",
                                     "options": {
-                                        "route_type": {
+                                        "route_types": {
                                             "type": "list",
                                             "elements": "str",
                                         }
@@ -257,7 +257,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "type": "list",
                                     "elements": "int",
                                 },
-                                "route_type": {
+                                "route_types": {
                                     "type": "list",
                                     "elements": "str",
                                     "choices": [

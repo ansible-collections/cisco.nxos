@@ -93,7 +93,7 @@ options:
                 description: Match BGP EVPN Routes.
                 type: dict
                 suboptions:
-                  route_type:
+                  route_types:
                     description: Match route type for evpn route.
                     type: list
                     elements: str
@@ -198,7 +198,7 @@ options:
                 description: Match ospf area.
                 type: list
                 elements: int
-              route_type:
+              route_types:
                 description: Match route-type of route.
                 type: list
                 elements: str
