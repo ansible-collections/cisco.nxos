@@ -4175,7 +4175,7 @@ Examples
 
     # Using rendered
 
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Render platform specific configuration lines with state rendered (without connecting to the device)
       cisco.nxos.nxos_ospfv3:
         config:
           processes:

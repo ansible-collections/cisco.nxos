@@ -400,6 +400,1209 @@ options:
     default: merged
 """
 EXAMPLES = """
+# Using merged
+
+# Before state:
+# -------------
+# nxos-9k-rdo# show running-config | section "^route-map"
+# nxos-9k-rdo#
+
+- name: Merge the provided configuration with the exisiting running configuration
+  cisco.nxos.nxos_route_maps:
+    config:
+      - route_map: rmap1
+        entries:
+          - sequence: 10
+            action: permit
+            description: rmap1-10-permit
+            match:
+              ip:
+                address:
+                  access_list: acl_1
+              as_path: Allow40
+              as_number:
+                asn: 65564
+
+          - sequence: 20
+            action: deny
+            description: rmap1-20-deny
+            match:
+              community:
+                community_list:
+                  - BGPCommunity1
+                  - BGPCommunity2
+              ip:
+                address:
+                  prefix_lists:
+                    - AllowPrefix1
+                    - AllowPrefix2
+            set:
+              dampening:
+                half_life: 30
+                start_reuse_route: 1500
+                start_suppress_route: 10000
+                max_suppress_time: 120
+
+      - route_map: rmap2
+        entries:
+          - sequence: 20
+            action: permit
+            description: rmap2-20-permit
+            continue: 40
+            match:
+              ipv6:
+                address:
+                  prefix_lists: AllowIPv6Prefix
+              interfaces: "{{ nxos_int1 }}"
+            set:
+              as_path:
+                prepend:
+                  as_number:
+                    - 65563
+                    - 65568
+                    - 65569
+              comm_list: BGPCommunity
+
+          - sequence: 40
+            action: deny
+            description: rmap2-40-deny
+            match:
+              route_types:
+                - level-1
+                - level-2
+              tags: 2
+              ip:
+                multicast:
+                  rp:
+                    prefix: 192.0.2.0/24
+                    rp_type: ASM
+                  source: 203.0.113.0/24
+                  group_range:
+                    first: 239.0.0.1
+                    last: 239.255.255.255
+    state: merged
+
+# Task output
+# -------------
+#  before: []
+#
+#  commands:
+#    - "route-map rmap1 permit 10"
+#    - "match as-number 65564"
+#    - "match as-path Allow40"
+#    - "match ip address acl_1"
+#    - "description rmap1-10-permit"
+#    - "route-map rmap1 deny 20"
+#    - "match community BGPCommunity1 BGPCommunity2"
+#    - "match ip address prefix-list AllowPrefix1 AllowPrefix2"
+#    - "description rmap1-20-deny"
+#    - "set dampening 30 1500 10000 120"
+#    - "route-map rmap2 permit 20"
+#    - "match interface Ethernet1/1"
+#    - "match ipv6 address prefix-list AllowIPv6Prefix"
+#    - "set as-path prepend 65563 65568 65569"
+#    - "description rmap2-20-permit"
+#    - "continue 40"
+#    - "set comm-list BGPCommunity delete"
+#    - "route-map rmap2 deny 40"
+#    - "match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM"
+#    - "match route-type level-1 level-2"
+#    - "match tag 2"
+#    - "description rmap2-40-deny"
+#
+#  after:
+#   - route_map: rmap1
+#     entries:
+#     - action: permit
+#       description: rmap1-10-permit
+#       match:
+#         as_number:
+#           asn:
+#           - '65564'
+#         as_path:
+#           - Allow40
+#         ip:
+#           address:
+#             access_list: acl_1
+#       sequence: 10
+#
+#     - action: deny
+#       description: rmap1-20-deny
+#       match:
+#         community:
+#           community_list:
+#           - BGPCommunity1
+#           - BGPCommunity2
+#         ip:
+#           address:
+#             prefix_lists:
+#             - AllowPrefix1
+#             - AllowPrefix2
+#       sequence: 20
+#       set:
+#         dampening:
+#           half_life: 30
+#           max_suppress_time: 120
+#           start_reuse_route: 1500
+#           start_suppress_route: 10000
+#
+#   - route_map: rmap2
+#     entries:
+#     - action: permit
+#       continue: 40
+#       description: rmap2-20-permit
+#       match:
+#         interfaces:
+#         - Ethernet1/1
+#         ipv6:
+#           address:
+#             prefix_lists:
+#             - AllowIPv6Prefix
+#         sequence: 20
+#         set:
+#           as_path:
+#             prepend:
+#               as_number:
+#               - '65563'
+#               - '65568'
+#               - '65569'
+#           comm_list: BGPCommunity
+#
+#     - action: deny
+#       description: rmap2-40-deny
+#       match:
+#         ip:
+#           multicast:
+#             group_range:
+#               first: 239.0.0.1
+#               last: 239.255.255.255
+#             rp:
+#               prefix: 192.0.2.0/24
+#               rp_type: ASM
+#             source: 203.0.113.0/24
+#         route_types:
+#         - level-1
+#         - level-2
+#         tags:
+#         - 2
+#       sequence: 40
+
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^route-map"
+# route-map rmap1 permit 10
+#   match as-number 65564
+#   match as-path Allow40
+#   match ip address acl_1
+#   description rmap1-10-permit
+# route-map rmap1 deny 20
+#   match community BGPCommunity1 BGPCommunity2
+#   match ip address prefix-list AllowPrefix1 AllowPrefix2
+#   description rmap1-20-deny
+#   set dampening 30 1500 10000 120
+# route-map rmap2 permit 20
+#   match interface Ethernet1/1
+#   match ipv6 address prefix-list AllowIPv6Prefix
+#   set as-path prepend 65563 65568 65569
+#   description rmap2-20-permit
+#   continue 40
+#   set comm-list BGPCommunity delete
+# route-map rmap2 deny 40
+#   match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM
+#   match route-type level-1 level-2
+#   match tag 2
+#   description rmap2-40-deny
+
+# Using replaced
+# (for the listed route-map(s), sequences that are in running-config but not in the task are negated)
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^route-map"
+# route-map rmap1 permit 10
+#   match as-number 65564
+#   match as-path Allow40
+#   match ip address acl_1
+#   description rmap1-10-permit
+# route-map rmap1 deny 20
+#   match community BGPCommunity1 BGPCommunity2
+#   match ip address prefix-list AllowPrefix1 AllowPrefix2
+#   description rmap1-20-deny
+#   set dampening 30 1500 10000 120
+# route-map rmap2 permit 20
+#   match interface Ethernet1/1
+#   match ipv6 address prefix-list AllowIPv6Prefix
+#   set as-path prepend 65563 65568 65569
+#   description rmap2-20-permit
+#   continue 40
+#   set comm-list BGPCommunity delete
+# route-map rmap2 deny 40
+#   match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM
+#   match route-type level-1 level-2
+#   match tag 2
+#   description rmap2-40-deny
+
+- name: Replace route-maps configurations of listed route-maps with provided configurations
+  cisco.nxos.nxos_route_maps:
+    config:
+      - route_map: rmap1
+        entries:
+          - sequence: 20
+            action: deny
+            description: rmap1-20-deny
+            match:
+              community:
+                community_list:
+                  - BGPCommunity4
+                  - BGPCommunity5
+              ip:
+                address:
+                  prefix_lists:
+                    - AllowPrefix1
+            set:
+              community:
+                local_as: True
+    state: replaced
+
+# Task output
+# -------------
+#  before:
+#   - route_map: rmap1
+#     entries:
+#     - action: permit
+#       description: rmap1-10-permit
+#       match:
+#         as_number:
+#           asn:
+#           - '65564'
+#         as_path:
+#           - Allow40
+#         ip:
+#           address:
+#             access_list: acl_1
+#       sequence: 10
+#
+#     - action: deny
+#       description: rmap1-20-deny
+#       match:
+#         community:
+#           community_list:
+#           - BGPCommunity1
+#           - BGPCommunity2
+#         ip:
+#           address:
+#             prefix_lists:
+#             - AllowPrefix1
+#             - AllowPrefix2
+#       sequence: 20
+#       set:
+#         dampening:
+#           half_life: 30
+#           max_suppress_time: 120
+#           start_reuse_route: 1500
+#           start_suppress_route: 10000
+#
+#   - route_map: rmap2
+#     entries:
+#     - action: permit
+#       continue: 40
+#       description: rmap2-20-permit
+#       match:
+#         interfaces:
+#         - Ethernet1/1
+#         ipv6:
+#           address:
+#             prefix_lists:
+#             - AllowIPv6Prefix
+#         sequence: 20
+#         set:
+#           as_path:
+#             prepend:
+#               as_number:
+#               - '65563'
+#               - '65568'
+#               - '65569'
+#           comm_list: BGPCommunity
+#
+#     - action: deny
+#       description: rmap2-40-deny
+#       match:
+#         ip:
+#           multicast:
+#             group_range:
+#               first: 239.0.0.1
+#               last: 239.255.255.255
+#             rp:
+#               prefix: 192.0.2.0/24
+#               rp_type: ASM
+#             source: 203.0.113.0/24
+#         route_types:
+#         - level-1
+#         - level-2
+#         tags:
+#         - 2
+#       sequence: 40
+#
+#  commands:
+#    - no route-map rmap1 permit 10
+#    - route-map rmap1 deny 20
+#    - no match community BGPCommunity1 BGPCommunity2
+#    - match community BGPCommunity4 BGPCommunity5
+#    - no match ip address prefix-list AllowPrefix1 AllowPrefix2
+#    - match ip address prefix-list AllowPrefix1
+#    - no set dampening 30 1500 10000 120
+#    - set community local-AS
+#
+#  after:
+#    - route_map: rmap1
+#      entries:
+#        - sequence: 20
+#          action: deny
+#          description: rmap1-20-deny
+#          match:
+#            community:
+#              community_list:
+#                - BGPCommunity4
+#                - BGPCommunity5
+#            ip:
+#              address:
+#                prefix_lists:
+#                  - AllowPrefix1
+#          set:
+#            community:
+#              local_as: True
+#
+#    - route_map: rmap2
+#      entries:
+#        - action: permit
+#          continue: 40
+#          description: rmap2-20-permit
+#          match:
+#            interfaces:
+#            - Ethernet1/1
+#            ipv6:
+#              address:
+#                prefix_lists:
+#                - AllowIPv6Prefix
+#          sequence: 20
+#          set:
+#            as_path:
+#              prepend:
+#                as_number:
+#                - '65563'
+#                - '65568'
+#                - '65569'
+#            comm_list: BGPCommunity
+#
+#        - action: deny
+#          description: rmap2-40-deny
+#          match:
+#            ip:
+#              multicast:
+#                group_range:
+#                  first: 239.0.0.1
+#                  last: 239.255.255.255
+#                rp:
+#                  prefix: 192.0.2.0/24
+#                  rp_type: ASM
+#                source: 203.0.113.0/24
+#            route_types:
+#            - level-1
+#            - level-2
+#            tags:
+#            - 2
+#          sequence: 40
+#
+
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^route-map"
+# route-map rmap1 deny 20
+#   description rmap1-20-deny
+#   match community BGPCommunity4 BGPCommunity5
+#   match ip address prefix-list AllowPrefix1
+#   set community local-AS
+# route-map rmap2 permit 20
+#   match interface Ethernet1/1
+#   match ipv6 address prefix-list AllowIPv6Prefix
+#   set as-path prepend 65563 65568 65569
+#   description rmap2-20-permit
+#   continue 40
+#   set comm-list BGPCommunity delete
+# route-map rmap2 deny 40
+#   match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM
+#   match route-type level-1 level-2
+#   match tag 2
+#   description rmap2-40-deny
+
+# Using overridden
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^route-map"
+# route-map rmap1 permit 10
+#   match as-number 65564
+#   match as-path Allow40
+#   match ip address acl_1
+#   description rmap1-10-permit
+# route-map rmap1 deny 20
+#   match community BGPCommunity1 BGPCommunity2
+#   match ip address prefix-list AllowPrefix1 AllowPrefix2
+#   description rmap1-20-deny
+#   set dampening 30 1500 10000 120
+# route-map rmap2 permit 20
+#   match interface Ethernet1/1
+#   match ipv6 address prefix-list AllowIPv6Prefix
+#   set as-path prepend 65563 65568 65569
+#   description rmap2-20-permit
+#   continue 40
+#   set comm-list BGPCommunity delete
+# route-map rmap2 deny 40
+#   match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM
+#   match route-type level-1 level-2
+#   match tag 2
+#   description rmap2-40-deny
+
+- name: Overridde all route-maps configuration with provided configuration
+  cisco.nxos.nxos_route_maps:
+    config:
+      - route_map: rmap1
+        entries:
+          - sequence: 20
+            action: deny
+            description: rmap1-20-deny
+            match:
+              community:
+                community_list:
+                  - BGPCommunity4
+                  - BGPCommunity5
+              ip:
+                address:
+                  prefix_lists:
+                    - AllowPrefix1
+            set:
+              community:
+                local_as: True
+    state: overridden
+
+# Task output
+# -------------
+#  before:
+#   - route_map: rmap1
+#     entries:
+#     - action: permit
+#       description: rmap1-10-permit
+#       match:
+#         as_number:
+#           asn:
+#           - '65564'
+#         as_path:
+#           - Allow40
+#         ip:
+#           address:
+#             access_list: acl_1
+#       sequence: 10
+#
+#     - action: deny
+#       description: rmap1-20-deny
+#       match:
+#         community:
+#           community_list:
+#           - BGPCommunity1
+#           - BGPCommunity2
+#         ip:
+#           address:
+#             prefix_lists:
+#             - AllowPrefix1
+#             - AllowPrefix2
+#       sequence: 20
+#       set:
+#         dampening:
+#           half_life: 30
+#           max_suppress_time: 120
+#           start_reuse_route: 1500
+#           start_suppress_route: 10000
+#
+#   - route_map: rmap2
+#     entries:
+#     - action: permit
+#       continue: 40
+#       description: rmap2-20-permit
+#       match:
+#         interfaces:
+#         - Ethernet1/1
+#         ipv6:
+#           address:
+#             prefix_lists:
+#             - AllowIPv6Prefix
+#         sequence: 20
+#         set:
+#           as_path:
+#             prepend:
+#               as_number:
+#               - '65563'
+#               - '65568'
+#               - '65569'
+#           comm_list: BGPCommunity
+#
+#     - action: deny
+#       description: rmap2-40-deny
+#       match:
+#         ip:
+#           multicast:
+#             group_range:
+#               first: 239.0.0.1
+#               last: 239.255.255.255
+#             rp:
+#               prefix: 192.0.2.0/24
+#               rp_type: ASM
+#             source: 203.0.113.0/24
+#         route_types:
+#         - level-1
+#         - level-2
+#         tags:
+#         - 2
+#       sequence: 40
+#
+#  commands:
+#    - no route-map rmap1 permit 10
+#    - route-map rmap1 deny 20
+#    - no match community BGPCommunity1 BGPCommunity2
+#    - match community BGPCommunity4 BGPCommunity5
+#    - no match ip address prefix-list AllowPrefix1 AllowPrefix2
+#    - match ip address prefix-list AllowPrefix1
+#    - no set dampening 30 1500 10000 120
+#    - set community local-AS
+#    - no route-map rmap2 permit 20
+#    - no route-map rmap2 deny 40
+#
+#  after:
+#  - route_map: rmap1
+#    entries:
+#    - sequence: 20
+#      action: deny
+#      description: rmap1-20-deny
+#      match:
+#        community:
+#          community_list:
+#          - BGPCommunity4
+#          - BGPCommunity5
+#        ip:
+#          address:
+#            prefix_lists:
+#            - AllowPrefix1
+#      set:
+#        community:
+#          local_as: True
+#
+# After state:
+# ------------
+# nxos-9k-rdo# sh running-config | section "^route-map"
+# route-map rmap1 deny 20
+#   description rmap1-20-deny
+#   match community BGPCommunity4 BGPCommunity5
+#   match ip address prefix-list AllowPrefix1
+#   set community local-AS
+
+# Using deleted to delete a single route-map
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^route-map"
+# route-map rmap1 permit 10
+#   match as-number 65564
+#   match as-path Allow40
+#   match ip address acl_1
+#   description rmap1-10-permit
+# route-map rmap1 deny 20
+#   match community BGPCommunity1 BGPCommunity2
+#   match ip address prefix-list AllowPrefix1 AllowPrefix2
+#   description rmap1-20-deny
+#   set dampening 30 1500 10000 120
+# route-map rmap2 permit 20
+#   match interface Ethernet1/1
+#   match ipv6 address prefix-list AllowIPv6Prefix
+#   set as-path prepend 65563 65568 65569
+#   description rmap2-20-permit
+#   continue 40
+#   set comm-list BGPCommunity delete
+# route-map rmap2 deny 40
+#   match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM
+#   match route-type level-1 level-2
+#   match tag 2
+#   description rmap2-40-deny
+
+- name: Delete single route-map
+  cisco.nxos.nxos_route_maps:
+    config:
+      - route_map: rmap1
+    state: deleted
+
+# Task output
+# -------------
+#  before:
+#   - route_map: rmap1
+#     entries:
+#     - action: permit
+#       description: rmap1-10-permit
+#       match:
+#         as_number:
+#           asn:
+#           - '65564'
+#         as_path:
+#           - Allow40
+#         ip:
+#           address:
+#             access_list: acl_1
+#       sequence: 10
+#
+#     - action: deny
+#       description: rmap1-20-deny
+#       match:
+#         community:
+#           community_list:
+#           - BGPCommunity1
+#           - BGPCommunity2
+#         ip:
+#           address:
+#             prefix_lists:
+#             - AllowPrefix1
+#             - AllowPrefix2
+#       sequence: 20
+#       set:
+#         dampening:
+#           half_life: 30
+#           max_suppress_time: 120
+#           start_reuse_route: 1500
+#           start_suppress_route: 10000
+#
+#   - route_map: rmap2
+#     entries:
+#     - action: permit
+#       continue: 40
+#       description: rmap2-20-permit
+#       match:
+#         interfaces:
+#         - Ethernet1/1
+#         ipv6:
+#           address:
+#             prefix_lists:
+#             - AllowIPv6Prefix
+#         sequence: 20
+#         set:
+#           as_path:
+#             prepend:
+#               as_number:
+#               - '65563'
+#               - '65568'
+#               - '65569'
+#           comm_list: BGPCommunity
+#
+#     - action: deny
+#       description: rmap2-40-deny
+#       match:
+#         ip:
+#           multicast:
+#             group_range:
+#               first: 239.0.0.1
+#               last: 239.255.255.255
+#             rp:
+#               prefix: 192.0.2.0/24
+#               rp_type: ASM
+#             source: 203.0.113.0/24
+#         route_types:
+#         - level-1
+#         - level-2
+#         tags:
+#         - 2
+#       sequence: 40
+#
+#  commands:
+#    - no route-map rmap1 permit 10
+#    - no route-map rmap1 deny 20
+#
+#  after:
+#   - route_map: rmap2
+#     entries:
+#     - action: permit
+#       continue: 40
+#       description: rmap2-20-permit
+#       match:
+#         interfaces:
+#         - Ethernet1/1
+#         ipv6:
+#           address:
+#             prefix_lists:
+#             - AllowIPv6Prefix
+#         sequence: 20
+#         set:
+#           as_path:
+#             prepend:
+#               as_number:
+#               - '65563'
+#               - '65568'
+#               - '65569'
+#           comm_list: BGPCommunity
+#
+#     - action: deny
+#       description: rmap2-40-deny
+#       match:
+#         ip:
+#           multicast:
+#             group_range:
+#               first: 239.0.0.1
+#               last: 239.255.255.255
+#             rp:
+#               prefix: 192.0.2.0/24
+#               rp_type: ASM
+#             source: 203.0.113.0/24
+#         route_types:
+#         - level-1
+#         - level-2
+#         tags:
+#         - 2
+#       sequence: 40
+#
+# After state:
+# ------------
+# nxos-9k-rdo# sh running-config | section "^route-map"
+# route-map rmap2 permit 20
+#   match interface Ethernet1/1
+#   match ipv6 address prefix-list AllowIPv6Prefix
+#   set as-path prepend 65563 65568 65569
+#   description rmap2-20-permit
+#   continue 40
+#   set comm-list BGPCommunity delete
+# route-map rmap2 deny 40
+#   match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM
+#   match route-type level-1 level-2
+#   match tag 2
+#   description rmap2-40-deny
+
+# Using deleted to delete all route-maps from the device running-config
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^route-map"
+# route-map rmap1 permit 10
+#   match as-number 65564
+#   match as-path Allow40
+#   match ip address acl_1
+#   description rmap1-10-permit
+# route-map rmap1 deny 20
+#   match community BGPCommunity1 BGPCommunity2
+#   match ip address prefix-list AllowPrefix1 AllowPrefix2
+#   description rmap1-20-deny
+#   set dampening 30 1500 10000 120
+# route-map rmap2 permit 20
+#   match interface Ethernet1/1
+#   match ipv6 address prefix-list AllowIPv6Prefix
+#   set as-path prepend 65563 65568 65569
+#   description rmap2-20-permit
+#   continue 40
+#   set comm-list BGPCommunity delete
+# route-map rmap2 deny 40
+#   match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM
+#   match route-type level-1 level-2
+#   match tag 2
+#   description rmap2-40-deny
+
+- name: Delete all route-maps
+  cisco.nxos.nxos_route_maps:
+    state: deleted
+
+# Task output
+# -------------
+#  before:
+#   - route_map: rmap1
+#     entries:
+#     - action: permit
+#       description: rmap1-10-permit
+#       match:
+#         as_number:
+#           asn:
+#           - '65564'
+#         as_path:
+#           - Allow40
+#         ip:
+#           address:
+#             access_list: acl_1
+#       sequence: 10
+#
+#     - action: deny
+#       description: rmap1-20-deny
+#       match:
+#         community:
+#           community_list:
+#           - BGPCommunity1
+#           - BGPCommunity2
+#         ip:
+#           address:
+#             prefix_lists:
+#             - AllowPrefix1
+#             - AllowPrefix2
+#       sequence: 20
+#       set:
+#         dampening:
+#           half_life: 30
+#           max_suppress_time: 120
+#           start_reuse_route: 1500
+#           start_suppress_route: 10000
+#
+#   - route_map: rmap2
+#     entries:
+#     - action: permit
+#       continue: 40
+#       description: rmap2-20-permit
+#       match:
+#         interfaces:
+#         - Ethernet1/1
+#         ipv6:
+#           address:
+#             prefix_lists:
+#             - AllowIPv6Prefix
+#         sequence: 20
+#         set:
+#           as_path:
+#             prepend:
+#               as_number:
+#               - '65563'
+#               - '65568'
+#               - '65569'
+#           comm_list: BGPCommunity
+#
+#     - action: deny
+#       description: rmap2-40-deny
+#       match:
+#         ip:
+#           multicast:
+#             group_range:
+#               first: 239.0.0.1
+#               last: 239.255.255.255
+#             rp:
+#               prefix: 192.0.2.0/24
+#               rp_type: ASM
+#             source: 203.0.113.0/24
+#         route_types:
+#         - level-1
+#         - level-2
+#         tags:
+#         - 2
+#       sequence: 40
+#
+#  commands:
+#    - no route-map rmap1 permit 10
+#    - no route-map rmap1 deny 20
+#    - no route-map rmap2 permit 20
+#    - no route-map rmap2 deny 40
+#
+#  after: []
+#
+# After state:
+# ------------
+# nxos-9k-rdo# sh running-config | section "^route-map"
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_route_maps:
+    config:
+      - route_map: rmap1
+        entries:
+          - sequence: 10
+            action: permit
+            description: rmap1-10-permit
+            match:
+              ip:
+                address:
+                  access_list: acl_1
+              as_path: Allow40
+              as_number:
+                asn: 65564
+
+          - sequence: 20
+            action: deny
+            description: rmap1-20-deny
+            match:
+              community:
+                community_list:
+                  - BGPCommunity1
+                  - BGPCommunity2
+              ip:
+                address:
+                  prefix_lists:
+                    - AllowPrefix1
+                    - AllowPrefix2
+            set:
+              dampening:
+                half_life: 30
+                start_reuse_route: 1500
+                start_suppress_route: 10000
+                max_suppress_time: 120
+
+      - route_map: rmap2
+        entries:
+          - sequence: 20
+            action: permit
+            description: rmap2-20-permit
+            continue: 40
+            match:
+              ipv6:
+                address:
+                  prefix_lists: AllowIPv6Prefix
+              interfaces: "{{ nxos_int1 }}"
+            set:
+              as_path:
+                prepend:
+                  as_number:
+                    - 65563
+                    - 65568
+                    - 65569
+              comm_list: BGPCommunity
+
+          - sequence: 40
+            action: deny
+            description: rmap2-40-deny
+            match:
+              route_types:
+                - level-1
+                - level-2
+              tags: 2
+              ip:
+                multicast:
+                  rp:
+                    prefix: 192.0.2.0/24
+                    rp_type: ASM
+                  source: 203.0.113.0/24
+                  group_range:
+                    first: 239.0.0.1
+                    last: 239.255.255.255
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+#  rendered:
+#    - "route-map rmap1 permit 10"
+#    - "match as-number 65564"
+#    - "match as-path Allow40"
+#    - "match ip address acl_1"
+#    - "description rmap1-10-permit"
+#    - "route-map rmap1 deny 20"
+#    - "match community BGPCommunity1 BGPCommunity2"
+#    - "match ip address prefix-list AllowPrefix1 AllowPrefix2"
+#    - "description rmap1-20-deny"
+#    - "set dampening 30 1500 10000 120"
+#    - "route-map rmap2 permit 20"
+#    - "match interface Ethernet1/1"
+#    - "match ipv6 address prefix-list AllowIPv6Prefix"
+#    - "set as-path prepend 65563 65568 65569"
+#    - "description rmap2-20-permit"
+#    - "continue 40"
+#    - "set comm-list BGPCommunity delete"
+#    - "route-map rmap2 deny 40"
+#    - "match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM"
+#    - "match route-type level-1 level-2"
+#    - "match tag 2"
+#    - "description rmap2-40-deny"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# route-map rmap1 permit 10
+#   match as-number 65564
+#   match as-path Allow40
+#   match ip address acl_1
+#   description rmap1-10-permit
+# route-map rmap1 deny 20
+#   match community BGPCommunity1 BGPCommunity2
+#   match ip address prefix-list AllowPrefix1 AllowPrefix2
+#   description rmap1-20-deny
+#   set dampening 30 1500 10000 120
+# route-map rmap2 permit 20
+#   match interface Ethernet1/1
+#   match ipv6 address prefix-list AllowIPv6Prefix
+#   set as-path prepend 65563 65568 65569
+#   description rmap2-20-permit
+#   continue 40
+#   set comm-list BGPCommunity delete
+# route-map rmap2 deny 40
+#   match ip multicast source 203.0.113.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 192.0.2.0/24 rp-type ASM
+#   match route-type level-1 level-2
+#   match tag 2
+#   description rmap2-40-deny
+
+- name: Parse externally provided route-maps configuration
+  cisco.nxos.nxos_route_maps:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+#  parsed:
+#   - route_map: rmap1
+#     entries:
+#     - action: permit
+#       description: rmap1-10-permit
+#       match:
+#         as_number:
+#           asn:
+#           - '65564'
+#         as_path:
+#           - Allow40
+#         ip:
+#           address:
+#             access_list: acl_1
+#       sequence: 10
+#
+#     - action: deny
+#       description: rmap1-20-deny
+#       match:
+#         community:
+#           community_list:
+#           - BGPCommunity1
+#           - BGPCommunity2
+#         ip:
+#           address:
+#             prefix_lists:
+#             - AllowPrefix1
+#             - AllowPrefix2
+#       sequence: 20
+#       set:
+#         dampening:
+#           half_life: 30
+#           max_suppress_time: 120
+#           start_reuse_route: 1500
+#           start_suppress_route: 10000
+#
+#   - route_map: rmap2
+#     entries:
+#     - action: permit
+#       continue: 40
+#       description: rmap2-20-permit
+#       match:
+#         interfaces:
+#         - Ethernet1/1
+#         ipv6:
+#           address:
+#             prefix_lists:
+#             - AllowIPv6Prefix
+#         sequence: 20
+#         set:
+#           as_path:
+#             prepend:
+#               as_number:
+#               - '65563'
+#               - '65568'
+#               - '65569'
+#           comm_list: BGPCommunity
+#
+#     - action: deny
+#       description: rmap2-40-deny
+#       match:
+#         ip:
+#           multicast:
+#             group_range:
+#               first: 239.0.0.1
+#               last: 239.255.255.255
+#             rp:
+#               prefix: 192.0.2.0/24
+#               rp_type: ASM
+#             source: 203.0.113.0/24
+#         route_types:
+#         - level-1
+#         - level-2
+#         tags:
+#         - 2
+#       sequence: 40
+
+# Using gathered
+
+# Existing route-map config
+# ---------------------------
+# nxos-9k-rdo# show running-config | section "^route-map"
+# route-map rmap1 permit 10
+#   match as-number 65564
+#   match as-path Allow40
+#   match ip address acl_1
+#   description rmap1-10-permit
+# route-map rmap2 permit 20
+#   match interface Ethernet1/1
+#   match ipv6 address prefix-list AllowIPv6Prefix
+#   set as-path prepend 65563 65568 65569
+#   description rmap2-20-permit
+#   continue 40
+#   set comm-list BGPCommunity delete
+
+- name: Gather route-maps facts using gathered
+  cisco.nxos.nxos_route_maps:
+    state: gathered
+
+#  gathered:
+#   - route_map: rmap1
+#     entries:
+#     - action: permit
+#       description: rmap1-10-permit
+#       match:
+#         as_number:
+#           asn:
+#           - '65564'
+#         as_path:
+#           - Allow40
+#         ip:
+#           address:
+#             access_list: acl_1
+#       sequence: 10
+#
+#   - route_map: rmap2
+#     entries:
+#     - action: permit
+#       continue: 40
+#       description: rmap2-20-permit
+#       match:
+#         interfaces:
+#         - Ethernet1/1
+#         ipv6:
+#           address:
+#             prefix_lists:
+#             - AllowIPv6Prefix
+#         sequence: 20
+#         set:
+#           as_path:
+#             prepend:
+#               as_number:
+#               - '65563'
+#               - '65568'
+#               - '65569'
+#           comm_list: BGPCommunity
+#
+"""
+
+RETURN = """
+before:
+  description: The configuration prior to the model invocation.
+  returned: always
+  type: dict
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+after:
+  description: The resulting configuration model invocation.
+  returned: when changed
+  type: dict
+  sample: >
+    The configuration returned will always be in the same format
+     of the parameters above.
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: always
+  type: list
+  sample:
+    - "route-map rmap1 permit 10"
+    - "match as-number 65564"
+    - "match as-path Allow40"
+    - "match ip address acl_1"
+    - "description rmap1-10-permit"
+    - "route-map rmap1 deny 20"
+    - "match community BGPCommunity1 BGPCommunity2"
 """
 
 from ansible.module_utils.basic import AnsibleModule
