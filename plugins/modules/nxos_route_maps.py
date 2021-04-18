@@ -388,6 +388,11 @@ options:
     description:
     - The state the configuration should be left in.
     - Refer to examples for more details.
+    - With state I(replaced), for the listed route-maps,
+      sequences that are in running-config but not in the task are negated.
+    - With state I(overridden), all route-maps that are in running-config but
+      not in the task are negated.
+    - Please refer to examples for more details.
     type: str
     choices:
     - merged

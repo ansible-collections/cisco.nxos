@@ -2439,6 +2439,9 @@ Parameters
                 <td>
                         <div>The state the configuration should be left in.</div>
                         <div>Refer to examples for more details.</div>
+                        <div>With state <em>replaced</em>, for the listed route-maps, sequences that are in running-config but not in the task are negated.</div>
+                        <div>With state <em>overridden</em>, all route-maps that are in running-config but not in the task are negated.</div>
+                        <div>Please refer to examples for more details.</div>
                 </td>
             </tr>
     </table>
