@@ -83,11 +83,6 @@ def _tmplt_set_metric(data):
     return cmd
 
 
-def _tmplt_set_community(data):
-    cmd = "set community"
-    community = data["community"]
-
-
 class Route_mapsTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Route_mapsTemplate, self).__init__(
@@ -102,7 +97,8 @@ class Route_mapsTemplate(NetworkTemplate):
                 r"""
                 ^route-map\s(?P<route_map>\S+)\s(?P<action>\S+)\s(?P<sequence>\d+)
                 $""", re.VERBOSE),
-            "setval": "route-map {{ route_map }} {{ action }}{{ ' ' + sequence|string if sequence is defined else '' }}",
+            "setval": "route-map {{ route_map }} {{ action }}"
+                      "{{ ' ' + sequence|string if sequence is defined else '' }}",
             "result": {
                 "{{ route_map }}": {
                     "route_map": "{{ route_map }}",
@@ -117,17 +113,17 @@ class Route_mapsTemplate(NetworkTemplate):
             "shared": True,
         },
         {
-            "name": "continue",
+            "name": "continue_sequence",
             "getval": re.compile(
                 r"""
-                \s+continue\s(?P<continue>\d+)
+                \s+continue\s(?P<continue_sequence>\d+)
                 $""", re.VERBOSE),
-            "setval": "continue {{ continue }}",
+            "setval": "continue {{ continue_sequence }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
                         "{{ sequence }}": {
-                            "continue": "{{ continue }}",
+                            "continue_sequence": "{{ continue_sequence }}",
                         }
                     }
                 }
@@ -758,7 +754,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \slast-as\s(?P<last_as>\d+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "set as-path prepend {{ last_as|string }}",
+            "setval": "set as-path prepend last-as {{ set.as_path.prepend.last_as|string }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
@@ -1149,7 +1145,7 @@ class Route_mapsTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+set\slocal-preference
-                \s(?P<local_preference>\S+)
+                \s(?P<local_preference>\d+)
                 \s*$""", re.VERBOSE),
             "setval": "set local-preference {{ set.local_preference }}",
             "result": {

@@ -52,7 +52,7 @@ options:
             description: Route map denies or permits set operations.
             type: str
             choices: ["deny", "permit"]
-          continue:
+          continue_sequence:
             description: Continue on a different entry within the route-map.
             type: int
           description:

@@ -50,7 +50,7 @@ class Route_maps(ResourceModule):
         )
         self.linear_parsers = [
             "description",
-            "continue",
+            "continue_sequence",
             "set.as_path.prepend.last_as",
             "set.as_path.tag",
             "set.comm_list",

@@ -50,7 +50,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                             "type": "str",
                             "choices": ["deny", "permit"],
                         },
-                        "continue": {"type": "int"},
+                        "continue_sequence": {"type": "int"},
                         "description": {"type": "str"},
                         "match": {
                             "type": "dict",

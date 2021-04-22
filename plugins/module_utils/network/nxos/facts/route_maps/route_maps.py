@@ -36,6 +36,12 @@ class Route_mapsFacts(object):
         self._module = module
         self.argument_spec = Route_mapsArgs.argument_spec
 
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get("show running-config | section '^route-map'")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Route_maps network resource
 
@@ -50,7 +56,7 @@ class Route_mapsFacts(object):
         objs = []
 
         if not data:
-            data = connection.get("show running-config | section ^route-map")
+            data = self.get_config(connection)
 
         # parse native config using the Route_maps template
         route_maps_parser = Route_mapsTemplate(
