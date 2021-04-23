@@ -45,7 +45,7 @@
               - sequence: 20
                 action: permit
                 description: rmap2-20-permit
-                continue: 40
+                continue_sequence: 40
                 match:
                   ipv6:
                     address:

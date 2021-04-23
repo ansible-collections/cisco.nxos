@@ -85,7 +85,7 @@ class Route_maps(ResourceModule):
             "match.ip.address.prefix_lists",
             "match.ip.multicast",
             "match.ip.next_hop.prefix_lists",
-            "match.ip.route_source.prefix_lists"
+            "match.ip.route_source.prefix_lists",
             "match.ipv6.address.access_list",
             "match.ipv6.address.prefix_lists",
             "match.ipv6.multicast",

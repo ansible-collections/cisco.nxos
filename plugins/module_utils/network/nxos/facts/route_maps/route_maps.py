@@ -66,8 +66,7 @@ class Route_mapsFacts(object):
         objs = list(route_maps_parser.parse().values())
 
         for item in objs:
-            if "entries" in item:
-                item["entries"] = list(item["entries"].values())
+            item["entries"] = list(item["entries"].values())
 
         ansible_facts["ansible_network_resources"].pop("route_maps", None)
 

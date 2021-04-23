@@ -1,11 +1,11 @@
 ---
 - debug:
-    msg: START nxos_ospf_interfaces empty_config integration tests on connection={{ ansible_connection }}
+    msg: START nxos_route_maps empty_config integration tests on connection={{ ansible_connection }}
 
 - name: Merged with empty config should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.nxos.nxos_ospf_interfaces:
+  cisco.nxos.nxos_route_maps:
     config:
     state: merged
 
@@ -16,7 +16,7 @@
 - name: Replaced with empty config should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.nxos.nxos_ospf_interfaces:
+  cisco.nxos.nxos_route_maps:
     config:
     state: replaced
 
@@ -27,7 +27,7 @@
 - name: Overridden with empty config should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.nxos.nxos_ospf_interfaces:
+  cisco.nxos.nxos_route_maps:
     config:
     state: overridden
 
@@ -38,7 +38,7 @@
 - name: Rendered with empty config should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.nxos.nxos_ospf_interfaces:
+  cisco.nxos.nxos_route_maps:
     config:
     state: rendered
 
@@ -50,7 +50,7 @@
 - name: Parsed with empty config should give appropriate error message
   register: result
   ignore_errors: true
-  cisco.nxos.nxos_ospf_interfaces:
+  cisco.nxos.nxos_route_maps:
     running_config:
     state: parsed
 
@@ -59,4 +59,4 @@
       - result.msg == 'value of running_config parameter must not be empty for state parsed'
 
 - debug:
-    msg: END nxos_ospf_interfaces empty_config integration tests on connection={{ ansible_connection }}
+    msg: END nxos_route_maps empty_config integration tests on connection={{ ansible_connection }}

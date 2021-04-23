@@ -745,3 +745,312 @@ class TestNxosRouteMapsModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_complex_merged(self):
+        # test merged for complex attributes
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="rmap1",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    as_number=dict(
+                                        asn=["64455", "65546"],
+                                        as_path_list=["acl1", "acl2"],
+                                    ),
+                                    as_path=["65565", "65578", "65590"],
+                                    community=dict(
+                                        community_list=["comm1", "comm2"]
+                                    ),
+                                    evpn=dict(route_types=["1", "2-mac-ip"]),
+                                    extcommunity=dict(
+                                        extcommunity_list=[
+                                            "extcomm1",
+                                            "extcomm2",
+                                        ]
+                                    ),
+                                    interfaces=["Ethernet1/1", "Ethernet1/2"],
+                                    ip=dict(
+                                        address=dict(
+                                            access_list="acl1",
+                                            prefix_lists=["pl1", "pl2", "pl3"],
+                                        ),
+                                        multicast=dict(
+                                            group=dict(prefix="239.0.0.1/24"),
+                                            rp=dict(
+                                                prefix="209.165.201.0/27",
+                                                rp_type="Bidir",
+                                            ),
+                                            source="192.168.1.0/24",
+                                        ),
+                                        next_hop=dict(
+                                            prefix_lists=["pl1", "pl2"]
+                                        ),
+                                        route_source=dict(
+                                            prefix_lists=["pl3", "pl4"]
+                                        ),
+                                    ),
+                                    mac_list=["mac1", "mac2"],
+                                    metric=[100, 200],
+                                    ospf_area=[200, 300],
+                                    route_types=["external", "inter-area"],
+                                    source_protocol=["eigrp", "ospf"],
+                                    tags=[10, 200],
+                                ),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=20,
+                                match=dict(
+                                    ipv6=dict(
+                                        address=dict(
+                                            access_list="acl1",
+                                            prefix_lists=["pl1", "pl2", "pl3"],
+                                        ),
+                                        multicast=dict(
+                                            group=dict(prefix="239.0.0.1/24"),
+                                            rp=dict(
+                                                prefix="209.165.201.0/27",
+                                                rp_type="Bidir",
+                                            ),
+                                            source="192.168.1.0/24",
+                                        ),
+                                        next_hop=dict(
+                                            prefix_lists=["pl1", "pl2"]
+                                        ),
+                                        route_source=dict(
+                                            prefix_lists=["pl3", "pl4"]
+                                        ),
+                                    )
+                                ),
+                            ),
+                            dict(
+                                sequence=40,
+                                action="permit",
+                                set=dict(
+                                    as_path=dict(
+                                        prepend=dict(
+                                            as_number=["65546", "78878"]
+                                        )
+                                    ),
+                                    distance=dict(
+                                        igp_ebgp_routes=10,
+                                        internal_routes=20,
+                                        local_routes=90,
+                                    ),
+                                    evpn=dict(
+                                        gateway_ip=dict(ip="192.168.1.1")
+                                    ),
+                                ),
+                            ),
+                            dict(
+                                sequence=52,
+                                action="permit",
+                                set=dict(
+                                    evpn=dict(
+                                        gateway_ip=dict(use_nexthop=True)
+                                    ),
+                                    community=dict(
+                                        internet=True,
+                                        number=["655:10", "655:20"],
+                                        no_export=True,
+                                        no_advertise=True,
+                                        local_as=True,
+                                        graceful_shutdown=True,
+                                        additive=True,
+                                    ),
+                                ),
+                            ),
+                        ],
+                    )
+                ],
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "route-map rmap1 permit 10",
+            "match as-number as-path-list acl1 acl2",
+            "match as-number 64455, 65546",
+            "match as-path 65565 65578 65590",
+            "match community comm1 comm2",
+            "match evpn route-type 1 2-mac-ip",
+            "match extcommunity extcomm1 extcomm2",
+            "match interface Ethernet1/1 Ethernet1/2",
+            "match ip address acl1",
+            "match ip address prefix-list pl1 pl2 pl3",
+            "match ip multicast source 192.168.1.0/24 group 239.0.0.1/24 rp 209.165.201.0/27 rp-type Bidir",
+            "match ip next-hop prefix-list pl1 pl2",
+            "match ip route-source prefix-list pl3 pl4",
+            "match mac-list mac1 mac2",
+            "match metric 100 200",
+            "match ospf-area 200 300",
+            "match route-type external inter-area",
+            "match source-protocol eigrp ospf",
+            "match tag 10 200",
+            "route-map rmap1 permit 20",
+            "match ipv6 address acl1",
+            "match ipv6 address prefix-list pl1 pl2 pl3",
+            "match ipv6 multicast source 192.168.1.0/24 group 239.0.0.1/24 rp 209.165.201.0/27 rp-type Bidir",
+            "match ipv6 next-hop prefix-list pl1 pl2",
+            "match ipv6 route-source prefix-list pl3 pl4",
+            "route-map rmap1 permit 40",
+            "set as-path prepend 65546 78878",
+            "set distance 10 20 90",
+            "set evpn gateway-ip 192.168.1.1",
+            "route-map rmap1 permit 52",
+            "set community internet 655:10 655:20 no-export no-advertise local-AS graceful-shutdown additive",
+            "set evpn gateway-ip use-nexthop",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_complex_merged_2(self):
+        # test merged for complex attributes
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="rmap1",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    ip=dict(
+                                        multicast=dict(
+                                            group_range=dict(
+                                                first="239.0.0.1",
+                                                last="239.255.255.255",
+                                            ),
+                                            rp=dict(
+                                                prefix="209.165.201.0/27",
+                                                rp_type="Bidir",
+                                            ),
+                                            source="192.168.1.0/24",
+                                        )
+                                    ),
+                                    ipv6=dict(
+                                        multicast=dict(
+                                            group_range=dict(
+                                                first="fd00:80::",
+                                                last="fd00:ff:ffff:ffff::",
+                                            ),
+                                            rp=dict(
+                                                prefix="fd00:280::/25",
+                                                rp_type="Bidir",
+                                            ),
+                                            source="2001:db8:2000::/36",
+                                        )
+                                    ),
+                                ),
+                                set=dict(
+                                    metric=dict(
+                                        bandwidth=1000,
+                                        igrp_delay_metric=90,
+                                        igrp_reliability_metric=80,
+                                        igrp_effective_bandwidth_metric=100,
+                                    )
+                                ),
+                            )
+                        ],
+                    )
+                ],
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "route-map rmap1 permit 10",
+            "match ip multicast source 192.168.1.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 209.165.201.0/27 rp-type Bidir",
+            "match ipv6 multicast source 2001:db8:2000::/36 group-range fd00:80:: to fd00:ff:ffff:ffff:: rp fd00:280::/25 rp-type Bidir",
+            "set metric 1000 90 80 100",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_complex_replaced(self):
+        # test replaced for complex attributes
+        self.get_config.return_value = dedent(
+            """\
+            route-map rmap1 permit 10
+              match ip address prefix-list pl1 pl2 pl3
+              match ip multicast source 192.168.1.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 209.165.201.0/27 rp-type Bidir
+              match ipv6 multicast source 2001:db8:2000::/36 group-range fd00:80:: to fd00:ff:ffff:ffff:: rp fd00:280::/25 rp-type Bidir
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="rmap1",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    ip=dict(
+                                        address=dict(prefix_lists=["pl4"]),
+                                        multicast=dict(
+                                            group=dict(prefix="239.0.0.1/24"),
+                                            rp=dict(
+                                                prefix="209.165.201.0/27",
+                                                rp_type="Bidir",
+                                            ),
+                                            source="192.168.1.0/24",
+                                        ),
+                                    ),
+                                    ipv6=dict(
+                                        multicast=dict(
+                                            group_range=dict(
+                                                first="fd00:80::",
+                                                last="fd00:ff:ffff:ffff::",
+                                            ),
+                                            rp=dict(
+                                                prefix="fd00:280::/25",
+                                                rp_type="Bidir",
+                                            ),
+                                            source="2001:db8:2000::/36",
+                                        )
+                                    ),
+                                ),
+                            )
+                        ],
+                    )
+                ],
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "route-map rmap1 permit 10",
+            "no match ip multicast source 192.168.1.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 209.165.201.0/27 rp-type Bidir",
+            "match ip multicast source 192.168.1.0/24 group 239.0.0.1/24 rp 209.165.201.0/27 rp-type Bidir",
+            "no match ip address prefix-list pl1 pl2 pl3",
+            "match ip address prefix-list pl4",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_gathered_empty(self):
+        # test gathered for empty config
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], [])

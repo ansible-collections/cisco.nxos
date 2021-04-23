@@ -63,7 +63,7 @@ merged:
     - route_map: rmap2
       entries:
         - action: permit
-          continue: 40
+          continue_sequence: 40
           description: rmap2-20-permit
           match:
             interfaces:
@@ -134,7 +134,7 @@ replaced:
     - route_map: rmap2
       entries:
         - action: permit
-          continue: 40
+          continue_sequence: 40
           description: rmap2-20-permit
           match:
             interfaces:

@@ -44,8 +44,8 @@ def _tmplt_match_ip_multicast(data):
 
 
 def _tmplt_match_ipv6_multicast(data):
-    cmd = "match ip multicast"
-    multicast = data["match"]["ip"]["multicast"]
+    cmd = "match ipv6 multicast"
+    multicast = data["match"]["ipv6"]["multicast"]
 
     if "source" in multicast:
         cmd += " source {source}".format(**multicast)
@@ -553,7 +553,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \sprefix-list\s(?P<prefix_lists>.+)
                 \s*
                 $""", re.VERBOSE),
-            "setval": "match ipv6 next-hop {{ 'match.ipv6.next_hop.prefix_lists|join(' ') }}",
+            "setval": "match ipv6 next-hop prefix-list {{ match.ipv6.next_hop.prefix_lists|join(' ') }}",
             "result": {
                 "{{ route_map }}": {
                     "entries": {
