@@ -23,4 +23,5 @@ class FactsArgs(object):
             default=["!config"], type="list", elements="str"
         ),
         "gather_network_resources": dict(type="list", elements="str"),
+        "available_network_resources": {"type": "bool", "default": False},
     }
