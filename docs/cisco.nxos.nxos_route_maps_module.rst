@@ -213,7 +213,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Match BGP AS path list.</div>
+                        <div>Match BGP AS path access-list.</div>
                 </td>
             </tr>
             <tr>
@@ -2510,7 +2510,7 @@ Examples
               - sequence: 20
                 action: permit
                 description: rmap2-20-permit
-                continue: 40
+                continue_sequence: 40
                 match:
                   ipv6:
                     address:
@@ -2611,7 +2611,7 @@ Examples
     #   - route_map: rmap2
     #     entries:
     #     - action: permit
-    #       continue: 40
+    #       continue_sequence: 40
     #       description: rmap2-20-permit
     #       match:
     #         interfaces:
@@ -2767,7 +2767,7 @@ Examples
     #   - route_map: rmap2
     #     entries:
     #     - action: permit
-    #       continue: 40
+    #       continue_sequence: 40
     #       description: rmap2-20-permit
     #       match:
     #         interfaces:
@@ -2837,7 +2837,7 @@ Examples
     #    - route_map: rmap2
     #      entries:
     #        - action: permit
-    #          continue: 40
+    #          continue_sequence: 40
     #          description: rmap2-20-permit
     #          match:
     #            interfaces:
@@ -2988,7 +2988,7 @@ Examples
     #   - route_map: rmap2
     #     entries:
     #     - action: permit
-    #       continue: 40
+    #       continue_sequence: 40
     #       description: rmap2-20-permit
     #       match:
     #         interfaces:
@@ -3141,7 +3141,7 @@ Examples
     #   - route_map: rmap2
     #     entries:
     #     - action: permit
-    #       continue: 40
+    #       continue_sequence: 40
     #       description: rmap2-20-permit
     #       match:
     #         interfaces:
@@ -3187,7 +3187,7 @@ Examples
     #   - route_map: rmap2
     #     entries:
     #     - action: permit
-    #       continue: 40
+    #       continue_sequence: 40
     #       description: rmap2-20-permit
     #       match:
     #         interfaces:
@@ -3314,7 +3314,7 @@ Examples
     #   - route_map: rmap2
     #     entries:
     #     - action: permit
-    #       continue: 40
+    #       continue_sequence: 40
     #       description: rmap2-20-permit
     #       match:
     #         interfaces:
@@ -3405,7 +3405,7 @@ Examples
               - sequence: 20
                 action: permit
                 description: rmap2-20-permit
-                continue: 40
+                continue_sequence: 40
                 match:
                   ipv6:
                     address:
@@ -3538,7 +3538,7 @@ Examples
     #   - route_map: rmap2
     #     entries:
     #     - action: permit
-    #       continue: 40
+    #       continue_sequence: 40
     #       description: rmap2-20-permit
     #       match:
     #         interfaces:
@@ -3617,7 +3617,7 @@ Examples
     #   - route_map: rmap2
     #     entries:
     #     - action: permit
-    #       continue: 40
+    #       continue_sequence: 40
     #       description: rmap2-20-permit
     #       match:
     #         interfaces:

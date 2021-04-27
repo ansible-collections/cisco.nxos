@@ -97,7 +97,8 @@ class Route_mapsTemplate(NetworkTemplate):
                 r"""
                 ^route-map\s(?P<route_map>\S+)\s(?P<action>\S+)\s(?P<sequence>\d+)
                 $""", re.VERBOSE),
-            "setval": "route-map {{ route_map }} {{ action }}"
+            "setval": "route-map {{ route_map }}"
+                      "{{ ' ' + action if action is defined else '' }}"
                       "{{ ' ' + sequence|string if sequence is defined else '' }}",
             "result": {
                 "{{ route_map }}": {
@@ -365,10 +366,10 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+match\sip\smulticast
                 (\ssource\s(?P<source>\S+))?
                 (\sgroup\s(?P<prefix>\S+))?
-                (\sgroup-range)?
+                (\sgroup-range
                 (\s(?P<first>\S+))?
                 (\sto)?
-                (\s(?P<last>\S+))?
+                (\s(?P<last>\S+)))?
                 (\srp\s(?P<rp>\S+))?
                 (\srp-type\s(?P<rp_type>\S+))?
                 \s*
