@@ -510,10 +510,10 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s+match\sipv6\smulticast
                 (\ssource\s(?P<source>\S+))?
                 (\sgroup\s(?P<prefix>\S+))?
-                (\sgroup-range)?
+                (\sgroup-range
                 (\s(?P<first>\S+))?
                 (\sto)?
-                (\s(?P<last>\S+))?
+                (\s(?P<last>\S+)))?
                 (\srp\s(?P<rp>\S+))?
                 (\srp-type\s(?P<rp_type>\S+))?
                 \s*
