@@ -524,3 +524,18 @@ releases:
     - 275-add_ignore_txt.yml
     - update_requirement.yaml
     release_date: '2021-04-09'
+  2.2.0:
+    changes:
+      minor_changes:
+      - Add nxos_route_maps resource module.
+      - Add support for ansible_network_resources key allows to fetch the available
+        resources for a platform(https://github.com/ansible-collections/cisco.nxos/issues/268).
+    fragments:
+    - 268_available_network_resources.yaml
+    - add_nxos_route_maps.yaml
+    - cahing_tests.yaml
+    modules:
+    - description: Route Maps resource module.
+      name: nxos_route_maps
+      namespace: ''
+    release_date: '2021-04-28'
