@@ -49,7 +49,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>When &#x27;Tru&#x27; a list of network resources for which resource modules are available will be provided.</div>
+                        <div>When &#x27;True&#x27; a list of network resources for which resource modules are available will be provided.</div>
                 </td>
             </tr>
             <tr>
