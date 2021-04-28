@@ -1,0 +1,67 @@
+---
+- debug:
+    msg: Start nxos_route_maps deleted integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete single route-map
+      cisco.nxos.nxos_route_maps: &id005
+        config:
+          - route_map: rmap1
+        state: deleted
+      register: result
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+        - "{{ result['before'][0] == merged['after'][0] }}"
+        - "{{ result['before'][1] == merged['after'][1] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - '"no route-map rmap1 permit 10" in result.commands'
+          - '"no route-map rmap1 deny 20" in result.commands'
+          - result.commands|length == 2
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+        - result["after"][0] == merged["after"][1]
+        - result["after"]|length == 1
+
+    - include_tasks: _remove_config.yaml
+
+    - include_tasks: _populate_config.yaml
+
+    - name: Delete all route-maps
+      cisco.nxos.nxos_route_maps: &id006
+        state: deleted
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+        - result["after"] == []
+
+    - name: Delete all route-maps (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_route_maps: *id006
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml

@@ -1,0 +1,109 @@
+---
+- debug:
+    msg: "Start nxos_route_maps merged integration tests connection={{ ansible_connection }}"
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge the provided configuration with the exisiting running configuration
+      cisco.nxos.nxos_route_maps: &id001
+        config:
+          - route_map: rmap1
+            entries:
+              - sequence: 10
+                action: permit
+                description: rmap1-10-permit
+                match:
+                  ip:
+                    address:
+                      access_list: acl_1
+                  as_path: Allow40
+                  as_number:
+                    asn: 65564
+
+              - sequence: 20
+                action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity1
+                      - BGPCommunity2
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                        - AllowPrefix2
+                set:
+                  dampening:
+                    half_life: 30
+                    start_reuse_route: 1500
+                    start_suppress_route: 10000
+                    max_suppress_time: 120
+
+          - route_map: rmap2
+            entries:
+              - sequence: 20
+                action: permit
+                description: rmap2-20-permit
+                continue_sequence: 40
+                match:
+                  ipv6:
+                    address:
+                      prefix_lists: AllowIPv6Prefix
+                  interfaces: "{{ nxos_int1 }}"
+                set:
+                  as_path:
+                    prepend:
+                      as_number:
+                        - 65563
+                        - 65568
+                        - 65569
+                  comm_list: BGPCommunity
+
+              - sequence: 40
+                action: deny
+                description: rmap2-40-deny
+                match:
+                  route_types:
+                    - level-1
+                    - level-2
+                  tags: 2
+                  ip:
+                    multicast:
+                      rp:
+                        prefix: 192.0.2.0/24
+                        rp_type: ASM
+                      source: 203.0.113.0/24
+                      group_range:
+                        first: 239.0.0.1
+                        last: 239.255.255.255
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that: "{{ result['before'] == [] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+        - "{{ merged['after'][0] == result['after'][0] }}"
+        - "{{ merged['after'][1] == result['after'][1] }}"
+
+    - name: Merge the provided configuration with the existing running configuration
+        (IDEMPOTENT)
+      cisco.nxos.nxos_route_maps: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+  always:
+    - include_tasks: _remove_config.yaml

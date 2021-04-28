@@ -1,0 +1,64 @@
+---
+- debug:
+    msg: "Start nxos_route_maps replaced integration tests connection={{ ansible_connection }}"
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace route-maps configurations of listed route-maps with provided configurations
+      cisco.nxos.nxos_route_maps: &id002
+        config:
+          - route_map: rmap1
+            entries:
+              - sequence: 20
+                action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity4
+                      - BGPCommunity5
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                set:
+                  community:
+                    local_as: True
+        state: replaced
+      register: result
+
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that:
+          - "{{ result['before'][0] == merged['after'][0] }}"
+          - "{{ result['before'][1] == merged['after'][1] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+        - "{{ replaced['after'][0] == result['after'][0] }}"
+        - "{{ replaced['after'][1] == result['after'][1] }}"
+
+    - name: Replace route-maps configurations of listed route-maps with provided configurations
+        (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_route_maps: *id002
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml

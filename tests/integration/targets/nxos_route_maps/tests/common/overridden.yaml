@@ -1,0 +1,60 @@
+---
+- debug:
+    msg: Start nxos_route_maps overridden integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Overridde all route-maps configuration with provided configuration
+      cisco.nxos.nxos_route_maps: &id003
+        config:
+          - route_map: rmap1
+            entries:
+              - sequence: 20
+                action: deny
+                description: rmap1-20-deny
+                match:
+                  community:
+                    community_list:
+                      - BGPCommunity4
+                      - BGPCommunity5
+                  ip:
+                    address:
+                      prefix_lists:
+                        - AllowPrefix1
+                set:
+                  community:
+                    local_as: True
+        state: overridden
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that:
+          - "{{ result['before'][0] == merged['after'][0] }}"
+          - "{{ result['before'][1] == merged['after'][1] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+        - "{{ overridden['after'][0] == result['after'][0] }}"
+
+    - name: Overridde all route-maps configuration with provided configuration (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_route_maps: *id003
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+  always:
+    - include_tasks: _remove_config.yaml
