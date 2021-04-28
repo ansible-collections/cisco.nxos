@@ -5,6 +5,20 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.2.0
+======
+
+Minor Changes
+-------------
+
+- Add nxos_route_maps resource module.
+- Add support for ansible_network_resources key allows to fetch the available resources for a platform (https://github.com/ansible-collections/cisco.nxos/issues/268).
+
+New Modules
+-----------
+
+- nxos_route_maps - Route Maps resource module.
+
 v2.1.1
 ======
 
