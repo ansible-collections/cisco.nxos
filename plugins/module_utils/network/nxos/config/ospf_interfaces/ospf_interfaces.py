@@ -138,7 +138,7 @@ class Ospf_interfaces(ResourceModule):
             # command is executed even when there is no existing config
             if (
                 witem.get("passive_interface") is False
-                and not "passive_interface" in hitem
+                and "passive_interface" not in hitem
             ):
                 hitem["passive_interface"] = True
 

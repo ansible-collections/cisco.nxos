@@ -184,6 +184,7 @@ options:
             description:
             - Set passive-interface attribute on this interface to default.
             - This option is mutually exclusive with I(passive_interface).
+            type: bool
           priority:
             description:
             - Router priority.
