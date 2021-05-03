@@ -178,7 +178,12 @@ options:
           passive_interface:
             description:
             - Suppress routing updates on the interface.
+            - This option is mutually exclusive with I(default_passive_interface).
             type: bool
+          default_passive_interface:
+            description:
+            - Set passive-interface attribute on this interface to default.
+            - This option is mutually exclusive with I(passive_interface).
           priority:
             description:
             - Router priority.

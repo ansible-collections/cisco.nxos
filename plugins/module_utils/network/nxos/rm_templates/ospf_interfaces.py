@@ -392,8 +392,9 @@ class Ospf_interfacesTemplate(NetworkTemplate):
             "name": "passive_interface",
             "getval": re.compile(
                 r"""
-                \s+(?P<afi>ip)?
-                \s(ospf|ospfv3)
+                (\s+(?P<negated>no))?
+                (\s+(?P<afi>ip))?
+                \s*(ospf|ospfv3)
                 \s(?P<passive_interface>passive-interface)$""",
                 re.VERBOSE,
             ),
@@ -405,7 +406,7 @@ class Ospf_interfacesTemplate(NetworkTemplate):
                     "address_family": {
                         "{{ afi|d('ipv6') }}": {
                             "afi": "{{ 'ipv4' if afi is defined else 'ipv6' }}",
-                            "passive_interface": "{{ not not passive_interface }}",
+                            "passive_interface": "{{ False if negated is defined else (not not passive_interface) }}",
                         },
                     }
                 }

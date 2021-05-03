@@ -41,6 +41,9 @@ class Ospf_interfacesArgs(object):  # pylint: disable=R0903
                 "address_family": {
                     "type": "list",
                     "elements": "dict",
+                    "mutually_exclusive": [
+                        ["passive_interface", "default_passive_interface"]
+                    ],
                     "options": {
                         "afi": {
                             "type": "str",
@@ -115,6 +118,7 @@ class Ospf_interfacesArgs(object):  # pylint: disable=R0903
                             "type": "str",
                             "choices": ["broadcast", "point-to-point"],
                         },
+                        "default_passive_interface": {"type": "bool"},
                         "passive_interface": {"type": "bool"},
                         "priority": {"type": "int"},
                         "retransmit_interval": {"type": "int"},
