@@ -223,7 +223,7 @@ options:
           working directory and backup configuration will be copied in C(filename)
           within I(backup) directory.
         type: path
-      non_config_lines:
+      remove_lines:
         description:
         - A list of regexes that match lines to be removed from running-config
           when taking backup. If this key is not set, the list of default regexes is used.
@@ -414,7 +414,7 @@ def main():
     backup_spec = dict(
         filename=dict(),
         dir_path=dict(type="path"),
-        non_config_lines=dict(
+        remove_lines=dict(
             type="list", default=NON_CONFIG_LINES, elements="str"
         ),
     )
@@ -486,12 +486,10 @@ def main():
         if module.params["backup"]:
             result["__backup__"] = contents
             if module.params["backup_options"]:
-                non_config_lines = module.params["backup_options"][
-                    "non_config_lines"
-                ]
+                remove_lines = module.params["backup_options"]["remove_lines"]
             else:
-                non_config_lines = NON_CONFIG_LINES
-            result["__non_config_lines__"] = non_config_lines
+                remove_lines = NON_CONFIG_LINES
+            result["__remove_lines__"] = remove_lines
 
     if any((module.params["src"], module.params["lines"], replace_src)):
         match = module.params["match"]
