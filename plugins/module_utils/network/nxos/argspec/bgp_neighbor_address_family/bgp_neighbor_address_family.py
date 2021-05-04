@@ -170,6 +170,12 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                 "route_reflector_client": {"type": "bool"},
                                 "send_community": {
                                     "type": "dict",
+                                    "mutually_exclusive": [
+                                        ["both", "set"],
+                                        ["extended", "both"],
+                                        ["standard", "both"],
+                                        ["standard", "set"],
+                                    ],
                                     "options": {
                                         "set": {"type": "bool"},
                                         "extended": {"type": "bool"},

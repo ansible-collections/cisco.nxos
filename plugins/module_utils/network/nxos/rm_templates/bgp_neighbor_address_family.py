@@ -700,19 +700,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "send_community",
+            "name": "send_community.standard",
             "getval": re.compile(
                 r"""
                 (?P<send_community>send-community)
-                (\s(?P<extended>extended))?
-                (\s(?P<both>both))?
-                (\s(?P<standard>standard))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "send-community{{ ' extended' if send_community.extended|d(False) else '' }}"
-                      "{{  ' both' if send_community.both|d(False) else '' }}"
-                      "{{ ' standard' if send_community.standard|d(False) else '' }}",
+            "setval": "send-community",
             "result": {
                 "vrfs": {
                     "{{ 'vrf_' + vrf|d() }}": {
@@ -722,10 +717,36 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "send_community": {
-                                            "set": "{{ True if send_community is defined }}",
+                                            "standard": "{{ True if send_community is defined }}",
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "send_community.extended",
+            "getval": re.compile(
+                r"""
+                send-community
+                \s(?P<extended>extended)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "send-community extended",
+            "result": {
+                "vrfs": {
+                    "{{ 'vrf_' + vrf|d() }}": {
+                        "vrf": "{{ vrf }}",
+                        "neighbors": {
+                            "{{ neighbor }}": {
+                                "address_family": {
+                                    '{{ afi + "_" + safi|d() }}': {
+                                        "send_community": {
                                             "extended": "{{ True if extended is defined }}",
-                                            "standard": "{{ True if standard is defined }}",
-                                            "both": "{{ True if both is defined }}",
                                         }
                                     }
                                 }

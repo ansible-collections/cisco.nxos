@@ -1975,7 +1975,6 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "neighbor 10.0.0.2",
             "address-family ipv4 multicast",
             "no route-reflector-client",
-            "send-community extended",
             "vrf site-1",
             "neighbor 192.168.1.1",
             "address-family ipv4 multicast",
@@ -2670,3 +2669,70 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+    def test_nxos_bgp_af_send_community(self):
+        # test merged for send_community
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65536
+              neighbor 10.0.0.2
+                address-family l2vpn evpn
+              neighbor 10.0.0.3
+                address-family l2vpn evpn
+                  send-community
+                  send-community extended
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    neighbors=[
+                        dict(
+                            neighbor_address="10.0.0.2",
+                            address_family=[
+                                dict(
+                                    afi="l2vpn",
+                                    safi="evpn",
+                                    send_community=dict(both=True),
+                                )
+                            ],
+                        ),
+                        dict(
+                            neighbor_address="10.0.0.3",
+                            address_family=[
+                                dict(
+                                    afi="l2vpn",
+                                    safi="evpn",
+                                    send_community=dict(both=True),
+                                )
+                            ],
+                        ),
+                        dict(
+                            neighbor_address="10.0.0.4",
+                            address_family=[
+                                dict(
+                                    afi="l2vpn",
+                                    safi="evpn",
+                                    send_community=dict(set=True),
+                                )
+                            ],
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "neighbor 10.0.0.2",
+            "address-family l2vpn evpn",
+            "send-community",
+            "send-community extended",
+            "neighbor 10.0.0.4",
+            "address-family l2vpn evpn",
+            "send-community",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))

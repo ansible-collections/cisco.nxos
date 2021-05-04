@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fix how `send_community` attribute is handled in `nxos_bgp_neighbor_address_family` (https://github.com/ansible-collections/cisco.nxos/issues/281).

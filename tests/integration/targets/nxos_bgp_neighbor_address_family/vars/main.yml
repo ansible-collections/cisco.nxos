@@ -59,10 +59,10 @@ merged:
               - afi: ipv4
                 safi: multicast
                 send_community:
-                  set: True
+                  standard: True
               - afi: ipv6
                 safi: unicast
-    
+
 replaced:
   commands:
     - router bgp 65536
@@ -106,7 +106,7 @@ replaced:
               - afi: ipv4
                 safi: multicast
                 send_community:
-                  set: True
+                  standard: True
               - afi: ipv6
                 safi: unicast
 
@@ -181,7 +181,7 @@ deleted:
               - afi: ipv4
                 safi: multicast
                 send_community:
-                  set: True
+                  standard: True
 
 deleted_all:
   commands:
