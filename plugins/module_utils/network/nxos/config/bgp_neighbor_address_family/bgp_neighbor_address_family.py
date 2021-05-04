@@ -16,7 +16,6 @@ is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
 created.
 """
-
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
@@ -69,7 +68,8 @@ class Bgp_neighbor_address_family(ResourceModule):
             "route_map.inbound",
             "route_map.outbound",
             "route_reflector_client",
-            "send_community",
+            "send_community.extended",
+            "send_community.standard",
             "soft_reconfiguration_inbound",
             "soo",
             "suppress_inactive",
@@ -148,6 +148,16 @@ class Bgp_neighbor_address_family(ResourceModule):
             for k, want_af in iteritems(want_afs):
                 begin_af = len(self.commands)
                 have_af = have_afs.pop(k, {})
+
+                # swap `both` and `set` for idempotence
+                if "send_community" in want_af:
+                    if want_af["send_community"].get("both"):
+                        want_af["send_community"] = {
+                            "extended": True,
+                            "standard": True,
+                        }
+                    elif want_af["send_community"].get("set"):
+                        want_af["send_community"].update({"standard": True})
 
                 self.compare(parsers=self.parsers, want=want_af, have=have_af)
 
