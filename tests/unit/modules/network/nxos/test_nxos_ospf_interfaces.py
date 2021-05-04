@@ -1570,3 +1570,64 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ospf_interfaces_passive_intf(self):
+        # test edge cases for passive_interface
+        self.get_config.return_value = dedent(
+            """\
+            interface Ethernet1/1
+              no switchport
+            interface Ethernet1/2
+              no switchport
+              ip ospf passive-interface
+            interface Ethernet1/3
+              no switchport
+              no ospfv3 passive-interface
+            interface Ethernet1/4
+              no switchport
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Ethernet1/1",
+                        address_family=[
+                            dict(afi="ipv4", passive_interface=False),
+                            dict(afi="ipv6", passive_interface=False),
+                        ],
+                    ),
+                    dict(
+                        name="Ethernet1/2",
+                        address_family=[
+                            dict(afi="ipv4", default_passive_interface=True)
+                        ],
+                    ),
+                    dict(
+                        name="Ethernet1/3",
+                        address_family=[
+                            dict(afi="ipv6", default_passive_interface=True)
+                        ],
+                    ),
+                    dict(
+                        name="Ethernet1/4",
+                        address_family=[
+                            dict(afi="ipv4", default_passive_interface=True)
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "interface Ethernet1/1",
+            "no ip ospf passive-interface",
+            "no ospfv3 passive-interface",
+            "interface Ethernet1/2",
+            "default ip ospf passive-interface",
+            "interface Ethernet1/3",
+            "default ospfv3 passive-interface",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))

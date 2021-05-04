@@ -134,6 +134,19 @@ class Ospf_interfaces(ResourceModule):
             witem.get("authentication", {}).pop("key_chain", None)
             hitem.get("authentication", {}).pop("key_chain", None)
 
+            # this ensures that the "no" form of "ip ospf passive-interface"
+            # command is executed even when there is no existing config
+            if (
+                witem.get("passive_interface") is False
+                and "passive_interface" not in hitem
+            ):
+                hitem["passive_interface"] = True
+
+            if "passive_interface" in hitem and witem.get(
+                "default_passive_interface"
+            ):
+                self.commands.append(self._generate_passive_intf(witem))
+
             self.compare(parsers=self.parsers, want=witem, have=hitem)
 
             # compare top-level `multi_areas` config
@@ -204,3 +217,11 @@ class Ospf_interfaces(ResourceModule):
                 subentry["afi"]: subentry
                 for subentry in item.get("address_family", [])
             }
+
+    def _generate_passive_intf(self, data):
+        cmd = "default "
+        if data["afi"] == "ipv4":
+            cmd += "ip ospf passive-interface"
+        else:
+            cmd += "ospfv3 passive-interface"
+        return cmd

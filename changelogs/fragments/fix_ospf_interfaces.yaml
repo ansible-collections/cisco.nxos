@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - Add `default_passive_interface` option in `nxos_ospf_interfaces`.
+bugfixes:
+  - Make `passive_interface` work properly when set to False.
