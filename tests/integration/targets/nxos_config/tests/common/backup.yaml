@@ -57,13 +57,16 @@
     - '{{ role_path }}/backup_test_dir/'
     - '{{ role_path }}/backup/backup.cfg'
 
+- set_fact:
+    backup_custom_dir: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
+
 - name: take configuration backup in custom filename and directory path
   register: result
   cisco.nxos.nxos_config:
     backup: true
     backup_options:
       filename: backup.cfg
-      dir_path: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}'
+      dir_path: "{{ backup_custom_dir }}"
 
 - assert:
     that:
@@ -71,13 +74,26 @@
 
 - name: check if the backup file-1 exist
   find:
-    paths: '{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg'
+    paths: "{{ backup_custom_dir }}"
+    pattern: "backup.cfg"
   register: backup_file
   connection: local
 
 - assert:
     that:
       - backup_file.files is defined
+
+- set_fact:
+    non_cfg_1: "{{ lookup('file', '{{ backup_custom_dir }}/backup.cfg') | regex_search('!Command:.+') }}"
+    non_cfg_2: "{{ lookup('file', '{{ backup_custom_dir }}/backup.cfg') | regex_search('!Time:.+') }}"
+    non_cfg_3: "{{ lookup('file', '{{ backup_custom_dir }}/backup.cfg') | regex_search('!Running configuration last done at:.+') }}"
+
+- name: Assert that backup file has no non-config data
+  assert:
+    that:
+      - non_cfg_1 == ''
+      - non_cfg_2 == ''
+      - non_cfg_3 == ''
 
 - name: take configuration backup in custom filename
   register: result
@@ -92,7 +108,8 @@
 
 - name: check if the backup file-2 exist
   find:
-    paths: '{{ role_path }}/backup/backup.cfg'
+    paths: '{{ role_path }}/backup'
+    pattern: 'backup.cfg'
   register: backup_file
   connection: local
 
