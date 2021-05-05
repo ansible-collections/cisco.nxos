@@ -55,6 +55,26 @@ Parameters
                         <div>When `ansible_network_single_user_mode` is enabled, if a command sent to the device is present in this list, the existing cache is invalidated.</div>
                 </td>
             </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>non_config_lines</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">["!Command:.+", "!Time:.+", "!Running configuration last done at:.+"]</div>
+                </td>
+                    <td>
+                                <div>var: ansible_nxos_non_config_lines</div>
+                    </td>
+                <td>
+                        <div>A list of regexes that match lines to be removed from running-config when taking backup. If this key is not set, the list of default regexes is used.</div>
+                </td>
+            </tr>
     </table>
     <br/>
 

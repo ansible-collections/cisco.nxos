@@ -40,6 +40,18 @@ options:
     default: []
     vars:
     - name: ansible_nxos_config_commands
+  non_config_lines:
+    description:
+    - A list of regexes that match lines to be removed from running-config
+      when taking backup. If this key is not set, the list of default regexes is used.
+    type: list
+    elements: str
+    default:
+    - "!Command:.+"
+    - "!Time:.+"
+    - "!Running configuration last done at:.+"
+    vars:
+    - name: ansible_nxos_non_config_lines
 """
 
 import json
