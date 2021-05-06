@@ -202,7 +202,7 @@ Please read and familiarize yourself with this document.
 
 ## Release notes
 
-Release notes are available [here](https://github.com/ansible-collections/cisco.nxos/blob/main/changelogs/CHANGELOG.rst).
+Release notes are available [here](https://github.com/ansible-collections/cisco.nxos/blob/main/CHANGELOG.rst).
 
 ## Roadmap
 
