@@ -82,14 +82,13 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
                 multisite_ingress_replication="enable",
             )
         )
-        self.execute_module(
-            changed=True,
-            commands=[
-                "interface nve1",
-                "member vni 5000",
-                "multisite ingress-replication",
-            ],
-        )
+        commands = [
+            "interface nve1",
+            "member vni 5000",
+            "multisite ingress-replication",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
 
     def test_nxos_vxlan_vtep_vni_multi_ingress_repl_opt(self):
         set_module_args(
@@ -99,14 +98,13 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
                 multisite_ingress_replication="optimized",
             )
         )
-        self.execute_module(
-            changed=True,
-            commands=[
-                "interface nve1",
-                "member vni 5000",
-                "multisite ingress-replication optimized",
-            ],
-        )
+        commands = [
+            "interface nve1",
+            "member vni 5000",
+            "multisite ingress-replication optimized",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
 
     def test_nxos_vxlan_vtep_vni_multi_ingress_repl_opt_exists(self):
         set_module_args(

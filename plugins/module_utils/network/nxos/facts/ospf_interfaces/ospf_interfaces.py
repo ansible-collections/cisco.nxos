@@ -66,11 +66,17 @@ class Ospf_interfacesFacts(object):
         if objs:
             for item in objs:
                 item["address_family"] = list(item["address_family"].values())
-                for af in item["address_family"]:
-                    if af.get("processes"):
-                        af["processes"] = list(af["processes"].values())
-                    if af.get("multi_areas"):
-                        af["multi_areas"].sort()
+                if "address_family" in item:
+                    for af in item["address_family"]:
+                        if af.get("processes"):
+                            af["processes"] = list(af["processes"].values())
+                        if af.get("multi_areas"):
+                            af["multi_areas"].sort()
+                    item["address_family"] = sorted(
+                        item["address_family"], key=lambda i: i["afi"]
+                    )
+
+            objs = sorted(objs, key=lambda i: i["name"])
 
         ansible_facts["ansible_network_resources"].pop("ospf_interfaces", None)
 

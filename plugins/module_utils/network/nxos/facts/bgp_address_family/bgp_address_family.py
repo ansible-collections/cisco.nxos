@@ -92,6 +92,14 @@ class Bgp_address_familyFacts(object):
                             x["redistribute"],
                             key=lambda k: (k.get("id", -1), k["protocol"]),
                         )
+                objs["address_family"] = sorted(
+                    objs["address_family"],
+                    key=lambda k: (
+                        k.get("afi", ""),
+                        k.get("safi", ""),
+                        k.get("vrf", ""),
+                    ),
+                )
 
         ansible_facts["ansible_network_resources"].pop(
             "bgp_address_family", None
