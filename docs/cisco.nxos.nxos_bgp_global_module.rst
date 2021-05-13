@@ -4585,7 +4585,7 @@ Examples
     # Nexus9000v# show running-config | section "^router bgp"
     # Nexus9000v#
 
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       cisco.nxos.nxos_bgp_global:
         config:
           as_number: 65563

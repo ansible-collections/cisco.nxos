@@ -5,7 +5,7 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       cisco.nxos.nxos_ospfv2: &id001
         config:
           processes:
@@ -78,7 +78,8 @@
           - "{{ merged['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
             \ == 0 }}"
 
-    - name: Merge the provided configuration with the existing running configuration
+    - name:
+        Merge the provided configuration with the existing running configuration
         (IDEMPOTENT)
       cisco.nxos.nxos_ospfv2: *id001
       register: result

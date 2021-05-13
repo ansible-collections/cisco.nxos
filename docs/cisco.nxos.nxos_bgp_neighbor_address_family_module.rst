@@ -2554,7 +2554,7 @@ Examples
     # Nexus9000v# show running-config | section "^router bgp"
     # Nexus9000v#
 
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       cisco.nxos.nxos_bgp_neighbor_address_family: &id001
         config:
           as_number: 65536
@@ -2892,7 +2892,7 @@ Examples
     #       address-family ipv6 unicast
     #
 
-    - name: Overridde all BGP AF configuration with provided configuration
+    - name: Override all BGP AF configuration with provided configuration
       cisco.nxos.nxos_bgp_neighbor_address_family:
         config:
           as_number: 65536

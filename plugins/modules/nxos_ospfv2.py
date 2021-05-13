@@ -456,7 +456,7 @@ options:
                 required: true
               not_advertise:
                 description:
-                - Supress advertising the specified summary.
+                - Suppress advertising the specified summary.
                 type: bool
               tag:
                 description:
@@ -911,7 +911,7 @@ options:
                     required: true
                   not_advertise:
                     description:
-                    - Supress advertising the specified summary.
+                    - Suppress advertising the specified summary.
                     type: bool
                   tag:
                     description:
@@ -1012,7 +1012,7 @@ EXAMPLES = """
 # nxos-9k-rdo# sh running-config | section "^router ospf .*"
 # nxos-9k-rdo#
 
-- name: Merge the provided configuration with the exisiting running configuration
+- name: Merge the provided configuration with the existing running configuration
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
@@ -1383,7 +1383,7 @@ EXAMPLES = """
 #   vrf zone2
 #     auto-cost reference-bandwidth 45 Gbps
 
-- name: Overridde all OSPF configuration with provided configuration
+- name: Override all OSPF configuration with provided configuration
   cisco.nxos.nxos_ospfv2:
     config:
       processes:

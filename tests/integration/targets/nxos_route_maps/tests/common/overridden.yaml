@@ -7,7 +7,7 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-    - name: Overridde all route-maps configuration with provided configuration
+    - name: Override all route-maps configuration with provided configuration
       cisco.nxos.nxos_route_maps: &id003
         config:
           - route_map: rmap1
@@ -45,9 +45,9 @@
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-        - "{{ overridden['after'][0] == result['after'][0] }}"
+          - "{{ overridden['after'][0] == result['after'][0] }}"
 
-    - name: Overridde all route-maps configuration with provided configuration (IDEMPOTENT)
+    - name: Override all route-maps configuration with provided configuration (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_route_maps: *id003
 
