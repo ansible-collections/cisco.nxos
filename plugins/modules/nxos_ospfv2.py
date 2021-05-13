@@ -1012,7 +1012,7 @@ EXAMPLES = """
 # nxos-9k-rdo# sh running-config | section "^router ospf .*"
 # nxos-9k-rdo#
 
-- name: Merge the provided configuration with the exisiting running configuration
+- name: Merge the provided configuration with the existing running configuration
   cisco.nxos.nxos_ospfv2:
     config:
       processes:

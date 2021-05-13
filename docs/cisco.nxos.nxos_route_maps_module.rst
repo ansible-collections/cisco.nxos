@@ -2469,7 +2469,7 @@ Examples
     # nxos-9k-rdo# show running-config | section "^route-map"
     # nxos-9k-rdo#
 
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       cisco.nxos.nxos_route_maps:
         config:
           - route_map: rmap1

@@ -3565,7 +3565,7 @@ Examples
     # nxos-9k-rdo# sh running-config | section "^router ospfv3"
     # nxos-9k-rdo#
 
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       cisco.nxos.nxos_ospfv3:
         config:
           processes:

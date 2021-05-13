@@ -773,7 +773,7 @@ Examples
     # interface Ethernet1/3
     #   no switchport
 
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       cisco.nxos.nxos_ospf_interfaces:
         config:
           - name: Ethernet1/1
