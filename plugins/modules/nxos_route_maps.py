@@ -387,7 +387,6 @@ options:
   state:
     description:
     - The state the configuration should be left in.
-    - Refer to examples for more details.
     - With state I(replaced), for the listed route-maps,
       sequences that are in running-config but not in the task are negated.
     - With state I(overridden), all route-maps that are in running-config but
@@ -412,7 +411,7 @@ EXAMPLES = """
 # nxos-9k-rdo# show running-config | section "^route-map"
 # nxos-9k-rdo#
 
-- name: Merge the provided configuration with the exisiting running configuration
+- name: Merge the provided configuration with the existing running configuration
   cisco.nxos.nxos_route_maps:
     config:
       - route_map: rmap1
@@ -868,7 +867,7 @@ EXAMPLES = """
 #   match tag 2
 #   description rmap2-40-deny
 
-- name: Overridde all route-maps configuration with provided configuration
+- name: Override all route-maps configuration with provided configuration
   cisco.nxos.nxos_route_maps:
     config:
       - route_map: rmap1

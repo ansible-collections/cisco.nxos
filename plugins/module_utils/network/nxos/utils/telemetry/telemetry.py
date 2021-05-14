@@ -127,7 +127,7 @@ def cr_key_lookup(key, mo):
 
 
 def normalize_data(cmd_ref):
-    """ Normalize playbook values and get_exisiting data """
+    """ Normalize playbook values and get_existing data """
 
     playval = cmd_ref._ref.get("destination").get("playval")
     existing = cmd_ref._ref.get("destination").get("existing")

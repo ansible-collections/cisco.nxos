@@ -7,7 +7,7 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       cisco.nxos.nxos_bgp_address_family: &replaced
         config:
           as_number: 65536
@@ -31,13 +31,13 @@
               vrf: site-1
         state: replaced
       register: result
-    
+
     - name: Assert that before dicts were correctly generated
       assert:
         that:
           - "{{ merged['after']['address_family'] | symmetric_difference(result['before']['address_family']) |length\
             \ == 0 }}"
-    
+
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -51,7 +51,8 @@
             \ == 0 }}"
           - replaced['after']['as_number'] == result['after']['as_number']
 
-    - name: Replace device configurations of listed OSPF processes with provided configurarions
+    - name:
+        Replace device configurations of listed OSPF processes with provided configurarions
         (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_bgp_address_family: *replaced

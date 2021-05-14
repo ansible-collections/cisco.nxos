@@ -5,7 +5,7 @@
 - include_tasks: _remove_config.yaml
 
 - block:
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       cisco.nxos.nxos_bgp_neighbor_address_family: &id001
         config:
           as_number: 65536
@@ -69,7 +69,8 @@
             \ == 0 }}"
           - merged['after']['as_number'] == result['after']['as_number']
 
-    - name: Merge the provided configuration with the existing running configuration
+    - name:
+        Merge the provided configuration with the existing running configuration
         (IDEMPOTENT)
       cisco.nxos.nxos_bgp_neighbor_address_family: *id001
       register: result

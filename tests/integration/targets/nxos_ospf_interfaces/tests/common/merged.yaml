@@ -7,51 +7,51 @@
 - include_tasks: _setup.yaml
 
 - block:
-    - name: Merge the provided configuration with the exisiting running configuration
+    - name: Merge the provided configuration with the existing running configuration
       cisco.nxos.nxos_ospf_interfaces: &id001
         config:
           - name: "{{ nxos_int1 }}"
             address_family:
-            - afi: ipv4
-              processes:
-              - process_id: "100"
-                area:
-                  area_id: 1.1.1.1
-                  secondaries: False
-              multi_areas:
-              - 11.11.11.11
-            - afi: ipv6
-              processes:
-              - process_id: "200"
-                area:
-                  area_id: 2.2.2.2
-              multi_areas:
-              - 21.0.0.0
-              - 50.50.50.50
-              - 16.10.10.10
+              - afi: ipv4
+                processes:
+                  - process_id: "100"
+                    area:
+                      area_id: 1.1.1.1
+                      secondaries: False
+                multi_areas:
+                  - 11.11.11.11
+              - afi: ipv6
+                processes:
+                  - process_id: "200"
+                    area:
+                      area_id: 2.2.2.2
+                multi_areas:
+                  - 21.0.0.0
+                  - 50.50.50.50
+                  - 16.10.10.10
           - name: "{{ nxos_int2 }}"
             address_family:
-            - afi: ipv4
-              authentication:
-                enable: True
-                key_chain: test-1
-              cost: 100
-            - afi: ipv6
-              network: broadcast
-              shutdown: True
+              - afi: ipv4
+                authentication:
+                  enable: True
+                  key_chain: test-1
+                cost: 100
+              - afi: ipv6
+                network: broadcast
+                shutdown: True
           - name: "{{ nxos_int3 }}"
             address_family:
-            - afi: ipv4
-              cost: 101
+              - afi: ipv4
+                cost: 101
         state: merged
       register: result
 
     - name: Assert that before dicts were correctly generated
       assert:
         that:
-        - result["before"][0] == merged["before"][0]
-        - result["before"][1] == merged["before"][1]
-        - result["before"][2] == merged["before"][2]
+          - result["before"][0] == merged["before"][0]
+          - result["before"][1] == merged["before"][1]
+          - result["before"][2] == merged["before"][2]
 
     - name: Assert that correct set of commands were generated
       assert:
@@ -62,11 +62,12 @@
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-        - "{{ result['after'][0]  == merged['after'][0] }}"
-        - "{{ result['after'][1]  == merged['after'][1] }}"
-        - "{{ result['after'][2]  == merged['after'][2] }}"
+          - "{{ result['after'][0]  == merged['after'][0] }}"
+          - "{{ result['after'][1]  == merged['after'][1] }}"
+          - "{{ result['after'][2]  == merged['after'][2] }}"
 
-    - name: Merge the provided configuration with the existing running configuration
+    - name:
+        Merge the provided configuration with the existing running configuration
         (IDEMPOTENT)
       cisco.nxos.nxos_ospf_interfaces: *id001
       register: result

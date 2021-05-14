@@ -228,7 +228,7 @@ EXAMPLES = """
 # interface Ethernet1/3
 #   no switchport
 
-- name: Merge the provided configuration with the exisiting running configuration
+- name: Merge the provided configuration with the existing running configuration
   cisco.nxos.nxos_ospf_interfaces:
     config:
       - name: Ethernet1/1
@@ -641,7 +641,7 @@ EXAMPLES = """
 #   no switchport
 #   ip ospf authentication-key 7 12090404011C03162E
 
-- name: Overridde all OSPF interfaces configuration with provided configuration
+- name: Override all OSPF interfaces configuration with provided configuration
   cisco.nxos.nxos_ospf_interfaces:
     config:
     - name: Ethernet1/1
