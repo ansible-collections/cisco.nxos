@@ -31,7 +31,7 @@ version_added: 2.3.0
 options:
   ncclient_device_handler:
     type: str
-    default: nxos
+    default: nexus
     description:
     - Specifies the ncclient device handler name for Cisco NX-OS network os. To
       identify the ncclient device handler name refer ncclient library documentation.
