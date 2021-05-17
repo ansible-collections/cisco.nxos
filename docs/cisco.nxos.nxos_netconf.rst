@@ -44,7 +44,7 @@ Parameters
                     </div>
                 </td>
                 <td>
-                        <b>Default:</b><br/><div style="color: blue">"nxos"</div>
+                        <b>Default:</b><br/><div style="color: blue">"nexus"</div>
                 </td>
                     <td>
                     </td>
