@@ -34,6 +34,11 @@ Name | Description
 --- | ---
 [cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_httpapi.rst)|Use NX-API to run commands on Cisco NX-OS platform
 
+### Netconf plugins
+Name | Description
+--- | ---
+[cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_netconf.rst)|Use nxos netconf plugin to run netconf commands on Cisco NX-OS platform.
+
 ### Modules
 Name | Description
 --- | ---
