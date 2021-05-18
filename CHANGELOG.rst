@@ -5,6 +5,29 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.3.0
+======
+
+Minor Changes
+-------------
+
+- Add `default_passive_interface` option in `nxos_ospf_interfaces`.
+- Add a netconf subplugin to make netconf_* modules work with older NX-OS versions (https://github.com/ansible-collections/ansible.netcommon/issues/252).
+
+Bugfixes
+--------
+
+- Fix how `send_community` attribute is handled in `nxos_bgp_neighbor_address_family` (https://github.com/ansible-collections/cisco.nxos/issues/281).
+- Make `passive_interface` work properly when set to False.
+
+New Plugins
+-----------
+
+Netconf
+~~~~~~~
+
+- nxos - Use nxos netconf plugin to run netconf commands on Cisco NX-OS platform.
+
 v2.2.0
 ======
 

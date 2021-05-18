@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Add a netconf subplugin to make netconf_* modules work with older NX-OS versions (https://github.com/ansible-collections/ansible.netcommon/issues/252).
