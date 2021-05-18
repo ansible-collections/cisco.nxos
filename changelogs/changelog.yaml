@@ -529,7 +529,7 @@ releases:
       minor_changes:
       - Add nxos_route_maps resource module.
       - Add support for ansible_network_resources key allows to fetch the available
-        resources for a platform(https://github.com/ansible-collections/cisco.nxos/issues/268).
+        resources for a platform (https://github.com/ansible-collections/cisco.nxos/issues/268).
     fragments:
     - 268_available_network_resources.yaml
     - add_nxos_route_maps.yaml
@@ -539,3 +539,29 @@ releases:
       name: nxos_route_maps
       namespace: ''
     release_date: '2021-04-28'
+  2.3.0:
+    changes:
+      bugfixes:
+      - Fix how `send_community` attribute is handled in `nxos_bgp_neighbor_address_family`
+        (https://github.com/ansible-collections/cisco.nxos/issues/281).
+      - Make `passive_interface` work properly when set to False.
+      minor_changes:
+      - Add `default_passive_interface` option in `nxos_ospf_interfaces`.
+      - Add a netconf subplugin to make netconf_* modules work with older NX-OS versions
+        (https://github.com/ansible-collections/ansible.netcommon/issues/252).
+    fragments:
+    - bgp_nbr_af.yaml
+    - changelog.yaml
+    - docs_facts.yaml
+    - docs_spelling_correction.yaml
+    - fix_ospf_interfaces.yaml
+    - netconf.yaml
+    - netconf_fix.yaml
+    - pre_sort.yaml
+    plugins:
+      netconf:
+      - description: Use nxos netconf plugin to run netconf commands on Cisco NX-OS
+          platform.
+        name: nxos
+        namespace: null
+    release_date: '2021-05-18'
