@@ -122,9 +122,9 @@ class Static_routesFacts(object):
 
         # ethernet1/2/23
         iface = re.match(
-            r".* (Ethernet|loopback|mgmt|port\-channel)(\S*) .*", conf
+            r".* (Ethernet|loopback|mgmt|port\-channel|Vlan)(\S*) .*", conf
         )
-        i = ["Ethernet", "loopback", "mgmt", "port-channel"]
+        i = ["Ethernet", "loopback", "mgmt", "port-channel", "Vlan"]
         if iface and iface.group(1) in i:
             inner_dict["interface"] = (iface.group(1)) + (iface.group(2))
             conf = re.sub(inner_dict["interface"], "", conf)
@@ -219,6 +219,9 @@ class Static_routesFacts(object):
         global_dest_list = []
         if con:
             for conf in con:
+                # ip route static bfd is not supported yet, skip
+                if conf.startswith("ip route static bfd"):
+                    continue
                 if conf.startswith("vrf context"):
                     svrf = re.match(r"vrf context (\S+)\n", conf).group(1)
                     afi_list = []
