@@ -627,11 +627,12 @@ def main():
     commands = map_obj_to_commands((want, have), module)
     result["commands"] = commands
 
-    if commands and not module.check_mode:
-        responses = load_config(
-            module, commands, opts={"catch_clierror": True}
-        )
-        vrf_error_check(module, commands, responses)
+    if commands:
+        if not module.check_mode:
+            responses = load_config(
+                module, commands, opts={"catch_clierror": True}
+            )
+            vrf_error_check(module, commands, responses)
         result["changed"] = True
 
     check_declarative_intent_params(want, module, element_spec, result)
