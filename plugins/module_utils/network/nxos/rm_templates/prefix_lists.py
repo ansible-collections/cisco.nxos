@@ -62,7 +62,7 @@ class Prefix_listsTemplate(NetworkTemplate):
                                 {
                                     "sequence": "{{ sequence|d(None) }}",
                                     "action": "{{ action }}",
-                                    "prefix":  "{{ prefix }}",
+                                    "prefix": "{{ prefix }}",
                                     "eq": "{{ eq }}",
                                     "ge": "{{ ge }}",
                                     "le": "{{ le }}",

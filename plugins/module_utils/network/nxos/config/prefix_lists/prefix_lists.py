@@ -17,8 +17,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -104,6 +102,7 @@ class Prefix_lists(ResourceModule):
         for wk, wentry in iteritems(want):
             hentry = have.pop(wk, {})
             self.compare(["description"], want=wentry, have=hentry)
+            # compare sequences
             w_seqs = wentry.pop("entries", {})
             h_seqs = hentry.pop("entries", {})
             self._compare_seqs(w_seqs, h_seqs)
@@ -115,9 +114,9 @@ class Prefix_lists(ResourceModule):
                 )
             )
 
-    def _compare_seqs(self, w_seqs, h_seqs):
-        for wseq, wentry in iteritems(w_seqs):
-            hentry = h_seqs.pop(wseq, {})
+    def _compare_seqs(self, want, have):
+        for wseq, wentry in iteritems(want):
+            hentry = have.pop(wseq, {})
             if hentry != wentry:
                 if hentry:
                     if self.state == "merged":
@@ -131,7 +130,7 @@ class Prefix_lists(ResourceModule):
                         self.addcmd(hentry, "entry", negate=True)
                 self.addcmd(wentry, "entry")
         # remove remaining entries from have prefix list
-        for hseq in h_seqs.values():
+        for hseq in have.values():
             self.addcmd(hseq, "entry", negate=True)
 
     def _prefix_list_transform(self, entry):
