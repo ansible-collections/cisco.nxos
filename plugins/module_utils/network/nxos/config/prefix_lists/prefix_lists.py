@@ -94,19 +94,20 @@ class Prefix_lists(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Prefix_lists network resource.
         """
-        w_plists = want.get("prefix_lists", {})
-        h_plists = have.get("prefix_lists", {})
-        self._compare_plists(want=w_plists, have=h_plists)
+        self._compare_plists(
+            want.get("prefix_lists", {}), have.get("prefix_lists", {})
+        )
 
     def _compare_plists(self, want, have):
         for wk, wentry in iteritems(want):
             hentry = have.pop(wk, {})
             self.compare(["description"], want=wentry, have=hentry)
             # compare sequences
-            w_seqs = wentry.pop("entries", {})
-            h_seqs = hentry.pop("entries", {})
-            self._compare_seqs(w_seqs, h_seqs)
+            self._compare_seqs(
+                wentry.pop("entries", {}), hentry.pop("entries", {})
+            )
 
+        # remove remaining prefix lists
         for h in have.values():
             self.commands.append(
                 "no {0} prefix-list {1}".format(
