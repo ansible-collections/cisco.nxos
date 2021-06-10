@@ -1,0 +1,92 @@
+---
+- debug:
+    msg: "Start nxos_prefix_lists merged integration tests connection={{ ansible_connection }}"
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge the provided configuration with the existing running configuration
+      cisco.nxos.nxos_prefix_lists: &id001
+        config:
+          - afi: ipv4
+            prefix_lists:
+              - name: AllowPrefix
+                description: allows engineering IPv4 networks
+                entries:
+                  - sequence: 10
+                    action: permit
+                    prefix: 192.0.2.0/23
+                    eq: 24
+                  - sequence: 20
+                    action: permit
+                    prefix: 198.51.100.128/26
+              - name: DenyPrefix
+                description: denies lab IPv4 networks
+                entries:
+                  - sequence: 20
+                    action: deny
+                    prefix: 203.0.113.0/24
+                    le: 25
+
+          - afi: ipv6
+            prefix_lists:
+              - name: AllowIPv6Prefix
+                description: allows engineering IPv6 networks
+                entries:
+                  - sequence: 8
+                    action: permit
+                    prefix: "2001:db8:400::/38"
+                  - sequence: 20
+                    action: permit
+                    prefix: "2001:db8:8000::/35"
+                    le: 37
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that: "{{ result['before'] == [] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+          - "{{ merged['after'][0] == result['after'][0] }}"
+          - "{{ merged['after'][1] == result['after'][1] }}"
+
+    - name:
+        Merge the provided configuration with the existing running configuration
+        (IDEMPOTENT)
+      cisco.nxos.nxos_prefix_lists: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Attempt to update an existing prefix-list entry (SHOULD FAIL)
+      cisco.nxos.nxos_prefix_lists:
+        config:
+          - afi: ipv4
+            prefix_lists:
+              - name: AllowPrefix
+                description: allows engineering IPv4 networks
+                entries:
+                  - sequence: 10
+                    action: permit
+                    prefix: 198.51.100.128/26
+      register: result
+      ignore_errors: True
+
+    - assert:
+        that:
+          - result.failed == True
+          - '"Cannot update existing sequence 10 of prefix list AllowPrefix with state merged. Please use state replaced or overridden." in result.msg'
+  always:
+    - include_tasks: _remove_config.yaml

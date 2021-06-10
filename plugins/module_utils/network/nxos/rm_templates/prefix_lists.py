@@ -81,7 +81,7 @@ class Prefix_listsTemplate(NetworkTemplate):
                 ^(?P<afi>ip|ipv6)
                 \sprefix-list
                 \s(?P<name>\S+)
-                \sdescription\s(?P<description>\S+)\s*
+                \sdescription\s(?P<description>.+)\s*
                 $""", re.VERBOSE),
             "setval": "{{ 'ip' if afi == 'ipv4' else afi }} prefix-list {{ name }} description {{ description }}",
             "result": {

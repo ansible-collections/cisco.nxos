@@ -1,0 +1,8 @@
+---
+- include: cli.yaml
+  tags:
+    - cli.yaml
+
+- include: nxapi.yaml
+  tags:
+    - nxapi

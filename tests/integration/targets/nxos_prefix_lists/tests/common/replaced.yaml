@@ -1,0 +1,60 @@
+---
+- debug:
+    msg: "Start nxos_prefix_lists replaced integration tests connection={{ ansible_connection }}"
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace prefix-lists configurations of listed prefix-lists with provided configurations
+      cisco.nxos.nxos_prefix_lists: &id002
+        config:
+          - afi: ipv4
+            prefix_lists:
+              - name: AllowPrefix
+                description: allows engineering IPv4 networks
+                entries:
+                  - sequence: 10
+                    action: permit
+                    prefix: 203.0.113.64/27
+
+                  - sequence: 30
+                    action: permit
+                    prefix: 203.0.113.96/27
+              - name: AllowPrefix2Stub
+                description: allow other engineering IPv4 network
+        state: replaced
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that:
+          - "{{ result['before'][0] == merged['after'][0] }}"
+          - "{{ result['before'][1] == merged['after'][1] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+        - "{{ replaced['after'][0] == result['after'][0] }}"
+        - "{{ replaced['after'][1] == result['after'][1] }}"
+
+    - name: Replace prefix-lists configurations of listed prefix-lists with provided configurations
+        (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_prefix_lists: *id002
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml

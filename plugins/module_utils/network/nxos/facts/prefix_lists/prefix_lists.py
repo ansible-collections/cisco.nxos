@@ -29,7 +29,7 @@ class Prefix_listsFacts(object):
     """ The nxos prefix_lists facts class
     """
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = Prefix_listsArgs.argument_spec
 
@@ -54,19 +54,28 @@ class Prefix_listsFacts(object):
         prefix_lists_parser = Prefix_listsTemplate(
             lines=data.splitlines(), module=self._module
         )
+
         objs = list(prefix_lists_parser.parse().values())
         if objs:
+            # pre-sort lists of dictionaries
             for item in objs:
-                item["prefix_lists"] = list(item["prefix_lists"].values())
+                item["prefix_lists"] = sorted(
+                    list(item["prefix_lists"].values()),
+                    key=lambda k: k["name"],
+                )
+                for x in item["prefix_lists"]:
+                    if "entries" in x:
+                        x["entries"] = sorted(
+                            x["entries"], key=lambda k: k["sequence"]
+                        )
+            objs = sorted(objs, key=lambda k: k["afi"])
 
         ansible_facts["ansible_network_resources"].pop("prefix_lists", None)
-
         params = utils.remove_empties(
             prefix_lists_parser.validate_config(
                 self.argument_spec, {"config": objs}, redact=True
             )
         )
-
         facts["prefix_lists"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 

@@ -39,7 +39,7 @@ class Prefix_lists(ResourceModule):
 
     def __init__(self, module):
         super(Prefix_lists, self).__init__(
-            empty_fact_val={},
+            empty_fact_val=[],
             facts_module=Facts(module),
             module=module,
             resource="prefix_lists",
@@ -77,7 +77,16 @@ class Prefix_lists(ResourceModule):
             haved = {
                 k: v for k, v in iteritems(haved) if k in wantd or not wantd
             }
-            wantd = {}
+            for key, hvalue in iteritems(haved):
+                wvalue = wantd.pop(key, {})
+                if wvalue:
+                    wplists = wvalue.get("prefix_lists", {})
+                    hplists = hvalue.get("prefix_lists", {})
+                    hvalue["prefix_lists"] = {
+                        k: v
+                        for k, v in iteritems(hplists)
+                        if k in wplists or not wplists
+                    }
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
@@ -94,26 +103,24 @@ class Prefix_lists(ResourceModule):
            the `want` and `have` data with the `parsers` defined
            for the Prefix_lists network resource.
         """
-        self._compare_plists(
-            want.get("prefix_lists", {}), have.get("prefix_lists", {})
-        )
-
-    def _compare_plists(self, want, have):
-        for wk, wentry in iteritems(want):
-            hentry = have.pop(wk, {})
+        wplists = want.get("prefix_lists", {})
+        hplists = have.get("prefix_lists", {})
+        for wk, wentry in iteritems(wplists):
+            hentry = hplists.pop(wk, {})
             self.compare(["description"], want=wentry, have=hentry)
             # compare sequences
             self._compare_seqs(
                 wentry.pop("entries", {}), hentry.pop("entries", {})
             )
 
-        # remove remaining prefix lists
-        for h in have.values():
-            self.commands.append(
-                "no {0} prefix-list {1}".format(
-                    h["afi"].replace("ipv4", "ip"), h["name"]
+        if self.state in ["overridden", "deleted"]:
+            # remove remaining prefix lists
+            for h in hplists.values():
+                self.commands.append(
+                    "no {0} prefix-list {1}".format(
+                        h["afi"].replace("ipv4", "ip"), h["name"]
+                    )
                 )
-            )
 
     def _compare_seqs(self, want, have):
         for wseq, wentry in iteritems(want):
@@ -146,6 +153,5 @@ class Prefix_lists(ResourceModule):
                             x["sequence"]: x for x in plist["entries"]
                         }
                 value["prefix_lists"] = {
-                    (entry["name"], afi): entry
-                    for entry in value["prefix_lists"]
+                    entry["name"]: entry for entry in value["prefix_lists"]
                 }
