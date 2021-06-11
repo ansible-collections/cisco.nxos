@@ -948,3 +948,38 @@ class TestNxosBgpGlobalModule(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+    def test_nxos_bgp_global_purged(self):
+        run_cfg = dedent(
+            """\
+            router bgp 65001
+            """
+        )
+        self.get_config.return_value = run_cfg
+        self.cfg_get_config.return_value = run_cfg
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65001",
+                    neighbors=[
+                        dict(
+                            neighbor_address="10.239.0.13",
+                            peer_type="fabric-external",
+                            remote_as="65002",
+                        )
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65001",
+            "neighbor 10.239.0.13",
+            "remote-as 65002",
+            "peer-type fabric-external",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))

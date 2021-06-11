@@ -1138,7 +1138,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 \speer-type\s(?P<peer_type>\S+)
                 $""", re.VERBOSE
             ),
-            "setval": "peer-type {{ neighbor.peer_type }}",
+            "setval": "peer-type {{ peer_type }}",
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
