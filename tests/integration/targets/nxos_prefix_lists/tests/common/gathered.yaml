@@ -7,7 +7,7 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-    - name: Gather route-maps facts using gathered
+    - name: Gather prefix-lists facts using gathered
       register: result
       cisco.nxos.nxos_prefix_lists:
         state: gathered

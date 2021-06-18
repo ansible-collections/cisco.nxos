@@ -238,6 +238,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     ping:
       redirect: cisco.nxos.nxos
+    nxos_prefix_lists:
+      redirect: cisco.nxos.nxos
+    prefix_lists:
+      redirect: cisco.nxos.nxos
     nxos_reboot:
       redirect: cisco.nxos.nxos
     reboot:
@@ -593,6 +597,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_pim_rp_address
     ping:
       redirect: cisco.nxos.nxos_ping
+    prefix_lists:
+      redirect: cisco.nxos.nxos_prefix_lists
     reboot:
       redirect: cisco.nxos.nxos_reboot
     rollback:
