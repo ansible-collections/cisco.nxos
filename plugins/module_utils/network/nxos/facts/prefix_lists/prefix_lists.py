@@ -33,6 +33,14 @@ class Prefix_listsFacts(object):
         self._module = module
         self.argument_spec = Prefix_listsArgs.argument_spec
 
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get(
+            "show running-config | section 'ip(.*) prefix-list'"
+        )
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Prefix_lists network resource
 
@@ -46,9 +54,7 @@ class Prefix_listsFacts(object):
         facts = {}
         objs = []
         if not data:
-            data = connection.get(
-                "show running-config | section 'ip(.*) prefix-list'"
-            )
+            data = self.get_config(connection)
 
         # parse native config using the Prefix_lists template
         prefix_lists_parser = Prefix_listsTemplate(
