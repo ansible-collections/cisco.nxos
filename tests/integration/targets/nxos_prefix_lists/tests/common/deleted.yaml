@@ -1,0 +1,92 @@
+---
+- debug:
+    msg: Start nxos_prefix_lists deleted integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete all prefix-lists for an AFI
+      cisco.nxos.nxos_prefix_lists:
+        config:
+          - afi: ipv4
+        state: deleted
+      register: result
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+        - "{{ result['before'][0] == merged['after'][0] }}"
+        - "{{ result['before'][1] == merged['after'][1] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - '"no ip prefix-list AllowPrefix" in result.commands'
+          - '"no ip prefix-list DenyPrefix" in result.commands'
+          - result.commands|length == 2
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+        - result["after"][0] == merged["after"][1]
+        - result["after"]|length == 1
+
+    - include_tasks: _remove_config.yaml
+
+    - include_tasks: _populate_config.yaml
+
+    - name: Delete a single prefix-list
+      cisco.nxos.nxos_prefix_lists:
+        config:
+          - afi: ipv4
+            prefix_lists:
+              - name: AllowPrefix
+        state: deleted
+      register: result
+
+    - name: Assert that before dicts are correctly generated
+      assert:
+        that:
+        - "{{ result['before'][0] == merged['after'][0] }}"
+        - "{{ result['before'][1] == merged['after'][1] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - '"no ip prefix-list AllowPrefix" in result.commands'
+          - result.commands|length == 1
+
+    - include_tasks: _remove_config.yaml
+
+    - include_tasks: _populate_config.yaml
+
+    - name: Delete all prefix-lists
+      cisco.nxos.nxos_prefix_lists: &id006
+        state: deleted
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      assert:
+        that:
+        - result["after"] == []
+
+    - name: Delete all prefix-lists (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_prefix_lists: *id006
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml

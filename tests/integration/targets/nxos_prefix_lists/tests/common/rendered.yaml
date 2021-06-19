@@ -1,0 +1,48 @@
+---
+- debug:
+    msg: START nxos_prefix_lists rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_prefix_lists: &id001
+    config:
+      - afi: ipv4
+        prefix_lists:
+          - name: AllowPrefix
+            description: allows engineering IPv4 networks
+            entries:
+              - sequence: 10
+                action: permit
+                prefix: 192.0.2.0/23
+                eq: 24
+              - sequence: 20
+                action: permit
+                prefix: 198.51.100.128/26
+          - name: DenyPrefix
+            description: denies lab IPv4 networks
+            entries:
+              - sequence: 20
+                action: deny
+                prefix: 203.0.113.0/24
+                le: 25
+
+      - afi: ipv6
+        prefix_lists:
+          - name: AllowIPv6Prefix
+            description: allows engineering IPv6 networks
+            entries:
+              - sequence: 8
+                action: permit
+                prefix: "2001:db8:400::/38"
+              - sequence: 20
+                action: permit
+                prefix: "2001:db8:8000::/35"
+                le: 37
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  assert:
+    that:
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
+        \ == 0 }}"
+      - result.changed == False

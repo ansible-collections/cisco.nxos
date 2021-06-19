@@ -1,0 +1,120 @@
+---
+merged:
+  before: []
+  commands:
+    - "ipv6 prefix-list AllowIPv6Prefix description allows engineering IPv6 networks"
+    - "ipv6 prefix-list AllowIPv6Prefix seq 8 permit 2001:db8:400::/38"
+    - "ipv6 prefix-list AllowIPv6Prefix seq 20 permit 2001:db8:8000::/35 le 37"
+    - "ip prefix-list AllowPrefix description allows engineering IPv4 networks"
+    - "ip prefix-list AllowPrefix seq 10 permit 192.0.2.0/23 eq 24"
+    - "ip prefix-list AllowPrefix seq 20 permit 198.51.100.128/26"
+    - "ip prefix-list DenyPrefix description denies lab IPv4 networks"
+    - "ip prefix-list DenyPrefix seq 20 deny 203.0.113.0/24 le 25"
+  after:
+    - afi: ipv4
+      prefix_lists:
+        - description: allows engineering IPv4 networks
+          entries:
+            - sequence: 10
+              action: permit
+              prefix: 192.0.2.0/23
+              eq: 24
+            - sequence: 20
+              action: permit
+              prefix: 198.51.100.128/26
+          name: AllowPrefix
+        - description: denies lab IPv4 networks
+          entries:
+            - sequence: 20
+              action: deny
+              prefix: 203.0.113.0/24
+              le: 25
+          name: DenyPrefix
+
+    - afi: ipv6
+      prefix_lists:
+        - description: allows engineering IPv6 networks
+          entries:
+            - sequence: 8
+              action: permit
+              prefix: "2001:db8:400::/38"
+            - sequence: 20
+              action: permit
+              prefix: "2001:db8:8000::/35"
+              le: 37
+          name: AllowIPv6Prefix
+
+replaced:
+  commands:
+    - "no ip prefix-list AllowPrefix seq 10 permit 192.0.2.0/23 eq 24"
+    - "ip prefix-list AllowPrefix seq 10 permit 203.0.113.64/27"
+    - "ip prefix-list AllowPrefix seq 30 permit 203.0.113.96/27"
+    - "no ip prefix-list AllowPrefix seq 20 permit 198.51.100.128/26"
+    - "ip prefix-list AllowPrefix2Stub description allow other engineering IPv4 network"
+
+  after:
+    - afi: ipv4
+      prefix_lists:
+        - description: allows engineering IPv4 networks
+          entries:
+            - sequence: 10
+              action: permit
+              prefix: 203.0.113.64/27
+            - sequence: 30
+              action: permit
+              prefix: 203.0.113.96/27
+          name: AllowPrefix
+        - description: allow other engineering IPv4 network
+          name: AllowPrefix2Stub
+        - description: denies lab IPv4 networks
+          entries:
+            - sequence: 20
+              action: deny
+              prefix: 203.0.113.0/24
+              le: 25
+          name: DenyPrefix
+
+    - afi: ipv6
+      prefix_lists:
+        - description: allows engineering IPv6 networks
+          entries:
+            - sequence: 8
+              action: permit
+              prefix: "2001:db8:400::/38"
+            - sequence: 20
+              action: permit
+              prefix: "2001:db8:8000::/35"
+              le: 37
+          name: AllowIPv6Prefix
+
+overridden:
+  commands:
+    - "no ip prefix-list AllowPrefix seq 10 permit 192.0.2.0/23 eq 24"
+    - "ip prefix-list AllowPrefix seq 10 permit 203.0.113.64/27"
+    - "ip prefix-list AllowPrefix seq 30 permit 203.0.113.96/27"
+    - "no ip prefix-list AllowPrefix seq 20 permit 198.51.100.128/26"
+    - "ip prefix-list AllowPrefix2Stub description allow other engineering IPv4 network"
+    - "no ip prefix-list DenyPrefix"
+    - "no ipv6 prefix-list AllowIPv6Prefix"
+
+  after:
+    - afi: ipv4
+      prefix_lists:
+        - name: AllowPrefix
+          description: allows engineering IPv4 networks
+          entries:
+            - sequence: 10
+              action: permit
+              prefix: 203.0.113.64/27
+
+            - sequence: 30
+              action: permit
+              prefix: 203.0.113.96/27
+        - name: AllowPrefix2Stub
+          description: allow other engineering IPv4 network
+
+deleted:
+  commands:
+    - "no ip prefix-list AllowPrefix"
+    - "no ip prefix-list DenyPrefix"
+    - "no ipv6 prefix-list AllowIPv6Prefix"
