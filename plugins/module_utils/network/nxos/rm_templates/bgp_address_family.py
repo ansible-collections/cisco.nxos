@@ -193,6 +193,23 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "advertise_l2vpn_evpn",
+            "getval": re.compile(
+                r"""
+                \s+(?P<advertise_l2vpn_evpn>advertise\sl2vpn\sevpn)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "advertise l2vpn evpn",
+            "result": {
+                "address_family": {
+                    '{{ nbr|d("nbr_") + afi + "_" + safi|d() + "_" + vrf|d() }}': {
+                        "advertise_l2vpn_evpn": "{{ not not advertise_l2vpn_evpn }}",
+                    }
+                }
+            },
+        },
+        {
             "name": "advertise_pip",
             "getval": re.compile(
                 r"""

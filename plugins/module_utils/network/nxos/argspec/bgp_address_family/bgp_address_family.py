@@ -74,6 +74,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "send": {"type": "bool"},
                             },
                         },
+                        "advertise_l2vpn_evpn": {"type": "bool"},
                         "advertise_pip": {"type": "bool"},
                         "advertise_system_mac": {"type": "bool"},
                         "allow_vni_in_ethertag": {"type": "bool"},

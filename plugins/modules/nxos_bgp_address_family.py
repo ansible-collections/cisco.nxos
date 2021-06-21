@@ -78,6 +78,9 @@ options:
           advertise_pip:
             description: Advertise physical ip for type-5 route.
             type: bool
+          advertise_l2vpn_evpn:
+            description: Enable advertising EVPN routes.
+            type: bool
           advertise_system_mac:
             description: Advertise extra EVPN RT-2 with system MAC.
             type: bool
