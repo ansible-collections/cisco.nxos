@@ -1,0 +1,3 @@
+---
+trivial:
+  - Update `version_added` for nxos_prefix_lists.

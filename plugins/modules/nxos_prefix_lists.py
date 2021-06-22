@@ -17,7 +17,7 @@ module: nxos_prefix_lists
 short_description: Prefix-Lists resource module.
 description:
 - This module manages prefix-lists configuration on devices running Cisco NX-OS.
-version_added: 2.3.0
+version_added: 2.4.0
 notes:
 - Tested against NX-OS 9.3.6.
 - This module works with connection C(network_cli) and C(httpapi).
