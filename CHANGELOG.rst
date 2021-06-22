@@ -5,6 +5,25 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.4.0
+======
+
+Minor Changes
+-------------
+
+- Add `advertise_l2vpn_evpn` option in `nxos_bgp_address_family` module (https://github.com/ansible-collections/cisco.nxos/issues/302).
+- Add `nxos_prefix_lists` resource module.
+
+Bugfixes
+--------
+
+- Render neighbor peer_type command correctly (https://github.com/ansible-collections/cisco.nxos/issues/308).
+
+New Modules
+-----------
+
+- nxos_prefix_lists - Prefix-Lists resource module.
+
 v2.3.0
 ======
 

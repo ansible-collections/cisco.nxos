@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Add `advertise_l2vpn_evpn` option in `nxos_bgp_address_family` module (https://github.com/ansible-collections/cisco.nxos/issues/302).
