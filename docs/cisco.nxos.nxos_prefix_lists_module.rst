@@ -8,7 +8,7 @@ cisco.nxos.nxos_prefix_lists
 **Prefix-Lists resource module.**
 
 
-Version added: 2.3.0
+Version added: 2.4.0
 
 .. contents::
    :local:
