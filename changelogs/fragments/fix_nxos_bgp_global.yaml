@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Render neighbor peer_type command correctly (https://github.com/ansible-collections/cisco.nxos/issues/308).

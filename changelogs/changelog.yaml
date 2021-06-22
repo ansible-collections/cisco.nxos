@@ -565,3 +565,20 @@ releases:
         name: nxos
         namespace: null
     release_date: '2021-05-18'
+  2.4.0:
+    changes:
+      bugfixes:
+      - Render neighbor peer_type command correctly (https://github.com/ansible-collections/cisco.nxos/issues/308).
+      minor_changes:
+      - Add `advertise_l2vpn_evpn` option in `nxos_bgp_address_family` module (https://github.com/ansible-collections/cisco.nxos/issues/302).
+      - Add `nxos_prefix_lists` resource module.
+    fragments:
+    - fix_nxos_bgp_global.yaml
+    - nxos_bgp_af.yaml
+    - nxos_prefix_lists.yaml
+    - update_readme_freenode_to_libera.yml
+    modules:
+    - description: Prefix-Lists resource module.
+      name: nxos_prefix_lists
+      namespace: ''
+    release_date: '2021-06-22'
