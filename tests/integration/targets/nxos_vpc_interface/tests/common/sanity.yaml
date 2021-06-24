@@ -32,6 +32,7 @@
         pkl_dest: 192.168.100.4
         pkl_src: 10.1.100.20
         peer_gw: true
+        l3_peer_router: true
         auto_recovery: false
 
     - name: Configure vpc port channel
@@ -114,6 +115,7 @@
         pkl_dest: 192.168.100.4
         pkl_src: 10.1.100.20
         peer_gw: true
+        l3_peer_router: true
         auto_recovery: false
 
     - name: remove vpc port channel

@@ -155,6 +155,25 @@ Parameters
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>l3_peer_router</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enables/Disables layer 3 peer router</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>pkl_dest</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -515,6 +534,7 @@ Examples
         pkl_dest: 192.168.100.4
         pkl_src: 10.1.100.20
         peer_gw: true
+        l3_peer_router: true
         auto_recovery: true
 
     - name: configure
@@ -523,6 +543,7 @@ Examples
         role_priority: 32667
         system_priority: 2000
         peer_gw: true
+        l3_peer_router: true
         pkl_src: 10.1.100.2
         pkl_dest: 192.168.100.4
         auto_recovery: true
@@ -534,6 +555,7 @@ Examples
         system_priority: 2000
         delay_restore: 180
         peer_gw: true
+        l3_peer_router: true
         pkl_src: 1.1.1.2
         pkl_dest: 1.1.1.1
         pkl_vrf: vpckeepalive
@@ -567,7 +589,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>commands sent to the device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vpc domain 100&#x27;, &#x27;peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management&#x27;, &#x27;auto-recovery&#x27;, &#x27;peer-gateway&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vpc domain 100&#x27;, &#x27;peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management&#x27;, &#x27;auto-recovery&#x27;, &#x27;peer-gateway&#x27;, &#x27;layer3 peer-router&#x27;]</div>
                 </td>
             </tr>
     </table>

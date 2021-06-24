@@ -90,6 +90,7 @@ class TestNxosVpcModule(TestNxosModule):
                 pkl_dest="192.168.100.4",
                 pkl_src="10.1.100.20",
                 peer_gw=True,
+                l3_peer_router=True,
                 auto_recovery=True,
             )
         )
@@ -102,6 +103,7 @@ class TestNxosVpcModule(TestNxosModule):
                 "system-priority 2000",
                 "peer-keepalive destination 192.168.100.4 source 10.1.100.20",
                 "peer-gateway",
+                "layer3 peer-router",
                 "auto-recovery",
             ],
         )

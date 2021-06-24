@@ -53,6 +53,7 @@
         role_priority: 500
         system_priority: 2000
         peer_gw: true
+        l3_peer_router: true
         delay_restore: 5
         delay_restore_interface_vlan: 15
         delay_restore_orphan_port: '{{ delay_restore_orphan_port|default(omit) }}'
@@ -123,6 +124,7 @@
         role_priority: default
         system_priority: default
         peer_gw: true
+        l3_peer_router: true
         delay_restore: default
         delay_restore_interface_vlan: default
         delay_restore_orphan_port: '{{ def_delay_restore_orphan_port|default(omit)
@@ -142,6 +144,7 @@
         state: present
         domain: 100
         peer_gw: false
+        l3_peer_router: false
 
     - assert: *id002
 

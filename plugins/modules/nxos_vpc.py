@@ -73,6 +73,10 @@ options:
     description:
     - Enables/Disables peer gateway
     type: bool
+  l3_peer_router:
+    description:
+    - Enables/Disables Layer 3 Peer Router
+    type: bool
   auto_recovery:
     description:
     - Enables/Disables auto recovery on platforms that support disable
@@ -117,6 +121,7 @@ EXAMPLES = """
     pkl_dest: 192.168.100.4
     pkl_src: 10.1.100.20
     peer_gw: true
+    l3_peer_router: true
     auto_recovery: true
 
 - name: configure
@@ -125,6 +130,7 @@ EXAMPLES = """
     role_priority: 32667
     system_priority: 2000
     peer_gw: true
+    l3_peer_router: true
     pkl_src: 10.1.100.2
     pkl_dest: 192.168.100.4
     auto_recovery: true
@@ -136,6 +142,7 @@ EXAMPLES = """
     system_priority: 2000
     delay_restore: 180
     peer_gw: true
+    l3_peer_router: true
     pkl_src: 1.1.1.2
     pkl_dest: 1.1.1.1
     pkl_vrf: vpckeepalive
@@ -171,6 +178,7 @@ CONFIG_ARGS = {
     "delay_restore_interface_vlan": "delay restore interface-vlan {delay_restore_interface_vlan}",
     "delay_restore_orphan_port": "delay restore orphan-port {delay_restore_orphan_port}",
     "peer_gw": "{peer_gw} peer-gateway",
+    "l3_peer_router": "{l3_peer_router} layer3 peer-router",
     "auto_recovery": "{auto_recovery} auto-recovery",
     "auto_recovery_reload_delay": "auto-recovery reload-delay {auto_recovery_reload_delay}",
 }
@@ -182,6 +190,7 @@ PARAM_TO_DEFAULT_KEYMAP = {
     "role_priority": "32667",
     "system_priority": "32667",
     "peer_gw": False,
+    "l3_peer_router": False,
     "auto_recovery_reload_delay": 240,
 }
 
@@ -269,6 +278,8 @@ def get_vpc(module):
                     vpc["auto_recovery_reload_delay"] = line[-1]
                 if "peer-gateway" in each:
                     vpc["peer_gw"] = False if "no " in each else True
+                if "layer3 peer-router" in each:
+                    vpc["l3_peer_router"] = False if "no " in each else True
                 if "peer-keepalive destination" in each:
                     # destination is reqd; src & vrf are optional
                     m = re.search(
@@ -338,6 +349,12 @@ def get_commands_to_config_vpc(module, vpc, domain, existing):
         else:
             vpc["peer_gw"] = ""
 
+    if "l3_peer_router" in vpc:
+        if not vpc.get("l3_peer_router"):
+            vpc["l3_peer_router"] = "no"
+        else:
+            vpc["l3_peer_router"] = ""
+
     for param in vpc:
         command = CONFIG_ARGS.get(param)
         if command is not None:
@@ -360,6 +377,7 @@ def main():
         pkl_dest=dict(required=False),
         pkl_vrf=dict(required=False),
         peer_gw=dict(required=False, type="bool"),
+        l3_peer_router=dict(required=False, type="bool"),
         auto_recovery=dict(required=False, type="bool"),
         auto_recovery_reload_delay=dict(required=False, type="str"),
         delay_restore=dict(required=False, type="str"),
@@ -387,6 +405,7 @@ def main():
     pkl_dest = module.params["pkl_dest"]
     pkl_vrf = module.params["pkl_vrf"]
     peer_gw = module.params["peer_gw"]
+    l3_peer_router = module.params["l3_peer_router"]
     auto_recovery = module.params["auto_recovery"]
     auto_recovery_reload_delay = module.params["auto_recovery_reload_delay"]
     delay_restore = module.params["delay_restore"]
@@ -404,6 +423,7 @@ def main():
         pkl_dest=pkl_dest,
         pkl_vrf=pkl_vrf,
         peer_gw=peer_gw,
+        l3_peer_router=l3_peer_router,
         auto_recovery=auto_recovery,
         auto_recovery_reload_delay=auto_recovery_reload_delay,
         delay_restore=delay_restore,
