@@ -1,0 +1,4 @@
+---
+trivial:
+  - Don't rely on ``safe_eval`` being able to do math/concat
+    (https://github.com/ansible-collections/cisco.nxos/pull/315)
