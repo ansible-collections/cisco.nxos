@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Prevent traceback when parsing unexpected line in nxos_static_routes.
