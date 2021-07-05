@@ -56,6 +56,7 @@ class Bgp_address_family(ResourceModule):
             "additional_paths.receive",
             "additional_paths.selection.route_map",
             "additional_paths.send",
+            "advertise_l2vpn_evpn",
             "advertise_pip",
             "advertise_system_mac",
             "allow_vni_in_ethertag",

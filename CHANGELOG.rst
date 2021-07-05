@@ -5,6 +5,48 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.4.0
+======
+
+Minor Changes
+-------------
+
+- Add `advertise_l2vpn_evpn` option in `nxos_bgp_address_family` module (https://github.com/ansible-collections/cisco.nxos/issues/302).
+- Add `nxos_prefix_lists` resource module.
+
+Bugfixes
+--------
+
+- Render neighbor peer_type command correctly (https://github.com/ansible-collections/cisco.nxos/issues/308).
+
+New Modules
+-----------
+
+- nxos_prefix_lists - Prefix-Lists resource module.
+
+v2.3.0
+======
+
+Minor Changes
+-------------
+
+- Add `default_passive_interface` option in `nxos_ospf_interfaces`.
+- Add a netconf subplugin to make netconf_* modules work with older NX-OS versions (https://github.com/ansible-collections/ansible.netcommon/issues/252).
+
+Bugfixes
+--------
+
+- Fix how `send_community` attribute is handled in `nxos_bgp_neighbor_address_family` (https://github.com/ansible-collections/cisco.nxos/issues/281).
+- Make `passive_interface` work properly when set to False.
+
+New Plugins
+-----------
+
+Netconf
+~~~~~~~
+
+- nxos - Use nxos netconf plugin to run netconf commands on Cisco NX-OS platform.
+
 v2.2.0
 ======
 

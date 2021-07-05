@@ -1848,7 +1848,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Supress advertising the specified summary.</div>
+                        <div>Suppress advertising the specified summary.</div>
                 </td>
             </tr>
             <tr>
@@ -3989,7 +3989,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Supress advertising the specified summary.</div>
+                        <div>Suppress advertising the specified summary.</div>
                 </td>
             </tr>
             <tr>
@@ -4798,7 +4798,7 @@ Examples
     #   vrf zone2
     #     auto-cost reference-bandwidth 45 Gbps
 
-    - name: Overridde all OSPF configuration with provided configuration
+    - name: Override all OSPF configuration with provided configuration
       cisco.nxos.nxos_ospfv2:
         config:
           processes:

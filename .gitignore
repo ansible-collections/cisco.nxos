@@ -106,3 +106,6 @@ venv.bak/
 # ide
 *.code-workspace
 .vscode/
+.DS_Store
+
+changelogs/.plugin-cache.yaml

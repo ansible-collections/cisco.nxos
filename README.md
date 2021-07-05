@@ -34,6 +34,11 @@ Name | Description
 --- | ---
 [cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_httpapi.rst)|Use NX-API to run commands on Cisco NX-OS platform
 
+### Netconf plugins
+Name | Description
+--- | ---
+[cisco.nxos.nxos](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_netconf.rst)|Use nxos netconf plugin to run netconf commands on Cisco NX-OS platform.
+
 ### Modules
 Name | Description
 --- | ---
@@ -98,6 +103,7 @@ Name | Description
 [cisco.nxos.nxos_pim_interface](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_pim_interface_module.rst)|Manages PIM interface configuration.
 [cisco.nxos.nxos_pim_rp_address](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_pim_rp_address_module.rst)|Manages configuration of an PIM static RP address instance.
 [cisco.nxos.nxos_ping](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ping_module.rst)|Tests reachability using ping from Nexus switch.
+[cisco.nxos.nxos_prefix_lists](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_prefix_lists_module.rst)|Prefix-Lists resource module.
 [cisco.nxos.nxos_reboot](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_reboot_module.rst)|Reboot a network device.
 [cisco.nxos.nxos_rollback](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_rollback_module.rst)|Set a checkpoint or rollback to a checkpoint.
 [cisco.nxos.nxos_route_maps](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_route_maps_module.rst)|Route Maps resource module.
@@ -189,7 +195,7 @@ We welcome community contributions to this collection. If you find problems, ple
 
 You can also join us on:
 
-- Freenode IRC - ``#ansible-network`` Freenode channel
+- IRC - the ``#ansible-network`` [libera.chat](https://libera.chat/) channel
 - Slack - https://ansiblenetwork.slack.com
 
 See the [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for details on contributing to Ansible.

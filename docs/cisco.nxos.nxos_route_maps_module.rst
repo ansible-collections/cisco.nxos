@@ -2438,7 +2438,6 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in.</div>
-                        <div>Refer to examples for more details.</div>
                         <div>With state <em>replaced</em>, for the listed route-maps, sequences that are in running-config but not in the task are negated.</div>
                         <div>With state <em>overridden</em>, all route-maps that are in running-config but not in the task are negated.</div>
                         <div>Please refer to examples for more details.</div>
@@ -2925,7 +2924,7 @@ Examples
     #   match tag 2
     #   description rmap2-40-deny
 
-    - name: Overridde all route-maps configuration with provided configuration
+    - name: Override all route-maps configuration with provided configuration
       cisco.nxos.nxos_route_maps:
         config:
           - route_map: rmap1

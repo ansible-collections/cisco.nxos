@@ -1,0 +1,10 @@
+- name: Remove existing prefix-lists
+  cisco.nxos.nxos_config:
+    lines:
+      - "no ip prefix-list AllowPrefix"
+      - "no ip prefix-list DenyPrefix"
+      - "no ip prefix-list AllowPrefix2Stub"
+      - "no ipv6 prefix-list AllowIPv6Prefix"
+  ignore_errors: True
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

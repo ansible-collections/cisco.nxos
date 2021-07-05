@@ -190,7 +190,7 @@ options:
                     required: True
                   not_advertise:
                     description:
-                    - Supress advertising the specified summary.
+                    - Suppress advertising the specified summary.
                     type: bool
                   tag:
                     description:
@@ -1152,7 +1152,7 @@ EXAMPLES = """
 #   vrf zone2
 #     auto-cost reference-bandwidth 45 Gbps
 
-- name: Overridde all OSPFv3 configuration with provided configuration
+- name: Override all OSPFv3 configuration with provided configuration
   cisco.nxos.nxos_ospfv3:
     config:
       processes:

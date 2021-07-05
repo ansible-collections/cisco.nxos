@@ -88,6 +88,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.route_maps.route_maps import (
     Route_mapsFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.prefix_lists.prefix_lists import (
+    Prefix_listsFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(
@@ -121,6 +124,7 @@ FACT_RESOURCE_SUBSETS = dict(
     bgp_address_family=Bgp_address_familyFacts,
     bgp_neighbor_address_family=Bgp_neighbor_address_familyFacts,
     route_maps=Route_mapsFacts,
+    prefix_lists=Prefix_listsFacts,
 )
 
 

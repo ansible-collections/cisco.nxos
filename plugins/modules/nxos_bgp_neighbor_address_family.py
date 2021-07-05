@@ -608,7 +608,7 @@ EXAMPLES = """
 #       address-family ipv6 unicast
 #
 
-- name: Overridde all BGP AF configuration with provided configuration
+- name: Override all BGP AF configuration with provided configuration
   cisco.nxos.nxos_bgp_neighbor_address_family:
     config:
       as_number: 65536

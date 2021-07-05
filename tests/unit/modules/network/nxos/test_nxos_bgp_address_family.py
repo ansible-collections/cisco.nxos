@@ -2404,3 +2404,92 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_vrf_af_advertise_l2vpn_evpn(self):
+        # test merged for config->vrf->address_family->advertise l2vpn evpn
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65563
+              vrf site-1
+                address-family ipv4 unicast
+              vrf site-2
+                address-family ipv4 unicast
+                  advertise l2vpn evpn
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65563",
+                    address_family=[
+                        dict(
+                            vrf="site-1",
+                            afi="ipv4",
+                            safi="unicast",
+                            advertise_l2vpn_evpn=True,
+                        ),
+                        dict(
+                            vrf="site-2",
+                            afi="ipv4",
+                            safi="unicast",
+                            advertise_l2vpn_evpn=False,
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65563",
+            "vrf site-1",
+            "address-family ipv4 unicast",
+            "advertise l2vpn evpn",
+            "vrf site-2",
+            "address-family ipv4 unicast",
+            "no advertise l2vpn evpn",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_vrf_af_advertise_l2vpn_evpn_replaced(self):
+        # test replaced for config->vrf->address_family->advertise l2vpn evpn
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65563
+              vrf site-1
+                address-family ipv4 unicast
+              vrf site-2
+                address-family ipv4 unicast
+                  advertise l2vpn evpn
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65563",
+                    address_family=[
+                        dict(
+                            vrf="site-1",
+                            afi="ipv4",
+                            safi="unicast",
+                            advertise_l2vpn_evpn=True,
+                        ),
+                        dict(vrf="site-2", afi="ipv4", safi="unicast"),
+                    ],
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65563",
+            "vrf site-1",
+            "address-family ipv4 unicast",
+            "advertise l2vpn evpn",
+            "vrf site-2",
+            "address-family ipv4 unicast",
+            "no advertise l2vpn evpn",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
