@@ -89,6 +89,7 @@ Name | Description
 [cisco.nxos.nxos_lldp_global](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_lldp_global_module.rst)|LLDP resource module
 [cisco.nxos.nxos_lldp_interfaces](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_lldp_interfaces_module.rst)|LLDP interfaces resource module
 [cisco.nxos.nxos_logging](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_logging_module.rst)|Manage logging on network devices
+[cisco.nxos.nxos_logging_global](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_logging_global_module.rst)|Logging resource module.
 [cisco.nxos.nxos_ntp](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ntp_module.rst)|Manages core NTP configuration.
 [cisco.nxos.nxos_ntp_auth](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ntp_auth_module.rst)|Manages NTP authentication.
 [cisco.nxos.nxos_ntp_options](https://github.com/ansible-collections/nxos/blob/main/docs/cisco.nxos.nxos_ntp_options_module.rst)|Manages NTP options.
