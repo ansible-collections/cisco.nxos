@@ -101,13 +101,15 @@ options:
     description:
     - Transmit rate in bits per second (bps).
     - This is state check parameter only.
-    - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+    - Supports conditionals, see
+      U(https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules)
     type: str
   rx_rate:
     description:
     - Receiver rate in bits per second (bps).
     - This is state check parameter only.
-    - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+    - Supports conditionals, see
+      U(https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules)
     type: str
   neighbors:
     description:
@@ -196,13 +198,15 @@ options:
         description:
         - Transmit rate in bits per second (bps).
         - This is state check parameter only.
-        - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+        - Supports conditionals, see
+          U(https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules)
         type: str
       rx_rate:
         description:
         - Receiver rate in bits per second (bps).
         - This is state check parameter only.
-        - Supports conditionals, see L(Conditionals in Networking Modules,../network/user_guide/network_working_with_command_output.html)
+        - Supports conditionals, see
+          U(https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules)
         type: str
       neighbors:
         description:
