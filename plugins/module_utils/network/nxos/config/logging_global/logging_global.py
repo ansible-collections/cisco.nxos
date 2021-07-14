@@ -132,7 +132,7 @@ class Logging_global(ResourceModule):
         if self.state in self._state_set:
             # set default states for keys that appear in negated form
             for x in self.parsers[0:3]:
-                if x in haved and not x in wantd:
+                if x in haved and x not in wantd:
                     wantd[x] = {"state": "enabled"}
             if "rate_limit" in haved and "rate_limit" not in wantd:
                 wantd["rate_limit"] = "enabled"
