@@ -29,15 +29,14 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lo
 
 
 class Logging_globalFacts(object):
-    """ The nxos logging_global facts class
-    """
+    """The nxos logging_global facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Logging_globalArgs.argument_spec
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Logging_global network resource
+        """Populate the facts for Logging_global network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -59,6 +58,7 @@ class Logging_globalFacts(object):
         objs = logging_global_parser.parse()
 
         if objs:
+            # pre-sort list of dictionaries
             if "servers" in objs:
                 objs["servers"] = sorted(
                     objs["servers"], key=lambda k: k["server"]

@@ -224,6 +224,8 @@ options:
   state:
     description:
     - The state the configuration should be left in.
+    - The states I(replaced) and I(overridden) have identical
+      behaviour for this module.
     - Refer to examples for more details.
     type: str
     choices:

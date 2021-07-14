@@ -28,8 +28,7 @@ The arg spec for the nxos_logging_global module
 
 
 class Logging_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_logging_global module
-    """
+    """The arg spec for the nxos_logging_global module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

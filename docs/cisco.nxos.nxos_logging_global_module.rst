@@ -1088,6 +1088,7 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in.</div>
+                        <div>The states <em>replaced</em> and <em>overridden</em> have identical behaviour for this module.</div>
                         <div>Refer to examples for more details.</div>
                 </td>
             </tr>

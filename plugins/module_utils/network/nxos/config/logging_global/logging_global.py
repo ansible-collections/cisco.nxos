@@ -22,6 +22,7 @@ from copy import deepcopy
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
+    get_from_dict,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -47,50 +48,140 @@ class Logging_global(ResourceModule):
             resource="logging_global",
             tmplt=Logging_globalTemplate(),
         )
-        self.parsers = []
+        self._state_set = ("replaced", "deleted", "overridden")
+        self.parsers = [
+            "console",
+            "module",
+            "monitor",
+            "logfile",
+            "event.link_status.enable",
+            "event.link_status.default",
+            "event.trunk_status.enable",
+            "event.trunk_status.default",
+            "history.level",
+            "history.size",
+            "ip.access_list.cache.entries",
+            "ip.access_list.cache.interval",
+            "ip.access_list.cache.threshold",
+            "ip.access_list.detailed",
+            "ip.access_list.include.sgt",
+            "origin_id.hostname",
+            "origin_id.ip",
+            "origin_id.string",
+            "rate_limit",
+            "rfc_strict",
+            "source_interface",
+            "timestamp",
+        ]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
+
         if self.state not in ["parsed", "gathered"]:
             self.generate_commands()
             self.run_commands()
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        wantd = self._logging_list_to_dict(self.want)
+        haved = self._logging_list_to_dict(self.have)
+
+        if self.state == "deleted":
+            # empty out want (in case something was specified)
+            # some items are populated later on for correct removal
+            wantd = {}
+
+        # pre-process `event.x.y` keys
+        for x in self.parsers[4:7]:
+            have_k = get_from_dict(haved, x)
+            want_k = get_from_dict(wantd, x)
+            if have_k is None and want_k is not None:
+                # set have to True to mimic default state
+                # this allows negate commands to be issued
+                self.__update_dict(haved, x)
+            if all(
+                (
+                    self.state in self._state_set,
+                    have_k is False,
+                    want_k is None,
+                )
+            ):
+                # if want is missing and have is negated
+                # set want to True in order to revert to default state
+                self.__update_dict(wantd, x)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
+            for x in self.parsers[0:4]:
+                hstate = haved.get(x, {}).get("state", "")
+                wstate = wantd.get(x, {}).get("state", "")
+                if hstate == "disabled" and not wstate:
+                    # this ensures that updates are done
+                    # with correct `state`
+                    if wantd.get(x, {}):
+                        wantd[x].update({"state": "enabled"})
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
-        if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
-            wantd = {}
+        if self.state in self._state_set:
+            # set default states for keys that appear in negated form
+            for x in self.parsers[0:3]:
+                if x in haved and not x in wantd:
+                    wantd[x] = {"state": "enabled"}
+            if "rate_limit" in haved and "rate_limit" not in wantd:
+                wantd["rate_limit"] = "enabled"
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd:
-                    self._compare(want={}, have=have)
-
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        self._compare(want=wantd, have=haved)
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Logging_global network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Logging_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_lists(want, have)
+
+    def _compare_lists(self, want, have):
+        """Compare list of dictionaries"""
+        for x in ["facilities", "servers"]:
+            wantx = want.get(x, {})
+            havex = have.get(x, {})
+            for key, wentry in iteritems(wantx):
+                hentry = havex.pop(key, {})
+                if wentry != hentry:
+                    if x == "servers" and self.state in self._state_set:
+                        # remove have config for servers
+                        # else want gets appended
+                        self.addcmd(hentry, x, negate=True)
+                    self.addcmd(wentry, x)
+            for key, hentry in iteritems(havex):
+                self.addcmd(hentry, x, negate=True)
+
+    def _logging_list_to_dict(self, data):
+        """Convert all list to dicts to dicts
+        of dicts
+        """
+        tmp = deepcopy(data)
+        if "servers" in tmp:
+            tmp["servers"] = {x["server"]: x for x in tmp["servers"]}
+        if "facilities" in data:
+            tmp["facilities"] = {x["facility"]: x for x in tmp["facilities"]}
+        return tmp
+
+    def __update_dict(self, datadict, key, nval=True):
+        """Utility method that updates last subkey of
+        `datadict` as identified by `key` to `nval`.
+        """
+        keys = key.split(".")
+        if keys[0] not in datadict:
+            datadict[keys[0]] = {}
+        if keys[1] not in datadict[keys[0]]:
+            datadict[keys[0]][keys[1]] = {}
+        datadict[keys[0]][keys[1]].update({keys[2]: nval})
