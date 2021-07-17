@@ -245,6 +245,398 @@ options:
     default: merged
 """
 EXAMPLES = """
+# Using merged
+
+# Before state:
+# -------------
+# nxos-9k-rdo# show running-config | include logging
+# nxos-9k-rdo#
+
+- name: Merge the provided configuration with the existing running configuration
+  cisco.nxos.nxos_logging_global:
+    config:
+      console:
+        level: 3
+      monitor:
+        level: 4
+      ip:
+        access_list:
+          cache:
+            entries: 16384
+            interval: 200
+            threshold: 5000
+      facilities:
+        - facility: auth
+          level: 2
+        - facility: ospfv3
+          level: 1
+        - facility: ftp
+          level: 6
+      servers:
+        - server: 203.0.113.100
+          level: 1
+          use_vrf: management
+        - server: 203.0.113.101
+          level: 3
+          facility: local6
+          use_vrf: default
+      origin_id:
+        hostname: True
+
+# Task output
+# -------------
+#  before: {}
+#
+#  commands:
+#    - "logging console 3"
+#    - "logging monitor 4"
+#    - "logging ip access-list cache entries 16384"
+#    - "logging ip access-list cache interval 200"
+#    - "logging ip access-list cache threshold 5000"
+#    - "logging level auth 2"
+#    - "logging level ospfv3 1"
+#    - "logging level ftp 6"
+#    - "logging server 203.0.113.100 1 use-vrf management"
+#    - "logging server 203.0.113.101 3 facility local6 use-vrf default"
+#    - "logging origin-id hostname"
+#
+# after:
+#   console:
+#      level: 3
+#    facilities:
+#      - facility: auth
+#        level: 2
+#      - facility: ftp
+#        level: 6
+#      - facility: ospfv3
+#        level: 1
+#    ip:
+#      access_list:
+#        cache:
+#          entries: 16384
+#          interval: 200
+#          threshold: 5000
+#    monitor:
+#      level: 4
+#    origin_id:
+#      hostname: true
+#    servers:
+#      - level: 1
+#        server: 203.0.113.100
+#        use_vrf: management
+#      - facility: local6
+#        level: 3
+#        server: 203.0.113.101
+#        use_vrf: default
+
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config | include logging
+# logging console 3
+# logging monitor 4
+# logging ip access-list cache entries 16384
+# logging ip access-list cache interval 200
+# logging ip access-list cache threshold 5000
+# logging level auth 2
+# logging level ospfv3 1
+# logging level ftp 6
+# logging origin-id hostname
+# logging server 203.0.113.100 1 use-vrf management
+# logging server 203.0.113.101 3 use-vrf default facility local6
+
+# Using replaced
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config | include logging
+# logging console 3
+# logging monitor 4
+# logging ip access-list cache entries 16384
+# logging ip access-list cache interval 200
+# logging ip access-list cache threshold 5000
+# logging level auth 2
+# logging level ospfv3 1
+# logging level ftp 6
+# logging origin-id hostname
+# logging server 203.0.113.100 1 use-vrf management
+# logging server 203.0.113.101 3 use-vrf default facility local6
+
+- name: Replace logging configurations with provided config
+  cisco.nxos.nxos_logging_global:
+    config:
+      monitor:
+        level: 4
+      ip:
+        access_list:
+          cache:
+            entries: 4096
+      facilities:
+        - facility: auth
+          level: 2
+        - facility: ospfv3
+          level: 1
+        - facility: ftp
+          level: 6
+      servers:
+        - server: 203.0.113.101
+          level: 3
+          facility: local6
+          use_vrf: default
+        - server: 198.51.100.101
+          level: 1
+          port: 6538
+          use_vrf: management
+      origin_id:
+        ip: 192.0.2.100
+    state: replaced
+
+# Task output
+# -------------
+# before:
+#   console:
+#      level: 3
+#    facilities:
+#      - facility: auth
+#        level: 2
+#      - facility: ftp
+#        level: 6
+#      - facility: ospfv3
+#        level: 1
+#    ip:
+#      access_list:
+#        cache:
+#          entries: 16384
+#          interval: 200
+#          threshold: 5000
+#    monitor:
+#      level: 4
+#    origin_id:
+#      hostname: true
+#    servers:
+#      - level: 1
+#        server: 203.0.113.100
+#        use_vrf: management
+#      - facility: local6
+#        level: 3
+#        server: 203.0.113.101
+#        use_vrf: default
+#
+# commands:
+#   - "logging console"
+#   - "logging ip access-list cache entries 4096"
+#   - "no logging ip access-list cache interval 200"
+#   - "no logging ip access-list cache threshold 5000"
+#   - "no logging origin-id hostname"
+#   - "logging origin-id ip 192.0.2.100"
+#   - "logging server 198.51.100.101 1 port 6538 use-vrf management"
+#   - "no logging server 203.0.113.100 1 use-vrf management"
+#
+#  after:
+#    facilities:
+#      - facility: auth
+#        level: 2
+#      - facility: ftp
+#        level: 6
+#      - facility: ospfv3
+#        level: 1
+#    ip:
+#      access_list:
+#        cache:
+#          entries: 4096
+#    monitor:
+#      level: 4
+#    origin_id:
+#      ip: 192.0.2.100
+#    servers:
+#      - level: 1
+#        port: 6538
+#        server: 198.51.100.101
+#        use_vrf: management
+#      - facility: local6
+#        level: 3
+#        server: 203.0.113.101
+#        use_vrf: default
+#
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config | include logging
+# logging monitor 4
+# logging ip access-list cache entries 4096
+# logging level auth 2
+# logging level ospfv3 1
+# logging level ftp 6
+# logging origin-id ip 192.0.2.100
+# logging server 203.0.113.101 3 use-vrf default facility local6
+# logging server 198.51.100.101 1 port 6538 use-vrf management
+
+# Using deleted to delete all logging configurations
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config | include logging
+# logging console 3
+# logging monitor 4
+# logging ip access-list cache entries 16384
+# logging ip access-list cache interval 200
+# logging ip access-list cache threshold 5000
+# logging level auth 2
+# logging level ospfv3 1
+# logging level ftp 6
+# logging origin-id hostname
+# logging server 203.0.113.100 1 use-vrf management
+# logging server 203.0.113.101 3 use-vrf default facility local6
+
+- name: Delete all logging configuration
+  cisco.nxos.nxos_logging_global:
+    state: deleted
+
+# Task output
+# -------------
+# before:
+#   console:
+#      level: 3
+#    facilities:
+#      - facility: auth
+#        level: 2
+#      - facility: ftp
+#        level: 6
+#      - facility: ospfv3
+#        level: 1
+#    ip:
+#      access_list:
+#        cache:
+#          entries: 16384
+#          interval: 200
+#          threshold: 5000
+#    monitor:
+#      level: 4
+#    origin_id:
+#      hostname: true
+#    servers:
+#      - level: 1
+#        server: 203.0.113.100
+#        use_vrf: management
+#      - facility: local6
+#        level: 3
+#        server: 203.0.113.101
+#        use_vrf: default
+#
+# commands:
+#   - "logging console"
+#   - "logging monitor"
+#   - "no logging ip access-list cache entries 16384"
+#   - "no logging ip access-list cache interval 200"
+#   - "no logging ip access-list cache threshold 5000"
+#   - "no logging origin-id hostname"
+#   - "no logging level auth 2"
+#   - "no logging level ospfv3 1"
+#   - "no logging level ftp 6"
+#   - "no logging server 203.0.113.100 1 use-vrf management"
+#   - "no logging server 203.0.113.101 3 facility local6 use-vrf default"
+#
+# after: {}
+
+# Using rendered
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_logging_global:
+    config:
+      console:
+        level: 3
+      monitor:
+        level: 4
+      ip:
+        access_list:
+          cache:
+            entries: 16384
+            interval: 200
+            threshold: 5000
+      facilities:
+        - facility: auth
+          level: 2
+        - facility: ospfv3
+          level: 1
+        - facility: ftp
+          level: 6
+      servers:
+        - server: 203.0.113.100
+          level: 1
+          use_vrf: management
+        - server: 203.0.113.101
+          level: 3
+          facility: local6
+          use_vrf: default
+      origin_id:
+        hostname: True
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+#  rendered:
+#    - "logging console 3"
+#    - "logging monitor 4"
+#    - "logging ip access-list cache entries 16384"
+#    - "logging ip access-list cache interval 200"
+#    - "logging ip access-list cache threshold 5000"
+#    - "logging level auth 2"
+#    - "logging level ospfv3 1"
+#    - "logging level ftp 6"
+#    - "logging server 203.0.113.100 1 use-vrf management"
+#    - "logging server 203.0.113.101 3 facility local6 use-vrf default"
+#    - "logging origin-id hostname"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# logging console 3
+# logging monitor 4
+# logging ip access-list cache entries 16384
+# logging ip access-list cache interval 200
+# logging ip access-list cache threshold 5000
+# logging level auth 2
+# logging level ospfv3 1
+# logging level ftp 6
+# logging origin-id hostname
+# logging server 203.0.113.100 1 use-vrf management
+# logging server 203.0.113.101 3 use-vrf default facility local6
+
+- name: Parse externally provided logging configuration
+  register: result
+  cisco.nxos.nxos_logging_global:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+#  parsed:
+#    console:
+#      level: 3
+#    facilities:
+#      - facility: auth
+#        level: 2
+#      - facility: ftp
+#        level: 6
+#      - facility: ospfv3
+#        level: 1
+#    ip:
+#      access_list:
+#        cache:
+#          entries: 16384
+#          interval: 200
+#          threshold: 5000
+#    monitor:
+#      level: 4
+#    origin_id:
+#      hostname: true
+#    servers:
+#      - level: 1
+#        server: 203.0.113.100
+#        use_vrf: management
+#      - facility: local6
+#        level: 3
+#        server: 203.0.113.101
+#        use_vrf: default
 
 """
 
