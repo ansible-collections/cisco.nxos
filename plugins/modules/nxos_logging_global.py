@@ -164,13 +164,19 @@ options:
         type: dict
         suboptions:
           hostname:
-            description: Use hostname as origin-id of logging messages.
+            description:
+              - Use hostname as origin-id of logging messages.
+              - This option is mutually exclusive with I(ip) and I(string).
             type: bool
           ip:
-            description: Use ip address as origin-id of logging messages.
+            description:
+              - Use ip address as origin-id of logging messages.
+              - This option is mutually exclusive with I(hostname) and I(string).
             type: str
           string:
-            description: Use text string as origin-id of logging messages.
+            description:
+              - Use text string as origin-id of logging messages.
+              - This option is mutually exclusive with I(hostname) and I(ip).
             type: str
       rate_limit:
         description: Enable or disable rate limit for log messages.
@@ -197,7 +203,7 @@ options:
             type: str
           port:
             description: Destination Port when forwarding to remote server.
-            type: str
+            type: int
           secure:
             description: Enable secure connection to remote server.
             type: dict

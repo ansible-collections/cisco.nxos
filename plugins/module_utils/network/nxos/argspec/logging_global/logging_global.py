@@ -137,6 +137,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                 },
                 "origin_id": {
                     "type": "dict",
+                    "mutually_exclusive": [["hostname", "ip", "string"]],
                     "options": {
                         "hostname": {"type": "bool"},
                         "ip": {"type": "str"},
@@ -155,7 +156,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                         "server": {"type": "str"},
                         "level": {"type": "int"},
                         "facility": {"type": "str"},
-                        "port": {"type": "str"},
+                        "port": {"type": "int"},
                         "secure": {
                             "type": "dict",
                             "options": {

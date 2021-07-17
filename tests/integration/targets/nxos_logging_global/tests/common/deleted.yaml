@@ -1,0 +1,41 @@
+---
+- debug:
+    msg: Start nxos_logging_global deleted integration tests connection={{ ansible_connection}}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete all logging configuration
+      cisco.nxos.nxos_logging_global: &del
+        state: deleted
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that: "{{ result['before'] == merged['after'] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+          - result['after'] == {}
+
+    - name: Delete all logging configuration (IDEMPOTENT)
+      cisco.nxos.nxos_logging_global: *del
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml

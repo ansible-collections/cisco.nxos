@@ -773,6 +773,7 @@ Parameters
                 </td>
                 <td>
                         <div>Use hostname as origin-id of logging messages.</div>
+                        <div>This option is mutually exclusive with <em>ip</em> and <em>string</em>.</div>
                 </td>
             </tr>
             <tr>
@@ -790,6 +791,7 @@ Parameters
                 </td>
                 <td>
                         <div>Use ip address as origin-id of logging messages.</div>
+                        <div>This option is mutually exclusive with <em>hostname</em> and <em>string</em>.</div>
                 </td>
             </tr>
             <tr>
@@ -807,6 +809,7 @@ Parameters
                 </td>
                 <td>
                         <div>Use text string as origin-id of logging messages.</div>
+                        <div>This option is mutually exclusive with <em>hostname</em> and <em>ip</em>.</div>
                 </td>
             </tr>
 
@@ -910,7 +913,7 @@ Parameters
                     <b>port</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">integer</span>
                     </div>
                 </td>
                 <td>
