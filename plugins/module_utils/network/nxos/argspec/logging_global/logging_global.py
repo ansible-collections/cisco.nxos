@@ -28,7 +28,8 @@ The arg spec for the nxos_logging_global module
 
 
 class Logging_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_logging_global module"""
+    """The arg spec for the nxos_logging_global module
+    """
 
     argument_spec = {
         "running_config": {"type": "str"},
@@ -42,7 +43,19 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                             "type": "str",
                             "choices": ["enabled", "disabled"],
                         },
-                        "level": {"type": "int"},
+                        "severity": {
+                            "type": "str",
+                            "choices": [
+                                "emergency",
+                                "alert",
+                                "critical",
+                                "error",
+                                "warning",
+                                "notification",
+                                "informational",
+                                "debugging",
+                            ],
+                        },
                     },
                 },
                 "event": {
@@ -67,7 +80,19 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                 "history": {
                     "type": "dict",
                     "options": {
-                        "level": {"type": "int"},
+                        "severity": {
+                            "type": "str",
+                            "choices": [
+                                "emergency",
+                                "alert",
+                                "critical",
+                                "error",
+                                "warning",
+                                "notification",
+                                "informational",
+                                "debugging",
+                            ],
+                        },
                         "size": {"type": "int"},
                     },
                 },
@@ -99,7 +124,19 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "facility": {"type": "str"},
-                        "level": {"type": "int"},
+                        "severity": {
+                            "type": "str",
+                            "choices": [
+                                "emergency",
+                                "alert",
+                                "critical",
+                                "error",
+                                "warning",
+                                "notification",
+                                "informational",
+                                "debugging",
+                            ],
+                        },
                     },
                 },
                 "logfile": {
@@ -110,7 +147,19 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                             "choices": ["enabled", "disabled"],
                         },
                         "name": {"type": "str"},
-                        "level": {"type": "int"},
+                        "severity": {
+                            "type": "str",
+                            "choices": [
+                                "emergency",
+                                "alert",
+                                "critical",
+                                "error",
+                                "warning",
+                                "notification",
+                                "informational",
+                                "debugging",
+                            ],
+                        },
                         "persistent_threshold": {"type": "int"},
                         "size": {"type": "int"},
                     },
@@ -122,7 +171,19 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                             "type": "str",
                             "choices": ["enabled", "disabled"],
                         },
-                        "level": {"type": "int"},
+                        "severity": {
+                            "type": "str",
+                            "choices": [
+                                "emergency",
+                                "alert",
+                                "critical",
+                                "error",
+                                "warning",
+                                "notification",
+                                "informational",
+                                "debugging",
+                            ],
+                        },
                     },
                 },
                 "monitor": {
@@ -132,12 +193,23 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                             "type": "str",
                             "choices": ["enabled", "disabled"],
                         },
-                        "level": {"type": "int"},
+                        "severity": {
+                            "type": "str",
+                            "choices": [
+                                "emergency",
+                                "alert",
+                                "critical",
+                                "error",
+                                "warning",
+                                "notification",
+                                "informational",
+                                "debugging",
+                            ],
+                        },
                     },
                 },
                 "origin_id": {
                     "type": "dict",
-                    "mutually_exclusive": [["hostname", "ip", "string"]],
                     "options": {
                         "hostname": {"type": "bool"},
                         "ip": {"type": "str"},
@@ -149,12 +221,24 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                     "choices": ["enabled", "disabled"],
                 },
                 "rfc_strict": {"type": "bool"},
-                "servers": {
+                "hosts": {
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "server": {"type": "str"},
-                        "level": {"type": "int"},
+                        "host": {"type": "str"},
+                        "severity": {
+                            "type": "str",
+                            "choices": [
+                                "emergency",
+                                "alert",
+                                "critical",
+                                "error",
+                                "warning",
+                                "notification",
+                                "informational",
+                                "debugging",
+                            ],
+                        },
                         "facility": {"type": "str"},
                         "port": {"type": "int"},
                         "secure": {

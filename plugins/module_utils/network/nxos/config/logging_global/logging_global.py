@@ -24,6 +24,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
     get_from_dict,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    get_logging_sevmap,
+)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -48,6 +51,7 @@ class Logging_global(ResourceModule):
             resource="logging_global",
             tmplt=Logging_globalTemplate(),
         )
+        self._sev_map = get_logging_sevmap(invert=True)
         self._state_set = ("replaced", "deleted", "overridden")
         self.parsers = [
             "console",
@@ -58,7 +62,7 @@ class Logging_global(ResourceModule):
             "event.link_status.default",
             "event.trunk_status.enable",
             "event.trunk_status.default",
-            "history.level",
+            "history.severity",
             "history.size",
             "ip.access_list.cache.entries",
             "ip.access_list.cache.interval",
@@ -136,6 +140,8 @@ class Logging_global(ResourceModule):
                     wantd[x] = {"state": "enabled"}
             if "rate_limit" in haved and "rate_limit" not in wantd:
                 wantd["rate_limit"] = "enabled"
+            if "logfile" in haved and "logfile" not in wantd:
+                wantd["logfile"] = {"name": "messages", "severity": 5}
 
         self._compare(want=wantd, have=haved)
 
@@ -150,14 +156,14 @@ class Logging_global(ResourceModule):
 
     def _compare_lists(self, want, have):
         """Compare list of dictionaries"""
-        for x in ["facilities", "servers"]:
+        for x in ["facilities", "hosts"]:
             wantx = want.get(x, {})
             havex = have.get(x, {})
             for key, wentry in iteritems(wantx):
                 hentry = havex.pop(key, {})
                 if wentry != hentry:
-                    if x == "servers" and self.state in self._state_set:
-                        # remove have config for servers
+                    if x == "hosts" and self.state in self._state_set:
+                        # remove have config for hosts
                         # else want gets appended
                         self.addcmd(hentry, x, negate=True)
                     self.addcmd(wentry, x)
@@ -166,13 +172,19 @@ class Logging_global(ResourceModule):
 
     def _logging_list_to_dict(self, data):
         """Convert all list to dicts to dicts
-        of dicts
+        of dicts and substitute severity values
         """
         tmp = deepcopy(data)
-        if "servers" in tmp:
-            tmp["servers"] = {x["server"]: x for x in tmp["servers"]}
-        if "facilities" in data:
-            tmp["facilities"] = {x["facility"]: x for x in tmp["facilities"]}
+        pkey = {"hosts": "host", "facilities": "facility"}
+        for k in ("hosts", "facilities"):
+            if k in tmp:
+                for x in tmp[k]:
+                    if "severity" in x:
+                        x["severity"] = self._sev_map[x["severity"]]
+                tmp[k] = {i[pkey[k]]: i for i in tmp[k]}
+        for k in ("console", "history", "logfile", "module", "monitor"):
+            if "severity" in tmp.get(k, {}):
+                tmp[k]["severity"] = self._sev_map[tmp[k]["severity"]]
         return tmp
 
     def __update_dict(self, datadict, key, nval=True):

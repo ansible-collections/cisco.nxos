@@ -20,6 +20,9 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    get_logging_sevmap,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.logging_global import (
     Logging_globalTemplate,
 )
@@ -47,6 +50,7 @@ class Logging_globalFacts(object):
         """
         facts = {}
         objs = []
+        sev_map = get_logging_sevmap()
 
         if not data:
             data = connection.get("show running-config | include logging")
@@ -58,15 +62,17 @@ class Logging_globalFacts(object):
         objs = logging_global_parser.parse()
 
         if objs:
+            for k in ("console", "history", "logfile", "module", "monitor"):
+                if "severity" in objs.get(k, {}):
+                    objs[k]["severity"] = sev_map[objs[k]["severity"]]
             # pre-sort list of dictionaries
-            if "servers" in objs:
-                objs["servers"] = sorted(
-                    objs["servers"], key=lambda k: k["server"]
-                )
-            if "facilities" in objs:
-                objs["facilities"] = sorted(
-                    objs["facilities"], key=lambda k: k["facility"]
-                )
+            pkey = {"hosts": "host", "facilities": "facility"}
+            for x in ("hosts", "facilities"):
+                if x in objs:
+                    for item in objs[x]:
+                        if "severity" in item:
+                            item["severity"] = sev_map[item["severity"]]
+                    objs[x] = sorted(objs[x], key=lambda k: k[pkey[x]])
 
         ansible_facts["ansible_network_resources"].pop("logging_global", None)
 

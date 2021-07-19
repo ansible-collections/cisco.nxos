@@ -15,14 +15,14 @@ merged:
     - "logging origin-id hostname"
   after:
     console:
-      level: 3
+      severity: error
     facilities:
       - facility: auth
-        level: 2
+        severity: critical
       - facility: ftp
-        level: 6
+        severity: informational
       - facility: ospfv3
-        level: 1
+        severity: alert
     ip:
       access_list:
         cache:
@@ -30,16 +30,16 @@ merged:
           interval: 200
           threshold: 5000
     monitor:
-      level: 4
+      severity: warning
     origin_id:
       hostname: true
-    servers:
-      - level: 1
-        server: 203.0.113.100
+    hosts:
+      - severity: alert
+        host: 203.0.113.100
         use_vrf: management
       - facility: local6
-        level: 3
-        server: 203.0.113.101
+        severity: error
+        host: 203.0.113.101
         use_vrf: default
 
 replaced:
@@ -55,27 +55,27 @@ replaced:
   after:
     facilities:
       - facility: auth
-        level: 2
+        severity: critical
       - facility: ftp
-        level: 6
+        severity: informational
       - facility: ospfv3
-        level: 1
+        severity: alert
     ip:
       access_list:
         cache:
           entries: 4096
     monitor:
-      level: 4
+      severity: warning
     origin_id:
       ip: 192.0.2.100
-    servers:
-      - level: 1
+    hosts:
+      - severity: alert
         port: 6538
-        server: 198.51.100.101
+        host: 198.51.100.101
         use_vrf: management
       - facility: local6
-        level: 3
-        server: 203.0.113.101
+        severity: error
+        host: 203.0.113.101
         use_vrf: default
 
 deleted:

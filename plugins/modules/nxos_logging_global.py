@@ -186,12 +186,12 @@ options:
           - Set RFC to which messages should compliant.
           - Syslogs will be compliant to RFC 5424.
         type: bool
-      servers:
+      hosts:
         description: Enable forwarding to Remote Syslog Servers.
         type: list
         elements: dict
         suboptions:
-          server:
+          host:
             description: Hostname/IPv4/IPv6 address of the Remote Syslog Server.
             type: str
           severity: *sev
@@ -269,11 +269,11 @@ EXAMPLES = """
           severity: alert
         - facility: ftp
           severity: informational
-      servers:
-        - server: 203.0.113.100
+      hosts:
+        - host: 203.0.113.100
           severity: alert
           use_vrf: management
-        - server: 203.0.113.101
+        - host: 203.0.113.101
           severity: error
           facility: local6
           use_vrf: default
@@ -317,13 +317,13 @@ EXAMPLES = """
 #      severity: warning
 #    origin_id:
 #      hostname: true
-#    servers:
+#    hosts:
 #      - severity: alert
-#        server: 203.0.113.100
+#        host: 203.0.113.100
 #        use_vrf: management
 #      - facility: local6
 #        severity: error
-#        server: 203.0.113.101
+#        host: 203.0.113.101
 #        use_vrf: default
 
 # After state:
@@ -374,12 +374,12 @@ EXAMPLES = """
           severity: alert
         - facility: ftp
           severity: informational
-      servers:
-        - server: 203.0.113.101
+      hosts:
+        - host: 203.0.113.101
           severity: error
           facility: local6
           use_vrf: default
-        - server: 198.51.100.101
+        - host: 198.51.100.101
           severity: alert
           port: 6538
           use_vrf: management
@@ -409,13 +409,13 @@ EXAMPLES = """
 #      severity: warning
 #    origin_id:
 #      hostname: true
-#    servers:
+#    hosts:
 #      - severity: alert
-#        server: 203.0.113.100
+#        host: 203.0.113.100
 #        use_vrf: management
 #      - facility: local6
 #        severity: error
-#        server: 203.0.113.101
+#        host: 203.0.113.101
 #        use_vrf: default
 #
 # commands:
@@ -444,14 +444,14 @@ EXAMPLES = """
 #      severity: warning
 #    origin_id:
 #      ip: 192.0.2.100
-#    servers:
+#    hosts:
 #      - severity: alert
 #        port: 6538
-#        server: 198.51.100.101
+#        host: 198.51.100.101
 #        use_vrf: management
 #      - facility: local6
 #        severity: error
-#        server: 203.0.113.101
+#        host: 203.0.113.101
 #        use_vrf: default
 #
 # After state:
@@ -509,13 +509,13 @@ EXAMPLES = """
 #      severity: warning
 #    origin_id:
 #      hostname: true
-#    servers:
+#    hosts:
 #      - severity: alert
-#        server: 203.0.113.100
+#        host: 203.0.113.100
 #        use_vrf: management
 #      - facility: local6
 #        severity: error
-#        server: 203.0.113.101
+#        host: 203.0.113.101
 #        use_vrf: default
 #
 # commands:
@@ -555,11 +555,11 @@ EXAMPLES = """
           severity: alert
         - facility: ftp
           severity: informational
-      servers:
-        - server: 203.0.113.100
+      hosts:
+        - host: 203.0.113.100
           severity: alert
           use_vrf: management
-        - server: 203.0.113.101
+        - host: 203.0.113.101
           severity: error
           facility: local6
           use_vrf: default
@@ -625,13 +625,13 @@ EXAMPLES = """
 #      severity: warning
 #    origin_id:
 #      hostname: true
-#    servers:
+#    hosts:
 #      - severity: alert
-#        server: 203.0.113.100
+#        host: 203.0.113.100
 #        use_vrf: management
 #      - facility: local6
 #        severity: error
-#        server: 203.0.113.101
+#        host: 203.0.113.101
 #        use_vrf: default
 """
 

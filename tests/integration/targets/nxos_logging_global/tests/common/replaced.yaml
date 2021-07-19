@@ -11,25 +11,25 @@
       cisco.nxos.nxos_logging_global: &id002
         config:
           monitor:
-            level: 4
+            severity: warning
           ip:
             access_list:
               cache:
                 entries: 4096
           facilities:
             - facility: auth
-              level: 2
+              severity: critical
             - facility: ospfv3
-              level: 1
+              severity: alert
             - facility: ftp
-              level: 6
-          servers:
-            - server: 203.0.113.101
-              level: 3
+              severity: informational
+          hosts:
+            - host: 203.0.113.101
+              severity: error
               facility: local6
               use_vrf: default
-            - server: 198.51.100.101
-              level: 1
+            - host: 198.51.100.101
+              severity: alert
               port: 6538
               use_vrf: management
           origin_id:

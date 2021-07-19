@@ -20,14 +20,14 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-def _tmplt_servers(data):
-    cmd = "logging server {server}"
+def _tmplt_hosts(data):
+    cmd = "logging server {host}"
     data["client_identity"] = (
         data.get("secure", {}).get("trustpoint", {}).get("client_identity")
     )
 
-    if "level" in data:
-        cmd += " {level}"
+    if "severity" in data:
+        cmd += " {severity}"
     if "port" in data:
         cmd += " port {port}"
     if data["client_identity"]:
@@ -56,15 +56,15 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^(?P<negated>no\s)?
                 logging\sconsole
-                (\s(?P<level>\d))?
+                (\s(?P<severity>\d))?
                 $""", re.VERBOSE),
             "setval": "{{ 'no ' if console.state|d('') == 'disabled' else '' }}"
                       "logging console"
-                      "{{ (' ' + console.level|string) if console.level is defined else '' }}",
+                      "{{ (' ' + console.severity|string) if console.severity is defined else '' }}",
             "result": {
                 "console": {
                     "state": "{{ 'disabled' if negated is defined else None }}",
-                    "level": "{{ level }}",
+                    "severity": "{{ severity }}",
                 },
             },
         },
@@ -133,16 +133,16 @@ class Logging_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "history.level",
+            "name": "history.severity",
             "getval": re.compile(
                 r"""
                 ^logging\shistory
-                \s(?P<level>\d)
+                \s(?P<severity>\d)
                 $""", re.VERBOSE),
-            "setval": "logging history {{ history.level }}",
+            "setval": "logging history {{ history.severity }}",
             "result": {
                 "history": {
-                    "level": "{{ level }}",
+                    "severity": "{{ severity }}",
                 },
             },
         },
@@ -254,14 +254,14 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\slevel
                 \s(?P<facility>\S+)
-                \s(?P<level>\d+)
+                \s(?P<severity>\d+)
                 $""", re.VERBOSE),
-            "setval": "logging level {{ facility }} {{ level }}",
+            "setval": "logging level {{ facility }} {{ severity }}",
             "result": {
                 "facilities": [
                     {
                         "facility": "{{ facility }}",
-                        "level": "{{ level }}",
+                        "severity": "{{ severity }}",
                     },
                 ]
             },
@@ -273,21 +273,21 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^(?P<negated>no\s)?
                 logging\slogfile
                 (\s(?P<name>\S+))?
-                (\s(?P<level>\d+))?
+                (\s(?P<severity>\d+))?
                 (\ssize\s(?P<size>\d+))?
                 (\spersistent\sthreshold\s(?P<persistent_threshold>\d+))?
                 $""", re.VERBOSE),
             "setval": "{{ 'no ' if logfile.state|d('') == 'disabled' else '' }}"
                       "logging logfile"
                       "{{ ' ' + logfile.name if logfile.name|d('') else '' }}"
-                      "{{ (' ' + logfile.level|string) if logfile.level is defined else '' }}"
+                      "{{ (' ' + logfile.severity|string) if logfile.severity is defined else '' }}"
                       "{{ (' size ' + logfile.size|string) if logfile.size is defined else '' }}"
                       "{{ (' persistent threshold ' + logfile.persistent_threshold|string) if logfile.persistent_threshold is defined else '' }}",
             "result": {
                 "logfile": {
                     "state": "{{ 'disabled' if negated is defined else None }}",
                     "name": "{{ name }}",
-                    "level": "{{ level }}",
+                    "severity": "{{ severity }}",
                     "persistent_threshold": "{{ persistent_threshold }}",
                     "size": "{{ size }}",
                 },
@@ -299,15 +299,15 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^(?P<negated>no\s)?
                 logging\smodule
-                (\s(?P<level>\d))?
+                (\s(?P<severity>\d))?
                 $""", re.VERBOSE),
             "setval": "{{ 'no ' if module.state|d('') == 'disabled' else '' }}"
                       "logging module"
-                      "{{ (' ' + module.level|string) if module.level is defined else '' }}",
+                      "{{ (' ' + module.severity|string) if module.severity is defined else '' }}",
             "result": {
                 "module": {
                     "state": "{{ 'disabled' if negated is defined else None }}",
-                    "level": "{{ level }}",
+                    "severity": "{{ severity }}",
                 },
             },
         },
@@ -317,15 +317,15 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^(?P<negated>no\s)?
                 logging\smonitor
-                (\s(?P<level>\d))?
+                (\s(?P<severity>\d))?
                 $""", re.VERBOSE),
             "setval": "{{ 'no ' if monitor.state|d('') == 'disabled' else '' }}"
                       "logging monitor"
-                      "{{ (' ' + monitor.level|string) if monitor.level is defined else '' }}",
+                      "{{ (' ' + monitor.severity|string) if monitor.severity is defined else '' }}",
             "result": {
                 "monitor": {
                     "state": "{{ 'disabled' if negated is defined else None }}",
-                    "level": "{{ level }}",
+                    "severity": "{{ severity }}",
                 },
             },
         },
@@ -398,23 +398,23 @@ class Logging_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "servers",
+            "name": "hosts",
             "getval": re.compile(
                 r"""
                 ^logging\sserver
-                \s(?P<server>\S+)
-                (\s(?P<level>\d))?
+                \s(?P<host>\S+)
+                (\s(?P<severity>\d))?
                 (\sport\s(?P<port>\d+))?
                 (\ssecure\strustpoint\sclient-identity\s(?P<client_identity>\S+))?
                 (\suse-vrf\s(?P<use_vrf>\S+))?
                 (\sfacility\s(?P<facility>\S+))?
                 $""", re.VERBOSE),
-            "setval": _tmplt_servers,
+            "setval": _tmplt_hosts,
             "result": {
-                "servers": [
+                "hosts": [
                     {
-                        "server": "{{ server }}",
-                        "level": "{{ level }}",
+                        "host": "{{ host }}",
+                        "severity": "{{ severity }}",
                         "secure": {
                             "trustpoint": {
                                 "client_identity": "{{ client_identity }}",

@@ -381,6 +381,176 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>hosts</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Enable forwarding to Remote Syslog Servers.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>facility</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Facility to use when forwarding to server.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>host</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Hostname/IPv4/IPv6 address of the Remote Syslog Server.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Destination Port when forwarding to remote server.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>secure</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Enable secure connection to remote server.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>trustpoint</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Trustpoint configuration.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>client_identity</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Client Identity certificate for mutual authentication.</div>
+                        <div>Trustpoint to use for client certificate authentication.</div>
+                </td>
+            </tr>
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>severity</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>emergency</li>
+                                    <li>alert</li>
+                                    <li>critical</li>
+                                    <li>error</li>
+                                    <li>warning</li>
+                                    <li>notification</li>
+                                    <li>informational</li>
+                                    <li>debugging</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set severity severity for console.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>use_vrf</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Display per-VRF information.</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ip</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -918,176 +1088,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>servers</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Enable forwarding to Remote Syslog Servers.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Facility to use when forwarding to server.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>port</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Destination Port when forwarding to remote server.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>secure</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Enable secure connection to remote server.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>trustpoint</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Trustpoint configuration.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>client_identity</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Client Identity certificate for mutual authentication.</div>
-                        <div>Trustpoint to use for client certificate authentication.</div>
-                </td>
-            </tr>
-
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>server</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Hostname/IPv4/IPv6 address of the Remote Syslog Server.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>severity</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>emergency</li>
-                                    <li>alert</li>
-                                    <li>critical</li>
-                                    <li>error</li>
-                                    <li>warning</li>
-                                    <li>notification</li>
-                                    <li>informational</li>
-                                    <li>debugging</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set severity severity for console.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>use_vrf</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Display per-VRF information.</div>
-                </td>
-            </tr>
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>source_interface</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1210,11 +1210,11 @@ Examples
               severity: alert
             - facility: ftp
               severity: informational
-          servers:
-            - server: 203.0.113.100
+          hosts:
+            - host: 203.0.113.100
               severity: alert
               use_vrf: management
-            - server: 203.0.113.101
+            - host: 203.0.113.101
               severity: error
               facility: local6
               use_vrf: default
@@ -1258,13 +1258,13 @@ Examples
     #      severity: warning
     #    origin_id:
     #      hostname: true
-    #    servers:
+    #    hosts:
     #      - severity: alert
-    #        server: 203.0.113.100
+    #        host: 203.0.113.100
     #        use_vrf: management
     #      - facility: local6
     #        severity: error
-    #        server: 203.0.113.101
+    #        host: 203.0.113.101
     #        use_vrf: default
 
     # After state:
@@ -1315,12 +1315,12 @@ Examples
               severity: alert
             - facility: ftp
               severity: informational
-          servers:
-            - server: 203.0.113.101
+          hosts:
+            - host: 203.0.113.101
               severity: error
               facility: local6
               use_vrf: default
-            - server: 198.51.100.101
+            - host: 198.51.100.101
               severity: alert
               port: 6538
               use_vrf: management
@@ -1350,13 +1350,13 @@ Examples
     #      severity: warning
     #    origin_id:
     #      hostname: true
-    #    servers:
+    #    hosts:
     #      - severity: alert
-    #        server: 203.0.113.100
+    #        host: 203.0.113.100
     #        use_vrf: management
     #      - facility: local6
     #        severity: error
-    #        server: 203.0.113.101
+    #        host: 203.0.113.101
     #        use_vrf: default
     #
     # commands:
@@ -1385,14 +1385,14 @@ Examples
     #      severity: warning
     #    origin_id:
     #      ip: 192.0.2.100
-    #    servers:
+    #    hosts:
     #      - severity: alert
     #        port: 6538
-    #        server: 198.51.100.101
+    #        host: 198.51.100.101
     #        use_vrf: management
     #      - facility: local6
     #        severity: error
-    #        server: 203.0.113.101
+    #        host: 203.0.113.101
     #        use_vrf: default
     #
     # After state:
@@ -1450,13 +1450,13 @@ Examples
     #      severity: warning
     #    origin_id:
     #      hostname: true
-    #    servers:
+    #    hosts:
     #      - severity: alert
-    #        server: 203.0.113.100
+    #        host: 203.0.113.100
     #        use_vrf: management
     #      - facility: local6
     #        severity: error
-    #        server: 203.0.113.101
+    #        host: 203.0.113.101
     #        use_vrf: default
     #
     # commands:
@@ -1496,11 +1496,11 @@ Examples
               severity: alert
             - facility: ftp
               severity: informational
-          servers:
-            - server: 203.0.113.100
+          hosts:
+            - host: 203.0.113.100
               severity: alert
               use_vrf: management
-            - server: 203.0.113.101
+            - host: 203.0.113.101
               severity: error
               facility: local6
               use_vrf: default
@@ -1566,13 +1566,13 @@ Examples
     #      severity: warning
     #    origin_id:
     #      hostname: true
-    #    servers:
+    #    hosts:
     #      - severity: alert
-    #        server: 203.0.113.100
+    #        host: 203.0.113.100
     #        use_vrf: management
     #      - facility: local6
     #        severity: error
-    #        server: 203.0.113.101
+    #        host: 203.0.113.101
     #        use_vrf: default
 
 
