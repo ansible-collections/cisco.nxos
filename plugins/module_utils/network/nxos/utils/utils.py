@@ -159,5 +159,7 @@ def numerical_sort(string_int_list):
 def get_logging_sevmap(invert=False):
     x = LOGGING_SEVMAP
     if invert:
-        x = {v: k for k, v in iteritems(x)}
+        # cannot use dict comprehension yet
+        # since we still test with Python 2.6
+        x = dict(map(reversed, iteritems(x)))
     return x
