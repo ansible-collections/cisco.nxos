@@ -74,7 +74,8 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                 "ip route 192.0.2.16/28 192.0.2.24 name initial_route"
             ]
             vrf_data = [
-                "vrf context test\n  ip route 192.0.2.96/28 192.0.2.122 vrf dest_vrf\n  ipv6 route 2001:db8:12::/32 2001:db8::1001 name ipv6_route 3\n"
+                "vrf context test\n  ip route 192.0.2.96/28 192.0.2.122 vrf dest_vrf"
+                "\n  ip route static bfd Vlan100 192.168.1.100\n  ipv6 route 2001:db8:12::/32 2001:db8::1001 name ipv6_route 3\n"
             ]
 
             output = non_vrf_data + vrf_data

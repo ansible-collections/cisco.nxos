@@ -229,12 +229,16 @@ class Static_routesFacts(object):
                     # considering from the second line as first line is 'vrf context..'
                     conf = conf[1:]
                     for c in conf:
-                        if "ip route" in c or "ipv6 route" in c:
+                        if (
+                            "ip route" in c or "ipv6 route" in c
+                        ) and "bfd" not in c:
                             self.get_command(c, afi_list, dest_list, af)
                             config_dict["address_families"] = af
                     config.append(config_dict)
                 else:
-                    if "ip route" in conf or "ipv6 route" in conf:
+                    if (
+                        "ip route" in conf or "ipv6 route" in conf
+                    ) and "bfd" not in conf:
                         self.get_command(
                             conf, global_afi_list, global_dest_list, global_af
                         )
