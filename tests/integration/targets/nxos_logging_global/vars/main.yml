@@ -8,7 +8,7 @@ merged:
     - "logging ip access-list cache interval 200"
     - "logging ip access-list cache threshold 5000"
     - "logging level auth 2"
-    - "logging level ospfv3 1"
+    - "logging level aaa 1"
     - "logging level ftp 6"
     - "logging server 203.0.113.100 1 use-vrf management"
     - "logging server 203.0.113.101 3 facility local6 use-vrf default"
@@ -17,12 +17,12 @@ merged:
     console:
       severity: error
     facilities:
+      - facility: aaa
+        severity: alert
       - facility: auth
         severity: critical
       - facility: ftp
         severity: informational
-      - facility: ospfv3
-        severity: alert
     ip:
       access_list:
         cache:
@@ -54,12 +54,12 @@ replaced:
     - "no logging server 203.0.113.100 1 use-vrf management"
   after:
     facilities:
+      - facility: aaa
+        severity: alert
       - facility: auth
         severity: critical
       - facility: ftp
         severity: informational
-      - facility: ospfv3
-        severity: alert
     ip:
       access_list:
         cache:
@@ -87,7 +87,7 @@ deleted:
     - "no logging ip access-list cache threshold 5000"
     - "no logging origin-id hostname"
     - "no logging level auth 2"
-    - "no logging level ospfv3 1"
+    - "no logging level aaa 1"
     - "no logging level ftp 6"
     - "no logging server 203.0.113.100 1 use-vrf management"
     - "no logging server 203.0.113.101 3 facility local6 use-vrf default"

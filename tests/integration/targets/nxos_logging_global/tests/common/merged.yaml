@@ -21,7 +21,7 @@
           facilities:
             - facility: auth
               severity: critical
-            - facility: ospfv3
+            - facility: aaa
               severity: alert
             - facility: ftp
               severity: informational
