@@ -44,9 +44,18 @@ options:
             description: Enable or disable monitor logging.
             type: str
             choices: ["enabled", "disabled"]
-          level:
-            description:  Set severity level for console (0-7).
-            type: int
+          severity: &sev
+            description:  Set severity severity for console.
+            type: str
+            choices:
+            - emergency
+            - alert
+            - critical
+            - error
+            - warning
+            - notification
+            - informational
+            - debugging
       event:
         description: Interface events.
         type: dict
@@ -56,7 +65,7 @@ options:
             type: dict
             suboptions: &event
               enable:
-                description: To enable logging overriding port level configuration.
+                description: To enable logging overriding port severity configuration.
                 type: bool
               default:
                 description: Default logging configuration used by interfaces not explicitly configured.
@@ -66,12 +75,10 @@ options:
             type: dict
             suboptions: *event
       history:
-        description: Modifies severity level or size for history table.
+        description: Modifies severity severity or size for history table.
         type: dict
         suboptions:
-          level:
-            description: Set severity level for history.
-            type: int
+          severity: *sev
           size:
             description: Set history table size.
             type: int
@@ -114,9 +121,7 @@ options:
           facility:
             description: Facility name.
             type: str
-          level:
-            description: Set severity level for the facility (0-7).
-            type: int
+          severity: *sev
       logfile:
         description: Set file logging.
         type: dict
@@ -128,9 +133,7 @@ options:
           name:
             description: Logfile name.
             type: str
-          level:
-            description: Set severity level for logfile.
-            type: int
+          severity: *sev
           persistent_threshold:
             description: Set persistent logging utilization alert threshold in percentage.
             type: int
@@ -145,20 +148,16 @@ options:
             description: Enable or disable module logging.
             type: str
             choices: ["enabled", "disabled"]
-          level:
-            description: Set severity level for module logging.
-            type: int
+          severity: *sev
       monitor:
-        description: Set terminal line(monitor) logging level.
+        description: Set terminal line(monitor) logging severity.
         type: dict
         suboptions:
           state:
             description: Enable or disable monitor logging.
             type: str
             choices: ["enabled", "disabled"]
-          level:
-            description: Set severity level for monitor logging.
-            type: int
+          severity: *sev
       origin_id:
         description: Enable origin information for Remote Syslog Server.
         type: dict
@@ -195,9 +194,7 @@ options:
           server:
             description: Hostname/IPv4/IPv6 address of the Remote Syslog Server.
             type: str
-          level:
-            description: Set severity level for host.
-            type: int
+          severity: *sev
           facility:
             description: Facility to use when forwarding to server.
             type: str
@@ -256,9 +253,9 @@ EXAMPLES = """
   cisco.nxos.nxos_logging_global:
     config:
       console:
-        level: 3
+        severity: error
       monitor:
-        level: 4
+        severity: warning
       ip:
         access_list:
           cache:
@@ -267,17 +264,17 @@ EXAMPLES = """
             threshold: 5000
       facilities:
         - facility: auth
-          level: 2
+          severity: critical
         - facility: ospfv3
-          level: 1
+          severity: alert
         - facility: ftp
-          level: 6
+          severity: informational
       servers:
         - server: 203.0.113.100
-          level: 1
+          severity: alert
           use_vrf: management
         - server: 203.0.113.101
-          level: 3
+          severity: error
           facility: local6
           use_vrf: default
       origin_id:
@@ -293,23 +290,23 @@ EXAMPLES = """
 #    - "logging ip access-list cache entries 16384"
 #    - "logging ip access-list cache interval 200"
 #    - "logging ip access-list cache threshold 5000"
-#    - "logging level auth 2"
-#    - "logging level ospfv3 1"
-#    - "logging level ftp 6"
+#    - "logging severity auth 2"
+#    - "logging severity ospfv3 1"
+#    - "logging severity ftp 6"
 #    - "logging server 203.0.113.100 1 use-vrf management"
 #    - "logging server 203.0.113.101 3 facility local6 use-vrf default"
 #    - "logging origin-id hostname"
 #
 # after:
 #   console:
-#      level: 3
+#      severity: error
 #    facilities:
 #      - facility: auth
-#        level: 2
+#        severity: critical
 #      - facility: ftp
-#        level: 6
+#        severity: informational
 #      - facility: ospfv3
-#        level: 1
+#        severity: alert
 #    ip:
 #      access_list:
 #        cache:
@@ -317,15 +314,15 @@ EXAMPLES = """
 #          interval: 200
 #          threshold: 5000
 #    monitor:
-#      level: 4
+#      severity: warning
 #    origin_id:
 #      hostname: true
 #    servers:
-#      - level: 1
+#      - severity: alert
 #        server: 203.0.113.100
 #        use_vrf: management
 #      - facility: local6
-#        level: 3
+#        severity: error
 #        server: 203.0.113.101
 #        use_vrf: default
 
@@ -337,9 +334,9 @@ EXAMPLES = """
 # logging ip access-list cache entries 16384
 # logging ip access-list cache interval 200
 # logging ip access-list cache threshold 5000
-# logging level auth 2
-# logging level ospfv3 1
-# logging level ftp 6
+# logging severity auth 2
+# logging severity ospfv3 1
+# logging severity ftp 6
 # logging origin-id hostname
 # logging server 203.0.113.100 1 use-vrf management
 # logging server 203.0.113.101 3 use-vrf default facility local6
@@ -354,9 +351,9 @@ EXAMPLES = """
 # logging ip access-list cache entries 16384
 # logging ip access-list cache interval 200
 # logging ip access-list cache threshold 5000
-# logging level auth 2
-# logging level ospfv3 1
-# logging level ftp 6
+# logging severity auth 2
+# logging severity ospfv3 1
+# logging severity ftp 6
 # logging origin-id hostname
 # logging server 203.0.113.100 1 use-vrf management
 # logging server 203.0.113.101 3 use-vrf default facility local6
@@ -365,25 +362,25 @@ EXAMPLES = """
   cisco.nxos.nxos_logging_global:
     config:
       monitor:
-        level: 4
+        severity: warning
       ip:
         access_list:
           cache:
             entries: 4096
       facilities:
         - facility: auth
-          level: 2
+          severity: critical
         - facility: ospfv3
-          level: 1
+          severity: alert
         - facility: ftp
-          level: 6
+          severity: informational
       servers:
         - server: 203.0.113.101
-          level: 3
+          severity: error
           facility: local6
           use_vrf: default
         - server: 198.51.100.101
-          level: 1
+          severity: alert
           port: 6538
           use_vrf: management
       origin_id:
@@ -394,14 +391,14 @@ EXAMPLES = """
 # -------------
 # before:
 #   console:
-#      level: 3
+#      severity: error
 #    facilities:
 #      - facility: auth
-#        level: 2
+#        severity: critical
 #      - facility: ftp
-#        level: 6
+#        severity: informational
 #      - facility: ospfv3
-#        level: 1
+#        severity: alert
 #    ip:
 #      access_list:
 #        cache:
@@ -409,15 +406,15 @@ EXAMPLES = """
 #          interval: 200
 #          threshold: 5000
 #    monitor:
-#      level: 4
+#      severity: warning
 #    origin_id:
 #      hostname: true
 #    servers:
-#      - level: 1
+#      - severity: alert
 #        server: 203.0.113.100
 #        use_vrf: management
 #      - facility: local6
-#        level: 3
+#        severity: error
 #        server: 203.0.113.101
 #        use_vrf: default
 #
@@ -434,26 +431,26 @@ EXAMPLES = """
 #  after:
 #    facilities:
 #      - facility: auth
-#        level: 2
+#        severity: critical
 #      - facility: ftp
-#        level: 6
+#        severity: informational
 #      - facility: ospfv3
-#        level: 1
+#        severity: alert
 #    ip:
 #      access_list:
 #        cache:
 #          entries: 4096
 #    monitor:
-#      level: 4
+#      severity: warning
 #    origin_id:
 #      ip: 192.0.2.100
 #    servers:
-#      - level: 1
+#      - severity: alert
 #        port: 6538
 #        server: 198.51.100.101
 #        use_vrf: management
 #      - facility: local6
-#        level: 3
+#        severity: error
 #        server: 203.0.113.101
 #        use_vrf: default
 #
@@ -462,9 +459,9 @@ EXAMPLES = """
 # nxos-9k-rdo# show running-config | include logging
 # logging monitor 4
 # logging ip access-list cache entries 4096
-# logging level auth 2
-# logging level ospfv3 1
-# logging level ftp 6
+# logging severity auth 2
+# logging severity ospfv3 1
+# logging severity ftp 6
 # logging origin-id ip 192.0.2.100
 # logging server 203.0.113.101 3 use-vrf default facility local6
 # logging server 198.51.100.101 1 port 6538 use-vrf management
@@ -479,9 +476,9 @@ EXAMPLES = """
 # logging ip access-list cache entries 16384
 # logging ip access-list cache interval 200
 # logging ip access-list cache threshold 5000
-# logging level auth 2
-# logging level ospfv3 1
-# logging level ftp 6
+# logging severity auth 2
+# logging severity ospfv3 1
+# logging severity ftp 6
 # logging origin-id hostname
 # logging server 203.0.113.100 1 use-vrf management
 # logging server 203.0.113.101 3 use-vrf default facility local6
@@ -494,14 +491,14 @@ EXAMPLES = """
 # -------------
 # before:
 #   console:
-#      level: 3
+#      severity: error
 #    facilities:
 #      - facility: auth
-#        level: 2
+#        severity: critical
 #      - facility: ftp
-#        level: 6
+#        severity: informational
 #      - facility: ospfv3
-#        level: 1
+#        severity: alert
 #    ip:
 #      access_list:
 #        cache:
@@ -509,15 +506,15 @@ EXAMPLES = """
 #          interval: 200
 #          threshold: 5000
 #    monitor:
-#      level: 4
+#      severity: warning
 #    origin_id:
 #      hostname: true
 #    servers:
-#      - level: 1
+#      - severity: alert
 #        server: 203.0.113.100
 #        use_vrf: management
 #      - facility: local6
-#        level: 3
+#        severity: error
 #        server: 203.0.113.101
 #        use_vrf: default
 #
@@ -528,9 +525,9 @@ EXAMPLES = """
 #   - "no logging ip access-list cache interval 200"
 #   - "no logging ip access-list cache threshold 5000"
 #   - "no logging origin-id hostname"
-#   - "no logging level auth 2"
-#   - "no logging level ospfv3 1"
-#   - "no logging level ftp 6"
+#   - "no logging severity auth 2"
+#   - "no logging severity ospfv3 1"
+#   - "no logging severity ftp 6"
 #   - "no logging server 203.0.113.100 1 use-vrf management"
 #   - "no logging server 203.0.113.101 3 facility local6 use-vrf default"
 #
@@ -542,9 +539,9 @@ EXAMPLES = """
   cisco.nxos.nxos_logging_global:
     config:
       console:
-        level: 3
+        severity: error
       monitor:
-        level: 4
+        severity: warning
       ip:
         access_list:
           cache:
@@ -553,22 +550,21 @@ EXAMPLES = """
             threshold: 5000
       facilities:
         - facility: auth
-          level: 2
+          severity: critical
         - facility: ospfv3
-          level: 1
+          severity: alert
         - facility: ftp
-          level: 6
+          severity: informational
       servers:
         - server: 203.0.113.100
-          level: 1
+          severity: alert
           use_vrf: management
         - server: 203.0.113.101
-          level: 3
+          severity: error
           facility: local6
           use_vrf: default
       origin_id:
         hostname: True
-    state: rendered
 
 # Task Output (redacted)
 # -----------------------
@@ -578,9 +574,9 @@ EXAMPLES = """
 #    - "logging ip access-list cache entries 16384"
 #    - "logging ip access-list cache interval 200"
 #    - "logging ip access-list cache threshold 5000"
-#    - "logging level auth 2"
-#    - "logging level ospfv3 1"
-#    - "logging level ftp 6"
+#    - "logging severity auth 2"
+#    - "logging severity ospfv3 1"
+#    - "logging severity ftp 6"
 #    - "logging server 203.0.113.100 1 use-vrf management"
 #    - "logging server 203.0.113.101 3 facility local6 use-vrf default"
 #    - "logging origin-id hostname"
@@ -594,9 +590,9 @@ EXAMPLES = """
 # logging ip access-list cache entries 16384
 # logging ip access-list cache interval 200
 # logging ip access-list cache threshold 5000
-# logging level auth 2
-# logging level ospfv3 1
-# logging level ftp 6
+# logging severity auth 2
+# logging severity ospfv3 1
+# logging severity ftp 6
 # logging origin-id hostname
 # logging server 203.0.113.100 1 use-vrf management
 # logging server 203.0.113.101 3 use-vrf default facility local6
@@ -609,16 +605,16 @@ EXAMPLES = """
 
 # Task output (redacted)
 # -----------------------
-#  parsed:
-#    console:
-#      level: 3
+# parsed:
+#   console:
+#      severity: error
 #    facilities:
 #      - facility: auth
-#        level: 2
+#        severity: critical
 #      - facility: ftp
-#        level: 6
+#        severity: informational
 #      - facility: ospfv3
-#        level: 1
+#        severity: alert
 #    ip:
 #      access_list:
 #        cache:
@@ -626,18 +622,17 @@ EXAMPLES = """
 #          interval: 200
 #          threshold: 5000
 #    monitor:
-#      level: 4
+#      severity: warning
 #    origin_id:
 #      hostname: true
 #    servers:
-#      - level: 1
+#      - severity: alert
 #        server: 203.0.113.100
 #        use_vrf: management
 #      - facility: local6
-#        level: 3
+#        severity: error
 #        server: 203.0.113.101
 #        use_vrf: default
-
 """
 
 from ansible.module_utils.basic import AnsibleModule

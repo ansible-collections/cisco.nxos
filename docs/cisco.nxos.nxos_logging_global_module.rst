@@ -69,16 +69,26 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>level</b>
+                    <b>severity</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>emergency</li>
+                                    <li>alert</li>
+                                    <li>critical</li>
+                                    <li>error</li>
+                                    <li>warning</li>
+                                    <li>notification</li>
+                                    <li>informational</li>
+                                    <li>debugging</li>
+                        </ul>
                 </td>
                 <td>
-                        <div>Set severity level for console (0-7).</div>
+                        <div>Set severity severity for console.</div>
                 </td>
             </tr>
             <tr>
@@ -177,7 +187,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>To enable logging overriding port level configuration.</div>
+                        <div>To enable logging overriding port severity configuration.</div>
                 </td>
             </tr>
 
@@ -239,7 +249,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>To enable logging overriding port level configuration.</div>
+                        <div>To enable logging overriding port severity configuration.</div>
                 </td>
             </tr>
 
@@ -283,16 +293,26 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>level</b>
+                    <b>severity</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>emergency</li>
+                                    <li>alert</li>
+                                    <li>critical</li>
+                                    <li>error</li>
+                                    <li>warning</li>
+                                    <li>notification</li>
+                                    <li>informational</li>
+                                    <li>debugging</li>
+                        </ul>
                 </td>
                 <td>
-                        <div>Set severity level for the facility (0-7).</div>
+                        <div>Set severity severity for console.</div>
                 </td>
             </tr>
 
@@ -309,7 +329,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Modifies severity level or size for history table.</div>
+                        <div>Modifies severity severity or size for history table.</div>
                 </td>
             </tr>
                                 <tr>
@@ -317,16 +337,26 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>level</b>
+                    <b>severity</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>emergency</li>
+                                    <li>alert</li>
+                                    <li>critical</li>
+                                    <li>error</li>
+                                    <li>warning</li>
+                                    <li>notification</li>
+                                    <li>informational</li>
+                                    <li>debugging</li>
+                        </ul>
                 </td>
                 <td>
-                        <div>Set severity level for history.</div>
+                        <div>Set severity severity for console.</div>
                 </td>
             </tr>
             <tr>
@@ -543,23 +573,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>level</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set severity level for logfile.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -587,6 +600,33 @@ Parameters
                 </td>
                 <td>
                         <div>Set persistent logging utilization alert threshold in percentage.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>severity</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>emergency</li>
+                                    <li>alert</li>
+                                    <li>critical</li>
+                                    <li>error</li>
+                                    <li>warning</li>
+                                    <li>notification</li>
+                                    <li>informational</li>
+                                    <li>debugging</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set severity severity for console.</div>
                 </td>
             </tr>
             <tr>
@@ -649,16 +689,26 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>level</b>
+                    <b>severity</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>emergency</li>
+                                    <li>alert</li>
+                                    <li>critical</li>
+                                    <li>error</li>
+                                    <li>warning</li>
+                                    <li>notification</li>
+                                    <li>informational</li>
+                                    <li>debugging</li>
+                        </ul>
                 </td>
                 <td>
-                        <div>Set severity level for module logging.</div>
+                        <div>Set severity severity for console.</div>
                 </td>
             </tr>
             <tr>
@@ -696,7 +746,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Set terminal line(monitor) logging level.</div>
+                        <div>Set terminal line(monitor) logging severity.</div>
                 </td>
             </tr>
                                 <tr>
@@ -704,16 +754,26 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>level</b>
+                    <b>severity</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>emergency</li>
+                                    <li>alert</li>
+                                    <li>critical</li>
+                                    <li>error</li>
+                                    <li>warning</li>
+                                    <li>notification</li>
+                                    <li>informational</li>
+                                    <li>debugging</li>
+                        </ul>
                 </td>
                 <td>
-                        <div>Set severity level for monitor logging.</div>
+                        <div>Set severity severity for console.</div>
                 </td>
             </tr>
             <tr>
@@ -893,23 +953,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>level</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set severity level for host.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>port</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -994,6 +1037,33 @@ Parameters
                 </td>
                 <td>
                         <div>Hostname/IPv4/IPv6 address of the Remote Syslog Server.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>severity</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>emergency</li>
+                                    <li>alert</li>
+                                    <li>critical</li>
+                                    <li>error</li>
+                                    <li>warning</li>
+                                    <li>notification</li>
+                                    <li>informational</li>
+                                    <li>debugging</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set severity severity for console.</div>
                 </td>
             </tr>
             <tr>
@@ -1124,9 +1194,9 @@ Examples
       cisco.nxos.nxos_logging_global:
         config:
           console:
-            level: 3
+            severity: error
           monitor:
-            level: 4
+            severity: warning
           ip:
             access_list:
               cache:
@@ -1135,17 +1205,17 @@ Examples
                 threshold: 5000
           facilities:
             - facility: auth
-              level: 2
+              severity: critical
             - facility: ospfv3
-              level: 1
+              severity: alert
             - facility: ftp
-              level: 6
+              severity: informational
           servers:
             - server: 203.0.113.100
-              level: 1
+              severity: alert
               use_vrf: management
             - server: 203.0.113.101
-              level: 3
+              severity: error
               facility: local6
               use_vrf: default
           origin_id:
@@ -1161,23 +1231,23 @@ Examples
     #    - "logging ip access-list cache entries 16384"
     #    - "logging ip access-list cache interval 200"
     #    - "logging ip access-list cache threshold 5000"
-    #    - "logging level auth 2"
-    #    - "logging level ospfv3 1"
-    #    - "logging level ftp 6"
+    #    - "logging severity auth 2"
+    #    - "logging severity ospfv3 1"
+    #    - "logging severity ftp 6"
     #    - "logging server 203.0.113.100 1 use-vrf management"
     #    - "logging server 203.0.113.101 3 facility local6 use-vrf default"
     #    - "logging origin-id hostname"
     #
     # after:
     #   console:
-    #      level: 3
+    #      severity: error
     #    facilities:
     #      - facility: auth
-    #        level: 2
+    #        severity: critical
     #      - facility: ftp
-    #        level: 6
+    #        severity: informational
     #      - facility: ospfv3
-    #        level: 1
+    #        severity: alert
     #    ip:
     #      access_list:
     #        cache:
@@ -1185,15 +1255,15 @@ Examples
     #          interval: 200
     #          threshold: 5000
     #    monitor:
-    #      level: 4
+    #      severity: warning
     #    origin_id:
     #      hostname: true
     #    servers:
-    #      - level: 1
+    #      - severity: alert
     #        server: 203.0.113.100
     #        use_vrf: management
     #      - facility: local6
-    #        level: 3
+    #        severity: error
     #        server: 203.0.113.101
     #        use_vrf: default
 
@@ -1205,9 +1275,9 @@ Examples
     # logging ip access-list cache entries 16384
     # logging ip access-list cache interval 200
     # logging ip access-list cache threshold 5000
-    # logging level auth 2
-    # logging level ospfv3 1
-    # logging level ftp 6
+    # logging severity auth 2
+    # logging severity ospfv3 1
+    # logging severity ftp 6
     # logging origin-id hostname
     # logging server 203.0.113.100 1 use-vrf management
     # logging server 203.0.113.101 3 use-vrf default facility local6
@@ -1222,9 +1292,9 @@ Examples
     # logging ip access-list cache entries 16384
     # logging ip access-list cache interval 200
     # logging ip access-list cache threshold 5000
-    # logging level auth 2
-    # logging level ospfv3 1
-    # logging level ftp 6
+    # logging severity auth 2
+    # logging severity ospfv3 1
+    # logging severity ftp 6
     # logging origin-id hostname
     # logging server 203.0.113.100 1 use-vrf management
     # logging server 203.0.113.101 3 use-vrf default facility local6
@@ -1233,25 +1303,25 @@ Examples
       cisco.nxos.nxos_logging_global:
         config:
           monitor:
-            level: 4
+            severity: warning
           ip:
             access_list:
               cache:
                 entries: 4096
           facilities:
             - facility: auth
-              level: 2
+              severity: critical
             - facility: ospfv3
-              level: 1
+              severity: alert
             - facility: ftp
-              level: 6
+              severity: informational
           servers:
             - server: 203.0.113.101
-              level: 3
+              severity: error
               facility: local6
               use_vrf: default
             - server: 198.51.100.101
-              level: 1
+              severity: alert
               port: 6538
               use_vrf: management
           origin_id:
@@ -1262,14 +1332,14 @@ Examples
     # -------------
     # before:
     #   console:
-    #      level: 3
+    #      severity: error
     #    facilities:
     #      - facility: auth
-    #        level: 2
+    #        severity: critical
     #      - facility: ftp
-    #        level: 6
+    #        severity: informational
     #      - facility: ospfv3
-    #        level: 1
+    #        severity: alert
     #    ip:
     #      access_list:
     #        cache:
@@ -1277,15 +1347,15 @@ Examples
     #          interval: 200
     #          threshold: 5000
     #    monitor:
-    #      level: 4
+    #      severity: warning
     #    origin_id:
     #      hostname: true
     #    servers:
-    #      - level: 1
+    #      - severity: alert
     #        server: 203.0.113.100
     #        use_vrf: management
     #      - facility: local6
-    #        level: 3
+    #        severity: error
     #        server: 203.0.113.101
     #        use_vrf: default
     #
@@ -1302,26 +1372,26 @@ Examples
     #  after:
     #    facilities:
     #      - facility: auth
-    #        level: 2
+    #        severity: critical
     #      - facility: ftp
-    #        level: 6
+    #        severity: informational
     #      - facility: ospfv3
-    #        level: 1
+    #        severity: alert
     #    ip:
     #      access_list:
     #        cache:
     #          entries: 4096
     #    monitor:
-    #      level: 4
+    #      severity: warning
     #    origin_id:
     #      ip: 192.0.2.100
     #    servers:
-    #      - level: 1
+    #      - severity: alert
     #        port: 6538
     #        server: 198.51.100.101
     #        use_vrf: management
     #      - facility: local6
-    #        level: 3
+    #        severity: error
     #        server: 203.0.113.101
     #        use_vrf: default
     #
@@ -1330,9 +1400,9 @@ Examples
     # nxos-9k-rdo# show running-config | include logging
     # logging monitor 4
     # logging ip access-list cache entries 4096
-    # logging level auth 2
-    # logging level ospfv3 1
-    # logging level ftp 6
+    # logging severity auth 2
+    # logging severity ospfv3 1
+    # logging severity ftp 6
     # logging origin-id ip 192.0.2.100
     # logging server 203.0.113.101 3 use-vrf default facility local6
     # logging server 198.51.100.101 1 port 6538 use-vrf management
@@ -1347,9 +1417,9 @@ Examples
     # logging ip access-list cache entries 16384
     # logging ip access-list cache interval 200
     # logging ip access-list cache threshold 5000
-    # logging level auth 2
-    # logging level ospfv3 1
-    # logging level ftp 6
+    # logging severity auth 2
+    # logging severity ospfv3 1
+    # logging severity ftp 6
     # logging origin-id hostname
     # logging server 203.0.113.100 1 use-vrf management
     # logging server 203.0.113.101 3 use-vrf default facility local6
@@ -1362,14 +1432,14 @@ Examples
     # -------------
     # before:
     #   console:
-    #      level: 3
+    #      severity: error
     #    facilities:
     #      - facility: auth
-    #        level: 2
+    #        severity: critical
     #      - facility: ftp
-    #        level: 6
+    #        severity: informational
     #      - facility: ospfv3
-    #        level: 1
+    #        severity: alert
     #    ip:
     #      access_list:
     #        cache:
@@ -1377,15 +1447,15 @@ Examples
     #          interval: 200
     #          threshold: 5000
     #    monitor:
-    #      level: 4
+    #      severity: warning
     #    origin_id:
     #      hostname: true
     #    servers:
-    #      - level: 1
+    #      - severity: alert
     #        server: 203.0.113.100
     #        use_vrf: management
     #      - facility: local6
-    #        level: 3
+    #        severity: error
     #        server: 203.0.113.101
     #        use_vrf: default
     #
@@ -1396,9 +1466,9 @@ Examples
     #   - "no logging ip access-list cache interval 200"
     #   - "no logging ip access-list cache threshold 5000"
     #   - "no logging origin-id hostname"
-    #   - "no logging level auth 2"
-    #   - "no logging level ospfv3 1"
-    #   - "no logging level ftp 6"
+    #   - "no logging severity auth 2"
+    #   - "no logging severity ospfv3 1"
+    #   - "no logging severity ftp 6"
     #   - "no logging server 203.0.113.100 1 use-vrf management"
     #   - "no logging server 203.0.113.101 3 facility local6 use-vrf default"
     #
@@ -1410,9 +1480,9 @@ Examples
       cisco.nxos.nxos_logging_global:
         config:
           console:
-            level: 3
+            severity: error
           monitor:
-            level: 4
+            severity: warning
           ip:
             access_list:
               cache:
@@ -1421,22 +1491,21 @@ Examples
                 threshold: 5000
           facilities:
             - facility: auth
-              level: 2
+              severity: critical
             - facility: ospfv3
-              level: 1
+              severity: alert
             - facility: ftp
-              level: 6
+              severity: informational
           servers:
             - server: 203.0.113.100
-              level: 1
+              severity: alert
               use_vrf: management
             - server: 203.0.113.101
-              level: 3
+              severity: error
               facility: local6
               use_vrf: default
           origin_id:
             hostname: True
-        state: rendered
 
     # Task Output (redacted)
     # -----------------------
@@ -1446,9 +1515,9 @@ Examples
     #    - "logging ip access-list cache entries 16384"
     #    - "logging ip access-list cache interval 200"
     #    - "logging ip access-list cache threshold 5000"
-    #    - "logging level auth 2"
-    #    - "logging level ospfv3 1"
-    #    - "logging level ftp 6"
+    #    - "logging severity auth 2"
+    #    - "logging severity ospfv3 1"
+    #    - "logging severity ftp 6"
     #    - "logging server 203.0.113.100 1 use-vrf management"
     #    - "logging server 203.0.113.101 3 facility local6 use-vrf default"
     #    - "logging origin-id hostname"
@@ -1462,9 +1531,9 @@ Examples
     # logging ip access-list cache entries 16384
     # logging ip access-list cache interval 200
     # logging ip access-list cache threshold 5000
-    # logging level auth 2
-    # logging level ospfv3 1
-    # logging level ftp 6
+    # logging severity auth 2
+    # logging severity ospfv3 1
+    # logging severity ftp 6
     # logging origin-id hostname
     # logging server 203.0.113.100 1 use-vrf management
     # logging server 203.0.113.101 3 use-vrf default facility local6
@@ -1477,16 +1546,16 @@ Examples
 
     # Task output (redacted)
     # -----------------------
-    #  parsed:
-    #    console:
-    #      level: 3
+    # parsed:
+    #   console:
+    #      severity: error
     #    facilities:
     #      - facility: auth
-    #        level: 2
+    #        severity: critical
     #      - facility: ftp
-    #        level: 6
+    #        severity: informational
     #      - facility: ospfv3
-    #        level: 1
+    #        severity: alert
     #    ip:
     #      access_list:
     #        cache:
@@ -1494,15 +1563,15 @@ Examples
     #          interval: 200
     #          threshold: 5000
     #    monitor:
-    #      level: 4
+    #      severity: warning
     #    origin_id:
     #      hostname: true
     #    servers:
-    #      - level: 1
+    #      - severity: alert
     #        server: 203.0.113.100
     #        use_vrf: management
     #      - facility: local6
-    #        level: 3
+    #        severity: error
     #        server: 203.0.113.101
     #        use_vrf: default
 
