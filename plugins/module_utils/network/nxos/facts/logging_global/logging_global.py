@@ -38,6 +38,12 @@ class Logging_globalFacts(object):
         self._module = module
         self.argument_spec = Logging_globalArgs.argument_spec
 
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get("show running-config | include logging")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Logging_global network resource
 
@@ -53,7 +59,7 @@ class Logging_globalFacts(object):
         sev_map = get_logging_sevmap()
 
         if not data:
-            data = connection.get("show running-config | include logging")
+            data = self.get_config(connection)
 
         # parse native config using the Logging_global template
         logging_global_parser = Logging_globalTemplate(
