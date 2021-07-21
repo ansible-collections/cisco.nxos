@@ -12,6 +12,8 @@ plugins/modules/nxos_linkagg.py validate-modules:deprecation-mismatch # 2.9 expe
 plugins/modules/nxos_linkagg.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/modules/nxos_lldp.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
 plugins/modules/nxos_lldp.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/modules/nxos_logging.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_logging.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/modules/nxos_ospf.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
 plugins/modules/nxos_ospf.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/modules/nxos_static_route.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
@@ -59,3 +61,8 @@ plugins/modules/nxos_bgp_neighbor_address_family.py import-2.6!skip
 plugins/modules/nxos_prefix_lists.py import-2.6!skip
 plugins/module_utils/network/nxos/config/prefix_lists/prefix_lists.py import-2.6!skip
 plugins/module_utils/network/nxos/config/prefix_lists/prefix_lists.py compile-2.6!skip
+plugins/modules/nxos_logging_global.py import-2.6!skip
+plugins/module_utils/network/nxos/config/logging_global/logging_global.py import-2.6!skip
+plugins/module_utils/network/nxos/config/logging_global/logging_global.py compile-2.6!skip
+plugins/module_utils/network/nxos/utils/utils.py import-2.6!skip
+plugins/module_utils/network/nxos/utils/utils.py compile-2.6!skip

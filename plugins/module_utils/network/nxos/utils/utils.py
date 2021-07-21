@@ -5,6 +5,17 @@ import socket
 
 from ansible.module_utils.six import iteritems
 
+LOGGING_SEVMAP = {
+    0: "emergency",
+    1: "alert",
+    2: "critical",
+    3: "error",
+    4: "warning",
+    5: "notification",
+    6: "informational",
+    7: "debugging",
+}
+
 
 def search_obj_in_list(name, lst, identifier):
     for o in lst:
@@ -143,3 +154,12 @@ def numerical_sort(string_int_list):
         as_int_list.append(int(vlan))
     as_int_list.sort()
     return as_int_list
+
+
+def get_logging_sevmap(invert=False):
+    x = LOGGING_SEVMAP
+    if invert:
+        # cannot use dict comprehension yet
+        # since we still test with Python 2.6
+        x = dict(map(reversed, iteritems(x)))
+    return x

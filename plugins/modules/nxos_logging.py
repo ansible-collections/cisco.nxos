@@ -15,6 +15,10 @@ short_description: Manage logging on network devices
 description:
 - This module provides declarative management of logging on Cisco NX-OS devices.
 version_added: 1.0.0
+deprecated:
+  alternative: nxos_logging_global
+  why: Updated module released with more functionality.
+  removed_at_date: '2023-08-01'
 options:
   dest:
     description:

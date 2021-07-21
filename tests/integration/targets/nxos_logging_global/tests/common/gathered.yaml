@@ -1,0 +1,21 @@
+---
+- debug:
+    msg: START nxos_logging_global gathered integration tests on connection={{ ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gather logging global facts using gathered
+      register: result
+      cisco.nxos.nxos_logging_global:
+        state: gathered
+
+    - name: Assert that facts were correctly generated
+      assert:
+        that:
+        - "{{ result['gathered'] == merged['after'] }}"
+
+  always:
+    - include_tasks: _remove_config.yaml

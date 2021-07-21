@@ -1,0 +1,68 @@
+---
+- debug:
+    msg: "Start nxos_logging_global merged integration tests connection={{ ansible_connection }}"
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge the provided configuration with the existing running configuration
+      cisco.nxos.nxos_logging_global: &id001
+        config:
+          console:
+            severity: error
+          monitor:
+            severity: warning
+          ip:
+            access_list:
+              cache:
+                entries: 16384
+                interval: 200
+                threshold: 5000
+          facilities:
+            - facility: auth
+              severity: critical
+            - facility: aaa
+              severity: alert
+            - facility: ftp
+              severity: informational
+          hosts:
+            - host: 203.0.113.100
+              severity: alert
+              use_vrf: management
+            - host: 203.0.113.101
+              severity: error
+              facility: local6
+              use_vrf: default
+          origin_id:
+            hostname: True
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that: "{{ result['before'] == {} }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+          - "{{ merged['after'] == result['after'] }}"
+
+    - name:
+        Merge the provided configuration with the existing running configuration
+        (IDEMPOTENT)
+      cisco.nxos.nxos_logging_global: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml

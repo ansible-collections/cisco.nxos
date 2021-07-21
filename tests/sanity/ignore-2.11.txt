@@ -25,3 +25,8 @@ plugins/modules/nxos_bgp_neighbor_address_family.py import-2.6!skip
 plugins/modules/nxos_prefix_lists.py import-2.6!skip
 plugins/module_utils/network/nxos/config/prefix_lists/prefix_lists.py import-2.6!skip
 plugins/module_utils/network/nxos/config/prefix_lists/prefix_lists.py compile-2.6!skip
+plugins/modules/nxos_logging_global.py import-2.6!skip
+plugins/module_utils/network/nxos/config/logging_global/logging_global.py import-2.6!skip
+plugins/module_utils/network/nxos/config/logging_global/logging_global.py compile-2.6!skip
+plugins/module_utils/network/nxos/utils/utils.py import-2.6!skip
+plugins/module_utils/network/nxos/utils/utils.py compile-2.6!skip

@@ -1,0 +1,43 @@
+---
+- debug:
+    msg: START nxos_logging_global rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_logging_global: &id001
+    config:
+      console:
+        severity: error
+      monitor:
+        severity: warning
+      ip:
+        access_list:
+          cache:
+            entries: 16384
+            interval: 200
+            threshold: 5000
+      facilities:
+        - facility: auth
+          severity: critical
+        - facility: aaa
+          severity: alert
+        - facility: ftp
+          severity: informational
+      hosts:
+        - host: 203.0.113.100
+          severity: alert
+          use_vrf: management
+        - host: 203.0.113.101
+          severity: error
+          facility: local6
+          use_vrf: default
+      origin_id:
+        hostname: True
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  assert:
+    that:
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
+        \ == 0 }}"
+      - result.changed == False
