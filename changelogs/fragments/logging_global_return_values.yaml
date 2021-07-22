@@ -1,0 +1,3 @@
+---
+trivial:
+  - Add RETURN values to nxos_logging_global.
