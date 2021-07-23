@@ -166,10 +166,10 @@ def get_logging_sevmap(invert=False):
     return x
 
 
-def vlan_unparser(data):
+def get_ranges(data):
     """
     Returns a generator object that yields lists of
-    consequtive vlans.
+    consequtive integers from a list of integers.
     """
     for _k, group in groupby(data, lambda t, c=count(): int(t) - next(c)):
         yield list(group)
@@ -181,6 +181,6 @@ def vlan_list_to_range(cmd):
     into ranges.
     """
     ranges = []
-    for v in vlan_unparser(cmd):
+    for v in get_ranges(cmd):
         ranges.append("-".join(map(str, (v[0], v[-1])[: len(v)])))
     return ",".join(ranges)
