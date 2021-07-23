@@ -15,6 +15,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import re
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
@@ -31,6 +32,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
     normalize_interface,
     search_obj_in_list,
     vlan_range_to_list,
+    vlan_list_to_range,
 )
 
 
@@ -71,8 +73,8 @@ class L2_interfaces(ConfigBase):
         :returns: The result from module execution
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
 
         if self.state in self.ACTION_STATES:
             existing_l2_interfaces_facts = self.get_l2_interfaces_facts()
@@ -135,8 +137,10 @@ class L2_interfaces(ConfigBase):
         have = existing_l2_interfaces_facts
         for h in have:
             self.expand_trunk_allowed_vlans(h)
-        resp = self.set_state(want, have)
-        return to_list(resp)
+        resp = self.set_state(want, have) or []
+        self._reconstruct_commands(resp)
+
+        return resp
 
     def expand_trunk_allowed_vlans(self, d):
         if not d:
@@ -353,3 +357,14 @@ class L2_interfaces(ConfigBase):
                     return commands
             commands = self.add_commands(diff)
         return commands
+
+    def _reconstruct_commands(self, cmds):
+        for idx, cmd in enumerate(cmds):
+            match = re.search(
+                r"^(?P<cmd>(no\s)?switchport trunk allowed vlan(\sadd)?)\s(?P<vlans>.+)",
+                cmd,
+            )
+            if match:
+                data = match.groupdict()
+                unparsed = vlan_list_to_range(data["vlans"].split(","))
+                cmds[idx] = data["cmd"] + " " + unparsed

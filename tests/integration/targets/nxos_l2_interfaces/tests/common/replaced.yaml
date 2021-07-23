@@ -45,7 +45,7 @@
               vlan: 8
             trunk:
               allowed_vlans: 10-12
-          
+
           - name: '{{ test_int2 }}'
             trunk:
               allowed_vlans: 25-27
@@ -56,7 +56,7 @@
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
           - "'switchport access vlan 8' in result.commands"
-          - "'switchport trunk allowed vlan 10,11,12' in result.commands"
+          - "'switchport trunk allowed vlan 10-12' in result.commands"
           - "'interface {{ test_int2 }}' in result.commands"
           - "'no switchport trunk native vlan' in result.commands"
           - result.commands|length == 5
