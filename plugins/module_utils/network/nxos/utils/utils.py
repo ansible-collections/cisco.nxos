@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 import socket
 
+from itertools import groupby, count
 from ansible.module_utils.six import iteritems
 
 LOGGING_SEVMAP = {
@@ -163,3 +164,23 @@ def get_logging_sevmap(invert=False):
         # since we still test with Python 2.6
         x = dict(map(reversed, iteritems(x)))
     return x
+
+
+def get_ranges(data):
+    """
+    Returns a generator object that yields lists of
+    consequtive integers from a list of integers.
+    """
+    for _k, group in groupby(data, lambda t, c=count(): int(t) - next(c)):
+        yield list(group)
+
+
+def vlan_list_to_range(cmd):
+    """
+    Converts a comma separated list of vlan IDs
+    into ranges.
+    """
+    ranges = []
+    for v in get_ranges(cmd):
+        ranges.append("-".join(map(str, (v[0], v[-1])[: len(v)])))
+    return ",".join(ranges)
