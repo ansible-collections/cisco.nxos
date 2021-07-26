@@ -253,7 +253,7 @@ def main():
                     platform = get_capabilities(module)["device_info"][
                         "network_os_platform"
                     ]
-                    if platform.startswith("N9K"):
+                    if platform.startswith("N9K") and rt.get("rt") == "auto":
                         rt_commands = match_current_rt(
                             rt, "both", current, rt_commands
                         )
