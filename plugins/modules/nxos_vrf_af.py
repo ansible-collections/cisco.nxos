@@ -162,6 +162,7 @@ commands:
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
+    get_capabilities,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
@@ -249,12 +250,20 @@ def main():
         if module.params["route_targets"] is not None:
             for rt in module.params["route_targets"]:
                 if rt.get("direction") == "both" or not rt.get("direction"):
-                    rt_commands = match_current_rt(
-                        rt, "import", current, rt_commands
-                    )
-                    rt_commands = match_current_rt(
-                        rt, "export", current, rt_commands
-                    )
+                    platform = get_capabilities(module)["device_info"][
+                        "network_os_platform"
+                    ]
+                    if platform.startswith("N9K"):
+                        rt_commands = match_current_rt(
+                            rt, "both", current, rt_commands
+                        )
+                    else:
+                        rt_commands = match_current_rt(
+                            rt, "import", current, rt_commands
+                        )
+                        rt_commands = match_current_rt(
+                            rt, "export", current, rt_commands
+                        )
                 else:
                     rt_commands = match_current_rt(
                         rt, rt.get("direction"), current, rt_commands
