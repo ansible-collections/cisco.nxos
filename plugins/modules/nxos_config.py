@@ -54,9 +54,9 @@ options:
     - The I(src) argument provides a path to the configuration file to load into the
       remote system.  The path can either be a full system path to the configuration
       file if the value starts with / or relative to the root of the implemented role
-      or playbook. This argument is mutually exclusive with the I(lines) and I(parents)
-      arguments. The configuration lines in the source file should be similar to how it
-      will appear if present in the running-configuration of the device including indentation
+      or playbook. This argument is mutually exclusive with the I(lines) argument.
+      The configuration lines in the source file should be similar to how it will
+      appear if present in the running-configuration of the device including indentation
       to ensure idempotency and correct diff.
     type: path
   replace_src:
@@ -421,12 +421,15 @@ def main():
 
     argument_spec.update(nxos_argument_spec)
 
-    mutually_exclusive = [("lines", "src", "replace_src"), ("parents", "src")]
+    mutually_exclusive = [
+        ("lines", "src", "replace_src"),
+        ("parents", "replace_src"),
+    ]
 
     required_if = [
-        ("match", "strict", ["lines"]),
-        ("match", "exact", ["lines"]),
-        ("replace", "block", ["lines"]),
+        ("match", "strict", ["lines", "src"]),
+        ("match", "exact", ["lines", "src"]),
+        ("replace", "block", ["lines", "src"]),
         ("replace", "config", ["replace_src"]),
         ("diff_against", "intended", ["intended_config"]),
     ]

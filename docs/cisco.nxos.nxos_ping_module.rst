@@ -526,7 +526,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>Show RTT stats</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;avg&#x27;, 6.264), (&#x27;max&#x27;, 6.564), (&#x27;min&#x27;, 5.978)])</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;avg&#x27;: 6.264, &#x27;max&#x27;: 6.564, &#x27;min&#x27;: 5.978}</div>
                 </td>
             </tr>
     </table>
