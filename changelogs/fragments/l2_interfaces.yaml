@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Convert vlan lists to ranges in nxos_l2_interfaces (https://github.com/ansible-collections/cisco.nxos/issues/95).

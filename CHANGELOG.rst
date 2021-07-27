@@ -5,6 +5,36 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.5.0
+======
+
+Minor Changes
+-------------
+
+- Add nxos_logging_global resource module.
+
+Deprecated Features
+-------------------
+
+- The nxos_logging module has been deprecated in favor of the new nxos_logging_global resource module and will be removed in a release after '2023-08-01'.
+
+Bugfixes
+--------
+
+- Convert vlan lists to ranges in nxos_l2_interfaces (https://github.com/ansible-collections/cisco.nxos/issues/95).
+- Do not expand direction 'both' into 'import' and 'export' for Nexus 9000 platforms (https://github.com/ansible-collections/cisco.nxos/issues/303).
+- Prevent traceback when parsing unexpected line in nxos_static_routes.
+
+Documentation Changes
+---------------------
+
+- Broken link in documentation fixed.
+
+New Modules
+-----------
+
+- nxos_logging_global - Logging resource module.
+
 v2.4.0
 ======
 
