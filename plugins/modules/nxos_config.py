@@ -427,9 +427,9 @@ def main():
     ]
 
     required_if = [
-        ("match", "strict", ["lines", "src"]),
-        ("match", "exact", ["lines", "src"]),
-        ("replace", "block", ["lines", "src"]),
+        ("match", "strict", ["lines", "src"], True),
+        ("match", "exact", ["lines", "src"], True),
+        ("replace", "block", ["lines", "src"], True),
         ("replace", "config", ["replace_src"]),
         ("diff_against", "intended", ["intended_config"]),
     ]
