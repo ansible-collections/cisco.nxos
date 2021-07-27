@@ -43,10 +43,19 @@ class TestNxosVrfafModule(TestNxosModule):
         )
         self.get_config = self.mock_get_config.start()
 
+        self.mock_get_capabilities = patch(
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf_af.get_capabilities"
+        )
+        self.get_capabilities = self.mock_get_capabilities.start()
+        self.get_capabilities.return_value = {
+            "device_info": {"network_os_platform": "N7K-C7018"}
+        }
+
     def tearDown(self):
         super(TestNxosVrfafModule, self).tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
+        self.mock_get_capabilities.stop()
 
     def load_fixtures(self, commands=None, device=""):
         self.get_config.return_value = load_fixture(
@@ -1087,4 +1096,27 @@ class TestNxosVrfafModule(TestNxosModule):
         self.assertEqual(
             result["commands"],
             ["vrf context vrf1", "no address-family ipv4 unicast"],
+        )
+
+    def test_nxos_vrf_af_both_auto_N9K(self):
+        self.get_capabilities.return_value = {
+            "device_info": {"network_os_platform": "N9K-C9300v"}
+        }
+        set_module_args(
+            dict(
+                vrf="v2000",
+                afi="ipv4",
+                route_targets=[
+                    {"rt": "auto", "direction": "both", "state": "present"}
+                ],
+            )
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "vrf context v2000",
+                "address-family ipv4 unicast",
+                "route-target both auto",
+            ],
         )

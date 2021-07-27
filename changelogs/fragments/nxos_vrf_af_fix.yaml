@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Do not expand direction 'both' into 'import' and 'export' for Nexus 9000 platforms (https://github.com/ansible-collections/cisco.nxos/issues/303).
