@@ -1,5 +1,0 @@
----
-minor_changes:
-  - Add nxos_logging_global resource module.
-deprecated_features:
-  - The nxos_logging module has been deprecated in favor of the new nxos_logging_global resource module and will be removed in a release after '2023-08-01'.

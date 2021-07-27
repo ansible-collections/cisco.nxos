@@ -582,3 +582,31 @@ releases:
       name: nxos_prefix_lists
       namespace: ''
     release_date: '2021-06-22'
+  2.5.0:
+    changes:
+      bugfixes:
+      - Convert vlan lists to ranges in nxos_l2_interfaces (https://github.com/ansible-collections/cisco.nxos/issues/95).
+      - Do not expand direction 'both' into 'import' and 'export' for Nexus 9000 platforms
+        (https://github.com/ansible-collections/cisco.nxos/issues/303).
+      - Prevent traceback when parsing unexpected line in nxos_static_routes.
+      deprecated_features:
+      - The nxos_logging module has been deprecated in favor of the new nxos_logging_global
+        resource module and will be removed in a release after '2023-08-01'.
+      doc_changes:
+      - Broken link in documentation fixed.
+      minor_changes:
+      - Add nxos_logging_global resource module.
+    fragments:
+    - 315-safe-eval-no-concat.yml
+    - add_nxos_logging_global.yaml
+    - doc_broken_link.yaml
+    - l2_interfaces.yaml
+    - logging_global_return_values.yaml
+    - nxos_vrf_af_fix.yaml
+    - prefix_lists.yaml
+    - static_routes.yaml
+    modules:
+    - description: Logging resource module.
+      name: nxos_logging_global
+      namespace: ''
+    release_date: '2021-07-27'
