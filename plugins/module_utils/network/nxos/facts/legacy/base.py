@@ -344,7 +344,11 @@ class Interfaces(FactsBase):
             data = [data]
 
         for item in data:
-            local_intf = item["intf_id"]
+            if "intf_id" in item:
+                local_intf = item["intf_id"]
+            else:
+                # in some N7Ks the key has been renamed
+                local_intf = item["interface"]
             objects[local_intf] = list()
             nbor = dict()
             nbor["port"] = item["port_id"]
