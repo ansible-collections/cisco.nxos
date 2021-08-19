@@ -319,6 +319,7 @@ class ShowZone(object):
         patZone = r"zone name (\S+) vsan " + str(self.vsan)
         output = self.execute_show_zone_vsan_cmd().split("\n")
         for line in output:
+            line = re.sub(r"[\[].*?[\]]", "", line)
             line = " ".join(line.strip().split())
             if "init" in line:
                 line = line.replace("init", "initiator")
