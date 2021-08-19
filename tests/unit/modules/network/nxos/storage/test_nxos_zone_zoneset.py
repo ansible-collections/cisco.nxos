@@ -762,7 +762,6 @@ class TestNxosZoneZonesetModule(TestNxosModule):
 
     # Test for bug 339
     def test_for_bug_339(self):
-        # switch has def-zone deny and mode basic
         mem1 = {"pwwn": "20:00:00:25:b5:10:a0:00", "devtype": "initiator"}
         a = dict(
             zone_zoneset_details=[
