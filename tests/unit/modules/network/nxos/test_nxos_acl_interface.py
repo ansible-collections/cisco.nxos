@@ -60,9 +60,9 @@ class TestNxosAclInterfaceModule(TestNxosModule):
                     command = item["command"]
                 except ValueError:
                     command = item
-                filename = "%s.txt" % str(command).split(" | ", maxsplit=1)[
-                    0
-                ].replace(" ", "_")
+                filename = "%s.txt" % str(command).split(" | ", 1)[0].replace(
+                    " ", "_"
+                )
                 output.append(load_fixture("nxos_acl_interface", filename))
             return output
 
