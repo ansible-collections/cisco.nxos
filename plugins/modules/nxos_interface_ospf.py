@@ -363,7 +363,7 @@ def state_present(module, existing, proposed, candidate):
             if key == "ip router ospf":
                 if proposed["area"] == existing["area"]:
                     continue
-            if existing_commands[key] == proposed_commands[key]:
+            if existing_commands[key] == value:
                 continue
 
         if key == "ip ospf passive-interface" and module.params.get(

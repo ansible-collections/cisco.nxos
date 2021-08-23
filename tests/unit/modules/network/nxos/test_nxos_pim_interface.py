@@ -66,7 +66,7 @@ class TestNxosIPInterfaceModule(TestNxosModule):
                     command = command["command"]
                 filename = (
                     str(command)
-                    .split(" | ")[0]
+                    .split(" | ", 1)[0]
                     .replace(" ", "_")
                     .replace("/", "_")
                 )

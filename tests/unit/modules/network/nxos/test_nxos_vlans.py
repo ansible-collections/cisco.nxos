@@ -93,12 +93,12 @@ class TestNxosVlansModule(TestNxosModule):
 
     def load_from_file(self, *args, **kwargs):
         cmd = args[1]
-        filename = str(cmd).split(" | ")[0].replace(" ", "_")
+        filename = str(cmd).split(" | ", 1)[0].replace(" ", "_")
         return load_fixture("nxos_vlans", filename)
 
     def load_from_file_no_facts(self, *args, **kwargs):
         cmd = args[1]
-        filename = str(cmd).split(" | ")[0].replace(" ", "_")
+        filename = str(cmd).split(" | ", 1)[0].replace(" ", "_")
         filename += "_no_facts"
         return load_fixture("nxos_vlans", filename)
 
