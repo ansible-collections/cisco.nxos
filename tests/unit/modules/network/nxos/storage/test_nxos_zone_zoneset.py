@@ -760,6 +760,31 @@ class TestNxosZoneZonesetModule(TestNxosModule):
             ],
         )
 
+    # Test for bug 339
+    def test_for_bug_339(self):
+        mem1 = {"pwwn": "20:00:00:25:b5:10:a0:00", "devtype": "initiator"}
+        a = dict(
+            zone_zoneset_details=[
+                dict(
+                    vsan=100,
+                    smart_zoning=True,
+                    zone=[dict(name="SZ-WLD-IAAS1-HUABVA07", members=[mem1])],
+                )
+            ]
+        )
+
+        self.execute_show_cmd_zone.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzone_bug339.cfg"
+        )
+        self.execute_show_cmd_zone_status.return_value = load_fixture(
+            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+        )
+        set_module_args(a, True)
+        result = self.execute_module(changed=False, failed=False)
+        self.assertEqual(result["commands"], [])
+        m = "zone member '20:00:00:25:b5:10:a0:00' of device type 'initiator' is already present in zone 'SZ-WLD-IAAS1-HUABVA07'"
+        assert m in str(result["messages"])
+
     def test_bug_zone_remove_oliver(self):
         mem1 = {"pwwn": "c0:50:76:09:5b:20:00:64", "remove": True}
         a = dict(
