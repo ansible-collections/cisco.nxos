@@ -59,7 +59,7 @@ class TestNxosVpcModule(TestNxosModule):
             module, commands = args
             output = list()
             for command in commands:
-                filename = str(command).split(" | ")[0].replace(" ", "_")
+                filename = str(command).split(" | ", 1)[0].replace(" ", "_")
                 output.append(load_fixture("nxos_vpc_interface", filename))
             return output
 
