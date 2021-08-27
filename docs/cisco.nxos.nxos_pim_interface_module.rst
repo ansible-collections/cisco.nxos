@@ -541,6 +541,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - When ``state=default``, supported params will be reset to a default state. These include ``dr_prio``, ``hello_auth_key``, ``hello_interval``, ``jp_policy_out``, ``jp_policy_in``, ``jp_type_in``, ``jp_type_out``, ``border``, ``neighbor_policy``, ``neighbor_type``.
    - The ``hello_auth_key`` param is not idempotent.
    - ``hello_auth_key`` only supports clear text passwords.

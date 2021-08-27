@@ -348,6 +348,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - Module will fail if the udld feature has not been previously enabled.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`

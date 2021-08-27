@@ -374,6 +374,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - default, where supported, restores params default value.
    - RD override is not permitted. You should set it to the default values first and then reconfigure it.
    - ``route_target_both``, ``route_target_import`` and ``route_target_export valid`` values are a list of extended communities, (i.e. ['1.2.3.4:5', '33:55']) or the keywords 'auto' or 'default'.

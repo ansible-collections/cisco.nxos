@@ -754,6 +754,12 @@ Parameters
     <br/>
 
 
+Notes
+-----
+
+.. note::
+   - Unsupported for Cisco MDS
+
 
 
 Examples

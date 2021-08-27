@@ -430,6 +430,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - HSRP feature needs to be enabled first on the system.
    - SVIs must exist before using this module.
    - Interface must be a L3 port before using this module.

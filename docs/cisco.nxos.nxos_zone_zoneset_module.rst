@@ -414,7 +414,7 @@ Notes
 -----
 
 .. note::
-   - Tested against NX-OS 8.4(1)
+   - Tested against Cisco MDS NX-OS 8.4(1)
 
 
 

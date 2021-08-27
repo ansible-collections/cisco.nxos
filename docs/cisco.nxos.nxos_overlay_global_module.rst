@@ -292,6 +292,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - Default restores params default value
    - Supported MAC address format are "E.E.E", "EE-EE-EE-EE-EE-EE", "EE:EE:EE:EE:EE:EE" and "EEEE.EEEE.EEEE"
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`

@@ -343,6 +343,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Limited Support for Cisco MDS
    - This module works at the group level for traps.  If you need to only enable/disable 1 specific trap within a group, use the :ref:`cisco.nxos.nxos_command <cisco.nxos.nxos_command_module>` module.
    - Be aware that you can set a trap only for an enabled feature.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`

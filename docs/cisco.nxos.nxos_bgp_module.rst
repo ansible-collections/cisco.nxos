@@ -1002,6 +1002,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - ``state=absent`` removes the whole BGP ASN configuration when ``vrf=default`` or the whole VRF instance within the BGP process when using a different VRF.
    - Default when supported restores params default value.
    - Configuring global params is only permitted if ``vrf=default``.

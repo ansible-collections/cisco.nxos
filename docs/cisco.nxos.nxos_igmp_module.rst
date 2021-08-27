@@ -352,6 +352,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - When ``state=default``, all supported params will be reset to a default state.
    - If restart is set to true with other params set, the restart will happen last, i.e. after the configuration takes place.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`

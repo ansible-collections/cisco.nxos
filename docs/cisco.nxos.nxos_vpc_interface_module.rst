@@ -345,6 +345,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - Either vpc or peer_link param is required, but not both.
    - ``state=absent`` removes whatever VPC config is on a port-channel if one exists.
    - Re-assigning a vpc or peerlink from one portchannel to another is not supported.  The module will force the user to unconfigure an existing vpc/pl before configuring the same value on a new portchannel

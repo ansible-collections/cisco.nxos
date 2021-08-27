@@ -478,6 +478,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - The module is used to manage NVE properties, not to create NVE interfaces. Use :ref:`cisco.nxos.nxos_interface <cisco.nxos.nxos_interface_module>` if you wish to do so.
    - ``state=absent`` removes the interface.
    - Default, where supported, restores params default value.

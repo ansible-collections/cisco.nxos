@@ -554,6 +554,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - When ``state=default``, supported params will be reset to a default state. These include ``version``, ``startup_query_interval``, ``startup_query_count``, ``robustness``, ``querier_timeout``, ``query_mrt``, ``query_interval``, ``last_member_qrt``, ``last_member_query_count``, ``group_timeout``, ``report_llg``, and ``immediate_leave``.
    - When ``state=absent``, all configs for ``oif_ps``, and ``oif_routemap`` will be removed.
    - PIM must be enabled to use this module.
