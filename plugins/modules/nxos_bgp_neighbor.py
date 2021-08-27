@@ -35,6 +35,7 @@ deprecated:
   removed_at_date: '2023-01-27'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - C(state=absent) removes the whole BGP neighbor configuration.
 - Default, where supported, restores params default value.
 options:

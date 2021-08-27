@@ -39,6 +39,7 @@ version_added: 1.0.0
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
 - Tested against NX-OS 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 options:
   running_config:
     description:

@@ -39,6 +39,7 @@ version_added: 1.0.0
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
 - Tested against NX-OS 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - When a route is configured for a non-existent VRF, the VRF is created and the route
   is added to it.
 - When deleting routes for a VRF, all routes inside the VRF are deleted, but the VRF

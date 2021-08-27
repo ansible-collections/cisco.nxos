@@ -33,6 +33,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - VRF needs to be added globally with M(cisco.nxos.nxos_vrf) before adding a VRF to an interface.
 - Remove a VRF from an interface will still remove all L3 attributes just as it does
   from CLI.

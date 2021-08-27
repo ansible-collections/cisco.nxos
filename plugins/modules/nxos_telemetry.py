@@ -39,6 +39,7 @@ version_added: 1.0.0
 author: Mike Wiebe (@mikewiebe)
 notes:
 - Supported on N9k Version 7.0(3)I7(5) and later.
+- Unsupported for Cisco MDS
 options:
   config:
     description: The provided configuration

@@ -32,6 +32,7 @@ author:
 - Chris Van Heuveln (@chrisvanheuveln)
 notes:
 - Tested against NXOSv 9.2(2)
+- Unsupported for Cisco MDS
 - BFD global will automatically enable 'feature bfd' if it is disabled.
 - BFD global does not have a 'state' parameter. All of the BFD commands are unique
   and are defined if 'feature bfd' is enabled.

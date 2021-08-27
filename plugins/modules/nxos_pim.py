@@ -27,6 +27,8 @@ extends_documentation_fragment:
 short_description: Manages configuration of a PIM instance.
 description:
 - Manages configuration of a Protocol Independent Multicast (PIM) instance.
+notes:
+- Unsupported for Cisco MDS
 version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 options:

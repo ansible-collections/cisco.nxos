@@ -33,6 +33,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Either vpc or peer_link param is required, but not both.
 - C(state=absent) removes whatever VPC config is on a port-channel if one exists.
 - Re-assigning a vpc or peerlink from one portchannel to another is not supported.  The

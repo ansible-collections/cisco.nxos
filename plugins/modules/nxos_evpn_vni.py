@@ -32,6 +32,7 @@ version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - default, where supported, restores params default value.
 - RD override is not permitted. You should set it to the default values first and
   then reconfigure it.

@@ -32,6 +32,7 @@ author:
 - Jason Edelman (@jedelman8)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Feature UDLD must be enabled on the device to use this module.
 options:
   mode:

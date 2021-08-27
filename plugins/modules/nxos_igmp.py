@@ -33,6 +33,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - When C(state=default), all supported params will be reset to a default state.
 - If restart is set to true with other params set, the restart will happen last, i.e.
   after the configuration takes place.

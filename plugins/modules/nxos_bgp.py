@@ -37,6 +37,7 @@ deprecated:
   removed_at_date: '2023-01-27'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - C(state=absent) removes the whole BGP ASN configuration when C(vrf=default) or the
   whole VRF instance within the BGP process when using a different VRF.
 - Default when supported restores params default value.

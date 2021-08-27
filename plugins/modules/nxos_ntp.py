@@ -12,6 +12,8 @@ module: nxos_ntp
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manages core NTP configuration.
+notes:
+- Limited Support for Cisco MDS
 description:
 - Manages core NTP configuration.
 version_added: 1.0.0

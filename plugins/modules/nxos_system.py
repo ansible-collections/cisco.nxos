@@ -26,6 +26,8 @@ extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
 short_description: Manage the system attributes on Cisco NXOS devices
+notes:
+- Unsupported for Cisco MDS
 description:
 - This module provides declarative management of node system attributes on Cisco NXOS
   devices.  It provides an option to configure host system parameters or remove those

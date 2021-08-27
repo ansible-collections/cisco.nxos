@@ -19,6 +19,7 @@ author:
 - Jason Edelman (@jedelman8)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - When C(state=default), supported params will be reset to a default state. These
   include C(dr_prio), C(hello_auth_key), C(hello_interval), C(jp_policy_out), C(jp_policy_in),
   C(jp_type_in), C(jp_type_out), C(border), C(neighbor_policy), C(neighbor_type).

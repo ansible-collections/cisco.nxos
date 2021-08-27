@@ -35,6 +35,7 @@ deprecated:
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Default, where supported, restores params default value.
 - To remove an existing authentication configuration you should use C(message_digest_key_id=default)
   plus all other options matching their existing values.

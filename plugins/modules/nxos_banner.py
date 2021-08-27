@@ -33,6 +33,7 @@ description:
 notes:
 - Since responses from the device are always read with surrounding whitespaces stripped,
   tasks that configure banners with preceeding or trailing whitespaces will not be idempotent.
+- Limited Support for Cisco MDS
 version_added: 1.0.0
 options:
   banner:

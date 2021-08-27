@@ -25,6 +25,8 @@ module: nxos_feature
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manage features in NX-OS switches.
+notes:
+- Limited Support for Cisco MDS
 description:
 - Offers ability to enable and disable features in NX-OS.
 version_added: 1.0.0

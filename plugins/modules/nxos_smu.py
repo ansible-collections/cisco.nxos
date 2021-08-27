@@ -35,6 +35,7 @@ deprecated:
   removed_at_date: '2022-10-01'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - The module can only activate and commit a package, not remove or deactivate it.
 - Use C(transport=nxapi) to avoid connection timeout
 options:

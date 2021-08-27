@@ -26,6 +26,7 @@ author:
 - Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOSv 7.0(3)I5(1).
+- Unsupported for Cisco MDS
 options:
   name:
     description:

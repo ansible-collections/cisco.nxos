@@ -15,7 +15,7 @@ version_added: 1.0.0
 author:
 - Suhas Bharadwaj (@srbharadwaj) (subharad@cisco.com)
 notes:
-- Tested against NX-OS 8.4(1)
+- Tested against Cisco MDS NX-OS 8.4(1)
 options:
   vsan:
     description:

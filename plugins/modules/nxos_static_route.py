@@ -36,6 +36,7 @@ deprecated:
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - If no vrf is supplied, vrf is set to default.
 - If C(state=absent), the route will be removed, regardless of the non-required parameters.
 options:

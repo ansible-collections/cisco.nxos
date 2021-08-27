@@ -32,6 +32,7 @@ author:
 - Jason Edelman (@jedelman8)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Limited Support for Cisco MDS
 - If C(state=absent), the module will remove the given key configuration if it exists.
 - If C(state=absent) and C(authentication=on), authentication will be turned off.
 options:

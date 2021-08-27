@@ -32,6 +32,7 @@ version_added: 1.0.0
 author: Sai Chintalapudi (@saichint)
 notes:
 - Tested against NXOSv 7.0(3)I2(5), 7.0(3)I4(6), 7.0(3)I5(3), 7.0(3)I6(1), 7.0(3)I7(3)
+- Unsupported for Cisco MDS
 - For patches, the minimum platform version needed is 7.0(3)I2(5)
 - For feature rpms, the minimum platform version needed is 7.0(3)I6(1)
 - The module manages the entire RPM lifecycle (Add, activate, commit, deactivate,
