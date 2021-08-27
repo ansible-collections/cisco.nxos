@@ -5,6 +5,20 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.5.1
+======
+
+Bugfixes
+--------
+
+- `nxos_facts` - Fix gathering CDP neighbor facts from certain N7Ks (https://github.com/ansible-collections/cisco.nxos/issues/329).
+- `nxos_zone_zoneset` - zone member addition with smart zoning in an already existing zone should be a no-op (https://github.com/ansible-collections/cisco.nxos/issues/339).
+
+Documentation Changes
+---------------------
+
+- Added notes in module docs to indicate supportability for Cisco MDS.
+
 v2.5.0
 ======
 
