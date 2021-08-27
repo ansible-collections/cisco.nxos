@@ -614,6 +614,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - Cisco NX-OS creates the default VRF by itself. Therefore, you're not allowed to use default as *vrf* name in this module.
    - ``vrf`` name must be shorter than 32 chars.
    - VRF names are not case sensible in NX-OS. Anyway, the name is stored just like it's inserted by the user and it'll not be changed again unless the VRF is removed and re-created. i.e. ``vrf=NTC`` will create a VRF named NTC, but running it again with ``vrf=ntc`` will not cause a configuration change.

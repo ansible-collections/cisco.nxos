@@ -492,6 +492,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - The feature vpc must be enabled before this module can be used
    - If not using management vrf, vrf must be globally on the device before using in the pkl config
    - Although source IP isn't required on the command line it is required when using this module.  The PKL VRF must also be configured prior to using this module.

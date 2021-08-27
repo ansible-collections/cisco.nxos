@@ -909,6 +909,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - ``state=absent`` removes the whole BGP address-family's neighbor configuration.
    - Default, when supported, removes properties
    - In order to default maximum-prefix configuration, only ``max_prefix_limit=default`` is needed.

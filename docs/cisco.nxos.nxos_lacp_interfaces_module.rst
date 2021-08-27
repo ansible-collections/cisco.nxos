@@ -302,6 +302,7 @@ Notes
 
 .. note::
    - Tested against NXOS 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
 
 
 

@@ -296,6 +296,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - VTP feature must be active on the device to use this module.
    - This module is used to manage only VTP version.
    - Use this in combination with :ref:`cisco.nxos.nxos_vtp_password <cisco.nxos.nxos_vtp_password_module>` and :ref:`cisco.nxos.nxos_vtp_version <cisco.nxos.nxos_vtp_version_module>` to fully manage VTP operations.

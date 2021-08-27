@@ -912,6 +912,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - This module is also used to create logical interfaces such as svis and loopbacks.
    - Be cautious of platform specific idiosyncrasies. For example, when you default a loopback interface, the admin state toggles on certain versions of NX-OS.
    - The :ref:`cisco.nxos.nxos_overlay_global <cisco.nxos.nxos_overlay_global_module>` ``anycast_gateway_mac`` attribute must be set before setting the ``fabric_forwarding_anycast_gateway`` property.

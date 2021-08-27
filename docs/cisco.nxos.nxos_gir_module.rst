@@ -395,6 +395,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - ``state`` has effect only in combination with ``system_mode_maintenance_timeout`` or ``system_mode_maintenance_on_reload_reset_reason``.
    - Using ``system_mode_maintenance`` and ``system_mode_maintenance_dont_generate_profile`` would make the module fail, but the system mode will be triggered anyway.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`

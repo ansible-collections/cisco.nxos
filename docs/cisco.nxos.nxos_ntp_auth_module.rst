@@ -382,6 +382,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Limited Support for Cisco MDS
    - If ``state=absent``, the module will remove the given key configuration if it exists.
    - If ``state=absent`` and ``authentication=on``, authentication will be turned off.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`

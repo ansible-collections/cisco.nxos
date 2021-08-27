@@ -579,6 +579,7 @@ Notes
 
 .. note::
    - Supported on N9k Version 7.0(3)I7(5) and later.
+   - Unsupported for Cisco MDS
 
 
 

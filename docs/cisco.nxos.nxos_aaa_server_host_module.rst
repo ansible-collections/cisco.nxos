@@ -425,6 +425,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Limited Support for Cisco MDS
    - Changes to the host key (shared secret) are not idempotent for type 0.
    - If ``state=absent`` removes the whole host configuration.
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`

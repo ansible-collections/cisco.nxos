@@ -760,6 +760,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - ``state=absent`` removes the ACE if it exists.
    - ``state=delete_acl`` deletes the ACL if it exists.
    - For idempotency, use port numbers for the src/dest port params like *src_port1* and names for the well defined protocols for the *proto* param.

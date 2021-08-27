@@ -504,6 +504,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - ``transport=cli`` may cause timeout errors.
    - The ``element_key1`` and ``element_key2`` parameter specify the tags used to distinguish among row entries. In most cases, only the element_key1 parameter needs to specified to be able to distinguish among row entries.
    - ``action=compare`` will always store a comparison report on a local file.
