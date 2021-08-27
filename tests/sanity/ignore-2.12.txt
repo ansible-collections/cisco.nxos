@@ -30,3 +30,5 @@ plugins/module_utils/network/nxos/config/logging_global/logging_global.py import
 plugins/module_utils/network/nxos/config/logging_global/logging_global.py compile-2.6!skip
 plugins/module_utils/network/nxos/utils/utils.py import-2.6!skip
 plugins/module_utils/network/nxos/utils/utils.py compile-2.6!skip
+plugins/cliconf/nxos.py pylint:arguments-renamed
+tests/unit/mock/loader.py pylint:arguments-renamed

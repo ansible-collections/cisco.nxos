@@ -60,7 +60,7 @@ class TestNxosVpcModule(TestNxosModule):
             output = list()
 
             for command in commands:
-                filename = str(command).split(" | ")[0].replace(" ", "_")
+                filename = str(command).split(" | ", 1)[0].replace(" ", "_")
                 output.append(load_fixture("nxos_vpc", filename))
             return output
 
@@ -69,9 +69,9 @@ class TestNxosVpcModule(TestNxosModule):
             module, commands = args
             output = list()
             for command in commands:
-                filename = "vrf_test_" + str(command).split(" | ")[0].replace(
-                    " ", "_"
-                )
+                filename = "vrf_test_" + str(command).split(" | ", 1)[
+                    0
+                ].replace(" ", "_")
                 output.append(load_fixture("nxos_vpc", filename))
             return output
 
