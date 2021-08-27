@@ -225,6 +225,7 @@ options:
         type: path
     type: dict
 notes:
+- Unsupported for Cisco MDS
 - Abbreviated commands are NOT idempotent, see
   U(https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands).
 - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they

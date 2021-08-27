@@ -20,6 +20,7 @@ description:
 version_added: 2.5.0
 notes:
 - Tested against NX-OS 9.3.6.
+- Limited Support for Cisco MDS
 - This module works with connection C(network_cli) and C(httpapi).
 author: Nilashish Chakraborty (@NilashishC)
 options:

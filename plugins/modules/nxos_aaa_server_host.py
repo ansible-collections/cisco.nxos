@@ -31,6 +31,7 @@ version_added: 1.0.0
 author: Jason Edelman (@jedelman8)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Limited Support for Cisco MDS
 - Changes to the host key (shared secret) are not idempotent for type 0.
 - If C(state=absent) removes the whole host configuration.
 options:

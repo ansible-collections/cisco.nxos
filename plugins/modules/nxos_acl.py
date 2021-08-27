@@ -38,6 +38,7 @@ deprecated:
   removed_at_date: '2022-06-01'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - C(state=absent) removes the ACE if it exists.
 - C(state=delete_acl) deletes the ACL if it exists.
 - For idempotency, use port numbers for the src/dest port params like I(src_port1)

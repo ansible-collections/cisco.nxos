@@ -40,6 +40,7 @@ author: Chris Van Heuveln (@chrisvanheuveln)
 notes:
 - Tested against NX-OS 7.0(3)I5(1).
 - Feature bfd should be enabled for this module.
+- Unsupported for Cisco MDS
 options:
   running_config:
     description:

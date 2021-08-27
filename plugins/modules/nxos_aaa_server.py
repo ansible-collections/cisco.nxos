@@ -32,6 +32,7 @@ author:
 - Jason Edelman (@jedelman8)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Limited Support for Cisco MDS
 - The server_type parameter is always required.
 - If encrypt_type is not supplied, the global AAA server key will be stored as encrypted
   (type 7).

@@ -32,6 +32,7 @@ author:
 - Jason Edelman (@jedelman8)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Limited Support for Cisco MDS
 - When C(state=absent), master and logging will be set to False and stratum will be
   removed as well
 options:

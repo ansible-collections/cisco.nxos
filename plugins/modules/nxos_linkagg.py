@@ -27,6 +27,7 @@ author:
 - Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOSv 7.0(3)I5(1).
+- Unsupported for Cisco MDS
 - C(state=absent) removes the portchannel config and interface if it already exists.
   If members to be removed are not explicitly passed, all existing members (if any),
   are removed.

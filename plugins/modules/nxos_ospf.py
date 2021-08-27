@@ -28,6 +28,8 @@ short_description: (deprecated, removed after 2022-06-01) Manages configuration
   of an ospf instance.
 description:
 - Manages configuration of an ospf instance.
+notes:
+- Unsupported for Cisco MDS
 version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 deprecated:

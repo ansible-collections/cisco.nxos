@@ -35,6 +35,7 @@ deprecated:
   removed_at_date: '2022-10-01'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Value I(default) restores params default value, if any. Otherwise it removes the
   existing param configuration.
 options:

@@ -35,6 +35,7 @@ deprecated:
   removed_at_date: '2023-02-24'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - C(state=absent) removes the whole BGP address-family's neighbor configuration.
 - Default, when supported, removes properties
 - In order to default maximum-prefix configuration, only C(max_prefix_limit=default)

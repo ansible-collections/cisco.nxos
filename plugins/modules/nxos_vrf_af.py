@@ -31,6 +31,7 @@ version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Default, where supported, restores params default value.
 - In case of C(state=absent) the address-family configuration will be absent. Therefore
   the options C(route_target_both_auto_evpn) and C(route_targets) are ignored.

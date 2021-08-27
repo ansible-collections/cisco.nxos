@@ -36,6 +36,7 @@ author:
 notes:
 - Tested against NXOS 7.0(3)I2(5), 7.0(3)I4(6), 7.0(3)I5(3), 7.0(3)I6(1), 7.0(3)I7(3),
   6.0(2)A8(8), 7.0(3)F3(4), 7.3(0)D1(1), 8.3(0), 9.2, 9.3
+- Limited Support for Cisco MDS
 - When pushing files (file_pull is False) to the NXOS device, feature scp-server must
   be enabled.
 - When pulling files (file_pull is True) to the NXOS device, feature scp-server is

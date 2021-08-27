@@ -33,6 +33,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Limited Support for Cisco MDS
 - The module will fail due to timeout issues, but the reboot will be performed anyway.
 options:
   confirm:

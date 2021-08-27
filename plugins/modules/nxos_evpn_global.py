@@ -31,6 +31,7 @@ version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - This module is not supported on Nexus 3000 series of switches.
+- Unsupported for Cisco MDS
 options:
   nv_overlay_evpn:
     description:

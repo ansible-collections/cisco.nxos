@@ -24,6 +24,7 @@ deprecated:
   removed_at_date: '2022-06-01'
 notes:
 - Tested against NXOSv 7.0(3)I5(1).
+- Unsupported for Cisco MDS
 options:
   state:
     description:

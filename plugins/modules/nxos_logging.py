@@ -12,6 +12,8 @@ DOCUMENTATION = """
 module: nxos_logging
 author: Trishna Guha (@trishnaguha)
 short_description: Manage logging on network devices
+notes:
+- Limited Support for Cisco MDS
 description:
 - This module provides declarative management of logging on Cisco NX-OS devices.
 version_added: 1.0.0

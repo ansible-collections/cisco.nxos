@@ -33,6 +33,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - When C(state=default), supported params will be reset to a default state. These
   include C(version), C(startup_query_interval), C(startup_query_count), C(robustness),
   C(querier_timeout), C(query_mrt), C(query_interval), C(last_member_qrt), C(last_member_query_count),

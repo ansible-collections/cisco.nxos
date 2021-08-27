@@ -97,6 +97,7 @@ options:
     default: merged
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL.
+- Unsupported for Cisco MDS
 - This module works with connection C(network_cli).
 
 """

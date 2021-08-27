@@ -26,6 +26,8 @@ extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
 short_description: Manage NXAPI configuration on an NXOS device.
+notes:
+- Limited Support for Cisco MDS
 description:
 - Configures the NXAPI feature on devices running Cisco NXOS.  The NXAPI feature is
   absent from the configuration by default.  Since this module manages the NXAPI feature

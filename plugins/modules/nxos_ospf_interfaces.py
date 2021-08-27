@@ -18,6 +18,8 @@ version_added: 1.3.0
 short_description: OSPF Interfaces Resource Module.
 description:
 - This module manages OSPF(v2/v3) configuration of interfaces on devices running Cisco NX-OS.
+notes:
+- Unsupported for Cisco MDS
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:

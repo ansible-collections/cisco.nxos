@@ -25,6 +25,8 @@ module: nxos_user
 extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
+notes:
+- Limited Support for Cisco MDS
 short_description: Manage the collection of local users on Nexus devices
 description:
 - This module provides declarative management of the local usernames configured on

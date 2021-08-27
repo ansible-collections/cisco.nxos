@@ -34,6 +34,7 @@ author:
 - Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Cisco NX-OS creates the default VRF by itself. Therefore, you're not allowed to
   use default as I(vrf) name in this module.
 - C(vrf) name must be shorter than 32 chars.
