@@ -610,3 +610,18 @@ releases:
       name: nxos_logging_global
       namespace: ''
     release_date: '2021-07-27'
+  2.5.1:
+    changes:
+      bugfixes:
+      - '`nxos_facts` - Fix gathering CDP neighbor facts from certain N7Ks (https://github.com/ansible-collections/cisco.nxos/issues/329).'
+      - '`nxos_zone_zoneset` - zone member addition with smart zoning in an already
+        existing zone should be a no-op (https://github.com/ansible-collections/cisco.nxos/issues/339).'
+      doc_changes:
+      - Added notes in module docs to indicate supportability for Cisco MDS.
+    fragments:
+    - fix_nbr_cdp_facts.yaml
+    - fix_nxos_zone_zoneset.yaml
+    - fix_pylint_issues.yaml
+    - module_docs_support_for_cisco_mds.yaml
+    - update_docs_for_mds_support.yaml
+    release_date: '2021-08-27'
