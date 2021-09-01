@@ -87,7 +87,6 @@ options:
           key:
             description: Authentication key.
             type: str
-            no_log: True
           encryption:
             description:
               - 0 for Clear text
