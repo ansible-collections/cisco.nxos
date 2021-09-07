@@ -47,7 +47,17 @@ class Ntp_global(ResourceModule):
             resource="ntp_global",
             tmplt=Ntp_globalTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "access_group.match_all",
+            "allow.control.rate_limit",
+            "allow.private",
+            "authenticate",
+            "logging",
+            "master.stratum",
+            "passive",
+            "source",
+            "source_interface",
+        ]
 
     def execute_module(self):
         """ Execute the module
@@ -64,28 +74,18 @@ class Ntp_global(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        wantd = self._ntp_list_to_dict(self.want)
+        haved = self._ntp_list_to_dict(self.have)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
+        # if state is deleted, empty out wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
             wantd = {}
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd:
-                    self._compare(want={}, have=have)
-
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        self._compare(want=wantd, have=haved)
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -94,3 +94,65 @@ class Ntp_global(ResourceModule):
            for the Ntp_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_lists(want=want, have=have)
+        self._compare_access_group(want=want, have=have)
+
+    def _compare_lists(self, want, have):
+        keys = ["authentication_keys", "peers", "servers", "trusted_keys"]
+        for x in keys:
+            wantx = want.get(x, {})
+            havex = have.get(x, {})
+
+            for wkey, wentry in iteritems(wantx):
+                hentry = havex.pop(wkey, {})
+                if wentry != hentry:
+                    if x in keys[1:3] and self.state in [
+                        "overridden",
+                        "replaced",
+                    ]:
+                        # remove existing config else it gets appeneded
+                        self.addcmd(hentry, x, negate=True)
+                    self.addcmd(wentry, x)
+
+            # remove superfluos config
+            for _hkey, hentry in iteritems(havex):
+                self.addcmd(hentry, x, negate=True)
+
+    def _compare_access_group(self, want, have):
+        want_ag = want.get("access_group", {})
+        have_ag = have.get("access_group", {})
+
+        for x in ["peer", "query_only", "serve", "serve_only"]:
+            wx = want_ag.get(x, {})
+            hx = have_ag.get(x, {})
+
+            for wkey, wentry in iteritems(wx):
+                hentry = hx.pop(wkey, {})
+                if wentry != hentry:
+                    self.addcmd(wentry, x)
+
+            # remove superfluos config
+            for hentry in hx.values():
+                self.addcmd(hentry, x, negate=True)
+
+    def _ntp_list_to_dict(self, data):
+        """Convert all list to dicts to dicts
+        of dicts
+        """
+        tmp = deepcopy(data)
+        if "access_group" in tmp:
+            for x in ["peer", "query_only", "serve", "serve_only"]:
+                if x in tmp["access_group"]:
+                    tmp["access_group"][x] = {
+                        i["access_list"]: i for i in tmp["access_group"][x]
+                    }
+        pkey = {
+            "authentication_keys": "id",
+            "peers": "peer",
+            "servers": "server",
+            "trusted_keys": "key_id",
+        }
+        for k in pkey.keys():
+            if k in tmp:
+                tmp[k] = {i[pkey[k]]: i for i in tmp[k]}
+        return tmp

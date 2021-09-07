@@ -42,61 +42,69 @@ class Ntp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "access_group.peer",
+            "name": "peer",
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group\speer\s(?P<acl>\S+)
                 $""", re.VERBOSE),
-            "setval": "ntp access-group peer {{ peer }}",
+            "setval": "ntp access-group peer {{ access_list }}",
             "result": {
                 "access_group": {
                     "peer": [
-                        "{{ acl }}"
+                        {
+                            "access_list": "{{ acl }}",
+                        }
                     ],
                 }
             },
         },
         {
-            "name": "access_group.query_only",
+            "name": "query_only",
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group\squery-only\s(?P<acl>\S+)
                 $""", re.VERBOSE),
-            "setval": "ntp access-group query_only {{ query_only }}",
+            "setval": "ntp access-group query-only {{ access_list }}",
             "result": {
                 "access_group": {
                     "query_only": [
-                        "{{ acl }}"
+                        {
+                            "access_list": "{{ acl }}",
+                        }
                     ],
                 }
             },
         },
         {
-            "name": "access_group.serve",
+            "name": "serve",
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group\sserve\s(?P<acl>\S+)
                 $""", re.VERBOSE),
-            "setval": "ntp access-group serve {{ serve }}",
+            "setval": "ntp access-group serve {{ access_list }}",
             "result": {
                 "access_group": {
                     "serve": [
-                        "{{ acl }}"
+                        {
+                            "access_list": "{{ acl }}",
+                        }
                     ],
                 }
             },
         },
         {
-            "name": "access_group.serve_only",
+            "name": "serve_only",
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group\sserve-only\s(?P<acl>\S+)
                 $""", re.VERBOSE),
-            "setval": "ntp access-group serve_only {{ serve_only }}",
+            "setval": "ntp access-group serve-only {{ access_list }}",
             "result": {
                 "access_group": {
                     "serve_only": [
-                        "{{ acl }}"
+                        {
+                            "access_list": "{{ acl }}",
+                        }
                     ],
                 }
             },
@@ -169,14 +177,16 @@ class Ntp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "master",
+            "name": "master.stratum",
             "getval": re.compile(
                 r"""
-                ^ntp\smaster\s(?P<master>\d+)
+                ^ntp\smaster\s(?P<stratum>\d+)
                 $""", re.VERBOSE),
-            "setval": "ntp master {{ master }}",
+            "setval": "ntp master {{ master.stratum }}",
             "result": {
-                "master": "{{ master }}",
+                "master": {
+                    "stratum": "{{ stratum }}",
+                }
             },
         },
         {
@@ -202,14 +212,19 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\sminpoll\s(?P<minpoll>\d+))?
                 (\smaxpoll\s(?P<maxpoll>\d+))?
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "ntp peer {{ peer }}"
+                      "{{ ' prefer' if prefer is defined else ''}}"
+                      "{{ (' use-vrf ' + use_vrf) if use_vrf is defined else '' }}"
+                      "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
+                      "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
+                      "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}",
             "result": {
                 "peers": [
                     {
                         "peer": "{{ peer }}",
                         "prefer": "{{ not not prefer }}",
                         "use_vrf": "{{ use_vrf }}",
-                        "key": "{{ key }}",
+                        "key_id": "{{ key }}",
                         "minpoll": "{{ minpoll }}",
                         "maxpoll": "{{ maxpoll }}",
                     }
@@ -228,14 +243,19 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\sminpoll\s(?P<minpoll>\d+))?
                 (\smaxpoll\s(?P<maxpoll>\d+))?
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "ntp server {{ server }}"
+                      "{{ ' prefer' if prefer is defined else ''}}"
+                      "{{ (' use-vrf ' + use_vrf) if use_vrf is defined else '' }}"
+                      "{{ (' key ' + key_id|string) if key is defined else '' }}"
+                      "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
+                      "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}",
             "result": {
                 "servers": [
                     {
                         "server": "{{ server }}",
                         "prefer": "{{ not not prefer }}",
                         "use_vrf": "{{ use_vrf }}",
-                        "key": "{{ key }}",
+                        "key_id": "{{ key }}",
                         "minpoll": "{{ minpoll }}",
                         "maxpoll": "{{ maxpoll }}",
                     }
@@ -270,10 +290,12 @@ class Ntp_globalTemplate(NetworkTemplate):
                 r"""
                 ^ntp\strusted-key\s(?P<key>\d+)
                 $""", re.VERBOSE),
-            "setval": "ntp trusted-key {{ key }}",
+            "setval": "ntp trusted-key {{ key_id|string }}",
             "result": {
                 "trusted_keys": [
-                    "{{ key }}",
+                    {
+                        "key_id": "{{ key }}",
+                    }
                 ]
             },
         },

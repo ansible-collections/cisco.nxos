@@ -17,6 +17,10 @@ notes:
 description:
 - Manages core NTP configuration.
 version_added: 1.0.0
+deprecated:
+  alternative: nxos_ntp_global
+  why: Updated module released with more functionality.
+  removed_at_date: '2024-01-01'
 author:
 - Jason Edelman (@jedelman8)
 options:

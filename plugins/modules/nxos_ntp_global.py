@@ -46,19 +46,35 @@ options:
           peer:
             description: Access-group peer.
             type: list
-            elements: str
+            elements: dict
+            suboptions:
+              access_list:
+                description: Name of access list.
+                type: str
           query_only:
             description: Access-group query-only.
             type: list
-            elements: str
+            elements: dict
+            suboptions:
+              access_list:
+                description: Name of access list.
+                type: str
           serve:
             description: Access-group serve.
             type: list
-            elements: str
+            elements: dict
+            suboptions:
+              access_list:
+                description: Name of access list.
+                type: str
           serve_only:
             description: Access-group serve-only.
             type: list
-            elements: str
+            elements: dict
+            suboptions:
+              access_list:
+                description: Name of access list.
+                type: str
       allow:
         description: Enable/Disable the packets.
         type: dict
@@ -98,8 +114,11 @@ options:
       master:
         description:
           - Act as NTP master clock.
-          - Stratum number.
-        type: int
+        type: dict
+        suboptions:
+          stratum:
+            description: Stratum number.
+            type: int
       passive:
         description: NTP passive command.
         type: bool
@@ -111,7 +130,7 @@ options:
           peer:
             description: Hostname/IP address of the NTP Peer.
             type: str
-          key:
+          key_id:
             description: Keyid to be used while communicating to this server.
             type: int
           maxpoll:
@@ -139,7 +158,7 @@ options:
           server:
             description: Hostname/IP address of the NTP Peer.
             type: str
-          key:
+          key_id:
             description: Keyid to be used while communicating to this server.
             type: int
           maxpoll:
@@ -168,15 +187,16 @@ options:
       trusted_keys:
         description: NTP trusted-key number.
         type: list
-        elements: int
+        elements: dict
+        suboptions:
+          key_id:
+            description: Trusted-Key number.
+            type: int
   state:
     description:
     - The state the configuration should be left in.
-    - Refer to examples for more details.
-    - With state I(replaced), for the listed route-maps,
-      sequences that are in running-config but not in the task are negated.
-    - With state I(overridden), all route-maps that are in running-config but
-      not in the task are negated.
+    - The states I(replaced) and I(overridden) have identical
+      behaviour for this module.
     - Please refer to examples for more details.
     type: str
     choices:
@@ -214,17 +234,23 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - ntp master stratum 2
+    - ntp peer 198.51.100.1 use-vrf test maxpoll 7
+    - ntp authentication-key 10 md5 wawyhanx2 7
+    - ntp access-group peer PeerAcl1
+    - ntp access-group peer PeerAcl2
+    - ntp access-group query-only QueryAcl1
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - ntp master stratum 2
+    - ntp peer 198.51.100.1 use-vrf test maxpoll 7
+    - ntp authentication-key 10 md5 wawyhanx2 7
+    - ntp access-group peer PeerAcl1
+    - ntp access-group peer PeerAcl2
+    - ntp access-group query-only QueryAcl1
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)

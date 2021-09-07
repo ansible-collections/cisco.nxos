@@ -40,10 +40,26 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                     "options": {
                         "match_all": {"type": "bool"},
-                        "peer": {"type": "list", "elements": "str"},
-                        "query_only": {"type": "list", "elements": "str"},
-                        "serve": {"type": "list", "elements": "str"},
-                        "serve_only": {"type": "list", "elements": "str"},
+                        "peer": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {"access_list": {"type": "str"}},
+                        },
+                        "query_only": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {"access_list": {"type": "str"}},
+                        },
+                        "serve": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {"access_list": {"type": "str"}},
+                        },
+                        "serve_only": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {"access_list": {"type": "str"}},
+                        },
                     },
                 },
                 "allow": {
@@ -60,6 +76,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                 "authentication_keys": {
                     "type": "list",
                     "elements": "dict",
+                    "no_log": False,
                     "options": {
                         "id": {"type": "int"},
                         "key": {"type": "str", "no_log": True},
@@ -67,14 +84,17 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "logging": {"type": "bool"},
-                "master": {"type": "int"},
+                "master": {
+                    "type": "dict",
+                    "options": {"stratum": {"type": "int"}},
+                },
                 "passive": {"type": "bool"},
                 "peers": {
                     "type": "list",
                     "elements": "dict",
                     "options": {
                         "peer": {"type": "str"},
-                        "key": {"type": "int"},
+                        "key_id": {"type": "int"},
                         "maxpoll": {"type": "int"},
                         "minpoll": {"type": "int"},
                         "prefer": {"type": "bool"},
@@ -86,7 +106,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "server": {"type": "str"},
-                        "key": {"type": "int"},
+                        "key_id": {"type": "int"},
                         "maxpoll": {"type": "int"},
                         "minpoll": {"type": "int"},
                         "prefer": {"type": "bool"},
@@ -95,7 +115,12 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                 },
                 "source": {"type": "str"},
                 "source_interface": {"type": "str"},
-                "trusted_keys": {"type": "list", "elements": "int"},
+                "trusted_keys": {
+                    "type": "list",
+                    "elements": "dict",
+                    "no_log": False,
+                    "options": {"key_id": {"type": "int"}},
+                },
             },
         },
         "state": {
