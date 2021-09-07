@@ -14,6 +14,13 @@ Version added: 1.0.0
    :local:
    :depth: 1
 
+DEPRECATED
+----------
+:Removed in collection release after 2024-01-01
+:Why: Updated module released with more functionality.
+:Alternative: nxos_ntp_global
+
+
 
 Synopsis
 --------
@@ -117,7 +124,7 @@ Parameters
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
                         <div>Starting with Ansible 2.6 we recommend using <code>connection: httpapi</code> for NX-API.</div>
                         <div>This option will be removed in a release after 2022-06-01.</div>
-                        <div>For more information please see the <a href='../network/user_guide/platform_nxos.html'>NXOS Platform Options guide</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>
@@ -439,6 +446,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
 
 Status
 ------
+
+
+- This module will be removed in version . *[deprecated]*
+- For more information see `DEPRECATED`_.
 
 
 Authors
