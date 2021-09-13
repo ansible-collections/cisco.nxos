@@ -246,7 +246,7 @@ class Ntp_globalTemplate(NetworkTemplate):
             "setval": "ntp server {{ server }}"
                       "{{ ' prefer' if prefer is defined else ''}}"
                       "{{ (' use-vrf ' + use_vrf) if use_vrf is defined else '' }}"
-                      "{{ (' key ' + key_id|string) if key is defined else '' }}"
+                      "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
                       "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}",
             "result": {

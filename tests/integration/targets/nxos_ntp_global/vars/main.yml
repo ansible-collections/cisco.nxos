@@ -1,0 +1,85 @@
+---
+merged:
+  before: {}
+  commands:
+    - "ntp authenticate"
+    - "ntp logging"
+    - "ntp master 2"
+    - "ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15"
+    - "ntp peer 192.0.2.2 prefer use-vrf siteA key 2"
+    - "ntp server 198.51.100.1 use-vrf default key 2"
+    - "ntp server 203.0.113.1 use-vrf siteB key 1"
+    - "ntp access-group peer PeerAcl1"
+    - "ntp access-group serve ServeAcl1"
+  after:
+    access_group:
+      peer:
+        - access_list: PeerAcl1
+      serve:
+        - access_list: ServeAcl1
+    authenticate: True
+    logging: True
+    master:
+      stratum: 2
+    peers:
+      - peer: 192.0.2.1
+        key_id: 1
+        maxpoll: 15
+        minpoll: 5
+        use_vrf: default
+      - peer: 192.0.2.2
+        key_id: 2
+        prefer: True
+        use_vrf: siteA
+    servers:
+      - server: 198.51.100.1
+        key_id: 2
+        use_vrf: default
+      - server: 203.0.113.1
+        key_id: 1
+        use_vrf: siteB
+
+replaced:
+  commands:
+    - "no ntp authenticate"
+    - "ntp peer 192.0.2.5 prefer use-vrf siteA key 2"
+    - "no ntp peer 192.0.2.2 prefer use-vrf siteA key 2"
+    - "no ntp server 203.0.113.1 use-vrf siteB key 1"
+    - "ntp access-group peer PeerAcl2"
+    - "no ntp access-group peer PeerAcl1"
+    - "ntp access-group serve ServeAcl2"
+    - "no ntp access-group serve ServeAcl1"
+  after:
+    access_group:
+      peer:
+        - access_list: PeerAcl2
+      serve:
+        - access_list: ServeAcl2
+    logging: True
+    master:
+      stratum: 2
+    peers:
+      - peer: 192.0.2.1
+        key_id: 1
+        maxpoll: 15
+        minpoll: 5
+        use_vrf: default
+      - peer: 192.0.2.5
+        key_id: 2
+        prefer: True
+        use_vrf: siteA
+    servers:
+      - server: 198.51.100.1
+        key_id: 2
+        use_vrf: default
+deleted:
+  commands:
+    - "no ntp authenticate"
+    - "no ntp logging"
+    - "no ntp master 2"
+    - "no ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15"
+    - "no ntp peer 192.0.2.2 prefer use-vrf siteA key 2"
+    - "no ntp server 198.51.100.1 use-vrf default key 2"
+    - "no ntp server 203.0.113.1 use-vrf siteB key 1"
+    - "no ntp access-group peer PeerAcl1"
+    - "no ntp access-group serve ServeAcl1"
