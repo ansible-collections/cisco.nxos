@@ -345,7 +345,7 @@ class Interfaces(FactsBase):
 
         for item in data:
             # in some N7Ks the key has been renamed
-            local_intf = item.get("intf_id", item["interface"])
+            local_intf = item["intf_id"]
             objects[local_intf] = list()
             nbor = dict()
             nbor["port"] = item["port_id"]
