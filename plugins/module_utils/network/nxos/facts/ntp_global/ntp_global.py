@@ -36,6 +36,12 @@ class Ntp_globalFacts(object):
         self._module = module
         self.argument_spec = Ntp_globalArgs.argument_spec
 
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get("show running-config ntp")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Ntp_global network resource
 
@@ -50,7 +56,7 @@ class Ntp_globalFacts(object):
         objs = []
 
         if not data:
-            data = connection.get("show running-config ntp")
+            data = self.get_config(connection)
 
         # parse native config using the Ntp_global template
         ntp_global_parser = Ntp_globalTemplate(

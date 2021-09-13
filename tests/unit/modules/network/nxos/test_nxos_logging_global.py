@@ -528,7 +528,6 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         self.assertEqual(set(result["commands"]), set(commands))
 
     def test_nxos_logging_global_gathered_empty(self):
-        # test replaced for `event`
         set_module_args(
             dict(running_config="", state="gathered"), ignore_provider_arg
         )
