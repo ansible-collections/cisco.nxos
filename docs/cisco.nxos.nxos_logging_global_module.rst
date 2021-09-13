@@ -1540,7 +1540,6 @@ Examples
     # logging server 203.0.113.101 3 use-vrf default facility local6
 
     - name: Parse externally provided logging configuration
-      register: result
       cisco.nxos.nxos_logging_global:
         running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
         state: parsed

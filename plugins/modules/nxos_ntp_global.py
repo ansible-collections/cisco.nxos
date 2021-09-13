@@ -211,7 +211,424 @@ options:
 """
 
 EXAMPLES = """
+# Using merged
 
+# Before state:
+# -------------
+# nxos-9k-rdo# show running-config ntp
+# nxos-9k-rdo#
+
+- name: Merge the provided configuration with the existing running configuration
+  cisco.nxos.nxos_ntp_global: &id001
+    config:
+      access_group:
+        peer:
+          - access_list: PeerAcl1
+        serve:
+          - access_list: ServeAcl1
+      authenticate: True
+      authentication_keys:
+        - id: 1001
+          key: vagwwtKfkv
+          encryption: 7
+        - id: 1002
+          key: vagwwtKfkvgthz
+          encryption: 7
+      logging: True
+      master:
+        stratum: 2
+      peers:
+        - peer: 192.0.2.1
+          key_id: 1
+          maxpoll: 15
+          minpoll: 5
+          use_vrf: default
+        - peer: 192.0.2.2
+          key_id: 2
+          prefer: True
+          use_vrf: siteA
+      servers:
+        - server: 198.51.100.1
+          key_id: 2
+          use_vrf: default
+        - server: 203.0.113.1
+          key_id: 1
+          use_vrf: siteB
+
+# Task output
+# -------------
+#  before: {}
+#
+#  commands:
+#    - "ntp authenticate"
+#    - "ntp logging"
+#    - "ntp master 2"
+#    - "ntp authentication-keys 1001 md5 vagwwtKfkv 7"
+#    - "ntp authentication-keys 1002 md5 vagwwtKfkvgthz 7"
+#    - "ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15"
+#    - "ntp peer 192.0.2.2 prefer use-vrf siteA key 2"
+#    - "ntp server 198.51.100.1 use-vrf default key 2"
+#    - "ntp server 203.0.113.1 use-vrf siteB key 1"
+#    - "ntp access-group peer PeerAcl1"
+#    - "ntp access-group serve ServeAcl1"
+#
+#  after:
+#    access_group:
+#      peer:
+#        - access_list: PeerAcl1
+#      serve:
+#       - access_list: ServeAcl1
+#    authenticate: True
+#    authentication_keys:
+#      - id: 1001
+#        key: vagwwtKfkv
+#        encryption: 7
+#      - id: 1002
+#        key: vagwwtKfkvgthz
+#        encryption: 7
+#    logging: True
+#    master:
+#     stratum: 2
+#    peers:
+#      - peer: 192.0.2.1
+#        key_id: 1
+#        maxpoll: 15
+#        minpoll: 5
+#        use_vrf: default
+#      - peer: 192.0.2.2
+#        key_id: 2
+#        prefer: True
+#        use_vrf: siteA
+#    servers:
+#      - server: 198.51.100.1
+#        key_id: 2
+#        use_vrf: default
+#      - server: 203.0.113.1
+#        key_id: 1
+#        use_vrf: siteB
+
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config ntp
+# ntp authenticate
+# ntp logging
+# ntp master 2
+# ntp authentication-keys 1001 md5 vagwwtKfkv 7
+# ntp authentication-keys 1002 md5 vagwwtKfkvgthz 7
+# ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15
+# ntp peer 192.0.2.2 prefer use-vrf siteA key 2
+# ntp server 198.51.100.1 use-vrf default key 2
+# ntp server 203.0.113.1 use-vrf siteB key 1
+# ntp access-group peer PeerAcl1
+# ntp access-group serve ServeAcl1
+
+# Using replaced
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config ntp
+# ntp authenticate
+# ntp logging
+# ntp master 2
+# ntp authentication-keys 1001 md5 vagwwtKfkv 7
+# ntp authentication-keys 1002 md5 vagwwtKfkvgthz 7
+# ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15
+# ntp peer 192.0.2.2 prefer use-vrf siteA key 2
+# ntp server 198.51.100.1 use-vrf default key 2
+# ntp server 203.0.113.1 use-vrf siteB key 1
+# ntp access-group peer PeerAcl1
+# ntp access-group serve ServeAcl1
+
+- name: Replace logging global configurations of listed logging global with provided configurations
+  cisco.nxos.nxos_ntp_global:
+    config:
+      access_group:
+        peer:
+          - access_list: PeerAcl2
+        serve:
+          - access_list: ServeAcl2
+      logging: True
+      master:
+        stratum: 2
+      peers:
+        - peer: 192.0.2.1
+          key_id: 1
+          maxpoll: 15
+          minpoll: 5
+          use_vrf: default
+        - peer: 192.0.2.5
+          key_id: 2
+          prefer: True
+          use_vrf: siteA
+      servers:
+        - server: 198.51.100.1
+          key_id: 2
+          use_vrf: default
+    state: replaced
+
+# Task output
+# -------------
+#  before:
+#    access_group:
+#      peer:
+#        - access_list: PeerAcl1
+#      serve:
+#       - access_list: ServeAcl1
+#    authenticate: True
+#    authentication_keys:
+#      - id: 1001
+#        key: vagwwtKfkv
+#        encryption: 7
+#      - id: 1002
+#        key: vagwwtKfkvgthz
+#        encryption: 7
+#    logging: True
+#    master:
+#     stratum: 2
+#    peers:
+#      - peer: 192.0.2.1
+#        key_id: 1
+#        maxpoll: 15
+#        minpoll: 5
+#        use_vrf: default
+#      - peer: 192.0.2.2
+#        key_id: 2
+#        prefer: True
+#        use_vrf: siteA
+#    servers:
+#      - server: 198.51.100.1
+#        key_id: 2
+#        use_vrf: default
+#      - server: 203.0.113.1
+#        key_id: 1
+#        use_vrf: siteB
+#
+#  commands:
+#    - "no ntp authenticate"
+#    - "no ntp authentication-keys 1001 md5 vagwwtKfkv 7"
+#    - "no ntp authentication-keys 1002 md5 vagwwtKfkvgthz 7"
+#    - "ntp peer 192.0.2.5 prefer use-vrf siteA key 2"
+#    - "no ntp peer 192.0.2.2 prefer use-vrf siteA key 2"
+#    - "no ntp server 203.0.113.1 use-vrf siteB key 1"
+#    - "ntp access-group peer PeerAcl2"
+#    - "no ntp access-group peer PeerAcl1"
+#    - "ntp access-group serve ServeAcl2"
+#    - "no ntp access-group serve ServeAcl1"
+#
+#  after:
+#    access_group:
+#      peer:
+#        - access_list: PeerAcl2
+#      serve:
+#        - access_list: ServeAcl2
+#    logging: True
+#    master:
+#      stratum: 2
+#    peers:
+#      - peer: 192.0.2.1
+#        key_id: 1
+#        maxpoll: 15
+#        minpoll: 5
+#        use_vrf: default
+#      - peer: 192.0.2.5
+#        key_id: 2
+#        prefer: True
+#        use_vrf: siteA
+#    servers:
+#      - server: 198.51.100.1
+#        key_id: 2
+#        use_vrf: default
+
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config ntp
+# ntp logging
+# ntp master 2
+# ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15
+# ntp peer 192.0.2.5 prefer use-vrf siteA key 2
+# ntp server 198.51.100.1 use-vrf default key 2
+# ntp access-group peer PeerAcl2
+# ntp access-group serve ServeAcl2
+
+# Using deleted to delete all logging configurations
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config ntp
+
+- name: Delete all logging configuration
+  cisco.nxos.nxos_ntp_global:
+    state: deleted
+
+# Task output
+# -------------
+#  before:
+#    access_group:
+#      peer:
+#        - access_list: PeerAcl1
+#      serve:
+#       - access_list: ServeAcl1
+#    authenticate: True
+#    authentication_keys:
+#      - id: 1001
+#        key: vagwwtKfkv
+#        encryption: 7
+#      - id: 1002
+#        key: vagwwtKfkvgthz
+#        encryption: 7
+#    logging: True
+#    master:
+#     stratum: 2
+#    peers:
+#      - peer: 192.0.2.1
+#        key_id: 1
+#        maxpoll: 15
+#        minpoll: 5
+#        use_vrf: default
+#      - peer: 192.0.2.2
+#        key_id: 2
+#        prefer: True
+#        use_vrf: siteA
+#    servers:
+#      - server: 198.51.100.1
+#        key_id: 2
+#        use_vrf: default
+#      - server: 203.0.113.1
+#        key_id: 1
+#        use_vrf: siteB
+#
+#  commands:
+#    - "no ntp authenticate"
+#    - "no ntp logging"
+#    - "no ntp master 2"
+#    - "no ntp authentication-keys 1001 md5 vagwwtKfkv 7"
+#    - "no ntp authentication-keys 1002 md5 vagwwtKfkvgthz 7"
+#    - "no ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15"
+#    - "no ntp peer 192.0.2.2 prefer use-vrf siteA key 2"
+#    - "no ntp server 198.51.100.1 use-vrf default key 2"
+#    - "no ntp server 203.0.113.1 use-vrf siteB key 1"
+#    - "no ntp access-group peer PeerAcl1"
+#    - "no ntp access-group serve ServeAcl1"
+#
+#  after: {}
+
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config ntp
+# nxos-9k-rdo#
+
+# Using rendered
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_ntp_global:
+    config:
+      access_group:
+        peer:
+          - access_list: PeerAcl1
+        serve:
+          - access_list: ServeAcl1
+      authenticate: True
+      authentication_keys:
+        - id: 1001
+          key: vagwwtKfkv
+          encryption: 7
+        - id: 1002
+          key: vagwwtKfkvgthz
+          encryption: 7
+      logging: True
+      master:
+        stratum: 2
+      peers:
+        - peer: 192.0.2.1
+          key_id: 1
+          maxpoll: 15
+          minpoll: 5
+          use_vrf: default
+        - peer: 192.0.2.2
+          key_id: 2
+          prefer: True
+          use_vrf: siteA
+      servers:
+        - server: 198.51.100.1
+          key_id: 2
+          use_vrf: default
+        - server: 203.0.113.1
+          key_id: 1
+          use_vrf: siteB
+    state: rendered
+
+# Task Output (redacted)
+# -----------------------
+#  rendered:
+#    - "ntp authenticate"
+#    - "ntp logging"
+#    - "ntp master 2"
+#    - "ntp authentication-keys 1001 md5 vagwwtKfkv 7"
+#    - "ntp authentication-keys 1002 md5 vagwwtKfkvgthz 7"
+#    - "ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15"
+#    - "ntp peer 192.0.2.2 prefer use-vrf siteA key 2"
+#    - "ntp server 198.51.100.1 use-vrf default key 2"
+#    - "ntp server 203.0.113.1 use-vrf siteB key 1"
+#    - "ntp access-group peer PeerAcl1"
+#    - "ntp access-group serve ServeAcl1"
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# ntp authenticate
+# ntp logging
+# ntp master 2
+# ntp authentication-keys 1001 md5 vagwwtKfkv 7
+# ntp authentication-keys 1002 md5 vagwwtKfkvgthz 7
+# ntp peer 192.0.2.1 use-vrf default key 1 minpoll 5 maxpoll 15
+# ntp peer 192.0.2.2 prefer use-vrf siteA key 2
+# ntp server 198.51.100.1 use-vrf default key 2
+# ntp server 203.0.113.1 use-vrf siteB key 1
+# ntp access-group peer PeerAcl1
+# ntp access-group serve ServeAcl1
+
+- name: Parse externally provided ntp configuration
+  cisco.nxos.nxos_ntp_global:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+# parsed:
+#    access_group:
+#      peer:
+#        - access_list: PeerAcl1
+#      serve:
+#       - access_list: ServeAcl1
+#    authenticate: True
+#    authentication_keys:
+#      - id: 1001
+#        key: vagwwtKfkv
+#        encryption: 7
+#      - id: 1002
+#        key: vagwwtKfkvgthz
+#        encryption: 7
+#    logging: True
+#    master:
+#     stratum: 2
+#    peers:
+#      - peer: 192.0.2.1
+#        key_id: 1
+#        maxpoll: 15
+#        minpoll: 5
+#        use_vrf: default
+#      - peer: 192.0.2.2
+#        key_id: 2
+#        prefer: True
+#        use_vrf: siteA
+#    servers:
+#      - server: 198.51.100.1
+#        key_id: 2
+#        use_vrf: default
+#      - server: 203.0.113.1
+#        key_id: 1
+#        use_vrf: siteB
 """
 
 RETURN = """
