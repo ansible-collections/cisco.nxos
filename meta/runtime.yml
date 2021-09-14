@@ -178,6 +178,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     logging_global:
       redirect: cisco.nxos.nxos
+    nxos_ntp_global:
+      redirect: cisco.nxos.nxos
+    ntp_global:
+      redirect: cisco.nxos.nxos
     nxos_ntp:
       redirect: cisco.nxos.nxos
     ntp:
@@ -564,12 +568,35 @@ plugin_routing:
         warning_text: See the plugin documentation for more details
     logging_global:
       redirect: cisco.nxos.nxos_logging_global
+    ntp_global:
+      redirect: cisco.nxos.nxos_ntp_global
     ntp:
       redirect: cisco.nxos.nxos_ntp
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    nxos_ntp:
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
     ntp_auth:
       redirect: cisco.nxos.nxos_ntp_auth
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    nxos_ntp_auth:
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
     ntp_options:
       redirect: cisco.nxos.nxos_ntp_options
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    nxos_ntp_options:
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
     nxapi:
       redirect: cisco.nxos.nxos_nxapi
     ospf_interfaces:

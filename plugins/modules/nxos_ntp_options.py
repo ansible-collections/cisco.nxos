@@ -28,6 +28,10 @@ short_description: Manages NTP options.
 description:
 - Manages NTP options, e.g. authoritative server and logging.
 version_added: 1.0.0
+deprecated:
+  alternative: nxos_ntp_global
+  why: Updated module released with more functionality.
+  removed_at_date: '2024-01-01'
 author:
 - Jason Edelman (@jedelman8)
 notes:

@@ -88,7 +88,7 @@ Parameters
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
                         <div>Starting with Ansible 2.6 we recommend using <code>connection: httpapi</code> for NX-API.</div>
                         <div>This option will be removed in a release after 2022-06-01.</div>
-                        <div>For more information please see the <a href='../network/user_guide/platform_nxos.html'>NXOS Platform Options guide</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>
@@ -399,7 +399,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>Boot and install information.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;install_state&#x27;, [&#x27;Compatibility check is done:&#x27;, &#x27;Module  bootable          Impact  Install-type  Reason&#x27;, &#x27;------  --------  --------------  ------------  ------&#x27;, &#x27;     1       yes  non-disruptive         reset  &#x27;, &#x27;Images will be upgraded according to following table:&#x27;, &#x27;Module       Image                  Running-Version(pri:alt)           New-Version  Upg-Required&#x27;, &#x27;------  ----------  ----------------------------------------  --------------------  ------------&#x27;, &#x27;     1        nxos                               7.0(3)I6(1)           7.0(3)I7(1)           yes&#x27;, &#x27;     1        bios                        v4.4.0(07/12/2017)    v4.4.0(07/12/2017)            no&#x27;])])</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;install_state&#x27;: [&#x27;Compatibility check is done:&#x27;, &#x27;Module  bootable          Impact  Install-type  Reason&#x27;, &#x27;------  --------  --------------  ------------  ------&#x27;, &#x27;     1       yes  non-disruptive         reset  &#x27;, &#x27;Images will be upgraded according to following table:&#x27;, &#x27;Module       Image                  Running-Version(pri:alt)           New-Version  Upg-Required&#x27;, &#x27;------  ----------  ----------------------------------------  --------------------  ------------&#x27;, &#x27;     1        nxos                               7.0(3)I6(1)           7.0(3)I7(1)           yes&#x27;, &#x27;     1        bios                        v4.4.0(07/12/2017)    v4.4.0(07/12/2017)            no&#x27;]}</div>
                 </td>
             </tr>
     </table>

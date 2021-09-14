@@ -1,0 +1,14 @@
+---
+- debug:
+    msg: START nxos_ntp_global parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided ntp configuration
+  register: result
+  cisco.nxos.nxos_ntp_global:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+- name: Assert that config was correctly parsed
+  assert:
+    that:
+      - "{{ merged['after'] == result['parsed'] }}"

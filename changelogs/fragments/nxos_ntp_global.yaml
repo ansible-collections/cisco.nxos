@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - Add nxos_ntp_global module.
+deprecated_features:
+  - Deprecated `nxos_ntp`, `nxos_ntp_options`, `nxos_ntp_auth` modules.
