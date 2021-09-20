@@ -1,9 +1,7 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_reboot sanity test"
 
-- debug: msg="***WARNING*** Remove meta end_play to verify this module ***WARNING***"
-
-- meta: end_play
+- debug: msg="***WARNING*** Set run_nxos_reboot_test to True to verify this module ***WARNING***"
 
 - block:
 
@@ -22,3 +20,4 @@
         host: '{{ inventory_hostname }}'
 
     - debug: msg="END connection={{ ansible_connection }} nxos_reboot sanity test"
+  when: run_nxos_reboot_test | d(False)
