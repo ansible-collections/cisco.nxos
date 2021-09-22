@@ -84,7 +84,7 @@ options:
                 suboptions:
                   area_id:
                     description:
-                    - The Area ID as an integer or IP Address.
+                    - The Area ID in IP Address format.
                     type: str
                     required: True
                   default_cost:
@@ -247,7 +247,7 @@ options:
             suboptions:
               area_id:
                 description:
-                - The Area ID as an integer or IP Address.
+                - The Area ID in IP Address format.
                 type: str
                 required: True
               nssa:
@@ -534,7 +534,7 @@ options:
                 suboptions:
                   area_id:
                     description:
-                    - The Area ID as an integer or IP Address.
+                    - The Area ID in IP Address format.
                     type: str
                     required: True
                   nssa:
