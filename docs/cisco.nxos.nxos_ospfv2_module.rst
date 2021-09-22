@@ -99,7 +99,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The Area ID as an integer or IP Address.</div>
+                        <div>The Area ID in IP Address format.</div>
                 </td>
             </tr>
             <tr>
@@ -1540,7 +1540,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Area Id as an integer or ip address.</div>
+                        <div>Area Id in ip address format.</div>
                 </td>
             </tr>
 
@@ -2235,7 +2235,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The Area ID as an integer or IP Address.</div>
+                        <div>The Area ID in IP Address format.</div>
                 </td>
             </tr>
             <tr>

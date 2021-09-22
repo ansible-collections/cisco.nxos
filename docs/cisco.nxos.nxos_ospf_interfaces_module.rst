@@ -568,7 +568,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Area ID as a decimal or IP address format.</div>
+                        <div>Area ID in IP address format.</div>
                 </td>
             </tr>
             <tr>
