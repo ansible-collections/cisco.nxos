@@ -4,152 +4,152 @@
 - set_fact: smu_run="false"
 
 - set_fact: smu_run="true"
-  when: ((platform is search('N9K')) and (imagetag and (imagetag is version_compare('I2',
+  when: ((platform is search('N9K')) and (imagetag and 'I' in imagetag and (imagetag is version_compare('I2',
     'ge'))))
 
 - set_fact: sdk_run="false"
 
 - set_fact: sdk_run="true"
-  when: ((platform is search('N9K')) and (imagetag and (imagetag is version_compare('I6',
+  when: ((platform is search('N9K')) and (imagetag and 'I' in imagetag and (imagetag is version_compare('I6',
     'ge'))))
 
-- debug: msg="***WARNING*** Remove meta end_play to verify this module ***WARNING***"
-
-- meta: end_play
+- debug: msg="***WARNING*** Set run_nxos_rpm_test to True to verify this module ***WARNING***"
 
 - block:
+  - block:
 
-    - name: Install smu RPM
-      register: result
-      cisco.nxos.nxos_rpm: &id001
-        pkg: nxos.sample-n9k_ALL-1.0.0-7.0.3.I6.1.lib32_n9000.rpm
+      - name: Install smu RPM
+        register: result
+        cisco.nxos.nxos_rpm: &id001
+          pkg: nxos.sample-n9k_ALL-1.0.0-7.0.3.I6.1.lib32_n9000.rpm
 
-    - assert: &id002
-        that:
-          - result.changed == true
+      - assert: &id002
+          that:
+            - result.changed == true
 
-    - name: Check Idempotence
-      register: result
-      cisco.nxos.nxos_rpm: *id001
+      - name: Check Idempotence
+        register: result
+        cisco.nxos.nxos_rpm: *id001
 
-    - assert: &id004
-        that:
-          - result.changed == false
+      - assert: &id004
+          that:
+            - result.changed == false
 
-    - name: Remove smu RPM
-      register: result
-      cisco.nxos.nxos_rpm: &id003
-        pkg: nxos.sample-n9k_ALL-1.0.0-7.0.3.I6.1.lib32_n9000.rpm
-        state: absent
+      - name: Remove smu RPM
+        register: result
+        cisco.nxos.nxos_rpm: &id003
+          pkg: nxos.sample-n9k_ALL-1.0.0-7.0.3.I6.1.lib32_n9000.rpm
+          state: absent
 
-    - assert: *id002
+      - assert: *id002
 
-    - name: Check Idempotence
-      register: result
-      cisco.nxos.nxos_rpm: *id003
+      - name: Check Idempotence
+        register: result
+        cisco.nxos.nxos_rpm: *id003
 
-    - assert: *id004
-  when: smu_run
+      - assert: *id004
+    when: smu_run
 
-- block:
+  - block:
 
-    - name: Install nxsdk RPM(aggregate)
-      register: result
-      cisco.nxos.nxos_rpm: &id005
-        aggregate:
+      - name: Install nxsdk RPM(aggregate)
+        register: result
+        cisco.nxos.nxos_rpm: &id005
+          aggregate:
 
-          - pkg: healthMonitor-1.0-1.5.0.x86_64.rpm
-            file_system: bootflash
+            - pkg: healthMonitor-1.0-1.5.0.x86_64.rpm
+              file_system: bootflash
 
-          - pkg: customCliApp-1.0-1.0.0.x86_64.rpm
+            - pkg: customCliApp-1.0-1.0.0.x86_64.rpm
 
-    - assert: &id006
-        that:
-          - result.changed == true
+      - assert: &id006
+          that:
+            - result.changed == true
 
-    - name: Check Idempotence
-      register: result
-      cisco.nxos.nxos_rpm: *id005
+      - name: Check Idempotence
+        register: result
+        cisco.nxos.nxos_rpm: *id005
 
-    - assert: &id008
-        that:
-          - result.changed == false
+      - assert: &id008
+          that:
+            - result.changed == false
 
-    - name: Remove nxsdk RPM(aggregate)
-      register: result
-      cisco.nxos.nxos_rpm: &id007
-        aggregate:
+      - name: Remove nxsdk RPM(aggregate)
+        register: result
+        cisco.nxos.nxos_rpm: &id007
+          aggregate:
 
-          - pkg: healthMonitor-1.0-1.5.0.x86_64.rpm
+            - pkg: healthMonitor-1.0-1.5.0.x86_64.rpm
 
-          - pkg: customCliApp-1.0-1.0.0.x86_64.rpm
-        state: absent
+            - pkg: customCliApp-1.0-1.0.0.x86_64.rpm
+          state: absent
 
-    - assert: *id006
+      - assert: *id006
 
-    - name: Check Idempotence
-      register: result
-      cisco.nxos.nxos_rpm: *id007
+      - name: Check Idempotence
+        register: result
+        cisco.nxos.nxos_rpm: *id007
 
-    - assert: *id008
-  when: sdk_run
+      - assert: *id008
+    when: sdk_run
 
-- block:
+  - block:
 
-    - name: Install reload smu RPM
-      register: result
-      cisco.nxos.nxos_rpm: &id009
-        pkg: nxos.CSCve91311-n9k_ALL-1.0.0-7.0.3.I6.1.lib32_n9000.rpm
+      - name: Install reload smu RPM
+        register: result
+        cisco.nxos.nxos_rpm: &id009
+          pkg: nxos.CSCve91311-n9k_ALL-1.0.0-7.0.3.I6.1.lib32_n9000.rpm
 
-    - assert: *id002
+      - assert: *id002
 
-    - name: Wait for device to come back up
-      wait_for:
-        port: 22
-        state: started
-        timeout: 600
-        delay: 60
-        host: '{{ inventory_hostname_short }}'
+      - name: Wait for device to come back up
+        wait_for:
+          port: 22
+          state: started
+          timeout: 600
+          delay: 60
+          host: '{{ inventory_hostname_short }}'
 
-    - name: Continue with install reload smu RPM
-      register: result
-      cisco.nxos.nxos_rpm: *id009
+      - name: Continue with install reload smu RPM
+        register: result
+        cisco.nxos.nxos_rpm: *id009
 
-    - assert: *id002
+      - assert: *id002
 
-    - name: Check Idempotence
-      register: result
-      cisco.nxos.nxos_rpm: *id009
+      - name: Check Idempotence
+        register: result
+        cisco.nxos.nxos_rpm: *id009
 
-    - assert: *id004
+      - assert: *id004
 
-    - name: Remove reload smu RPM
-      register: result
-      cisco.nxos.nxos_rpm: &id010
-        pkg: nxos.CSCve91311-n9k_ALL-1.0.0-7.0.3.I6.1.lib32_n9000.rpm
-        state: absent
+      - name: Remove reload smu RPM
+        register: result
+        cisco.nxos.nxos_rpm: &id010
+          pkg: nxos.CSCve91311-n9k_ALL-1.0.0-7.0.3.I6.1.lib32_n9000.rpm
+          state: absent
 
-    - assert: *id002
+      - assert: *id002
 
-    - name: Wait for device to come back up
-      wait_for:
-        port: 22
-        state: started
-        timeout: 600
-        delay: 60
-        host: '{{ inventory_hostname_short }}'
+      - name: Wait for device to come back up
+        wait_for:
+          port: 22
+          state: started
+          timeout: 600
+          delay: 60
+          host: '{{ inventory_hostname_short }}'
 
-    - name: Continue with remove reload smu RPM
-      register: result
-      cisco.nxos.nxos_rpm: *id010
+      - name: Continue with remove reload smu RPM
+        register: result
+        cisco.nxos.nxos_rpm: *id010
 
-    - assert: *id002
+      - assert: *id002
 
-    - name: Check Idempotence
-      register: result
-      cisco.nxos.nxos_rpm: *id010
+      - name: Check Idempotence
+        register: result
+        cisco.nxos.nxos_rpm: *id010
 
-    - assert: *id004
-  when: smu_run
+      - assert: *id004
+    when: smu_run
+  when: run_nxos_rpm_test|d(False)
 
 - debug: msg="END connection={{ ansible_connection }} nxos_rpm sanity test"
