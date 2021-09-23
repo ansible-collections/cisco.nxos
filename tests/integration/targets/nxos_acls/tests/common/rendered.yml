@@ -6,13 +6,10 @@
   register: result
   cisco.nxos.nxos_acls: &id001
     config:
-
       - afi: ipv4
         acls:
-
           - name: ACL1v4
             aces:
-
               - grant: deny
                 destination:
                   address: 192.0.2.64
@@ -28,12 +25,22 @@
                     fin: true
                 sequence: 50
 
+              - destination:
+                  port_protocol:
+                    range:
+                      end: 4000
+                      start: 3949
+                  prefix: 203.0.113.0/24
+                grant: permit
+                protocol: tcp
+                source:
+                  any: true
+                sequence: 70
+
       - afi: ipv6
         acls:
-
           - name: ACL1v6
             aces:
-
               - grant: permit
                 sequence: 10
                 source:
@@ -48,9 +55,10 @@
       - result.changed == false
       - "'ip access-list ACL1v4' in result.rendered"
       - "'50 deny tcp any eq whois 192.0.2.64 0.0.0.255 ack fin' in result.rendered"
+      - "'70 permit tcp any 203.0.113.0/24 range drip 4000' in result.rendered"
       - "'ipv6 access-list ACL1v6' in result.rendered"
       - "'10 permit sctp any 2001:db8:12::/32' in result.rendered"
-      - result.rendered | length == 4
+      - result.rendered | length == 5
 
 - name: Idempotence - Rendered
   register: result

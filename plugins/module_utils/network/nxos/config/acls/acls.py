@@ -241,43 +241,40 @@ class Acls(ConfigBase):
                             if "protocol" in ace.keys() and ace[
                                 "protocol"
                             ] in ["tcp", "udp"]:
-                                for end in ["source", "destination"]:
-                                    if "port_protocol" in ace[end].keys():
+                                for x in ["source", "destination"]:
+                                    if "port_protocol" in ace[x].keys():
                                         key = list(
-                                            ace[end]["port_protocol"].keys()
+                                            ace[x]["port_protocol"].keys()
                                         )[0]
                                         # key could be eq,gt,lt,neq or range
                                         if key != "range":
-                                            val = ace[end]["port_protocol"][
-                                                key
-                                            ]
+                                            val = ace[x]["port_protocol"][key]
                                             if (
                                                 val.isdigit()
                                                 and int(val)
                                                 in port_protocol.keys()
                                             ):
-                                                ace[end]["port_protocol"][
+                                                ace[x]["port_protocol"][
                                                     key
                                                 ] = port_protocol[int(val)]
                                         else:
                                             st = int(
-                                                ace[end]["port_protocol"][
+                                                ace[x]["port_protocol"][
                                                     "range"
                                                 ]["start"]
                                             )
-
                                             end = int(
-                                                ace[end]["port_protocol"][
+                                                ace[x]["port_protocol"][
                                                     "range"
                                                 ]["end"]
                                             )
 
                                             if st in port_protocol.keys():
-                                                ace[end]["port_protocol"][
+                                                ace[x]["port_protocol"][
                                                     "range"
                                                 ]["start"] = port_protocol[st]
                                             if end in port_protocol.keys():
-                                                ace[end]["port_protocol"][
+                                                ace[x]["port_protocol"][
                                                     "range"
                                                 ]["end"] = port_protocol[end]
         return want
