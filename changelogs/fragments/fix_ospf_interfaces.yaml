@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_ospf_interfaces` - Correctly sort interface names before rendering."

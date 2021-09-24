@@ -5,6 +5,42 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.6.0
+======
+
+Minor Changes
+-------------
+
+- Add nxos_ntp_global module.
+
+Deprecated Features
+-------------------
+
+- Deprecated `nxos_ntp`, `nxos_ntp_options`, `nxos_ntp_auth` modules.
+
+Bugfixes
+--------
+
+- `nxos_acls` - Fix traceback with 'port_protocol' range (https://github.com/ansible-collections/cisco.nxos/issues/356)
+- `nxos_facts` - Fix KeyError while gathering CDP neighbor facts (https://github.com/ansible-collections/cisco.nxos/issues/354).
+- `nxos_ospf_interfaces` - Correctly sort interface names before rendering.
+
+Documentation Changes
+---------------------
+
+- `ospf[v2, v3, _interfaces]` - Area ID should be in IP address format.
+
+New Modules
+-----------
+
+Private
+~~~~~~~
+
+var.folders.84.qwfwbspx3hjfvxvq2hf2rk500000gn.T.antsibull-changelogsllulrbr.collections.ansible_collections.cisco.nxos.plugins.modules
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- nxos_ntp_global - NTP Global resource module.
+
 v2.5.1
 ======
 
