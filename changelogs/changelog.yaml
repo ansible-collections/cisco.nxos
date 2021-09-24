@@ -631,6 +631,7 @@ releases:
       - '`nxos_acls` - Fix traceback with ''port_protocol'' range (https://github.com/ansible-collections/cisco.nxos/issues/356)'
       - '`nxos_facts` - Fix KeyError while gathering CDP neighbor facts (https://github.com/ansible-collections/cisco.nxos/issues/354).'
       - '`nxos_ospf_interfaces` - Correctly sort interface names before rendering.'
+      - '`nxos_vlans` - switching to `| json-pretty` instead of `| json` as a workaround for the timeout issue with `libssh` (https://github.com/ansible/pylibssh/issues/208)'
       deprecated_features:
       - Deprecated `nxos_ntp`, `nxos_ntp_options`, `nxos_ntp_auth` modules.
       doc_changes:
@@ -643,6 +644,7 @@ releases:
     - nxos_acls.yaml
     - nxos_ntp_global.yaml
     - nxos_ospf_interfaces.yaml
+    - nxos_vlans_json.yaml
     - remove_end_play.yaml
     - set_allow_duplicates.yaml
     modules:
