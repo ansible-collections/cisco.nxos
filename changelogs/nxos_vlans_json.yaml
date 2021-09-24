@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_vlans` - switching to `| json-pretty` instead of `| json` as a workaround for the timeout issue with `libssh` (https://github.com/ansible/pylibssh/issues/208)"
