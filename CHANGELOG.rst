@@ -24,6 +24,8 @@ Bugfixes
 - `nxos_acls` - Fix traceback with 'port_protocol' range (https://github.com/ansible-collections/cisco.nxos/issues/356)
 - `nxos_facts` - Fix KeyError while gathering CDP neighbor facts (https://github.com/ansible-collections/cisco.nxos/issues/354).
 - `nxos_ospf_interfaces` - Correctly sort interface names before rendering.
+- `nxos_vlans` - switching to `| json-pretty` instead of `| json` as a workaround for the timeout issue with `libssh` (https://github.com/ansible/pylibssh/issues/208)
+
 
 Documentation Changes
 ---------------------
