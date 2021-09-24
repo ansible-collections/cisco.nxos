@@ -648,5 +648,5 @@ releases:
     modules:
     - description: NTP Global resource module.
       name: nxos_ntp_global
-      namespace: private.var.folders.84.qwfwbspx3hjfvxvq2hf2rk500000gn.T.antsibull-changelogsllulrbr.collections.ansible_collections.cisco.nxos.plugins.modules
+      namespace: ''
     release_date: '2021-09-24'

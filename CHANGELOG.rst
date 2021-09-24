@@ -33,12 +33,6 @@ Documentation Changes
 New Modules
 -----------
 
-Private
-~~~~~~~
-
-var.folders.84.qwfwbspx3hjfvxvq2hf2rk500000gn.T.antsibull-changelogsllulrbr.collections.ansible_collections.cisco.nxos.plugins.modules
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 - nxos_ntp_global - NTP Global resource module.
 
 v2.5.1
