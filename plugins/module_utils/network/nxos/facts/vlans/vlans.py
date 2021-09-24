@@ -72,7 +72,9 @@ class VlansFacts(object):
         if not data:
             # Use structured for most of the vlan parameter states.
             # This data is consistent across the supported nxos platforms.
-            structured = self.get_device_data(connection, "show vlan | json")
+            structured = self.get_device_data(
+                connection, "show vlan | json-pretty"
+            )
 
             # Raw cli config is needed for mapped_vni, which is not included in structured.
             run_cfg_output = self.get_device_data(
