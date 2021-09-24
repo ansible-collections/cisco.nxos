@@ -1,3 +1,0 @@
----
-trivial:
-  - Do not use end_play to skip tests. This abruptly ends EE testing.

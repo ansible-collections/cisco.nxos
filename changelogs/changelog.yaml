@@ -625,3 +625,28 @@ releases:
     - module_docs_support_for_cisco_mds.yaml
     - update_docs_for_mds_support.yaml
     release_date: '2021-08-27'
+  2.6.0:
+    changes:
+      bugfixes:
+      - '`nxos_acls` - Fix traceback with ''port_protocol'' range (https://github.com/ansible-collections/cisco.nxos/issues/356)'
+      - '`nxos_facts` - Fix KeyError while gathering CDP neighbor facts (https://github.com/ansible-collections/cisco.nxos/issues/354).'
+      - '`nxos_ospf_interfaces` - Correctly sort interface names before rendering.'
+      deprecated_features:
+      - Deprecated `nxos_ntp`, `nxos_ntp_options`, `nxos_ntp_auth` modules.
+      doc_changes:
+      - '`ospf[v2, v3, _interfaces]` - Area ID should be in IP address format.'
+      minor_changes:
+      - Add nxos_ntp_global module.
+    fragments:
+    - fix_facts.yaml
+    - fix_ospf_interfaces.yaml
+    - nxos_acls.yaml
+    - nxos_ntp_global.yaml
+    - nxos_ospf_interfaces.yaml
+    - remove_end_play.yaml
+    - set_allow_duplicates.yaml
+    modules:
+    - description: NTP Global resource module.
+      name: nxos_ntp_global
+      namespace: ''
+    release_date: '2021-09-24'

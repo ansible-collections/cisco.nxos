@@ -1,3 +1,0 @@
----
-doc_changes:
-  - "`ospf[v2, v3, _interfaces]` - Area ID should be in IP address format."

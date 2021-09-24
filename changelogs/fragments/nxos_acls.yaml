@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_acls` - Fix traceback with 'port_protocol' range (https://github.com/ansible-collections/cisco.nxos/issues/356)"
