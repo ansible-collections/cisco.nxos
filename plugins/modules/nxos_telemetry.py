@@ -197,6 +197,7 @@ options:
     - merged
     - replaced
     - deleted
+    - gathered
     default: merged
 
 """

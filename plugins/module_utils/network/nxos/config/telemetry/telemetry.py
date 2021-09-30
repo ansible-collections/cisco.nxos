@@ -62,13 +62,13 @@ class Telemetry(ConfigBase):
     def __init__(self, module):
         super(Telemetry, self).__init__(module)
 
-    def get_telemetry_facts(self):
+    def get_telemetry_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources
+            self.gather_subset, self.gather_network_resources, data=data
         )
         telemetry_facts = facts["ansible_network_resources"].get("telemetry")
         if not telemetry_facts:
@@ -108,24 +108,32 @@ class Telemetry(ConfigBase):
                 "source_interface"
             ] = normalize_interface(int)
 
-        existing_telemetry_facts = self.get_telemetry_facts()
-        commands.extend(self.set_config(existing_telemetry_facts))
-        if commands:
+        if self.state in self.ACTION_STATES:
+            existing_telemetry_facts = self.get_telemetry_facts()
+        else:
+            existing_telemetry_facts = []
+
+        if self.state in self.ACTION_STATES:
+            commands.extend(self.set_config(existing_telemetry_facts))
+
+        if commands and self.state in self.ACTION_STATES:
             if not self._module.check_mode:
                 self.edit_config(commands)
-                # TODO: edit_config is only available for network_cli. Once we
-                # add support for httpapi, we will need to switch to load_config
-                # or add support to httpapi for edit_config
-                #
-                # self._connection.load_config(commands)
             result["changed"] = True
-        result["commands"] = commands
 
-        changed_telemetry_facts = self.get_telemetry_facts()
+        if self.state in self.ACTION_STATES:
+            result["commands"] = commands
 
-        result["before"] = existing_telemetry_facts
-        if result["changed"]:
-            result["after"] = changed_telemetry_facts
+        if self.state in self.ACTION_STATES or self.state == "gathered":
+            changed_telemetry_facts = self.get_telemetry_facts()
+
+        if self.state in self.ACTION_STATES:
+            result["before"] = existing_telemetry_facts
+            if result["changed"]:
+                result["after"] = changed_telemetry_facts
+
+        elif self.state == "gathered":
+            result["gathered"] = changed_telemetry_facts
 
         result["warnings"] = warnings
         return result
