@@ -7,7 +7,8 @@ The Ansible Cisco NX-OS collection includes a variety of Ansible content to help
 
 The Cisco NX-OS connection plugins combined with Cisco NX-OS resource modules aligns the Cisco NX-OS experience with the other core networking platforms supported by Ansible.
 
-This collection has been tested against Cisco NX-OS 7.0(3)I5(1) on Nexus Switches and NX-OS 8.4(1) on MDS Switches.
+This collection has been tested against Cisco NX-OS 7.0(3)I5(1) on Nexus Switches.
+The modules with full support for Cisco MDS are tested against NX-OS 8.4(1) on MDS Switches.
 
 <!--start requires_ansible-->
 ## Ansible version compatibility
