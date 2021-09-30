@@ -564,6 +564,7 @@ Parameters
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
                                     <li>deleted</li>
+                                    <li>gathered</li>
                         </ul>
                 </td>
                 <td>
