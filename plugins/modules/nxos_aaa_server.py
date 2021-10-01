@@ -149,6 +149,7 @@ def execute_show_command(command, module):
 
 def flatten_list(command_lists):
     flat_command_list = []
+
     for command in command_lists:
         if isinstance(command, list):
             flat_command_list.extend(command)
