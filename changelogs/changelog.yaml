@@ -631,7 +631,8 @@ releases:
       - '`nxos_acls` - Fix traceback with ''port_protocol'' range (https://github.com/ansible-collections/cisco.nxos/issues/356)'
       - '`nxos_facts` - Fix KeyError while gathering CDP neighbor facts (https://github.com/ansible-collections/cisco.nxos/issues/354).'
       - '`nxos_ospf_interfaces` - Correctly sort interface names before rendering.'
-      - '`nxos_vlans` - switching to `| json-pretty` instead of `| json` as a workaround for the timeout issue with `libssh` (https://github.com/ansible/pylibssh/issues/208)'
+      - '`nxos_vlans` - switching to `| json-pretty` instead of `| json` as a workaround
+        for the timeout issue with `libssh` (https://github.com/ansible/pylibssh/issues/208)'
       deprecated_features:
       - Deprecated `nxos_ntp`, `nxos_ntp_options`, `nxos_ntp_auth` modules.
       doc_changes:
@@ -652,3 +653,14 @@ releases:
       name: nxos_ntp_global
       namespace: ''
     release_date: '2021-09-24'
+  2.7.0:
+    changes:
+      doc_changes:
+      - Update README with information regarding MDS module testing.
+      minor_changes:
+      - '`nxos_telemetry` - Add support for state gathered'
+    fragments:
+    - 0-copy_ignore_txt.yml
+    - nxos_telemetry.yaml
+    - readme.yaml
+    release_date: '2021-10-01'
