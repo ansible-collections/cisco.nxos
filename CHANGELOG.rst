@@ -5,6 +5,19 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.7.0
+======
+
+Minor Changes
+-------------
+
+- `nxos_telemetry` - Add support for state gathered
+
+Documentation Changes
+---------------------
+
+- Update README with information regarding MDS module testing.
+
 v2.6.0
 ======
 
@@ -25,7 +38,6 @@ Bugfixes
 - `nxos_facts` - Fix KeyError while gathering CDP neighbor facts (https://github.com/ansible-collections/cisco.nxos/issues/354).
 - `nxos_ospf_interfaces` - Correctly sort interface names before rendering.
 - `nxos_vlans` - switching to `| json-pretty` instead of `| json` as a workaround for the timeout issue with `libssh` (https://github.com/ansible/pylibssh/issues/208)
-
 
 Documentation Changes
 ---------------------
