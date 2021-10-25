@@ -18,7 +18,6 @@ import re
 import ast
 from copy import deepcopy
 
-from ansible.errors import AnsibleConnectionFailure
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -79,7 +78,7 @@ class VlansFacts(object):
                 structured = self.get_device_data(
                     connection, "show vlan | json-pretty"
                 )
-            except AnsibleConnectionFailure:
+            except Exception:
                 # When json-pretty is not supported, we fall back to | json
                 structured = self.get_device_data(
                     connection, "show vlan | json"
