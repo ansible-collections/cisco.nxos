@@ -608,7 +608,7 @@ class TestNxosAclsModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-    
+
     def test_nxos_acls_merged_failure(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -631,10 +631,10 @@ class TestNxosAclsModule(TestNxosModule):
                                         source=dict(host="192.0.2.1"),
                                         sequence=10,
                                         protocol="ip",
-                                    ),
-                                ]
+                                    )
+                                ],
                             )
-                        ]
+                        ],
                     )
                 ],
                 state="merged",
