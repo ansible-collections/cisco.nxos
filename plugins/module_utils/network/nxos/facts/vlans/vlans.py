@@ -72,9 +72,17 @@ class VlansFacts(object):
         if not data:
             # Use structured for most of the vlan parameter states.
             # This data is consistent across the supported nxos platforms.
-            structured = self.get_device_data(
-                connection, "show vlan | json-pretty"
-            )
+            try:
+                # Not all devices support | json-pretty but is a workaround for
+                # libssh issue https://github.com/ansible/pylibssh/issues/208
+                structured = self.get_device_data(
+                    connection, "show vlan | json-pretty"
+                )
+            except Exception:
+                # When json-pretty is not supported, we fall back to | json
+                structured = self.get_device_data(
+                    connection, "show vlan | json"
+                )
 
             # Raw cli config is needed for mapped_vni, which is not included in structured.
             run_cfg_output = self.get_device_data(
