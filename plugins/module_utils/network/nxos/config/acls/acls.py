@@ -14,7 +14,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import socket
 import re
 from copy import deepcopy
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
@@ -23,7 +22,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
     remove_empties,
-    dict_diff,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
     Facts,
@@ -35,10 +33,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
     utils,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    flatten_dict,
     search_obj_in_list,
-    get_interface_type,
-    normalize_interface,
 )
 
 
@@ -53,6 +48,7 @@ class Acls(ConfigBase):
 
     def __init__(self, module):
         super(Acls, self).__init__(module)
+        self.state = self._module.params["state"]
 
     def get_acls_facts(self, data=None):
         """ Get the 'facts' (the current configuration)
@@ -83,7 +79,7 @@ class Acls(ConfigBase):
         result = {"changed": False}
         warnings = list()
         commands = list()
-        state = self._module.params["state"]
+        state = self.state
         action_states = ["merged", "replaced", "deleted", "overridden"]
 
         if state == "gathered":
@@ -288,7 +284,7 @@ class Acls(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        state = self._module.params["state"]
+        state = self.state
         commands = []
         if state == "overridden":
             commands = self._state_overridden(want, have)
@@ -461,7 +457,7 @@ class Acls(ConfigBase):
                         for acl in w["acls"]:
                             if (
                                 "aces" in acl.keys()
-                                and self._module.params["state"] != "deleted"
+                                and self.state != "deleted"
                             ):
                                 have_name = search_obj_in_list(
                                     acl["name"], have_afi["acls"], "name"
@@ -641,17 +637,15 @@ class Acls(ConfigBase):
                                             "sequence",
                                         )  # case 3
                                         if temp_obj != w:
-                                            for key, val in w.items():
-                                                temp_obj[key] = val
-                                            ace_list.append(temp_obj)
-                                            if (
-                                                self._module.params["state"]
-                                                == "merged"
-                                            ):
-                                                ace_commands.append(
-                                                    "no " + str(w["sequence"])
+                                            ace_list.append(w)
+                                            if self.state == "merged":
+                                                # merged will never negate commands
+                                                self._module.fail_json(
+                                                    msg="Cannot update existing ACE {0} of ACL {1} with state merged."
+                                                    " Please use state replaced or overridden.".format(
+                                                        name, w["sequence"]
+                                                    )
                                                 )
-                                        # remove existing rule to update it
                             elif w_acl.get("aces"):
                                 # 'have' has ACL defined without any ACE
                                 ace_list = list(w_acl["aces"])
