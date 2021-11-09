@@ -365,6 +365,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                         dict(facility="auth", severity="alert"),
                         dict(facility="ospfv3", severity="critical"),
                         dict(facility="cron", severity="notification"),
+                        dict(facility="vlan_mgr", severity="notification"),
                     ],
                 ),
                 state="merged",
@@ -376,6 +377,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging level cron 5",
             "logging level ospfv3 2",
             "logging level auth 1",
+            "logging level vlan_mgr 5",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -388,6 +390,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging level cron 5
             logging level ospfv3 2
             logging level auth 1
+            logging level vlan_mgr 5
             """
         )
         set_module_args(
@@ -403,6 +406,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                         dict(facility="auth", severity="alert"),
                         dict(facility="ospfv3", severity="critical"),
                         dict(facility="cron", severity="notification"),
+                        dict(facility="vlan_mgr", severity="notification"),
                     ],
                 ),
                 state="merged",
@@ -542,6 +546,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging module 5
             logging monitor 2
             logging history 6
+            logging level vlan_mgr 5
             logging history size 4096
             no logging rate-limit
             logging rfc-strict 5424
@@ -557,6 +562,9 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "rate_limit": "disabled",
             "rfc_strict": True,
             "origin_id": {"string": "nodeA"},
+            "facilities": [
+                {"facility": "vlan_mgr", "severity": "notification"}
+            ],
         }
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered)
