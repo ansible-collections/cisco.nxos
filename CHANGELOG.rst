@@ -5,6 +5,16 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.7.1
+======
+
+Bugfixes
+--------
+
+- `nxos_acls` - Updating an existing ACE can only be done with states replaced or overridden. Using state merged will result in a failure.
+- `nxos_logging_global` - Fix vlan_mgr not being gathered in facts (https://github.com/ansible-collections/cisco.nxos/issues/380).
+- `nxos_vlans` - Fallback to json when json-pretty is not supported (https://github.com/ansible-collections/cisco.nxos/issues/377).
+
 v2.7.0
 ======
 

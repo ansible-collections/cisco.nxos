@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_logging_global` - Fix vlan_mgr not being gathered in facts (https://github.com/ansible-collections/cisco.nxos/issues/380)."

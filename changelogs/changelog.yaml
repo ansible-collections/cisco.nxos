@@ -664,3 +664,16 @@ releases:
     - nxos_telemetry.yaml
     - readme.yaml
     release_date: '2021-10-01'
+  2.7.1:
+    changes:
+      bugfixes:
+      - '`nxos_acls` - Updating an existing ACE can only be done with states replaced
+        or overridden. Using state merged will result in a failure.'
+      - '`nxos_logging_global` - Fix vlan_mgr not being gathered in facts (https://github.com/ansible-collections/cisco.nxos/issues/380).'
+      - '`nxos_vlans` - Fallback to json when json-pretty is not supported (https://github.com/ansible-collections/cisco.nxos/issues/377).'
+    fragments:
+    - ignores.yaml
+    - nxos_acls.yaml
+    - nxos_logging.yaml
+    - nxos_vlans.yaml
+    release_date: '2021-11-11'
