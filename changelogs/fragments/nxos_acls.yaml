@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_acls` - Updating an existing ACE can only be done with states replaced or overridden. Using state merged will result in a failure."

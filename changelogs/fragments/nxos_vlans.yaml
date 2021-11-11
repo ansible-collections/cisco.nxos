@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_vlans` - Fallback to json when json-pretty is not supported (https://github.com/ansible-collections/cisco.nxos/issues/377)."
