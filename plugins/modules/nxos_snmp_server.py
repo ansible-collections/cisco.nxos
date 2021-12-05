@@ -356,6 +356,84 @@ options:
               trap_rate:
                 description: Number of traps per minute.
                 type: bool
+          stpx:
+            description: Stpx traps.
+            type: dict
+            suboptions:
+              enable:
+                description: Enable stpx traps.
+                type: bool
+              inconsistency:
+                description: Enable SNMP STPX MIB InconsistencyUpdate traps.
+                type: bool
+              loop_inconsistency:
+                description: Enable SNMP STPX MIB LoopInconsistencyUpdate traps.
+                type: bool
+              root_inconsistency:
+                description: Enable SNMP STPX MIB RootInconsistencyUpdate traps.
+                type: bool
+          syslog:
+            description: Enable syslog traps.
+            type: dict
+            suboptions:
+              enable:
+                description: Enable syslog traps.
+                type: bool
+              message_generated:
+                description: Message Generated Notification.
+                type: bool
+          sysmgr:
+            description: Sysmgr traps.
+            type: dict
+            suboptions:
+              enable:
+                description: Enable sysmgr traps.
+                type: bool
+              cseFailSwCoreNotifyExtended:
+                description: Software Core Notification.
+                type: bool
+          system:
+            description: System traps.
+            type: dict
+            suboptions:
+              enable:
+                description: Enable system traps.
+                type: bool
+              clock_change_notification:
+                description: Clock-change-notification traps.
+                type: bool
+          upgrade:
+            description: Upgrade traps.
+            type: dict
+            suboptions:
+              enable:
+                description: Enable upgrade traps.
+                type: bool
+              upgradeJobStatusNotify:
+                description: Upgrade Job Status Notification.
+                type: bool
+              upgradeOpNotifyOnCompletion:
+                description: Upgrade Global Status Notification.
+                type: bool
+          vtp:
+            description: VTP traps.
+            type: dict
+            suboptions:
+              enable:
+                description: Enable VTP traps.
+                type: bool
+              notifs:
+                description:
+                  - Enable vtpConfigRevNumberError vtpConfigDigestEnable vtpConfigRevNumberError vtpConfigDigestError
+                    vtpServerDisabled vtpVersionOneDeviceDetected vlanTrunkPortDynamicStatusChange vtpLocalModeChanged
+                    vtpVersionInUseChanged notification.
+                type: bool
+              vlancreate:
+                description: Enable vtpVlanCreated notification.
+                type: bool
+              vlandelete:
+                description: Enable vtpVlanDeleted notification.
+                type: bool
       engine_id:
         description: Configure a local SNMPv3 engineID.
         type: dict
@@ -456,50 +534,55 @@ options:
             description: Enable one time authentication for snmp over tcp session.
             type: bool
       users:
-        description: Define a user who can access the SNMP engine.
-        type: list
-        elements: dict
+        description: Define users who can access the SNMP engine.
+        type: dict
         suboptions:
-          user:
-            description: Name of the user (Max Size 28).
-            type: str
-          group:
-            description: Group name (ignored for notif target user) (Max Size 28).
-            type: str
           auth:
-            description: Authentication parameters for the user.
-            type: dict
+            description: SNMP User authentication related settings
+            type: list
+            elements: dict
             suboptions:
-              algorithm:
-                description: Select algorithm for authentication.
+              user:
+                description: Name of the user (Max Size 28).
                 type: str
-                choices: ["md5", "sha"]
-              password:
-                description: Authentication password for user (Max Size 127).
+              group:
+                description: Group name (ignored for notif target user) (Max Size 28).
                 type: str
-              engine_id:
-                description: EngineID for configuring notif target user (for V3 informs).
-                type: str
-              localized_key:
-                description: Specifies whether the passwords are in localized key format.
-                type: bool
-              priv:
-                description: Encryption parameters for the user.
+              authentication:
+                description: Authentication parameters for the user.
                 type: dict
                 suboptions:
-                  privacy_password:
-                    description: Privacy password for user (Max Size 130).
+                  algorithm:
+                    description: Select algorithm for authentication.
                     type: str
-                  aes_128:
-                    description: Use 128-bit AES algorithm for privacy.
+                    choices: ["md5", "sha"]
+                  password:
+                    description: Authentication password for user (Max Size 127).
+                    type: str
+                  engine_id:
+                    description: EngineID for configuring notif target user (for V3 informs).
+                    type: str
+                  localized_key:
+                    description: Specifies whether the passwords are in localized key format.
                     type: bool
-          enforce_priv:
-            description: Enforce privacy for the user.
-            type: bool
-          use_acl:
+                  priv:
+                    description: Encryption parameters for the user.
+                    type: dict
+                    suboptions:
+                      privacy_password:
+                        description: Privacy password for user (Max Size 130).
+                        type: str
+                      aes_128:
+                        description: Use 128-bit AES algorithm for privacy.
+                        type: bool
+          use_acls:
             description: Set IPv4 and IPv6 ACL to use.
-            type: dict
+            type: list
+            elements: dict
             suboptions:
+              user:
+                description: Name of the user (Max Size 28).
+                type: str
               ipv4:
                 description: Specify IPv4 ACL, the ACL name specified after must be IPv4 ACL.
                 type: str

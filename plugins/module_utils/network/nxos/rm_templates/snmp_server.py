@@ -20,6 +20,75 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def _template_hosts(data):
+    cmd = "snmp-server host {0}".format(data["host"])
+    if data.get("traps"):
+        cmd += " traps"
+    if data.get("informs"):
+        cmd += " informs"
+    if data.get("use_vrf"):
+        cmd += " use-vrf {0}".format(data["use_vrf"])
+    if data.get("filter_vrf"):
+        cmd += " filter-vrf {0}".format(data["filter_vrf"])
+    if data.get("source_interface"):
+        cmd += " source-interface {0}".format(data["source_interface"])
+    if data.get("version"):
+        cmd += " version {0}".format(data["version"])
+    if data.get("community"):
+        cmd += " " + data["community"]
+    elif data.get("auth"):
+        cmd += " auth {0}".format(data["auth"])
+    elif data.get("priv"):
+        cmd += " priv {0}".format(data["priv"])
+    if data.get("udp_port"):
+        cmd += " udp-port {0}".format(data["udp_port"])
+
+    return cmd
+
+
+def _tmplt_users_auth(data):
+    cmd = "snmp-server user {0}".format(data["user"])
+
+    if "group" in data:
+        cmd += " {0}".format(data["group"])
+    if "authentication" in data:
+        auth = data["authentication"]
+        if "algorithm" in auth:
+            cmd += " auth {0}".format(auth["algorithm"])
+        if "password" in auth:
+            cmd += " {0}".format(auth["password"])
+        priv = auth.get("priv", {})
+        if priv:
+            cmd += " priv"
+            if priv.get("aes_128", False):
+                cmd += " aes-128"
+            if "privacy_password" in priv:
+                cmd += " {0}".format(priv["privacy_password"])
+        if auth.get("localized_key", False):
+            cmd += " localizedkey"
+        if "engine_id" in auth:
+            cmd += " engineID {0}".format(auth["engine_id"])
+
+        return cmd
+
+
+def _template_communities(data):
+    cmd = "snmp-server community {0}".format(data["community"])
+
+    if "group" in data:
+        cmd += " group {0}".format(data["group"])
+    elif "use_ipv4acl" in data:
+        cmd += " use-ipv4acl {0}".format(data["use_ipv4acl"])
+    elif "use_ipv6acl" in data:
+        cmd += " use-ipv6acl {0}".format(data["use_ipv6acl"])
+    elif data.get("ro", False):
+        cmd += " ro"
+    elif data.get("rw", False):
+        cmd += " rw"
+
+    return cmd
+
+
 class Snmp_serverTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Snmp_serverTemplate, self).__init__(
@@ -29,7 +98,7 @@ class Snmp_serverTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "aaa_user",
+            "name": "aaa_user.cache_timeout",
             "getval": re.compile(
                 r"""
                 ^snmp-server\saaa-user
@@ -43,39 +112,25 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "communities.group",
+            "name": "communities",
             "getval": re.compile(
                 r"""
                 ^snmp-server
                 \scommunity\s(?P<community>\S+)
-                \sgroup\s(?P<group>\S+)
+                (\sgroup\s(?P<group>\S+))?
+                (\suse-ipv4acl\s(?P<use_ipv4acl>\S+))?
+                (\suse-ipv6acl\s(?P<use_ipv6acl>\S+))?
                 $""", re.VERBOSE),
-            "setval": "snmp-server community {{ community }} group {{ group }}",
+            "setval": _template_communities,
             "result": {
-                "communities": {
-                    "{{ community }}": {
+                "communities": [
+                    {
                         "community": "{{ community }}",
                         "group": "{{ group }}",
-                    }
-                }
-            },
-        },
-        {
-            "name": "communities.use_ipv4acl",
-            "getval": re.compile(
-                r"""
-                ^snmp-server
-                \scommunity\s(?P<community>\S+)
-                \suse-ipv4acl\s(?P<use_ipv4acl>\S+)
-                $""", re.VERBOSE),
-            "setval": "snmp-server community {{ community }} use-ipv4acl {{ use_ipv4acl }}",
-            "result": {
-                "communities": {
-                    "{{ community }}": {
-                        "community": "{{ community }}",
                         "use_ipv4acl": "{{ use_ipv4acl }}",
+                        "use_ipv6acl": "{{ use_ipv6acl }}",
                     }
-                }
+                ]
             },
         },
         {
@@ -943,14 +998,201 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "engine_id.local",
+            "name": "traps.stpx.inconsistency",
             "getval": re.compile(
                 r"""
                 ^snmp-server\senable
-                \sengine-id
+                \straps
+                \sstpx\s(?P<inconsistency>inconsistency)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps stpx inconsistency",
+            "result": {
+                "traps": {
+                    "stpx": {
+                        "inconsistency": "{{ not not inconsistency }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.stpx.root_inconsistency",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \sstpx\s(?P<root_inconsistency>root-inconsistency)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps stpx root-inconsistency",
+            "result": {
+                "traps": {
+                    "stpx": {
+                        "root_inconsistency": "{{ not not root_inconsistency }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.stpx.loop_inconsistency",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \sstpx\s(?P<loop_inconsistency>loop-inconsistency)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps stpx loop-inconsistency",
+            "result": {
+                "traps": {
+                    "stpx": {
+                        "loop_inconsistency": "{{ not not loop_inconsistency }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.syslog.message_generated",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \ssyslog\s(?P<message_generated>message-generated)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps syslog message-generated",
+            "result": {
+                "traps": {
+                    "syslog": {
+                        "message_generated": "{{ not not message_generated }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.sysmgr.cseFailSwCoreNotifyExtended",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \ssysmgr\s(?P<cseFailSwCoreNotifyExtended>cseFailSwCoreNotifyExtended)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps sysmgr cseFailSwCoreNotifyExtended",
+            "result": {
+                "traps": {
+                    "sysmgr": {
+                        "cseFailSwCoreNotifyExtended": "{{ not not cseFailSwCoreNotifyExtended }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.system.clock_change_notification",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \ssystem\s(?P<clock_change_notification>Clock-change-notification)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps system Clock-change-notification",
+            "result": {
+                "traps": {
+                    "system": {
+                        "clock_change_notification": "{{ not not clock_change_notification }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.upgrade.upgradeJobStatusNotify",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \supgrade\s(?P<upgradeJobStatusNotify>upgradeJobStatusNotify)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps upgrade upgradeJobStatusNotify",
+            "result": {
+                "traps": {
+                    "upgrade": {
+                        "upgradeJobStatusNotify": "{{ not not upgradeJobStatusNotify }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.upgrade.upgradeOpNotifyOnCompletion",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \supgrade\s(?P<upgradeOpNotifyOnCompletion>upgradeOpNotifyOnCompletion)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps upgrade upgradeOpNotifyOnCompletion",
+            "result": {
+                "traps": {
+                    "upgrade": {
+                        "upgradeOpNotifyOnCompletion": "{{ not not upgradeOpNotifyOnCompletion }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.vtp.notifs",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \svtp\s(?P<notifs>notifs)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps vtp notifs",
+            "result": {
+                "traps": {
+                    "vtp": {
+                        "notifs": "{{ not not notifs }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.vtp.vlancreate",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \svtp\s(?P<vlancreate>vlancreate)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps vtp vlancreate",
+            "result": {
+                "traps": {
+                    "vtp": {
+                        "vlancreate": "{{ not not vlancreate }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.vtp.vlandelete",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps
+                \svtp\s(?P<vlandelete>vlandelete)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps vtp vlandelete",
+            "result": {
+                "traps": {
+                    "vtp": {
+                        "vlandelete": "{{ not not vlandelete }}",
+                    }
+                }
+            },
+        },
+
+        {
+            "name": "engine_id.local",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\sengineID
                 \slocal\s(?P<local>\S+)
                 $""", re.VERBOSE),
-            "setval": "snmp-server engine-id local {{ engine_id.local }}",
+            "setval": "snmp-server engineID local {{ engine_id.local }}",
             "result": {
                 "engine_id": {
                     "local": "{{ local }}",
@@ -980,7 +1222,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s((auth\s(?P<auth>\S+))|(priv\s(?P<priv>\S+))|((?P<community>\S+))))?
                 (\sudp-port\s(?P<udp_port>\S+))?
                 $""", re.VERBOSE),
-            "setval": "snmp-server host {{ host }}",
+            "setval": _template_hosts,
             "result": {
                 "hosts": [
                     {
@@ -1121,39 +1363,42 @@ class Snmp_serverTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "users",
+            "name": "users.auth",
             "getval": re.compile(
                 r"""
                 ^snmp-server
                 \suser\s(?P<user>\S+)
-                \s(?P<group>\S+)
+                (\s(?P<group>[^auth]\S+))?
                 (\sauth\s(?P<algorithm>md5|sha)\s(?P<password>\S+))?
                 (\spriv(\s(?P<aes_128>aes-128))?\s(?P<privacy_password>\S+))?
                 (\s(?P<localized_key>localizedkey))?
-                (\sengineID(?P<engine_id>\S+))?
+                (\sengineID\s(?P<engine_id>\S+))?
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": _tmplt_users_auth,
             "result": {
-                "users": [
-                    {
-                        "user": "{{ user }}",
-                        "group": "{{ group }}",
-                        "auth": {
-                            "algorithm": "{{ algorithm }}",
-                            "password": "'{{ password }}'",
-                            "engine_id": "{{ engine_id }}",
-                            "localized_key": "{{ not not localized_key }}",
-                            "priv": {
-                                "privacy_password": "'{{ privacy_password }}'",
-                                "aes_128": "{{ not not aes_128 }}",
+                "users": {
+                    "auth": [
+                        {
+                            "user": "{{ user }}",
+                            "group": "{{ group }}",
+                            "authentication": {
+                                "algorithm": "{{ algorithm }}",
+                                "password": "'{{ password }}'",
+                                "engine_id": "'{{ engine_id }}'",
+                                "localized_key": "{{ not not localized_key }}",
+                                "priv": {
+                                    "privacy_password": "'{{ privacy_password }}'",
+                                    "aes_128": "{{ not not aes_128 }}",
+                                }
                             }
+
                         }
-                    }
-                ]
+                    ]
+                }
             }
         },
         {
-            "name": "users.use_acl",
+            "name": "users.use_acls",
             "getval": re.compile(
                 r"""
                 ^snmp-server
@@ -1165,15 +1410,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                       "{{ (' use-ipv4acl ' + ipv4) if ipv4 is defined else '' }}"
                       "{{ (' use-ipv6acl ' + ipv6) if ipv6 is defined else '' }}",
             "result": {
-                "users": [
-                    {
-                        "user": "{{ user }}",
-                        "use_acl": {
+                "users": {
+                    "use_acls": [
+                        {
+                            "user": "{{ user }}",
                             "ipv4": "{{ ipv4 }}",
                             "ipv6": "{{ ipv6 }}",
                         }
-                    }
-                ]
+                    ]
+                }
             }
         },
     ]

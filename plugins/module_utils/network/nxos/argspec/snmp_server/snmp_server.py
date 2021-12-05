@@ -230,6 +230,57 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "trap_rate": {"type": "bool"},
                             },
                         },
+                        "stpx": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "inconsistency": {"type": "bool"},
+                                "loop_inconsistency": {"type": "bool"},
+                                "root_inconsistency": {"type": "bool"},
+                            },
+                        },
+                        "syslog": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "message_generated": {"type": "bool"},
+                            },
+                        },
+                        "sysmgr": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "cseFailSwCoreNotifyExtended": {
+                                    "type": "bool"
+                                },
+                            },
+                        },
+                        "system": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "clock_change_notification": {"type": "bool"},
+                            },
+                        },
+                        "upgrade": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "upgradeJobStatusNotify": {"type": "bool"},
+                                "upgradeOpNotifyOnCompletion": {
+                                    "type": "bool"
+                                },
+                            },
+                        },
+                        "vtp": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                                "notifs": {"type": "bool"},
+                                "vlancreate": {"type": "bool"},
+                                "vlandelete": {"type": "bool"},
+                            },
+                        },
                     },
                 },
                 "engine_id": {
@@ -248,13 +299,13 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "source_interface": {"type": "str"},
                         "traps": {"type": "bool"},
                         "use_vrf": {"type": "str"},
-                        "udp_port": {"type": "int"},
-                        "auth": {"type": "str"},
-                        "priv": {"type": "str"},
                         "version": {
                             "type": "str",
                             "choices": ["1", "2c", "3"],
                         },
+                        "auth": {"type": "str"},
+                        "priv": {"type": "str"},
+                        "udp_port": {"type": "int"},
                     },
                 },
                 "location": {"type": "str"},
@@ -267,8 +318,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "community": {"type": "str"},
                                 "context": {"type": "str"},
                             },
-                        },
-                        "context": {"type": "str"},
+                        }
                     },
                 },
                 "packetsize": {"type": "int"},
@@ -292,34 +342,46 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "users": {
-                    "type": "list",
-                    "elements": "dict",
+                    "type": "dict",
                     "options": {
-                        "user": {"type": "str"},
-                        "group": {"type": "str"},
                         "auth": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
-                                "algorithm": {
-                                    "type": "str",
-                                    "choices": ["md5", "sha"],
-                                },
-                                "password": {"type": "str"},
-                                "engine_id": {"type": "str"},
-                                "localized_key": {"type": "bool"},
-                                "priv": {
+                                "user": {"type": "str"},
+                                "group": {"type": "str"},
+                                "authentication": {
                                     "type": "dict",
                                     "options": {
-                                        "privacy_password": {"type": "str"},
-                                        "aes_128": {"type": "bool"},
+                                        "algorithm": {
+                                            "type": "str",
+                                            "choices": ["md5", "sha"],
+                                        },
+                                        "password": {
+                                            "type": "str",
+                                            "no_log": False,
+                                        },
+                                        "engine_id": {"type": "str"},
+                                        "localized_key": {"type": "bool"},
+                                        "priv": {
+                                            "type": "dict",
+                                            "options": {
+                                                "privacy_password": {
+                                                    "type": "str",
+                                                    "no_log": False,
+                                                },
+                                                "aes_128": {"type": "bool"},
+                                            },
+                                        },
                                     },
                                 },
                             },
                         },
-                        "enforce_priv": {"type": "bool"},
-                        "use_acl": {
-                            "type": "dict",
+                        "use_acls": {
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
+                                "user": {"type": "str"},
                                 "ipv4": {"type": "str"},
                                 "ipv6": {"type": "str"},
                             },

@@ -1,0 +1,65 @@
+---
+- debug:
+    msg: START nxos_snmp_server rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_snmp_server:
+    config:
+      aaa_user:
+        cache_timeout: 36000
+      communities:
+        - community: public
+          group: network-operator
+        - community: private
+          group: network-admin
+      contact: nxosswitchadmin@localhost
+      location: serverroom-1
+      traps:
+        aaa:
+          server_state_change: True
+        system:
+          clock_change_notification: True
+      hosts:
+        - host: 192.0.2.1
+          traps: True
+          version: '1'
+          community: public
+        - host: 192.0.2.1
+          source_interface: Ethernet1/1
+        - host: 192.0.2.2
+          informs: True
+          version: '3'
+          auth: NMS
+      users:
+        auth:
+          - user: snmp_user_1
+            group: network-operator
+            authentication:
+              algorithm: md5
+              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              localized_key: True
+          - user: snmp_user_2
+            group: network-operator
+            authentication:
+              algorithm: md5
+              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              localized_key: True
+              priv:
+                privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
+                aes_128: True
+        use_acls:
+          - user: snmp_user_1
+            ipv4: acl1
+            ipv6: acl2
+          - user: snmp_user_2
+            ipv4: acl3
+            ipv6: acl4
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  assert:
+    that:
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
+        \ == 0 }}"
+      - result.changed == False

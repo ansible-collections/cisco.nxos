@@ -14,8 +14,6 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
@@ -50,8 +48,9 @@ class Snmp_serverFacts(object):
         objs = []
 
         if not data:
-            # data = connection.get("show running-config | section '^snmp-server user admin'")
-            data = "snmp-server user admin network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv 0x5632724fb8ac3699296af26281e1d0f1 localizedkey"
+            data = connection.get(
+                "show running-config | section '^snmp-server'"
+            )
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(
@@ -60,7 +59,9 @@ class Snmp_serverFacts(object):
         objs = snmp_server_parser.parse()
 
         if "communities" in objs:
-            objs["communities"] = list(objs["communities"].values())
+            objs["communities"] = sorted(
+                objs["communities"], key=lambda k: k["community"]
+            )
 
         ansible_facts["ansible_network_resources"].pop("snmp_server", None)
 
