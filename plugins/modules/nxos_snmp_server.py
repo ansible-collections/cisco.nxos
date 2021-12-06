@@ -557,10 +557,14 @@ options:
                     type: str
                     choices: ["md5", "sha"]
                   password:
-                    description: Authentication password for user (Max Size 127).
+                    description:
+                      - Authentication password for user (Max Size 127).
+                      - If this value is localized, it has to be enclosed in quotes in the task.
                     type: str
                   engine_id:
-                    description: EngineID for configuring notif target user (for V3 informs).
+                    description:
+                      - EngineID for configuring notif target user (for V3 informs).
+                      - This value needs to be enclosed in quotes in the task.
                     type: str
                   localized_key:
                     description: Specifies whether the passwords are in localized key format.
@@ -570,7 +574,9 @@ options:
                     type: dict
                     suboptions:
                       privacy_password:
-                        description: Privacy password for user (Max Size 130).
+                        description:
+                          - Privacy password for user (Max Size 130).
+                          - If this value is localized, it has to be enclosed in quotes in the task.
                         type: str
                       aes_128:
                         description: Use 128-bit AES algorithm for privacy.
@@ -592,6 +598,7 @@ options:
   state:
     description:
     - The state the configuration should be left in.
+    - The states C(replaced) and C(overridden) have identical behaviour for this module.
     - Please refer to examples for more details.
     type: str
     choices:

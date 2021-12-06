@@ -3191,6 +3191,7 @@ Parameters
                 </td>
                 <td>
                         <div>EngineID for configuring notif target user (for V3 informs).</div>
+                        <div>This value needs to be enclosed in quotes in the task.</div>
                 </td>
             </tr>
             <tr>
@@ -3233,6 +3234,7 @@ Parameters
                 </td>
                 <td>
                         <div>Authentication password for user (Max Size 127).</div>
+                        <div>If this value is localized, it has to be enclosed in quotes in the task.</div>
                 </td>
             </tr>
             <tr>
@@ -3296,6 +3298,7 @@ Parameters
                 </td>
                 <td>
                         <div>Privacy password for user (Max Size 130).</div>
+                        <div>If this value is localized, it has to be enclosed in quotes in the task.</div>
                 </td>
             </tr>
 
@@ -3451,6 +3454,7 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in.</div>
+                        <div>The states <code>replaced</code> and <code>overridden</code> have identical behaviour for this module.</div>
                         <div>Please refer to examples for more details.</div>
                 </td>
             </tr>
