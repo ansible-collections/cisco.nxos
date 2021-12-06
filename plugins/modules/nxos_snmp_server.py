@@ -607,6 +607,694 @@ options:
 
 EXAMPLES = """
 
+# Using merged
+
+# Before state:
+# -------------
+# nxos-9k-rdo# show running-config | section "^snmp-server"
+# snmp-server user admin network-admin auth md5 0xcbde46b02c46e0bcd3ac5af6a8b13da9 priv 0xcbde46b02c46e0bcd3ac5af6a8b13da9 localizedkey
+
+- name: Merge the provided configuration with the existing running configuration
+  cisco.nxos.nxos_snmp_server:
+    config:
+      aaa_user:
+        cache_timeout: 36000
+      communities:
+        - community: public
+          group: network-operator
+        - community: private
+          group: network-admin
+      contact: nxosswitchadmin@localhost
+      location: serverroom-1
+      traps:
+        aaa:
+          server_state_change: True
+        system:
+          clock_change_notification: True
+      hosts:
+        - host: 192.0.2.1
+          traps: True
+          version: '1'
+          community: public
+        - host: 192.0.2.1
+          source_interface: Ethernet1/1
+        - host: 192.0.2.2
+          informs: True
+          version: '3'
+          auth: NMS
+      users:
+        auth:
+          - user: snmp_user_1
+            group: network-operator
+            authentication:
+              algorithm: md5
+              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              localized_key: True
+          - user: snmp_user_2
+            group: network-operator
+            authentication:
+              algorithm: md5
+              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              localized_key: True
+              priv:
+                privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
+                aes_128: True
+        use_acls:
+          - user: snmp_user_1
+            ipv4: acl1
+            ipv6: acl2
+          - user: snmp_user_2
+            ipv4: acl3
+            ipv6: acl4
+
+# Task output
+# -------------
+# before:
+#   users:
+#     auth:
+#       - user: admin
+#         group: network-admin
+#         authentication:
+#           algorithm: md5
+#           password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#           localized_key: True
+#           priv:
+#             privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#
+# commands:
+#   - snmp-server contact nxosswitchadmin@localhost
+#   - snmp-server location serverroom-1
+#   - snmp-server aaa-user cache-timeout 36000
+#   - snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+#   - snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+#   - snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+#   - snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+#   - snmp-server host 192.0.2.1 traps version 1 public
+#   - snmp-server host 192.0.2.1 source-interface Ethernet1/1
+#   - snmp-server host 192.0.2.2 informs version 3 auth NMS
+#   - snmp-server community private group network-admin
+#   - snmp-server community public group network-operator
+#   - snmp-server enable traps aaa server-state-change
+#   - snmp-server enable traps system Clock-change-notification
+#
+# after:
+#   aaa_user:
+#      cache_timeout: 36000
+#    communities:
+#      - community: private
+#        group: network-admin
+#      - community: public
+#        group: network-operator
+#    contact: nxosswitchadmin@localhost
+#    location: serverroom-1
+#    traps:
+#      aaa:
+#        server_state_change: True
+#      system:
+#        clock_change_notification: True
+#    hosts:
+#      - host: 192.0.2.1
+#        traps: true
+#        version: "1"
+#        community: public
+#
+#      - host: 192.0.2.1
+#        source_interface: Ethernet1/1
+#
+#      - host: 192.0.2.2
+#        informs: true
+#        version: "3"
+#        auth: NMS
+#    users:
+#      auth:
+#        - user: admin
+#          group: network-admin
+#          authentication:
+#            algorithm: md5
+#            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#            localized_key: True
+#            priv:
+#              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#
+#        - user: snmp_user_1
+#          group: network-operator
+#          authentication:
+#            algorithm: md5
+#            password: "0x5632724fb8ac3699296af26281e1d0f1"
+#            localized_key: True
+#
+#        - authentication:
+#            algorithm: md5
+#            localized_key: true
+#            password: "0x5632724fb8ac3699296af26281e1d0f1"
+#            priv:
+#              aes_128: true
+#              privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+#          group: network-operator
+#          user: snmp_user_2
+#
+#      use_acls:
+#        - user: snmp_user_1
+#          ipv4: acl1
+#          ipv6: acl2
+#        - user: snmp_user_2
+#          ipv4: acl3
+#          ipv6: acl4
+
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^snmp-server"
+# snmp-server contact nxosswitchadmin@localhost
+# snmp-server location serverroom-1
+# snmp-server aaa-user cache-timeout 36000
+# snmp-server user admin network-admin auth md5 0xcbde46b02c46e0bcd3ac5af6a8b13da9 priv 0xcbde46b02c46e0bcd3ac5af6a8b13da9 localizedkey
+# snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+# snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+# snmp-server host 192.0.2.1 traps version 1 public
+# snmp-server host 192.0.2.1 source-interface Ethernet1/1
+# snmp-server host 192.0.2.2 informs version 3 auth NMS
+# snmp-server community private group network-admin
+# snmp-server community public group network-operator
+# snmp-server enable traps aaa server-state-change
+# snmp-server enable traps system Clock-change-notification
+
+# Using replaced
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^snmp-server"
+# snmp-server contact nxosswitchadmin@localhost
+# snmp-server location serverroom-1
+# snmp-server aaa-user cache-timeout 36000
+# snmp-server user admin network-admin auth md5 0xcbde46b02c46e0bcd3ac5af6a8b13da9 priv 0xcbde46b02c46e0bcd3ac5af6a8b13da9 localizedkey
+# snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+# snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+# snmp-server host 192.0.2.1 traps version 1 public
+# snmp-server host 192.0.2.1 source-interface Ethernet1/1
+# snmp-server host 192.0.2.2 informs version 3 auth NMS
+# snmp-server community private group network-admin
+# snmp-server community public group network-operator
+# snmp-server enable traps aaa server-state-change
+# snmp-server enable traps system Clock-change-notification
+
+- name: Replace snmp-server configurations of listed snmp-server with provided configurations
+  cisco.nxos.nxos_snmp_server:
+    config:
+      aaa_user:
+        cache_timeout: 36000
+      communities:
+        - community: public
+          group: network-operator
+        - community: secret
+          group: network-operator
+      contact: nxosswitchadmin2@localhost
+      location: serverroom-2
+      traps:
+        aaa:
+          server_state_change: True
+      hosts:
+        - host: 192.0.2.1
+          traps: True
+          version: '1'
+          community: public
+        - host: 192.0.2.1
+          source_interface: Ethernet1/1
+        - host: 192.0.3.2
+          informs: True
+          version: '3'
+          auth: NMS
+      users:
+        auth:
+          - user: admin
+            group: network-admin
+            authentication:
+              algorithm: md5
+              password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+              localized_key: True
+              priv:
+                privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+
+          - user: snmp_user_1
+            group: network-operator
+            authentication:
+              algorithm: md5
+              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              localized_key: True
+
+          - user: snmp_user_2
+            group: network-operator
+            authentication:
+              algorithm: md5
+              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              localized_key: True
+              priv:
+                privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
+                aes_128: True
+        use_acls:
+          - user: snmp_user_1
+            ipv4: acl1
+            ipv6: acl2
+    state: replaced
+
+# Task output
+# -------------
+# before:
+#   aaa_user:
+#      cache_timeout: 36000
+#    communities:
+#      - community: private
+#        group: network-admin
+#      - community: public
+#        group: network-operator
+#    contact: nxosswitchadmin@localhost
+#    location: serverroom-1
+#    traps:
+#      aaa:
+#        server_state_change: True
+#      system:
+#        clock_change_notification: True
+#    hosts:
+#      - host: 192.0.2.1
+#        traps: true
+#        version: "1"
+#        community: public
+#
+#      - host: 192.0.2.1
+#        source_interface: Ethernet1/1
+#
+#      - host: 192.0.2.2
+#        informs: true
+#        version: "3"
+#        auth: NMS
+#    users:
+#      auth:
+#        - user: admin
+#          group: network-admin
+#          authentication:
+#            algorithm: md5
+#            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#            localized_key: True
+#            priv:
+#              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#
+#        - user: snmp_user_1
+#          group: network-operator
+#          authentication:
+#            algorithm: md5
+#            password: "0x5632724fb8ac3699296af26281e1d0f1"
+#            localized_key: True
+#
+#        - authentication:
+#            algorithm: md5
+#            localized_key: true
+#            password: "0x5632724fb8ac3699296af26281e1d0f1"
+#            priv:
+#              aes_128: true
+#              privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+#          group: network-operator
+#          user: snmp_user_2
+#
+#      use_acls:
+#        - user: snmp_user_1
+#          ipv4: acl1
+#          ipv6: acl2
+#        - user: snmp_user_2
+#          ipv4: acl3
+#          ipv6: acl4
+#
+# commands:
+#   - snmp-server contact nxosswitchadmin2@localhost
+#   - no snmp-server enable traps system Clock-change-notification
+#   - snmp-server location serverroom-2
+#   - no snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+#   - no snmp-server host 192.0.2.2 informs version 3 auth NMS
+#   - snmp-server host 192.0.3.2 informs version 3 auth NMS
+#   - no snmp-server community private group network-admin
+#   - snmp-server community secret group network-operator
+#
+# after:
+#   aaa_user:
+#      cache_timeout: 36000
+#    communities:
+#      - community: public
+#        group: network-operator
+#      - community: secret
+#        group: network-operator
+#    contact: nxosswitchadmin2@localhost
+#    location: serverroom-2
+#    traps:
+#      aaa:
+#        server_state_change: True
+#    hosts:
+#      - host: 192.0.2.1
+#        traps: True
+#        version: '1'
+#        community: public
+#      - host: 192.0.2.1
+#        source_interface: Ethernet1/1
+#      - host: 192.0.3.2
+#        informs: True
+#        version: '3'
+#        auth: NMS
+#    users:
+#      auth:
+#        - user: admin
+#          group: network-admin
+#          authentication:
+#            algorithm: md5
+#            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#            localized_key: True
+#            priv:
+#              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#
+#        - user: snmp_user_1
+#          group: network-operator
+#          authentication:
+#            algorithm: md5
+#            password: '0x5632724fb8ac3699296af26281e1d0f1'
+#            localized_key: True
+#
+#        - user: snmp_user_2
+#          group: network-operator
+#          authentication:
+#            algorithm: md5
+#            password: '0x5632724fb8ac3699296af26281e1d0f1'
+#            localized_key: True
+#            priv:
+#              privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
+#              aes_128: True
+#
+#      use_acls:
+#        - user: snmp_user_1
+#          ipv4: acl1
+#          ipv6: acl2
+#
+
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^snmp-server"
+# snmp-server contact nxosswitchadmin2@localhost
+# snmp-server location serverroom-2
+# snmp-server aaa-user cache-timeout 36000
+# snmp-server user admin network-admin auth md5 0xcbde46b02c46e0bcd3ac5af6a8b13da9 priv 0xcbde46b02c46e0bcd3ac5af6a8b13da9 localizedkey
+# snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+# snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+# snmp-server host 192.0.2.1 traps version 1 public
+# snmp-server host 192.0.2.1 source-interface Ethernet1/1
+# snmp-server host 192.0.2.2 informs version 3 auth NMS
+# snmp-server community secret group network-operator
+# snmp-server community public group network-operator
+# snmp-server enable traps aaa server-state-change
+# snmp-server enable traps system Clock-change-notification
+
+# Using deleted
+
+# Before state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^snmp-server"
+# snmp-server contact nxosswitchadmin@localhost
+# snmp-server location serverroom-1
+# snmp-server aaa-user cache-timeout 36000
+# snmp-server user admin network-admin auth md5 0xcbde46b02c46e0bcd3ac5af6a8b13da9 priv 0xcbde46b02c46e0bcd3ac5af6a8b13da9 localizedkey
+# snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+# snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+# snmp-server host 192.0.2.1 traps version 1 public
+# snmp-server host 192.0.2.1 source-interface Ethernet1/1
+# snmp-server host 192.0.2.2 informs version 3 auth NMS
+# snmp-server community private group network-admin
+# snmp-server community public group network-operator
+# snmp-server enable traps aaa server-state-change
+# snmp-server enable traps system Clock-change-notification
+
+- name: Delete SNMP Server configurations from the device (admin user will not be deleted)
+  cisco.nxos.nxos_snmp_server:
+    state: deleted
+
+# Task output
+# -------------
+# before:
+#   aaa_user:
+#      cache_timeout: 36000
+#    communities:
+#      - community: private
+#        group: network-admin
+#      - community: public
+#        group: network-operator
+#    contact: nxosswitchadmin@localhost
+#    location: serverroom-1
+#    traps:
+#      aaa:
+#        server_state_change: True
+#      system:
+#        clock_change_notification: True
+#    hosts:
+#      - host: 192.0.2.1
+#        traps: true
+#        version: "1"
+#        community: public
+#
+#      - host: 192.0.2.1
+#        source_interface: Ethernet1/1
+#
+#      - host: 192.0.2.2
+#        informs: true
+#        version: "3"
+#        auth: NMS
+#    users:
+#      auth:
+#        - user: admin
+#          group: network-admin
+#          authentication:
+#            algorithm: md5
+#            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#            localized_key: True
+#            priv:
+#              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#
+#        - user: snmp_user_1
+#          group: network-operator
+#          authentication:
+#            algorithm: md5
+#            password: "0x5632724fb8ac3699296af26281e1d0f1"
+#            localized_key: True
+#
+#        - authentication:
+#            algorithm: md5
+#            localized_key: true
+#            password: "0x5632724fb8ac3699296af26281e1d0f1"
+#            priv:
+#              aes_128: true
+#              privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+#          group: network-operator
+#          user: snmp_user_2
+#
+#      use_acls:
+#        - user: snmp_user_1
+#          ipv4: acl1
+#          ipv6: acl2
+#        - user: snmp_user_2
+#          ipv4: acl3
+#          ipv6: acl4
+#
+# commands:
+#   - no snmp-server contact nxosswitchadmin@localhost
+#   - no snmp-server location serverroom-1
+#   - no snmp-server aaa-user cache-timeout 36000
+#   - no snmp-server user admin network-admin auth md5 0xcbde46b02c46e0bcd3ac5af6a8b13da9 priv 0xcbde46b02c46e0bcd3ac5af6a8b13da9 localizedkey
+#   - no snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+#   - no snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+#   - no snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+#   - no snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+#   - no snmp-server host 192.0.2.1 traps version 1 public
+#   - no snmp-server host 192.0.2.1 source-interface Ethernet1/1
+#   - no snmp-server host 192.0.2.2 informs version 3 auth NMS
+#   - no snmp-server community private group network-admin
+#   - no snmp-server community public group network-operator
+#   - no snmp-server enable traps aaa server-state-change
+#   - no snmp-server enable traps system Clock-change-notification
+#
+# after:
+#   users:
+#     auth:
+#       - user: admin
+#         group: network-admin
+#         authentication:
+#           algorithm: md5
+#           password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+#           localized_key: True
+#           priv:
+#             privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
+
+# After state:
+# ------------
+# nxos-9k-rdo# show running-config | section "^snmp-server"
+# snmp-server user admin network-admin auth md5 0xcbde46b02c46e0bcd3ac5af6a8b13da9 priv 0xcbde46b02c46e0bcd3ac5af6a8b13da9 localizedkey
+
+# Using rendered
+# ---------------
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_snmp_server:
+    config:
+      aaa_user:
+        cache_timeout: 36000
+      communities:
+        - community: public
+          group: network-operator
+        - community: private
+          group: network-admin
+      contact: nxosswitchadmin@localhost
+      location: serverroom-1
+      traps:
+        aaa:
+          server_state_change: True
+        system:
+          clock_change_notification: True
+      hosts:
+        - host: 192.0.2.1
+          traps: True
+          version: '1'
+          community: public
+        - host: 192.0.2.1
+          source_interface: Ethernet1/1
+        - host: 192.0.2.2
+          informs: True
+          version: '3'
+          auth: NMS
+      users:
+        auth:
+          - user: snmp_user_1
+            group: network-operator
+            authentication:
+              algorithm: md5
+              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              localized_key: True
+          - user: snmp_user_2
+            group: network-operator
+            authentication:
+              algorithm: md5
+              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              localized_key: True
+              priv:
+                privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
+                aes_128: True
+        use_acls:
+          - user: snmp_user_1
+            ipv4: acl1
+            ipv6: acl2
+          - user: snmp_user_2
+            ipv4: acl3
+            ipv6: acl4
+    state: rendered
+
+
+# Task Output (redacted)
+# -----------------------
+#  rendered:
+#    - snmp-server contact nxosswitchadmin@localhost
+#    - snmp-server location serverroom-1
+#    - snmp-server aaa-user cache-timeout 36000
+#    - snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+#    - snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+#    - snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+#    - snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+#    - snmp-server host 192.0.2.1 traps version 1 public
+#    - snmp-server host 192.0.2.1 source-interface Ethernet1/1
+#    - snmp-server host 192.0.2.2 informs version 3 auth NMS
+#    - snmp-server community private group network-admin
+#    - snmp-server community public group network-operator
+#    - snmp-server enable traps aaa server-state-change
+#    - snmp-server enable traps system Clock-change-notification
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+# snmp-server contact nxosswitchadmin@localhost
+# snmp-server location serverroom-1
+# snmp-server aaa-user cache-timeout 36000
+# snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+# snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+# snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+# snmp-server host 192.0.2.1 traps version 1 public
+# snmp-server host 192.0.2.1 source-interface Ethernet1/1
+# snmp-server host 192.0.2.2 informs version 3 auth NMS
+# snmp-server community private group network-admin
+# snmp-server community public group network-operator
+# snmp-server enable traps aaa server-state-change
+# snmp-server enable traps system Clock-change-notification
+
+- name: Parse externally provided snmp-server configuration
+  cisco.nxos.nxos_snmp_server:
+    running_config: "{{ lookup('file', './parsed.cfg') }}"
+    state: parsed
+
+# Task output (redacted)
+# -----------------------
+#  parsed:
+#   aaa_user:
+#      cache_timeout: 36000
+#    communities:
+#      - community: private
+#        group: network-admin
+#      - community: public
+#        group: network-operator
+#    contact: nxosswitchadmin@localhost
+#    location: serverroom-1
+#    traps:
+#      aaa:
+#        server_state_change: True
+#      system:
+#        clock_change_notification: True
+#    hosts:
+#      - host: 192.0.2.1
+#        traps: true
+#        version: "1"
+#        community: public
+#
+#      - host: 192.0.2.1
+#        source_interface: Ethernet1/1
+#
+#      - host: 192.0.2.2
+#        informs: true
+#        version: "3"
+#        auth: NMS
+#    users:
+#      auth:
+#        - user: snmp_user_1
+#          group: network-operator
+#          authentication:
+#            algorithm: md5
+#            password: "0x5632724fb8ac3699296af26281e1d0f1"
+#            localized_key: True
+#
+#        - authentication:
+#            algorithm: md5
+#            localized_key: true
+#            password: "0x5632724fb8ac3699296af26281e1d0f1"
+#            priv:
+#              aes_128: true
+#              privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
+#          group: network-operator
+#          user: snmp_user_2
+#
+#      use_acls:
+#        - user: snmp_user_1
+#          ipv4: acl1
+#          ipv6: acl2
+#        - user: snmp_user_2
+#          ipv4: acl3
+#          ipv6: acl4
+#
 """
 
 RETURN = """
