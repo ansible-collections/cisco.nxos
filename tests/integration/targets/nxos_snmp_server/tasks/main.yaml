@@ -6,7 +6,7 @@
 
 - name: Grep admin user SNMP localized key
   set_fact:
-    admin_snmp_passwd: "{{ result | regex_search('admin network-admin auth (md5|sha) (\\S+)', '\\2') }}"
+    admin_snmp_passwd: "{{ result['stdout'][0] | regex_search('admin network-admin auth (md5|sha) (\\S+)', '\\2') }}"
 
 - name: Find admin user SNMP localized key
   set_fact:
@@ -14,7 +14,7 @@
 
 - name: Grep zuul user SNMP localized key
   set_fact:
-    zuul_snmp_passwd: "{{ result | regex_search('zuul network-admin auth (md5|sha) (\\S+)', '\\2') }}"
+    zuul_snmp_passwd: "{{ result['stdout'][0] | regex_search('zuul network-admin auth (md5|sha) (\\S+)', '\\2') }}"
 
 - name: Find zuul user SNMP localized key
   set_fact:
