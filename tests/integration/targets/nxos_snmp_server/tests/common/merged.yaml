@@ -59,6 +59,14 @@
                 ipv6: acl4
       register: result
 
+    - name: Show before
+      debug:
+        msg: "{{ merged['before'] }}"
+
+    - name: Show after
+      debug:
+        msg: "{{ merged['after'] }}"
+
     - name: Assert that before dicts were correctly generated
       assert:
         that: "{{ result['before'] == merged['before'] }}"
