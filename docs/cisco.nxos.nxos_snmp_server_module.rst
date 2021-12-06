@@ -514,6 +514,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify hosts to receive SNMP notifications.</div>
+                        <div>SNMP hosts config lines that appear separately in running-config must be added as individual dictionaries.</div>
                 </td>
             </tr>
                                 <tr>

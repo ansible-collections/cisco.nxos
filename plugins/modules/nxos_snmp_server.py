@@ -445,7 +445,9 @@ options:
         description: Globally enforce privacy for all the users.
         type: bool
       hosts:
-        description: Specify hosts to receive SNMP notifications.
+        description:
+          - Specify hosts to receive SNMP notifications.
+          - SNMP hosts config lines that appear separately in running-config must be added as individual dictionaries.
         type: list
         elements: dict
         suboptions:

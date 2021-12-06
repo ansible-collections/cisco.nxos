@@ -470,6 +470,65 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def test_nxos_snmp_server_hosts_merged(self):
+        # test merged for hosts
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server host 192.168.2.1 informs version 2c private
+            snmp-server host 192.168.1.1 traps version 2c public
+            snmp-server host 192.168.4.1 informs version 3 priv private
+            snmp-server host 192.168.1.1 source-interface Ethernet1/1
+            snmp-server host 192.168.2.1 traps version 1 private
+            snmp-server host 192.168.3.1 informs version 3 auth private udp-port 65550
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    hosts=[
+                        dict(
+                            host="192.168.1.1",
+                            version="2c",
+                            community="public",
+                            traps=True,
+                        ),
+                        dict(
+                            host="192.168.1.1", source_interface="Ethernet1/1"
+                        ),
+                        dict(
+                            host="192.168.2.1",
+                            version="1",
+                            community="private",
+                            traps=True,
+                        ),
+                        dict(
+                            host="192.168.2.1",
+                            version="2c",
+                            community="private",
+                            informs=True,
+                        ),
+                        dict(
+                            host="192.168.3.1",
+                            version="3",
+                            auth="private",
+                            informs=True,
+                            udp_port=65550,
+                        ),
+                        dict(
+                            host="192.168.4.1",
+                            version="3",
+                            priv="private",
+                            informs=True,
+                        ),
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
     def test_nxos_snmp_server_hosts_replaced(self):
         # test replaced for hosts
         self.get_config.return_value = dedent(
