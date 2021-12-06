@@ -582,3 +582,389 @@ class TestNxosSnmpServerModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_users_merged(self):
+        # test merged for users
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    users=dict(
+                        auth=[
+                            dict(
+                                user="snmp_user_1",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="md5",
+                                    password="0x5632724fb8ac3699296af26281e1d0f1",
+                                    engine_id="1:1:1:1:1",
+                                    localized_key=True,
+                                ),
+                            ),
+                            dict(
+                                user="snmp_user_2",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="md5",
+                                    password="0x5632724fb8ac3699296af26281e1d0f1",
+                                    engine_id="2:2:2:2:2",
+                                    priv=dict(
+                                        privacy_password="0x5632724fb8ac3699296af26281e1d0f1"
+                                    ),
+                                    localized_key=True,
+                                ),
+                            ),
+                            dict(
+                                user="snmp_user_3",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="md5",
+                                    password="0x5632724fb8ac3699296af26281e1d0f1",
+                                    engine_id="3:3:3:3:3",
+                                    priv=dict(
+                                        privacy_password="0x5632724fb8ac3699296af26281e1d0f1",
+                                        aes_128=True,
+                                    ),
+                                    localized_key=True,
+                                ),
+                            ),
+                        ]
+                    )
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server user snmp_user_2 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv 0x5632724fb8ac3699296af26281e1d0f1"
+            " localizedkey engineID 2:2:2:2:2",
+            "snmp-server user snmp_user_3 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128"
+            " 0x5632724fb8ac3699296af26281e1d0f1 localizedkey engineID 3:3:3:3:3",
+            "snmp-server user snmp_user_1 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1"
+            " localizedkey engineID 1:1:1:1:1",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_users_merged(self):
+        # test merged for users
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server user user2 network-admin auth md5 0x5632724fb8ac3699296af262 priv 0x5632724fb8ac3699296af262 localizedkey engineID 2:2:2:2:2
+            snmp-server user user3 network-admin auth md5 0x5632724fb8ac3699296af262 priv aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3
+            snmp-server user user1 network-admin auth md5 0x5632724fb8ac3699296af262 localizedkey engineID 1:1:1:1:1
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    users=dict(
+                        auth=[
+                            dict(
+                                user="user1",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="md5",
+                                    password="0x5632724fb8ac3699296af262",
+                                    engine_id="1:1:1:1:1",
+                                    localized_key=True,
+                                ),
+                            ),
+                            dict(
+                                user="user2",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="md5",
+                                    password="0x5632724fb8ac3699296af262",
+                                    engine_id="2:2:2:2:2",
+                                    priv=dict(
+                                        privacy_password="0x5632724fb8ac3699296af262"
+                                    ),
+                                    localized_key=True,
+                                ),
+                            ),
+                            dict(
+                                user="user3",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="md5",
+                                    password="0x5632724fb8ac3699296af262",
+                                    engine_id="3:3:3:3:3",
+                                    priv=dict(
+                                        privacy_password="0x5632724fb8ac3699296af262",
+                                        aes_128=True,
+                                    ),
+                                    localized_key=True,
+                                ),
+                            ),
+                        ]
+                    )
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_snmp_server_users_replaced(self):
+        # test replaced for users
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server user user2 network-admin auth md5 0x5632724fb8ac3699296af262 priv 0x5632724fb8ac3699296af262 localizedkey engineID 2:2:2:2:2
+            snmp-server user user3 network-admin auth md5 0x5632724fb8ac3699296af262 priv aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3
+            snmp-server user user1 network-admin auth md5 0x5632724fb8ac3699296af262 localizedkey engineID 1:1:1:1:1
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    users=dict(
+                        auth=[
+                            dict(
+                                user="user1",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="md5",
+                                    password="0x5632724fb8ac3699296af262",
+                                    engine_id="1:1:1:1:1",
+                                    localized_key=True,
+                                ),
+                            ),
+                            dict(
+                                user="user4",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="md5",
+                                    password="0x5632724fb8ac3699296af262",
+                                    engine_id="3:3:3:3:3",
+                                    priv=dict(
+                                        privacy_password="0x5632724fb8ac3699296af262",
+                                        aes_128=True,
+                                    ),
+                                    localized_key=True,
+                                ),
+                            ),
+                        ]
+                    )
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server user user2 network-admin auth md5 0x5632724fb8ac3699296af262 priv"
+            " 0x5632724fb8ac3699296af262 localizedkey engineID 2:2:2:2:2",
+            "no snmp-server user user3 network-admin auth md5 0x5632724fb8ac3699296af262 priv"
+            " aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3",
+            "snmp-server user user4 network-admin auth md5 0x5632724fb8ac3699296af262 priv aes-128"
+            " 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_deleted(self):
+        # test deleted
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server globalEnforcePriv
+            snmp-server tcp-session auth
+            snmp-server counter cache timeout 1800
+            snmp-server packetsize 484
+            snmp-server drop unknown-user
+            snmp-server source-interface informs Ethernet1/1
+            snmp-server context public vrf siteA
+            snmp-server protocol enable
+            snmp-server system-shutdown
+            snmp-server aaa-user cache-timeout 36000
+            snmp-server engineID local 00:00:00:63:00:01:00:10:20:15:10:03
+            snmp-server contact testswitch@localhost
+            snmp-server drop unknown-engine-id
+            snmp-server location lab
+            snmp-server mib community-map public context public1
+            snmp-server source-interface traps Ethernet1/2
+            """
+        )
+        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        commands = [
+            "no snmp-server globalEnforcePriv",
+            "no snmp-server tcp-session auth",
+            "no snmp-server counter cache timeout 1800",
+            "no snmp-server packetsize 484",
+            "no snmp-server drop unknown-user",
+            "no snmp-server source-interface informs Ethernet1/1",
+            "no snmp-server context public vrf siteA",
+            "no snmp-server protocol enable",
+            "no snmp-server system-shutdown",
+            "no snmp-server aaa-user cache-timeout 36000",
+            "no snmp-server engineID local 00:00:00:63:00:01:00:10:20:15:10:03",
+            "no snmp-server contact testswitch@localhost",
+            "no snmp-server drop unknown-engine-id",
+            "no snmp-server location lab",
+            "no snmp-server mib community-map public context public1",
+            "no snmp-server source-interface traps Ethernet1/2",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_parsed(self):
+        # test parsed
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    snmp-server globalEnforcePriv
+                    snmp-server tcp-session auth
+                    snmp-server counter cache timeout 1800
+                    snmp-server packetsize 484
+                    snmp-server drop unknown-user
+                    snmp-server source-interface informs Ethernet1/1
+                    snmp-server context public vrf siteA
+                    snmp-server protocol enable
+                    snmp-server system-shutdown
+                    snmp-server aaa-user cache-timeout 36000
+                    snmp-server engineID local 00:00:00:63:00:01:00:10:20:15:10:03
+                    snmp-server contact testswitch@localhost
+                    snmp-server drop unknown-engine-id
+                    snmp-server location lab
+                    snmp-server mib community-map public context public1
+                    snmp-server source-interface traps Ethernet1/2
+                    """
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+
+        parsed = dict(
+            aaa_user=dict(cache_timeout=36000),
+            contact="testswitch@localhost",
+            context=dict(name="public", vrf="siteA"),
+            counter=dict(cache=dict(timeout=1800)),
+            drop=dict(unknown_engine_id=True, unknown_user=True),
+            engine_id=dict(local="00:00:00:63:00:01:00:10:20:15:10:03"),
+            global_enforce_priv=True,
+            location="lab",
+            mib=dict(
+                community_map=dict(community="public", context="public1")
+            ),
+            packetsize=484,
+            protocol=dict(enable=True),
+            source_interface=dict(informs="Ethernet1/1", traps="Ethernet1/2"),
+            system_shutdown=True,
+            tcp_session=dict(auth=True),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)
+
+    def test_nxos_snmp_server_rendered(self):
+        # test rendered
+        set_module_args(
+            dict(
+                config=dict(
+                    aaa_user=dict(cache_timeout=36000),
+                    contact="testswitch@localhost",
+                    context=dict(name="public", vrf="siteA"),
+                    counter=dict(cache=dict(timeout=1800)),
+                    drop=dict(unknown_engine_id=True, unknown_user=True),
+                    engine_id=dict(
+                        local="'00:00:00:63:00:01:00:10:20:15:10:03'"
+                    ),
+                    global_enforce_priv=True,
+                    location="lab",
+                    mib=dict(
+                        community_map=dict(
+                            community="public", context="public1"
+                        )
+                    ),
+                    packetsize=484,
+                    protocol=dict(enable=True),
+                    source_interface=dict(
+                        informs="Ethernet1/1", traps="Ethernet1/2"
+                    ),
+                    system_shutdown=True,
+                    tcp_session=dict(auth=True),
+                ),
+                state="rendered",
+            ),
+            ignore_provider_arg,
+        )
+        rendered = [
+            "snmp-server globalEnforcePriv",
+            "snmp-server tcp-session auth",
+            "snmp-server counter cache timeout 1800",
+            "snmp-server packetsize 484",
+            "snmp-server drop unknown-user",
+            "snmp-server source-interface informs Ethernet1/1",
+            "snmp-server context public vrf siteA",
+            "snmp-server protocol enable",
+            "snmp-server system-shutdown",
+            "snmp-server aaa-user cache-timeout 36000",
+            "snmp-server engineID local '00:00:00:63:00:01:00:10:20:15:10:03'",
+            "snmp-server contact testswitch@localhost",
+            "snmp-server drop unknown-engine-id",
+            "snmp-server location lab",
+            "snmp-server mib community-map public context public1",
+            "snmp-server source-interface traps Ethernet1/2",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(set(result["rendered"]), set(rendered))
+
+    def test_nxos_snmp_server_gathered(self):
+        # test gathered
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server globalEnforcePriv
+            snmp-server tcp-session auth
+            snmp-server counter cache timeout 1800
+            snmp-server packetsize 484
+            snmp-server drop unknown-user
+            snmp-server source-interface informs Ethernet1/1
+            snmp-server context public vrf siteA
+            snmp-server protocol enable
+            snmp-server system-shutdown
+            snmp-server aaa-user cache-timeout 36000
+            snmp-server engineID local 00:00:00:63:00:01:00:10:20:15:10:03
+            snmp-server contact testswitch@localhost
+            snmp-server drop unknown-engine-id
+            snmp-server location lab
+            snmp-server mib community-map public context public1
+            snmp-server source-interface traps Ethernet1/2
+            """
+        )
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+
+        gathered = dict(
+            aaa_user=dict(cache_timeout=36000),
+            contact="testswitch@localhost",
+            context=dict(name="public", vrf="siteA"),
+            counter=dict(cache=dict(timeout=1800)),
+            drop=dict(unknown_engine_id=True, unknown_user=True),
+            engine_id=dict(local="00:00:00:63:00:01:00:10:20:15:10:03"),
+            global_enforce_priv=True,
+            location="lab",
+            mib=dict(
+                community_map=dict(community="public", context="public1")
+            ),
+            packetsize=484,
+            protocol=dict(enable=True),
+            source_interface=dict(informs="Ethernet1/1", traps="Ethernet1/2"),
+            system_shutdown=True,
+            tcp_session=dict(auth=True),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_snmp_server_gathered_empty(self):
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+
+        gathered = {}
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)
