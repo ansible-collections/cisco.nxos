@@ -34,6 +34,12 @@ class Snmp_serverFacts(object):
         self._module = module
         self.argument_spec = Snmp_serverArgs.argument_spec
 
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get("show running-config | section '^snmp-server'")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Snmp_server network resource
 
@@ -48,9 +54,7 @@ class Snmp_serverFacts(object):
         objs = []
 
         if not data:
-            data = connection.get(
-                "show running-config | section '^snmp-server'"
-            )
+            data = self.get_config(connection)
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(

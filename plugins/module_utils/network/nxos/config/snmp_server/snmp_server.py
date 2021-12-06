@@ -114,7 +114,7 @@ class Snmp_server(ResourceModule):
             "engine_id.local",
             "global_enforce_priv",
             "location",
-            "mib",
+            "mib.community_map",
             "packetsize",
             "protocol.enable",
             "source_interface.informs",

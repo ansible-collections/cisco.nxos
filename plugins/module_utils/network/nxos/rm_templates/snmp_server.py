@@ -1254,7 +1254,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             }
         },
         {
-            "name": "mib",
+            "name": "mib.community_map",
             "getval": re.compile(
                 r"""
                 ^snmp-server
@@ -1262,7 +1262,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 \scommunity-map\s(?P<community>\S+)
                 \scontext\s(?P<context>\S+)
                 $""", re.VERBOSE),
-            "setval": "snmp-server mib community-map {{ community_map.community }} context {{ community_map.context }}",
+            "setval": "snmp-server mib community-map {{ mib.community_map.community }} context {{ mib.community_map.context }}",
             "result": {
                 "mib": {
                     "community_map": {
@@ -1278,17 +1278,11 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server
-                \spacket-size\s(?P<packet_size>\S+)
+                \spacketsize\s(?P<packetsize>\d+)
                 $""", re.VERBOSE),
             "setval": "snmp-server packetsize {{ packetsize }}",
             "result": {
-                "mib": {
-                    "community_map": {
-                        "community": "{{ community }}",
-                        "context": "{{ context }}",
-
-                    }
-                }
+                "packetsize": "{{ packetsize }}",
             }
         },
         {
@@ -1301,7 +1295,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "setval": "snmp-server protocol enable",
             "result": {
                 "protocol": {
-                    "enable": "{{ enable }}",
+                    "enable": "{{ not not enable }}",
                 }
             }
         },
@@ -1351,7 +1345,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server
                 \s(?P<tcp_session>tcp-session)
-                (\sauth(?P<auth>auth))?
+                (\s(?P<auth>auth))?
                 $""", re.VERBOSE),
             "setval": "snmp-server tcp-session"
                       "{{ ' auth' if tcp_session.auth|d(False) else '' }}",
