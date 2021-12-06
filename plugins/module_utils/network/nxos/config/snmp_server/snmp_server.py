@@ -52,7 +52,7 @@ class Snmp_server(ResourceModule):
             "contact",
             "context",
             "counter.enable",
-            "counter.timeout",
+            "counter.cache.timeout",
             "drop.unknown_engine_id",
             "drop.unknown_user",
             "traps.aaa",

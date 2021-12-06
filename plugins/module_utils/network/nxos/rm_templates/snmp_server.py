@@ -188,14 +188,14 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "counter.timeout",
+            "name": "counter.cache.timeout",
             "getval": re.compile(
                 r"""
                 ^snmp-server
                 \scounter
                 \scache\stimeout\s(?P<timeout>\d+)
                 $""", re.VERBOSE),
-            "setval": "snmp-server counter cache timeout {{ counter.timeout }}",
+            "setval": "snmp-server counter cache timeout {{ counter.cache.timeout }}",
             "result": {
                 "counter": {
                     "cache": {

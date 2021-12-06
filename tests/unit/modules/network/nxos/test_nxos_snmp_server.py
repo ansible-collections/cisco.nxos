@@ -93,6 +93,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         commands = [
             "snmp-server globalEnforcePriv",
             "snmp-server tcp-session auth",
+            "snmp-server counter cache timeout 1800",
             "snmp-server packetsize 484",
             "snmp-server drop unknown-user",
             "snmp-server source-interface informs Ethernet1/1",
@@ -116,6 +117,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """\
             snmp-server globalEnforcePriv
             snmp-server tcp-session auth
+            snmp-server counter cache timeout 1800
             snmp-server packetsize 484
             snmp-server drop unknown-user
             snmp-server source-interface informs Ethernet1/1
@@ -163,3 +165,361 @@ class TestNxosSnmpServerModule(TestNxosModule):
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+    def test_nxos_snmp_server_linear_replaced(self):
+        # test replaced for linear attributes
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server globalEnforcePriv
+            snmp-server tcp-session auth
+            snmp-server counter cache timeout 1800
+            snmp-server packetsize 484
+            snmp-server drop unknown-user
+            snmp-server source-interface informs Ethernet1/1
+            snmp-server context public vrf siteA
+            snmp-server protocol enable
+            snmp-server system-shutdown
+            snmp-server aaa-user cache-timeout 36000
+            snmp-server engineID local 00:00:00:63:00:01:00:10:20:15:10:03
+            snmp-server contact testswitch@localhost
+            snmp-server drop unknown-engine-id
+            snmp-server location lab
+            snmp-server mib community-map public context public1
+            snmp-server source-interface traps Ethernet1/2
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    aaa_user=dict(cache_timeout=36500),
+                    contact="testswitch@localhost",
+                    context=dict(name="public", vrf="siteA"),
+                    counter=dict(cache=dict(timeout=1860)),
+                    engine_id=dict(
+                        local="00:00:00:63:00:01:00:10:20:15:10:03"
+                    ),
+                    global_enforce_priv=True,
+                    location="lab",
+                    mib=dict(
+                        community_map=dict(
+                            community="public", context="public1"
+                        )
+                    ),
+                    packetsize=484,
+                    protocol=dict(enable=True),
+                    source_interface=dict(
+                        informs="Ethernet1/3", traps="Ethernet1/2"
+                    ),
+                    tcp_session=dict(auth=True),
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server counter cache timeout 1860",
+            "no snmp-server drop unknown-user",
+            "no snmp-server drop unknown-engine-id",
+            "snmp-server source-interface informs Ethernet1/3",
+            "no snmp-server system-shutdown",
+            "snmp-server aaa-user cache-timeout 36500",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_linear_overridden(self):
+        # test overridden for linear attributes
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server globalEnforcePriv
+            snmp-server tcp-session auth
+            snmp-server counter cache timeout 1800
+            snmp-server packetsize 484
+            snmp-server drop unknown-user
+            snmp-server source-interface informs Ethernet1/1
+            snmp-server context public vrf siteA
+            snmp-server protocol enable
+            snmp-server system-shutdown
+            snmp-server aaa-user cache-timeout 36000
+            snmp-server engineID local 00:00:00:63:00:01:00:10:20:15:10:03
+            snmp-server contact testswitch@localhost
+            snmp-server drop unknown-engine-id
+            snmp-server location lab
+            snmp-server mib community-map public context public1
+            snmp-server source-interface traps Ethernet1/2
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    aaa_user=dict(cache_timeout=36500),
+                    contact="testswitch@localhost",
+                    context=dict(name="public", vrf="siteA"),
+                    counter=dict(cache=dict(timeout=1860)),
+                    engine_id=dict(
+                        local="00:00:00:63:00:01:00:10:20:15:10:03"
+                    ),
+                    global_enforce_priv=True,
+                    location="lab",
+                    mib=dict(
+                        community_map=dict(
+                            community="public", context="public1"
+                        )
+                    ),
+                    packetsize=484,
+                    protocol=dict(enable=True),
+                    source_interface=dict(
+                        informs="Ethernet1/3", traps="Ethernet1/2"
+                    ),
+                    tcp_session=dict(auth=True),
+                ),
+                state="overridden",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server counter cache timeout 1860",
+            "no snmp-server drop unknown-user",
+            "no snmp-server drop unknown-engine-id",
+            "snmp-server source-interface informs Ethernet1/3",
+            "no snmp-server system-shutdown",
+            "snmp-server aaa-user cache-timeout 36500",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_traps_merged(self):
+        # test merged for traps
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        aaa=dict(server_state_change=True),
+                        bridge=dict(enable=True),
+                        callhome=dict(event_notify=True, smtp_send_fail=True),
+                    )
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server enable traps aaa server-state-change",
+            "snmp-server enable traps bridge newroot",
+            "snmp-server enable traps bridge topologychange",
+            "snmp-server enable traps callhome event-notify",
+            "snmp-server enable traps callhome smtp-send-fail",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_traps_merged_idempotent(self):
+        # test merged for traps (idempotent)
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server enable traps aaa server-state-change
+            snmp-server enable traps bridge newroot
+            snmp-server enable traps bridge topologychange
+            snmp-server enable traps callhome event-notify
+            snmp-server enable traps callhome smtp-send-fail
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        aaa=dict(server_state_change=True),
+                        bridge=dict(enable=True),
+                        callhome=dict(event_notify=True, smtp_send_fail=True),
+                    )
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_snmp_server_traps_replaced(self):
+        # test replaced for traps
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server enable traps aaa server-state-change
+            snmp-server enable traps bridge newroot
+            snmp-server enable traps bridge topologychange
+            snmp-server enable traps callhome event-notify
+            snmp-server enable traps callhome smtp-send-fail
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        aaa=dict(server_state_change=True),
+                        bridge=dict(enable=True),
+                        cfs=dict(merge_failure=True),
+                    )
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server enable traps callhome event-notify",
+            "no snmp-server enable traps callhome smtp-send-fail",
+            "snmp-server enable traps cfs merge-failure",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_traps_replaced(self):
+        # test replaced for traps
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server enable traps aaa server-state-change
+            snmp-server enable traps bridge newroot
+            snmp-server enable traps bridge topologychange
+            snmp-server enable traps callhome event-notify
+            snmp-server enable traps callhome smtp-send-fail
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        aaa=dict(server_state_change=True),
+                        bridge=dict(enable=True),
+                        cfs=dict(merge_failure=True),
+                    )
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server enable traps callhome event-notify",
+            "no snmp-server enable traps callhome smtp-send-fail",
+            "snmp-server enable traps cfs merge-failure",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_hosts_merged(self):
+        # test merged for hosts
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    hosts=[
+                        dict(
+                            host="192.168.1.1",
+                            version="2c",
+                            community="public",
+                            traps=True,
+                        ),
+                        dict(
+                            host="192.168.1.1", source_interface="Ethernet1/1"
+                        ),
+                        dict(
+                            host="192.168.2.1",
+                            version="1",
+                            community="private",
+                            traps=True,
+                        ),
+                        dict(
+                            host="192.168.2.1",
+                            version="2c",
+                            community="private",
+                            informs=True,
+                        ),
+                        dict(
+                            host="192.168.3.1",
+                            version="3",
+                            auth="private",
+                            informs=True,
+                            udp_port=65550,
+                        ),
+                        dict(
+                            host="192.168.4.1",
+                            version="3",
+                            priv="private",
+                            informs=True,
+                        ),
+                    ]
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server host 192.168.2.1 informs version 2c private",
+            "snmp-server host 192.168.1.1 traps version 2c public",
+            "snmp-server host 192.168.4.1 informs version 3 priv private",
+            "snmp-server host 192.168.1.1 source-interface Ethernet1/1",
+            "snmp-server host 192.168.2.1 traps version 1 private",
+            "snmp-server host 192.168.3.1 informs version 3 auth private udp-port 65550",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_snmp_server_hosts_replaced(self):
+        # test replaced for hosts
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server host 192.168.2.1 informs version 2c private
+            snmp-server host 192.168.1.1 traps version 2c public
+            snmp-server host 192.168.4.1 informs version 3 priv private
+            snmp-server host 192.168.1.1 source-interface Ethernet1/1
+            snmp-server host 192.168.2.1 traps version 1 private
+            snmp-server host 192.168.3.1 informs version 3 auth private udp-port 65550
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    hosts=[
+                        dict(
+                            host="192.168.1.1",
+                            version="2c",
+                            community="public",
+                            traps=True,
+                        ),
+                        dict(
+                            host="192.168.1.1", source_interface="Ethernet1/1"
+                        ),
+                        dict(
+                            host="192.168.2.1",
+                            version="1",
+                            community="private",
+                            traps=True,
+                        ),
+                        dict(
+                            host="192.168.2.1",
+                            version="2c",
+                            community="private",
+                            informs=True,
+                        ),
+                        dict(host="192.168.2.1", filter_vrf="siteA"),
+                        dict(host="192.168.4.1", use_vrf="siteB"),
+                    ]
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "no snmp-server host 192.168.4.1 informs version 3 priv private",
+            "no snmp-server host 192.168.3.1 informs version 3 auth private udp-port 65550",
+            "snmp-server host 192.168.2.1 filter-vrf siteA",
+            "snmp-server host 192.168.4.1 use-vrf siteB",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
