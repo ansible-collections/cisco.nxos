@@ -5,7 +5,7 @@
 cisco.nxos.nxos_snmp_host
 *************************
 
-**Manages SNMP host configuration.**
+**(deprecated, removed after 2024-01-01) Manages SNMP host configuration.**
 
 
 Version added: 1.0.0
@@ -13,6 +13,13 @@ Version added: 1.0.0
 .. contents::
    :local:
    :depth: 1
+
+DEPRECATED
+----------
+:Removed in collection release after 2024-01-01
+:Why: Updated modules released with more functionality
+:Alternative: nxos_snmp_server
+
 
 
 Synopsis
@@ -502,6 +509,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
 
 Status
 ------
+
+
+- This module will be removed in a release after 2024-01-01. *[deprecated]*
+- For more information see `DEPRECATED`_.
 
 
 Authors

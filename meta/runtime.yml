@@ -290,6 +290,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     snmp_location:
       redirect: cisco.nxos.nxos
+    nxos_snmp_server:
+      redirect: cisco.nxos.nxos
+    snmp_server:
+      redirect: cisco.nxos.nxos
     nxos_snmp_traps:
       redirect: cisco.nxos.nxos
     snmp_traps:
@@ -660,16 +664,60 @@ plugin_routing:
       redirect: cisco.nxos.nxos_snapshot
     snmp_community:
       redirect: cisco.nxos.nxos_snmp_community
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    nxos_snmp_community:
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
     snmp_contact:
       redirect: cisco.nxos.nxos_snmp_contact
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    nxos_snmp_contact:
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
     snmp_host:
       redirect: cisco.nxos.nxos_snmp_host
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    nxos_snmp_host:
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
     snmp_location:
       redirect: cisco.nxos.nxos_snmp_location
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    nxos_snmp_location:
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    snmp_server:
+      redirect: cisco.nxos.nxos_snmp_server
     snmp_traps:
       redirect: cisco.nxos.nxos_snmp_traps
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    nxos_snmp_traps:
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
     snmp_user:
       redirect: cisco.nxos.nxos_snmp_user
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
+    nxos_snmp_user:
+      deprecation:
+        removal_date: '2024-01-01'
+        warning_text: See the plugin documentation for more details
     static_route:
       redirect: cisco.nxos.nxos_static_route
       deprecation:

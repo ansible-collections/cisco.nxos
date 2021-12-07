@@ -1,0 +1,18 @@
+---
+- name: Populate config
+  cisco.nxos.nxos_config:
+    lines:
+      - snmp-server contact nxosswitchadmin@localhost
+      - snmp-server location serverroom-1
+      - snmp-server aaa-user cache-timeout 36000
+      - snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+      - snmp-server user snmp_user_2 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+      - snmp-server user snmp_user_1 use-ipv4acl acl1 use-ipv6acl acl2
+      - snmp-server user snmp_user_2 use-ipv4acl acl3 use-ipv6acl acl4
+      - snmp-server host 192.0.2.1 traps version 1 public
+      - snmp-server host 192.0.2.1 source-interface Ethernet1/1
+      - snmp-server host 192.0.2.2 informs version 3 auth NMS
+      - snmp-server community private group network-admin
+      - snmp-server community public group network-operator
+      - snmp-server enable traps aaa server-state-change
+      - snmp-server enable traps system Clock-change-notification

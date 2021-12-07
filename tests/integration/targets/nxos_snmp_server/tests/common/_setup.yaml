@@ -1,0 +1,11 @@
+- name: "Populate interfaces"
+  cisco.nxos.nxos_config:
+    lines:
+      - "no switchport"
+    parents: "interface {{ item }}"
+  loop:
+    - "{{ nxos_int1 }}"
+    - "{{ nxos_int2 }}"
+    - "{{ nxos_int3 }}"
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

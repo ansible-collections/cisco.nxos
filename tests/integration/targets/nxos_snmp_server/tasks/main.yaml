@@ -1,0 +1,29 @@
+---
+- name: Get admin user SNMP data
+  cisco.nxos.nxos_command:
+    commands: show running | section "^snmp-server user"
+  register: result
+
+- name: Grep admin user SNMP localized key
+  set_fact:
+    admin_snmp_passwd: "{{ result['stdout'][0] | regex_search('admin network-admin auth (md5|sha) (\\S+)', '\\2') }}"
+
+- name: Find admin user SNMP localized key
+  set_fact:
+    admin_snmp_passwd: "{{ admin_snmp_passwd[0] }}"
+
+- name: Grep zuul user SNMP localized key
+  set_fact:
+    zuul_snmp_passwd: "{{ result['stdout'][0] | regex_search('zuul network-admin auth (md5|sha) (\\S+)', '\\2') }}"
+
+- name: Find zuul user SNMP localized key
+  set_fact:
+    zuul_snmp_passwd: "{{ zuul_snmp_passwd[0] }}"
+
+- include: cli.yaml
+  tags:
+    - cli.yaml
+
+- include: nxapi.yaml
+  tags:
+    - nxapi

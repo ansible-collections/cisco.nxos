@@ -1,0 +1,10 @@
+---
+minor_changes:
+  - Add nxos_snmp_server resource module.
+deprecated_features:
+  - Deprecated nxos_snmp_community module.
+  - Deprecated nxos_snmp_contact module.
+  - Deprecated nxos_snmp_host module.
+  - Deprecated nxos_snmp_location module.
+  - Deprecated nxos_snmp_traps module.
+  - Deprecated nxos_snmp_user module.

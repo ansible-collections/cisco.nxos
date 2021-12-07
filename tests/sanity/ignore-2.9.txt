@@ -41,6 +41,18 @@ plugins/modules/nxos_ntp_auth.py validate-modules:deprecation-mismatch # 2.9 exp
 plugins/modules/nxos_ntp_auth.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/modules/nxos_ntp_options.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
 plugins/modules/nxos_ntp_options.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/modules/nxos_snmp_community.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_snmp_community.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/modules/nxos_snmp_contact.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_snmp_contact.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/modules/nxos_snmp_host.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_snmp_host.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/modules/nxos_snmp_location.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_snmp_location.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/modules/nxos_snmp_traps.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_snmp_traps.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
+plugins/modules/nxos_snmp_user.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
+plugins/modules/nxos_snmp_user.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/module_utils/network/nxos/config/bgp_global/bgp_global.py compile-2.6!skip
 plugins/module_utils/network/nxos/config/ospf_interfaces/ospf_interfaces.py compile-2.6!skip
 plugins/module_utils/network/nxos/config/ospfv2/ospfv2.py compile-2.6!skip
@@ -70,5 +82,8 @@ plugins/module_utils/network/nxos/config/prefix_lists/prefix_lists.py compile-2.
 plugins/modules/nxos_logging_global.py import-2.6!skip
 plugins/module_utils/network/nxos/config/logging_global/logging_global.py import-2.6!skip
 plugins/module_utils/network/nxos/config/logging_global/logging_global.py compile-2.6!skip
+plugins/modules/nxos_snmp_server.py import-2.6!skip
+plugins/module_utils/network/nxos/config/snmp_server/snmp_server.py import-2.6!skip
+plugins/module_utils/network/nxos/config/snmp_server/snmp_server.py compile-2.6!skip
 plugins/module_utils/network/nxos/utils/utils.py import-2.6!skip
 plugins/module_utils/network/nxos/utils/utils.py compile-2.6!skip
