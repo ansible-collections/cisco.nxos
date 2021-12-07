@@ -677,3 +677,21 @@ releases:
     - nxos_logging.yaml
     - nxos_vlans.yaml
     release_date: '2021-11-11'
+  2.8.0:
+    changes:
+      deprecated_features:
+      - Deprecated nxos_snmp_community module.
+      - Deprecated nxos_snmp_contact module.
+      - Deprecated nxos_snmp_host module.
+      - Deprecated nxos_snmp_location module.
+      - Deprecated nxos_snmp_traps module.
+      - Deprecated nxos_snmp_user module.
+      minor_changes:
+      - Add nxos_snmp_server resource module.
+    fragments:
+    - nxos_snmp_server.yaml
+    modules:
+    - description: SNMP Server resource module.
+      name: nxos_snmp_server
+      namespace: ''
+    release_date: '2021-12-07'
