@@ -5,6 +5,29 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.8.0
+======
+
+Minor Changes
+-------------
+
+- Add nxos_snmp_server resource module.
+
+Deprecated Features
+-------------------
+
+- Deprecated nxos_snmp_community module.
+- Deprecated nxos_snmp_contact module.
+- Deprecated nxos_snmp_host module.
+- Deprecated nxos_snmp_location module.
+- Deprecated nxos_snmp_traps module.
+- Deprecated nxos_snmp_user module.
+
+New Modules
+-----------
+
+- nxos_snmp_server - SNMP Server resource module.
+
 v2.7.1
 ======
 
