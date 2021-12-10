@@ -644,3 +644,82 @@ class TestNxosAclsModule(TestNxosModule):
         result = self.execute_module(failed=True)
         failure_msg = "Cannot update existing ACE 99 of ACL 10 with state merged. Please use state replaced or overridden."
         self.assertEqual(result["msg"], failure_msg)
+
+    def test_nxos_acls_parse_remark(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+              ip access-list TEST_RESEQUENCE
+                10 permit ip 10.0.0.0/24 any
+                20 deny udp any any eq domain
+                30 remark for resetting to default run resequence ip access-list TEST_RESEQUENCE 2 3
+              ipv6 access-list TEST_RESEQUENCE_ipv6
+                10 permit udp any any
+                20 deny tcp any any
+                30 remark for resetting to default run resequence ip access-list TEST_RESEQUENCE_ipv6 2 3
+            """
+        )
+        set_module_args(dict(state="gathered"))
+
+        gathered = [
+            {
+                "acls": [
+                    {
+                        "name": "TEST_RESEQUENCE_ipv6",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "udp",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "deny",
+                                "protocol": "tcp",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 30,
+                                "remark": "for resetting to default run resequence ip access-list TEST_RESEQUENCE_ipv6 2 3",
+                            },
+                        ],
+                    }
+                ],
+                "afi": "ipv6",
+            },
+            {
+                "acls": [
+                    {
+                        "name": "TEST_RESEQUENCE",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "ip",
+                                "source": {"prefix": "10.0.0.0/24"},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "deny",
+                                "protocol": "udp",
+                                "source": {"any": True},
+                                "destination": {
+                                    "any": True,
+                                    "port_protocol": {"eq": "domain"},
+                                },
+                            },
+                            {
+                                "sequence": 30,
+                                "remark": "for resetting to default run resequence ip access-list TEST_RESEQUENCE 2 3",
+                            },
+                        ],
+                    }
+                ],
+                "afi": "ipv4",
+            },
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)
