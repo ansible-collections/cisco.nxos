@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "nxos_acls - Fix incorrect parsing of remarks if it has 'ip/ipv6 access-list' in it."

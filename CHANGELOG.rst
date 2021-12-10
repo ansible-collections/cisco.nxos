@@ -5,6 +5,14 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.8.1
+======
+
+Bugfixes
+--------
+
+- nxos_acls - Fix incorrect parsing of remarks if it has 'ip/ipv6 access-list' in it.
+
 v2.8.0
 ======
 
