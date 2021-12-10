@@ -695,3 +695,11 @@ releases:
       name: nxos_snmp_server
       namespace: ''
     release_date: '2021-12-07'
+  2.8.1:
+    changes:
+      bugfixes:
+      - nxos_acls - Fix incorrect parsing of remarks if it has 'ip/ipv6 access-list'
+        in it.
+    fragments:
+    - nxos_acls.yaml
+    release_date: '2021-12-10'
