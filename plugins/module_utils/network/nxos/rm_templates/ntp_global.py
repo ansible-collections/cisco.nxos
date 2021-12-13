@@ -277,7 +277,7 @@ class Ntp_globalTemplate(NetworkTemplate):
             "name": "source_interface",
             "getval": re.compile(
                 r"""
-                ^ntp\ssource-interface\s(?P<source_interface>\S+)
+                ^ntp\ssource-interface(\s)+(?P<source_interface>\S+)
                 $""", re.VERBOSE),
             "setval": "ntp source-interface {{ source_interface }}",
             "result": {
