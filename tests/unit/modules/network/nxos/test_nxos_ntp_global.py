@@ -480,7 +480,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                         dict(key_id=1002),
                         dict(key_id=1003),
                     ],
-                    source_interface="192.168.1.100",
+                    source_interface="Ethernet1/1",
                 ),
                 state="merged",
             ),
@@ -490,7 +490,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "ntp trusted-key 1001",
             "ntp trusted-key 1002",
             "ntp trusted-key 1003",
-            "ntp source-interface 192.168.1.100",
+            "ntp source-interface Ethernet1/1",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -502,7 +502,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp trusted-key 1001
             ntp trusted-key 1002
             ntp trusted-key 1003
-            ntp source-interface 192.168.1.100
+            ntp source-interface  Ethernet1/1
             """
         )
         set_module_args(
@@ -513,10 +513,27 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                         dict(key_id=1002),
                         dict(key_id=1003),
                     ],
-                    source_interface="192.168.1.100",
+                    source_interface="Ethernet1/1",
                 ),
                 state="merged",
             ),
+            ignore_provider_arg,
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_nxos_ntp_global_source_interface_merged_idempotent(self):
+        # test merged for complex attributes - 3 (idempotent)
+        self.get_config.return_value = dedent(
+            """\
+            ntp trusted-key 1001
+            ntp trusted-key 1002
+            ntp trusted-key 1003
+            ntp source-interface Ethernet1/1
+            """
+        )
+        set_module_args(
+            dict(config=dict(source_interface="Ethernet1/1"), state="merged"),
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
