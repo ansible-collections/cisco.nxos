@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_ntp_global` - In some cases, there is an extra whitespace in the source-interface line. This patch accounts for this behaviour in config (https://github.com/ansible-collections/cisco.nxos/issues/399)."

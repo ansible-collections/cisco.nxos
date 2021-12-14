@@ -5,6 +5,20 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.8.2
+======
+
+Release Summary
+---------------
+
+- The v2.8.1 of the cisco.nxos collection is not available on Ansible Automation Hub. Please download and use v2.8.2 which
+  also contains an additional bug fix for the `nxos_ntp_global` module.
+
+Bugfixes
+--------
+
+- `nxos_ntp_global` - In some cases, there is an extra whitespace in the source-interface line. This patch accounts for this behaviour in config (https://github.com/ansible-collections/cisco.nxos/issues/399).
+
 v2.8.1
 ======
 
