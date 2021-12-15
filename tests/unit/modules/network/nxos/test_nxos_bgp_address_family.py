@@ -1575,6 +1575,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                                     route_map="test-2",
                                 ),
                                 dict(protocol="static", route_map="test-4"),
+                                dict(protocol="hmm", route_map="test-5"),
                             ],
                         ),
                         dict(
@@ -1606,6 +1607,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "redistribute eigrp 100 route-map test-1",
             "redistribute eigrp 101 route-map test-2",
             "redistribute static route-map test-4",
+            "redistribute hmm route-map test-5",
             "vrf site-1",
             "address-family ipv4 unicast",
             "redistribute eigrp 100 route-map test-18",
@@ -1623,6 +1625,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                 redistribute eigrp 100 route-map test-1
                 redistribute eigrp 101 route-map test-2
                 redistribute static route-map test-4
+                redistribute hmm route-map test-5
               vrf site-1
                 address-family ipv4 unicast
                   redistribute eigrp 100 route-map test-18
@@ -1644,6 +1647,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                                     route_map="test-1",
                                 ),
                                 dict(protocol="static", route_map="test-5"),
+                                dict(protocol="hmm", route_map="test-5"),
                             ],
                         ),
                         dict(

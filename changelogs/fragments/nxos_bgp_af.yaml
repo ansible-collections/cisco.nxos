@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_bgp_address_family` -  Add hmm as valid option for redistribute protocol (https://github.com/ansible-collections/cisco.nxos/issues/385)."

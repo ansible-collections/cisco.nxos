@@ -1244,6 +1244,7 @@ Parameters
                                     <li>ospfv3</li>
                                     <li>rip</li>
                                     <li>static</li>
+                                    <li>hmm</li>
                         </ul>
                 </td>
                 <td>
