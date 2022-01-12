@@ -158,7 +158,6 @@ class Snmp_serverTemplate(NetworkTemplate):
             "setval": "snmp-server context {{ context.name }}"
                       "{{ ' instance ' + context.instance if context.instance is defined else '' }}"
                       "{{ ' topology ' + context.topology if context.topology is defined else '' }}"
-                      "{{ ' instance ' + context.instance if context.instance is defined else '' }}"
                       "{{ ' vrf ' + context.vrf if context.vrf is defined else '' }}",
             "result": {
                 "context": {

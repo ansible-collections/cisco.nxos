@@ -65,7 +65,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                 config=dict(
                     aaa_user=dict(cache_timeout=36000),
                     contact="testswitch@localhost",
-                    context=dict(name="public", vrf="siteA"),
+                    context=dict(name="public", vrf="siteA", instance="test"),
                     counter=dict(cache=dict(timeout=1800)),
                     drop=dict(unknown_engine_id=True, unknown_user=True),
                     engine_id=dict(
@@ -97,7 +97,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server packetsize 484",
             "snmp-server drop unknown-user",
             "snmp-server source-interface informs Ethernet1/1",
-            "snmp-server context public vrf siteA",
+            "snmp-server context public instance test vrf siteA",
             "snmp-server protocol enable",
             "snmp-server system-shutdown",
             "snmp-server aaa-user cache-timeout 36000",
