@@ -574,6 +574,7 @@ def main():
                 if module.params["diff_against"] == "intended":
                     before = running_config
                     after = base_config
+
                 elif module.params["diff_against"] in ("startup", "running"):
                     before = base_config
                     after = running_config
