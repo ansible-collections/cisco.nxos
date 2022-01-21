@@ -121,6 +121,98 @@ Notes
 
 
 
+Examples
+--------
+
+.. code-block:: yaml
+
+    # Using merged (replaced, overridden has the same behaviour)
+
+    # Before state:
+    # -------------
+    # nxos-9k-rdo# show running-config | section ^hostname
+    # nxos-9k-rdo#
+
+    - name: Merge the provided configuration with the existing running configuration
+      cisco.nxos.nxos_hostname:
+        config:
+          hostname: NXOSv-9k
+
+    # Task output
+    # -------------
+    # before: {}
+    #
+    # commands:
+    #   - hostname NXOSv-9k
+    #
+    # after:
+    #   hostname: NXOSv-9k
+
+    # After state:
+    # ------------
+    # nxos-9k-rdo# show running-config | section ^hostname
+    # hostname NXOSv-9k
+    #
+
+    # Using deleted
+
+    # Before state:
+    # ------------
+    # nxos-9k-rdo# show running-config | section ^hostname
+    # hostname NXOSv-9k
+
+    - name: Delete hostname from running-config
+      cisco.nxos.nxos_hostname:
+        state: deleted
+
+    # Task output
+    # -------------
+    # before:
+    #   hostname: NXOSv-9k
+    #
+    # commands:
+    #   - no hostname NXOSv-9k
+    #
+    # after: {}
+
+    # Using gathered
+
+    - name: Gather hostname facts using gathered
+      cisco.nxos.nxos_hostname:
+        state: gathered
+
+    # Task output (redacted)
+    # -----------------------
+    #  gathered:
+    #    hostname: NXOSv-9k
+
+    # Using rendered
+
+    - name: Render platform specific configuration lines (without connecting to the device)
+      cisco.nxos.nxos_hostname:
+        config:
+          hostname: NXOSv-9k
+
+    # Task Output (redacted)
+    # -----------------------
+    # rendered:
+    #   - hostname NXOSv-9k
+
+    # Using parsed
+
+    # parsed.cfg
+    # ------------
+    # hostname NXOSv-9k
+
+    - name: Parse externally provided hostname config
+      cisco.nxos.nxos_hostname:
+        running_config: "{{ lookup('file', 'parsed.cfg') }}"
+        state: parsed
+
+    # Task output (redacted)
+    # -----------------------
+    # parsed:
+    #   hostname: NXOSv-9k
 
 
 

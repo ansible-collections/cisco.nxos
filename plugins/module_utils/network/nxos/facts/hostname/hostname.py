@@ -32,9 +32,15 @@ class HostnameFacts(object):
     """ The nxos hostname facts class
     """
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = HostnameArgs.argument_spec
+
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get("show running-config | section ^hostname")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Hostname network resource
@@ -50,7 +56,7 @@ class HostnameFacts(object):
         objs = []
 
         if not data:
-            data = connection.get("show running-config | section ^hostname")
+            data = self.get_config(connection)
 
         # parse native config using the Hostname template
         hostname_parser = HostnameTemplate(
