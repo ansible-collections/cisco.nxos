@@ -100,6 +100,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ntp_
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.snmp_server.snmp_server import (
     Snmp_serverFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname import (
+    HostnameFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(
@@ -137,6 +140,7 @@ FACT_RESOURCE_SUBSETS = dict(
     logging_global=Logging_globalFacts,
     ntp_global=Ntp_globalFacts,
     snmp_server=Snmp_serverFacts,
+    hostname=HostnameFacts,
 )
 
 
