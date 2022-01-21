@@ -63,14 +63,15 @@ class ActionModule(ActionNetworkModule):
             }
 
         if module_name == "nxos_file_copy":
-            self._task.args["host"] = self._play_context.remote_addr
-            self._task.args["password"] = self._play_context.password
-            if self._play_context.connection == "network_cli":
-                self._task.args["username"] = self._play_context.remote_user
-            elif self._play_context.connection == "local":
-                self._task.args[
-                    "username"
-                ] = self._play_context.connection_user
+            pass
+            # self._task.args["host"] = self._play_context.remote_addr
+            # self._task.args["password"] = self._play_context.password
+            # if self._play_context.connection == "network_cli":
+            #    self._task.args["username"] = self._play_context.remote_user
+            # elif self._play_context.connection == "local":
+            #    self._task.args[
+            #        "username"
+            #    ] = self._play_context.connection_user
 
         if module_name == "nxos_install_os":
             connection = self._connection

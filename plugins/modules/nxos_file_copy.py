@@ -19,8 +19,6 @@
 
 DOCUMENTATION = """
 module: nxos_file_copy
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Copy a file to a remote NXOS device.
 description:
 - This module supports two different workflows for copying a file to flash (or bootflash)
@@ -200,3 +198,342 @@ changed:
     type: bool
     sample: true
 """
+
+import re
+import os
+import time
+from ansible.module_utils.basic import AnsibleModule
+from ansible.errors import AnsibleError
+from ansible.utils.hashing import md5
+from ansible.module_utils.basic import missing_required_lib
+from ansible.utils.hashing import md5
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    nxos_argument_spec,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network import (
+    get_resource_connection,
+)
+
+try:
+    from scp import SCPClient
+
+    HAS_SCP = True
+except ImportError:
+    HAS_SCP = False
+
+try:
+    import pexpect
+
+    HAS_PEXPECT = True
+except ImportError:
+    HAS_PEXPECT = False
+
+
+def check_library_dependencies(file_pull):
+    if file_pull:
+        if not HAS_PEXPECT:
+            raise AnsibleError(missing_required_lib("pexpect"))
+    elif not HAS_SCP:
+        raise AnsibleError(missing_required_lib("scp"))
+
+
+class FilePush:
+    def __init__(self, module):
+        self._module = module
+        self._connection = get_resource_connection(self._module)
+        self.result = {}
+
+    def md5sum_check(self, dst, file_system):
+        command = "show file {0}{1} md5sum".format(file_system, dst)
+        remote_filehash = self._connection.run_commands(command)[0]
+
+        flp = os.path.join(os.path.abspath(self._module.params["local_file"]))
+        local_filehash = md5(flp)
+
+        if local_filehash == remote_filehash:
+            return True
+        else:
+            return False
+
+    def remote_file_exists(self, remote_file, file_system):
+        command = "dir {0}/{1}".format(file_system, remote_file)
+        body = self._connection.run_commands(command)[0]
+
+        if "No such file" in body:
+            return False
+        else:
+            return self.md5sum_check(remote_file, file_system)
+
+    def get_flash_size(self, file_system):
+        command = "dir {0}".format(file_system)
+        body = self._connection.run_commands(command)[0]
+
+        match = re.search(r"(\d+) bytes free", body)
+        if match:
+            bytes_free = match.group(1)
+            return int(bytes_free)
+
+        match = re.search(r"No such file or directory", body)
+        if match:
+            raise AnsibleError(
+                "Invalid nxos filesystem {0}".format(file_system)
+            )
+        else:
+            raise AnsibleError(
+                "Unable to determine size of filesystem {0}".format(
+                    file_system
+                )
+            )
+
+    def enough_space(self, file, file_system):
+        flash_size = self.get_flash_size(file_system)
+        file_size = os.path.getsize(file)
+        if file_size > flash_size:
+            return False
+
+        return True
+
+    def transfer_file_to_device(self, remote_file):
+        local_file = self._module.params["local_file"]
+        file_system = self._module.params["file_system"]
+
+        if not self.enough_space(local_file, file_system):
+            raise AnsibleError(
+                "Could not transfer file. Not enough space on device."
+            )
+
+        # frp = full_remote_path, flp = full_local_path
+        frp = "{0}{1}".format(file_system, remote_file)
+        flp = os.path.join(os.path.abspath(local_file))
+        try:
+            self._connection.copy_file(
+                source=flp,
+                destination=frp,
+                proto="scp",
+                timeout=self._connection.get_option(
+                    "persistent_command_timeout"
+                ),
+            )
+            self.result[
+                "transfer_status"
+            ] = "Sent: File copied to remote device."
+        except Exception as exc:
+            self.result["failed"] = True
+            self.result["msg"] = "Exception received : %s" % exc
+
+    def run(self):
+        local_file = self._module.params["local_file"]
+        remote_file = self._module.params["remote_file"] or os.path.basename(
+            local_file
+        )
+        file_system = self._module.params["file_system"]
+
+        if not os.path.isfile(local_file):
+            raise AnsibleError("Local file {0} not found".format(local_file))
+
+        remote_file = remote_file or os.path.basename(local_file)
+        remote_exists = self.remote_file_exists(remote_file, file_system)
+
+        if not remote_exists:
+            self.result["changed"] = True
+            file_exists = False
+        else:
+            self.result[
+                "transfer_status"
+            ] = "No Transfer: File already copied to remote device."
+            file_exists = True
+
+        if not self._module.check_mode and not file_exists:
+            self.transfer_file_to_device(remote_file)
+
+        self.result["local_file"] = local_file
+        if remote_file is None:
+            remote_file = os.path.basename(local_file)
+        self.result["remote_file"] = remote_file
+
+        return self.result
+
+
+class FilePull:
+    def __init__(self, module):
+        self._module = module
+        self._connection = get_resource_connection(self._module)
+        self.result = {}
+
+    def copy_file_from_remote(self, local, local_file_directory, file_system):
+        self.result["failed"] = False
+
+        # Build copy command components that will be used to initiate copy from the nxos device.
+        cmdroot = "copy " + self._module.params["file_pull_protocol"] + "://"
+        ruser = self._module.params["remote_scp_server_user"] + "@"
+        rserver = self._module.params["remote_scp_server"] + " "
+        rserverpassword = self._module.params["remote_scp_server_password"]
+        rfile = self._module.params["remote_file"]
+        vrf = " vrf " + self._module.params["vrf"]
+        local_dir_root = "/"
+        if self._module.params["file_pull_compact"]:
+            compact = " compact "
+        else:
+            compact = ""
+        if self._module.params["file_pull_kstack"]:
+            kstack = " use-kstack "
+        else:
+            kstack = ""
+
+        possible_errors = [
+            r"sure you want to continue connecting \(yes/no\)\? ",
+            "(?i)Password: ",
+            "file existing with this name",
+            "timed out",
+            "(?i)No space.*#",
+            "(?i)Permission denied.*#",
+            "(?i)No such file.*#",
+            ".*Invalid command.*#",
+            "Compaction is not supported on this platform.*#",
+            "Compact of.*failed.*#",
+            "(?i)Failed.*#",
+            "(?i)Could not resolve hostname",
+            "(?i)Too many authentication failures",
+            r"(?i)Copying to\/from this server name is not permitted",
+            "(?i)Copy complete",
+            r"#\s",
+        ]
+
+        # Create local file directory under NX-OS filesystem if
+        # local_file_directory playbook parameter is set.
+        if local_file_directory:
+            dir_array = local_file_directory.split("/")
+            for each in dir_array:
+                if each:
+                    mkdir_cmd = "mkdir " + local_dir_root + each
+                    output = self._connection.run_commands(mkdir_cmd)[0]
+                    if output and any(
+                        re.search(x, output) for x in possible_errors
+                    ):
+                        self.result["mkdir_cmd"] = mkdir_cmd
+                        self.result["failed"] = True
+                        self.result["error_data"] = output
+                        return
+                    local_dir_root += each + "/"
+
+        # Initiate file copy
+        copy_cmd = (
+            cmdroot
+            + ruser
+            + rserver
+            + rfile
+            + file_system
+            + local_dir_root
+            + local
+            + compact
+            + vrf
+            + kstack
+        )
+        self.result["copy_cmd"] = copy_cmd
+
+        for _x in range(6):
+            output = self._connection.run_commands(copy_cmd)[0]
+            if output:
+                # "sure you want to continue connecting \(yes/no\)\? "
+                if re.search(possible_errors[0], output):
+                    self._connection.exec_command("yes")
+                    continue
+                # "(?i)Password: "
+                if re.search(possible_errors[1], output):
+                    if rserverpassword:
+                        output = self._connection.run_commands(
+                            rserverpassword
+                        )[0]
+                    else:
+                        err_msg = "Remote scp server {0} requires a password.".format(
+                            rserver
+                        )
+                        err_msg += " Set the <remote_scp_server_password> playbook parameter or configure nxos device for passwordless scp."
+                        raise AnsibleError(err_msg)
+                # "file existing with this name"
+                if re.search(possible_errors[2], output):
+                    output = self._connection.run_commands("y")[0]
+                # "(?i)Copy complete"
+                if re.search(possible_errors[14], output):
+                    self.result[
+                        "transfer_status"
+                    ] = "Received: File copied/pulled to nxos device from remote scp server."
+                    break
+
+    def run(self):
+        remote_file = self._module.params["remote_file"]
+        local_file = (
+            self._module.params["local_file"] or remote_file.split("/")[-1]
+        )
+        file_system = self._module.params["file_system"]
+        # Note: This is the local file directory on the remote nxos device.
+        local_file_dir = self._module.params["local_file_directory"]
+
+        if not self._module.check_mode:
+            self.copy_file_from_remote(local_file, local_file_dir, file_system)
+
+        if not self.result["failed"]:
+            self.result["changed"] = True
+            self.result["remote_file"] = remote_file
+            if local_file_dir:
+                dir = local_file_dir
+            else:
+                dir = ""
+            self.result["local_file"] = file_system + dir + "/" + local_file
+            self.result["remote_scp_server"] = self._module.params[
+                "remote_scp_server"
+            ]
+
+        return self.result
+
+
+def main():
+    argument_spec = dict(
+        vrf=dict(type="str", default="management"),
+        connect_ssh_port=dict(type="int", default=22),
+        file_system=dict(type="str", default="bootflash:"),
+        file_pull=dict(type="bool", default=False),
+        file_pull_timeout=dict(type="int", default=300),
+        file_pull_protocol=dict(
+            type="str",
+            default="scp",
+            choices=["scp", "sftp", "http", "https", "tftp", "ftp"],
+        ),
+        file_pull_compact=dict(type="bool", default=False),
+        file_pull_kstack=dict(type="bool", default=False),
+        local_file=dict(type="path"),
+        local_file_directory=dict(type="path"),
+        remote_file=dict(type="path"),
+        remote_scp_server=dict(type="str"),
+        remote_scp_server_user=dict(type="str"),
+        remote_scp_server_password=dict(no_log=True),
+    )
+
+    argument_spec.update(nxos_argument_spec)
+
+    module = AnsibleModule(
+        argument_spec=argument_spec,
+        required_if=[
+            ("file_pull", True, ("remote_file", "remote_scp_server"))
+        ],
+        required_together=[("remote_scp_server", "remote_scp_server_user")],
+        supports_check_mode=True,
+    )
+
+    file_pull = module.params["file_pull"]
+    check_library_dependencies(file_pull)
+
+    warnings = list()
+
+    if file_pull:
+        result = FilePull(module).run()
+    else:
+        result = FilePush(module).run()
+
+    result["warnings"] = warnings
+
+    module.exit_json(**result)
+
+
+if __name__ == "__main__":
+    main()
