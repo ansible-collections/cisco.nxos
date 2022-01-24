@@ -17,7 +17,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -59,8 +58,8 @@ class Hostname(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        want = deepcopy(self.want)
-        have = deepcopy(self.have)
+        want = self.want
+        have = self.have
 
         if self.state == "deleted":
             want = {}
