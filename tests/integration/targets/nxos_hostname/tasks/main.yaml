@@ -1,0 +1,23 @@
+---
+- name: Fetch current hostname
+  cisco.nxos.nxos_command:
+    commands: show running-config | section ^hostname
+  register: result
+
+- name: Set current hostname
+  set_fact:
+    current_hostname: "{{ result['stdout'][0].split(' ')[1] }}"
+
+- block:
+    - include: cli.yaml
+      tags:
+        - cli.yaml
+
+    - include: nxapi.yaml
+      tags:
+        - nxapi
+  always:
+    - name: Reset hostname
+      cisco.nxos.nxos_config:
+        lines: "hostname {{ current_hostname }}"
+        match: none

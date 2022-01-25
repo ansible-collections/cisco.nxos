@@ -1,0 +1,38 @@
+---
+- debug:
+    msg: Start nxos_hostname deleted integration tests connection={{ ansible_connection}}
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete hostname configuration
+      cisco.nxos.nxos_hostname: &del
+        state: deleted
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that: "{{ result['before'] == merged['before'] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ deleted['commands'] == result['commands'] }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+          - result['after'] == {}
+
+    - name: Delete hostname configuration (IDEMPOTENT)
+      cisco.nxos.nxos_hostname: *del
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+  always:
+    - include_tasks: _remove_config.yaml
