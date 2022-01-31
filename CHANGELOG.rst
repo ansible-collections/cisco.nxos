@@ -27,6 +27,12 @@ New Modules
 v2.8.2
 ======
 
+Release Summary
+---------------
+
+- The v2.8.1 of the cisco.nxos collection is not available on Ansible Automation Hub. Please download and use v2.8.2 which
+  also contains an additional bug fix for the `nxos_ntp_global` module.
+
 Bugfixes
 --------
 
