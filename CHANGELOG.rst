@@ -5,6 +5,25 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.9.0
+======
+
+Minor Changes
+-------------
+
+- Add nxos_hostname resource module.
+
+Bugfixes
+--------
+
+- `nxos_bgp_address_family` -  Add hmm as valid option for redistribute protocol (https://github.com/ansible-collections/cisco.nxos/issues/385).
+- `nxos_snmp_server` - Fix rendering context command (https://github.com/ansible-collections/cisco.nxos/issues/406).
+
+New Modules
+-----------
+
+- nxos_hostname - Hostname resource module.
+
 v2.8.2
 ======
 

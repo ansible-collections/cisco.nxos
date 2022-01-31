@@ -716,3 +716,21 @@ releases:
     - nxos_ntp.yaml
     - snmp_server_ignore_2.6.yaml
     release_date: '2021-12-14'
+  2.9.0:
+    changes:
+      bugfixes:
+      - '`nxos_bgp_address_family` -  Add hmm as valid option for redistribute protocol
+        (https://github.com/ansible-collections/cisco.nxos/issues/385).'
+      - '`nxos_snmp_server` - Fix rendering context command (https://github.com/ansible-collections/cisco.nxos/issues/406).'
+      minor_changes:
+      - Add nxos_hostname resource module.
+    fragments:
+    - nxos_bgp_af.yaml
+    - nxos_hostname.yaml
+    - nxos_snmp_server.yaml
+    - updates.yaml
+    modules:
+    - description: Hostname resource module.
+      name: nxos_hostname
+      namespace: ''
+    release_date: '2022-01-31'
