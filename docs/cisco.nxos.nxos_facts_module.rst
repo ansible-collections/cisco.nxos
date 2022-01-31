@@ -65,7 +65,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are <code>all</code>, <code>bfd_interfaces</code>, <code>hsrp_interfaces</code>, <code>lag_interfaces</code>, <code>telemetry</code>, <code>vlans</code>, <code>lacp</code>, <code>lacp_interfaces</code>, <code>interfaces</code>, <code>l3_interfaces</code>, <code>l2_interfaces</code>, <code>lldp_global</code>, <code>acl_interfaces</code>, <code>acls</code>, <code>static_routes</code>, <code>ospfv2</code>, <code>ospfv2</code>, <code>ospfv3</code>, <code>ospf_interfaces</code>, <code>bgp_global</code>, <code>bgp_address_family</code>, <code>route_maps</code>, <code>prefix_lists</code>, <code>logging_global</code>, <code>ntp_global</code>, <code>snmp_server</code>.</div>
+                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are <code>all</code>, <code>bfd_interfaces</code>, <code>lag_interfaces</code>, <code>telemetry</code>, <code>vlans</code>, <code>lacp</code>, <code>lacp_interfaces</code>, <code>interfaces</code>, <code>l3_interfaces</code>, <code>l2_interfaces</code>, <code>lldp_global</code>, <code>acls</code>, <code>acl_interfaces</code>, <code>ospfv2</code>, <code>ospfv3</code>, <code>ospf_interfaces</code>, <code>bgp_global</code>, <code>bgp_address_family</code>, <code>route_maps</code>, <code>prefix_lists</code>, <code>logging_global</code>, <code>ntp_global</code>, <code>snmp_server</code>.</div>
                 </td>
             </tr>
             <tr>
@@ -82,7 +82,7 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">"!config"</div>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset.  Possible values for this argument include <code>all</code>, <code>default</code>, <code>legacy</code>, <code>hardware</code>, <code>interfaces</code>, <code>config</code>, <code>features</code>.  Can specify a list of values to include a larger subset.  Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
+                        <div>When supplied, this argument will restrict the facts collected to a given subset.  Possible values for this argument include <code>all</code>, <code>hardware</code>, <code>config</code>, <code>legacy</code>, and <code>interfaces</code>.  Can specify a list of values to include a larger subset.  Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
                 </td>
             </tr>
             <tr>

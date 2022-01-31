@@ -90,6 +90,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     gir_profile_management:
       redirect: cisco.nxos.nxos
+    nxos_hostname:
+      redirect: cisco.nxos.nxos
+    hostname:
+      redirect: cisco.nxos.nxos
     nxos_hsrp:
       redirect: cisco.nxos.nxos
     hsrp:
@@ -479,6 +483,8 @@ plugin_routing:
       redirect: cisco.nxos.nxos_gir
     gir_profile_management:
       redirect: cisco.nxos.nxos_gir_profile_management
+    hostname:
+      redirect: cisco.nxos.nxos_hostname
     hsrp:
       redirect: cisco.nxos.nxos_hsrp
     hsrp_interfaces:
