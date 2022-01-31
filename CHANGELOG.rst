@@ -5,14 +5,27 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
-v2.8.2
+v2.9.0
 ======
 
-Release Summary
----------------
+Minor Changes
+-------------
 
-- The v2.8.1 of the cisco.nxos collection is not available on Ansible Automation Hub. Please download and use v2.8.2 which
-  also contains an additional bug fix for the `nxos_ntp_global` module.
+- Add nxos_hostname resource module.
+
+Bugfixes
+--------
+
+- `nxos_bgp_address_family` -  Add hmm as valid option for redistribute protocol (https://github.com/ansible-collections/cisco.nxos/issues/385).
+- `nxos_snmp_server` - Fix rendering context command (https://github.com/ansible-collections/cisco.nxos/issues/406).
+
+New Modules
+-----------
+
+- nxos_hostname - Hostname resource module.
+
+v2.8.2
+======
 
 Bugfixes
 --------

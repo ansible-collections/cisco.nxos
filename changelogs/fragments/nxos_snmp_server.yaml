@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_snmp_server` - Fix rendering context command (https://github.com/ansible-collections/cisco.nxos/issues/406)."
