@@ -94,6 +94,15 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.pref
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.logging_global.logging_global import (
     Logging_globalFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ntp_global.ntp_global import (
+    Ntp_globalFacts,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.snmp_server.snmp_server import (
+    Snmp_serverFacts,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname import (
+    HostnameFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(
@@ -129,6 +138,9 @@ FACT_RESOURCE_SUBSETS = dict(
     route_maps=Route_mapsFacts,
     prefix_lists=Prefix_listsFacts,
     logging_global=Logging_globalFacts,
+    ntp_global=Ntp_globalFacts,
+    snmp_server=Snmp_serverFacts,
+    hostname=HostnameFacts,
 )
 
 

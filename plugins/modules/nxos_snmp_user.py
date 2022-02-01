@@ -24,10 +24,14 @@ DOCUMENTATION = """
 module: nxos_snmp_user
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages SNMP users for monitoring.
+short_description: (deprecated, removed after 2024-01-01) Manages SNMP users for monitoring.
 description:
 - Manages SNMP user configuration.
 version_added: 1.0.0
+deprecated:
+  alternative: nxos_snmp_server
+  why: Updated modules released with more functionality
+  removed_at_date: '2024-01-01'
 author:
 - Jason Edelman (@jedelman8)
 notes:

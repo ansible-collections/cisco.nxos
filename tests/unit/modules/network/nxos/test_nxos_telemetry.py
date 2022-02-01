@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+from textwrap import dedent
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
     AnsibleFailJson,
@@ -1819,6 +1820,56 @@ class TestNxosTelemetryModule(TestNxosModule):
             ignore_provider_arg,
         )
         self.execute_module(changed=False, commands=[])
+
+    def test_telemetry_gathered(self):
+        self.execute_show_command.return_value = dedent(
+            """
+        telemetry
+          certificate /bootflash/server.key localhost
+          destination-profile
+            use-vrf managements
+            use-compression gzip
+            source-interface loopback55
+          destination-group 2
+            ip address 192.168.0.1 port 50001 protocol gRPC encoding GPB
+            ip address 192.168.0.2 port 60001 protocol gRPC encoding GPB
+        """
+        )
+        self.get_platform_shortname.return_value = "N9K"
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+
+        gathered = {
+            "certificate": {
+                "hostname": "localhost",
+                "key": "/bootflash/server.key",
+            },
+            "compression": "gzip",
+            "source_interface": "loopback55",
+            "vrf": "managements",
+            "destination_groups": [
+                {
+                    "id": "2",
+                    "destination": {
+                        "ip": "192.168.0.1",
+                        "port": "50001",
+                        "protocol": "grpc",
+                        "encoding": "gpb",
+                    },
+                },
+                {
+                    "id": "2",
+                    "destination": {
+                        "ip": "192.168.0.2",
+                        "port": "60001",
+                        "protocol": "grpc",
+                        "encoding": "gpb",
+                    },
+                },
+            ],
+        }
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)
 
 
 def build_args(data, type, state=None, check_mode=None):

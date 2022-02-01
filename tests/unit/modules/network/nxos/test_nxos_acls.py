@@ -15,7 +15,7 @@ from ansible_collections.cisco.nxos.tests.unit.compat.mock import (
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
     set_module_args,
 )
-from .nxos_module import TestNxosModule, load_fixture
+from .nxos_module import TestNxosModule
 from textwrap import dedent
 
 
@@ -60,6 +60,10 @@ class TestNxosAclsModule(TestNxosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
+        v4 = """\nip access-list ACL1v4\n 10 permit ip any any\n 20 deny udp any any"""
+        v6 = """\nipv6 access-list ACL1v6\n 10 permit sctp any any"""
+        self.execute_show_command.return_value = dedent(v4 + v6)
+
     def tearDown(self):
         super(TestNxosAclsModule, self).tearDown()
         self.mock_get_resource_connection_config.stop()
@@ -68,14 +72,6 @@ class TestNxosAclsModule(TestNxosModule):
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
-
-    def load_fixtures(self, commands=None, device=""):
-        def load_from_file(*args, **kwargs):
-            v4 = """\nip access-list ACL1v4\n 10 permit ip any any\n 20 deny udp any any"""
-            v6 = """\nipv6 access-list ACL1v6\n 10 permit sctp any any"""
-            return v4 + v6
-
-        self.execute_show_command.side_effect = load_from_file
 
     def test_nxos_acls_merged(self):
         set_module_args(
@@ -538,3 +534,192 @@ class TestNxosAclsModule(TestNxosModule):
             },
         ]
         self.assertEqual(result["gathered"], compare_list, result["gathered"])
+
+    def test_nxos_acls_replaced_2(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+              ip access-list 99
+                10 remark TEST-COMMENT-1
+                20 permit ip 192.0.2.4/32 any
+                30 permit ip 192.0.2.5/32 any
+                40 remark TEST-COMMENT-2
+                50 permit ip 198.51.100.6/32 any
+                60 permit ip 198.51.100.7/32 any
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="99",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        destination=dict(any=True),
+                                        source=dict(host="192.0.2.1"),
+                                        sequence=10,
+                                        protocol="ip",
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        destination=dict(any=True),
+                                        source=dict(host="192.0.2.2"),
+                                        sequence=20,
+                                        protocol="ip",
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        destination=dict(any=True),
+                                        source=dict(host="192.0.2.3"),
+                                        sequence=30,
+                                        protocol="ip",
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        destination=dict(any=True),
+                                        source=dict(host="192.0.2.1"),
+                                        sequence=40,
+                                        protocol="ip",
+                                    ),
+                                ],
+                            )
+                        ],
+                    )
+                ],
+                state="replaced",
+            )
+        )
+
+        commands = [
+            "ip access-list 99",
+            "no 10 remark TEST-COMMENT-1",
+            "no 20 permit ip host 192.0.2.4 any",
+            "no 30 permit ip host 192.0.2.5 any",
+            "no 40 remark TEST-COMMENT-2",
+            "no 50 permit ip host 198.51.100.6 any",
+            "no 60 permit ip host 198.51.100.7 any",
+            "10 permit ip host 192.0.2.1 any",
+            "20 permit ip host 192.0.2.2 any",
+            "30 permit ip host 192.0.2.3 any",
+            "40 permit ip host 192.0.2.1 any",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_acls_merged_failure(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+              ip access-list 99
+                10 remark TEST-COMMENT-1
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="99",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        destination=dict(any=True),
+                                        source=dict(host="192.0.2.1"),
+                                        sequence=10,
+                                        protocol="ip",
+                                    )
+                                ],
+                            )
+                        ],
+                    )
+                ],
+                state="merged",
+            )
+        )
+
+        result = self.execute_module(failed=True)
+        failure_msg = "Cannot update existing ACE 99 of ACL 10 with state merged. Please use state replaced or overridden."
+        self.assertEqual(result["msg"], failure_msg)
+
+    def test_nxos_acls_parse_remark(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+              ip access-list TEST_RESEQUENCE
+                10 permit ip 10.0.0.0/24 any
+                20 deny udp any any eq domain
+                30 remark for resetting to default run resequence ip access-list TEST_RESEQUENCE 2 3
+              ipv6 access-list TEST_RESEQUENCE_ipv6
+                10 permit udp any any
+                20 deny tcp any any
+                30 remark for resetting to default run resequence ip access-list TEST_RESEQUENCE_ipv6 2 3
+            """
+        )
+        set_module_args(dict(state="gathered"))
+
+        gathered = [
+            {
+                "acls": [
+                    {
+                        "name": "TEST_RESEQUENCE_ipv6",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "udp",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "deny",
+                                "protocol": "tcp",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 30,
+                                "remark": "for resetting to default run resequence ip access-list TEST_RESEQUENCE_ipv6 2 3",
+                            },
+                        ],
+                    }
+                ],
+                "afi": "ipv6",
+            },
+            {
+                "acls": [
+                    {
+                        "name": "TEST_RESEQUENCE",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "ip",
+                                "source": {"prefix": "10.0.0.0/24"},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "deny",
+                                "protocol": "udp",
+                                "source": {"any": True},
+                                "destination": {
+                                    "any": True,
+                                    "port_protocol": {"eq": "domain"},
+                                },
+                            },
+                            {
+                                "sequence": 30,
+                                "remark": "for resetting to default run resequence ip access-list TEST_RESEQUENCE 2 3",
+                            },
+                        ],
+                    }
+                ],
+                "afi": "ipv4",
+            },
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)

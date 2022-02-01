@@ -159,7 +159,7 @@ Parameters
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
                         <div>Starting with Ansible 2.6 we recommend using <code>connection: httpapi</code> for NX-API.</div>
                         <div>This option will be removed in a release after 2022-06-01.</div>
-                        <div>For more information please see the <a href='../network/user_guide/platform_nxos.html'>NXOS Platform Options guide</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>
@@ -554,6 +554,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - When ``state=default``, supported params will be reset to a default state. These include ``version``, ``startup_query_interval``, ``startup_query_count``, ``robustness``, ``querier_timeout``, ``query_mrt``, ``query_interval``, ``last_member_qrt``, ``last_member_query_count``, ``group_timeout``, ``report_llg``, and ``immediate_leave``.
    - When ``state=absent``, all configs for ``oif_ps``, and ``oif_routemap`` will be removed.
    - PIM must be enabled to use this module.
@@ -624,7 +625,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of igmp interface configuration after module execution</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;startup_query_count&#x27;, &#x27;30&#x27;), (&#x27;oif_ps&#x27;, [AnsibleMapping([(&#x27;prefix&#x27;, &#x27;238.2.2.6&#x27;)]), AnsibleMapping([(&#x27;source&#x27;, &#x27;192.168.0.1&#x27;), (&#x27;prefix&#x27;, &#x27;238.2.2.5&#x27;)])])])</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;startup_query_count&#x27;: &#x27;30&#x27;, &#x27;oif_ps&#x27;: [{&#x27;prefix&#x27;: &#x27;238.2.2.6&#x27;}, {&#x27;source&#x27;: &#x27;192.168.0.1&#x27;, &#x27;prefix&#x27;: &#x27;238.2.2.5&#x27;}]}</div>
                 </td>
             </tr>
             <tr>
@@ -641,7 +642,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of existing igmp_interface configuration</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;startup_query_count&#x27;, &#x27;2&#x27;), (&#x27;oif_ps&#x27;, [])])</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;startup_query_count&#x27;: &#x27;2&#x27;, &#x27;oif_ps&#x27;: []}</div>
                 </td>
             </tr>
             <tr>
@@ -658,7 +659,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>k/v pairs of parameters passed into module</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">AnsibleMapping([(&#x27;startup_query_count&#x27;, &#x27;30&#x27;), (&#x27;oif_ps&#x27;, [AnsibleMapping([(&#x27;prefix&#x27;, &#x27;238.2.2.6&#x27;)]), AnsibleMapping([(&#x27;source&#x27;, &#x27;192.168.0.1&#x27;), (&#x27;prefix&#x27;, &#x27;238.2.2.5&#x27;)])])])</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">{&#x27;startup_query_count&#x27;: &#x27;30&#x27;, &#x27;oif_ps&#x27;: [{&#x27;prefix&#x27;: &#x27;238.2.2.6&#x27;}, {&#x27;source&#x27;: &#x27;192.168.0.1&#x27;, &#x27;prefix&#x27;: &#x27;238.2.2.5&#x27;}]}</div>
                 </td>
             </tr>
             <tr>

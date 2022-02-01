@@ -249,12 +249,15 @@ class Logging_globalTemplate(NetworkTemplate):
             },
         },
         {
+            # in some cases, the `logging level` command
+            # has an extra space at the end
             "name": "facilities",
             "getval": re.compile(
                 r"""
                 ^logging\slevel
                 \s(?P<facility>\S+)
                 \s(?P<severity>\d+)
+                \s*
                 $""", re.VERBOSE),
             "setval": "logging level {{ facility }} {{ severity }}",
             "result": {

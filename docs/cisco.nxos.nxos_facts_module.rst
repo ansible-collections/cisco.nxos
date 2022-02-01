@@ -65,7 +65,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are &#x27;all&#x27;, &#x27;bfd_interfaces&#x27;, &#x27;lag_interfaces&#x27;, &#x27;telemetry&#x27;, &#x27;vlans&#x27;, &#x27;lacp&#x27;, &#x27;lacp_interfaces&#x27;, &#x27;interfaces&#x27;, &#x27;l3_interfaces&#x27;, &#x27;l2_interfaces&#x27;, &#x27;lldp_global&#x27;, &#x27;acls&#x27;, &#x27;acl_interfaces&#x27;, &#x27;ospfv2&#x27;.</div>
+                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are <code>all</code>, <code>bfd_interfaces</code>, <code>lag_interfaces</code>, <code>telemetry</code>, <code>vlans</code>, <code>lacp</code>, <code>lacp_interfaces</code>, <code>interfaces</code>, <code>l3_interfaces</code>, <code>l2_interfaces</code>, <code>lldp_global</code>, <code>acls</code>, <code>acl_interfaces</code>, <code>ospfv2</code>, <code>ospfv3</code>, <code>ospf_interfaces</code>, <code>bgp_global</code>, <code>bgp_address_family</code>, <code>route_maps</code>, <code>prefix_lists</code>, <code>logging_global</code>, <code>ntp_global</code>, <code>snmp_server</code>.</div>
                 </td>
             </tr>
             <tr>
@@ -82,7 +82,7 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">"!config"</div>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset.  Possible values for this argument include all, hardware, config, legacy, and interfaces.  Can specify a list of values to include a larger subset.  Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
+                        <div>When supplied, this argument will restrict the facts collected to a given subset.  Possible values for this argument include <code>all</code>, <code>hardware</code>, <code>config</code>, <code>legacy</code>, and <code>interfaces</code>.  Can specify a list of values to include a larger subset.  Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
                 </td>
             </tr>
             <tr>
@@ -101,7 +101,7 @@ Parameters
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
                         <div>Starting with Ansible 2.6 we recommend using <code>connection: httpapi</code> for NX-API.</div>
                         <div>This option will be removed in a release after 2022-06-01.</div>
-                        <div>For more information please see the <a href='../network/user_guide/platform_nxos.html'>NXOS Platform Options guide</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>
@@ -328,6 +328,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.

@@ -564,6 +564,7 @@ Parameters
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
                                     <li>deleted</li>
+                                    <li>gathered</li>
                         </ul>
                 </td>
                 <td>
@@ -579,6 +580,7 @@ Notes
 
 .. note::
    - Supported on N9k Version 7.0(3)I7(5) and later.
+   - Unsupported for Cisco MDS
 
 
 

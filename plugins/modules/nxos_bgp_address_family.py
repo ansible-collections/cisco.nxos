@@ -259,7 +259,7 @@ options:
                 description:
                 - The name of the protocol.
                 type: str
-                choices: ["am", "direct", "eigrp", "isis", "lisp", "ospf", "ospfv3", "rip", "static"]
+                choices: ["am", "direct", "eigrp", "isis", "lisp", "ospf", "ospfv3", "rip", "static", "hmm"]
                 required: true
               id:
                 description:

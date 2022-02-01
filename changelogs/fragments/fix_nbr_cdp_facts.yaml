@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_facts` - Fix gathering CDP neighbor facts from certain N7Ks (https://github.com/ansible-collections/cisco.nxos/issues/329)."

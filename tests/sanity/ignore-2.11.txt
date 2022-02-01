@@ -18,6 +18,8 @@ plugins/modules/nxos_ospfv3.py import-2.6!skip
 plugins/modules/nxos_route_maps.py import-2.6!skip
 plugins/module_utils/network/nxos/config/route_maps/route_maps.py import-2.6!skip
 plugins/module_utils/network/nxos/config/route_maps/route_maps.py compile-2.6!skip
+plugins/module_utils/network/nxos/config/snmp_server/snmp_server.py import-2.6!skip
+plugins/module_utils/network/nxos/config/snmp_server/snmp_server.py compile-2.6!skip
 plugins/module_utils/network/nxos/config/bgp_address_family/bgp_address_family.py import-2.6!skip
 plugins/modules/nxos_bgp_address_family.py import-2.6!skip
 plugins/module_utils/network/nxos/config/bgp_neighbor_address_family/bgp_neighbor_address_family.py import-2.6!skip

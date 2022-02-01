@@ -1,0 +1,11 @@
+---
+merged:
+  before:
+    hostname: "{{ current_hostname }}"
+  commands:
+    - hostname NXOSv-9k
+  after:
+    hostname: NXOSv-9k
+deleted:
+  commands:
+    - "no hostname {{ current_hostname }}"

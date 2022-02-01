@@ -71,7 +71,7 @@ options:
                 suboptions:
                   area_id:
                     description:
-                    - Area ID as a decimal or IP address format.
+                    - Area ID in IP address format.
                     type: str
                     required: True
                   secondaries:

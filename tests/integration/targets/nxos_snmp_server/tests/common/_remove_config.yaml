@@ -1,0 +1,26 @@
+- name: Remove snmp-server
+  cisco.nxos.nxos_config:
+    lines:
+      - no snmp-server contact nxosswitchadmin@localhost
+      - no snmp-server contact nxosswitchadmin2@localhost
+      - no snmp-server location serverroom-1
+      - no snmp-server location serverroom-2
+      - no snmp-server aaa-user cache-timeout 36000
+      - no snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+      - no snmp-server user snmp_user_2 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
+      - no snmp-server user snmp_user_1
+      - no snmp-server user snmp_user_2
+      - no snmp-server community private group network-admin
+      - no snmp-server community public group network-operator
+      - no snmp-server community secret group network-operator
+      - no snmp-server enable traps aaa server-state-change
+      - no snmp-server enable traps system Clock-change-notification
+      - no snmp-server host 192.0.2.1 traps version 1 public
+      - no snmp-server host 192.0.2.1 source-interface Ethernet1/1
+      - no snmp-server host 192.0.2.2 informs version 3 auth NMS
+      - no snmp-server host 192.0.3.2 informs version 3 auth NMS
+  ignore_errors: True
+
+- name: Remove remaining config
+  cisco.nxos.nxos_snmp_server:
+    state: deleted

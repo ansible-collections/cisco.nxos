@@ -275,7 +275,7 @@ Parameters
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
                         <div>Starting with Ansible 2.6 we recommend using <code>connection: httpapi</code> for NX-API.</div>
                         <div>This option will be removed in a release after 2022-06-01.</div>
-                        <div>For more information please see the <a href='../network/user_guide/platform_nxos.html'>NXOS Platform Options guide</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>
@@ -541,6 +541,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - When ``state=default``, supported params will be reset to a default state. These include ``dr_prio``, ``hello_auth_key``, ``hello_interval``, ``jp_policy_out``, ``jp_policy_in``, ``jp_type_in``, ``jp_type_out``, ``border``, ``neighbor_policy``, ``neighbor_type``.
    - The ``hello_auth_key`` param is not idempotent.
    - ``hello_auth_key`` only supports clear text passwords.

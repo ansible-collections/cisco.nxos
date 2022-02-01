@@ -1,0 +1,64 @@
+---
+- debug:
+    msg: Start nxos_ntp_global overridden integration tests connection={{ ansible_connection }}
+
+- include_tasks: _remove_config.yaml
+
+- include_tasks: _populate_config.yaml
+
+- block:
+    - name: Override all logging configuration with provided configuration
+      cisco.nxos.nxos_ntp_global: &id003
+        config:
+          access_group:
+            peer:
+              - access_list: PeerAcl2
+            serve:
+              - access_list: ServeAcl2
+          logging: True
+          master:
+            stratum: 2
+          peers:
+            - peer: 192.0.2.1
+              key_id: 1
+              maxpoll: 15
+              minpoll: 5
+              use_vrf: default
+            - peer: 192.0.2.5
+              key_id: 2
+              prefer: True
+              use_vrf: siteA
+          servers:
+            - server: 198.51.100.1
+              key_id: 2
+              use_vrf: default
+        state: replaced
+      register: result
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that:
+          - "{{ merged['after'] == result['before'] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+        - replaced['after'] == result['after']
+
+    - name: Override all logging configuration with provided configuration (IDEMPOTENT)
+      register: result
+      cisco.nxos.nxos_ntp_global: *id003
+
+    - name: Assert that task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+  always:
+    - include_tasks: _remove_config.yaml

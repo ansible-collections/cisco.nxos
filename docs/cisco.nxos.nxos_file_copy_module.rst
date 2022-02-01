@@ -223,7 +223,7 @@ Parameters
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
                         <div>Starting with Ansible 2.6 we recommend using <code>connection: httpapi</code> for NX-API.</div>
                         <div>This option will be removed in a release after 2022-06-01.</div>
-                        <div>For more information please see the <a href='../network/user_guide/platform_nxos.html'>NXOS Platform Options guide</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>
@@ -530,6 +530,7 @@ Notes
 
 .. note::
    - Tested against NXOS 7.0(3)I2(5), 7.0(3)I4(6), 7.0(3)I5(3), 7.0(3)I6(1), 7.0(3)I7(3), 6.0(2)A8(8), 7.0(3)F3(4), 7.3(0)D1(1), 8.3(0), 9.2, 9.3
+   - Limited Support for Cisco MDS
    - When pushing files (file_pull is False) to the NXOS device, feature scp-server must be enabled.
    - When pulling files (file_pull is True) to the NXOS device, feature scp-server is not required.
    - When pulling files (file_pull is True) to the NXOS device, no transfer will take place if the file is already present.

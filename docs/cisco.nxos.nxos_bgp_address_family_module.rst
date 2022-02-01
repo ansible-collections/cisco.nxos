@@ -1244,6 +1244,7 @@ Parameters
                                     <li>ospfv3</li>
                                     <li>rip</li>
                                     <li>static</li>
+                                    <li>hmm</li>
                         </ul>
                 </td>
                 <td>
@@ -1635,6 +1636,7 @@ Notes
 
 .. note::
    - Tested against NX-OS 9.3.6.
+   - Unsupported for Cisco MDS
    - For managing BGP neighbor address family configurations please use the :ref:`cisco.nxos.nxos_bgp_neighbor_address_family <cisco.nxos.nxos_bgp_neighbor_address_family_module>` module.
    - This module works with connection ``network_cli`` and ``httpapi``.
 

@@ -220,7 +220,7 @@ class AclsFacts(object):
                 ).group(3)
                 acls["aces"] = []
                 for ace in list(filter(None, acl[1:])):
-                    if re.search(r"ip(.*)access-list.*", ace):
+                    if re.search(r"^ip(.*)access-list.*", ace):
                         break
                     ace = ace.strip()
                     seq = re.match(r"(\d+)", ace)

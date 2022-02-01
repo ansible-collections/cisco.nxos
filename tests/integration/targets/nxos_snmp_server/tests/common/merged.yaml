@@ -1,0 +1,95 @@
+---
+- debug:
+    msg: "Start nxos_snmp_server merged integration tests connection={{ ansible_connection }}"
+
+- include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge the provided configuration with the existing running configuration
+      cisco.nxos.nxos_snmp_server: &id001
+        config:
+          aaa_user:
+            cache_timeout: 36000
+          communities:
+            - community: public
+              group: network-operator
+            - community: private
+              group: network-admin
+          contact: nxosswitchadmin@localhost
+          location: serverroom-1
+          traps:
+            aaa:
+              server_state_change: True
+            system:
+              clock_change_notification: True
+          hosts:
+            - host: 192.0.2.1
+              traps: True
+              version: '1'
+              community: public
+            - host: 192.0.2.1
+              source_interface: Ethernet1/1
+            - host: 192.0.2.2
+              informs: True
+              version: '3'
+              auth: NMS
+          users:
+            auth:
+              - user: snmp_user_1
+                group: network-operator
+                authentication:
+                  algorithm: md5
+                  password: '0x5632724fb8ac3699296af26281e1d0f1'
+                  localized_key: True
+              - user: snmp_user_2
+                group: network-operator
+                authentication:
+                  algorithm: md5
+                  password: '0x5632724fb8ac3699296af26281e1d0f1'
+                  localized_key: True
+                  priv:
+                    privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
+                    aes_128: True
+            use_acls:
+              - user: snmp_user_1
+                ipv4: acl1
+                ipv6: acl2
+              - user: snmp_user_2
+                ipv4: acl3
+                ipv6: acl4
+      register: result
+
+    - name: Show before
+      debug:
+        msg: "{{ merged['before'] }}"
+
+    - name: Show after
+      debug:
+        msg: "{{ merged['after'] }}"
+
+    - name: Assert that before dicts were correctly generated
+      assert:
+        that: "{{ result['before'] == merged['before'] }}"
+
+    - name: Assert that correct set of commands were generated
+      assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
+            \ == 0 }}"
+
+    - name: Assert that after dicts were correctly generated
+      assert:
+        that:
+          - "{{ merged['after'] == result['after'] }}"
+
+    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
+      cisco.nxos.nxos_snmp_server: *id001
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+  always:
+    - include_tasks: _remove_config.yaml

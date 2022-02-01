@@ -64,8 +64,6 @@
 
     - assert: *id002
 
-    - meta: end_play
-
     - name: ssm_range none idempotence
       register: result
       cisco.nxos.nxos_pim: *id005

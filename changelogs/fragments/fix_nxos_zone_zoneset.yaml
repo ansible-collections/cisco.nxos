@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_zone_zoneset` - zone member addition with smart zoning in an already existing zone should be a no-op (https://github.com/ansible-collections/cisco.nxos/issues/339)."

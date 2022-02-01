@@ -319,7 +319,7 @@ Parameters
                         <div>Starting with Ansible 2.5 we recommend using <code>connection: network_cli</code>.</div>
                         <div>Starting with Ansible 2.6 we recommend using <code>connection: httpapi</code> for NX-API.</div>
                         <div>This option will be removed in a release after 2022-06-01.</div>
-                        <div>For more information please see the <a href='../network/user_guide/platform_nxos.html'>NXOS Platform Options guide</a>.</div>
+                        <div>For more information please see the <a href='https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html'>https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html</a>.</div>
                         <div><hr/></div>
                         <div>A dict object containing connection details.</div>
                 </td>
@@ -614,6 +614,7 @@ Notes
 
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
    - Cisco NX-OS creates the default VRF by itself. Therefore, you're not allowed to use default as *vrf* name in this module.
    - ``vrf`` name must be shorter than 32 chars.
    - VRF names are not case sensible in NX-OS. Anyway, the name is stored just like it's inserted by the user and it'll not be changed again unless the VRF is removed and re-created. i.e. ``vrf=NTC`` will create a VRF named NTC, but running it again with ``vrf=ntc`` will not cause a configuration change.

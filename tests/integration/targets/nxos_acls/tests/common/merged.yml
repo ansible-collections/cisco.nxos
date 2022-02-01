@@ -86,7 +86,7 @@
         that:
           - result.changed == false
 
-    - name: Update one parameter of an ACE
+    - name: Update one parameter of an existing ACE with state merged (should fail)
       register: result
       cisco.nxos.nxos_acls:
         config:
@@ -106,13 +106,12 @@
                     sequence: 20
                     precedence: 5
         state: merged
+      ignore_errors: True
 
     - assert:
         that:
-          - result.changed == True
-          - "'ip access-list ACL1v4' in result.commands"
-          - "'no 20' in result.commands"
-          - "'20 permit tcp any any fragments precedence critical log' in result.commands"
+          - result.failed == True
+          - "'Cannot update existing ACE ACL1v4 of ACL 20 with state merged. Please use state replaced or overridden.' in result.msg"
   always:
 
     - include_tasks: remove_config.yaml
