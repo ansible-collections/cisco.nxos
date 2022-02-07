@@ -404,18 +404,14 @@ class Cliconf(CliconfBase):
                     command=command, remove_prompt=False
                 )
                 if "file existing with this name" in output:
-
                     output = self.send_command(
                         command="y", remove_prompt=False
                     )
                 if "Are you sure you want to continue connecting" in output:
-
                     output = self.send_command(
                         command="yes", remove_prompt=False
                     )
                 if "Password:" in output:
-
-                    q(remotepassword)
                     output = self.send_command(
                         command=remotepassword, remove_prompt=False
                     )
