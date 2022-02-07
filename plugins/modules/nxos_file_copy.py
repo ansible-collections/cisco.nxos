@@ -16,9 +16,14 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import absolute_import, division, print_function
+
+__metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_file_copy
+extends_documentation_fragment:
+- cisco.nxos.nxos
 short_description: Copy a file to a remote NXOS device.
 description:
 - This module supports two different workflows for copying a file to flash (or bootflash)
@@ -43,15 +48,15 @@ notes:
   place if the file is already present.
 - Check mode will tell you if the file would be copied.
 requirements:
-- paramiko (required when file_pull is False)
-- SCPClient (required when file_pull is False)
-- pexpect (required when file_pull is True)
+- paramiko or libssh (required when file_pull is False)
+- scp (required when file_pull is False)
 options:
   local_file:
     description:
     - When (file_pull is False) this is the path to the local file on the Ansible
       controller. The local directory must exist.
     - When (file_pull is True) this is the target file name on the NXOS device.
+    type: path
   remote_file:
     description:
     - When (file_pull is False) this is the remote file path on the NXOS device. If
@@ -59,15 +64,18 @@ options:
       exist.
     - When (file_pull is True) this is the full path to the file on the remote SCP
       server to be copied to the NXOS device.
+    type: path
   file_system:
     description:
     - The remote file system on the nxos device. If omitted, devices that support
       a I(file_system) parameter will use their default values.
     default: 'bootflash:'
+    type: str
   connect_ssh_port:
     description:
     - SSH server port used for file transfer.
     default: 22
+    type: int
   file_pull:
     description:
     - When (False) file is copied from the Ansible controller to the NXOS device.
@@ -111,31 +119,37 @@ options:
       device, and written to this directory on the NXOS device. If the directory does
       not exist, it will be created under the file_system. This is an optional parameter.
     - When (file_pull is False), this is not used.
+    type: path
   file_pull_timeout:
     description:
     - Use this parameter to set timeout in seconds, when transferring large files
       or when the network is slow.
     - When (file_pull is False), this is not used.
     default: 300
+    type: int
   remote_scp_server:
     description:
     - The remote scp server address when file_pull is True. This is required if file_pull
       is True.
     - When (file_pull is False), this is not used.
+    type: str
   remote_scp_server_user:
     description:
     - The remote scp server username when file_pull is True. This is required if file_pull
       is True.
     - When (file_pull is False), this is not used.
+    type: str
   remote_scp_server_password:
     description:
     - The remote scp server password when file_pull is True. This is required if file_pull
       is True.
     - When (file_pull is False), this is not used.
+    type: str
   vrf:
     description:
     - The VRF used to pull the file. Useful when no vrf management is defined
     default: management
+    type: str
 """
 
 EXAMPLES = """
@@ -201,40 +215,14 @@ changed:
 
 import re
 import os
-import time
 from ansible.module_utils.basic import AnsibleModule
 from ansible.errors import AnsibleError
-from ansible.utils.hashing import md5
-from ansible.module_utils.basic import missing_required_lib
-from ansible.utils.hashing import md5
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network import (
     get_resource_connection,
 )
-
-try:
-    from scp import SCPClient
-
-    HAS_SCP = True
-except ImportError:
-    HAS_SCP = False
-
-try:
-    import pexpect
-
-    HAS_PEXPECT = True
-except ImportError:
-    HAS_PEXPECT = False
-
-
-def check_library_dependencies(file_pull):
-    if file_pull:
-        if not HAS_PEXPECT:
-            raise AnsibleError(missing_required_lib("pexpect"))
-    elif not HAS_SCP:
-        raise AnsibleError(missing_required_lib("scp"))
 
 
 class FilePush:
@@ -275,11 +263,11 @@ class FilePush:
 
         match = re.search(r"No such file or directory", body)
         if match:
-            raise AnsibleError(
+            self._module.fail_json(
                 "Invalid nxos filesystem {0}".format(file_system)
             )
         else:
-            raise AnsibleError(
+            self._module.fail_json(
                 "Unable to determine size of filesystem {0}".format(
                     file_system
                 )
@@ -360,15 +348,23 @@ class FilePull:
         self._connection = get_resource_connection(self._module)
         self.result = {}
 
-    def copy_file_from_remote(self, local, local_file_directory, file_system):
-        self.result["failed"] = False
+    def mkdir(self, directory):
+        dir_array = directory.split("/")
+        for each in dir_array:
+            if each:
+                mkdir_cmd = "mkdir " + directory + each
+                self._connection.run_commands(mkdir_cmd)[0]
+                directory += each + "/"
 
+    def copy_file_from_remote(self, local, local_file_directory, file_system):
         # Build copy command components that will be used to initiate copy from the nxos device.
         cmdroot = "copy " + self._module.params["file_pull_protocol"] + "://"
         ruser = self._module.params["remote_scp_server_user"] + "@"
-        rserver = self._module.params["remote_scp_server"] + " "
+        rserver = self._module.params["remote_scp_server"]
         rserverpassword = self._module.params["remote_scp_server_password"]
-        rfile = self._module.params["remote_file"]
+        rfile = self._module.params["remote_file"] + " "
+        if not rfile.startswith("/"):
+            rfile = "/" + rfile
         vrf = " vrf " + self._module.params["vrf"]
         local_dir_root = "/"
         if self._module.params["file_pull_compact"]:
@@ -380,43 +376,11 @@ class FilePull:
         else:
             kstack = ""
 
-        possible_errors = [
-            r"sure you want to continue connecting \(yes/no\)\? ",
-            "(?i)Password: ",
-            "file existing with this name",
-            "timed out",
-            "(?i)No space.*#",
-            "(?i)Permission denied.*#",
-            "(?i)No such file.*#",
-            ".*Invalid command.*#",
-            "Compaction is not supported on this platform.*#",
-            "Compact of.*failed.*#",
-            "(?i)Failed.*#",
-            "(?i)Could not resolve hostname",
-            "(?i)Too many authentication failures",
-            r"(?i)Copying to\/from this server name is not permitted",
-            "(?i)Copy complete",
-            r"#\s",
-        ]
-
         # Create local file directory under NX-OS filesystem if
         # local_file_directory playbook parameter is set.
         if local_file_directory:
-            dir_array = local_file_directory.split("/")
-            for each in dir_array:
-                if each:
-                    mkdir_cmd = "mkdir " + local_dir_root + each
-                    output = self._connection.run_commands(mkdir_cmd)[0]
-                    if output and any(
-                        re.search(x, output) for x in possible_errors
-                    ):
-                        self.result["mkdir_cmd"] = mkdir_cmd
-                        self.result["failed"] = True
-                        self.result["error_data"] = output
-                        return
-                    local_dir_root += each + "/"
+            self.mkdir(local_file_directory)
 
-        # Initiate file copy
         copy_cmd = (
             cmdroot
             + ruser
@@ -429,38 +393,16 @@ class FilePull:
             + vrf
             + kstack
         )
-        self.result["copy_cmd"] = copy_cmd
 
-        for _x in range(6):
-            output = self._connection.run_commands(copy_cmd)[0]
-            if output:
-                # "sure you want to continue connecting \(yes/no\)\? "
-                if re.search(possible_errors[0], output):
-                    self._connection.exec_command("yes")
-                    continue
-                # "(?i)Password: "
-                if re.search(possible_errors[1], output):
-                    if rserverpassword:
-                        output = self._connection.run_commands(
-                            rserverpassword
-                        )[0]
-                    else:
-                        err_msg = "Remote scp server {0} requires a password.".format(
-                            rserver
-                        )
-                        err_msg += " Set the <remote_scp_server_password> playbook parameter or configure nxos device for passwordless scp."
-                        raise AnsibleError(err_msg)
-                # "file existing with this name"
-                if re.search(possible_errors[2], output):
-                    output = self._connection.run_commands("y")[0]
-                # "(?i)Copy complete"
-                if re.search(possible_errors[14], output):
-                    self.result[
-                        "transfer_status"
-                    ] = "Received: File copied/pulled to nxos device from remote scp server."
-                    break
+        self.result["copy_cmd"] = copy_cmd
+        pulled = self._connection.pull_file(
+            command=copy_cmd, remotepassword=rserverpassword
+        )
+        if not pulled:
+            self.result["failed"] = True
 
     def run(self):
+        self.result["failed"] = False
         remote_file = self._module.params["remote_file"]
         local_file = (
             self._module.params["local_file"] or remote_file.split("/")[-1]
@@ -521,7 +463,6 @@ def main():
     )
 
     file_pull = module.params["file_pull"]
-    check_library_dependencies(file_pull)
 
     warnings = list()
 

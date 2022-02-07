@@ -57,7 +57,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
 )
-from ansible.plugins.cliconf import CliconfBase, enable_mode
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base import (
+    CliconfBase,
+    enable_mode,
+)
 
 
 class Cliconf(CliconfBase):
@@ -356,17 +359,87 @@ class Cliconf(CliconfBase):
 
         return json.dumps(result)
 
+    def pull_file(self, command, remotepassword=None):
+
+        possible_errors_re = [
+            re.compile(br"timed out"),
+            re.compile(br"(?i)No space.*#"),
+            re.compile(br"(?i)Permission denied.*#"),
+            re.compile(br"(?i)No such file.*#"),
+            re.compile(br"Compaction is not supported on this platform.*#"),
+            re.compile(br"Compact of.*failed.*#"),
+            re.compile(br"(?i)Could not resolve hostname"),
+            re.compile(br"(?i)Too many authentication failures"),
+            re.compile(
+                br"(?i)Copying to\/from this server name is not permitted"
+            ),
+        ]
+
+        # set error regex for copy command
+        current_stderr_re = self._connection._get_terminal_std_re(
+            "terminal_stderr_re"
+        )
+        current_stderr_re.extend(possible_errors_re)
+
+        possible_prompts_re = [
+            re.compile(br"file existing with this name"),
+            re.compile(br"Are you sure you want to continue connecting"),
+            re.compile(br"Password: "),
+        ]
+
+        # set stdout regex for copy command to handle optional user prompts
+        # based on different match conditions
+        current_stdout_re = self._connection._get_terminal_std_re(
+            "terminal_stdout_re"
+        )
+        current_stdout_re.extend(possible_prompts_re)
+
+        retry = 1
+        file_pulled = False
+
+        try:
+            while not file_pulled and retry <= 6:
+                retry += 1
+                output = self.send_command(
+                    command=command, remove_prompt=False
+                )
+                if "file existing with this name" in output:
+
+                    output = self.send_command(
+                        command="y", remove_prompt=False
+                    )
+                if "Are you sure you want to continue connecting" in output:
+
+                    output = self.send_command(
+                        command="yes", remove_prompt=False
+                    )
+                if "Password:" in output:
+
+                    q(remotepassword)
+                    output = self.send_command(
+                        command=remotepassword, remove_prompt=False
+                    )
+                if "Copy complete" in output:
+                    file_pulled = True
+            return file_pulled
+        finally:
+            # always reset terminal regexes to default
+            for x in possible_prompts_re:
+                current_stdout_re.remove(x)
+            for x in possible_errors_re:
+                current_stderr_re.remove(x)
+
     def set_cli_prompt_context(self):
         """
         Make sure we are in the operational cli context
         :return: None
         """
-        if self._connection.connected:
-            out = self._connection.get_prompt()
+        if self.connection.connected:
+            out = self.connection.get_prompt()
             if out is None:
                 raise AnsibleConnectionFailure(
-                    message="cli prompt is not identified from the last received"
-                    " response window: %s" % self._connection._last_recv_window
+                    message=u"cli prompt is not identified from the last received"
+                    u" response window: %s" % self.connection._last_recv_window
                 )
             # Match prompts ending in )# except those with (maint-mode)#
             config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
@@ -374,11 +447,11 @@ class Cliconf(CliconfBase):
             while config_prompt.match(
                 to_text(out, errors="surrogate_then_replace").strip()
             ):
-                self._connection.queue_message(
+                self.connection.queue_message(
                     "vvvv", "wrong context, sending exit to device"
                 )
-                self._connection.send_command("exit")
-                out = self._connection.get_prompt()
+                self.connection.send_command("exit")
+                out = self.connection.get_prompt()
 
     def _get_command_with_output(self, command, output):
         options_values = self.get_option_values()
