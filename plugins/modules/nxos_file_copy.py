@@ -73,7 +73,12 @@ options:
     type: str
   connect_ssh_port:
     description:
+    - B(Deprecated)
+    - This option has been deprecated and will be removed in a release after 2024-06-01.
+    - To maintain backwards compatibility, this option will continue to override the value of I(ansible_port) until removed.
+    - HORIZONTALLINE
     - SSH server port used for file transfer.
+    - Only used when I(file_pull) is C(True).
     default: 22
     type: int
   file_pull:
@@ -122,6 +127,10 @@ options:
     type: path
   file_pull_timeout:
     description:
+    - B(Deprecated)
+    - This option has been deprecated and will be removed in a release after 2024-06-01.
+    - To maintain backwards compatibility, this option will continue to override the value of I(ansible_command_timeout) until removed.
+    - HORIZONTALLINE
     - Use this parameter to set timeout in seconds, when transferring large files
       or when the network is slow.
     - When (file_pull is False), this is not used.
@@ -215,8 +224,10 @@ changed:
 
 import re
 import os
+import hashlib
+
+from ansible.module_utils._text import to_text, to_bytes
 from ansible.module_utils.basic import AnsibleModule
-from ansible.errors import AnsibleError
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
 )
@@ -234,11 +245,25 @@ class FilePush:
     def md5sum_check(self, dst, file_system):
         command = "show file {0}{1} md5sum".format(file_system, dst)
         remote_filehash = self._connection.run_commands(command)[0]
+        remote_filehash = to_bytes(
+            remote_filehash, errors="surrogate_or_strict"
+        )
 
-        flp = os.path.join(os.path.abspath(self._module.params["local_file"]))
-        local_filehash = md5(flp)
+        local_file = self._module.params["local_file"]
+        try:
+            with open(local_file, "rb") as f:
+                filecontent = f.read()
+        except (OSError, IOError) as exc:
+            self._module.fail_json(
+                "Error reading the file: {0}".format(to_text(exc))
+            )
 
-        if local_filehash == remote_filehash:
+        filecontent = to_bytes(filecontent, errors="surrogate_or_strict")
+        local_filehash = hashlib.md5(filecontent).hexdigest()
+
+        decoded_rhash = remote_filehash.decode("UTF-8")
+
+        if local_filehash == decoded_rhash:
             return True
         else:
             return False
@@ -286,7 +311,7 @@ class FilePush:
         file_system = self._module.params["file_system"]
 
         if not self.enough_space(local_file, file_system):
-            raise AnsibleError(
+            self._module.fail_json(
                 "Could not transfer file. Not enough space on device."
             )
 
@@ -317,7 +342,9 @@ class FilePush:
         file_system = self._module.params["file_system"]
 
         if not os.path.isfile(local_file):
-            raise AnsibleError("Local file {0} not found".format(local_file))
+            self._module.fail_json(
+                "Local file {0} not found".format(local_file)
+            )
 
         remote_file = remote_file or os.path.basename(local_file)
         remote_exists = self.remote_file_exists(remote_file, file_system)
@@ -338,6 +365,7 @@ class FilePush:
         if remote_file is None:
             remote_file = os.path.basename(local_file)
         self.result["remote_file"] = remote_file
+        self.result["file_system"] = file_system
 
         return self.result
 
@@ -349,12 +377,14 @@ class FilePull:
         self.result = {}
 
     def mkdir(self, directory):
+        local_dir_root = "/"
         dir_array = directory.split("/")
         for each in dir_array:
             if each:
-                mkdir_cmd = "mkdir " + directory + each
-                self._connection.run_commands(mkdir_cmd)[0]
-                directory += each + "/"
+                mkdir_cmd = "mkdir " + local_dir_root + each
+                self._connection.run_commands(mkdir_cmd)
+                local_dir_root += each + "/"
+        return local_dir_root
 
     def copy_file_from_remote(self, local, local_file_directory, file_system):
         # Build copy command components that will be used to initiate copy from the nxos device.
@@ -366,7 +396,6 @@ class FilePull:
         if not rfile.startswith("/"):
             rfile = "/" + rfile
         vrf = " vrf " + self._module.params["vrf"]
-        local_dir_root = "/"
         if self._module.params["file_pull_compact"]:
             compact = " compact "
         else:
@@ -378,8 +407,9 @@ class FilePull:
 
         # Create local file directory under NX-OS filesystem if
         # local_file_directory playbook parameter is set.
+        local_dir_root = "/"
         if local_file_directory:
-            self.mkdir(local_file_directory)
+            local_dir_root = self.mkdir(local_file_directory)
 
         copy_cmd = (
             cmdroot
@@ -398,7 +428,11 @@ class FilePull:
         pulled = self._connection.pull_file(
             command=copy_cmd, remotepassword=rserverpassword
         )
-        if not pulled:
+        if pulled:
+            self.result[
+                "transfer_status"
+            ] = "Received: File copied/pulled to nxos device from remote scp server."
+        else:
             self.result["failed"] = True
 
     def run(self):
@@ -414,17 +448,19 @@ class FilePull:
         if not self._module.check_mode:
             self.copy_file_from_remote(local_file, local_file_dir, file_system)
 
+        self.result["remote_file"] = remote_file
+        if local_file_dir:
+            dir = local_file_dir
+        else:
+            dir = ""
+        self.result["local_file"] = file_system + dir + "/" + local_file
+        self.result["remote_scp_server"] = self._module.params[
+            "remote_scp_server"
+        ]
+        self.result["file_system"] = self._module.params["file_system"]
+
         if not self.result["failed"]:
             self.result["changed"] = True
-            self.result["remote_file"] = remote_file
-            if local_file_dir:
-                dir = local_file_dir
-            else:
-                dir = ""
-            self.result["local_file"] = file_system + dir + "/" + local_file
-            self.result["remote_scp_server"] = self._module.params[
-                "remote_scp_server"
-            ]
 
         return self.result
 

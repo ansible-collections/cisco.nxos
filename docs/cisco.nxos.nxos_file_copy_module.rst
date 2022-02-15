@@ -53,7 +53,12 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">22</div>
                 </td>
                 <td>
+                        <div><b>Deprecated</b></div>
+                        <div>This option has been deprecated and will be removed in a release after 2024-06-01.</div>
+                        <div>To maintain backwards compatibility, this option will continue to override the value of <em>ansible_port</em> until removed.</div>
+                        <div><hr/></div>
                         <div>SSH server port used for file transfer.</div>
+                        <div>Only used when <em>file_pull</em> is <code>True</code>.</div>
                 </td>
             </tr>
             <tr>
@@ -154,6 +159,10 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">300</div>
                 </td>
                 <td>
+                        <div><b>Deprecated</b></div>
+                        <div>This option has been deprecated and will be removed in a release after 2024-06-01.</div>
+                        <div>To maintain backwards compatibility, this option will continue to override the value of <em>ansible_command_timeout</em> until removed.</div>
+                        <div><hr/></div>
                         <div>Use this parameter to set timeout in seconds, when transferring large files or when the network is slow.</div>
                         <div>When (file_pull is False), this is not used.</div>
                 </td>

@@ -360,7 +360,6 @@ class Cliconf(CliconfBase):
         return json.dumps(result)
 
     def pull_file(self, command, remotepassword=None):
-
         possible_errors_re = [
             re.compile(br"timed out"),
             re.compile(br"(?i)No space.*#"),
@@ -370,6 +369,7 @@ class Cliconf(CliconfBase):
             re.compile(br"Compact of.*failed.*#"),
             re.compile(br"(?i)Could not resolve hostname"),
             re.compile(br"(?i)Too many authentication failures"),
+            re.compile(br"Access Denied"),
             re.compile(
                 br"(?i)Copying to\/from this server name is not permitted"
             ),
@@ -400,20 +400,17 @@ class Cliconf(CliconfBase):
         try:
             while not file_pulled and retry <= 6:
                 retry += 1
-                output = self.send_command(
-                    command=command, remove_prompt=False
-                )
+                output = self.send_command(command=command, strip_prompt=False)
+
                 if "file existing with this name" in output:
-                    output = self.send_command(
-                        command="y", remove_prompt=False
-                    )
+                    output = self.send_command(command="y", strip_prompt=False)
                 if "Are you sure you want to continue connecting" in output:
                     output = self.send_command(
-                        command="yes", remove_prompt=False
+                        command="yes", strip_prompt=False
                     )
                 if "Password:" in output:
                     output = self.send_command(
-                        command=remotepassword, remove_prompt=False
+                        command=remotepassword, strip_prompt=False
                     )
                 if "Copy complete" in output:
                     file_pulled = True

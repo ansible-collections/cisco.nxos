@@ -62,6 +62,28 @@ class ActionModule(ActionNetworkModule):
                 % (module_name),
             }
 
+        if module_name == "nxos_file_copy":
+            # when file_pull is enabled, the file_pull_timeout and connect_ssh_port options
+            # will override persistent_command_timeout and port
+            # this has been kept for backwards compatibility till these options are removed
+            if persistent_connection != "network_cli":
+                return {
+                    "failed": True,
+                    "msg": "Connection type must be fully qualified name for network_cli connection type, got %s"
+                    % self._play_context.connection,
+                }
+
+            conn = Connection(self._connection.socket_path)
+            file_pull = self._task.args.get("file_pull", False)
+            file_pull_timeout = self._task.args.get("file_pull_timeout", 300)
+            connect_ssh_port = self._task.args.get("connect_ssh_port", 22)
+
+            if file_pull:
+                conn.set_option(
+                    "persistent_command_timeout", file_pull_timeout
+                )
+                conn.set_option("port", connect_ssh_port)
+
         if module_name == "nxos_install_os":
             connection = self._connection
             if connection.transport == "local":

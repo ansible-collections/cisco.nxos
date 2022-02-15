@@ -1,7 +1,7 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_file_copy sanity test"
 
-- set_fact: 
+- set_fact:
     test_source_file: "data.cfg"
     test_destination_file: "test_destination_file"
 
@@ -90,7 +90,6 @@
           - "'bootflash:' in result.file_system"
           - "'{{ test_source_file }}' in result.local_file"
           - "'{{ test_destination_file }}' in result.remote_file"
-
           - "'Sent: File copied to remote device.' in result.transfer_status"
 
     - name: Idempotence - Copy {{ test_source_file }} file from Ansible controller
@@ -129,7 +128,7 @@
         remote_scp_server_user: temp_user
         remote_scp_server_password: "{{ temp_passwd }}"
         connect_ssh_port: '{{ ansible_ssh_port }}'
-        
+
     - assert: &id006
         that:
           - result.changed == true
@@ -174,7 +173,7 @@
           - "'Received: File copied/pulled to nxos device from remote scp server.'\
             \ in result.transfer_status"
           - "'{{ mgmt0_ip }}' in result.remote_scp_server"
-  
+
   always:
     - name: Remove file
       ignore_errors: true
