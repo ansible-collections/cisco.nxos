@@ -194,9 +194,14 @@ class VlansFacts(object):
             vlan.update(v)
             vlan.update(mtuinfo[index])
 
-            run_cfg = [
-                i for i in run_cfg_list if "%s\n" % v["vlan_id"] in i
-            ] or [""]
-            vlan["run_cfg"] = run_cfg.pop()
+            vlan["run_cfg"] = ""
+            for item in run_cfg_list:
+                # Sample match line
+                # 202\n  name Production-Segment-100101\n  vn-segment 100101
+                pattern = "^{0}\s+name.*vn-segment".format(v["vlan_id"])
+                if re.search(pattern, item, flags=re.DOTALL):
+                    vlan["run_cfg"] = item
+                    break
+
             vlans.append(vlan)
         return vlans
