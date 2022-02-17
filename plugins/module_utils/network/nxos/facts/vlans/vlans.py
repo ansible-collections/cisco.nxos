@@ -199,7 +199,7 @@ class VlansFacts(object):
                 # Sample match lines
                 # 202\n  name Production-Segment-100101\n  vn-segment 100101
                 # 5\n  state suspend\n  shutdown\n  name test-changeme\n  vn-segment 942
-                pattern = '^{0}\s+\S.*vn-segment'.format(v["vlan_id"])
+                pattern = r'^{0}\s+\S.*vn-segment'.format(v["vlan_id"])
                 if re.search(pattern, item, flags=re.DOTALL):
                     vlan["run_cfg"] = item
                     break
