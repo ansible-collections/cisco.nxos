@@ -1,0 +1,2 @@
+bugfixes:
+  - Fix for nxos_vlans issue (https://github.com/ansible-collections/cisco.nxos/issues/425).
