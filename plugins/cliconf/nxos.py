@@ -381,10 +381,11 @@ class Cliconf(CliconfBase):
         )
         current_stderr_re.extend(possible_errors_re)
 
+        # do not change the ordering of this list
         possible_prompts_re = [
             re.compile(br"file existing with this name"),
-            re.compile(br"Are you sure you want to continue connecting"),
-            re.compile(br"Password: "),
+            re.compile(br"sure you want to continue connecting"),
+            re.compile(br"(?i)Password:.*"),
         ]
 
         # set stdout regex for copy command to handle optional user prompts
@@ -402,13 +403,15 @@ class Cliconf(CliconfBase):
                 retry += 1
                 output = self.send_command(command=command, strip_prompt=False)
 
-                if "file existing with this name" in output:
+                if possible_prompts_re[0].search(to_bytes(output)):
                     output = self.send_command(command="y", strip_prompt=False)
-                if "Are you sure you want to continue connecting" in output:
+
+                if possible_prompts_re[1].search(to_bytes(output)):
                     output = self.send_command(
                         command="yes", strip_prompt=False
                     )
-                if "Password:" in output:
+
+                if possible_prompts_re[2].search(to_bytes(output)):
                     output = self.send_command(
                         command=remotepassword, strip_prompt=False
                     )

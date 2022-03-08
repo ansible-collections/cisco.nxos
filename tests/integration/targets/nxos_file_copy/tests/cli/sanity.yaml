@@ -141,6 +141,9 @@
             \ in result.transfer_status"
           - "'{{ mgmt0_ip }}' in result.remote_scp_server"
 
+    - pause:
+        seconds: 60
+
     - name: Overwrite the file
       register: result
       cisco.nxos.nxos_file_copy: *id005
