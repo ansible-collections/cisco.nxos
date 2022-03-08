@@ -331,7 +331,7 @@ Notes
 
 .. note::
    - Tested against the following platforms and images - N9k 7.0(3)I4(6), 7.0(3)I5(3), 7.0(3)I6(1), 7.0(3)I7(1), 7.0(3)F2(2), 7.0(3)F3(2) - N3k 6.0(2)A8(6), 6.0(2)A8(8), 7.0(3)I6(1), 7.0(3)I7(1) - N7k 7.3(0)D1(1), 8.0(1), 8.1(1), 8.2(1)
-   - Limited Support for Cisco MDS
+   - Tested against Cisco MDS NX-OS 9.2(1)
    - This module requires both the ANSIBLE_PERSISTENT_CONNECT_TIMEOUT and ANSIBLE_PERSISTENT_COMMAND_TIMEOUT timers to be set to 600 seconds or higher. The module will exit if the timers are not set properly.
    - When using connection local, ANSIBLE_PERSISTENT_CONNECT_TIMEOUT and ANSIBLE_PERSISTENT_COMMAND_TIMEOUT can only be set using ENV variables or the ansible.cfg file.
    - Do not include full file paths, just the name of the file(s) stored on the top level flash directory.
