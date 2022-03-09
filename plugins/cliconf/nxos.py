@@ -21,8 +21,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-author: Ansible Networking Team
-cliconf: nxos
+author: Ansible Networking Team (@ansible-network)
+name: nxos
 short_description: Use NX-OS cliconf to run commands on Cisco NX-OS platform
 description:
 - This nxos plugin provides low level abstraction apis for sending and receiving CLI

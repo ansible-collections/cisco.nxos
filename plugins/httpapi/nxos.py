@@ -6,8 +6,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-author: Ansible Networking Team
-httpapi: nxos
+author: Ansible Networking Team (@ansible-network)
+name: nxos
 short_description: Use NX-API to run commands on Cisco NX-OS platform
 description:
 - This plugin provides low level abstraction APIs for sending and receiving
