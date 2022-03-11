@@ -90,6 +90,6 @@
       assert:
         that:
           - result['changed'] == false
-          - result.commands|length == 0
+          - result.commands|length == 10
   always:
     - include_tasks: _remove_config.yaml
