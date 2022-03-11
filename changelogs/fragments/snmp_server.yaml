@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "nxos_snmp_server - Add alias for community (https://github.com/ansible-collections/cisco.nxos/issues/433)"
