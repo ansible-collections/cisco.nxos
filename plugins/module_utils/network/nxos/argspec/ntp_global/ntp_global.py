@@ -98,7 +98,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                         "maxpoll": {"type": "int"},
                         "minpoll": {"type": "int"},
                         "prefer": {"type": "bool"},
-                        "use_vrf": {"type": "str"},
+                        "vrf": {"type": "str", "aliases": ["use_vrf"]},
                     },
                 },
                 "servers": {
@@ -110,7 +110,7 @@ class Ntp_globalArgs(object):  # pylint: disable=R0903
                         "maxpoll": {"type": "int"},
                         "minpoll": {"type": "int"},
                         "prefer": {"type": "bool"},
-                        "use_vrf": {"type": "str"},
+                        "vrf": {"type": "str", "aliases": ["use_vrf"]},
                     },
                 },
                 "source": {"type": "str"},
