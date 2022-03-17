@@ -71,6 +71,10 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     engine_id=dict(
                         local="'00:00:00:63:00:01:00:10:20:15:10:03'"
                     ),
+                    communities=[
+                        dict(name="private", group="network-admin"),
+                        dict(community="public", use_ipv4acl="myacl"),
+                    ],
                     global_enforce_priv=True,
                     location="lab",
                     mib=dict(
@@ -91,6 +95,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
             ignore_provider_arg,
         )
         commands = [
+            "snmp-server community private group network-admin",
+            "snmp-server community public use-ipv4acl myacl",
             "snmp-server globalEnforcePriv",
             "snmp-server tcp-session auth",
             "snmp-server counter cache timeout 1800",
@@ -816,6 +822,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
             dict(
                 running_config=dedent(
                     """\
+                    snmp-server community private group network-admin
+                    snmp-server community public use-ipv4acl myacl
                     snmp-server globalEnforcePriv
                     snmp-server tcp-session auth
                     snmp-server counter cache timeout 1800
@@ -842,6 +850,10 @@ class TestNxosSnmpServerModule(TestNxosModule):
         parsed = dict(
             aaa_user=dict(cache_timeout=36000),
             contact="testswitch@localhost",
+            communities=[
+                dict(name="private", group="network-admin"),
+                dict(name="public", use_ipv4acl="myacl"),
+            ],
             context=dict(name="public", vrf="siteA"),
             counter=dict(cache=dict(timeout=1800)),
             drop=dict(unknown_engine_id=True, unknown_user=True),

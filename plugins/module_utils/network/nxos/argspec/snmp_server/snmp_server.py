@@ -44,7 +44,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "community": {"type": "str", "aliases": ["name"]},
+                        "name": {"type": "str", "aliases": ["community"]},
                         "group": {"type": "str"},
                         "ro": {"type": "bool"},
                         "rw": {"type": "bool"},

@@ -64,7 +64,7 @@ class Snmp_serverFacts(object):
 
         if "communities" in objs:
             objs["communities"] = sorted(
-                objs["communities"], key=lambda k: k["community"]
+                objs["communities"], key=lambda k: k["name"]
             )
 
         if "users" in objs:
