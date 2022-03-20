@@ -397,10 +397,9 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>1</li>
+                                    <li><div style="color: blue"><b>1</b>&nbsp;&larr;</div></li>
                                     <li>2</li>
                         </ul>
-                        <b>Default:</b><br/><div style="color: blue">1</div>
                 </td>
                 <td>
                         <div>HSRP version.</div>
