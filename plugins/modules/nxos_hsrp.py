@@ -41,7 +41,7 @@ options:
   version:
     description:
     - HSRP version.
-    default: 1
+    default: '1'
     choices:
     - '1'
     - '2'

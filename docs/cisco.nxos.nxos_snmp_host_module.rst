@@ -368,7 +368,7 @@ Parameters
                     </div>
                 </td>
                 <td>
-                        <b>Default:</b><br/><div style="color: blue">162</div>
+                        <b>Default:</b><br/><div style="color: blue">"162"</div>
                 </td>
                 <td>
                         <div>UDP port number (0-65535).</div>
