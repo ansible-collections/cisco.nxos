@@ -734,3 +734,15 @@ releases:
       name: nxos_hostname
       namespace: ''
     release_date: '2022-01-31'
+  2.9.1:
+    changes:
+      bugfixes:
+      - Fix for nxos_vlans issue (https://github.com/ansible-collections/cisco.nxos/issues/425).
+      doc_changes:
+      - Added notes in module docs to indicate supportability for Cisco MDS.
+    fragments:
+    - fix_nxos_vlans.yaml
+    - fix_sanity.yaml
+    - module_docs_support_for_cisco_mds.yaml
+    - sanity.yaml
+    release_date: '2022-03-29'
