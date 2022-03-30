@@ -214,7 +214,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "ntp peer {{ peer }}"
                       "{{ ' prefer' if prefer is defined else ''}}"
-                      "{{ (' use-vrf ' + use_vrf) if use_vrf is defined else '' }}"
+                      "{{ (' use-vrf ' + vrf) if vrf is defined else '' }}"
                       "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
                       "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}",
@@ -223,7 +223,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                     {
                         "peer": "{{ peer }}",
                         "prefer": "{{ not not prefer }}",
-                        "use_vrf": "{{ use_vrf }}",
+                        "vrf": "{{ use_vrf }}",
                         "key_id": "{{ key }}",
                         "minpoll": "{{ minpoll }}",
                         "maxpoll": "{{ maxpoll }}",
@@ -245,7 +245,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE),
             "setval": "ntp server {{ server }}"
                       "{{ ' prefer' if prefer is defined else ''}}"
-                      "{{ (' use-vrf ' + use_vrf) if use_vrf is defined else '' }}"
+                      "{{ (' use-vrf ' + vrf) if vrf is defined else '' }}"
                       "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
                       "{{ (' maxpoll ' + maxpoll|string) if maxpoll is defined else '' }}",
@@ -254,7 +254,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                     {
                         "server": "{{ server }}",
                         "prefer": "{{ not not prefer }}",
-                        "use_vrf": "{{ use_vrf }}",
+                        "vrf": "{{ use_vrf }}",
                         "key_id": "{{ key }}",
                         "minpoll": "{{ minpoll }}",
                         "maxpoll": "{{ maxpoll }}",

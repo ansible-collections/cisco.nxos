@@ -18,7 +18,6 @@
 # Make coding more python3-ish
 
 from __future__ import absolute_import, division, print_function
-from typing import Sequence
 
 __metaclass__ = type
 
@@ -385,13 +384,11 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                             key_id=2,
                             minpoll=5,
                             maxpoll=15,
-                            use_vrf="siteA",
+                            vrf="siteA",
                             prefer=True,
                         ),
-                        dict(peer="192.168.1.2", key_id=3, use_vrf="siteB"),
-                        dict(
-                            peer="192.168.1.3", maxpoll=10, use_vrf="default"
-                        ),
+                        dict(peer="192.168.1.2", key_id=3, vrf="siteB"),
+                        dict(peer="192.168.1.3", maxpoll=10, vrf="default"),
                     ],
                     servers=[
                         dict(
@@ -399,13 +396,11 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                             key_id=2,
                             minpoll=5,
                             maxpoll=15,
-                            use_vrf="siteA",
+                            vrf="siteA",
                             prefer=True,
                         ),
-                        dict(server="203.0.113.2", key_id=3, use_vrf="siteB"),
-                        dict(
-                            server="203.0.113.3", maxpoll=10, use_vrf="default"
-                        ),
+                        dict(server="203.0.113.2", key_id=3, vrf="siteB"),
+                        dict(server="203.0.113.3", maxpoll=10, vrf="default"),
                     ],
                 ),
                 state="merged",
@@ -436,10 +431,10 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                             key_id=2,
                             minpoll=5,
                             maxpoll=15,
-                            use_vrf="siteA",
+                            vrf="siteA",
                             prefer=True,
                         ),
-                        dict(peer="192.168.1.2", use_vrf="siteB"),
+                        dict(peer="192.168.1.2", vrf="siteB"),
                     ],
                     servers=[
                         dict(
@@ -447,7 +442,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                             key_id=2,
                             minpoll=5,
                             maxpoll=15,
-                            use_vrf="siteA",
+                            vrf="siteA",
                             prefer=True,
                         )
                     ],
