@@ -12,8 +12,7 @@ The arg spec for the nxos facts module.
 
 
 class FactsArgs(object):
-    """ The arg spec for the nxos facts module
-    """
+    """The arg spec for the nxos facts module"""
 
     def __init__(self, **kwargs):
         pass

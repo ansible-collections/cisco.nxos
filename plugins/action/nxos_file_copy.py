@@ -52,7 +52,7 @@ display = Display()
 
 class ActionModule(ActionBase):
     def process_playbook_values(self):
-        """ Get playbook values and perform input validation """
+        """Get playbook values and perform input validation"""
         argument_spec = dict(
             vrf=dict(type="str", default="management"),
             connect_ssh_port=dict(type="int", default=22),
@@ -513,8 +513,10 @@ class ActionModule(ActionBase):
                         self.playvals["remote_scp_server_password"]
                     )
                 else:
-                    err_msg = "Remote scp server {0} requires a password.".format(
-                        rserver
+                    err_msg = (
+                        "Remote scp server {0} requires a password.".format(
+                            rserver
+                        )
                     )
                     err_msg += " Set the <remote_scp_server_password> playbook parameter or configure nxos device for passwordless scp"
                     raise AnsibleError(err_msg)

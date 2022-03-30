@@ -30,8 +30,7 @@ __metaclass__ = type
 
 
 class Static_routesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_static_routes module
-    """
+    """The arg spec for the nxos_static_routes module"""
 
     argument_spec = {
         "config": {

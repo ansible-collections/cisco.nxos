@@ -28,8 +28,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.os
 
 
 class Ospfv2Facts(object):
-    """ The nxos snmp fact class
-    """
+    """The nxos snmp fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -54,7 +53,7 @@ class Ospfv2Facts(object):
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for interfaces
+        """Populate the facts for interfaces
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

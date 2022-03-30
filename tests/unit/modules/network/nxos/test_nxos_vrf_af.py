@@ -97,7 +97,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self.assertEqual(result["commands"], [])
 
     def test_nxos_vrf_af_auto_evpn_route_target_present_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(vrf="vrf10", afi="ipv4", route_target_both_auto_evpn=True)
@@ -127,7 +127,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_auto_evpn_route_target_absent_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(vrf="vrf1", afi="ipv4", route_target_both_auto_evpn=False)
@@ -136,7 +136,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self.assertEqual(result["commands"], [])
 
     def test_nxos_vrf_af_route_target_import_present_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -162,7 +162,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_default_direction_present_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -200,7 +200,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self.assertEqual(result["commands"], [])
 
     def test_nxos_vrf_af_route_target_default_direction_present_current_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -213,7 +213,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self.assertEqual(result["commands"], [])
 
     def test_nxos_vrf_af_route_target_multi_import_present_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -251,7 +251,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_multi_import_present_current_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -321,7 +321,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_multi_import_absent_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -350,7 +350,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self.assertEqual(result["commands"], [])
 
     def test_nxos_vrf_af_route_target_multi_import_absent_current_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -433,7 +433,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_export_present_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -476,7 +476,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self.assertEqual(result["commands"], [])
 
     def test_nxos_vrf_af_route_target_multi_export_present_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -514,7 +514,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_multi_export_present_current_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -584,7 +584,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_multi_export_absent_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -613,7 +613,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self.assertEqual(result["commands"], [])
 
     def test_nxos_vrf_af_route_target_multi_export_absent_current_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -738,7 +738,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self.assertEqual(result["commands"], [])
 
     def test_nxos_vrf_af_route_target_multi_both_present_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -779,7 +779,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_multi_both_present_current_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -850,7 +850,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_multi_both_absent_current_non_existing(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -965,7 +965,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_multi_both_current_only_import_or_export(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -1009,7 +1009,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_route_target_multi_direction_current_only_import_or_export(
-        self
+        self,
     ):
         set_module_args(
             dict(
@@ -1075,7 +1075,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
 
     def test_nxos_vrf_af_auto_evpn_route_target_and_manual_route_targets_with_absent_vrf(
-        self
+        self,
     ):
         set_module_args(
             dict(

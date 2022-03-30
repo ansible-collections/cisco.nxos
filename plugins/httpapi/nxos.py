@@ -231,8 +231,7 @@ def handle_response(response):
 
 
 def request_builder(commands, output, version="1.0", chunk="0", sid=None):
-    """Encodes a NXAPI JSON request message
-    """
+    """Encodes a NXAPI JSON request message"""
     output_to_command_type = {
         "text": "cli_show_ascii",
         "json": "cli_show",

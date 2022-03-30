@@ -43,7 +43,7 @@ class Bfd_interfaces(ConfigBase):
         super(Bfd_interfaces, self).__init__(module)
 
     def get_bfd_interfaces_facts(self, data=None):
-        """ Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration)
 
         :returns: A list of interface configs and a platform string
         """
@@ -63,7 +63,7 @@ class Bfd_interfaces(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -73,9 +73,10 @@ class Bfd_interfaces(ConfigBase):
         commands = list()
 
         if self.state in self.ACTION_STATES:
-            existing_bfd_interfaces_facts, platform = (
-                self.get_bfd_interfaces_facts()
-            )
+            (
+                existing_bfd_interfaces_facts,
+                platform,
+            ) = self.get_bfd_interfaces_facts()
         else:
             existing_bfd_interfaces_facts, platform = [], ""
 
@@ -93,9 +94,10 @@ class Bfd_interfaces(ConfigBase):
             result["commands"] = commands
 
         if self.state in self.ACTION_STATES or self.state == "gathered":
-            changed_bfd_interfaces_facts, platform = (
-                self.get_bfd_interfaces_facts()
-            )
+            (
+                changed_bfd_interfaces_facts,
+                platform,
+            ) = self.get_bfd_interfaces_facts()
 
         elif self.state == "rendered":
             result["rendered"] = commands
@@ -122,7 +124,7 @@ class Bfd_interfaces(ConfigBase):
         return result
 
     def set_config(self, existing_bfd_interfaces_facts, platform):
-        """ Collect the configuration from the args passed to the module,
+        """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
         :rtype: A list
@@ -150,7 +152,7 @@ class Bfd_interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """ Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -183,7 +185,7 @@ class Bfd_interfaces(ConfigBase):
         return cmds
 
     def _state_replaced(self, want, have):
-        """ The command generator when state is replaced
+        """The command generator when state is replaced
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -210,7 +212,7 @@ class Bfd_interfaces(ConfigBase):
         return cmds
 
     def _state_overridden(self, want, have):
-        """ The command generator when state is overridden
+        """The command generator when state is overridden
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -236,7 +238,7 @@ class Bfd_interfaces(ConfigBase):
         return cmds
 
     def _state_merged(self, want, have):
-        """ The command generator when state is merged
+        """The command generator when state is merged
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -245,7 +247,7 @@ class Bfd_interfaces(ConfigBase):
         return self.set_commands(want, have)
 
     def _state_deleted(self, want, have):
-        """ The command generator when state is deleted
+        """The command generator when state is deleted
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration

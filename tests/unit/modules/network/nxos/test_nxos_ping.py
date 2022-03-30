@@ -34,7 +34,7 @@ ignore_provider_arg = True
 
 
 class TestNxosPingModule(TestNxosModule):
-    """ Class used for Unit Tests agains ios_ping module """
+    """Class used for Unit Tests agains ios_ping module"""
 
     module = nxos_ping
 
@@ -267,7 +267,7 @@ class TestNxosPingModule(TestNxosModule):
         self.assertEqual(result["msg"], "Wrong VRF name inserted.")
 
     def test_nxos_ping_failed_error(self):
-        """ Test for successful pings when destination should be reachable """
+        """Test for successful pings when destination should be reachable"""
         self.run_commands.return_value = [""""""]
         set_module_args(dict(dest="172.28.128.7", count=10, vrf="site-1"))
         result = self.execute_module(failed=True)

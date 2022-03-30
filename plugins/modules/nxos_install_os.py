@@ -415,7 +415,7 @@ def parse_show_version(data):
 
 def check_mode_legacy(module, issu, image, kick=None):
     """Some platforms/images/transports don't support the 'install all impact'
-        command so we need to use a different method."""
+    command so we need to use a different method."""
     current = execute_show_command(module, "show version", "json")[0]
     # Call parse_show_data on empty string to create the default upgrade
     # data structure dictionary

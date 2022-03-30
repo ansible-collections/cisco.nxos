@@ -28,8 +28,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class L2_interfacesFacts(object):
-    """The nxos l2_interfaces fact class
-    """
+    """The nxos l2_interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -46,7 +45,7 @@ class L2_interfacesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for l2_interfaces
+        """Populate the facts for l2_interfaces
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary

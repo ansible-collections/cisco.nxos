@@ -30,8 +30,7 @@ __metaclass__ = type
 
 
 class L2_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_l2_interfaces module
-    """
+    """The arg spec for the nxos_l2_interfaces module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

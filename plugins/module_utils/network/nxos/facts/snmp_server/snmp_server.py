@@ -27,8 +27,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.sn
 
 
 class Snmp_serverFacts(object):
-    """ The nxos snmp_server facts class
-    """
+    """The nxos snmp_server facts class"""
 
     def __init__(self, module):
         self._module = module
@@ -41,7 +40,7 @@ class Snmp_serverFacts(object):
         return connection.get("show running-config | section '^snmp-server'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Snmp_server network resource
+        """Populate the facts for Snmp_server network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

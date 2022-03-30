@@ -380,8 +380,7 @@ def search_obj_in_list(name, lst):
 
 
 def get_interfaces_dict(module):
-    """Gets all active interfaces on a given switch
-    """
+    """Gets all active interfaces on a given switch"""
     try:
         body = execute_show_command("show interface", module)[0]
     except IndexError:
@@ -408,8 +407,8 @@ def get_interfaces_dict(module):
 
 
 def get_vlan_interface_attributes(name, intf_type, module):
-    """ Returns dictionary that has two k/v pairs:
-        admin_state & description if not an svi, returns None
+    """Returns dictionary that has two k/v pairs:
+    admin_state & description if not an svi, returns None
     """
     command = "show run interface {0} all".format(name)
     try:
@@ -450,8 +449,7 @@ def get_admin_state(admin_state):
 
 
 def is_default_interface(name, module):
-    """Checks to see if interface exists and if it is a default config
-    """
+    """Checks to see if interface exists and if it is a default config"""
     command = "show run interface {0}".format(name)
 
     try:
@@ -905,8 +903,7 @@ def check_declarative_intent_params(module, want):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     neighbors_spec = dict(host=dict(), port=dict())
 
     element_spec = dict(

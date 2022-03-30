@@ -390,8 +390,7 @@ def map_params_to_obj(module):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     argument_spec = dict(
         http=dict(aliases=["enable_http"], type="bool", default=True),
         http_port=dict(type="int", default=80),

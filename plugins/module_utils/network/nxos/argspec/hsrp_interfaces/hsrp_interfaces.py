@@ -31,8 +31,7 @@ The arg spec for the nxos_hsrp_interfaces module
 
 
 class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_hsrp_interfaces module
-    """
+    """The arg spec for the nxos_hsrp_interfaces module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

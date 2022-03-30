@@ -28,8 +28,7 @@ The arg spec for the nxos_route_maps module
 
 
 class Route_mapsArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_route_maps module
-    """
+    """The arg spec for the nxos_route_maps module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

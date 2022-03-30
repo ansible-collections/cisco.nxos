@@ -29,8 +29,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ho
 
 
 class HostnameFacts(object):
-    """ The nxos hostname facts class
-    """
+    """The nxos hostname facts class"""
 
     def __init__(self, module):
         self._module = module
@@ -43,7 +42,7 @@ class HostnameFacts(object):
         return connection.get("show running-config | section ^hostname")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Hostname network resource
+        """Populate the facts for Hostname network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

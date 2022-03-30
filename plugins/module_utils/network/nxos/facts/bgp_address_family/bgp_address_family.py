@@ -29,8 +29,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bg
 
 
 class Bgp_address_familyFacts(object):
-    """ The nxos bgp_address_family facts class
-    """
+    """The nxos bgp_address_family facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -43,7 +42,7 @@ class Bgp_address_familyFacts(object):
         return connection.get("show running-config | section '^router bgp'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Bgp_address_family network resource
+        """Populate the facts for Bgp_address_family network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -115,7 +114,7 @@ class Bgp_address_familyFacts(object):
         return ansible_facts
 
     def _flatten_config(self, data):
-        """ Flatten contexts in the BGP
+        """Flatten contexts in the BGP
             running-config for easier parsing.
         :param obj: dict
         :returns: flattened running config
