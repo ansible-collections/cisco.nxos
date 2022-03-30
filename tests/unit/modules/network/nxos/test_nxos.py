@@ -22,7 +22,10 @@ __metaclass__ = type
 
 from os import path
 
-from mock import MagicMock
+try:
+    from unittest.mock import MagicMock
+except ImportError:
+    from mock import MagicMock
 
 from ansible_collections.cisco.nxos.tests.unit.compat import unittest
 from ansible_collections.cisco.nxos.plugins.cliconf import nxos
