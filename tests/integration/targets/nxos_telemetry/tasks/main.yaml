@@ -52,7 +52,7 @@
   cisco.nxos.nxos_file_copy:
     local_file: "{{ role_path }}/tests/common/fixtures/{{ item }}"
     file_system: 'bootflash:'
-    connect_ssh_port: '{{ ansible_ssh_port }}'
+    connect_ssh_port: '{{ ansible_ssh_port||default(22) }}'
   loop:
      - server.crt
      - new_server.crt
