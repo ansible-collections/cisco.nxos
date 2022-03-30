@@ -60,7 +60,7 @@ class Ntp_global(ResourceModule):
         ]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -71,8 +71,8 @@ class Ntp_global(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         wantd = self._ntp_list_to_dict(self.want)
         haved = self._ntp_list_to_dict(self.have)
@@ -89,9 +89,9 @@ class Ntp_global(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Ntp_global network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Ntp_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists(want=want, have=have)

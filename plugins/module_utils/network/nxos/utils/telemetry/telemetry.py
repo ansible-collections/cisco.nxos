@@ -127,7 +127,7 @@ def cr_key_lookup(key, mo):
 
 
 def normalize_data(cmd_ref):
-    """ Normalize playbook values and get_existing data """
+    """Normalize playbook values and get_existing data"""
 
     playval = cmd_ref._ref.get("destination").get("playval")
     existing = cmd_ref._ref.get("destination").get("existing")
@@ -144,7 +144,7 @@ def normalize_data(cmd_ref):
 
 
 def remove_duplicate_context(cmds):
-    """ Helper method to remove duplicate telemetry context commands """
+    """Helper method to remove duplicate telemetry context commands"""
     if not cmds:
         return cmds
     feature_indices = [
@@ -166,15 +166,15 @@ def remove_duplicate_context(cmds):
 
 
 def get_setval_path(module_or_path_data):
-    """ Build setval for path parameter based on playbook inputs
-        Full Command:
-          - path {name} depth {depth} query-condition {query_condition} filter-condition {filter_condition}
-        Required:
-          - path {name}
-        Optional:
-          - depth {depth}
-          - query-condition {query_condition},
-          - filter-condition {filter_condition}
+    """Build setval for path parameter based on playbook inputs
+    Full Command:
+      - path {name} depth {depth} query-condition {query_condition} filter-condition {filter_condition}
+    Required:
+      - path {name}
+    Optional:
+      - depth {depth}
+      - query-condition {query_condition},
+      - filter-condition {filter_condition}
     """
     if isinstance(module_or_path_data, dict):
         path = module_or_path_data

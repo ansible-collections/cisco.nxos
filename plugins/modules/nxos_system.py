@@ -359,8 +359,7 @@ def map_params_to_obj(module):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     argument_spec = dict(
         hostname=dict(),
         domain_lookup=dict(type="bool"),

@@ -1258,7 +1258,7 @@ class TestNxosOspfv3Module(TestNxosModule):
         self.assertEqual(set(result["commands"]), set(commands))
 
     def test_nxos_ospfv3_log_adjacency_changes_name_lookup_passive_interface_merged(
-        self
+        self,
     ):
         # test merged for config->processes->log_adjacency_changes, name_lookup, passive_interface
         self.get_config.return_value = dedent(
@@ -1299,7 +1299,7 @@ class TestNxosOspfv3Module(TestNxosModule):
         self.assertEqual(set(result["commands"]), set(commands))
 
     def test_nxos_ospfv3_log_adjacency_changes_name_lookup_passive_interface_replaced(
-        self
+        self,
     ):
         # test replaced for config->processes->log_adjacency_changes, name_lookup, passive_interface
         self.get_config.return_value = dedent(

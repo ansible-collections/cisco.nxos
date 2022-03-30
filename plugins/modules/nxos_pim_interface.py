@@ -476,8 +476,10 @@ def default_pim_interface_policies(existing, jp_bidir):
             if k == "jp_policy_in":
                 if existing.get("jp_policy_in"):
                     if existing.get("jp_type_in") == "prefix":
-                        command = "no ip pim jp-policy prefix-list {0} in".format(
-                            existing.get("jp_policy_in")
+                        command = (
+                            "no ip pim jp-policy prefix-list {0} in".format(
+                                existing.get("jp_policy_in")
+                            )
                         )
                     else:
                         command = "no ip pim jp-policy {0} in".format(
@@ -486,8 +488,10 @@ def default_pim_interface_policies(existing, jp_bidir):
             elif k == "jp_policy_out":
                 if existing.get("jp_policy_out"):
                     if existing.get("jp_type_out") == "prefix":
-                        command = "no ip pim jp-policy prefix-list {0} out".format(
-                            existing.get("jp_policy_out")
+                        command = (
+                            "no ip pim jp-policy prefix-list {0} out".format(
+                                existing.get("jp_policy_out")
+                            )
                         )
                     else:
                         command = "no ip pim jp-policy {0} out".format(

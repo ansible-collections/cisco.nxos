@@ -30,8 +30,7 @@ __metaclass__ = type
 
 
 class AclsArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_acls module
-    """
+    """The arg spec for the nxos_acls module"""
 
     argument_spec = {
         "config": {

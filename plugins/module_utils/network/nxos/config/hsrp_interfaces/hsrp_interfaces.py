@@ -46,7 +46,7 @@ class Hsrp_interfaces(ConfigBase):
         super(Hsrp_interfaces, self).__init__(module)
 
     def get_hsrp_interfaces_facts(self, data=None):
-        """ Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -63,7 +63,7 @@ class Hsrp_interfaces(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -116,7 +116,7 @@ class Hsrp_interfaces(ConfigBase):
         return result
 
     def set_config(self, existing_hsrp_interfaces_facts):
-        """ Collect the configuration from the args passed to the module,
+        """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
         :rtype: A list
@@ -134,7 +134,7 @@ class Hsrp_interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """ Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -168,7 +168,7 @@ class Hsrp_interfaces(ConfigBase):
         return cmds
 
     def _state_replaced(self, want, have):
-        """ The command generator when state is replaced
+        """The command generator when state is replaced
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -195,7 +195,7 @@ class Hsrp_interfaces(ConfigBase):
         return cmds
 
     def _state_overridden(self, want, have):
-        """ The command generator when state is overridden
+        """The command generator when state is overridden
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -219,7 +219,7 @@ class Hsrp_interfaces(ConfigBase):
         return cmds
 
     def _state_merged(self, want, have):
-        """ The command generator when state is merged
+        """The command generator when state is merged
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -228,7 +228,7 @@ class Hsrp_interfaces(ConfigBase):
         return self.set_commands(want, have)
 
     def _state_deleted(self, want, have):
-        """ The command generator when state is deleted
+        """The command generator when state is deleted
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration

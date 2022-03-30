@@ -31,8 +31,7 @@ __metaclass__ = type
 
 
 class TelemetryArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_telemetry module
-    """
+    """The arg spec for the nxos_telemetry module"""
 
     argument_spec = {
         "config": {

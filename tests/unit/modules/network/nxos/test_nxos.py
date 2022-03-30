@@ -30,8 +30,7 @@ from ansible.module_utils._text import to_bytes, to_text
 
 
 class TestPluginCLIConfNXOS(unittest.TestCase):
-    """ Test class for NXOS CLI Conf Methods
-    """
+    """Test class for NXOS CLI Conf Methods"""
 
     def setUp(self):
         self._mock_connection = MagicMock()
@@ -75,8 +74,7 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
         pass
 
     def test_get_device_info_nxos(self):
-        """ Test get_device_info for nxos
-        """
+        """Test get_device_info for nxos"""
         device_info = self._cliconf.get_device_info()
 
         mock_device_info = {
@@ -91,8 +89,7 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
         self.assertEqual(device_info, mock_device_info)
 
     def test_get_device_info_mds(self):
-        """ Test get_device_info for mds
-        """
+        """Test get_device_info for mds"""
         self._prepare(platform="mds")
         device_info = self._cliconf.get_device_info()
         mock_device_info = {
@@ -107,8 +104,7 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
         self.assertEqual(device_info, mock_device_info)
 
     def test_get_command_with_output_nxos(self):
-        """ Test _get_command_with_output for nxos
-        """
+        """Test _get_command_with_output for nxos"""
         self._prepare()
         cmd = self._cliconf._get_command_with_output(
             command="show version", output="json"
@@ -117,8 +113,7 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
         self.assertEqual(cmd, "show version | json")
 
     def test_get_command_with_output_mds(self):
-        """ Test _get_command_with_output for mds
-        """
+        """Test _get_command_with_output for mds"""
         self._prepare(platform="mds")
         cmd = self._cliconf._get_command_with_output(
             command="show version", output="json"

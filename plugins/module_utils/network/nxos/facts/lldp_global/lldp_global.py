@@ -25,8 +25,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ll
 
 
 class Lldp_globalFacts(object):
-    """ The nxos lldp_global fact class
-    """
+    """The nxos lldp_global fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -43,7 +42,7 @@ class Lldp_globalFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for lldp_global
+        """Populate the facts for lldp_global
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

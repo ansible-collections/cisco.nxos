@@ -435,7 +435,7 @@ def map_obj_to_commands(module, updates):
 
 
 def match_facility_default(module, facility, want_level):
-    """ Check wanted facility to see if it matches current device default """
+    """Check wanted facility to see if it matches current device default"""
 
     matches_default = False
     # Sample output from show logging level command
@@ -900,8 +900,7 @@ def outliers(haves, wants):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     argument_spec = dict(
         dest=dict(choices=DEST_GROUP),
         name=dict(),

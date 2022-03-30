@@ -313,7 +313,7 @@ class Cliconf(CliconfBase):
                     out = to_text(out, errors="surrogate_or_strict").strip()
                 except UnicodeError:
                     raise ConnectionError(
-                        message=u"Failed to decode output from %s: %s"
+                        message="Failed to decode output from %s: %s"
                         % (cmd, to_text(out))
                     )
 
@@ -365,9 +365,8 @@ class Cliconf(CliconfBase):
             out = self._connection.get_prompt()
             if out is None:
                 raise AnsibleConnectionFailure(
-                    message=u"cli prompt is not identified from the last received"
-                    u" response window: %s"
-                    % self._connection._last_recv_window
+                    message="cli prompt is not identified from the last received"
+                    " response window: %s" % self._connection._last_recv_window
                 )
             # Match prompts ending in )# except those with (maint-mode)#
             config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")

@@ -31,8 +31,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vl
 
 
 class VlansFacts(object):
-    """ The nxos vlans fact class
-    """
+    """The nxos vlans fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -55,7 +54,7 @@ class VlansFacts(object):
         return connection.get(show_cmd)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for vlans
+        """Populate the facts for vlans
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
