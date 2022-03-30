@@ -48,9 +48,10 @@ options:
         type: list
         elements: dict
         suboptions:
-          community:
+          name:
             description: SNMP community string (Max Size 32).
             type: str
+            aliases: ["community"]
           group:
             description: Group to which the community belongs.
             type: str
