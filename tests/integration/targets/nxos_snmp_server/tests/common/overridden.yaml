@@ -13,9 +13,9 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-            - community: public
+            - name: public
               group: network-operator
-            - community: secret
+            - name: secret
               group: network-operator
           contact: nxosswitchadmin2@localhost
           location: serverroom-2

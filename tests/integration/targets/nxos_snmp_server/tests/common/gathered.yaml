@@ -7,6 +7,9 @@
 - include_tasks: _populate_config.yaml
 
 - block:
+    - debug:
+        var: merged['after']
+
     - name: Gather snmp-server facts using gathered
       register: result
       cisco.nxos.nxos_snmp_server:
