@@ -43,12 +43,6 @@ merged:
       - community: public
         group: network-operator
     contact: nxosswitchadmin@localhost
-    location: serverroom-1
-    traps:
-      aaa:
-        server_state_change: True
-      system:
-        clock_change_notification: True
     hosts:
       - host: 192.0.2.1
         traps: true
@@ -62,6 +56,12 @@ merged:
         informs: true
         version: "3"
         auth: NMS
+    location: serverroom-1
+    traps:
+      aaa:
+        server_state_change: True
+      system:
+        clock_change_notification: True
     users:
       auth:
         - user: admin
@@ -72,6 +72,15 @@ merged:
             localized_key: True
             priv:
               privacy_password: "{{ admin_snmp_passwd }}"
+
+        - user: admin
+          authentication:
+            algorithm: md5
+            engine_id: "{{ admin_snmp_engineid_2 }}"
+            localized_key: true
+            password: "{{ admin_snmp_passwd_2 }}"
+            priv:
+              privacy_password: "{{ admin_snmp_passwd_2 }}"
 
         - user: snmp_user_1
           group: network-operator
@@ -151,6 +160,15 @@ replaced:
             localized_key: True
             priv:
               privacy_password: "{{ admin_snmp_passwd }}"
+
+        - user: admin
+          authentication:
+            algorithm: md5
+            engine_id: "{{ admin_snmp_engineid_2 }}"
+            localized_key: true
+            password: "{{ admin_snmp_passwd_2 }}"
+            priv:
+              privacy_password: "{{ admin_snmp_passwd_2 }}"
 
         - user: snmp_user_1
           group: network-operator
