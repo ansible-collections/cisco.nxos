@@ -44,6 +44,15 @@
                   priv:
                     privacy_password: "{{ admin_snmp_passwd }}"
 
+              - user: admin
+                authentication:
+                  algorithm: md5
+                  engine_id: "{{ admin_snmp_engineid_2 }}"
+                  localized_key: true
+                  password: "{{ admin_snmp_passwd_2 }}"
+                  priv:
+                    privacy_password: "{{ admin_snmp_passwd_2 }}"
+
               - user: zuul
                 group: network-admin
                 authentication:
