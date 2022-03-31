@@ -23,15 +23,15 @@
               key_id: 1
               maxpoll: 15
               minpoll: 5
-              use_vrf: default
+              vrf: default
             - peer: 192.0.2.5
               key_id: 2
               prefer: True
-              use_vrf: siteA
+              vrf: siteA
           servers:
             - server: 198.51.100.1
               key_id: 2
-              use_vrf: default
+              vrf: default
         state: replaced
       register: result
 
