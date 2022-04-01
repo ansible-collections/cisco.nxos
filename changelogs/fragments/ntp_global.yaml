@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_ntp_global` - Aliased `vrf` to `use_vrf` wherever applicable to maintain consistency with models for other platforms."

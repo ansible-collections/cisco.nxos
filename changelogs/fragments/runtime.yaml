@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Fix action plugin redirection to make module defaults work properly.
