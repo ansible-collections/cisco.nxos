@@ -840,6 +840,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     snmp-server location lab
                     snmp-server mib community-map public context public1
                     snmp-server source-interface traps Ethernet1/2
+                    snmp-server user 1234 network-admin auth md5 0x7d425fbf09417c44bca69e1d9e9ce889 priv 0x7d425fbf09417c44bca69e1d9e9ce889 localizedkey
+                    snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
                     """
                 ),
                 state="parsed",
@@ -868,6 +870,31 @@ class TestNxosSnmpServerModule(TestNxosModule):
             source_interface=dict(informs="Ethernet1/1", traps="Ethernet1/2"),
             system_shutdown=True,
             tcp_session=dict(auth=True),
+            users=dict(
+                auth=[
+                    dict(
+                        user="1234",
+                        group="network-admin",
+                        authentication=dict(
+                            algorithm="md5",
+                            password="0x7d425fbf09417c44bca69e1d9e9ce889",
+                            localized_key=True,
+                            priv=dict(
+                                privacy_password="0x7d425fbf09417c44bca69e1d9e9ce889"
+                            ),
+                        ),
+                    ),
+                    dict(
+                        user="snmp_user_1",
+                        group="network-operator",
+                        authentication=dict(
+                            algorithm="md5",
+                            password="0x5632724fb8ac3699296af26281e1d0f1",
+                            localized_key=True,
+                        ),
+                    ),
+                ]
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
