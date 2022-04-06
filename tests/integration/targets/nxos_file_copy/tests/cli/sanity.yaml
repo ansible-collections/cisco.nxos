@@ -51,7 +51,7 @@
       cisco.nxos.nxos_file_copy: &id001
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
         file_system: 'bootflash:'
-        connect_ssh_port: '{{ ansible_ssh_port }}'
+        connect_ssh_port: '{{ ansible_port }}'
 
     - assert:
         that:
@@ -82,7 +82,7 @@
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
         remote_file: '{{ test_destination_file }}'
         file_system: 'bootflash:'
-        connect_ssh_port: '{{ ansible_ssh_port }}'
+        connect_ssh_port: '{{ ansible_port }}'
 
     - assert:
         that:
@@ -111,7 +111,7 @@
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
         remote_file: '{{ test_destination_file }}'
         file_system: 'bootflash:'
-        connect_ssh_port: '{{ ansible_ssh_port }}'
+        connect_ssh_port: '{{ ansible_port }}'
 
     - assert: *id004
 
@@ -127,7 +127,7 @@
         remote_scp_server: '{{ mgmt0_ip }}'
         remote_scp_server_user: temp_user
         remote_scp_server_password: "{{ temp_passwd }}"
-        connect_ssh_port: '{{ ansible_ssh_port }}'
+        connect_ssh_port: '{{ ansible_port }}'
 
     - assert: &id006
         that:
@@ -163,7 +163,7 @@
         remote_scp_server: '{{ mgmt0_ip }}'
         remote_scp_server_user: admin
         remote_scp_server_password: "{% if ansible_user == 'admin' %}{{ ansible_password }}{% else %}{{ temp_passwd }}{% endif %}"
-        connect_ssh_port: '{{ ansible_ssh_port }}'
+        connect_ssh_port: '{{ ansible_port }}'
 
     - assert:
         that:
