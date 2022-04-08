@@ -30,7 +30,7 @@ class ModuleDocFragment(object):
         type: str
       port:
         description:
-        - Specifies the port to use when building the connection to the remote device.  This
+        - Specifies the port to use when building the Connection to the remote device.  This
           value applies to either I(cli) or I(nxapi).  The port value will default
           to the appropriate transport common port if none is provided in the task.  (cli=22,
           http=80, https=443).
