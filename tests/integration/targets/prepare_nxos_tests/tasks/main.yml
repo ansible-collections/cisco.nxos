@@ -146,4 +146,4 @@
     - set_fact:
         ipv6_supported: 'false'
       when: platform is match("N35")
-  when: prepare_nxos_tests_task | default(True) | bool
+  when: prepare_nxos_tests_task | default(False) | bool
