@@ -1,4 +1,27 @@
 ---
+- name: Set inventory vars here temporarily
+  set_fact:
+    chassis_type: "C9300v"
+    cli:
+      transport: 'cli'
+      authorize: true
+    fretta: ""
+    imagemr: "6"
+    imagetag: "9.3"
+    image_version: "9.3(6)"
+    ipv6_supported: true
+    major_version: "9.0"
+    nxapi:
+      port: '80'
+      transport: 'nxapi'
+      use_ssl: false
+    nxos_int1: "Ethernet1/1"
+    nxos_int2: "Ethernet1/2"
+    nxos_int3: "Ethernet1/3"
+    platform: "N9K"
+    prepare_nxos_tests_task: false
+    titanium: False
+
 - block:
 
     - name: Enable Feature Privilege
