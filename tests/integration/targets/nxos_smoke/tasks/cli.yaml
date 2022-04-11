@@ -20,6 +20,11 @@
 - name: set test_items
   set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
 
+- set_fact:
+    cli:
+      transport: cli
+      authorize: true
+
 - name: run test cases (connection=network_cli)
   include: "{{ test_case_to_run }} ansible_connection=network_cli connection={{ cli }}"
   with_items: "{{ test_items }}"
