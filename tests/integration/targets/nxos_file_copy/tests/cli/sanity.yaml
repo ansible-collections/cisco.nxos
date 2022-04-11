@@ -154,13 +154,13 @@
       cisco.nxos.nxos_file_copy:
         file_pull: true
         file_pull_protocol: sftp
-        file_pull_timeout: 30
+        file_pull_timeout: 60
         remote_file: "{{ sftp_root_dir }}/{{ test_destination_file }}"
         local_file: '{{ test_destination_file }}_another_copy'
         local_file_directory: dir1/dir2/dir3
         remote_scp_server: '{{ mgmt0_ip }}'
-        remote_scp_server_user: admin
-        remote_scp_server_password: "{% if ansible_user == 'admin' %}{{ ansible_password }}{% else %}{{ temp_passwd }}{% endif %}"
+        remote_scp_server_user: temp_user
+        remote_scp_server_password: "{{ temp_passwd }}"
         connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
     - assert:
