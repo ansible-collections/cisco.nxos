@@ -45,7 +45,7 @@ class TerminalModule(TerminalBase):
         re.compile(rb"invalid input", re.I),
         re.compile(rb"(?:incomplete|ambiguous) command", re.I),
         re.compile(rb"connection timed out", re.I),
-        re.compile(rb"[^\r\n]+ not found", re.I),
+        re.compile(rb"[^\r\n] not found", re.I),
         re.compile(rb"'[^']' +returned error code: ?\d+"),
         re.compile(rb"syntax error"),
         re.compile(rb"unknown command"),
