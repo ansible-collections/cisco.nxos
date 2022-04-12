@@ -155,7 +155,7 @@
         file_pull: true
         file_pull_protocol: sftp
         file_pull_timeout: 60
-        remote_file: "{{ sftp_root_dir }}/{{ test_destination_file }}"
+        remote_file: "/bootflash/{{ test_destination_file }}"
         local_file: '{{ test_destination_file }}_another_copy'
         local_file_directory: dir1/dir2/dir3
         remote_scp_server: '{{ mgmt0_ip }}'
@@ -169,7 +169,7 @@
           - "'copy sftp:' in result.copy_cmd"
           - "'bootflash:' in result.file_system"
           - "'bootflash:dir1/dir2/dir3/{{ test_destination_file }}_another_copy' in result.local_file"
-          - "'{{ sftp_root_dir }}/{{ test_destination_file }}' in result.remote_file"
+          - "'/bootflash/{{ test_destination_file }}' in result.remote_file"
 
           - "'Received: File copied/pulled to nxos device from remote scp server.'\
             \ in result.transfer_status"
