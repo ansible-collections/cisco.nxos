@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_snmp_server` - Properly handle corner cases for snmp-server user (https://github.com/ansible-collections/cisco.nxos/issues/454)."
