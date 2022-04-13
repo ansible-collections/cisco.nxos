@@ -20,8 +20,7 @@
 
 - assert:
     that:
-      - result is search("argument file_pull_timeout is of type <class 'ansible.parsing.yaml.objects.AnsibleUnicode'>
-        and we were unable to convert to int")
+      - result is search("argument 'file_pull_timeout' is of type <class 'str'> and we were unable to convert to int")
 
 - name: Input Validation - param should be type <bool>
   register: result
@@ -31,8 +30,7 @@
 
 - assert:
     that:
-      - result is search("argument file_pull is of type <class 'ansible.parsing.yaml.objects.AnsibleUnicode'>
-        and we were unable to convert to bool")
+      - result is search("argument 'file_pull' is of type <class 'str'> and we were unable to convert to bool")
 
 - name: Input Validation - param <file_pull> <remote_file> dependency
   register: result
@@ -42,8 +40,7 @@
 
 - assert:
     that:
-      - result is search("Playbook parameter <remote_file> required when <file_pull>
-        is True")
+      - result is search("file_pull is True but all of the following are missing: remote_file, remote_scp_server")
 
 - name: Input Validation - param <file_pull> <remote_scp_server> dependency
   register: result
@@ -54,8 +51,7 @@
 
 - assert:
     that:
-      - result is search('Playbook parameter <remote_scp_server> required when <file_pull>
-        is True')
+      - result is search("file_pull is True but all of the following are missing: remote_file, remote_scp_server")
 
 - name: Input Validation - remote_scp_server params together
   register: result
@@ -65,8 +61,7 @@
 
 - assert:
     that:
-      - result is search('Playbook parameters <remote_scp_server>, <remote_scp_server_user>
-        must be set together')
+      - result is search('parameters are required together: remote_scp_server, remote_scp_server_user')
 
 - name: Input Validation - param <file_pull_protocol> should only accept strings, which are included in choices
   register: result
@@ -80,7 +75,6 @@
 
 - assert:
     that:
-      - result is search("argument file_pull_protocol with value foobar is not valid.
-        Allowed values are scp, sftp, http, https, tftp, ftp")
+      - result is search("'value of file_pull_protocol must be one of:' scp, sftp, http, https, tftp, ftp, got: foobar")
 
 - debug: msg="END nxos_file_copy input_validation test"

@@ -49,15 +49,12 @@
 - assert:
     that:
       - result.changed == false
-      - "'copy scp:' in result.copy_cmd"
-      - "'bootflash:' in result.file_system"
-      - "'No Transfer' in result.transfer_status"
+      - result.failed == True
+      - "'Could not resolve hostname' in result.module_stderr"
 
-- assert:
-    that:
-      - result.error_data is search("ERROR Could not resolve hostname|Copying to.*from
-        this server name is not permitted")
-
+# file_pull_timeout > 30s has no effect in this case, since the device
+# shell gives up connecting to the bad IP after 30s and the response
+# on the shell triggers a standard error regex.
 - name: Try and copy file using an invalid remote scp server ip address
   register: result
   ignore_errors: true
@@ -75,10 +72,7 @@
 - assert:
     that:
       - result.changed == false
-      - "'copy scp:' in result.copy_cmd"
-      - "'timed out' in result.error_data"
-      - "'bootflash:' in result.file_system"
-      - "'No Transfer' in result.transfer_status"
+      - result.failed == True
 
 - pause:
     seconds: 10
@@ -100,10 +94,8 @@
 - assert:
     that:
       - result.changed == false
-      - "'copy scp:' in result.copy_cmd"
-      - "'Too many authentication failures' in result.error_data"
-      - "'bootflash:' in result.file_system"
-      - "'No Transfer' in result.transfer_status"
+      - result.failed == True
+      - "'Too many authentication failures' in result.module_stderr"
 
 - name: Try and copy file using an invalid password
   register: result
@@ -122,9 +114,7 @@
 - assert:
     that:
       - result.changed == false
-      - "'copy scp:' in result.copy_cmd"
-      - "'Too many authentication failures' in result.error_data"
-      - "'bootflash:' in result.file_system"
-      - "'No Transfer' in result.transfer_status"
+      - result.failed == True
+      - "'Too many authentication failures' in result.module_stderr"
 
 - debug: msg="END nxos_file_copy negative test"

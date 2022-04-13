@@ -57,7 +57,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
 )
-from ansible.plugins.cliconf import CliconfBase, enable_mode
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base import (
+    CliconfBase,
+    enable_mode,
+)
 
 
 class Cliconf(CliconfBase):
@@ -355,6 +358,72 @@ class Cliconf(CliconfBase):
         result.update(self.get_option_values())
 
         return json.dumps(result)
+
+    def pull_file(self, command, remotepassword=None):
+        possible_errors_re = [
+            re.compile(rb"timed out"),
+            re.compile(rb"(?i)No space.*#"),
+            re.compile(rb"(?i)Permission denied.*#"),
+            re.compile(rb"(?i)No such file.*#"),
+            re.compile(rb"Compaction is not supported on this platform.*#"),
+            re.compile(rb"Compact of.*failed.*#"),
+            re.compile(rb"(?i)Could not resolve hostname"),
+            re.compile(rb"(?i)Too many authentication failures"),
+            re.compile(rb"Access Denied"),
+            re.compile(
+                rb"(?i)Copying to\/from this server name is not permitted"
+            ),
+        ]
+
+        # set error regex for copy command
+        current_stderr_re = self._connection._get_terminal_std_re(
+            "terminal_stderr_re"
+        )
+        current_stderr_re.extend(possible_errors_re)
+
+        # do not change the ordering of this list
+        possible_prompts_re = [
+            re.compile(rb"file existing with this name"),
+            re.compile(rb"sure you want to continue connecting"),
+            re.compile(rb"(?i)Password:.*"),
+        ]
+
+        # set stdout regex for copy command to handle optional user prompts
+        # based on different match conditions
+        current_stdout_re = self._connection._get_terminal_std_re(
+            "terminal_stdout_re"
+        )
+        current_stdout_re.extend(possible_prompts_re)
+
+        retry = 1
+        file_pulled = False
+
+        try:
+            while not file_pulled and retry <= 6:
+                retry += 1
+                output = self.send_command(command=command, strip_prompt=False)
+
+                if possible_prompts_re[0].search(to_bytes(output)):
+                    output = self.send_command(command="y", strip_prompt=False)
+
+                if possible_prompts_re[1].search(to_bytes(output)):
+                    output = self.send_command(
+                        command="yes", strip_prompt=False
+                    )
+
+                if possible_prompts_re[2].search(to_bytes(output)):
+                    output = self.send_command(
+                        command=remotepassword, strip_prompt=False
+                    )
+                if "Copy complete" in output:
+                    file_pulled = True
+            return file_pulled
+        finally:
+            # always reset terminal regexes to default
+            for x in possible_prompts_re:
+                current_stdout_re.remove(x)
+            for x in possible_errors_re:
+                current_stderr_re.remove(x)
 
     def set_cli_prompt_context(self):
         """
