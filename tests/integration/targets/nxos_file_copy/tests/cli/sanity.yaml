@@ -1,7 +1,7 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_file_copy sanity test"
 
-- set_fact: 
+- set_fact:
     test_source_file: "data.cfg"
     test_destination_file: "test_destination_file"
 
@@ -51,7 +51,7 @@
       cisco.nxos.nxos_file_copy: &id001
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
         file_system: 'bootflash:'
-        connect_ssh_port: '{{ ansible_ssh_port }}'
+        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
     - assert:
         that:
@@ -82,7 +82,7 @@
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
         remote_file: '{{ test_destination_file }}'
         file_system: 'bootflash:'
-        connect_ssh_port: '{{ ansible_ssh_port }}'
+        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
     - assert:
         that:
@@ -112,7 +112,7 @@
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
         remote_file: '{{ test_destination_file }}'
         file_system: 'bootflash:'
-        connect_ssh_port: '{{ ansible_ssh_port }}'
+        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
     - assert: *id004
 
@@ -128,8 +128,8 @@
         remote_scp_server: '{{ mgmt0_ip }}'
         remote_scp_server_user: temp_user
         remote_scp_server_password: "{{ temp_passwd }}"
-        connect_ssh_port: '{{ ansible_ssh_port }}'
-        
+        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
+
     - assert: &id006
         that:
           - result.changed == true
@@ -154,14 +154,14 @@
       cisco.nxos.nxos_file_copy:
         file_pull: true
         file_pull_protocol: sftp
-        file_pull_timeout: 30
-        remote_file: "{{ sftp_root_dir }}/{{ test_destination_file }}"
+        file_pull_timeout: 60
+        remote_file: "/bootflash/{{ test_destination_file }}"
         local_file: '{{ test_destination_file }}_another_copy'
         local_file_directory: dir1/dir2/dir3
         remote_scp_server: '{{ mgmt0_ip }}'
-        remote_scp_server_user: admin
-        remote_scp_server_password: "{% if ansible_user == 'admin' %}{{ ansible_password }}{% else %}{{ temp_passwd }}{% endif %}"
-        connect_ssh_port: '{{ ansible_ssh_port }}'
+        remote_scp_server_user: temp_user
+        remote_scp_server_password: "{{ temp_passwd }}"
+        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
     - assert:
         that:
@@ -169,12 +169,12 @@
           - "'copy sftp:' in result.copy_cmd"
           - "'bootflash:' in result.file_system"
           - "'bootflash:dir1/dir2/dir3/{{ test_destination_file }}_another_copy' in result.local_file"
-          - "'{{ sftp_root_dir }}/{{ test_destination_file }}' in result.remote_file"
+          - "'/bootflash/{{ test_destination_file }}' in result.remote_file"
 
           - "'Received: File copied/pulled to nxos device from remote scp server.'\
             \ in result.transfer_status"
           - "'{{ mgmt0_ip }}' in result.remote_scp_server"
-  
+
   always:
     - name: Remove file
       ignore_errors: true

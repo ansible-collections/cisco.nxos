@@ -69,7 +69,7 @@
   cisco.nxos.nxos_interface:
     name: "{{ testint2 }}"
     admin_state: down
-    tx_rate: gt(0)
+    tx_rate: lt(0)
     rx_rate: lt(0)
     provider: "{{ connection }}"
   ignore_errors: yes
@@ -78,7 +78,7 @@
 - assert:
     that:
       - "result.failed == true"
-      - "'tx_rate gt(0)' in result.failed_conditions"
+      - "'tx_rate lt(0)' in result.failed_conditions"
       - "'rx_rate lt(0)' in result.failed_conditions"
 
 - name: aggregate definition of interface

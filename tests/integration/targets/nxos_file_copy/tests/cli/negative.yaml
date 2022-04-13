@@ -1,7 +1,7 @@
 ---
 - debug: msg="START nxos_file_copy negative test"
 
-- set_fact: 
+- set_fact:
     test_source_file: "data.cfg"
     test_destination_file: "test_destination_file"
 
@@ -12,7 +12,7 @@
     file_pull: false
     local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
     file_system: 'invalid_media_type:'
-    connect_ssh_port: '{{ ansible_ssh_port }}'
+    connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
 - assert:
     that:
@@ -25,7 +25,7 @@
     file_pull: false
     local_file: ./{{ test_source_file }}_does_not_exist
     file_system: 'bootflash:'
-    connect_ssh_port: '{{ ansible_ssh_port }}'
+    connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
 - assert:
     that:
@@ -44,7 +44,7 @@
     remote_scp_server: scp_server_gone.example.com
     remote_scp_server_user: '{{ ansible_ssh_user }}'
     remote_scp_server_password: '{{ temp_passwd }}'
-    connect_ssh_port: '{{ ansible_ssh_port }}'
+    connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
 - assert:
     that:
@@ -70,7 +70,7 @@
     remote_scp_server: 192.168.55.55
     remote_scp_server_user: '{{ ansible_ssh_user }}'
     remote_scp_server_password: '{{ temp_passwd }}'
-    connect_ssh_port: '{{ ansible_ssh_port }}'
+    connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
 - assert:
     that:
@@ -95,7 +95,7 @@
     remote_scp_server: '{{ mgmt0_ip }}'
     remote_scp_server_user: invalid_user_name
     remote_scp_server_password: '{{ temp_passwd }}'
-    connect_ssh_port: '{{ ansible_ssh_port }}'
+    connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
 - assert:
     that:
@@ -117,7 +117,7 @@
     remote_scp_server: '{{ mgmt0_ip }}'
     remote_scp_server_user: '{{ ansible_ssh_user }}'
     remote_scp_server_password: invalid_password
-    connect_ssh_port: '{{ ansible_ssh_port }}'
+    connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
 
 - assert:
     that:
