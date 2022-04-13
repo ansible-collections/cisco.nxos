@@ -8,9 +8,9 @@
       aaa_user:
         cache_timeout: 36000
       communities:
-        - community: public
+        - name: public
           group: network-operator
-        - community: private
+        - name: private
           group: network-admin
       contact: nxosswitchadmin@localhost
       location: serverroom-1
