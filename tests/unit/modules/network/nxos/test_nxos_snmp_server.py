@@ -294,6 +294,31 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+    def test_nxos_snmp_server_location_spaces(self):
+        # test replaced for linear attributes
+        self.get_config.return_value = dedent(
+            """\
+            snmp-server contact testswitch@localhost
+            snmp-server location lab
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    contact="test-switch @t localhost",
+                    location="long/and.(complicated) address",
+                ),
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server contact test-switch @t localhost",
+            "snmp-server location long/and.(complicated) address",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
     def test_nxos_snmp_server_traps_merged(self):
         # test merged for traps
         self.get_config.return_value = dedent(
