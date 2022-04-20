@@ -8,15 +8,17 @@
 - assert:
     that:
       - result.changed == false
-      - "'hardware' in result.ansible_facts.ansible_net_gather_subset"
       - "'default' in result.ansible_facts.ansible_net_gather_subset"
-      - "'interfaces' in result.ansible_facts.ansible_net_gather_subset"
-      - result.ansible_facts.ansible_net_filesystems is defined
       - "'config' not in result.ansible_facts.ansible_net_gather_subset"
-      - result.ansible_facts.ansible_net_filesystems is defined
-      - result.ansible_facts.ansible_net_memtotal_mb > 10
+      - result.ansible_facts.ansible_net_hostname is defined
+      - result.ansible_facts.ansible_net_image is defined
+      - result.ansible_facts.ansible_net_license_hostid is defined
       - result.ansible_facts.ansible_net_model is defined
-      - result.ansible_facts.ansible_net_interfaces is defined
-      - result.ansible_facts.ansible_net_config is not defined
+      - result.ansible_facts.ansible_net_platform is defined
+      - result.ansible_facts.ansible_net_python_version is defined
+      - result.ansible_facts.ansible_net_serialnum is defined
+      - result.ansible_facts.ansible_net_system is defined
+      - result.ansible_facts.ansible_net_version is defined
+      - result.ansible_facts.ansible_network_resources == {}
 
 - debug: msg="END cli/default.yaml"
