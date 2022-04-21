@@ -79,10 +79,10 @@ Parameters
                     </div>
                 </td>
                 <td>
-                        <b>Default:</b><br/><div style="color: blue">"!config"</div>
+                        <b>Default:</b><br/><div style="color: blue">"min"</div>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset.  Possible values for this argument include <code>all</code>, <code>hardware</code>, <code>config</code>, <code>legacy</code>, and <code>interfaces</code>.  Can specify a list of values to include a larger subset.  Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
+                        <div>When supplied, this argument will restrict the facts collected to a given subset.  Possible values for this argument include <code>all</code>, <code>hardware</code>, <code>config</code>, <code>legacy</code>, <code>interfaces</code>, and <code>min</code>.  Can specify a list of values to include a larger subset.  Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
                 </td>
             </tr>
             <tr>

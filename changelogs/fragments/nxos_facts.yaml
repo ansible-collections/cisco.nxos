@@ -1,0 +1,3 @@
+---
+major_changes:
+  - "`nxos_facts` - change default gather_subset to `min` from `!config` (https://github.com/ansible-collections/cisco.nxos/issues/418)."

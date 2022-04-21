@@ -42,11 +42,11 @@ options:
   gather_subset:
     description:
     - When supplied, this argument will restrict the facts collected to a given subset.  Possible
-      values for this argument include C(all), C(hardware), C(config), C(legacy), and C(interfaces).  Can
+      values for this argument include C(all), C(hardware), C(config), C(legacy), C(interfaces), and C(min).  Can
       specify a list of values to include a larger subset.  Values can also be used
       with an initial C(!) to specify that a specific subset should not be collected.
     required: false
-    default: '!config'
+    default: 'min'
     type: list
     elements: str
   gather_network_resources:
@@ -238,10 +238,6 @@ def main():
     )
 
     warnings = []
-    if module.params["gather_subset"] == "!config":
-        warnings.append(
-            "default value for `gather_subset` will be changed to `min` from `!config` v2.11 onwards"
-        )
 
     ansible_facts = {}
     if module.params.get("available_network_resources"):
