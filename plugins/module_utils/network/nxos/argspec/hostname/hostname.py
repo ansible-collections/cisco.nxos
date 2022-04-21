@@ -28,8 +28,7 @@ The arg spec for the nxos_hostname module
 
 
 class HostnameArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_hostname module
-    """
+    """The arg spec for the nxos_hostname module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

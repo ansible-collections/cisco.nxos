@@ -21,8 +21,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-author: Ansible Networking Team
-cliconf: nxos
+author: Ansible Networking Team (@ansible-network)
+name: nxos
 short_description: Use NX-OS cliconf to run commands on Cisco NX-OS platform
 description:
 - This nxos plugin provides low level abstraction apis for sending and receiving CLI
@@ -37,6 +37,7 @@ options:
       to the device is present in this list, the existing cache is invalidated.
     version_added: 2.0.0
     type: list
+    elements: str
     default: []
     vars:
     - name: ansible_nxos_config_commands
@@ -315,7 +316,7 @@ class Cliconf(CliconfBase):
                     out = to_text(out, errors="surrogate_or_strict").strip()
                 except UnicodeError:
                     raise ConnectionError(
-                        message=u"Failed to decode output from %s: %s"
+                        message="Failed to decode output from %s: %s"
                         % (cmd, to_text(out))
                     )
 
@@ -358,6 +359,72 @@ class Cliconf(CliconfBase):
 
         return json.dumps(result)
 
+    def pull_file(self, command, remotepassword=None):
+        possible_errors_re = [
+            re.compile(rb"timed out"),
+            re.compile(rb"(?i)No space.*#"),
+            re.compile(rb"(?i)Permission denied.*#"),
+            re.compile(rb"(?i)No such file.*#"),
+            re.compile(rb"Compaction is not supported on this platform.*#"),
+            re.compile(rb"Compact of.*failed.*#"),
+            re.compile(rb"(?i)Could not resolve hostname"),
+            re.compile(rb"(?i)Too many authentication failures"),
+            re.compile(rb"Access Denied"),
+            re.compile(
+                rb"(?i)Copying to\/from this server name is not permitted"
+            ),
+        ]
+
+        # set error regex for copy command
+        current_stderr_re = self._connection._get_terminal_std_re(
+            "terminal_stderr_re"
+        )
+        current_stderr_re.extend(possible_errors_re)
+
+        # do not change the ordering of this list
+        possible_prompts_re = [
+            re.compile(rb"file existing with this name"),
+            re.compile(rb"sure you want to continue connecting"),
+            re.compile(rb"(?i)Password:.*"),
+        ]
+
+        # set stdout regex for copy command to handle optional user prompts
+        # based on different match conditions
+        current_stdout_re = self._connection._get_terminal_std_re(
+            "terminal_stdout_re"
+        )
+        current_stdout_re.extend(possible_prompts_re)
+
+        retry = 1
+        file_pulled = False
+
+        try:
+            while not file_pulled and retry <= 6:
+                retry += 1
+                output = self.send_command(command=command, strip_prompt=False)
+
+                if possible_prompts_re[0].search(to_bytes(output)):
+                    output = self.send_command(command="y", strip_prompt=False)
+
+                if possible_prompts_re[1].search(to_bytes(output)):
+                    output = self.send_command(
+                        command="yes", strip_prompt=False
+                    )
+
+                if possible_prompts_re[2].search(to_bytes(output)):
+                    output = self.send_command(
+                        command=remotepassword, strip_prompt=False
+                    )
+                if "Copy complete" in output:
+                    file_pulled = True
+            return file_pulled
+        finally:
+            # always reset terminal regexes to default
+            for x in possible_prompts_re:
+                current_stdout_re.remove(x)
+            for x in possible_errors_re:
+                current_stderr_re.remove(x)
+
     def set_cli_prompt_context(self):
         """
         Make sure we are in the operational cli context
@@ -367,9 +434,8 @@ class Cliconf(CliconfBase):
             out = self._connection.get_prompt()
             if out is None:
                 raise AnsibleConnectionFailure(
-                    message=u"cli prompt is not identified from the last received"
-                    u" response window: %s"
-                    % self._connection._last_recv_window
+                    message="cli prompt is not identified from the last received"
+                    " response window: %s" % self._connection._last_recv_window
                 )
             # Match prompts ending in )# except those with (maint-mode)#
             config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")

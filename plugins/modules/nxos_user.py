@@ -400,8 +400,7 @@ def update_objects(want, have):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     element_spec = dict(
         name=dict(),
         configured_password=dict(no_log=True),

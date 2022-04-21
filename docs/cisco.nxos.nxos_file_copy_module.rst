@@ -25,9 +25,8 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- paramiko (required when file_pull is False)
-- SCPClient (required when file_pull is False)
-- pexpect (required when file_pull is True)
+- paramiko or libssh (required when file_pull is False)
+- scp (required when file_pull is False)
 
 
 Parameters
@@ -47,14 +46,19 @@ Parameters
                     <b>connect_ssh_port</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">integer</span>
                     </div>
                 </td>
                 <td>
                         <b>Default:</b><br/><div style="color: blue">22</div>
                 </td>
                 <td>
+                        <div><b>Deprecated</b></div>
+                        <div>This option has been deprecated and will be removed in a release after 2024-06-01.</div>
+                        <div>To maintain backwards compatibility, this option will continue to override the value of <em>ansible_port</em> until removed.</div>
+                        <div><hr/></div>
                         <div>SSH server port used for file transfer.</div>
+                        <div>Only used when <em>file_pull</em> is <code>True</code>.</div>
                 </td>
             </tr>
             <tr>
@@ -148,13 +152,17 @@ Parameters
                     <b>file_pull_timeout</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">integer</span>
                     </div>
                 </td>
                 <td>
                         <b>Default:</b><br/><div style="color: blue">300</div>
                 </td>
                 <td>
+                        <div><b>Deprecated</b></div>
+                        <div>This option has been deprecated and will be removed in a release after 2024-06-01.</div>
+                        <div>To maintain backwards compatibility, this option will continue to override the value of <em>ansible_command_timeout</em> until removed.</div>
+                        <div><hr/></div>
                         <div>Use this parameter to set timeout in seconds, when transferring large files or when the network is slow.</div>
                         <div>When (file_pull is False), this is not used.</div>
                 </td>
@@ -165,7 +173,7 @@ Parameters
                     <b>file_system</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
@@ -181,7 +189,7 @@ Parameters
                     <b>local_file</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">path</span>
                     </div>
                 </td>
                 <td>
@@ -197,7 +205,7 @@ Parameters
                     <b>local_file_directory</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">path</span>
                     </div>
                 </td>
                 <td>
@@ -447,7 +455,7 @@ Parameters
                     <b>remote_file</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">path</span>
                     </div>
                 </td>
                 <td>
@@ -463,7 +471,7 @@ Parameters
                     <b>remote_scp_server</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
@@ -479,7 +487,7 @@ Parameters
                     <b>remote_scp_server_password</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
@@ -495,7 +503,7 @@ Parameters
                     <b>remote_scp_server_user</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
@@ -511,7 +519,7 @@ Parameters
                     <b>vrf</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">-</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>

@@ -562,8 +562,7 @@ def check_declarative_intent_params(want, module, element_spec, result):
 
 
 def vrf_error_check(module, commands, responses):
-    """Checks for VRF config errors and executes a retry in some circumstances.
-    """
+    """Checks for VRF config errors and executes a retry in some circumstances."""
     pattern = "ERROR: Deletion of VRF .* in progress"
     if re.search(pattern, str(responses)):
         # Allow delay/retry for VRF changes
@@ -579,8 +578,7 @@ def vrf_error_check(module, commands, responses):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     element_spec = dict(
         name=dict(type="str", aliases=["vrf"]),
         description=dict(type="str"),

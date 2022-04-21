@@ -31,8 +31,7 @@ The arg spec for the nxos_ospfv3 module
 
 
 class Ospfv3Args(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_ospfv3 module
-    """
+    """The arg spec for the nxos_ospfv3 module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

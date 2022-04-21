@@ -49,38 +49,6 @@
 
 - assert: *id003
 
-- name: Set Baud Rate to less than 38400
-  cisco.nxos.nxos_config:
-    lines:
-      - speed 19200
-    parents: line console
-
-- name: Enable console logging with level 3 (will fail)
-  register: result
-  ignore_errors: true
-  cisco.nxos.nxos_logging: &id004
-    dest: console
-    dest_level: 3
-
-- assert:
-    that:
-      - result.failed == true
-
-- name: Set Baud Rate to 38400
-  cisco.nxos.nxos_config:
-    lines:
-      - speed 38400
-    parents: line console
-
-- name: Enable console logging with level 3 (will pass)
-  register: result
-  cisco.nxos.nxos_logging: *id004
-
-- assert:
-    that:
-      - result.changed == true
-      - '"logging console 3" in result.commands'
-
 - block:
 
     - name: Logfile logging with level

@@ -30,8 +30,7 @@ __metaclass__ = type
 
 
 class LacpArgs(object):
-    """The arg spec for the nxos_lacp module
-    """
+    """The arg spec for the nxos_lacp module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

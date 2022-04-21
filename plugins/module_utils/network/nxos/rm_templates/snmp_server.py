@@ -73,7 +73,7 @@ def _tmplt_users_auth(data):
 
 
 def _template_communities(data):
-    cmd = "snmp-server community {0}".format(data["community"])
+    cmd = "snmp-server community {0}".format(data["name"])
 
     if "group" in data:
         cmd += " group {0}".format(data["group"])
@@ -125,7 +125,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "result": {
                 "communities": [
                     {
-                        "community": "{{ community }}",
+                        "name": "{{ community }}",
                         "group": "{{ group }}",
                         "use_ipv4acl": "{{ use_ipv4acl }}",
                         "use_ipv6acl": "{{ use_ipv6acl }}",

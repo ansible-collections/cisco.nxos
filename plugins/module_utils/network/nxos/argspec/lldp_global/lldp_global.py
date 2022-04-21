@@ -30,8 +30,7 @@ __metaclass__ = type
 
 
 class Lldp_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_lldp_global module
-    """
+    """The arg spec for the nxos_lldp_global module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

@@ -58,8 +58,7 @@ def validate_ipv6_addr(address):
 
 
 def normalize_interface(name):
-    """Return the normalized interface name
-    """
+    """Return the normalized interface name"""
     if not name:
         return
 
@@ -98,8 +97,7 @@ def normalize_interface(name):
 
 
 def get_interface_type(interface):
-    """Gets the type of interface
-    """
+    """Gets the type of interface"""
     if interface.upper().startswith("ET"):
         return "ethernet"
     elif interface.upper().startswith("VL"):
@@ -119,8 +117,7 @@ def get_interface_type(interface):
 
 
 def remove_rsvd_interfaces(interfaces):
-    """Exclude reserved interfaces from user management
-    """
+    """Exclude reserved interfaces from user management"""
     if not interfaces:
         return []
     return [
@@ -146,8 +143,7 @@ def vlan_range_to_list(vlans):
 
 
 def numerical_sort(string_int_list):
-    """Sorts list of integers that are digits in numerical order.
-    """
+    """Sorts list of integers that are digits in numerical order."""
 
     as_int_list = []
 

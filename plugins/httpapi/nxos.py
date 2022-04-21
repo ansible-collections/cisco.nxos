@@ -6,8 +6,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-author: Ansible Networking Team
-httpapi: nxos
+author: Ansible Networking Team (@ansible-network)
+name: nxos
 short_description: Use NX-API to run commands on Cisco NX-OS platform
 description:
 - This plugin provides low level abstraction APIs for sending and receiving
@@ -233,8 +233,7 @@ def handle_response(response):
 
 
 def request_builder(commands, output, version="1.0", chunk="0", sid=None):
-    """Encodes a NXAPI JSON request message
-    """
+    """Encodes a NXAPI JSON request message"""
     output_to_command_type = {
         "text": "cli_show_ascii",
         "json": "cli_show",

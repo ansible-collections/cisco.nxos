@@ -31,8 +31,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vl
 
 
 class VlansFacts(object):
-    """ The nxos vlans fact class
-    """
+    """The nxos vlans fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -55,7 +54,7 @@ class VlansFacts(object):
         return connection.get(show_cmd)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for vlans
+        """Populate the facts for vlans
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
@@ -194,9 +193,15 @@ class VlansFacts(object):
             vlan.update(v)
             vlan.update(mtuinfo[index])
 
-            run_cfg = [
-                i for i in run_cfg_list if "%s\n" % v["vlan_id"] in i
-            ] or [""]
-            vlan["run_cfg"] = run_cfg.pop()
+            vlan["run_cfg"] = ""
+            for item in run_cfg_list:
+                # Sample match lines
+                # 202\n  name Production-Segment-100101\n  vn-segment 100101
+                # 5\n  state suspend\n  shutdown\n  name test-changeme\n  vn-segment 942
+                pattern = r"^{0}\s+\S.*vn-segment".format(v["vlan_id"])
+                if re.search(pattern, item, flags=re.DOTALL):
+                    vlan["run_cfg"] = item
+                    break
+
             vlans.append(vlan)
         return vlans

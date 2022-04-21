@@ -171,8 +171,7 @@ def to_cli(obj):
 
 
 def main():
-    """entry point for module execution
-    """
+    """entry point for module execution"""
     argument_spec = dict(
         # { command: <str>, output: <str>, prompt: <str>, response: <str> }
         commands=dict(type="list", required=True, elements="raw"),

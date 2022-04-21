@@ -28,8 +28,7 @@ The arg spec for the nxos_snmp_server module
 
 
 class Snmp_serverArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_snmp_server module
-    """
+    """The arg spec for the nxos_snmp_server module"""
 
     argument_spec = {
         "running_config": {"type": "str"},
@@ -44,7 +43,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "community": {"type": "str"},
+                        "name": {"type": "str", "aliases": ["community"]},
                         "group": {"type": "str"},
                         "ro": {"type": "bool"},
                         "rw": {"type": "bool"},

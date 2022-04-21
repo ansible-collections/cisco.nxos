@@ -13,9 +13,9 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-            - community: public
+            - name: public
               group: network-operator
-            - community: secret
+            - name: secret
               group: network-operator
           contact: nxosswitchadmin2@localhost
           location: serverroom-2
@@ -44,14 +44,14 @@
                   priv:
                     privacy_password: "{{ admin_snmp_passwd }}"
 
-              - user: zuul
-                group: network-admin
+              - user: admin
                 authentication:
                   algorithm: md5
-                  password: "{{ zuul_snmp_passwd }}"
-                  localized_key: True
+                  engine_id: "{{ admin_snmp_engineid_2 }}"
+                  localized_key: true
+                  password: "{{ admin_snmp_passwd_2 }}"
                   priv:
-                    privacy_password: "{{ zuul_snmp_passwd }}"
+                    privacy_password: "{{ admin_snmp_passwd_2 }}"
 
               - user: snmp_user_1
                 group: network-operator

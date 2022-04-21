@@ -19,20 +19,20 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-
 DOCUMENTATION = """
 module: nxos_feature
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manage features in NX-OS switches.
 notes:
-- Limited Support for Cisco MDS
+- Tested against Cisco MDS NX-OS 9.2(2)
 description:
 - Offers ability to enable and disable features in NX-OS.
 version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
+- Suhas Bharadwaj (@srbharadwaj)
 options:
   feature:
     description:
@@ -152,6 +152,30 @@ def get_commands(proposed, existing, state, module):
     return commands
 
 
+def get_mds_mapping_features():
+    feature_to_be_mapped = {
+        "show": {
+            "fcrxbbcredit": "extended_credit",
+            "port-track": "port_track",
+            "scp-server": "scpServer",
+            "sftp-server": "sftpServer",
+            "ssh": "sshServer",
+            "tacacs+": "tacacs",
+            "telnet": "telnetServer",
+        },
+        "config": {
+            "extended_credit": "fcrxbbcredit",
+            "port_track": "port-track",
+            "scpServer": "scp-server",
+            "sftpServer": "sftp-server",
+            "sshServer": "ssh",
+            "tacacs": "tacacs+",
+            "telnetServer": "telnet",
+        },
+    }
+    return feature_to_be_mapped
+
+
 def validate_feature(module, mode="show"):
     """Some features may need to be mapped due to inconsistency
     between how they appear from "show feature" output and
@@ -163,8 +187,10 @@ def validate_feature(module, mode="show"):
         info = get_capabilities(module)
         device_info = info.get("device_info", {})
         os_version = device_info.get("network_os_version", "")
+        os_platform = device_info.get("network_os_platform", "")
     except ConnectionError:
         os_version = ""
+        os_platform = ""
 
     if "8.1" in os_version:
         feature_to_be_mapped = {
@@ -230,6 +256,9 @@ def validate_feature(module, mode="show"):
                 "eth_port_sec": "port-security",
             },
         }
+
+    if os_platform.startswith("DS-"):
+        feature_to_be_mapped = get_mds_mapping_features()
 
     if feature in feature_to_be_mapped[mode]:
         feature = feature_to_be_mapped[mode][feature]

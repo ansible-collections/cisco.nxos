@@ -34,36 +34,36 @@ class TerminalModule(TerminalBase):
 
     terminal_stdout_re = [
         re.compile(
-            br"[\r\n](?!\s*<)?(\x1b\S+)*[a-zA-Z_0-9]{1}[a-zA-Z0-9-_.]*[>|#](?:\s*)(\x1b\S+)*$"
+            rb"[\r\n](?!\s*<)?(\x1b\S+)*[a-zA-Z_0-9]{1}[a-zA-Z0-9-_.]*[>|#](?:\s*)(\x1b\S+)*$"
         ),
-        re.compile(br"[\r\n]?[a-zA-Z0-9]{1}[a-zA-Z0-9-_.]*\(.+\)#(?:\s*)$"),
+        re.compile(rb"[\r\n]?[a-zA-Z0-9]{1}[a-zA-Z0-9-_.]*\(.+\)#(?:\s*)$"),
     ]
 
     terminal_stderr_re = [
-        re.compile(br"% ?Error"),
-        re.compile(br"\nerror:(.*)", re.I),
-        re.compile(br"^% \w+", re.M),
-        re.compile(br"% ?Bad secret"),
-        re.compile(br"invalid input", re.I),
-        re.compile(br"(?:incomplete|ambiguous) command", re.I),
-        re.compile(br"connection timed out", re.I),
-        re.compile(br"[^\r\n]+ not found", re.I),
-        re.compile(br"'[^']' +returned error code: ?\d+"),
-        re.compile(br"syntax error"),
-        re.compile(br"unknown command"),
-        re.compile(br"user not present"),
-        re.compile(br"invalid (.+?)at '\^' marker", re.I),
-        re.compile(br"configuration not allowed .+ at '\^' marker"),
+        re.compile(rb"% ?Error"),
+        re.compile(rb"\nerror:(.*)", re.I),
+        re.compile(rb"^% \w+", re.M),
+        re.compile(rb"% ?Bad secret"),
+        re.compile(rb"invalid input", re.I),
+        re.compile(rb"(?:incomplete|ambiguous) command", re.I),
+        re.compile(rb"connection timed out", re.I),
+        re.compile(rb"[^\r\n]+ not found", re.I),
+        re.compile(rb"'[^']' +returned error code: ?\d+"),
+        re.compile(rb"syntax error"),
+        re.compile(rb"unknown command"),
+        re.compile(rb"user not present"),
+        re.compile(rb"invalid (.+?)at '\^' marker", re.I),
+        re.compile(rb"configuration not allowed .+ at '\^' marker"),
         re.compile(
-            br"[B|b]aud rate of console should be.* (\d*) to increase [a-z]* level",
+            rb"[B|b]aud rate of console should be.* (\d*) to increase [a-z]* level",
             re.I,
         ),
         re.compile(
-            br"cannot apply non-existing acl policy to interface", re.I
+            rb"cannot apply non-existing acl policy to interface", re.I
         ),
-        re.compile(br"Duplicate sequence number", re.I),
+        re.compile(rb"Duplicate sequence number", re.I),
         re.compile(
-            br"Cannot apply ACL to an interface that is a port-channel member",
+            rb"Cannot apply ACL to an interface that is a port-channel member",
             re.I,
         ),
     ]
@@ -87,13 +87,13 @@ class TerminalModule(TerminalBase):
         if "Disabled" in out:
             raise AnsibleConnectionFailure("Feature privilege is not enabled")
 
-        cmd = {u"command": u"enable"}
+        cmd = {"command": "enable"}
         if passwd:
-            cmd[u"prompt"] = to_text(
+            cmd["prompt"] = to_text(
                 r"(?i)[\r\n]?Password: $", errors="surrogate_or_strict"
             )
-            cmd[u"answer"] = passwd
-            cmd[u"prompt_retry_check"] = True
+            cmd["answer"] = passwd
+            cmd["prompt_retry_check"] = True
 
         try:
             self._exec_cli_command(

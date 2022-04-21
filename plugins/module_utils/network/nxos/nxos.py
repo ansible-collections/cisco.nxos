@@ -149,8 +149,7 @@ class Cli:
         return self._connection
 
     def get_config(self, flags=None):
-        """Retrieves the current config from the device or cache
-        """
+        """Retrieves the current config from the device or cache"""
         flags = [] if flags is None else flags
 
         cmd = "show running-config "
@@ -173,8 +172,7 @@ class Cli:
             return cfg
 
     def run_commands(self, commands, check_rc=True):
-        """Run list of commands on remote device and return results
-        """
+        """Run list of commands on remote device and return results"""
         connection = self._get_connection()
 
         try:
@@ -199,8 +197,7 @@ class Cli:
             self._module.fail_json(msg=to_text(exc))
 
     def load_config(self, config, return_error=False, opts=None, replace=None):
-        """Sends configuration commands to the remote device
-        """
+        """Sends configuration commands to the remote device"""
         if opts is None:
             opts = {}
 
@@ -259,8 +256,7 @@ class Cli:
         return response
 
     def get_capabilities(self):
-        """Returns platform info of the remove device
-        """
+        """Returns platform info of the remove device"""
         if hasattr(self._module, "_capabilities"):
             return self._module._capabilities
 
@@ -337,8 +333,7 @@ class LocalNxapi:
     def _request_builder(
         self, commands, output, version="1.0", chunk="0", sid=None
     ):
-        """Encodes a NXAPI JSON request message
-        """
+        """Encodes a NXAPI JSON request message"""
         try:
             command_type = self.OUTPUT_TO_COMMAND_TYPE[output]
         except KeyError:
@@ -449,8 +444,7 @@ class LocalNxapi:
             return result
 
     def get_config(self, flags=None):
-        """Retrieves the current config from the device or cache
-        """
+        """Retrieves the current config from the device or cache"""
         flags = [] if flags is None else flags
 
         cmd = "show running-config "
@@ -466,8 +460,7 @@ class LocalNxapi:
             return cfg
 
     def run_commands(self, commands, check_rc=True):
-        """Run list of commands on remote device and return results
-        """
+        """Run list of commands on remote device and return results"""
         output = None
         queue = list()
         responses = list()
@@ -497,8 +490,7 @@ class LocalNxapi:
     def load_config(
         self, commands, return_error=False, opts=None, replace=None
     ):
-        """Sends the ordered set of commands to the device
-        """
+        """Sends the ordered set of commands to the device"""
 
         if opts is None:
             opts = {}
@@ -643,8 +635,7 @@ class HttpApi:
         return self._connection_obj
 
     def run_commands(self, commands, check_rc=True):
-        """Runs list of commands on remote device and returns results
-        """
+        """Runs list of commands on remote device and returns results"""
         try:
             out = self._connection.send_request(commands)
         except ConnectionError as exc:
@@ -663,8 +654,7 @@ class HttpApi:
         return out
 
     def get_config(self, flags=None):
-        """Retrieves the current config from the device or cache
-        """
+        """Retrieves the current config from the device or cache"""
         flags = [] if flags is None else flags
 
         cmd = "show running-config "
@@ -720,8 +710,7 @@ class HttpApi:
     def load_config(
         self, commands, return_error=False, opts=None, replace=None
     ):
-        """Sends the ordered set of commands to the device
-        """
+        """Sends the ordered set of commands to the device"""
         if opts is None:
             opts = {}
 
@@ -773,8 +762,7 @@ class HttpApi:
         return resp
 
     def get_capabilities(self):
-        """Returns platform info of the remove device
-        """
+        """Returns platform info of the remove device"""
         try:
             capabilities = self._connection.get_capabilities()
         except ConnectionError as exc:
@@ -899,7 +887,7 @@ class NxosCmdRef:
             self._ref = yaml.load(cmd_ref_str, Loader=yaml.FullLoader)
 
     def feature_enable(self):
-        """Add 'feature <foo>' to _proposed if ref includes a 'feature' key. """
+        """Add 'feature <foo>' to _proposed if ref includes a 'feature' key."""
         ref = self._ref
         feature = ref["_template"].get("feature")
         if feature:
@@ -1054,8 +1042,7 @@ class NxosCmdRef:
         return match
 
     def set_context(self, context=None):
-        """Update ref with command context.
-        """
+        """Update ref with command context."""
         if context is None:
             context = []
         ref = self._ref
@@ -1402,8 +1389,7 @@ def get_diff(
 
 
 def normalize_interface(name):
-    """Return the normalized interface name
-    """
+    """Return the normalized interface name"""
     if not name:
         return
 
@@ -1442,8 +1428,7 @@ def normalize_interface(name):
 
 
 def get_interface_type(interface):
-    """Gets the type of interface
-    """
+    """Gets the type of interface"""
     if interface.upper().startswith("ET"):
         return "ethernet"
     elif interface.upper().startswith("VL"):

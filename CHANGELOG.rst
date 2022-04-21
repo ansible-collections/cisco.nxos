@@ -5,6 +5,22 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v2.9.1
+======
+
+Bugfixes
+--------
+
+- Fix action plugin redirection to make module defaults work properly.
+- Fix for nxos_vlans issue (https://github.com/ansible-collections/cisco.nxos/issues/425).
+- `nxos_ntp_global` - Aliased `vrf` to `use_vrf` wherever applicable to maintain consistency with models for other platforms.
+- nxos_snmp_server - Add alias for community (https://github.com/ansible-collections/cisco.nxos/issues/433)
+
+Documentation Changes
+---------------------
+
+- Added notes in module docs to indicate supportability for Cisco MDS.
+
 v2.9.0
 ======
 

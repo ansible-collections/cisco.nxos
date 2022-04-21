@@ -25,8 +25,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ac
 
 
 class AclsFacts(object):
-    """ The nxos acls fact class
-    """
+    """The nxos acls fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -50,7 +49,7 @@ class AclsFacts(object):
         return data
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for acls
+        """Populate the facts for acls
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf

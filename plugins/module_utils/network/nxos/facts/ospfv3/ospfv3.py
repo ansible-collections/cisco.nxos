@@ -28,8 +28,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.os
 
 
 class Ospfv3Facts(object):
-    """ The nxos ospfv3 facts class
-    """
+    """The nxos ospfv3 facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -42,7 +41,7 @@ class Ospfv3Facts(object):
         return connection.get("show running-config | section '^router ospfv3'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Ospfv3 network resource
+        """Populate the facts for Ospfv3 network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

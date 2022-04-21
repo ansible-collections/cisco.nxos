@@ -13,8 +13,7 @@ It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
-
-from ansible.module_utils.six import iteritems
+from ansible.module_utils._text import to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -27,8 +26,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.sn
 
 
 class Snmp_serverFacts(object):
-    """ The nxos snmp_server facts class
-    """
+    """The nxos snmp_server facts class"""
 
     def __init__(self, module):
         self._module = module
@@ -41,7 +39,7 @@ class Snmp_serverFacts(object):
         return connection.get("show running-config | section '^snmp-server'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Snmp_server network resource
+        """Populate the facts for Snmp_server network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -64,17 +62,17 @@ class Snmp_serverFacts(object):
 
         if "communities" in objs:
             objs["communities"] = sorted(
-                objs["communities"], key=lambda k: k["community"]
+                objs["communities"], key=lambda k: to_text(k["name"])
             )
 
         if "users" in objs:
             if "auth" in objs["users"]:
                 objs["users"]["auth"] = sorted(
-                    objs["users"]["auth"], key=lambda k: k["user"]
+                    objs["users"]["auth"], key=lambda k: to_text(k["user"])
                 )
             if "use_acls" in objs["users"]:
                 objs["users"]["use_acls"] = sorted(
-                    objs["users"]["use_acls"], key=lambda k: k["user"]
+                    objs["users"]["use_acls"], key=lambda k: to_text(k["user"])
                 )
 
         ansible_facts["ansible_network_resources"].pop("snmp_server", None)

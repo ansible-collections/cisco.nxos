@@ -99,7 +99,7 @@ class Bgp_global(ResourceModule):
         self._af_data = {}
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -110,8 +110,8 @@ class Bgp_global(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         # we fail early if state is merged or
         # replaced and want ASN != have ASN
@@ -155,9 +155,9 @@ class Bgp_global(ResourceModule):
 
     def _compare(self, want, have, vrf=None):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Bgp_global network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Bgp_global network resource.
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
@@ -349,20 +349,20 @@ class Bgp_global(ResourceModule):
 
     def _build_af_data(self):
         """Build a dictionary with AF related information
-           from fetched BGP config.
-            _af_data = {
-                gbl_data = {'192.168.1.100', '192.168.1.101'},
-                vrf_data = {
-                    'vrf_1': {
-                        'has_af': True,
-                        'nbrs': {'192.0.1.1', '192.8.1.1'}
-                    },
-                    'vrf_2': {
-                        'has_af': False,
-                        'nbrs': set()
-                    }
-                }
-            }
+        from fetched BGP config.
+         _af_data = {
+             gbl_data = {'192.168.1.100', '192.168.1.101'},
+             vrf_data = {
+                 'vrf_1': {
+                     'has_af': True,
+                     'nbrs': {'192.0.1.1', '192.8.1.1'}
+                 },
+                 'vrf_2': {
+                     'has_af': False,
+                     'nbrs': set()
+                 }
+             }
+         }
         """
         data = self._get_config().split("\n")
         cur_nbr = None

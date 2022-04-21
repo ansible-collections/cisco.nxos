@@ -14,8 +14,8 @@ gathered:
       id: '2'
     - id: '10'
   sensor_groups:
-    - id: '8'
     - id: '2'
+    - id: '8'
   subscriptions:
     - id: '100'
     - id: '100'

@@ -147,9 +147,10 @@ options:
             description:
               - Preferred Server.
             type: bool
-          use_vrf:
+          vrf:
             description: Display per-VRF information.
             type: str
+            aliases: ["use_vrf"]
       servers:
         description: NTP servers.
         type: list
@@ -175,9 +176,10 @@ options:
             description:
               - Preferred Server.
             type: bool
-          use_vrf:
+          vrf:
             description: Display per-VRF information.
             type: str
+            aliases: ["use_vrf"]
       source:
         description: Source of NTP packets.
         type: str
@@ -242,18 +244,18 @@ EXAMPLES = """
           key_id: 1
           maxpoll: 15
           minpoll: 5
-          use_vrf: default
+          vrf: default
         - peer: 192.0.2.2
           key_id: 2
           prefer: True
-          use_vrf: siteA
+          vrf: siteA
       servers:
         - server: 198.51.100.1
           key_id: 2
-          use_vrf: default
+          vrf: default
         - server: 203.0.113.1
           key_id: 1
-          use_vrf: siteB
+          vrf: siteB
 
 # Task output
 # -------------
@@ -294,18 +296,18 @@ EXAMPLES = """
 #        key_id: 1
 #        maxpoll: 15
 #        minpoll: 5
-#        use_vrf: default
+#        vrf: default
 #      - peer: 192.0.2.2
 #        key_id: 2
 #        prefer: True
-#        use_vrf: siteA
+#        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1
 #        key_id: 2
-#        use_vrf: default
+#        vrf: default
 #      - server: 203.0.113.1
 #        key_id: 1
-#        use_vrf: siteB
+#        vrf: siteB
 
 # After state:
 # ------------
@@ -355,15 +357,15 @@ EXAMPLES = """
           key_id: 1
           maxpoll: 15
           minpoll: 5
-          use_vrf: default
+          vrf: default
         - peer: 192.0.2.5
           key_id: 2
           prefer: True
-          use_vrf: siteA
+          vrf: siteA
       servers:
         - server: 198.51.100.1
           key_id: 2
-          use_vrf: default
+          vrf: default
     state: replaced
 
 # Task output
@@ -390,18 +392,18 @@ EXAMPLES = """
 #        key_id: 1
 #        maxpoll: 15
 #        minpoll: 5
-#        use_vrf: default
+#        vrf: default
 #      - peer: 192.0.2.2
 #        key_id: 2
 #        prefer: True
-#        use_vrf: siteA
+#        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1
 #        key_id: 2
-#        use_vrf: default
+#        vrf: default
 #      - server: 203.0.113.1
 #        key_id: 1
-#        use_vrf: siteB
+#        vrf: siteB
 #
 #  commands:
 #    - "no ntp authenticate"
@@ -429,15 +431,15 @@ EXAMPLES = """
 #        key_id: 1
 #        maxpoll: 15
 #        minpoll: 5
-#        use_vrf: default
+#        vrf: default
 #      - peer: 192.0.2.5
 #        key_id: 2
 #        prefer: True
-#        use_vrf: siteA
+#        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1
 #        key_id: 2
-#        use_vrf: default
+#        vrf: default
 
 # After state:
 # ------------
@@ -484,18 +486,18 @@ EXAMPLES = """
 #        key_id: 1
 #        maxpoll: 15
 #        minpoll: 5
-#        use_vrf: default
+#        vrf: default
 #      - peer: 192.0.2.2
 #        key_id: 2
 #        prefer: True
-#        use_vrf: siteA
+#        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1
 #        key_id: 2
-#        use_vrf: default
+#        vrf: default
 #      - server: 203.0.113.1
 #        key_id: 1
-#        use_vrf: siteB
+#        vrf: siteB
 #
 #  commands:
 #    - "no ntp authenticate"
@@ -543,18 +545,18 @@ EXAMPLES = """
           key_id: 1
           maxpoll: 15
           minpoll: 5
-          use_vrf: default
+          vrf: default
         - peer: 192.0.2.2
           key_id: 2
           prefer: True
-          use_vrf: siteA
+          vrf: siteA
       servers:
         - server: 198.51.100.1
           key_id: 2
-          use_vrf: default
+          vrf: default
         - server: 203.0.113.1
           key_id: 1
-          use_vrf: siteB
+          vrf: siteB
     state: rendered
 
 # Task Output (redacted)
@@ -617,18 +619,18 @@ EXAMPLES = """
 #        key_id: 1
 #        maxpoll: 15
 #        minpoll: 5
-#        use_vrf: default
+#        vrf: default
 #      - peer: 192.0.2.2
 #        key_id: 2
 #        prefer: True
-#        use_vrf: siteA
+#        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1
 #        key_id: 2
-#        use_vrf: default
+#        vrf: default
 #      - server: 203.0.113.1
 #        key_id: 1
-#        use_vrf: siteB
+#        vrf: siteB
 """
 
 RETURN = """

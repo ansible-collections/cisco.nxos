@@ -11,10 +11,10 @@
           aaa_user:
             cache_timeout: 36000
           communities:
-            - community: public
-              group: network-operator
-            - community: private
+            - name: private
               group: network-admin
+            - name: public
+              group: network-operator
           contact: nxosswitchadmin@localhost
           location: serverroom-1
           traps:

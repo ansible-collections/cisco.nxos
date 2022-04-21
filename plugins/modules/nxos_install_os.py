@@ -33,7 +33,7 @@ notes:
 - Tested against the following platforms and images - N9k 7.0(3)I4(6), 7.0(3)I5(3),
   7.0(3)I6(1), 7.0(3)I7(1), 7.0(3)F2(2), 7.0(3)F3(2) - N3k 6.0(2)A8(6), 6.0(2)A8(8),
   7.0(3)I6(1), 7.0(3)I7(1) - N7k 7.3(0)D1(1), 8.0(1), 8.1(1), 8.2(1)
-- Limited Support for Cisco MDS
+- Tested against Cisco MDS NX-OS 9.2(1)
 - This module requires both the ANSIBLE_PERSISTENT_CONNECT_TIMEOUT and ANSIBLE_PERSISTENT_COMMAND_TIMEOUT
   timers to be set to 600 seconds or higher. The module will exit if the timers are
   not set properly.
@@ -415,7 +415,7 @@ def parse_show_version(data):
 
 def check_mode_legacy(module, issu, image, kick=None):
     """Some platforms/images/transports don't support the 'install all impact'
-        command so we need to use a different method."""
+    command so we need to use a different method."""
     current = execute_show_command(module, "show version", "json")[0]
     # Call parse_show_data on empty string to create the default upgrade
     # data structure dictionary

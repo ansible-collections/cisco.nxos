@@ -68,7 +68,7 @@ options:
   udp:
     description:
     - UDP port number (0-65535).
-    default: 162
+    default: '162'
     type: str
   snmp_type:
     description:
