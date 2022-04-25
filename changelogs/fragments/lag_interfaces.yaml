@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_lag_interfaces` - Fix KeyError with state overridden when port-channel has no members (https://github.com/ansible-collections/cisco.nxos/issues/452)."

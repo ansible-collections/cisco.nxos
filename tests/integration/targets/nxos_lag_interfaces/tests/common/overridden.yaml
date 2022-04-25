@@ -3,7 +3,7 @@
     msg: Start nxos_lag_interfaces overridden integration tests connection={{ ansible_connection
       }}
 
-- set_fact: 
+- set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
     test_int3: "{{ nxos_int3 }}"
@@ -18,6 +18,7 @@
     lines:
       - no interface port-channel 10
       - no interface port-channel 19
+      - no interface port-channel 20
 
 - name: setup2
   cisco.nxos.nxos_lag_interfaces: &id003
@@ -73,6 +74,30 @@
     - assert:
         that:
           - result.changed == false
+
+    - name: Create Port-Channel20
+      cisco.nxos.nxos_interfaces:
+        config:
+        - name: port-channel20
+          description: Ansible Resource LAG
+
+    - name: Add first member to Port-Channel using overridden
+      cisco.nxos.nxos_lag_interfaces:
+        config:
+          - name: port-channel20
+            members:
+              - member: Ethernet1/9
+                mode: active
+                force: yes
+        state: overridden
+      register: result
+
+    - assert:
+        that:
+          - "result.changed ==  True"
+          - "'interface Ethernet1/9' in result.commands"
+          - "'channel-group 20 force  mode active' in result.commands"
+
   always:
 
     - name: Teardown
