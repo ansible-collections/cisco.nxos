@@ -23,9 +23,11 @@ __metaclass__ = type
 import re
 import json
 
-from ansible.plugins.terminal import TerminalBase
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import (
+    TerminalBase,
+)
 
 
 class TerminalModule(TerminalBase):

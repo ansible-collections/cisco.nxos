@@ -24,7 +24,9 @@ from ansible.module_utils.connection import ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_list,
 )
-from ansible.plugins.httpapi import HttpApiBase
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.httpapi_base import (
+    HttpApiBase,
+)
 
 
 OPTIONS = {
