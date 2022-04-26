@@ -90,6 +90,12 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "server_state_change": {"type": "bool"},
                             },
                         },
+                        "bgp": {
+                            "type": "dict",
+                            "options": {
+                                "enable": {"type": "bool"},
+                            },
+                        },
                         "bridge": {
                             "type": "dict",
                             "options": {
@@ -196,6 +202,14 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "cseMaintModeChangeNotify": {"type": "bool"},
                                 "cseNormalModeChangeNotify": {"type": "bool"},
                             },
+                        },
+                        "ospf": {
+                            "type": "dict",
+                            "options": {"enable": {"type": "bool"}},
+                        },
+                        "ospfv3": {
+                            "type": "dict",
+                            "options": {"enable": {"type": "bool"}},
                         },
                         "rf": {
                             "type": "dict",
