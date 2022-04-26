@@ -63,5 +63,17 @@
           - result['changed'] == false
           - result.commands|length == 0
 
+    - name: Attempt to configure non-existent auth key (should fail)
+      cisco.nxos.nxos_ntp_global:
+        config:
+          trusted_keys:
+            - key_id: 12344
+      register: result
+      ignore_errors: True
+
+    - assert:
+        that:
+          - "result.failed == True"
+
   always:
     - include_tasks: _remove_config.yaml

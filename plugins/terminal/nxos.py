@@ -64,6 +64,7 @@ class TerminalModule(TerminalBase):
             rb"Cannot apply ACL to an interface that is a port-channel member",
             re.I,
         ),
+        re.compile(rb"No corresponding (.+) configured", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
