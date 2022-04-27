@@ -1,5 +1,5 @@
 black==19.3.b0 ; python_version > '3.5'
-click<8.1
+click==8.0.4
 flake8
 mock ; python_version < '3.5'
 pexpect
