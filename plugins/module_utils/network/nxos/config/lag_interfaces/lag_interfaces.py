@@ -199,7 +199,7 @@ class Lag_interfaces(ConfigBase):
             obj_in_want = search_obj_in_list(h["name"], want, "name")
             if obj_in_want:
                 diff = self.diff_list_of_dicts(
-                    h["members"], obj_in_want["members"]
+                    h.get("members", []), obj_in_want["members"]
                 )
                 if not diff:
                     continue

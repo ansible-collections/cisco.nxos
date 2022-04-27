@@ -6,5 +6,6 @@
       - "no interface port-channel10"
       - "no interface port-channel11"
       - "no interface port-channel19"
+      - "no interface port-channel20"
       - "no feature lacp"
   ignore_errors: True
