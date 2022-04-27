@@ -535,14 +535,18 @@ class Static_routes(ConfigBase):
                         if af["afi"] in afi_list:
                             for x in h1["address_families"]:
                                 if x["afi"] == af["afi"]:
-                                    h2 = x  # this has the have dict with same vrf and afi as want
+                                    h2 = (
+                                        x
+                                    )  # this has the have dict with same vrf and afi as want
                             dest_list = [h["dest"] for h in h2["routes"]]
                             if "routes" in af.keys():
                                 for ro in af["routes"]:
                                     if ro["dest"] in dest_list:
                                         for x in h2["routes"]:
                                             if x["dest"] == ro["dest"]:
-                                                h3 = x  # this has the have dict with same vrf, afi and dest as want
+                                                h3 = (
+                                                    x
+                                                )  # this has the have dict with same vrf, afi and dest as want
                                         next_hop_list = list(h3["next_hops"])
                                         if "next_hops" in ro.keys():
                                             for nh in ro["next_hops"]:
@@ -554,14 +558,12 @@ class Static_routes(ConfigBase):
                                                     )
                                                 if nh not in next_hop_list:
                                                     # no match for next hop in have
-                                                    commands = (
-                                                        self.set_next_hop(
-                                                            want,
-                                                            h2,
-                                                            nh,
-                                                            ro,
-                                                            commands,
-                                                        )
+                                                    commands = self.set_next_hop(
+                                                        want,
+                                                        h2,
+                                                        nh,
+                                                        ro,
+                                                        commands,
                                                     )
                                                     vrf_list.append(
                                                         want["vrf"]

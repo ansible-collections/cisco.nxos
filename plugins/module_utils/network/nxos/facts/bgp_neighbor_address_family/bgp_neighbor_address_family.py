@@ -61,8 +61,8 @@ class Bgp_neighbor_address_familyFacts(object):
         data = self._flatten_config(data)
 
         # parse native config using the Bgp_neighbor_address_family template
-        bgp_neighbor_address_family_parser = (
-            Bgp_neighbor_address_familyTemplate(lines=data)
+        bgp_neighbor_address_family_parser = Bgp_neighbor_address_familyTemplate(
+            lines=data
         )
         objs = bgp_neighbor_address_family_parser.parse()
 

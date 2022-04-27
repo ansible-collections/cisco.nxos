@@ -361,17 +361,17 @@ class Cliconf(CliconfBase):
 
     def pull_file(self, command, remotepassword=None):
         possible_errors_re = [
-            re.compile(rb"timed out"),
-            re.compile(rb"(?i)No space.*#"),
-            re.compile(rb"(?i)Permission denied.*#"),
-            re.compile(rb"(?i)No such file.*#"),
-            re.compile(rb"Compaction is not supported on this platform.*#"),
-            re.compile(rb"Compact of.*failed.*#"),
-            re.compile(rb"(?i)Could not resolve hostname"),
-            re.compile(rb"(?i)Too many authentication failures"),
-            re.compile(rb"Access Denied"),
+            re.compile(br"timed out"),
+            re.compile(br"(?i)No space.*#"),
+            re.compile(br"(?i)Permission denied.*#"),
+            re.compile(br"(?i)No such file.*#"),
+            re.compile(br"Compaction is not supported on this platform.*#"),
+            re.compile(br"Compact of.*failed.*#"),
+            re.compile(br"(?i)Could not resolve hostname"),
+            re.compile(br"(?i)Too many authentication failures"),
+            re.compile(br"Access Denied"),
             re.compile(
-                rb"(?i)Copying to\/from this server name is not permitted"
+                br"(?i)Copying to\/from this server name is not permitted"
             ),
         ]
 
@@ -383,9 +383,9 @@ class Cliconf(CliconfBase):
 
         # do not change the ordering of this list
         possible_prompts_re = [
-            re.compile(rb"file existing with this name"),
-            re.compile(rb"sure you want to continue connecting"),
-            re.compile(rb"(?i)Password:.*"),
+            re.compile(br"file existing with this name"),
+            re.compile(br"sure you want to continue connecting"),
+            re.compile(br"(?i)Password:.*"),
         ]
 
         # set stdout regex for copy command to handle optional user prompts
