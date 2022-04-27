@@ -307,7 +307,10 @@ class TestNxosSnmpServerModule(TestNxosModule):
                         aaa=dict(server_state_change=True),
                         bridge=dict(enable=True),
                         callhome=dict(event_notify=True, smtp_send_fail=True),
-                    )
+                        bgp=dict(enable=True),
+                        ospf=dict(enable=True),
+                        ospfv3=dict(enable=True),
+                    ),
                 ),
                 state="merged",
             ),
@@ -319,6 +322,9 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server enable traps bridge topologychange",
             "snmp-server enable traps callhome event-notify",
             "snmp-server enable traps callhome smtp-send-fail",
+            "snmp-server enable traps bgp",
+            "snmp-server enable traps ospf",
+            "snmp-server enable traps ospfv3",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -332,6 +338,9 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server enable traps bridge topologychange
             snmp-server enable traps callhome event-notify
             snmp-server enable traps callhome smtp-send-fail
+            snmp-server enable traps bgp
+            snmp-server enable traps ospf
+            snmp-server enable traps ospfv3
             """
         )
         set_module_args(
@@ -341,6 +350,9 @@ class TestNxosSnmpServerModule(TestNxosModule):
                         aaa=dict(server_state_change=True),
                         bridge=dict(enable=True),
                         callhome=dict(event_notify=True, smtp_send_fail=True),
+                        bgp=dict(enable=True),
+                        ospf=dict(enable=True),
+                        ospfv3=dict(enable=True),
                     )
                 ),
                 state="merged",

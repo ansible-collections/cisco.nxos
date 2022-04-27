@@ -249,6 +249,22 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "traps.bgp",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps\s(?P<enable>bgp)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps bgp",
+            "result": {
+                "traps": {
+                    "bgp": {
+                        "enable": "{{ not not enable }}",
+                    }
+                }
+            },
+        },
+        {
             "name": "traps.bridge.newroot",
             "getval": re.compile(
                 r"""
@@ -856,6 +872,38 @@ class Snmp_serverTemplate(NetworkTemplate):
                 "traps": {
                     "mmode": {
                         "cseNormalModeChangeNotify": "{{ not not cseNormalModeChangeNotify }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.ospf",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps\s(?P<enable>ospf)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps ospf",
+            "result": {
+                "traps": {
+                    "ospf": {
+                        "enable": "{{ not not enable }}",
+                    }
+                }
+            },
+        },
+        {
+            "name": "traps.ospfv3",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable
+                \straps\s(?P<enable>ospfv3)
+                $""", re.VERBOSE),
+            "setval": "snmp-server enable traps ospfv3",
+            "result": {
+                "traps": {
+                    "ospfv3": {
+                        "enable": "{{ not not enable }}",
                     }
                 }
             },

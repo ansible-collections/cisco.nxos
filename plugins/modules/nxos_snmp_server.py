@@ -124,6 +124,13 @@ options:
               server_state_change:
                 description: AAA server state change notification.
                 type: bool
+          bgp:
+            description: SNMP BGP traps.
+            type: dict
+            suboptions:
+              enable:
+                description: Enable SNMP BGP traps.
+                type: bool
           bridge:
             description: Bridge traps.
             type: dict
@@ -304,6 +311,20 @@ options:
                 type: bool
               cseNormalModeChangeNotify:
                 description: Normal Mode Change Notification.
+                type: bool
+          ospf:
+            description: SNMP OSPF traps.
+            type: dict
+            suboptions:
+              enable:
+                description: Enable SNMP OSPF traps.
+                type: bool
+          ospfv3:
+            description: SNMP OSPFv3 traps.
+            type: dict
+            suboptions:
+              enable:
+                description: Enable SNMP OSPFv3 traps.
                 type: bool
           rf:
             description: RF traps.
@@ -616,7 +637,6 @@ options:
 """
 
 EXAMPLES = """
-
 # Using merged
 
 # Before state:
