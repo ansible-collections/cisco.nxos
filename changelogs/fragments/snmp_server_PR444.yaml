@@ -1,0 +1,2 @@
+bugfixes:
+  - "`snmp_server` - Snmp contact/location and location were not gathered if containing whitespaces."

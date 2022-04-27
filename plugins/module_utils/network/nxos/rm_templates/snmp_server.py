@@ -138,7 +138,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server
-                \scontact\s(?P<contact>\S+)
+                \scontact\s(?P<contact>.+)
                 $""", re.VERBOSE),
             "setval": "snmp-server contact {{ contact }}",
             "result": {
@@ -1293,7 +1293,7 @@ class Snmp_serverTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^snmp-server
-                \slocation\s(?P<location>\S+)
+                \slocation\s(?P<location>.+)
                 $""", re.VERBOSE),
             "setval": "snmp-server location {{ location }}",
             "result": {
