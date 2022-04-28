@@ -70,12 +70,12 @@ existing:
         - k/v pairs of existing vtp domain
     returned: always
     type: dict
-    sample: {"domain": "testing", "version": "2", "vtp_password": "\"}
+    sample: {"domain": "testing", "version": "2", "vtp_password": "password"}
 end_state:
     description: k/v pairs of vtp domain after module execution
     returned: always
     type: dict
-    sample: {"domain": "ntc", "version": "2", "vtp_password": "\"}
+    sample: {"domain": "ntc", "version": "2", "vtp_password": "password"}
 updates:
     description: command sent to the device
     returned: always
