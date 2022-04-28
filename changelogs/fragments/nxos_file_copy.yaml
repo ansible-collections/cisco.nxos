@@ -1,5 +1,0 @@
----
-major_changes:
-  - "nxos_file_copy has been rewritten as a module. This change also removes the dependency on pexpect for file_pull operation.
-    Since this now uses AnsibleModule class for argspec validation, the validation messages will be slighlty different. Expect changes
-    in the return payload in some cases. All functionality remains unchanged."

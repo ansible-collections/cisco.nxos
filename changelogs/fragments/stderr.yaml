@@ -1,3 +1,0 @@
----
-trivial:
-  - Fix slow stderr regex search

@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_ntp_global` - correctly propagate CLI failure for non-existent auth keys (https://github.com/ansible-collections/cisco.nxos/issues/467)."

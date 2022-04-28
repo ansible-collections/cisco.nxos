@@ -1,3 +1,0 @@
----
-minor_changes:
-  - "`nxos_snmp_server` - add support for BGP, OSPF and OSPFv3 traps."
