@@ -5,6 +5,30 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v3.0.0
+======
+
+Major Changes
+-------------
+
+- The minimum required ansible.netcommon version has been bumped to v2.6.1.
+- Updated base plugin references to ansible.netcommon.
+- `nxos_facts` - change default gather_subset to `min` from `!config` (https://github.com/ansible-collections/cisco.nxos/issues/418).
+- nxos_file_copy has been rewritten as a module. This change also removes the dependency on pexpect for file_pull operation. Since this now uses AnsibleModule class for argspec validation, the validation messages will be slighlty different. Expect changes in the return payload in some cases. All functionality remains unchanged.
+
+Minor Changes
+-------------
+
+- `nxos_snmp_server` - add support for BGP, OSPF and OSPFv3 traps.
+
+Bugfixes
+--------
+
+- `nxos_lag_interfaces` - Fix KeyError with state overridden when port-channel has no members (https://github.com/ansible-collections/cisco.nxos/issues/452).
+- `nxos_ntp_global` - correctly propagate CLI failure for non-existent auth keys (https://github.com/ansible-collections/cisco.nxos/issues/467).
+- `nxos_snmp_server` - Properly handle corner cases for snmp-server user (https://github.com/ansible-collections/cisco.nxos/issues/454).
+- `snmp_server` - Snmp contact/location and location were not gathered if containing whitespaces.
+
 v2.9.1
 ======
 

@@ -1,3 +1,0 @@
----
-major_changes:
-  - "The minimum required ansible.netcommon version has been bumped to v2.6.1."
