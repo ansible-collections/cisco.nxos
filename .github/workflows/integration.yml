@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  sanity:
+  integration:
     uses: ansible-network/github_actions/.github/workflows/integration.yml@main
     with:
       network_os: cisco.nxos.nxos
