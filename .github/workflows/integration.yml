@@ -10,7 +10,8 @@ jobs:
   integration:
     uses: ansible-network/github_actions/.github/workflows/integration.yml@main
     with:
-      cml_ssh_password: "${{ secrets.cml_ssh_password }}"
       network_os: cisco.nxos.nxos
+    secrets:
+      cml_ssh_password: "${{ secrets.cml_ssh_password }}"
       virl_host: "${{ secrets.virl_host }}"
       virl_password: "${{ secrets.virl_password }}"
