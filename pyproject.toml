@@ -1,0 +1,11 @@
+[tool.black]
+line-length = 79
+
+
+[tool.pytest.ini_options]
+addopts = "-s -vvv --integration-tests-path=tests/integration/targets --cml-lab=./tests/integration/labs/single.yaml"
+testpaths = ["tests"]
+filterwarnings = [
+    'ignore:AnsibleCollectionFinder has already been configured',
+    'ignore:_AnsibleCollectionFinder.find_spec().*',
+]
