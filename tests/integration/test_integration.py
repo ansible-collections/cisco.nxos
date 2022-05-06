@@ -6,7 +6,7 @@ def log(message):
         print(f"\n{message}", flush=True)
 
 def test_integration(ansible_project, environment):
-    log(f"::group::{ansible_project.role}")
+    log(f"::group::Run integration test: '{ansible_project.role}'")
     args = [
         "ansible-navigator",
         "run",
