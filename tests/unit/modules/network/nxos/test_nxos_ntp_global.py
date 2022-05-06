@@ -647,3 +647,84 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ntp_global_alias(self):
+        self.get_config.return_value = dedent(
+            """\
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    servers=[
+                        dict(
+                            server="1.1.1.1",
+                            vrf="management",
+                        ),
+                        dict(
+                            server="1.1.1.3",
+                            use_vrf="v200",
+                        ),
+                    ],
+                    peers=[
+                        dict(
+                            peer="192.168.1.1",
+                            vrf="default",
+                        ),
+                        dict(
+                            peer="192.168.1.2",
+                            use_vrf="v200",
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "ntp server 1.1.1.1 use-vrf management",
+            "ntp server 1.1.1.3 use-vrf v200",
+            "ntp peer 192.168.1.1 use-vrf default",
+            "ntp peer 192.168.1.2 use-vrf v200",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_ntp_global_alias_idempotent(self):
+        self.get_config.return_value = dedent(
+            """\
+            ntp server 1.1.1.1 use-vrf management
+            ntp server 1.1.1.3 use-vrf v200
+            ntp peer 192.168.1.1 use-vrf default
+            ntp peer 192.168.1.2 use-vrf v200
+            """
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    servers=[
+                        dict(
+                            server="1.1.1.1",
+                            vrf="management",
+                        ),
+                        dict(
+                            server="1.1.1.3",
+                            use_vrf="v200",
+                        ),
+                    ],
+                    peers=[
+                        dict(
+                            peer="192.168.1.1",
+                            vrf="default",
+                        ),
+                        dict(
+                            peer="192.168.1.2",
+                            use_vrf="v200",
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        self.execute_module(changed=False)
