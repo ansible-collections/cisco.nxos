@@ -3,7 +3,7 @@ import subprocess
 
 def log(message):
     if os.environ.get('GITHUB_ACTIONS'):
-        print(f"/n{message}", flush=True)
+        print(f"\n{message}", flush=True)
 
 def test_integration(ansible_project, environment):
     log(f"::group::{ansible_project.role}")
