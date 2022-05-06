@@ -11,7 +11,7 @@ jobs:
     uses: ansible-network/github_actions/.github/workflows/integration.yml@main
     with:
       network_os: cisco.nxos.nxos
-      pytest_addopts: "--role-include=interfaces"
+      pytest_addopts: "--role-include=l3_interfaces"
     secrets:
       cml_ssh_password: ${{ secrets.cml_ssh_password }}
       virl_host: ${{ secrets.virl_host }}
