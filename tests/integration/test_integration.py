@@ -2,6 +2,7 @@ import subprocess
 
 
 def test_integration(ansible_project, environment):
+    print(f"::group::{ansible_project.role}")
     args = [
         "ansible-navigator",
         "run",
@@ -19,7 +20,14 @@ def test_integration(ansible_project, environment):
         "--lf",
         ansible_project.log_file,
     ]
-    subprocess.check_call(
-        args,
-        env=environment,
-    )
+    try:
+        subprocess.check_call(
+            args,
+            env=environment,
+        )
+    except subprocess.CalledProcessError as exc:
+        print("::endgroup::")
+        print(f"::error title=Integration test failure::{ansible_project.role}")
+        raise exc
+    print("::endgroup::")
+
