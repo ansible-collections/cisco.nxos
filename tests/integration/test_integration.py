@@ -1,12 +1,10 @@
 import os
 import subprocess
 
-def log(message):
-    if os.environ.get('GITHUB_ACTIONS'):
-        print(f"\n{message}", flush=True)
+import logging
+
 
 def test_integration(ansible_project, environment):
-    log(f"::group::Run integration test: '{ansible_project.role}'")
     args = [
         "ansible-navigator",
         "run",
@@ -26,15 +24,11 @@ def test_integration(ansible_project, environment):
         "--skip-tags",
         "local,nxapi"
     ]
-    log(" ".join(args))
+    logging.info(" ".join(args))
     try:
         subprocess.check_call(
             args,
             env=environment,
         )
     except subprocess.CalledProcessError as exc:
-        log("::endgroup::")
-        log(f"::error title=Integration test failure::{ansible_project.role}", flush=True)
-        raise exc
-    log("::endgroup::")
-
+        raise AssertionError("Integration test failed: %s", ansible_project.role)
