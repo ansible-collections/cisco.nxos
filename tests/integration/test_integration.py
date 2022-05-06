@@ -2,7 +2,7 @@ import os
 import subprocess
 
 import logging
-
+import pytest
 
 def test_integration(ansible_project, environment):
     args = [
@@ -25,10 +25,11 @@ def test_integration(ansible_project, environment):
         "local,nxapi"
     ]
     logging.info(" ".join(args))
+    assert 1 == 2
     try:
         subprocess.check_call(
             args,
             env=environment,
         )
     except subprocess.CalledProcessError as exc:
-        raise AssertionError("Integration test failed: %s", ansible_project.role)
+        pytest.fail(msg=f"Integration test failed: {ansible_project.role}")
