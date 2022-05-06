@@ -25,7 +25,6 @@ def test_integration(ansible_project, environment):
         "local,nxapi"
     ]
     logging.info(" ".join(args))
-    assert 1 == 2
     try:
         subprocess.check_call(
             args,
