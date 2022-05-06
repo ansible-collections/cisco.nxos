@@ -1,8 +1,12 @@
+import os
 import subprocess
 
+def log(message):
+    if os.environ.get('GITHUB_ACTIONS'):
+        print(f"/n{message}", flush=True)
 
 def test_integration(ansible_project, environment):
-    print(f"::group::{ansible_project.role}", flush=True)
+    log(f"::group::{ansible_project.role}")
     args = [
         "ansible-navigator",
         "run",
@@ -14,21 +18,23 @@ def test_integration(ansible_project, environment):
         "--mode",
         "stdout",
         "--pas",
-        ansible_project.playbook_artifact,
+        str(ansible_project.playbook_artifact),
         "--ll",
         "debug",
         "--lf",
-        ansible_project.log_file,
+        str(ansible_project.log_file),
+        "--skip-tags",
+        "local,nxapi"
     ]
-    print(" ".join(args), flush=True)
+    log(" ".join(args))
     try:
         subprocess.check_call(
             args,
             env=environment,
         )
     except subprocess.CalledProcessError as exc:
-        print("::endgroup::", flush=True)
-        print(f"::error title=Integration test failure::{ansible_project.role}", flush=True)
+        log("::endgroup::")
+        log(f"::error title=Integration test failure::{ansible_project.role}", flush=True)
         raise exc
-    print("::endgroup::", flush=True)
+    log("::endgroup::")
 
