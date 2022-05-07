@@ -51,7 +51,7 @@
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-        - replaced['after'] == result['after']
+          - replaced['after'] == result['after']
 
     - name: Override all logging configuration with provided configuration (IDEMPOTENT)
       register: result

@@ -10,7 +10,6 @@
     lines: feature fabric forwarding
 
 - block:
-
     - include: cli.yaml
       tags:
         - cli

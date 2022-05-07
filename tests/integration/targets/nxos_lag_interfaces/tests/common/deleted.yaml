@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start nxos_lag_interfaces deleted integration tests connection={{ ansible_connection
+    msg:
+      Start nxos_lag_interfaces deleted integration tests connection={{ ansible_connection
       }}
 
 - set_fact: test_int1="{{ nxos_int1 }}"
@@ -14,7 +15,6 @@
     feature: lacp
 
 - block:
-
     - name: Setup2
       loop:
         - interface {{ test_int1 }}
@@ -22,13 +22,13 @@
       cisco.nxos.nxos_config:
         lines:
           - channel-group 10
-        parents: '{{ item }}'
+        parents: "{{ item }}"
 
     - name: Gather LAG interfaces facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lag_interfaces
 
     - name: deleted
@@ -58,7 +58,6 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: _remove_config.yaml
 
     - name: disable feature lacp

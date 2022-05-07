@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start nxos_bfd_interfaces overridden integration tests connection={{ ansible_connection
+    msg:
+      Start nxos_bfd_interfaces overridden integration tests connection={{ ansible_connection
       }}
 
 - set_fact: test_int1="{{ nxos_int1 }}"
@@ -20,7 +21,6 @@
       - "default interface {{ test_int2 }}"
 
 - block:
-
     - name: setup2
       cisco.nxos.nxos_config:
         lines:
@@ -38,13 +38,12 @@
     - name: setup initial bfd state
       cisco.nxos.nxos_bfd_interfaces:
         config:
-
-          - name: '{{ test_int1 }}'
-            bfd: '{{ bfd_disable|default(omit)}}'
+          - name: "{{ test_int1 }}"
+            bfd: "{{ bfd_disable|default(omit)}}"
             echo: enable
 
-          - name: '{{ test_int2 }}'
-            bfd: '{{ bfd_enable|default(omit)}}'
+          - name: "{{ test_int2 }}"
+            bfd: "{{ bfd_enable|default(omit)}}"
             echo: disable
         state: merged
 
@@ -52,9 +51,8 @@
       register: result
       cisco.nxos.nxos_bfd_interfaces: &id001
         config:
-
-          - name: '{{ test_int1 }}'
-            bfd: '{{ bfd_disable|default(omit)}}'
+          - name: "{{ test_int1 }}"
+            bfd: "{{ bfd_disable|default(omit)}}"
             echo: disable
         state: overridden
 
@@ -74,6 +72,5 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_config: *id002

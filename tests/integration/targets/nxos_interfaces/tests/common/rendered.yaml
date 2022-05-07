@@ -33,13 +33,14 @@
       cisco.nxos.nxos_interfaces:
         state: gathered
 
-    - name: Make sure that rendered task actually did not make any changes to the
+    - name:
+        Make sure that rendered task actually did not make any changes to the
         device
       assert:
-        that: "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.interfaces)|length
-                  == 0}}"
+        that:
+          "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.interfaces)|length
+          == 0}}"
   always:
-
     - include_tasks: _remove_config.yaml
 
 - debug:

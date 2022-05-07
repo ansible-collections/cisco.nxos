@@ -93,27 +93,26 @@
   until: result is not failed
   ignore_errors: true
   cisco.nxos.nxos_bfd_global:
-    slow_timer: '{{ nd_slow }}'
+    slow_timer: "{{ nd_slow }}"
 
 - block:
-
     - name: BFD non defaults
       register: result
       cisco.nxos.nxos_bfd_global: &id004
-        echo_interface: '{{ nd_echo }}'
-        echo_rx_interval: '{{ nd_echo_rx | default(omit) }}'
-        interval: '{{ nd_interval }}'
-        slow_timer: '{{ nd_slow }}'
-        startup_timer: '{{ nd_startup | default(omit) }}'
-        ipv4_echo_rx_interval: '{{ nd_ipv4_echo_rx | default(omit) }}'
-        ipv6_echo_rx_interval: '{{ nd_ipv6_echo_rx | default(omit) }}'
-        ipv4_interval: '{{ nd_ipv4_interval | default(omit) }}'
-        ipv6_interval: '{{ nd_ipv6_interval | default(omit) }}'
-        ipv4_slow_timer: '{{ nd_ipv4_slow | default(omit) }}'
-        ipv6_slow_timer: '{{ nd_ipv6_slow | default(omit) }}'
-        fabricpath_interval: '{{ nd_fab_interval | default(omit) }}'
-        fabricpath_slow_timer: '{{ nd_fab_slow | default(omit) }}'
-        fabricpath_vlan: '{{ nd_fab_vlan | default(omit) }}'
+        echo_interface: "{{ nd_echo }}"
+        echo_rx_interval: "{{ nd_echo_rx | default(omit) }}"
+        interval: "{{ nd_interval }}"
+        slow_timer: "{{ nd_slow }}"
+        startup_timer: "{{ nd_startup | default(omit) }}"
+        ipv4_echo_rx_interval: "{{ nd_ipv4_echo_rx | default(omit) }}"
+        ipv6_echo_rx_interval: "{{ nd_ipv6_echo_rx | default(omit) }}"
+        ipv4_interval: "{{ nd_ipv4_interval | default(omit) }}"
+        ipv6_interval: "{{ nd_ipv6_interval | default(omit) }}"
+        ipv4_slow_timer: "{{ nd_ipv4_slow | default(omit) }}"
+        ipv6_slow_timer: "{{ nd_ipv6_slow | default(omit) }}"
+        fabricpath_interval: "{{ nd_fab_interval | default(omit) }}"
+        fabricpath_slow_timer: "{{ nd_fab_slow | default(omit) }}"
+        fabricpath_vlan: "{{ nd_fab_vlan | default(omit) }}"
 
     - assert: &id005
         that:
@@ -130,20 +129,20 @@
     - name: BFD defaults
       register: result
       cisco.nxos.nxos_bfd_global: &id006
-        echo_interface: '{{ echo }}'
-        echo_rx_interval: '{{ echo_rx | default(omit) }}'
-        interval: '{{ interval }}'
-        slow_timer: '{{ slow }}'
-        startup_timer: '{{ startup | default(omit) }}'
-        ipv4_echo_rx_interval: '{{ ipv4_echo_rx | default(omit) }}'
-        ipv6_echo_rx_interval: '{{ ipv6_echo_rx | default(omit) }}'
-        ipv4_interval: '{{ ipv4_interval | default(omit) }}'
-        ipv6_interval: '{{ ipv6_interval | default(omit) }}'
-        ipv4_slow_timer: '{{ ipv4_slow | default(omit) }}'
-        ipv6_slow_timer: '{{ ipv6_slow | default(omit) }}'
-        fabricpath_interval: '{{ fab_interval | default(omit) }}'
-        fabricpath_slow_timer: '{{ fab_slow | default(omit) }}'
-        fabricpath_vlan: '{{ fab_vlan | default(omit) }}'
+        echo_interface: "{{ echo }}"
+        echo_rx_interval: "{{ echo_rx | default(omit) }}"
+        interval: "{{ interval }}"
+        slow_timer: "{{ slow }}"
+        startup_timer: "{{ startup | default(omit) }}"
+        ipv4_echo_rx_interval: "{{ ipv4_echo_rx | default(omit) }}"
+        ipv6_echo_rx_interval: "{{ ipv6_echo_rx | default(omit) }}"
+        ipv4_interval: "{{ ipv4_interval | default(omit) }}"
+        ipv6_interval: "{{ ipv6_interval | default(omit) }}"
+        ipv4_slow_timer: "{{ ipv4_slow | default(omit) }}"
+        ipv6_slow_timer: "{{ ipv6_slow | default(omit) }}"
+        fabricpath_interval: "{{ fab_interval | default(omit) }}"
+        fabricpath_slow_timer: "{{ fab_slow | default(omit) }}"
+        fabricpath_vlan: "{{ fab_vlan | default(omit) }}"
 
     - assert: *id005
 
@@ -153,7 +152,6 @@
 
     - assert: *id007
   always:
-
     - name: Teardown
       ignore_errors: true
       cisco.nxos.nxos_feature: *id008

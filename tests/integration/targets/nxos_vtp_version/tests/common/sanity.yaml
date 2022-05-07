@@ -8,7 +8,6 @@
   when: platform is search('N3K-F|N9K-F')
 
 - block:
-
     - name: disable feature vtp
       ignore_errors: true
       cisco.nxos.nxos_feature:
@@ -42,7 +41,6 @@
           - result.changed == false
   when: vtp_run | bool
   always:
-
     - name: disable feature vtp
       cisco.nxos.nxos_feature:
         feature: vtp

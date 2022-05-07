@@ -5,7 +5,7 @@
   register: result
   cisco.nxos.nxos_facts:
     gather_subset:
-      - '!hardware'
+      - "!hardware"
 
 - assert:
     that:

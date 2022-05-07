@@ -11,7 +11,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Gather lacp facts from the device using nxos_lacp
       register: result
       cisco.nxos.nxos_lacp:
@@ -20,7 +19,6 @@
     - assert:
         that: "{{ result['gathered'] == gathered }}"
   always:
-
     - include_tasks: _remove_config.yaml
 
     - name: teardown

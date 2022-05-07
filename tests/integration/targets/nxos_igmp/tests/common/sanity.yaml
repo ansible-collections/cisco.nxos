@@ -5,7 +5,6 @@
   when: platform is not match("N35")
 
 - block:
-
     - name: Configure igmp with non-default values
       register: result
       cisco.nxos.nxos_igmp: &id001
@@ -31,7 +30,7 @@
       cisco.nxos.nxos_igmp: &id003
         flush_routes: false
         enforce_rtr_alert: false
-        restart: '{{restart|default(omit)}}'
+        restart: "{{restart|default(omit)}}"
         state: present
 
     - assert: *id002
@@ -59,7 +58,6 @@
 
     - assert: *id004
   always:
-
     - name: Configure igmp with default values
       register: result
       ignore_errors: true

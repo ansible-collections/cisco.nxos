@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_community sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_snmp_community sanity
     test"
 
 - name: Setup - Remove snmp_community if configured - 1
@@ -17,7 +18,6 @@
     state: absent
 
 - block:
-
     - name: Configure snmp_community group
       register: result
       cisco.nxos.nxos_snmp_community: &id001
@@ -152,12 +152,12 @@
           - result.changed == True
           - "'snmp-server community TEST group network-admin' in result.commands"
   always:
-
     - name: Cleanup
       cisco.nxos.nxos_snmp_community: *id005
 
     - name: Cleanup
       cisco.nxos.nxos_snmp_community: *id010
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_community sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_snmp_community sanity
         test"

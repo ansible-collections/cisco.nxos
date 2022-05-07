@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
+    msg:
+      START nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _remove_config.yaml
@@ -35,9 +36,9 @@
       assert:
         that: "{{ result['gathered'] == [] }}"
   always:
-
     - include_tasks: _remove_config.yaml
 
 - debug:
-    msg: END nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
+    msg:
+      END nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
       }}

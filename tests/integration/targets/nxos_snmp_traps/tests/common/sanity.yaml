@@ -7,7 +7,6 @@
     state: disabled
 
 - block:
-
     - name: Configure one snmp trap group
       register: result
       cisco.nxos.nxos_snmp_traps: &id001
@@ -49,7 +48,6 @@
     - assert: *id002
 
     - block:
-
         - name: Idempotence Check
           register: result
           cisco.nxos.nxos_snmp_traps: *id005
@@ -69,7 +67,6 @@
 
     - assert: *id004
   always:
-
     - name: Cleanup
       cisco.nxos.nxos_snmp_traps: *id006
 

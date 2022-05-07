@@ -57,7 +57,7 @@
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
-    remote_scp_server: '{{ inventory_hostname_short }}'
+    remote_scp_server: "{{ inventory_hostname_short }}"
 
 - assert:
     that:

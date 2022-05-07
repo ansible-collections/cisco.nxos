@@ -36,7 +36,6 @@
       assert:
         that: "{{ result['gathered'] == [] }}"
   always:
-
     - include_tasks: _remove_config.yaml
 
 - debug:

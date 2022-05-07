@@ -1,29 +1,28 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_pim sanity test"
 
-- name: 'Setup: Disable features'
+- name: "Setup: Disable features"
   ignore_errors: true
   loop:
     - pim
     - bfd
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: disabled
 
-- name: 'Setup: Enable features'
+- name: "Setup: Enable features"
   loop:
     - pim
     - bfd
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: enabled
 
-- name: 'Setup: Configure ssm_range none'
+- name: "Setup: Configure ssm_range none"
   cisco.nxos.nxos_pim: &id005
     ssm_range: none
 
 - block:
-
     - name: Initial config from none
       register: result
       cisco.nxos.nxos_pim: &id001
@@ -70,14 +69,13 @@
 
     - assert: *id004
   always:
-
-    - name: 'Teardown: Disable features'
+    - name: "Teardown: Disable features"
       ignore_errors: true
       loop:
         - pim
         - bfd
       cisco.nxos.nxos_feature:
-        feature: '{{ item }}'
+        feature: "{{ item }}"
         state: disabled
 
 - debug: msg="END connection={{ ansible_connection }} nxos_pim sanity test"

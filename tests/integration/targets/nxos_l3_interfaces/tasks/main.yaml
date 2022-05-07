@@ -3,9 +3,9 @@
     rsvd_intf: "{{ rsvd_intf|default('mgmt0') }}"
 
 - block:
-  - include: cli.yaml
-    tags:
-      - cli
-  - include: nxapi.yaml
-    tags:
-      - nxapi
+    - include: cli.yaml
+      tags:
+        - cli
+    - include: nxapi.yaml
+      tags:
+        - nxapi

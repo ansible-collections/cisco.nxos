@@ -13,7 +13,6 @@
       register: result
       cisco.nxos.nxos_acl_interfaces: &id002
         config:
-
           - name: Ethernet1/2
         state: deleted
 
@@ -35,8 +34,8 @@
     - name: Gather acl interfaces facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: acl_interfaces
 
     - assert:
@@ -55,5 +54,4 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: remove_config.yaml

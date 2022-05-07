@@ -5,12 +5,11 @@
 - include_tasks: populate_config.yaml
 
 - block:
-
     - name: Gather acl interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: acl_interfaces
 
     - name: Gathered
@@ -31,5 +30,4 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: remove_config.yaml

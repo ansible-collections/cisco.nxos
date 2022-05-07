@@ -9,7 +9,7 @@
 - set_fact: test_shutdown
   when: platform is not search('N3[5KL]|N[56]K|titanium')
 
-- name: 'setup0: clean up (interfaces) attributes on all interfaces'
+- name: "setup0: clean up (interfaces) attributes on all interfaces"
   cisco.nxos.nxos_interfaces:
     state: deleted
 
@@ -18,7 +18,6 @@
     lines: "default interface {{ test_int1 }}"
 
 - block:
-
     - name: setup2
       cisco.nxos.nxos_config:
         lines:
@@ -29,8 +28,8 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: interfaces
 
     - name: deleted
@@ -61,6 +60,5 @@
           - result.commands|length == 0
       when: test_shutdown is defined
   always:
-
     - name: teardown
       cisco.nxos.nxos_config: *id002

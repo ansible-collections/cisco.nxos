@@ -9,7 +9,6 @@
     state: absent
 
 - block:
-
     - name: Configure text ntp authentication
       register: result
       cisco.nxos.nxos_ntp_auth:
@@ -125,7 +124,6 @@
 
     - assert: *id004
   always:
-
     - name: Cleanup ntp auth config
       ignore_errors: true
       cisco.nxos.nxos_ntp_auth: *id009

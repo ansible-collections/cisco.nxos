@@ -51,12 +51,12 @@
   register: result
   cisco.nxos.nxos_file_copy:
     local_file: "{{ role_path }}/tests/common/fixtures/{{ item }}"
-    file_system: 'bootflash:'
-    connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
+    file_system: "bootflash:"
+    connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
   loop:
-     - server.crt
-     - new_server.crt
-     - local_server.crt
+    - server.crt
+    - new_server.crt
+    - local_server.crt
   vars:
     ansible_connection: ansible.netcommon.network_cli
 

@@ -2,7 +2,6 @@
 - debug: msg="START connection={{ ansible_connection }} nxos_vrrp sanity test"
 
 - block:
-
     - name: Enable interface-vlan
       cisco.nxos.nxos_feature:
         feature: interface-vlan
@@ -112,7 +111,6 @@
 
     - assert: *id004
   always:
-
     - name: remove vrrp
       ignore_errors: true
       cisco.nxos.nxos_vrrp: *id005

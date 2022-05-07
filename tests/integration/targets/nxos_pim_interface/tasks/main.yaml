@@ -1,11 +1,9 @@
 ---
 - block:
-
     - include: cli.yaml
       tags:
         - cli
   always:
-
     - include: nxapi.yaml
       tags:
         - nxapi

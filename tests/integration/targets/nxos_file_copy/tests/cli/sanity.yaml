@@ -45,13 +45,12 @@
   when: ansible_user != "admin"
 
 - block:
-
     - name: Copy {{ test_source_file }} file from Ansible controller to bootflash
       register: result
       cisco.nxos.nxos_file_copy: &id001
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
-        file_system: 'bootflash:'
-        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
+        file_system: "bootflash:"
+        connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
     - assert:
         that:
@@ -62,7 +61,8 @@
 
           - "'Sent: File copied to remote device.' in result.transfer_status"
 
-    - name: Idempotence - Copy {{ test_source_file }} file from Ansible controller
+    - name:
+        Idempotence - Copy {{ test_source_file }} file from Ansible controller
         to bootflash
       register: result
       cisco.nxos.nxos_file_copy: *id001
@@ -75,14 +75,15 @@
       register: result
       cisco.nxos.nxos_command: *id002
 
-    - name: Copy {{ test_source_file }} file from Ansible controller to bootflash
+    - name:
+        Copy {{ test_source_file }} file from Ansible controller to bootflash
         renamed as {{ test_destination_file }}
       register: result
       cisco.nxos.nxos_file_copy: &id003
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
-        remote_file: '{{ test_destination_file }}'
-        file_system: 'bootflash:'
-        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
+        remote_file: "{{ test_destination_file }}"
+        file_system: "bootflash:"
+        connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
     - assert:
         that:
@@ -92,7 +93,8 @@
           - "'{{ test_destination_file }}' in result.remote_file"
           - "'Sent: File copied to remote device.' in result.transfer_status"
 
-    - name: Idempotence - Copy {{ test_source_file }} file from Ansible controller
+    - name:
+        Idempotence - Copy {{ test_source_file }} file from Ansible controller
         to bootflash renamed as {{ test_destination_file }}
       register: result
       cisco.nxos.nxos_file_copy: *id003
@@ -105,29 +107,30 @@
         file_pull_compact: true
         file_pull_kstack: true
         local_file_directory: dir1/dir2/dir3
-        remote_scp_server: '{{ inventory_hostname_short }}'
+        remote_scp_server: "{{ inventory_hostname_short }}"
         remote_scp_server_user: temp_user
-        remote_scp_server_password: '{{ temp_passwd }}'
+        remote_scp_server_password: "{{ temp_passwd }}"
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
-        remote_file: '{{ test_destination_file }}'
-        file_system: 'bootflash:'
-        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
+        remote_file: "{{ test_destination_file }}"
+        file_system: "bootflash:"
+        connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
     - assert: *id004
 
-    - name: Initiate copy from nxos device to copy {{ test_destination_file }} to
+    - name:
+        Initiate copy from nxos device to copy {{ test_destination_file }} to
         bootflash:dir1/dir2/dir3/{{ test_destination_file }}_copy
       register: result
       cisco.nxos.nxos_file_copy: &id005
         file_pull: true
         file_pull_timeout: 30
         remote_file: /{{ test_destination_file }}
-        local_file: '{{ test_destination_file }}_copy'
+        local_file: "{{ test_destination_file }}_copy"
         local_file_directory: dir1/dir2/dir3
-        remote_scp_server: '{{ mgmt0_ip }}'
+        remote_scp_server: "{{ mgmt0_ip }}"
         remote_scp_server_user: temp_user
         remote_scp_server_password: "{{ temp_passwd }}"
-        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
+        connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
     - assert: &id006
         that:
@@ -150,7 +153,8 @@
 
     - assert: *id006
 
-    - name: Initiate copy with sftp from nxos device to copy /bootflash/{{ test_destination_file }} to
+    - name:
+        Initiate copy with sftp from nxos device to copy /bootflash/{{ test_destination_file }} to
         bootflash:dir2/dir2/dir3/{{ test_destination_file }}_another_copy
       register: result
       cisco.nxos.nxos_file_copy:
@@ -158,12 +162,12 @@
         file_pull_protocol: sftp
         file_pull_timeout: 60
         remote_file: "/bootflash/{{ test_destination_file }}"
-        local_file: '{{ test_destination_file }}_another_copy'
+        local_file: "{{ test_destination_file }}_another_copy"
         local_file_directory: dir1/dir2/dir3
-        remote_scp_server: '{{ mgmt0_ip }}'
+        remote_scp_server: "{{ mgmt0_ip }}"
         remote_scp_server_user: temp_user
         remote_scp_server_password: "{{ temp_passwd }}"
-        connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
+        connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
     - assert:
         that:
@@ -181,7 +185,6 @@
     - name: Remove file
       ignore_errors: true
       cisco.nxos.nxos_command: *id002
-
 
     - name: Recover the admin password if ansible_user is not admin
       cisco.nxos.nxos_config:

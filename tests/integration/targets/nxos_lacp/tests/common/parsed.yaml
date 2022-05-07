@@ -12,7 +12,7 @@
         state: parsed
 
     - assert:
-       that: "{{ parsed == result['parsed'] }}"
+        that: "{{ parsed == result['parsed'] }}"
 
 - debug:
     msg: END nxos_lacp parsed integration tests on connection={{ ansible_connection }}

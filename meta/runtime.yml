@@ -1,5 +1,5 @@
 ---
-requires_ansible: '>=2.9.10'
+requires_ansible: ">=2.9.10"
 plugin_routing:
   action:
     nxos_aaa_server:
@@ -402,20 +402,20 @@ plugin_routing:
     acl:
       redirect: cisco.nxos.nxos_acl
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_acl:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     acl_interface:
       redirect: cisco.nxos.nxos_acl_interface
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_acl_interface:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     acl_interfaces:
       redirect: cisco.nxos.nxos_acl_interfaces
@@ -430,38 +430,38 @@ plugin_routing:
     bgp:
       redirect: cisco.nxos.nxos_bgp
       deprecation:
-        removal_date: '2023-01-27'
+        removal_date: "2023-01-27"
         warning_text: See the plugin documentation for more details
     nxos_bgp:
       deprecation:
-        removal_date: '2023-01-27'
+        removal_date: "2023-01-27"
         warning_text: See the plugin documentation for more details
     bgp_af:
       redirect: cisco.nxos.nxos_bgp_af
       deprecation:
-        removal_date: '2023-02-24'
+        removal_date: "2023-02-24"
         warning_text: See the plugin documentation for more details
     nxos_bgp_af:
       deprecation:
-        removal_date: '2023-02-24'
+        removal_date: "2023-02-24"
         warning_text: See the plugin documentation for more details
     bgp_neighbor:
       redirect: cisco.nxos.nxos_bgp_neighbor
       deprecation:
-        removal_date: '2023-01-27'
+        removal_date: "2023-01-27"
         warning_text: See the plugin documentation for more details
     nxos_bgp_neighbor:
       deprecation:
-        removal_date: '2023-01-27'
+        removal_date: "2023-01-27"
         warning_text: See the plugin documentation for more details
     bgp_neighbor_af:
       redirect: cisco.nxos.nxos_bgp_neighbor_af
       deprecation:
-        removal_date: '2023-02-24'
+        removal_date: "2023-02-24"
         warning_text: See the plugin documentation for more details
     nxos_bgp_neighbor_af:
       deprecation:
-        removal_date: '2023-02-24'
+        removal_date: "2023-02-24"
         warning_text: See the plugin documentation for more details
     command:
       redirect: cisco.nxos.nxos_command
@@ -500,42 +500,42 @@ plugin_routing:
     interface:
       redirect: cisco.nxos.nxos_interface
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_interface:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     interface_ospf:
       redirect: cisco.nxos.nxos_interface_ospf
       deprecation:
-        removal_date: '2022-10-26'
+        removal_date: "2022-10-26"
         warning_text: See the plugin documentation for more details
     nxos_interface_ospf:
       deprecation:
-        removal_date: '2022-10-26'
+        removal_date: "2022-10-26"
         warning_text: See the plugin documentation for more details
     interfaces:
       redirect: cisco.nxos.nxos_interfaces
     l2_interface:
       redirect: cisco.nxos.nxos_l2_interface
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_l2_interface:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     l2_interfaces:
       redirect: cisco.nxos.nxos_l2_interfaces
     l3_interface:
       redirect: cisco.nxos.nxos_l3_interface
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_l3_interface:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     l3_interfaces:
       redirect: cisco.nxos.nxos_l3_interfaces
@@ -548,20 +548,20 @@ plugin_routing:
     linkagg:
       redirect: cisco.nxos.nxos_linkagg
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_linkagg:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     lldp:
       redirect: cisco.nxos.nxos_lldp
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_lldp:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     lldp_global:
       redirect: cisco.nxos.nxos_lldp_global
@@ -570,11 +570,11 @@ plugin_routing:
     logging:
       redirect: cisco.nxos.nxos_logging
       deprecation:
-        removal_date: '2023-08-01'
+        removal_date: "2023-08-01"
         warning_text: See the plugin documentation for more details
     nxos_logging:
       deprecation:
-        removal_date: '2023-08-01'
+        removal_date: "2023-08-01"
         warning_text: See the plugin documentation for more details
     logging_global:
       redirect: cisco.nxos.nxos_logging_global
@@ -583,29 +583,29 @@ plugin_routing:
     ntp:
       redirect: cisco.nxos.nxos_ntp
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxos_ntp:
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     ntp_auth:
       redirect: cisco.nxos.nxos_ntp_auth
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxos_ntp_auth:
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     ntp_options:
       redirect: cisco.nxos.nxos_ntp_options
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxos_ntp_options:
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxapi:
       redirect: cisco.nxos.nxos_nxapi
@@ -614,20 +614,20 @@ plugin_routing:
     ospf:
       redirect: cisco.nxos.nxos_ospf
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_ospf:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     ospf_vrf:
       redirect: cisco.nxos.nxos_ospf_vrf
       deprecation:
-        removal_date: '2022-10-01'
+        removal_date: "2022-10-01"
         warning_text: See the plugin documentation for more details
     nxos_ospf_vrf:
       deprecation:
-        removal_date: '2022-10-01'
+        removal_date: "2022-10-01"
         warning_text: See the plugin documentation for more details
     bgp_global:
       redirect: cisco.nxos.nxos_bgp_global
@@ -660,78 +660,78 @@ plugin_routing:
     smu:
       redirect: cisco.nxos.nxos_smu
       deprecation:
-        removal_date: '2022-10-01'
+        removal_date: "2022-10-01"
         warning_text: See the plugin documentation for more details
     nxos_smu:
       deprecation:
-        removal_date: '2022-10-01'
+        removal_date: "2022-10-01"
         warning_text: See the plugin documentation for more details
     snapshot:
       redirect: cisco.nxos.nxos_snapshot
     snmp_community:
       redirect: cisco.nxos.nxos_snmp_community
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxos_snmp_community:
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     snmp_contact:
       redirect: cisco.nxos.nxos_snmp_contact
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxos_snmp_contact:
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     snmp_host:
       redirect: cisco.nxos.nxos_snmp_host
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxos_snmp_host:
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     snmp_location:
       redirect: cisco.nxos.nxos_snmp_location
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxos_snmp_location:
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     snmp_server:
       redirect: cisco.nxos.nxos_snmp_server
     snmp_traps:
       redirect: cisco.nxos.nxos_snmp_traps
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxos_snmp_traps:
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     snmp_user:
       redirect: cisco.nxos.nxos_snmp_user
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     nxos_snmp_user:
       deprecation:
-        removal_date: '2024-01-01'
+        removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
     static_route:
       redirect: cisco.nxos.nxos_static_route
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_static_route:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     static_routes:
       redirect: cisco.nxos.nxos_static_routes
@@ -748,11 +748,11 @@ plugin_routing:
     vlan:
       redirect: cisco.nxos.nxos_vlan
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     nxos_vlan:
       deprecation:
-        removal_date: '2022-06-01'
+        removal_date: "2022-06-01"
         warning_text: See the plugin documentation for more details
     vlans:
       redirect: cisco.nxos.nxos_vlans

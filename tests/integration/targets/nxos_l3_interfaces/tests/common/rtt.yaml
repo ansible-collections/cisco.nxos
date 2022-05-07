@@ -39,8 +39,8 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - l3_interfaces
 
@@ -71,7 +71,7 @@
 
     - assert:
         that:
-        - result.changed == true
+          - result.changed == true
 
     - name: Revert back to base config using facts round trip
       register: revert

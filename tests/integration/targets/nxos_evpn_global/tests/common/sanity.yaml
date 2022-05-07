@@ -15,7 +15,6 @@
     state: disabled
 
 - block:
-
     - name: Enable feature nv overlay
       ignore_errors: true
       cisco.nxos.nxos_feature:
@@ -53,11 +52,10 @@
     - assert: *id004
   when: not ( platform is search('N3K|N35|N3L'))
   rescue:
-
-    - debug: msg="connection={{ ansible_connection }} nxos_evpn_global sanity test
+    - debug:
+        msg="connection={{ ansible_connection }} nxos_evpn_global sanity test
         - FALURE ENCOUNTERED"
   always:
-
     - name: Cleanup - Disable nv overlay evpn
       ignore_errors: true
       cisco.nxos.nxos_config: *id005
@@ -66,5 +64,6 @@
       ignore_errors: true
       cisco.nxos.nxos_feature: *id006
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_evpn_global sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_evpn_global sanity
         test"

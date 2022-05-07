@@ -22,7 +22,6 @@
     state: enabled
 
 - block:
-
     - name: set isolate
       register: result
       when: bgp_isolate
@@ -63,10 +62,8 @@
     - assert: *id004
       when: bgp_isolate
   rescue:
-
     - debug: msg="Tests can fail on A8 images"
   always:
-
     - name: Disable feature bgp
       ignore_errors: true
       cisco.nxos.nxos_feature:

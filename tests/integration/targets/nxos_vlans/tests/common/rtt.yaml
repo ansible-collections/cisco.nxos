@@ -22,10 +22,10 @@
     - name: Gather VLANs facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
-          - 'vlans'
+          - "vlans"
 
     - name: Set default vlan (vlan1) config and config to revert
       set_fact:
@@ -47,7 +47,7 @@
 
     - assert:
         that:
-        - result.changed == true
+          - result.changed == true
 
     - name: Revert back to base config using facts round trip
       register: revert

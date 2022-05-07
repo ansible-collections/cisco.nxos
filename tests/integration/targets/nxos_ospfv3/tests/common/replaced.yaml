@@ -17,27 +17,27 @@
                 afi: ipv6
                 safi: unicast
                 areas:
-                - area_id: 0.0.0.100
-                  filter_list:
-                  - route_map: rmap_8
-                    direction: in
-                  ranges:
-                  - not_advertise: true
-                    prefix: 2001:db2::/32
+                  - area_id: 0.0.0.100
+                    filter_list:
+                      - route_map: rmap_8
+                        direction: in
+                    ranges:
+                      - not_advertise: true
+                        prefix: 2001:db2::/32
                 redistribute:
-                - protocol: eigrp
-                  id: 130
-                  route_map: rmap_1
-                - protocol: direct
-                  route_map: ospf102-direct-connect
+                  - protocol: eigrp
+                    id: 130
+                    route_map: rmap_1
+                  - protocol: direct
+                    route_map: ospf102-direct-connect
               vrfs:
-              - vrf: zone1
-                router_id: 198.51.100.129
-                areas:
-                  - area_id: 0.0.0.102
-                    nssa:
-                      default_information_originate: True
-                      no_summary: True
+                - vrf: zone1
+                  router_id: 198.51.100.129
+                  areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: True
+                        no_summary: True
         state: replaced
       register: result
 
@@ -59,7 +59,8 @@
           - "{{ replaced['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
             \ == 0 }}"
 
-    - name: Replace device configurations of listed OSPF processes with provided configurarions
+    - name:
+        Replace device configurations of listed OSPF processes with provided configurarions
         (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_ospfv3: *id002

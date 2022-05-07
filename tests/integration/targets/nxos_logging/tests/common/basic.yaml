@@ -50,7 +50,6 @@
 - assert: *id003
 
 - block:
-
     - name: Logfile logging with level
       register: result
       cisco.nxos.nxos_logging: &id005
@@ -183,7 +182,6 @@
   register: result
   cisco.nxos.nxos_logging: &id012
     aggregate:
-
       - dest: console
         dest_level: 3
 
@@ -237,7 +235,6 @@
 - assert: *id003
 
 - block:
-
     - name: Configure Logging message
       register: result
       cisco.nxos.nxos_logging: &id013

@@ -2,14 +2,12 @@
 - debug: msg="START connection={{ ansible_connection }} nxos_vpc sanity test"
 
 - block:
-
     - set_fact: delay_restore_orphan_port=25
 
     - set_fact: def_delay_restore_orphan_port=default
   when: platform is not search("N35|N5K|N6K")
 
 - block:
-
     - name: disable vpc for initial vpc config cleanup
       cisco.nxos.nxos_feature:
         feature: vpc
@@ -55,7 +53,7 @@
         peer_gw: true
         delay_restore: 5
         delay_restore_interface_vlan: 15
-        delay_restore_orphan_port: '{{ delay_restore_orphan_port|default(omit) }}'
+        delay_restore_orphan_port: "{{ delay_restore_orphan_port|default(omit) }}"
 
     - assert: *id002
 
@@ -66,7 +64,6 @@
     - assert: *id004
 
     - block:
-
         - set_fact: def_auto_recovery=False
 
         - set_fact: def_auto_recovery=True
@@ -76,7 +73,7 @@
           register: result
           cisco.nxos.nxos_vpc: &id005
             domain: 100
-            auto_recovery: '{{ not def_auto_recovery }}'
+            auto_recovery: "{{ not def_auto_recovery }}"
 
         - assert: *id002
 
@@ -90,7 +87,7 @@
           register: result
           cisco.nxos.nxos_vpc: &id006
             domain: 100
-            auto_recovery: '{{ def_auto_recovery }}'
+            auto_recovery: "{{ def_auto_recovery }}"
 
         - assert: *id002
 
@@ -125,8 +122,9 @@
         peer_gw: true
         delay_restore: default
         delay_restore_interface_vlan: default
-        delay_restore_orphan_port: '{{ def_delay_restore_orphan_port|default(omit)
-          }}'
+        delay_restore_orphan_port:
+          "{{ def_delay_restore_orphan_port|default(omit)
+          }}"
 
     - assert: *id002
 
@@ -165,7 +163,6 @@
 
     - assert: *id004
   always:
-
     - name: remove vrf
       ignore_errors: true
       cisco.nxos.nxos_vrf:

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_igmp_interface sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_igmp_interface sanity
     test"
 
 - set_fact: intname="{{ nxos_int1 }}"
@@ -21,7 +22,6 @@
     match: none
 
 - block:
-
     - name: put interface in L3 and enable PIM
       cisco.nxos.nxos_config:
         commands:
@@ -34,7 +34,7 @@
     - name: Configure igmp interface with non-default values
       register: result
       cisco.nxos.nxos_igmp_interface: &id001
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         version: 3
         startup_query_interval: 60
         startup_query_count: 5
@@ -48,7 +48,6 @@
         immediate_leave: true
         group_timeout: 300
         oif_ps:
-
           - source: 192.0.2.1
             prefix: 239.255.255.2
         state: present
@@ -68,7 +67,7 @@
     - name: Configure igmp interface with some default values
       register: result
       cisco.nxos.nxos_igmp_interface: &id003
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         version: default
         startup_query_interval: default
         startup_query_count: default
@@ -80,7 +79,6 @@
         last_member_query_count: default
         group_timeout: default
         oif_ps:
-
           - prefix: 238.2.2.6
 
           - prefix: 238.2.2.5
@@ -99,13 +97,13 @@
 
     - name: restart igmp
       cisco.nxos.nxos_igmp_interface:
-        interface: '{{ intname }}'
-        restart: '{{restart|default(omit)}}'
+        interface: "{{ intname }}"
+        restart: "{{restart|default(omit)}}"
 
     - name: Configure igmp interface with default oif_ps
       register: result
       cisco.nxos.nxos_igmp_interface: &id005
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         oif_ps: default
         state: present
 
@@ -120,7 +118,7 @@
     - name: Configure igmp interface with oif_routemap
       register: result
       cisco.nxos.nxos_igmp_interface: &id006
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         version: 3
         startup_query_interval: 60
         startup_query_count: 5
@@ -139,7 +137,7 @@
     - name: Configure igmp interface with default state
       register: result
       cisco.nxos.nxos_igmp_interface: &id007
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         state: default
 
     - assert: *id002
@@ -153,7 +151,7 @@
     - name: Configure igmp interface with absent state
       register: result
       cisco.nxos.nxos_igmp_interface: &id008
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         state: absent
 
     - assert: *id002
@@ -164,7 +162,6 @@
 
     - assert: *id004
   always:
-
     - name: Configure igmp interface with absent state
       register: result
       cisco.nxos.nxos_igmp_interface: *id008
@@ -181,5 +178,6 @@
         feature: pim
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_igmp_interface sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_igmp_interface sanity
         test"

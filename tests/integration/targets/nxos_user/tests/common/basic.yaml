@@ -4,7 +4,6 @@
 - name: Remove old entries of user
   cisco.nxos.nxos_user: &rem
     aggregate:
-
       - name: ansibletest1
 
       - name: ansibletest2
@@ -37,7 +36,6 @@
   register: result
   cisco.nxos.nxos_user:
     aggregate:
-
       - name: ansibletest2
 
       - name: ansibletest3

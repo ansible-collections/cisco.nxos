@@ -30,7 +30,6 @@
         state: replaced
       register: result
 
-
     - name: Assert that before dicts were correctly generated
       assert:
         that:
@@ -46,10 +45,11 @@
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-        - "{{ replaced['after'][0] == result['after'][0] }}"
-        - "{{ replaced['after'][1] == result['after'][1] }}"
+          - "{{ replaced['after'][0] == result['after'][0] }}"
+          - "{{ replaced['after'][1] == result['after'][1] }}"
 
-    - name: Replace route-maps configurations of listed route-maps with provided configurations
+    - name:
+        Replace route-maps configurations of listed route-maps with provided configurations
         (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_route_maps: *id002

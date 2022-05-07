@@ -18,7 +18,6 @@
     system_mode_maintenance: false
 
 - block:
-
     - name: Put system in maintenance mode with reload reset reason
       register: result
       cisco.nxos.nxos_gir: &id001
@@ -85,10 +84,8 @@
     - assert: *id002
   when: gir_run
   rescue:
-
     - debug: msg="connection={{ ansible_connection }} nxos_gir failure detected"
   always:
-
     - name: Remove snapshots
       ignore_errors: true
       cisco.nxos.nxos_snapshot:

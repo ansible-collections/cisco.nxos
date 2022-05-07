@@ -84,7 +84,10 @@
 - name: aggregate definition of interface
   cisco.nxos.nxos_interface:
     aggregate:
-      - { name: "{{ testint1 }}", description: "Test aggregation on first interface" }
+      - {
+          name: "{{ testint1 }}",
+          description: "Test aggregation on first interface",
+        }
       - { name: "{{ testint2 }}", mode: layer3 }
     provider: "{{ connection }}"
   register: result

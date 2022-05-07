@@ -6,8 +6,8 @@
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
     local_file: ./network-integration.cfg
-    file_system: 'bootflash:'
-    connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
+    file_system: "bootflash:"
+    connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
 - assert:
     that:

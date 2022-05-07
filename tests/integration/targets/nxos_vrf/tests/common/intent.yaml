@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vrf intent & aggregate
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_vrf intent & aggregate
     test"
 
 - set_fact: testint1="{{ nxos_int1 }}"
@@ -38,7 +39,6 @@
   register: result
   cisco.nxos.nxos_vrf: &id001
     aggregate:
-
       - name: test1
         description: Configured by Ansible
 
@@ -69,11 +69,11 @@
   cisco.nxos.nxos_vrf: &id002
     name: test1
     interfaces:
-      - '{{ testint1 }}'
-      - '{{ testint2 }}'
+      - "{{ testint1 }}"
+      - "{{ testint2 }}"
     associated_interfaces:
-      - '{{ testint1 }}'
-      - '{{ testint2 }}'
+      - "{{ testint1 }}"
+      - "{{ testint2 }}"
 
 - assert:
     that:
@@ -97,8 +97,8 @@
   cisco.nxos.nxos_vrf:
     name: test1
     associated_interfaces:
-      - '{{ testint1 }}'
-      - '{{ testint2 }}'
+      - "{{ testint1 }}"
+      - "{{ testint2 }}"
 
 - assert:
     that:
@@ -121,7 +121,7 @@
   cisco.nxos.nxos_vrf: &id003
     name: test1
     interfaces:
-      - '{{ testint2 }}'
+      - "{{ testint2 }}"
 
 - assert:
     that:
@@ -141,7 +141,6 @@
   register: result
   cisco.nxos.nxos_vrf: &id004
     aggregate:
-
       - name: test1
         description: Configured by Ansible
 
@@ -192,5 +191,6 @@
     lines:
       - no vrf context test2
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vrf intent & aggregate
+- debug:
+    msg="END connection={{ ansible_connection }} nxos_vrf intent & aggregate
     test"

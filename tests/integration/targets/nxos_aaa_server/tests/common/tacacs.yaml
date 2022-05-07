@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml
     sanity test"
 
 - name: Enable feature tacacs+
@@ -17,7 +18,6 @@
     state: default
 
 - block:
-
     - name: Configure tacacs server defaults
       register: result
       cisco.nxos.nxos_aaa_server: &id001
@@ -91,10 +91,8 @@
 
     - assert: *id003
   rescue:
-
     - debug: msg="connection={{ ansible_connection }} nxos_aaa_server failure detected"
   always:
-
     - name: Remove tacacs server configuration
       register: result
       cisco.nxos.nxos_aaa_server: *id004
@@ -104,5 +102,6 @@
         feature: tacacs+
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml
+- debug:
+    msg="END connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml
     sanity test"

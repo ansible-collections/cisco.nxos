@@ -1,14 +1,14 @@
 ---
 - debug:
-    msg: START nxos_l3_interfaces rendered integration tests on connection={{ ansible_connection
+    msg:
+      START nxos_l3_interfaces rendered integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _remove_config.yaml
 
-
 - name: Gather pre-facts
   cisco.nxos.nxos_facts:
-    gather_subset: ['!all', '!min']
+    gather_subset: ["!all", "!min"]
     gather_network_resources: l3_interfaces
 
 - block:

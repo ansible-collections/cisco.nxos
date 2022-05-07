@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start nxos_vlans replaced integration tests connection={{ ansible_connection
+    msg:
+      Start nxos_vlans replaced integration tests connection={{ ansible_connection
       }}
 
 - name: setup1
@@ -9,7 +10,6 @@
       - "no vlan 2-100"
 
 - block:
-
     - name: setup2
       cisco.nxos.nxos_config:
         lines:
@@ -21,15 +21,14 @@
     - name: Gather vlans facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: vlans
 
     - name: Replaced
       register: result
       cisco.nxos.nxos_vlans: &id002
         config:
-
           - vlan_id: 6
             state: suspend
         state: replaced
@@ -59,6 +58,5 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_config: *id003

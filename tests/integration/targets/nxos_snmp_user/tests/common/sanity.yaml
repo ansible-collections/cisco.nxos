@@ -27,7 +27,6 @@
     seconds: 5
 
 - block:
-
     - name: Create snmp user
       register: result
       cisco.nxos.nxos_snmp_user:
@@ -77,7 +76,6 @@
     - assert: *id004
 
     - block:
-
         - name: delete snmp user
           register: result
           cisco.nxos.nxos_snmp_user: &id005
@@ -97,7 +95,6 @@
         - assert: *id004
       when: delete_last_user_allowed
   always:
-
     - name: delete snmp user
       when: platform is not search('N5K|N6K|N9K-F')
       cisco.nxos.nxos_snmp_user: *id006

@@ -13,14 +13,13 @@
   when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
 - block:
-
     - name: Merged
       register: result
       cisco.nxos.nxos_lacp: &id001
         config:
           system:
             priority: 11
-            mac: '{{ mac|default(omit) }}'
+            mac: "{{ mac|default(omit) }}"
         state: merged
 
     - assert:
@@ -43,8 +42,8 @@
     - name: Gather lacp facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lacp
 
     - assert:
@@ -60,7 +59,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature:
         feature: lacp

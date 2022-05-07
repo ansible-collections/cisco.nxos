@@ -3,8 +3,8 @@
     msg: Start nxos_l3_interfaces merged integration tests connection={{ ansible_connection }}
 
 - set_fact:
-    test_int3: '{{ nxos_int3 }}'
-    subint3: '{{ nxos_int3 }}.42'
+    test_int3: "{{ nxos_int3 }}"
+    subint3: "{{ nxos_int3 }}.42"
 
 - include_tasks: _remove_config.yaml
 
@@ -18,18 +18,15 @@
       - "  no switchport"
 
 - block:
-
     - name: Merged
       register: result
       cisco.nxos.nxos_l3_interfaces: &id001
         config:
-
-          - name: '{{ subint3 }}'
+          - name: "{{ subint3 }}"
             dot1q: 42
             redirects: false
             unreachables: true
             ipv4:
-
               - address: 192.168.10.2/24
         state: merged
 
@@ -46,8 +43,8 @@
     - name: Gather l3_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l3_interfaces
 
     - assert:
@@ -63,11 +60,10 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown sub-interface
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
-         - "no interface {{ subint3 }}"
+          - "no interface {{ subint3 }}"
 
     - include_tasks: _remove_config.yaml

@@ -1,13 +1,12 @@
 ---
 - block:
-
     - debug: msg="START cli/nxapi_ssl.yaml"
 
     - name: Configure NXAPI HTTPs w/weak ciphers
       register: result
       cisco.nxos.nxos_nxapi: &id001
         enable_https: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         ssl_strong_ciphers: false
 
     - register: result
@@ -33,7 +32,7 @@
       register: result
       cisco.nxos.nxos_nxapi: &id002
         enable_https: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         ssl_strong_ciphers: true
 
     - register: result
@@ -57,7 +56,7 @@
       register: result
       cisco.nxos.nxos_nxapi: &id004
         enable_https: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
 
     - register: result
       cisco.nxos.nxos_command:
@@ -80,7 +79,7 @@
       register: result
       cisco.nxos.nxos_nxapi: &id005
         enable_https: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         tlsv1_1: true
         tlsv1_0: false
 
@@ -105,7 +104,7 @@
       register: result
       cisco.nxos.nxos_nxapi: &id006
         enable_https: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         tlsv1_2: true
         tlsv1_0: false
 
@@ -130,7 +129,7 @@
       register: result
       cisco.nxos.nxos_nxapi: &id007
         enable_https: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         ssl_strong_ciphers: true
         tlsv1_2: true
 
@@ -155,7 +154,7 @@
       register: result
       cisco.nxos.nxos_nxapi: &id008
         enable_https: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         ssl_strong_ciphers: true
         tlsv1_0: false
         tlsv1_1: true
@@ -182,7 +181,7 @@
       register: result
       cisco.nxos.nxos_nxapi: &id009
         enable_https: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         ssl_strong_ciphers: true
         tlsv1_1: true
         tlsv1_2: true
@@ -208,7 +207,7 @@
       register: result
       cisco.nxos.nxos_nxapi: &id010
         enable_https: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         ssl_strong_ciphers: true
         tlsv1_0: true
         tlsv1_1: true
@@ -231,7 +230,6 @@
     - name: Assert configuration is idempotent
       assert: *id003
   always:
-
     - name: Cleanup - Disable NXAPI
       register: result
       cisco.nxos.nxos_nxapi:
@@ -243,6 +241,7 @@
         state: present
 
     - debug: msg="END cli/nxapi_ssl.yaml"
-  when: (platform is match("N9K") or platform is match("N3K") or platform is match("N9K-F")
+  when:
+    (platform is match("N9K") or platform is match("N3K") or platform is match("N9K-F")
     or platform is match("N35") or platform is match("N3L")) and major_version is
     version('9.2', '>=')

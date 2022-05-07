@@ -23,7 +23,6 @@
     - "{{ test_int3 }}"
 
 - block:
-
     - name: setup3
       cisco.nxos.nxos_config:
         lines:
@@ -35,15 +34,15 @@
     - name: Gather l3_interfaces facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l3_interfaces
 
     - name: Store reserved interface IP config
       set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         overriden_config:
-          - name: '{{ test_int3 }}'
+          - name: "{{ test_int3 }}"
             ipv4:
               - address: 10.1.1.3/24
 
@@ -81,7 +80,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       ignore_errors: true
       cisco.nxos.nxos_config: *id003

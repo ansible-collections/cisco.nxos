@@ -1,9 +1,9 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vpc_interface sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_vpc_interface sanity
     test"
 
 - block:
-
     - name: enable feature vpc
       cisco.nxos.nxos_feature:
         feature: vpc
@@ -103,7 +103,6 @@
 
     - assert: *id004
   always:
-
     - name: remove vpc
       ignore_errors: true
       cisco.nxos.nxos_vpc:

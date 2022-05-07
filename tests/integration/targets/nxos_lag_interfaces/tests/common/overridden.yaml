@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start nxos_lag_interfaces overridden integration tests connection={{ ansible_connection
+    msg:
+      Start nxos_lag_interfaces overridden integration tests connection={{ ansible_connection
       }}
 
 - set_fact:
@@ -25,7 +26,6 @@
     state: deleted
 
 - block:
-
     - name: setup3
       ignore_errors: true
       loop:
@@ -34,13 +34,13 @@
       cisco.nxos.nxos_config:
         lines:
           - channel-group 10
-        parents: '{{ item }}'
+        parents: "{{ item }}"
 
     - name: Gather LAG interfaces facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lag_interfaces
 
     - name: Overridden
@@ -49,8 +49,7 @@
         config:
           - name: port-channel19
             members:
-
-              - member: '{{ test_int3 }}'
+              - member: "{{ test_int3 }}"
         state: overridden
 
     - assert:
@@ -78,8 +77,8 @@
     - name: Create Port-Channel20
       cisco.nxos.nxos_interfaces:
         config:
-        - name: port-channel20
-          description: Ansible Resource LAG
+          - name: port-channel20
+            description: Ansible Resource LAG
 
     - name: Add first member to Port-Channel using overridden
       cisco.nxos.nxos_lag_interfaces:
@@ -99,7 +98,6 @@
           - "'channel-group 20 force  mode active' in result.commands"
 
   always:
-
     - name: Teardown
       ignore_errors: true
       cisco.nxos.nxos_lag_interfaces: *id003

@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start nxos_lldp_interfaces deleted integration tests connection = {{ ansible_connection
+    msg:
+      Start nxos_lldp_interfaces deleted integration tests connection = {{ ansible_connection
       }}
 
 - name: Enable LLDP feature
@@ -9,7 +10,6 @@
     state: enabled
 
 - block:
-
     - name: Setup
       cisco.nxos.nxos_config:
         lines:
@@ -26,7 +26,6 @@
       register: result
       cisco.nxos.nxos_lldp_interfaces:
         config:
-
           - name: Ethernet1/2
         state: deleted
 
@@ -41,8 +40,8 @@
     - name: Gather lldp_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lldp_interfaces
 
     - name: Deleted
@@ -57,7 +56,7 @@
           - "'lldp transmit' in result.commands"
           - "'interface Ethernet1/3' in result.commands"
           - "'no lldp tlv-set management-address 192.0.2.12' in result.commands"
-          - 'result.changed == true '
+          - "result.changed == true "
           - result.commands | length == 4
 
     - name: Idempotence - deleted
@@ -69,7 +68,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature:
         feature: lldp

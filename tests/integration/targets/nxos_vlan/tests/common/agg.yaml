@@ -13,7 +13,6 @@
   register: result
   cisco.nxos.nxos_vlan: &id001
     aggregate:
-
       - name: app02
         vlan_id: 102
 
@@ -42,7 +41,6 @@
   register: result
   cisco.nxos.nxos_vlan: &id002
     aggregate:
-
       - name: app02
         vlan_id: 102
 
@@ -95,7 +93,6 @@
   register: result
   cisco.nxos.nxos_vlan: &id004
     aggregate:
-
       - vlan_id: 102
 
       - vlan_id: 103

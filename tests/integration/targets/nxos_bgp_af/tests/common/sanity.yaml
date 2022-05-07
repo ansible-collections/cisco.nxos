@@ -23,7 +23,6 @@
     state: absent
 
 - block:
-
     - name: Enable nv overlay evpn
       when: platform is search('N9K')
       cisco.nxos.nxos_config:
@@ -37,7 +36,7 @@
         vrf: testing
         afi: ipv4
         safi: unicast
-        advertise_l2vpn_evpn: '{{advertise_l2vpn_evpn|default(omit)}}'
+        advertise_l2vpn_evpn: "{{advertise_l2vpn_evpn|default(omit)}}"
         state: present
 
     - assert: &id002
@@ -64,11 +63,11 @@
     - assert: *id002
 
     - name: Configure BGP_AF 2
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id003
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         afi: ipv4
         safi: unicast
         dampening_state: true
@@ -83,18 +82,18 @@
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id003
 
     - assert: *id004
 
     - name: Configure BGP_AF def2
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id005
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         afi: ipv4
         safi: unicast
         dampening_state: false
@@ -109,18 +108,18 @@
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id005
 
     - assert: *id004
 
     - name: Remove BGP
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id008
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         afi: ipv4
         safi: unicast
         state: absent
@@ -128,11 +127,11 @@
     - assert: *id002
 
     - name: Configure BGP_AF 3
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id006
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         afi: ipv4
         safi: unicast
         dampening_routemap: abcd
@@ -151,18 +150,18 @@
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id006
 
     - assert: *id004
 
     - name: Configure BGP_AF def3
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id007
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         afi: ipv4
         safi: unicast
         dampening_routemap: default
@@ -181,25 +180,25 @@
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id007
 
     - assert: *id004
 
     - name: Remove BGP
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id008
 
     - assert: *id002
 
     - name: Configure BGP_AF 4
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id009
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         afi: ipv4
         safi: unicast
         dampen_igp_metric: 200
@@ -207,38 +206,37 @@
         dampening_max_suppress_time: 4
         dampening_reuse_time: 2
         dampening_suppress_time: 3
-        inject_map: [
-          [lax_inject_map, lax_exist_map],
-          [nyc_inject_map, nyc_exist_map, copy-attributes],
-          [fsd_inject_map, fsd_exist_map]
-        ]
-        networks: [
-          [10.0.0.0/16, routemap_LA],
-          [192.168.1.1/32, Chicago],
-          [192.168.2.0/24],
-          [192.168.3.0/24, routemap_NYC]
-        ]
-        redistribute: [
-          [direct, rm_direct],
-          [lisp, rm_lisp]
-        ]
+        inject_map:
+          [
+            [lax_inject_map, lax_exist_map],
+            [nyc_inject_map, nyc_exist_map, copy-attributes],
+            [fsd_inject_map, fsd_exist_map],
+          ]
+        networks:
+          [
+            [10.0.0.0/16, routemap_LA],
+            [192.168.1.1/32, Chicago],
+            [192.168.2.0/24],
+            [192.168.3.0/24, routemap_NYC],
+          ]
+        redistribute: [[direct, rm_direct], [lisp, rm_lisp]]
         state: present
 
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id009
 
     - assert: *id004
 
     - name: Configure BGP_AF 5
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id010
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         afi: ipv4
         safi: unicast
         dampen_igp_metric: 300
@@ -246,32 +244,26 @@
         dampening_max_suppress_time: 40
         dampening_reuse_time: 20
         dampening_suppress_time: 30
-        inject_map: [
-          [fsd_inject_map, fsd_exist_map]
-        ]
-        networks: [
-          [192.168.2.0/24]
-        ]
-        redistribute: [
-          [lisp, rm_lisp]
-        ]
+        inject_map: [[fsd_inject_map, fsd_exist_map]]
+        networks: [[192.168.2.0/24]]
+        redistribute: [[lisp, rm_lisp]]
         state: present
 
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id010
 
     - assert: *id004
 
     - name: Configure BGP_AF def5
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id011
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         afi: ipv4
         safi: unicast
         dampen_igp_metric: default
@@ -287,32 +279,30 @@
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id011
 
     - assert: *id004
 
     - name: Remove BGP
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id008
 
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id008
 
     - assert: *id004
   rescue:
-
     - name: Cleanup BGP
       ignore_errors: true
       cisco.nxos.nxos_bgp: *id012
   always:
-
     - name: Disable feature bgp
       cisco.nxos.nxos_feature:
         feature: bgp

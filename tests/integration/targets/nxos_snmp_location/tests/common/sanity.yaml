@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_location sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_snmp_location sanity
     test"
 
 - name: Setup - Remove snmp_location if configured
@@ -8,7 +9,6 @@
     state: absent
 
 - block:
-
     - name: Configure snmp location
       register: result
       cisco.nxos.nxos_snmp_location: &id001
@@ -53,10 +53,10 @@
 
     - assert: *id004
   always:
-
     - name: Cleanup
       register: result
       cisco.nxos.nxos_snmp_location: *id005
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_location sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_snmp_location sanity
         test"

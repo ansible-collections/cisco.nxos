@@ -27,9 +27,9 @@
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-        - result["before"][0] == merged["after"][0]
-        - result["before"][1] == merged["after"][1]
-        - result["before"][2] == merged["after"][2]
+          - result["before"][0] == merged["after"][0]
+          - result["before"][1] == merged["after"][1]
+          - result["before"][2] == merged["after"][2]
 
     - name: Assert that correct set of commands were generated
       assert:
@@ -46,10 +46,9 @@
     - name: Assert that after dict is correctly generated
       assert:
         that:
-        - result["after"][0] == int1
-        - result["after"][1] == merged["after"][1]
-        - result["after"][2] == merged["after"][2]
-
+          - result["after"][0] == int1
+          - result["after"][1] == merged["after"][1]
+          - result["after"][2] == merged["after"][2]
 
     - name: Delete OSPF config from a single interface (IDEMPOTENT)
       register: result
@@ -71,9 +70,9 @@
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-        - result["before"][0] == merged["after"][0]
-        - result["before"][1] == merged["after"][1]
-        - result["before"][2] == merged["after"][2]
+          - result["before"][0] == merged["after"][0]
+          - result["before"][1] == merged["after"][1]
+          - result["before"][2] == merged["after"][2]
 
     - name: Assert that correct set of commands were generated
       assert:
@@ -83,9 +82,9 @@
     - name: Assert that after dict is correctly generated
       assert:
         that:
-        - result["after"][0] == int1
-        - result["after"][1] == int2
-        - result["after"][2] == int3
+          - result["after"][0] == int1
+          - result["after"][1] == int2
+          - result["after"][2] == int3
 
     - name: Delete OSPF config from all interfaces (IDEMPOTENT)
       register: result

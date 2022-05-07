@@ -14,20 +14,19 @@
   when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
 - block:
-
     - name: Setup1
       cisco.nxos.nxos_config:
         lines: lacp system-priority 11
 
     - name: Setup2
       cisco.nxos.nxos_config:
-        lines: '{{ mac1|default(omit) }}'
+        lines: "{{ mac1|default(omit) }}"
 
     - name: Gather lacp facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lacp
 
     - name: Replaced
@@ -36,7 +35,7 @@
         config:
           system:
             priority: 12
-            mac: '{{ mac2|default(omit) }}'
+            mac: "{{ mac2|default(omit) }}"
         state: replaced
 
     - assert:
@@ -78,7 +77,7 @@
 
     - name: Setup3
       cisco.nxos.nxos_config:
-        lines: '{{ mac1|default(omit) }}'
+        lines: "{{ mac1|default(omit) }}"
 
     - name: Replaced
       register: result
@@ -98,7 +97,6 @@
           - "'lacp system-priority 1' in result.commands"
       when: platform is search('N9K') and imagetag is not search('I[2-6]')
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature:
         feature: lacp

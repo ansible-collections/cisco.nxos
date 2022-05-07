@@ -7,7 +7,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Gather l3_interfaces facts from the device using nxos_l3_interfaces
       register: result
       cisco.nxos.nxos_l3_interfaces:

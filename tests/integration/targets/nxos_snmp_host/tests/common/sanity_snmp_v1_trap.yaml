@@ -3,7 +3,8 @@
 
 - set_fact: snmp_version="v1"
 
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
     }} {{ snmp_version }} sanity test"
 
 - set_fact: intname="{{ nxos_int1 }}"
@@ -14,26 +15,25 @@
   cisco.nxos.nxos_snmp_host: &id007
     snmp_host: 192.0.2.3
     community: TESTING
-    version: '{{ snmp_version }}'
-    snmp_type: '{{ snmp_type }}'
+    version: "{{ snmp_version }}"
+    snmp_type: "{{ snmp_type }}"
     vrf: management
     vrf_filter: management
-    src_intf: '{{ intname|default(omit) }}'
+    src_intf: "{{ intname|default(omit) }}"
     udp: 222
     state: absent
 
 - block:
-
     - name: Configure snmp host
       register: result
       cisco.nxos.nxos_snmp_host: &id001
         snmp_host: 192.0.2.3
         community: TESTING
-        version: '{{ snmp_version }}'
-        snmp_type: '{{ snmp_type }}'
+        version: "{{ snmp_version }}"
+        snmp_type: "{{ snmp_type }}"
         vrf: management
         vrf_filter: management
-        src_intf: '{{ intname|default(omit) }}'
+        src_intf: "{{ intname|default(omit) }}"
         udp: 222
         state: present
 
@@ -50,7 +50,6 @@
           - result.changed == false
 
     - block:
-
         - name: Add another vrf to filter
           register: result
           cisco.nxos.nxos_snmp_host: &id003
@@ -73,7 +72,7 @@
       cisco.nxos.nxos_snmp_host: &id005
         snmp_host: 192.0.2.3
         udp: 222
-        src_intf: '{{ intname|default(omit) }}'
+        src_intf: "{{ intname|default(omit) }}"
         vrf: management
         vrf_filter: management
         state: absent
@@ -87,7 +86,6 @@
     - assert: *id004
 
     - block:
-
         - name: remove some more configuration
           register: result
           cisco.nxos.nxos_snmp_host: &id006
@@ -117,9 +115,9 @@
 
     - assert: *id004
   always:
-
     - name: Cleanup
       cisco.nxos.nxos_snmp_host: *id007
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
         }} {{ snmp_version }} sanity test"

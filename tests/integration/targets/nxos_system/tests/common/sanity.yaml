@@ -2,7 +2,6 @@
 - debug: msg="START connection={{ ansible_connection }}/sanity.yaml"
 
 - block:
-
     - name: remove configuration
       register: result
       ignore_errors: true
@@ -52,7 +51,6 @@
       register: result
       cisco.nxos.nxos_system: &id005
         name_servers:
-
           - server: 8.8.8.8
             vrf: management
 
@@ -121,7 +119,6 @@
 
     - assert: *id004
   always:
-
     - name: remove configuration
       cisco.nxos.nxos_system: *id010
 

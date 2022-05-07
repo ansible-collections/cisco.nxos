@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_telemetry merged sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_telemetry merged sanity
     test"
 
 - set_fact: source_interface="Loopback55"
@@ -17,12 +18,11 @@
     state: disabled
 
 - block:
-
     - name: Gather Telemetry Facts Before Changes
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - telemetry
 
@@ -35,10 +35,9 @@
             key: /bootflash/server.crt
             hostname: localhost
           compression: gzip
-          source_interface: '{{source_interface|default(omit)}}'
+          source_interface: "{{source_interface|default(omit)}}"
           vrf: RED
           destination_groups:
-
             - id: 2
               destination:
                 ip: 192.168.0.1
@@ -67,7 +66,6 @@
                 protocol: gRPC
                 encoding: gpb
           sensor_groups:
-
             - id: 8
               data_source: NX-API
               path:
@@ -100,7 +98,6 @@
                 query_condition: foo
                 filter_condition: or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
           subscriptions:
-
             - id: 44
               destination_group: 10
               sensor_group:
@@ -195,10 +192,9 @@
             key: /bootflash/local_server.crt
             hostname: localhost
           compression: gzip
-          source_interface: '{{source_interface|default(omit)}}'
+          source_interface: "{{source_interface|default(omit)}}"
           vrf: RED
           destination_groups:
-
             - id: 2
               destination:
                 ip: 192.168.0.1
@@ -227,7 +223,6 @@
                 protocol: gRPC
                 encoding: gpb
           sensor_groups:
-
             - id: 8
               data_source: NX-API
               path:
@@ -260,7 +255,6 @@
                 query_condition: foo
                 filter_condition: or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
           subscriptions:
-
             - id: 44
               destination_group: 10
               sensor_group:
@@ -300,7 +294,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: Teardown
       ignore_errors: true
       cisco.nxos.nxos_feature: *id004

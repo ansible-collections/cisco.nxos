@@ -14,7 +14,6 @@
       - "default interface {{ test_int2 }}"
 
 - block:
-
     - name: setup2
       cisco.nxos.nxos_config:
         lines:
@@ -31,16 +30,15 @@
     - name: Gather l2_interfaces facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l2_interfaces
 
     - name: Overridden
       register: result
       cisco.nxos.nxos_l2_interfaces: &id002
         config:
-
-          - name: '{{ test_int2 }}'
+          - name: "{{ test_int2 }}"
             access:
               vlan: 6
             trunk:
@@ -73,7 +71,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       ignore_errors: true
       cisco.nxos.nxos_config: *id003

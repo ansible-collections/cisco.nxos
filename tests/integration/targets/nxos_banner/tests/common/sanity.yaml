@@ -10,7 +10,6 @@
   when: imagetag is not search("I7") and ansible_connection != "ansible.netcommon.httpapi"
 
 - block:
-
     - debug: msg="START nxos_banner exec tests"
 
     - name: setup exec
@@ -45,7 +44,6 @@
   when: banner_exec_image_ok == True
 
 - block:
-
     - name: setup motd
       cisco.nxos.nxos_banner: &id004
         banner: motd

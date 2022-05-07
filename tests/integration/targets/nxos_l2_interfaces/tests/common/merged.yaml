@@ -12,7 +12,6 @@
       - "default interface {{ test_int1 }}"
 
 - block:
-
     - name: setup2
       cisco.nxos.nxos_config:
         lines:
@@ -23,7 +22,7 @@
       register: result
       cisco.nxos.nxos_l2_interfaces: &id001
         config:
-          - name: '{{ test_int1 }}'
+          - name: "{{ test_int1 }}"
             access:
               vlan: 6
             trunk:
@@ -41,8 +40,8 @@
     - name: Gather l2_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l2_interfaces
 
     - assert:
@@ -62,8 +61,7 @@
       register: result
       cisco.nxos.nxos_l2_interfaces: &id002
         config:
-
-          - name: '{{ test_int1 }}'
+          - name: "{{ test_int1 }}"
             mode: trunk
             trunk:
               allowed_vlans: 10-12
@@ -80,8 +78,8 @@
     - name: Gather l2_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l2_interfaces
 
     - assert:
@@ -97,7 +95,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       ignore_errors: true
       cisco.nxos.nxos_config: *id003
