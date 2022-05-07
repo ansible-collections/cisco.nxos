@@ -4,13 +4,13 @@
 - set_fact: def_met_default="default"
   when: imagetag is not search("I7")
 
-- name: 'Setup: disable features for initial cleanup'
+- name: "Setup: disable features for initial cleanup"
   loop:
     - ospf
     - bfd
   ignore_errors: true
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: disabled
 
 - name: Enable features
@@ -18,11 +18,10 @@
     - ospf
     - bfd
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: enabled
 
 - block:
-
     - name: Configure ospf vrf
       register: result
       cisco.nxos.nxos_ospf_vrf: &id001
@@ -79,7 +78,7 @@
       cisco.nxos.nxos_ospf_vrf: &id005
         ospf: 2
         auto_cost: default
-        default_metric: '{{def_met_default|default(omit)}}'
+        default_metric: "{{def_met_default|default(omit)}}"
         log_adjacency: default
         timer_throttle_spf_hold: default
         passive_interface: false
@@ -126,14 +125,13 @@
     - assert: *id004
       when: def_met_default is defined
   always:
-
     - name: Disable features
       loop:
         - ospf
         - bfd
       ignore_errors: true
       cisco.nxos.nxos_feature:
-        feature: '{{ item }}'
+        feature: "{{ item }}"
         state: disabled
 
 - debug: msg="END connection={{ ansible_connection }} nxos_ospf_vrf sanity test"

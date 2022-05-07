@@ -2,7 +2,6 @@
 - debug: msg="START connection={{ ansible_connection }}/set_hostname.yaml"
 
 - block:
-
     - name: setup
       cisco.nxos.nxos_config:
         lines: hostname switch
@@ -26,7 +25,6 @@
         that:
           - result.changed == false
   always:
-
     - name: teardown
       cisco.nxos.nxos_config:
         lines: hostname switch

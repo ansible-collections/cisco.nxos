@@ -1,7 +1,7 @@
 {
   "TABLE_interface": {
     "ROW_interface": {
-      "interface": "Ethernet2/1", 
+      "interface": "Ethernet2/1",
       "oper_mode": "access",
       "switchport": "Enabled",
       "access_vlan": 2,

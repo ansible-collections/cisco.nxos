@@ -51,22 +51,26 @@
   register: result
   cisco.nxos.nxos_file_copy:
     local_file: "{{ role_path }}/tests/common/fixtures/{{ item }}"
-    file_system: 'bootflash:'
-    connect_ssh_port: '{{ ansible_ssh_port|d(22) }}'
+    file_system: "bootflash:"
+    connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
   loop:
-     - server.crt
-     - new_server.crt
-     - local_server.crt
+    - server.crt
+    - new_server.crt
+    - local_server.crt
   vars:
     ansible_connection: ansible.netcommon.network_cli
 
 - block:
-    - include: cli.yaml
-      tags: cli
+    - name: Run the tests for network_cli
+      ansible.builtin.include_tasks: cli.yaml
+      tags:
+        - cli
       when: run_test
 
-    - include: nxapi.yaml
-      tags: nxapi
+    - name: Run the tests for nxapi
+      ansible.builtin.include_tasks: nxapi.yaml
+      tags:
+        - nxapi
       when: run_test
   always:
     - name: Remove temporary user

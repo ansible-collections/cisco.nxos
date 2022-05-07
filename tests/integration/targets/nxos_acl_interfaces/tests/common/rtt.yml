@@ -9,33 +9,26 @@
 - include_tasks: populate_config.yaml
 
 - block:
-
     - name: RTT- Apply provided configuration
       cisco.nxos.nxos_acl_interfaces:
         config:
-
           - name: Ethernet1/2
             access_groups:
-
               - afi: ipv6
                 acls:
-
                   - name: ACL1v6
                     direction: in
 
           - name: Eth1/6
             access_groups:
-
               - afi: ipv4
                 acls:
-
                   - name: PortACL
                     direction: in
                     port: true
 
           - name: Eth1/5
             access_groups:
-
               - afi: ipv4
                 acls:
                   - name: ACL1v4
@@ -43,7 +36,6 @@
 
               - afi: ipv6
                 acls:
-
                   - name: ACL1v6
                     direction: in
         state: merged
@@ -51,8 +43,8 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - acl_interfaces
 
@@ -60,22 +52,17 @@
       register: result
       cisco.nxos.nxos_acl_interfaces:
         config:
-
           - name: Eth1/4
             access_groups:
-
               - afi: ipv4
                 acls:
-
                   - name: NewACLv4
                     direction: out
 
           - name: Ethernet1/6
             access_groups:
-
               - afi: ipv6
                 acls:
-
                   - name: NewACLv6
                     direction: in
                     port: true
@@ -117,5 +104,4 @@
           - "'ip port access-group PortACL in' in result.commands"
           - "'no ipv6 port traffic-filter NewACLv6 in' in result.commands"
   always:
-
     - include_tasks: remove_config.yaml

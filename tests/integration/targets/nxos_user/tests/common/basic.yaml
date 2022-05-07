@@ -4,7 +4,6 @@
 - name: Remove old entries of user
   cisco.nxos.nxos_user: &rem
     aggregate:
-
       - name: ansibletest1
 
       - name: ansibletest2
@@ -37,7 +36,6 @@
   register: result
   cisco.nxos.nxos_user:
     aggregate:
-
       - name: ansibletest2
 
       - name: ansibletest3
@@ -68,7 +66,7 @@
   ignore_errors: True
 
 - assert:
-    that: 
+    that:
       - result.failed == True
       - result.msg is search('Wrong Password')
 
@@ -83,7 +81,7 @@
   register: result
 
 - assert:
-    that: 
+    that:
       - result.changed == True
       - result.failed == False
       - '"Minimum recommended length of 8 characters" in result.warnings[1]'

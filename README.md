@@ -1,6 +1,5 @@
-
-
 # Cisco NX-OS Collection
+
 [![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.nxos) <!--[![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/vyos)](https://codecov.io/gh/ansible-collections/cisco.nxos)-->
 
 The Ansible Cisco NX-OS collection includes a variety of Ansible content to help automate the management of Cisco NX-OS network appliances.
@@ -21,9 +20,11 @@ PEP440 is the schema used to describe the versions of Ansible.
 <!--end requires_ansible-->
 
 ### Supported connections
-The Cisco NX-OS collection supports ``network_cli``  and ``httpapi`` connections.
+
+The Cisco NX-OS collection supports `network_cli` and `httpapi` connections.
 
 ## Included content
+
 <!--start collection content-->
 ### Cliconf plugins
 Name | Description
@@ -146,7 +147,7 @@ Name | Description
 
 <!--end collection content-->
 
-Click the ``Content`` button to see the list of content included in this collection.
+Click the `Content` button to see the list of content included in this collection.
 
 ## Installing this collection
 
@@ -161,8 +162,8 @@ You can also include it in a `requirements.yml` file and install it with `ansibl
 collections:
   - name: cisco.nxos
 ```
-## Using this collection
 
+## Using this collection
 
 This collection includes [network resource modules](https://docs.ansible.com/ansible/latest/network/user_guide/network_resource_modules.html).
 
@@ -173,43 +174,41 @@ The following example task replaces configuration changes in the existing config
 
 ```yaml
 ---
-  - name: Replace device configuration of specified L2 interfaces with provided configuration.
-    cisco.nxos.nxos_l2_interfaces:
-      config:
-        - name: Ethernet1/1
-          trunk:
-            native_vlan: 20
-            trunk_vlans: 5-10, 15
-      state: replaced
-
+- name: Replace device configuration of specified L2 interfaces with provided configuration.
+  cisco.nxos.nxos_l2_interfaces:
+    config:
+      - name: Ethernet1/1
+        trunk:
+          native_vlan: 20
+          trunk_vlans: 5-10, 15
+    state: replaced
 ```
 
 **NOTE**: For Ansible 2.9, you may not see deprecation warnings when you run your playbooks with this collection. Use this documentation to track when a module is deprecated.
 
-
 ### See Also:
 
-* [Cisco NX-OS Platform Options](https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
-* [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
+- [Cisco NX-OS Platform Options](https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
+- [Ansible Using collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) for more details.
 
 ## Contributing to this collection
 
 Ongoing development efforts and contributions to this collection are solely focused on enhancements to current resource modules, additional resource modules and enhancements to connection plugins.
 
-We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Cisco NX-OS collection repository](https://github.com/ansible-collections/cisco.nxos).  See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for complete details.
+We welcome community contributions to this collection. If you find problems, please open an issue or create a PR against the [Cisco NX-OS collection repository](https://github.com/ansible-collections/cisco.nxos). See [Contributing to Ansible-maintained collections](https://docs.ansible.com/ansible/devel/community/contributing_maintained_collections.html#contributing-maintained-collections) for complete details.
 
 You can also join us on:
 
-- IRC - the ``#ansible-network`` [libera.chat](https://libera.chat/) channel
+- IRC - the `#ansible-network` [libera.chat](https://libera.chat/) channel
 - Slack - https://ansiblenetwork.slack.com
 
 See the [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for details on contributing to Ansible.
 
 ### Code of Conduct
+
 This collection follows the Ansible project's
 [Code of Conduct](https://docs.ansible.com/ansible/devel/community/code_of_conduct.html).
 Please read and familiarize yourself with this document.
-
 
 ## Release notes
 

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp_neighbor_af sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_bgp_neighbor_af sanity
     test"
 
 - set_fact: soft_reconfiguration_ina="always"
@@ -18,7 +19,6 @@
     state: enabled
 
 - block:
-
     - name: Configure BGP neighbor address-family
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id001
@@ -38,7 +38,7 @@
         filter_list_out: my_filter_list_out
         max_prefix_limit: 100
         max_prefix_threshold: 50
-        max_prefix_warning: 'true'
+        max_prefix_warning: "true"
         next_hop_self: true
         next_hop_third_party: false
         prefix_list_in: pfx_in
@@ -47,7 +47,7 @@
         soft_reconfiguration_in: enable
         suppress_inactive: true
         unsuppress_map: unsup_map
-        weight: '30'
+        weight: "30"
         state: present
 
     - assert: &id002
@@ -99,7 +99,7 @@
 
     - assert: *id004
 
-    - name: 'Setup: Remove BGP config'
+    - name: "Setup: Remove BGP config"
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id005
         asn: 65535
@@ -123,7 +123,7 @@
         neighbor: 192.0.2.3
         afi: ipv4
         safi: unicast
-        allowas_in_max: '5'
+        allowas_in_max: "5"
         advertise_map_non_exist:
           - ansible_rm
           - my_non_exist_map
@@ -168,7 +168,7 @@
 
     - assert: *id004
 
-    - name: 'Setup: Remove BGP config'
+    - name: "Setup: Remove BGP config"
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: *id005
 
@@ -197,9 +197,9 @@
         safi: unicast
         additional_paths_receive: disable
         additional_paths_send: disable
-        as_override: 'true'
+        as_override: "true"
         send_community: standard
-        soft_reconfiguration_in: '{{soft_reconfiguration_ina|default(omit)}}'
+        soft_reconfiguration_in: "{{soft_reconfiguration_ina|default(omit)}}"
         soo: "3:3"
         next_hop_third_party: true
         state: present
@@ -235,7 +235,7 @@
 
     - assert: *id004
 
-    - name: 'Setup: Remove BGP config'
+    - name: "Setup: Remove BGP config"
       register: result
       cisco.nxos.nxos_bgp: &id012
         asn: 65535
@@ -256,7 +256,7 @@
         neighbor: 192.0.2.2
         afi: ipv4
         safi: unicast
-        route_reflector_client: 'true'
+        route_reflector_client: "true"
 
     - assert: *id002
 
@@ -283,7 +283,6 @@
 
     - assert: *id004
   always:
-
     - name: Cleanup BGP
       ignore_errors: true
       cisco.nxos.nxos_bgp: *id012
@@ -291,5 +290,6 @@
     - name: Disable feature bgp
       cisco.nxos.nxos_feature: *id013
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_bgp_neighbor_af sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_bgp_neighbor_af sanity
         test"

@@ -5,7 +5,6 @@
   register: result
   cisco.nxos.nxos_command:
     commands:
-
       - command: show version
         output: text
 

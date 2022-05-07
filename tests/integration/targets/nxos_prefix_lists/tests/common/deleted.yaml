@@ -17,8 +17,8 @@
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-        - "{{ result['before'][0] == merged['after'][0] }}"
-        - "{{ result['before'][1] == merged['after'][1] }}"
+          - "{{ result['before'][0] == merged['after'][0] }}"
+          - "{{ result['before'][1] == merged['after'][1] }}"
 
     - name: Assert that correct set of commands were generated
       assert:
@@ -30,8 +30,8 @@
     - name: Assert that after dict is correctly generated
       assert:
         that:
-        - result["after"][0] == merged["after"][1]
-        - result["after"]|length == 1
+          - result["after"][0] == merged["after"][1]
+          - result["after"]|length == 1
 
     - include_tasks: _remove_config.yaml
 
@@ -49,8 +49,8 @@
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-        - "{{ result['before'][0] == merged['after'][0] }}"
-        - "{{ result['before'][1] == merged['after'][1] }}"
+          - "{{ result['before'][0] == merged['after'][0] }}"
+          - "{{ result['before'][1] == merged['after'][1] }}"
 
     - name: Assert that correct set of commands were generated
       assert:
@@ -76,7 +76,7 @@
     - name: Assert that after dict is correctly generated
       assert:
         that:
-        - result["after"] == []
+          - result["after"] == []
 
     - name: Delete all prefix-lists (IDEMPOTENT)
       register: result

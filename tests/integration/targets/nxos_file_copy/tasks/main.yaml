@@ -19,12 +19,14 @@
     name: temp_user
     configured_password: "{{ temp_passwd }}"
 
-- block: 
-    - include: cli.yaml
+- block:
+    - name: Run the tests for network_cli
+      ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
 
-    - include: nxapi.yaml
+    - name: Run the tests for nxapi
+      ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
   always:

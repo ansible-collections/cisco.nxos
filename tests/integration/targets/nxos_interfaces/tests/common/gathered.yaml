@@ -7,7 +7,6 @@
 - include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Gather interfaces facts from the device using nxos_interfaces
       register: result
       cisco.nxos.nxos_interfaces:
@@ -17,7 +16,6 @@
         that: "{{ result['gathered'][:2] | symmetric_difference(gathered)\
           \ |length == 0 }}"
   always:
-
     - include_tasks: _remove_config.yaml
 
     - debug:

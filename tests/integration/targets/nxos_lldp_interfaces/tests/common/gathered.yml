@@ -8,7 +8,6 @@
     state: enabled
 
 - block:
-
     - name: Setup
       cisco.nxos.nxos_config:
         lines:
@@ -24,8 +23,8 @@
     - name: Gather lldp interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lldp_interfaces
 
     - name: Gathered
@@ -46,7 +45,6 @@
         that:
           - result.changed == false
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature:
         feature: lldp

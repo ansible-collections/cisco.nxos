@@ -2,7 +2,8 @@
 - include: targets/nxos_install_os/tasks/upgrade/delete_files.yaml
   when: delete_files
 
-- include: targets/nxos_install_os/tasks/upgrade/copy_kick_system_images.yaml ansible_connection=ansible.netcommon.network_cli
+- include:
+    targets/nxos_install_os/tasks/upgrade/copy_kick_system_images.yaml ansible_connection=ansible.netcommon.network_cli
     connection={{ cli }}
   when: copy_images
 

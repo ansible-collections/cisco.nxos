@@ -10,12 +10,13 @@
     lines: feature fabric forwarding
 
 - block:
-
-    - include: cli.yaml
+    - name: Run the tests for network_cli
+      ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
 
-    - include: nxapi.yaml
+    - name: Run the tests for nxapi
+      ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
 
@@ -26,7 +27,7 @@
         state: disabled
       vars:
         ansible_connection: ansible.netcommon.network_cli
-    
+
     - name: Disable fabric forwarding
       cisco.nxos.nxos_config:
         lines: no feature fabric forwarding

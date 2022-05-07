@@ -5,20 +5,16 @@
 - include_tasks: populate_config.yaml
 
 - block:
-
     - name: Replaced
       register: result
       cisco.nxos.nxos_acls: &id001
         config:
-
           - afi: ipv4
 
           - afi: ipv6
             acls:
-
               - name: ACL1v6
                 aces:
-
                   - sequence: 30
                     grant: permit
                     source:
@@ -51,8 +47,8 @@
     - name: Gather static_routes post facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: acls
 
     - assert:
@@ -67,5 +63,4 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: remove_config.yaml

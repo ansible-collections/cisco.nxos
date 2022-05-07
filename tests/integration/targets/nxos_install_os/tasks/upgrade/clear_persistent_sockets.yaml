@@ -2,7 +2,7 @@
 - name: Clean up sockets with file module
   file:
     state: absent
-    path: '{{ home }}/.ansible/pc/'
+    path: "{{ home }}/.ansible/pc/"
   delegate_to: 127.0.0.1
 
 - name: Display socket info after delete

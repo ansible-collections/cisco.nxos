@@ -1,9 +1,10 @@
 ---
 - debug:
-    msg: Start nxos_hsrp_interfaces merged integration tests connection={{ ansible_connection
+    msg:
+      Start nxos_hsrp_interfaces merged integration tests connection={{ ansible_connection
       }}
 
-- set_fact: 
+- set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
@@ -17,25 +18,25 @@
 
     - name: setup2
       cisco.nxos.nxos_config:
-        lines: 
+        lines:
           - "feature bfd"
           - "feature hsrp"
-          - "interface {{ test_int1 }}"  
+          - "interface {{ test_int1 }}"
           - "  no switchport"
           - "  hsrp bfd"
-    
+
     - name: setup3
       cisco.nxos.nxos_config:
         lines:
-          - "interface {{ test_int2 }}" 
+          - "interface {{ test_int2 }}"
           - "  no switchport"
 
     - name: Merged
       register: result
       cisco.nxos.nxos_hsrp_interfaces: &id001
         config:
-          - name: '{{ test_int1 }}'
-            bfd: '{{ bfd_disable|default(omit)}}'
+          - name: "{{ test_int1 }}"
+            bfd: "{{ bfd_disable|default(omit)}}"
         state: merged
 
     - assert:
@@ -47,8 +48,8 @@
     - name: Gather hsrp_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: hsrp_interfaces
 
     - name: Idempotence - Merged
@@ -60,6 +61,6 @@
           - result.changed == false
           - result.commands|length == 0
   when: bfd_enable is defined
-  
+
   always:
     - include_tasks: _remove_config.yaml

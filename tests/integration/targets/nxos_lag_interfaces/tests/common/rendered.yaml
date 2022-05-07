@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: START nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
+    msg:
+      START nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
       }}
 
 - include_tasks: _remove_config.yaml
@@ -21,7 +22,7 @@
               - member: Ethernet1/802
                 mode: passive
         state: rendered
-        
+
     - assert:
         that: "{{ rendered | symmetric_difference(result['rendered'])\
           \ |length==0 }}"
@@ -31,13 +32,13 @@
       cisco.nxos.nxos_lag_interfaces:
         state: gathered
 
-    - name: Make sure that rendered 
+    - name: Make sure that rendered
       assert:
         that: "{{ result['gathered'] == [] }}"
   always:
-
     - include_tasks: _remove_config.yaml
 
 - debug:
-    msg: END nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
+    msg:
+      END nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
       }}

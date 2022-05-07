@@ -49,7 +49,7 @@
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-        - replaced['after'] == result['after']
+          - replaced['after'] == result['after']
 
     - name: Replace logging global configurations with provided configurations (IDEMPOTENT)
       register: result

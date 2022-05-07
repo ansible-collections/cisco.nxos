@@ -14,28 +14,26 @@
   ignore_errors: true
   cisco.nxos.nxos_l3_interface:
     aggregate:
-
-      - name: '{{ testint2 }}'
+      - name: "{{ testint2 }}"
         ipv4: 192.168.22.1/24
 
-      - name: '{{ testint3 }}'
+      - name: "{{ testint3 }}"
         ipv4: 192.168.20.1/24
-        ipv6: '{{ ipv6_address }}'
+        ipv6: "{{ ipv6_address }}"
     state: absent
 
 - name: Setup - Ensure interfaces are layer3
   cisco.nxos.nxos_interface:
     aggregate:
+      - name: "{{ testint2 }}"
 
-      - name: '{{ testint2 }}'
-
-      - name: '{{ testint3 }}'
+      - name: "{{ testint3 }}"
     mode: layer3
 
 - name: Configure ipv4 address to interface
   register: result
   cisco.nxos.nxos_l3_interface: &id001
-    name: '{{ testint2 }}'
+    name: "{{ testint2 }}"
     ipv4: 192.168.22.1/24
 
 - assert:
@@ -53,7 +51,7 @@
 - name: Remove ipv4 address from interface
   register: result
   cisco.nxos.nxos_l3_interface: &id002
-    name: '{{ testint2 }}'
+    name: "{{ testint2 }}"
     ipv4: 192.168.22.1/24
     state: absent
 
@@ -73,13 +71,12 @@
   register: result
   cisco.nxos.nxos_l3_interface: &id003
     aggregate:
-
-      - name: '{{ testint2 }}'
+      - name: "{{ testint2 }}"
         ipv4: 192.168.22.1/24
 
-      - name: '{{ testint3 }}'
+      - name: "{{ testint3 }}"
         ipv4: 192.168.20.1/24
-        ipv6: '{{ ipv6_address }}'
+        ipv6: "{{ ipv6_address }}"
 
 - assert:
     that:
@@ -97,13 +94,12 @@
   register: result
   cisco.nxos.nxos_l3_interface: &id004
     aggregate:
-
-      - name: '{{ testint2 }}'
+      - name: "{{ testint2 }}"
         ipv4: 192.168.22.1/24
 
-      - name: '{{ testint3 }}'
+      - name: "{{ testint3 }}"
         ipv4: 192.168.20.1/24
-        ipv6: '{{ ipv6_address }}'
+        ipv6: "{{ ipv6_address }}"
     state: absent
 
 - assert:

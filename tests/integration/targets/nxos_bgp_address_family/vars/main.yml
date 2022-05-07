@@ -47,7 +47,7 @@ merged:
           - id: "101"
             protocol: eigrp
             route_map: rmap-eigrp-1
-    
+
 replaced:
   commands:
     - router bgp 65536
@@ -162,7 +162,7 @@ deleted:
           - id: "101"
             protocol: eigrp
             route_map: rmap-eigrp-1
-      
+
       - afi: ipv6
         safi: unicast
         vrf: site-2

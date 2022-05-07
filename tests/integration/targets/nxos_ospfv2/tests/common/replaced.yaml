@@ -63,7 +63,8 @@
           - "{{ replaced['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
             \ == 0 }}"
 
-    - name: Replace device configurations of listed OSPF processes with provided configurarions
+    - name:
+        Replace device configurations of listed OSPF processes with provided configurarions
         (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_ospfv2: *id002

@@ -9,24 +9,19 @@
 - include_tasks: populate_config.yaml
 
 - block:
-
     - name: Overridden
       register: result
       cisco.nxos.nxos_acl_interfaces: &id002
         config:
-
           - name: Ethernet1/3
             access_groups:
-
               - afi: ipv4
                 acls:
-
                   - name: ACL1v4
                     direction: out
 
           - name: Ethernet1/6
             access_groups:
-
               - afi: ipv4
                 acls:
                   - name: PortACL
@@ -35,7 +30,6 @@
 
               - afi: ipv6
                 acls:
-
                   - name: NewACLv6
                     direction: in
                     port: true
@@ -59,8 +53,8 @@
     - name: Gather acl_interfaces post facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: acl_interfaces
 
     - name: Gather acls post facts
@@ -78,5 +72,4 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: remove_config.yaml

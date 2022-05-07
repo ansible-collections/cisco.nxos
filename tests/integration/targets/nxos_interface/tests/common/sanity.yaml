@@ -3,19 +3,19 @@
 
 - set_fact: testint="{{ nxos_int1 }}"
 
-- name: 'Setup: Enable feature interface-vlan'
+- name: "Setup: Enable feature interface-vlan"
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: interface-vlan
     state: enabled
 
-- name: 'Setup: Put interface {{ testint }} into a default state'
+- name: "Setup: Put interface {{ testint }} into a default state"
   ignore_errors: true
   cisco.nxos.nxos_config: &id008
     lines:
       - default interface {{ testint }}
 
-- name: 'Setup: Remove possibly existing vlan interfaces'
+- name: "Setup: Remove possibly existing vlan interfaces"
   ignore_errors: true
   cisco.nxos.nxos_config: &id009
     lines:
@@ -25,11 +25,10 @@
       - no interface vlan 712
 
 - block:
-
     - name: Configure layer3 params
       register: result
       cisco.nxos.nxos_interface: &id001
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         mode: layer3
         description: Configured by Ansible - Layer3
         admin_state: up
@@ -50,7 +49,7 @@
     - name: Configure layer2 params
       register: result
       cisco.nxos.nxos_interface: &id003
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         mode: layer2
         description: Configured by Ansible - Layer2
         admin_state: down
@@ -66,7 +65,6 @@
 
     - name: Create VLAN Interfaces
       with_items: &id005
-
         - os_svi_int: vlan2
           os_svi_desc: SVI_VLAN2
 
@@ -80,8 +78,8 @@
           os_svi_desc: SVI_VLAN712
       register: result
       cisco.nxos.nxos_interface: &id006
-        interface: '{{ item.os_svi_int }}'
-        description: '{{ item.os_svi_desc }}'
+        interface: "{{ item.os_svi_int }}"
+        description: "{{ item.os_svi_desc }}"
 
     - assert: *id002
 
@@ -89,7 +87,6 @@
       register: result
       cisco.nxos.nxos_l3_interface: &id007
         aggregate:
-
           - name: vlan2
             ipv4: 192.168.2.1/24
 
@@ -117,7 +114,6 @@
 
     - assert: *id004
   always:
-
     - name: Set interface back to default
       ignore_errors: true
       cisco.nxos.nxos_config: *id008
@@ -125,7 +121,7 @@
     - name: Remove vlan interfaces
       cisco.nxos.nxos_config: *id009
 
-    - name: 'Setup: Disable feature interface-vlan'
+    - name: "Setup: Disable feature interface-vlan"
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: interface-vlan

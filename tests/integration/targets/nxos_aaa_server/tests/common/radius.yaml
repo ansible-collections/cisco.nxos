@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_aaa_server radius.yaml
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_aaa_server radius.yaml
     sanity test"
 
 - name: Setup
@@ -12,7 +13,6 @@
     state: default
 
 - block:
-
     - name: Configure radius server defaults
       register: result
       cisco.nxos.nxos_aaa_server: &id001
@@ -86,13 +86,12 @@
 
     - assert: *id003
   rescue:
-
     - debug: msg="connection={{ ansible_connection }} nxos_aaa_server failure detected"
   always:
-
     - name: Remove radius server configuration
       register: result
       cisco.nxos.nxos_aaa_server: *id004
 
-- debug: msg="END connection={{ ansible_connection }} nxos_aaa_server radius.yaml
+- debug:
+    msg="END connection={{ ansible_connection }} nxos_aaa_server radius.yaml
     sanity test"

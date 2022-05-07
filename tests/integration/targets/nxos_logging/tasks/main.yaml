@@ -1,15 +1,15 @@
 ---
 - block:
-
-    - include: cli.yaml
+    - name: Run the tests for network_cli
+      ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
 
-    - include: nxapi.yaml
+    - name: Run the tests for nxapi
+      ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
   always:
-
     - name: Set Baud Rate Back to 9600 so our tests don't break
       connection: ansible.netcommon.network_cli
       cisco.nxos.nxos_config:

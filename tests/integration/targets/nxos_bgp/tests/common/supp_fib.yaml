@@ -24,13 +24,12 @@
     state: enabled
 
 - block:
-
     - name: set bestpath limit
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id001
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         timer_bestpath_limit: 255
 
     - assert: &id002
@@ -38,7 +37,7 @@
           - result.changed == true
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id001
 
@@ -47,17 +46,17 @@
           - result.changed == false
 
     - name: reset bestpath limit
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id003
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         timer_bestpath_limit: default
 
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       when: bgp_best_path_limit
       cisco.nxos.nxos_bgp: *id003
@@ -99,10 +98,8 @@
     - assert: *id004
       when: bgp_suppress_fib_supported
   rescue:
-
     - debug: msg="Tests can fail on I2/I4/A8/Fretta or helsinki images"
   always:
-
     - name: Disable feature bgp
       ignore_errors: true
       cisco.nxos.nxos_feature:

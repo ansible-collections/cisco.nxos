@@ -14,7 +14,7 @@
         state: parsed
 
     - assert:
-       that: "{{ parsed == result['parsed'] }}"
+        that: "{{ parsed == result['parsed'] }}"
 
 - debug:
     msg: END nxos_lldp_global parsed integration tests on connection={{ ansible_connection }}

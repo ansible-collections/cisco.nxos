@@ -4,14 +4,14 @@
 - set_fact: udld_run="true"
 
 - set_fact: udld_run="false"
-  when: ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3',
+  when:
+    ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3',
     'lt'))))
 
 - set_fact: udld_run="false"
   when: titanium
 
 - block:
-
     - name: Enable feature udld
       cisco.nxos.nxos_feature:
         feature: udld
@@ -85,7 +85,6 @@
     - assert: *id004
   when: udld_run
   always:
-
     - name: Disable udld
       ignore_errors: true
       cisco.nxos.nxos_feature:

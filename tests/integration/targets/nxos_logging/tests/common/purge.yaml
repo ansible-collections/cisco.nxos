@@ -6,7 +6,6 @@
     purge: true
 
 - block:
-
     - name: Set up console logging
       register: result
       cisco.nxos.nxos_logging:
@@ -72,7 +71,6 @@
           - '"no logging level virtual-service 7" in result.commands'
 
     - block:
-
         - name: Purge the outliers (idempotent)
           register: result
           cisco.nxos.nxos_logging:
@@ -87,7 +85,6 @@
       register: result
       cisco.nxos.nxos_logging:
         aggregate:
-
           - dest: console
             dest_level: 0
 

@@ -1,27 +1,28 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp_neighbor multisite sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_bgp_neighbor multisite sanity
     test"
 
 - set_fact: intname="{{ nxos_int1 }}"
 
-- name: 'Setup: Disable features - multisite'
+- name: "Setup: Disable features - multisite"
   loop:
     - bgp
     - bfd
     - nv overlay
   ignore_errors: true
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: disabled
 
-- name: 'Setup: Enable features - multisite'
+- name: "Setup: Enable features - multisite"
   loop:
     - bgp
     - bfd
     - nv overlay
   ignore_errors: true
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: enabled
 
 - name: Enable nv overlay evpn - multisite
@@ -39,7 +40,6 @@
       - evpn multisite border-gateway 10
 
 - block:
-
     - name: Configure BGP neighbor1 - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor: &id001
@@ -95,18 +95,18 @@
 
     - name: Disable multisite border gateway - multisite
       cisco.nxos.nxos_config:
-       lines:
-         - no evpn multisite border-gateway 10
+        lines:
+          - no evpn multisite border-gateway 10
   when: multiout is not search("Invalid command")
 
-- name: 'Teardown: Disable features'
+- name: "Teardown: Disable features"
   loop:
     - bgp
     - bfd
     - nv overlay
   ignore_errors: true
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: disabled
 
 - pause:

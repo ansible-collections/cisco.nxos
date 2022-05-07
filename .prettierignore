@@ -1,0 +1,27 @@
+# Stuff we don't want priettier to ever to look into
+.git/
+.tox/
+.mypy_cache/
+build/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# A linked collection directory
+
+collections/
+
+# Tracked but not manually edited
+
+
+# Tracked but manually formatted
+
+# WIP
+tests/integration/targets/nxos_config/templates/config.js
+README.md

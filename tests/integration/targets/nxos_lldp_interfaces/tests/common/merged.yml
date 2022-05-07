@@ -7,12 +7,10 @@
     feature: lldp
 
 - block:
-
     - name: Merged
       register: result
       cisco.nxos.nxos_lldp_interfaces: &id001
         config:
-
           - name: Ethernet 1/1
             receive: false
             tlv_set:
@@ -38,8 +36,8 @@
     - name: Gather lldp_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lldp_interfaces
 
     - assert:
@@ -55,7 +53,6 @@
           - result.changed == false
           - result.commands | length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature:
         feature: lldp

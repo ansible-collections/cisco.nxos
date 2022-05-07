@@ -8,7 +8,6 @@
     state: enabled
 
 - block:
-
     - name: Setup
       cisco.nxos.nxos_config:
         lines:
@@ -20,7 +19,6 @@
       register: result
       cisco.nxos.nxos_lldp_interfaces: &id001
         config:
-
           - name: Ethernet1/2
             transmit: false
             tlv_set:
@@ -40,8 +38,8 @@
     - name: Gather lldp_interfaces post facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lldp_interfaces
 
     - assert:
@@ -57,7 +55,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature:
         feature: lldp

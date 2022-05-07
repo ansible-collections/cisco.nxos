@@ -6,7 +6,7 @@
 
 - name: Gather pre facts
   cisco.nxos.nxos_facts:
-    gather_subset: ['!all', '!min']
+    gather_subset: ["!all", "!min"]
     gather_network_resources: "vlans"
 
 - block:
@@ -32,12 +32,12 @@
       cisco.nxos.nxos_vlans:
         state: gathered
 
-    - name: Make sure that rendered task actually did not make any changes to the
+    - name:
+        Make sure that rendered task actually did not make any changes to the
         device
       assert:
         that: "{{ result['gathered'] == ansible_facts['network_resources']['vlans'] }}"
   always:
-
     - include_tasks: _remove_config.yaml
 
 - debug:

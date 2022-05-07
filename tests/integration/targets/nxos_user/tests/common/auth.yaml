@@ -1,6 +1,5 @@
 ---
 - block:
-
     - name: Create user with password
       cisco.nxos.nxos_user:
         name: auth_user
@@ -10,7 +9,8 @@
 
     - name: test login
       expect:
-        command: ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
+        command:
+          ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
           }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
           show version
         responses:
@@ -18,7 +18,8 @@
 
     - name: test login with invalid password (should fail)
       expect:
-        command: ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
+        command:
+          ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22)
           }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
           show version
         responses:
@@ -31,7 +32,6 @@
         that:
           - results.failed
   always:
-
     - name: delete user
       register: result
       cisco.nxos.nxos_user:

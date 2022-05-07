@@ -7,7 +7,6 @@
 - include_tasks: _populate_config.yml
 
 - block:
-
     - name: Gather lldp_global facts from the device using nxos_lldp_global
       register: result
       cisco.nxos.nxos_lldp_global:
@@ -17,7 +16,6 @@
         that: "{{ result['gathered'] == gathered }}"
 
   always:
-
     - include_tasks: _remove_config.yml
 
     - debug:

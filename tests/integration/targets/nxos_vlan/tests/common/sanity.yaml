@@ -6,7 +6,6 @@
 - set_fact: testint2="{{ nxos_int2 }}"
 
 - block:
-
     - name: Install and Enable FabricPath feature set
       when: platform is search('N5K|N7K')
       cisco.nxos.nxos_config:
@@ -182,8 +181,8 @@
         vlan_id: 101
         vlan_state: suspend
         interfaces:
-          - '{{ testint1 }}'
-          - '{{ testint2 }}'
+          - "{{ testint1 }}"
+          - "{{ testint2 }}"
 
     - assert: *id002
 
@@ -207,7 +206,6 @@
 
     - assert: *id004
   always:
-
     - name: Remove int from vlan
       ignore_errors: true
       cisco.nxos.nxos_vlan: *id012

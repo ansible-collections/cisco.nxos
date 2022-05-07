@@ -1,12 +1,12 @@
 ---
 - name: Install OS image {{ si }}
-  check_mode: '{{ checkmode }}'
+  check_mode: "{{ checkmode }}"
   register: result
   when: not force
   cisco.nxos.nxos_install_os:
-    system_image_file: '{{ si }}'
-    kickstart_image_file: '{{ ki }}'
-    issu: '{{ issu }}'
+    system_image_file: "{{ si }}"
+    kickstart_image_file: "{{ ki }}"
+    issu: "{{ issu }}"
 
 - name: Set OS image {{ si }} boot pointers
   when: force
@@ -34,7 +34,7 @@
     state: started
     timeout: 500
     delay: 60
-    host: '{{ inventory_hostname }}'
+    host: "{{ inventory_hostname }}"
   when: result.changed and not checkmode
 
 - debug: msg='Wait 5 mins to allow system to stabilize'

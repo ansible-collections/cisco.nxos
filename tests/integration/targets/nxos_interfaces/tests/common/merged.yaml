@@ -10,10 +10,9 @@
   when: platform is not search('N3[5KL]|N[56]K|titanium')
 
 - block:
-
     - name: setup
       cisco.nxos.nxos_config: &id002
-        lines: 
+        lines:
           - "default interface {{ test_int1 }}"
           - "default interface {{ test_int2 }}"
 
@@ -21,10 +20,9 @@
       register: result
       cisco.nxos.nxos_interfaces: &id001
         config:
-
-          - name: '{{ test_int1 }}'
+          - name: "{{ test_int1 }}"
             description: Configured by Ansible
-            enabled: '{{ enabled|default(omit)}}'
+            enabled: "{{ enabled|default(omit)}}"
         state: merged
 
     - assert:
@@ -41,8 +39,8 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: interfaces
 
     - assert:

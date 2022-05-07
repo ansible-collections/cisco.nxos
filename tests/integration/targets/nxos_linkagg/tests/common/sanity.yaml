@@ -25,16 +25,15 @@
   cisco.nxos.nxos_config:
     lines:
       - no channel-group 20
-    parents: '{{ item }}'
+    parents: "{{ item }}"
 
 - name: Put interface in L2 mode
   when: platform is match("N35")
   cisco.nxos.nxos_interface:
     aggregate:
+      - name: "{{testint1}}"
 
-      - name: '{{testint1}}'
-
-      - name: '{{testint2}}'
+      - name: "{{testint2}}"
     mode: layer2
 
 - name: create linkagg
@@ -63,8 +62,8 @@
     mode: active
     force: true
     members:
-      - '{{ testint1 }}'
-      - '{{ testint2 }}'
+      - "{{ testint1 }}"
+      - "{{ testint2 }}"
 
 - assert:
     that:
@@ -89,7 +88,7 @@
     mode: active
     force: true
     members:
-      - '{{ testint2 }}'
+      - "{{ testint2 }}"
 
 - assert:
     that:
@@ -128,7 +127,6 @@
   register: result
   cisco.nxos.nxos_linkagg: &id005
     aggregate:
-
       - group: 20
         min_links: 3
 
@@ -155,7 +153,6 @@
   register: result
   cisco.nxos.nxos_linkagg: &id006
     aggregate:
-
       - group: 20
         min_links: 3
 
@@ -191,7 +188,7 @@
   cisco.nxos.nxos_config:
     lines:
       - no channel-group 20
-    parents: '{{ item }}'
+    parents: "{{ item }}"
 
 - name: Disable feature LACP
   cisco.nxos.nxos_feature:

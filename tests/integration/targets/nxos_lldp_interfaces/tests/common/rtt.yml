@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start nxos_lldp_interfaces round trip integration tests on connection={{
+    msg:
+      Start nxos_lldp_interfaces round trip integration tests on connection={{
       ansible_connection }}
 
 - name: Enable lldp
@@ -10,12 +11,10 @@
 - include_tasks: remove_config.yaml
 
 - block:
-
     - name: RTT - Apply the provided configuration (base config)
       register: base_config
       cisco.nxos.nxos_lldp_interfaces:
         config:
-
           - name: Ethernet1/1
             transmit: false
             tlv_set:
@@ -25,8 +24,8 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - lldp_interfaces
 
@@ -34,7 +33,6 @@
       register: result
       cisco.nxos.nxos_lldp_interfaces:
         config:
-
           - name: Ethernet1/1
             transmit: false
 
@@ -65,10 +63,10 @@
 
     - name: Assert that config was reverted
       assert:
-        that: "{{ base_config['after'] | symmetric_difference(revert['after']) |length\
+        that:
+          "{{ base_config['after'] | symmetric_difference(revert['after']) |length\
           \ == 0 }}"
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature:
         feature: lldp

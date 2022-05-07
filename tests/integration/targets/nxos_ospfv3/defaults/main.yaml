@@ -1,2 +1,2 @@
 ---
-testcase: '[^_].*'
+testcase: "[^_].*"

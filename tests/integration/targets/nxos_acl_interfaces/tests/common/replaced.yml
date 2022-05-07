@@ -9,27 +9,21 @@
 - include_tasks: populate_config.yaml
 
 - block:
-
     - name: Replaced
       register: result
       cisco.nxos.nxos_acl_interfaces: &id001
         config:
-
           - name: Eth1/5
             access_groups:
-
               - afi: ipv4
                 acls:
-
                   - name: NewACLv4
                     direction: out
 
           - name: Ethernet1/6
             access_groups:
-
               - afi: ipv6
                 acls:
-
                   - name: NewACLv6
                     direction: in
                     port: true
@@ -49,8 +43,8 @@
     - name: Gather acl_interfaces post facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: acl_interfaces
 
     - assert:
@@ -65,5 +59,4 @@
         that:
           - result.changed == false
   always:
-
     - include_tasks: remove_config.yaml

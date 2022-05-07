@@ -1,6 +1,7 @@
 ---
 - debug:
-    msg: Start nxos_vlans overridden integration tests connection={{ ansible_connection
+    msg:
+      Start nxos_vlans overridden integration tests connection={{ ansible_connection
       }}
 
 - name: setup1
@@ -9,7 +10,6 @@
       - "no vlan 2-100"
 
 - block:
-
     - name: setup
       cisco.nxos.nxos_config:
         lines:
@@ -21,10 +21,10 @@
     - name: Gather vlans facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: vlans
-    
+
     - name: Set default vlan (vlan1) config and config to revert
       set_fact:
         default_vlan: "{{ ansible_facts.network_resources.vlans|selectattr('vlan_id', 'equalto', 1)|list }}"
@@ -66,6 +66,5 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_config: *id003

@@ -4,6 +4,7 @@ import subprocess
 import logging
 import pytest
 
+
 def test_integration(ansible_project, environment):
     args = [
         "ansible-navigator",
@@ -22,7 +23,7 @@ def test_integration(ansible_project, environment):
         "--lf",
         str(ansible_project.log_file),
         "--skip-tags",
-        "local,nxapi"
+        "local,nxapi",
     ]
     logging.info(" ".join(args))
     try:

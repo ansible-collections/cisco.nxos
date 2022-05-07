@@ -3,9 +3,12 @@
     rsvd_intf: "{{ rsvd_intf|default('mgmt0') }}"
 
 - block:
-  - include: cli.yaml
-    tags:
-      - cli
-  - include: nxapi.yaml
-    tags:
-      - nxapi
+    - name: Run the tests for network_cli
+      ansible.builtin.include_tasks: cli.yaml
+      tags:
+        - cli
+
+    - name: Run the tests for nxapi
+      ansible.builtin.include_tasks: nxapi.yaml
+      tags:
+        - nxapi

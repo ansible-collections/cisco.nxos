@@ -1,16 +1,15 @@
 ---
 - debug: msg="START connection={{ ansible_connection }} nxos_banner sanity test"
 
-- set_fact: 
+- set_fact:
     banner_exec_image_ok: True
   when: platform is search("N7K|N3K-F")
 
-- set_fact: 
+- set_fact:
     banner_motd_image_ok: True
   when: imagetag is not search("I7") and ansible_connection != "ansible.netcommon.httpapi"
 
 - block:
-
     - debug: msg="START nxos_banner exec tests"
 
     - name: setup exec
@@ -45,7 +44,6 @@
   when: banner_exec_image_ok == True
 
 - block:
-
     - name: setup motd
       cisco.nxos.nxos_banner: &id004
         banner: motd

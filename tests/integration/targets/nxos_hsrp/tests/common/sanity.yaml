@@ -6,7 +6,6 @@
 - set_fact: intname2="{{ nxos_int2 }}"
 
 - block:
-
     - name: Enable feature hsrp
       cisco.nxos.nxos_feature:
         feature: hsrp
@@ -35,7 +34,7 @@
         version: 2
         vip: 10.1.1.1
         priority: 150
-        interface: '{{ intname1 }}'
+        interface: "{{ intname1 }}"
         preempt: enabled
         auth_type: md5
         auth_string: 7 1234
@@ -59,7 +58,7 @@
         version: 2
         vip: 192.0.2.2
         priority: 25
-        interface: '{{ intname1 }}'
+        interface: "{{ intname1 }}"
         preempt: enabled
         auth_type: md5
         auth_string: 0 1234
@@ -79,7 +78,7 @@
         version: 2
         vip: default
         priority: default
-        interface: '{{ intname1 }}'
+        interface: "{{ intname1 }}"
         preempt: disabled
         auth_type: md5
         auth_string: 0 1234
@@ -98,9 +97,9 @@
         group: 200
         vip: 192.0.2.3
         version: 1
-        interface: '{{ intname2 }}'
+        interface: "{{ intname2 }}"
         auth_type: text
-        auth_string: '1234'
+        auth_string: "1234"
 
     - assert: *id002
 
@@ -116,7 +115,7 @@
         group: 200
         vip: 192.0.2.3
         version: 2
-        interface: '{{ intname2 }}'
+        interface: "{{ intname2 }}"
         auth_type: text
         auth_string: default
 
@@ -132,7 +131,7 @@
       register: result
       cisco.nxos.nxos_hsrp: &id008
         group: 1000
-        interface: '{{ intname1 }}'
+        interface: "{{ intname1 }}"
         state: absent
 
     - assert: *id002
@@ -143,7 +142,6 @@
 
     - assert: *id004
   always:
-
     - name: Disable feature hsrp
       ignore_errors: true
       cisco.nxos.nxos_feature:

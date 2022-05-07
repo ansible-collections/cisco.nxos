@@ -12,7 +12,7 @@
   assert:
     that:
       - "{{ merged['after']['neighbors'] | symmetric_difference(result['parsed']['neighbors']) |length\
-            \ == 0 }}"
+        \ == 0 }}"
       - "{{ merged['after']['vrfs'] | symmetric_difference(result['parsed']['vrfs']) |length\
         \ == 0 }}"
       - merged['after']['as_number'] == result['parsed']['as_number']

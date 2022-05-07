@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli_config/cli_block_replace.yaml on connection={{ ansible_connection
+- debug:
+    msg="START cli_config/cli_block_replace.yaml on connection={{ ansible_connection
     }}"
 
 - name: setup - remove configuration
@@ -28,5 +29,6 @@
 - name: teardown
   ansible.netcommon.cli_config: *id002
 
-- debug: msg="END cli_config/cli_block_replace.yaml on connection={{ ansible_connection
+- debug:
+    msg="END cli_config/cli_block_replace.yaml on connection={{ ansible_connection
     }}"

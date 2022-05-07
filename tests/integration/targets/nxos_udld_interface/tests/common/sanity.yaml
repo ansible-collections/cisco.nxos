@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_udld_interface sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_udld_interface sanity
     test"
 
 - set_fact: udld_run="true"
@@ -7,7 +8,8 @@
 - set_fact: udld_enable="true"
 
 - set_fact: udld_run="false"
-  when: ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3',
+  when:
+    ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3',
     'lt'))))
 
 - set_fact: udld_run="false"
@@ -19,7 +21,6 @@
 - set_fact: intname="{{ nxos_int1 }}"
 
 - block:
-
     - name: Enable feature udld
       cisco.nxos.nxos_feature:
         feature: udld
@@ -34,7 +35,7 @@
     - name: ensure interface is configured to be in aggressive mode
       register: result
       cisco.nxos.nxos_udld_interface: &id001
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         mode: aggressive
         state: present
 
@@ -51,11 +52,10 @@
           - result.changed == false
 
     - block:
-
         - name: ensure interface has mode enabled
           register: result
           cisco.nxos.nxos_udld_interface: &id003
-            interface: '{{ intname }}'
+            interface: "{{ intname }}"
             mode: enabled
             state: present
 
@@ -82,7 +82,7 @@
         - name: ensure interface has mode disabled
           register: result
           cisco.nxos.nxos_udld_interface: &id005
-            interface: '{{ intname }}'
+            interface: "{{ intname }}"
             mode: disabled
             state: present
 
@@ -97,12 +97,11 @@
 
     - name: Remove the config
       cisco.nxos.nxos_udld_interface:
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         mode: enabled
         state: absent
   when: udld_run
   always:
-
     - name: Disable udld
       ignore_errors: true
       cisco.nxos.nxos_feature:

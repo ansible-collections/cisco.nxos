@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_acl_interface sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_acl_interface sanity
     test"
 
 - set_fact: intname="{{ nxos_int1 }}"
@@ -7,13 +8,13 @@
 - name: Interface selected for this test
   debug: msg="{{ intname }}"
 
-- name: 'Setup: Put interface into a default state'
+- name: "Setup: Put interface into a default state"
   ignore_errors: true
   cisco.nxos.nxos_config: &id007
     lines:
       - default interface {{ intname }}
 
-- name: 'Setup: Put interface into no switch port mode'
+- name: "Setup: Put interface into no switch port mode"
   ignore_errors: true
   cisco.nxos.nxos_config:
     commands:
@@ -22,7 +23,7 @@
       - interface {{ intname }}
     match: none
 
-- name: 'Setup: Cleanup possibly existing acl'
+- name: "Setup: Cleanup possibly existing acl"
   ignore_errors: true
   cisco.nxos.nxos_acl: &id008
     name: ANSIBLE_ACL
@@ -39,12 +40,11 @@
     dest: any
 
 - block:
-
     - name: Configure acl interface egress
       register: result
       cisco.nxos.nxos_acl_interface: &id001
         name: ANSIBLE_ACL
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         direction: egress
         state: present
 
@@ -64,7 +64,7 @@
       register: result
       cisco.nxos.nxos_acl_interface: &id003
         name: ANSIBLE_ACL
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         direction: ingress
         state: present
 
@@ -80,7 +80,7 @@
       register: result
       cisco.nxos.nxos_acl_interface: &id005
         name: ANSIBLE_ACL
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         direction: egress
         state: absent
 
@@ -96,7 +96,7 @@
       register: result
       cisco.nxos.nxos_acl_interface: &id006
         name: ANSIBLE_ACL
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         direction: ingress
         state: absent
 
@@ -108,15 +108,14 @@
 
     - assert: *id004
   rescue:
-
     - name: Put test interface into default state.
       ignore_errors: true
       cisco.nxos.nxos_config: *id007
   always:
-
     - name: Remove possible configured ACL
       ignore_errors: true
       cisco.nxos.nxos_acl: *id008
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_acl_interface sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_acl_interface sanity
         test"

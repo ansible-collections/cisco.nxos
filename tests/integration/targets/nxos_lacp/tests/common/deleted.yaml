@@ -11,20 +11,19 @@
   when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
 - block:
-
     - name: Setup
       cisco.nxos.nxos_config:
         lines: lacp system-priority 11
 
     - name: Setup
       cisco.nxos.nxos_config:
-        lines: '{{ mac|default(omit) }}'
+        lines: "{{ mac|default(omit) }}"
 
     - name: Gather lacp facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lacp
 
     - name: deleted
@@ -65,7 +64,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature:
         feature: lacp

@@ -28,10 +28,12 @@
   set_fact:
     admin_snmp_engineid_2: "{{ admin_snmp_engineid_2[0] }}"
 
-- include: cli.yaml
+- name: Run the tests for network_cli
+  ansible.builtin.include_tasks: cli.yaml
   tags:
-    - cli.yaml
+    - cli
 
-- include: nxapi.yaml
+- name: Run the tests for nxapi
+  ansible.builtin.include_tasks: nxapi.yaml
   tags:
     - nxapi

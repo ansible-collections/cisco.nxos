@@ -1,11 +1,13 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_overlay_global sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_overlay_global sanity
     test"
 
 - set_fact: overlay_global_supported="false"
 
 - set_fact: overlay_global_supported="true"
-  when: platform is search("N35NG|N7K|^N9K$") or ( platform is match("N9k-F") and
+  when:
+    platform is search("N35NG|N7K|^N9K$") or ( platform is match("N9k-F") and
     imagetag is version('F3', 'ne'))
 
 - debug: msg="Platform {{ platform }} running Image version {{ image_version }}
@@ -13,7 +15,6 @@
   when: overlay_global_supported
 
 - block:
-
     - name: Enable nv overlay evpn
       cisco.nxos.nxos_evpn_global:
         nv_overlay_evpn: true
@@ -37,7 +38,6 @@
   when: overlay_global_supported
 
 - block:
-
     - name: Configure overlay global
       register: result
       cisco.nxos.nxos_overlay_global: &id001
@@ -82,7 +82,6 @@
     - assert: *id004
   when: overlay_global_supported
   always:
-
     - name: Apply N7K specific cleanup config
       include: tasks/platform/n7k/cleanup.yaml
       when: platform is match('N7K')
@@ -93,5 +92,6 @@
       cisco.nxos.nxos_evpn_global:
         nv_overlay_evpn: false
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_overlay_global sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_overlay_global sanity
         test"

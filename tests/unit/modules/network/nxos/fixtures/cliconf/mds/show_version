@@ -34,7 +34,7 @@ Kernel uptime is 42 day(s), 23 hour(s), 31 minute(s), 29 second(s)
 Last reset at 870592 usecs after Tue Oct 13 17:01:33 2020
   Reason: Reset Requested by CLI command reload
   System version: 8.4(2b)
-  Service: 
+  Service:
 
 plugin
   Core Plugin

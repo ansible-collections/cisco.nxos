@@ -1,6 +1,6 @@
 - name: Default interfaces
   cisco.nxos.nxos_config:
-    lines: 
+    lines:
       - "default interface {{ nxos_int1 }}"
       - "default interface {{ nxos_int2 }}"
       - "default interface {{ nxos_int3 }}"
