@@ -64,5 +64,3 @@ plugin
   Core Plugin, Ethernet Plugin
 
 Active Package(s)
-
-

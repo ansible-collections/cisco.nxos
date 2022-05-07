@@ -155,7 +155,7 @@
 
     - name: Cleanup
       cisco.nxos.nxos_snmp_community: *id005
-    
+
     - name: Cleanup
       cisco.nxos.nxos_snmp_community: *id010
 

@@ -1,5 +1,5 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vxlan_vtep_vni multisite 
+- debug: msg="START connection={{ ansible_connection }} nxos_vxlan_vtep_vni multisite
     sanity test"
 
 - name: Disable feature nv overlay - multisite
@@ -73,7 +73,7 @@
       cisco.nxos.nxos_vxlan_vtep_vni: &id005
         interface: nve1
         vni: 8000
-        multisite_ingress_replication: optimized 
+        multisite_ingress_replication: optimized
 
     - assert: *id002
 
@@ -104,5 +104,5 @@
     lines:
       - no nv overlay evpn
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vxlan_vtep_vni multisite 
+- debug: msg="END connection={{ ansible_connection }} nxos_vxlan_vtep_vni multisite
     sanity test"

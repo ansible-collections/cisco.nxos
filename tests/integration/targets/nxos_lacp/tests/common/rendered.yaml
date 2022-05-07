@@ -15,7 +15,7 @@
               address: 00c1.4c00.bd15
               role: secondary
         state: rendered
-        
+
     - assert:
         that: "{{ rendered | symmetric_difference(result['rendered'])\
           \ |length==0 }}"

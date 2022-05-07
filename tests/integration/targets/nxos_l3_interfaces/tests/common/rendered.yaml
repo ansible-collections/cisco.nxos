@@ -42,7 +42,7 @@
     - name: Make sure that rendered task actually did not make any changes to the device
       assert:
         that: "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == [] }}"
-  
+
   always:
     - include_tasks: _remove_config.yaml
 

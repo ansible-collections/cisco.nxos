@@ -11,7 +11,7 @@
       cisco.nxos.nxos_bgp_global: &id003
         state: deleted
       register: result
-    
+
     - name: Assert that before dicts are correctly generated
       assert:
         that:
@@ -25,12 +25,12 @@
         that:
           - "{{ result['commands'] | symmetric_difference(deleted['commands']) |length\
             \ == 0 }}"
-  
+
     - name: Assert that after dict is correctly generated
       assert:
         that:
           - deleted['after'] == result['after']
-    
+
     - name: Delete BGP configs handled by this module (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_bgp_global: *id003

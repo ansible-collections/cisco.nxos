@@ -1,5 +1,5 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp_neighbor_af multisite 
+- debug: msg="START connection={{ ansible_connection }} nxos_bgp_neighbor_af multisite
      sanity test"
 
 - set_fact: soft_reconfiguration_ina="always"
@@ -112,5 +112,5 @@
     lines:
       - no nv overlay evpn
 
-- debug: msg="END connection={{ ansible_connection }} nxos_bgp_neighbor_af multisite 
+- debug: msg="END connection={{ ansible_connection }} nxos_bgp_neighbor_af multisite
      sanity test"

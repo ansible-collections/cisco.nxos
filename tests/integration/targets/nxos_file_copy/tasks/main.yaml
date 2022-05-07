@@ -19,7 +19,7 @@
     name: temp_user
     configured_password: "{{ temp_passwd }}"
 
-- block: 
+- block:
     - include: cli.yaml
       tags:
         - cli

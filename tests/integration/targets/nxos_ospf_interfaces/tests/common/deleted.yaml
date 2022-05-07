@@ -23,7 +23,7 @@
           - name: "{{ nxos_int1 }}"
         state: deleted
       register: result
-    
+
     - name: Assert that before dicts are correctly generated
       assert:
         that:
@@ -41,16 +41,16 @@
           - '"no ipv6 router ospfv3 multi-area 21.0.0.0" in result.commands'
           - '"no ipv6 router ospfv3 multi-area 50.50.50.50" in result.commands'
           - '"no ipv6 router ospfv3 multi-area 16.10.10.10" in result.commands'
-          - result.commands|length == 7        
-  
+          - result.commands|length == 7
+
     - name: Assert that after dict is correctly generated
       assert:
         that:
         - result["after"][0] == int1
         - result["after"][1] == merged["after"][1]
         - result["after"][2] == merged["after"][2]
-          
-    
+
+
     - name: Delete OSPF config from a single interface (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_ospf_interfaces: *id005
@@ -60,14 +60,14 @@
         that:
           - result['changed'] == false
           - result.commands|length == 0
-    
+
     - include_tasks: _populate_config.yaml
 
     - name: Delete OSPF config from all interfaces
       cisco.nxos.nxos_ospf_interfaces: &id007
         state: deleted
       register: result
-    
+
     - name: Assert that before dicts are correctly generated
       assert:
         that:
@@ -86,7 +86,7 @@
         - result["after"][0] == int1
         - result["after"][1] == int2
         - result["after"][2] == int3
-    
+
     - name: Delete OSPF config from all interfaces (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_ospf_interfaces: *id007

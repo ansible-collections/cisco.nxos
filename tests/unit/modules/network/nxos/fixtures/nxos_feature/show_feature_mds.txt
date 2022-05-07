@@ -1,4 +1,4 @@
-Feature Name         Instance State 
+Feature Name         Instance State
 -------------------- -------- -----
 analytics            1        enabled
 bulkstat             1        disabled

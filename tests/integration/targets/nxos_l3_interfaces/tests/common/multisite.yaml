@@ -226,7 +226,7 @@
         - "{{ test_int2 }}"
         - "{{ test_int3 }}"
 
-    - name: setup3 - overidden 
+    - name: setup3 - overidden
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int1 }}"
@@ -242,7 +242,7 @@
           - '!all'
           - '!min'
         gather_network_resources: l3_interfaces
-    
+
     - name: Store reserved interface IP config
       set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
@@ -334,7 +334,7 @@
     - name: Make sure that rendered task actually did not make any changes to the device
       assert:
         that: "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == [] }}"
-  
+
     - include_tasks: _remove_config.yaml
 
     # Interfaces used in the task don't actually exist on the appliance

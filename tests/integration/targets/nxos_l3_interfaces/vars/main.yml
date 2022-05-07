@@ -17,7 +17,7 @@ rendered:
   - "interface Ethernet1/800"
   - "ipv6 address fd5d:12c9:2201:2::1/64 tag 6"
 
-parsed: 
+parsed:
   - name: Ethernet1/800
     ipv4:
       - address: 192.168.1.100/24

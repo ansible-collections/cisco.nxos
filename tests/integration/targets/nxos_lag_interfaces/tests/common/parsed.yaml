@@ -22,7 +22,7 @@
           interface Ethernet1/803
             channel-group 11 mode passive
         state: parsed
-    
+
     - assert:
        that: "{{ parsed | symmetric_difference(result['parsed']) |length==0\
          \ }}"

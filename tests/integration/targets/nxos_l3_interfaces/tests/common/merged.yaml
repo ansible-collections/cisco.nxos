@@ -69,5 +69,5 @@
       cisco.nxos.nxos_config:
         lines:
          - "no interface {{ subint3 }}"
-    
+
     - include_tasks: _remove_config.yaml

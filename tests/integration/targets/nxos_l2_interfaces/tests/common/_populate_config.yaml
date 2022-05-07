@@ -7,7 +7,7 @@
     parents: "interface {{ nxos_int1 }}"
   vars:
     ansible_connection: ansible.netcommon.network_cli
-  
+
 - name: Populate interface - 2
   cisco.nxos.nxos_config:
     lines:

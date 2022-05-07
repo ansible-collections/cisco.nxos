@@ -208,18 +208,18 @@
         dampening_reuse_time: 2
         dampening_suppress_time: 3
         inject_map: [
-          [lax_inject_map, lax_exist_map], 
-          [nyc_inject_map, nyc_exist_map, copy-attributes], 
+          [lax_inject_map, lax_exist_map],
+          [nyc_inject_map, nyc_exist_map, copy-attributes],
           [fsd_inject_map, fsd_exist_map]
         ]
         networks: [
-          [10.0.0.0/16, routemap_LA], 
-          [192.168.1.1/32, Chicago], 
-          [192.168.2.0/24], 
+          [10.0.0.0/16, routemap_LA],
+          [192.168.1.1/32, Chicago],
+          [192.168.2.0/24],
           [192.168.3.0/24, routemap_NYC]
         ]
         redistribute: [
-          [direct, rm_direct], 
+          [direct, rm_direct],
           [lisp, rm_lisp]
         ]
         state: present

@@ -3,7 +3,7 @@
 
 - name: setup
   cisco.nxos.nxos_config: &teardown
-    lines: 
+    lines:
       - no feature bgp
       - no feature fabric forwarding
     match: none

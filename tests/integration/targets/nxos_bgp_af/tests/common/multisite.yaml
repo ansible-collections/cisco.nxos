@@ -90,7 +90,7 @@
 
     - assert: *id003
 
-    - name: Remove BGP - Route Target 
+    - name: Remove BGP - Route Target
       register: result
       cisco.nxos.nxos_bgp_af: &id006
         asn: 65535

@@ -5,11 +5,11 @@
     commands: show version | grep MDS
 
 - name: Set skip_test flag to false
-  set_fact: 
+  set_fact:
     skip_test=False
 
 - name: Set skip_test flag to true if not MDS
-  set_fact: 
+  set_fact:
     skip_test=True
   when: result.stdout[0] is not search('MDS')
 

@@ -74,7 +74,7 @@ merged:
           reference_bandwidth: 45
           unit: Gbps
         vrf: zone2
-    
+
 replaced:
   commands:
     - router ospf 102

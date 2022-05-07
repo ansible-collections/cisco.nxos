@@ -33,7 +33,7 @@
               safi: multicast
         state: deleted
       register: result
-    
+
     - name: Assert that before dicts were correctly generated
       assert:
         that:
@@ -45,13 +45,13 @@
         that:
           - "{{ result['commands'] | symmetric_difference(deleted['commands']) |length\
             \ == 0 }}"
-  
+
     - name: Assert that after dicts were correctly generated
       assert:
         that:
           - "{{ deleted['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length\
             \ == 0 }}"
-    
+
     - include_tasks: _remove_config.yaml
 
     - include_tasks: _populate_config.yaml
@@ -60,7 +60,7 @@
       cisco.nxos.nxos_bgp_address_family: &id004
         state: deleted
       register: result
-    
+
     - name: Assert that before dicts were correctly generated
       assert:
         that:
@@ -72,12 +72,12 @@
         that:
           - "{{ result['commands'] | symmetric_difference(deleted_all['commands']) |length\
             \ == 0 }}"
-  
+
     - name: Assert that after dicts were correctly generated
       assert:
         that:
           - deleted_all['after'] == result['after']
-    
+
     - name: Delete all BGP configs handled by this module (IDEMPOTENT)
       cisco.nxos.nxos_bgp_address_family: *id004
       register: result

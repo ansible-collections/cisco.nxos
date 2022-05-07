@@ -13,7 +13,7 @@
 
     - name: setup
       cisco.nxos.nxos_config: &id002
-        lines: 
+        lines:
           - "default interface {{ test_int1 }}"
           - "default interface {{ test_int2 }}"
 

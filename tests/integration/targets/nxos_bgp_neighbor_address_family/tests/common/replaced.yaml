@@ -52,7 +52,7 @@
           - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) |length\
             \ == 0 }}"
           - merged['after']['as_number'] == result['before']['as_number']
-    
+
     - name: Assert that correct set of commands were generated
       assert:
         that:

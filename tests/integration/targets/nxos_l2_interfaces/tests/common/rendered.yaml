@@ -30,7 +30,7 @@
           - name: Ethernet1/5
             mode: fabricpath
         state: rendered
-        
+
     - assert:
         that: "{{ rendered | symmetric_difference(result['rendered'])\
           \ |length==0 }}"

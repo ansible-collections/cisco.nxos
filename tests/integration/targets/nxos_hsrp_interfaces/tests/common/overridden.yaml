@@ -3,7 +3,7 @@
     msg: Start nxos_hsrp_interfaces overridden integration tests connection={{ ansible_connection
       }}
 
-- set_fact: 
+- set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
@@ -14,19 +14,19 @@
 
 - block:
     - include_tasks: _remove_config.yaml
-    
+
     - name: setup2
       cisco.nxos.nxos_config:
-        lines: 
+        lines:
           - "feature bfd"
           - "feature hsrp"
-          - "interface {{ test_int1 }}"  
+          - "interface {{ test_int1 }}"
           - "  no switchport"
-    
+
     - name: setup3
       cisco.nxos.nxos_config:
         lines:
-          - "interface {{ test_int2 }}" 
+          - "interface {{ test_int2 }}"
           - "  no switchport"
           - "  hsrp bfd"
 
@@ -54,6 +54,6 @@
         that:
           - result.changed == false
           - result.commands|length == 0
-  
+
   always:
     - include_tasks: _remove_config.yaml

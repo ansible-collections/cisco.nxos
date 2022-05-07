@@ -68,7 +68,7 @@
   ignore_errors: True
 
 - assert:
-    that: 
+    that:
       - result.failed == True
       - result.msg is search('Wrong Password')
 
@@ -83,7 +83,7 @@
   register: result
 
 - assert:
-    that: 
+    that:
       - result.changed == True
       - result.failed == False
       - '"Minimum recommended length of 8 characters" in result.warnings[1]'

@@ -32,7 +32,7 @@
       cisco.nxos.nxos_lacp_interfaces:
         state: gathered
 
-    - name: Make sure that rendered 
+    - name: Make sure that rendered
       assert:
         that: "{{ result['gathered'] == [] }}"
   always:

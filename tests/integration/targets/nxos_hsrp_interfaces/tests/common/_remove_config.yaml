@@ -1,6 +1,6 @@
 - name: Remove Config
   cisco.nxos.nxos_config:
-    lines: 
+    lines:
       - "no feature bfd"
       - "no feature hsrp"
       - "default interface {{ nxos_int1 }}"
