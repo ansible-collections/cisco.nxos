@@ -1,0 +1,3 @@
+---
+trivial:
+  - REplace conditional block with include_tasks for prepare.
