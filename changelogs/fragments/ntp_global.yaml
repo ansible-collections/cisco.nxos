@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_ntp_global` - Ensure idempotence for aliased keys (https://github.com/ansible-collections/cisco.nxos/issues/484)."
