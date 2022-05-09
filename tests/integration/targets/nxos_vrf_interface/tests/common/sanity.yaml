@@ -1,12 +1,10 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_vrf_interface sanity
-    test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_vrf_interface sanity test"
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact: intname="{{ nxos_int1 }}"
 
 - block:
-    - name: put interface in L3
+    - name: Put interface in l3
       cisco.nxos.nxos_config:
         commands:
           - no switchport
@@ -21,38 +19,37 @@
         interface: "{{ intname }}"
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_vrf_interface: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: Ensure ntc VRF does not exist on interface
+    - name: Ensure ntc vrf does not exist on interface
       register: result
       cisco.nxos.nxos_vrf_interface: &id003
         vrf: ntc
         interface: "{{ intname }}"
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       register: result
       cisco.nxos.nxos_vrf_interface: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-    - name: put interface in default mode
+    - name: Put interface in default mode
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines: default interface {{ intname }}
         match: none
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vrf_interface sanity
-    test"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_vrf_interface sanity test"

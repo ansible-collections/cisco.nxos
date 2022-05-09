@@ -1,37 +1,37 @@
 ---
-- debug: msg="START nxapi/sublevel.yaml"
+- ansible.builtin.debug: msg="START nxapi/sublevel.yaml"
 
-- name: setup
+- name: Setup
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
 
-- name: configure sub level command
+- name: Configure sub level command
   register: result
   cisco.nxos.nxos_config:
     lines: 10 permit ip any any log
     parents: ip access-list test
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip access-list test' in result.updates"
       - "'10 permit ip any any log' in result.updates"
 
-- name: configure sub level command idempotent check
+- name: Configure sub level command idempotent check
   register: result
   cisco.nxos.nxos_config:
     lines: 10 permit ip any any log
     parents: ip access-list test
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
 
-- debug: msg="END nxapi/sublevel.yaml"
+- ansible.builtin.debug: msg="END nxapi/sublevel.yaml"

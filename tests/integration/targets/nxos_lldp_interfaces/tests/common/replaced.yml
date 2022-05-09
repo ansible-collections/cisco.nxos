@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lldp_interfaces replaced integration tests connection = {{ansible_connection}}
 
 - name: Enable lldp feature
@@ -25,7 +25,7 @@
               vlan: 2
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface Ethernet1/2' in result.commands"
@@ -42,20 +42,20 @@
           - "!min"
         gather_network_resources: lldp_interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lldp_interfaces == result.after
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_lldp_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lldp
         state: disabled

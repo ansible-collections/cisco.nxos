@@ -1,16 +1,16 @@
 ---
-- debug: msg="START TRANSPORT:CLI nxos_l3_interface sanity test"
+- ansible.builtin.debug: msg="START TRANSPORT:CLI nxos_l3_interface sanity test"
 
-- set_fact: testint2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact: testint2="{{ nxos_int2 }}"
 
-- set_fact: testint3="{{ nxos_int3 }}"
+- ansible.builtin.set_fact: testint3="{{ nxos_int3 }}"
 
-- set_fact: ipv6_address=""
+- ansible.builtin.set_fact: ipv6_address=""
 
-- set_fact: ipv6_address="33:db::2/8"
+- ansible.builtin.set_fact: ipv6_address="33:db::2/8"
   when: ipv6_supported
 
-- name: Setup - remove address from interface prior to testing(Part1)
+- name: Setup - remove address from interface prior to testing(part1)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -18,7 +18,7 @@
     parents: no switchport
     before: interface {{ testint2 }}
 
-- name: Setup - remove address from interface prior to testing(Part2)
+- name: Setup - remove address from interface prior to testing(part2)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -27,7 +27,7 @@
     parents: no switchport
     before: interface {{ testint3 }}
 
-- name: Setup - Ensure interfaces are layer3
+- name: Setup - ensure interfaces are layer3
   cisco.nxos.nxos_interface:
     aggregate:
       - name: "{{ testint2 }}"
@@ -41,15 +41,15 @@
     name: "{{ testint2 }}"
     ipv4: 192.168.22.1/24
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: Configure ipv4 address to interface(Idempotence)
+- name: Configure ipv4 address to interface(idempotence)
   register: result
   cisco.nxos.nxos_l3_interface: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -60,15 +60,15 @@
     ipv4: 192.168.22.1/24
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: Remove ipv4 address from interface(Idempotence)
+- name: Remove ipv4 address from interface(idempotence)
   register: result
   cisco.nxos.nxos_l3_interface: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -83,15 +83,15 @@
         ipv4: 192.168.20.1/24
         ipv6: "{{ ipv6_address }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: Configure address to interfaces aggregate(Idempotence)
+- name: Configure address to interfaces aggregate(idempotence)
   register: result
   cisco.nxos.nxos_l3_interface: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -107,16 +107,16 @@
         ipv6: "{{ ipv6_address }}"
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: Remove address from interfaces aggregate(Idempotence)
+- name: Remove address from interfaces aggregate(idempotence)
   register: result
   cisco.nxos.nxos_l3_interface: *id004
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- debug: msg="END TRANSPORT:CLI nxos_l3_interface sanity test"
+- ansible.builtin.debug: msg="END TRANSPORT:CLI nxos_l3_interface sanity test"

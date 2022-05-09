@@ -1,12 +1,12 @@
 ---
-- set_fact: ignore_errors_httpapi='no'
+- ansible.builtin.set_fact: ignore_errors_httpapi='no'
 
-- set_fact: ignore_errors_httpapi='yes'
+- ansible.builtin.set_fact: ignore_errors_httpapi='yes'
   when: ansible_connection == 'ansible.netcommon.httpapi'
 
-- include: targets/nxos_install_os/tasks/upgrade/enable_scp_server.yaml
+- ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/enable_scp_server.yaml
 
-- name: Remove SSH known_hosts file before scp of image file
+- name: Remove ssh known_hosts file before scp of image file
   ignore_errors: true
   cisco.nxos.nxos_command:
     commands: run bash rm /var/home/admin/.ssh/known_hosts
@@ -21,7 +21,7 @@
     remote_scp_server_user: "{{ remote_scp_user }}"
     remote_scp_server_password: "{{ remote_scp_password }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: "{{ item.key }} {{ item.value }}"
   with_dict: "{{ result }}"
 
@@ -36,7 +36,7 @@
     remote_scp_server_user: "{{ remote_scp_user }}"
     remote_scp_server_password: "{{ remote_scp_password }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: "{{ item.key }} {{ item.value }}"
   with_dict: "{{ result }}"
   when: ki is defined

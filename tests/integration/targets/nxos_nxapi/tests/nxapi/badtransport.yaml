@@ -1,5 +1,5 @@
 ---
-- debug: msg="START nxapi/badtransport.yaml"
+- ansible.builtin.debug: msg="START nxapi/badtransport.yaml"
 
 - name: Sending transport other than cli should fail
   register: result
@@ -10,8 +10,8 @@
     https_port: 9443
     provider: "{{ nxapi }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed and result.msg is search('Transport')
 
-- debug: msg="END nxapi/badtransport.yaml"
+- ansible.builtin.debug: msg="END nxapi/badtransport.yaml"

@@ -1,11 +1,11 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_interfaces round trip integration tests on connection={{ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.nxos.nxos_interfaces:
         config:
@@ -44,10 +44,10 @@
 
           - name: "{{ nxos_int3 }}"
             description: WRONG-TEST-INTF-3
-            enabled: False
+            enabled: false
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - '"interface Ethernet1/1" in result.commands'
           - '"description WRONG-TEST-INTF-1" in result.commands'
@@ -67,11 +67,11 @@
         config: "{{ ansible_facts['network_resources']['interfaces'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "{{ base_config['after'] == revert['after'] }}"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_interfaces round trip integration tests on connection={{ansible_connection }}

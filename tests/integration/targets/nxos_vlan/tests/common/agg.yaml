@@ -1,7 +1,7 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/agg.yaml"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }}/agg.yaml"
 
-- name: setup - remove vlan used in test
+- name: Setup - remove vlan used in test
   ignore_errors: true
   cisco.nxos.nxos_config: &id005
     lines:
@@ -9,7 +9,7 @@
       - no vlan 103
       - no vlan 104
 
-- name: configure vlan with aggregate
+- name: Configure vlan with aggregate
   register: result
   cisco.nxos.nxos_vlan: &id001
     aggregate:
@@ -21,7 +21,7 @@
     vlan_state: active
     admin_state: up
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"vlan 102" in result.commands'
@@ -29,15 +29,15 @@
       - '"no shutdown" in result.commands'
       - '"state active" in result.commands'
 
-- name: conf1 - Idempotence
+- name: Conf1 - idempotence
   register: result
   cisco.nxos.nxos_vlan: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: change property of existing vlan - admin_state down
+- name: Change property of existing vlan - admin_state down
   register: result
   cisco.nxos.nxos_vlan: &id002
     aggregate:
@@ -49,47 +49,47 @@
     vlan_state: active
     admin_state: down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"vlan 102" in result.commands'
       - '"vlan 103" in result.commands'
       - '"shutdown" in result.commands'
 
-- name: conf2 - Idempotence
+- name: Conf2 - idempotence
   register: result
   cisco.nxos.nxos_vlan: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: purge
+- name: Purge
   register: result
   cisco.nxos.nxos_vlan: &id003
     vlan_id: 1
     purge: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no vlan 102" in result.commands'
       - '"no vlan 103" in result.commands'
 
-- name: purge - Idempotence
+- name: Purge - idempotence
   register: result
   cisco.nxos.nxos_vlan: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: setup for purge test with aggregate add
+- name: Setup for purge test with aggregate add
   cisco.nxos.nxos_vlan:
     vlan_id: 104
     purge: true
 
-- name: purge 104 with aggregate add 102-103
+- name: Purge 104 with aggregate add 102-103
   register: result
   cisco.nxos.nxos_vlan: &id004
     aggregate:
@@ -98,23 +98,23 @@
       - vlan_id: 103
     purge: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"vlan 102" in result.commands'
       - '"vlan 103" in result.commands'
       - '"no vlan 104" in result.commands'
 
-- name: purge_add - Idempotence
+- name: Purge_add - idempotence
   register: result
   cisco.nxos.nxos_vlan: *id004
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   ignore_errors: true
   cisco.nxos.nxos_config: *id005
 
-- debug: msg="END connection={{ ansible_connection }}/agg.yaml"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }}/agg.yaml"

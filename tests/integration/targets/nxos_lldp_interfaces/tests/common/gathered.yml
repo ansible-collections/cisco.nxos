@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lldp_interfaces gathered integration tests connection={{ansible_connection}}"
 
-- name: Enable LLDP feature
+- name: Enable lldp feature
   cisco.nxos.nxos_feature:
     feature: lldp
     state: enabled
@@ -32,20 +32,20 @@
       cisco.nxos.nxos_lldp_interfaces: &id001
         state: gathered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - ansible_facts.network_resources.lldp_interfaces == result.gathered
 
-    - name: Idempotence - Gathered
+    - name: Idempotence - gathered
       register: result
       cisco.nxos.nxos_lldp_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lldp
         state: disabled

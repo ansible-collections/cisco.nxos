@@ -1,26 +1,26 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_os_install upgrade"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_os_install upgrade"
   when: connection is defined
 
-- set_fact: image_dir='/auto/fe_ssr/agents-ci/agents_images/release_images/730_N11/'
+- ansible.builtin.set_fact: image_dir='/auto/fe_ssr/agents-ci/agents_images/release_images/730_N11/'
 
-- set_fact: checkmode='no'
+- ansible.builtin.set_fact: checkmode='no'
 
-- set_fact: issu='no'
+- ansible.builtin.set_fact: issu='no'
 
-- set_fact: copy_images=True
+- ansible.builtin.set_fact: copy_images=True
 
-- set_fact: force=False
+- ansible.builtin.set_fact: force=False
 
-- set_fact: delete_files=True
+- ansible.builtin.set_fact: delete_files=True
 
-- set_fact:
+- ansible.builtin.set_fact:
     delete_image_list:
       - n6000*.bin
 
-- set_fact: si='n6000-uk9.7.3.0.N1.1.bin'
+- ansible.builtin.set_fact: si='n6000-uk9.7.3.0.N1.1.bin'
 
-- set_fact: ki='n6000-uk9-kickstart.7.3.0.N1.1.bin'
+- ansible.builtin.set_fact: ki='n6000-uk9-kickstart.7.3.0.N1.1.bin'
 
-- name: Upgrade N5k Device to 7.3(0)N1(1) Release Image
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+- name: Upgrade n5k device to 7.3(0)n1(1) release image
+  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

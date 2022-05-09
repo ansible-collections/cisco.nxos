@@ -1,27 +1,27 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_os_install upgrade"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_os_install upgrade"
   when: connection is defined
 
-- set_fact: image_dir='/auto/fe_ssr/agents-ci/agents_images/release_images/602A8_8/'
+- ansible.builtin.set_fact: image_dir='/auto/fe_ssr/agents-ci/agents_images/release_images/602A8_8/'
 
-- set_fact: checkmode='no'
+- ansible.builtin.set_fact: checkmode='no'
 
-- set_fact: issu='desired'
+- ansible.builtin.set_fact: issu='desired'
 
-- set_fact: copy_images=True
+- ansible.builtin.set_fact: copy_images=True
 
-- set_fact: force=False
+- ansible.builtin.set_fact: force=False
 
-- set_fact: delete_files=True
+- ansible.builtin.set_fact: delete_files=True
 
-- set_fact:
+- ansible.builtin.set_fact:
     delete_image_list:
       - n3000*.bin
       - n3500*.bin
 
-- set_fact: si='n3500-uk9.6.0.2.A8.8.bin'
+- ansible.builtin.set_fact: si='n3500-uk9.6.0.2.A8.8.bin'
 
-- set_fact: ki='n3500-uk9-kickstart.6.0.2.A8.8.bin'
+- ansible.builtin.set_fact: ki='n3500-uk9-kickstart.6.0.2.A8.8.bin'
 
-- name: Upgrade N3500 Device to A8_8 Release Image
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+- name: Upgrade n3500 device to a8_8 release image
+  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

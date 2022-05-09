@@ -1,12 +1,12 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lacp deleted integration tests connection={{ ansible_connection }}
 
 - name: Enable lacp feature
   cisco.nxos.nxos_feature:
     feature: lacp
 
-- set_fact:
+- ansible.builtin.set_fact:
     mac: lacp system-mac 00c1.4c00.bd15 role primary
   when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
@@ -26,12 +26,12 @@
           - "!min"
         gather_network_resources: lacp
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_lacp: &id002
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lacp == result.before
           - "'no lacp system-priority' in result.commands"
@@ -39,7 +39,7 @@
           - result.commands|length == 1
       when: platform is not search('N9K')
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lacp == result.before
           - "'no lacp system-priority' in result.commands"
@@ -51,7 +51,7 @@
     - name: Gather lacp post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|length == 0
 
@@ -59,12 +59,12 @@
       register: result
       cisco.nxos.nxos_lacp: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled

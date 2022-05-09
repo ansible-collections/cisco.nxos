@@ -1,32 +1,32 @@
 ---
-- debug: msg="START cli/set_domain_name.yaml"
+- ansible.builtin.debug: msg="START cli/set_domain_name.yaml"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines: no ip domain-name eng.ansible.com
     match: none
 
-- name: configure domain_name
+- name: Configure domain_name
   register: result
   cisco.nxos.nxos_system:
     domain_name: eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: verify domain_name
+- name: Verify domain_name
   register: result
   cisco.nxos.nxos_system:
     domain_name: eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config:
     lines: no ip domain-name eng.ansible.com
     match: none
 
-- debug: msg="END cli/set_domain_name.yaml"
+- ansible.builtin.debug: msg="END cli/set_domain_name.yaml"

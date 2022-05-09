@@ -1,13 +1,13 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_l3_interfaces multisite integration tests connection={{ ansible_connection }}
 
-- set_fact:
+- ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
     test_int3: "{{ nxos_int3 }}"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - name: Enable feature nv overlay - multisite
   cisco.nxos.nxos_config:
@@ -31,7 +31,7 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: setup1 - deleted
+    - name: Setup1 - deleted
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
@@ -40,7 +40,7 @@
           - "interface {{ test_int3 }}"
           - "  no switchport"
 
-    - name: setup3 - deleted
+    - name: Setup3 - deleted
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int3 }}"
@@ -56,14 +56,14 @@
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_l3_interfaces: &id001
         config:
           - name: "{{ test_int3 }}"
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
@@ -78,14 +78,14 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: setup1 - merged
+    - name: Setup1 - merged
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
@@ -106,7 +106,7 @@
               - address: 192.168.10.2/24
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface {{ test_int3 }}' in result.commands"
@@ -123,22 +123,22 @@
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_l3_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: setup1 - replaced
+    - name: Setup1 - replaced
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
@@ -147,7 +147,7 @@
           - "interface {{ test_int3 }}"
           - "  no switchport"
 
-    - name: setup3 - replaced
+    - name: Setup3 - replaced
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int3 }}"
@@ -179,7 +179,7 @@
                 secondary: true
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
@@ -193,24 +193,24 @@
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id003
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_l3_interfaces: *id004
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: setup1 - overidden
+    - name: Setup1 - overidden
       ignore_errors: true
-      cisco.nxos.nxos_config: &id005
+      cisco.nxos.nxos_config: &id007
         lines:
           - "no system default switchport"
           - "default interface {{ item }}"
@@ -221,7 +221,7 @@
         - "{{ test_int2 }}"
         - "{{ test_int3 }}"
 
-    - name: setup3 - overidden
+    - name: Setup3 - overidden
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int1 }}"
@@ -232,14 +232,14 @@
           - "  evpn multisite dci-tracking"
 
     - name: Gather l3_interfaces facts
-      cisco.nxos.nxos_facts: &id006
+      cisco.nxos.nxos_facts: &id005
         gather_subset:
           - "!all"
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - name: Store reserved interface IP config
-      set_fact:
+    - name: Store reserved interface ip config
+      ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         overriden_config:
           - name: "{{ test_int3 }}"
@@ -249,11 +249,11 @@
 
     - name: Overridden
       register: result
-      cisco.nxos.nxos_l3_interfaces: &id007
+      cisco.nxos.nxos_l3_interfaces: &id006
         config: "{{ overriden_config + mgmt }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
@@ -269,24 +269,24 @@
           - result.commands|length == 9
 
     - name: Gather l3_interfaces post facts
-      cisco.nxos.nxos_facts: *id006
+      cisco.nxos.nxos_facts: *id005
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: Idempotence - Overridden
+    - name: Idempotence - overridden
       register: result
-      cisco.nxos.nxos_l3_interfaces: *id007
+      cisco.nxos.nxos_l3_interfaces: *id006
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
 
-    - name: teardown - overdidden
+    - name: Teardown - overdidden
       ignore_errors: true
-      cisco.nxos.nxos_config: *id005
+      cisco.nxos.nxos_config: *id007
       loop:
         - "{{ test_int1 }}"
         - "{{ test_int2 }}"
@@ -307,7 +307,7 @@
               - address: 192.168.1.100/24
                 tag: 5
               - address: 10.1.1.1/24
-                secondary: True
+                secondary: true
                 tag: 10
             evpn_multisite_tracking: fabric-tracking
           - name: Ethernet1/800
@@ -317,9 +317,8 @@
             evpn_multisite_tracking: dci-tracking
         state: rendered
 
-    - assert:
-        that: "{{ rendered_multi | symmetric_difference(result['rendered'])\
-          \ |length==0 }}"
+    - ansible.builtin.assert:
+        that: "{{ rendered_multi | symmetric_difference(result['rendered']) |length==0 }}"
 
     - name: Gather l3_interfaces facts from the device and assert that its empty
       register: result
@@ -327,10 +326,10 @@
         state: gathered
 
     - name: Make sure that rendered task actually did not make any changes to the device
-      assert:
+      ansible.builtin.assert:
         that: "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == [] }}"
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
     # Interfaces used in the task don't actually exist on the appliance
     - name: Use parsed state to convert externally supplied config to structured format
@@ -351,10 +350,8 @@
             vrf member management
         state: parsed
 
-    - assert:
-        that:
-          "{{ parsed_multi | symmetric_difference(result['parsed']) |length==0\
-          \ }}"
+    - ansible.builtin.assert:
+        that: "{{ parsed_multi | symmetric_difference(result['parsed']) |length==0 }}"
 
   when: multiout is not search("Invalid command")
 
@@ -372,4 +369,4 @@
     feature: nve
     state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_l3_interfaces multisite test"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_l3_interfaces multisite test"

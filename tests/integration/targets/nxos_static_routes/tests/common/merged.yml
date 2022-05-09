@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_static_routes merged integration tests connection={{ansible_connection}}"
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Merged
@@ -38,7 +38,7 @@
         state: merged
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'configure terminal' in result.commands"
@@ -49,13 +49,13 @@
           - "'ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
           - "result.commands | length == 6"
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       cisco.nxos.nxos_static_routes: *merged
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == false"
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,13 +1,11 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_vrf intent & aggregate
-    test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_vrf intent & aggregate test"
 
-- set_fact: testint1="{{ nxos_int1 }}"
+- ansible.builtin.set_fact: testint1="{{ nxos_int1 }}"
 
-- set_fact: testint2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact: testint2="{{ nxos_int2 }}"
 
-- name: setup - remove vrf from interfaces used in test(part1)
+- name: Setup - remove vrf from interfaces used in test(part1)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -15,7 +13,7 @@
     parents: no switchport
     before: interface {{ testint1 }}
 
-- name: setup - remove vrf from interfaces used in test(part2)
+- name: Setup - remove vrf from interfaces used in test(part2)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -23,19 +21,19 @@
     parents: no switchport
     before: interface {{ testint2 }}
 
-- name: setup - delete VRF test1 used in test
+- name: Setup - delete vrf test1 used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - no vrf context test1
 
-- name: setup - remove VRF test2 used in test
+- name: Setup - remove vrf test2 used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - no vrf context test2
 
-- name: aggregate definitions of VRFs
+- name: Aggregate definitions of vrfs
   register: result
   cisco.nxos.nxos_vrf: &id001
     aggregate:
@@ -46,7 +44,7 @@
         description: Testing
         admin_state: down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"vrf context test1" in result.commands'
@@ -56,15 +54,15 @@
       - '"description Testing" in result.commands'
       - '"shutdown" in result.commands'
 
-- name: aggregate definitions of VRFs(Idempotence)
+- name: Aggregate definitions of vrfs(idempotence)
   register: result
   cisco.nxos.nxos_vrf: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: Assign interfaces to VRF (Config + intent)
+- name: Assign interfaces to vrf (config + intent)
   register: result
   cisco.nxos.nxos_vrf: &id002
     name: test1
@@ -75,7 +73,7 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.failed == false
@@ -84,15 +82,15 @@
       - '"interface {{ testint2 }}" in result.commands'
       - '"vrf member test1" in result.commands'
 
-- name: Assign interfaces to vrf(Idempotence)
+- name: Assign interfaces to vrf(idempotence)
   register: result
   cisco.nxos.nxos_vrf: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: Check interfaces assigned to VRF (intent)
+- name: Check interfaces assigned to vrf (intent)
   register: result
   cisco.nxos.nxos_vrf:
     name: test1
@@ -100,11 +98,11 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == false
 
-- name: Assign interfaces to VRF (intent fail)
+- name: Assign interfaces to vrf (intent fail)
   register: result
   ignore_errors: true
   cisco.nxos.nxos_vrf:
@@ -112,7 +110,7 @@
     associated_interfaces:
       - test
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == True
 
@@ -123,7 +121,7 @@
     interfaces:
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
@@ -133,11 +131,11 @@
   register: result
   cisco.nxos.nxos_vrf: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: Delete VRFs
+- name: Delete vrfs
   register: result
   cisco.nxos.nxos_vrf: &id004
     aggregate:
@@ -149,21 +147,21 @@
         admin_state: down
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no vrf context test1" in result.commands'
       - '"no vrf context test2" in result.commands'
 
-- name: Delete VRFs(Idempotence)
+- name: Delete vrfs(idempotence)
   register: result
   cisco.nxos.nxos_vrf: *id004
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: setup - remove vrf from interfaces used in test(part1)
+- name: Setup - remove vrf from interfaces used in test(part1)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -171,7 +169,7 @@
     parents: no switchport
     before: interface {{ testint1 }}
 
-- name: setup - remove vrf from interfaces used in test(part2)
+- name: Setup - remove vrf from interfaces used in test(part2)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -179,18 +177,16 @@
     parents: no switchport
     before: interface {{ testint2 }}
 
-- name: setup - delete VRF test1 used in test
+- name: Setup - delete vrf test1 used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - no vrf context test1
 
-- name: setup - remove VRF test2 used in test
+- name: Setup - remove vrf test2 used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - no vrf context test2
 
-- debug:
-    msg="END connection={{ ansible_connection }} nxos_vrf intent & aggregate
-    test"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_vrf intent & aggregate test"

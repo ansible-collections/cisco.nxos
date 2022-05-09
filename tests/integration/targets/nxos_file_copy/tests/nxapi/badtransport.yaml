@@ -1,5 +1,5 @@
 ---
-- debug: msg="START nxapi/badtransport.yaml"
+- ansible.builtin.debug: msg="START nxapi/badtransport.yaml"
 
 - name: Sending transport other than cli should fail
   register: result
@@ -9,8 +9,8 @@
     file_system: "bootflash:"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed and result.msg is search('Connection type must be fully qualified name for network_cli connection type, got {{ ansible_connection }}')
 
-- debug: msg="END nxapi/badtransport.yaml"
+- ansible.builtin.debug: msg="END nxapi/badtransport.yaml"

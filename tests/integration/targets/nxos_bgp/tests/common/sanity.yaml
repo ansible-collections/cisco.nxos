@@ -1,16 +1,16 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp sanity test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_bgp sanity test"
 
-- set_fact: neighbor_down_fib_accelerate="true"
+- ansible.builtin.set_fact: neighbor_down_fib_accelerate="true"
   when: (not titanium) and ((imagetag != 'N1') and (imagetag != 'D1'))
 
-- set_fact: reconnect_interval="55"
+- ansible.builtin.set_fact: reconnect_interval="55"
   when: (not titanium) and ((imagetag != 'N1') and (imagetag != 'D1'))
 
-- set_fact: isolate="false"
+- ansible.builtin.set_fact: isolate="false"
   when: platform is not match("N35")
 
-- name: Enable feature BGP
+- name: Enable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
@@ -24,38 +24,38 @@
     state: absent
 
 - block:
-    - name: Configure BGP defaults
+    - name: Configure bgp defaults
       register: result
       cisco.nxos.nxos_bgp: &id001
         asn: 65535
         router_id: 192.0.2.1
         state: present
 
-    - assert: &id003
+    - ansible.builtin.assert: &id003
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: Remove BGP
+    - name: Remove bgp
       register: result
       cisco.nxos.nxos_bgp: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id002
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure BGP non defaults
+    - name: Configure bgp non defaults
       register: result
       cisco.nxos.nxos_bgp: &id005
         asn: 65535
@@ -92,32 +92,32 @@
         suppress_fib_pending: true
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Remove BGP
+    - name: Remove bgp
       register: result
       cisco.nxos.nxos_bgp: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id002
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Disable feature bgp
       cisco.nxos.nxos_feature:
         feature: bgp
         state: disabled
   rescue:
-    - name: Cleanup BGP
+    - name: Cleanup bgp
       ignore_errors: true
       cisco.nxos.nxos_bgp: *id002
 
@@ -127,4 +127,4 @@
         feature: bgp
         state: disabled
   always:
-    - debug: msg="END connection={{ ansible_connection }} nxos_bgp sanity test"
+    - ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_bgp sanity test"

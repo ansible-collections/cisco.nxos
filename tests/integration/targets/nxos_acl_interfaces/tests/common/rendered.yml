@@ -1,8 +1,6 @@
 ---
-- debug:
-    msg:
-      Start nxos_acl_interfaces rendered tests connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: Start nxos_acl_interfaces rendered tests connection={{ ansible_connection }}
 
 - name: Rendered
   register: result
@@ -36,7 +34,7 @@
                 direction: in
     state: rendered
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'interface Ethernet1/2' in result.rendered"
@@ -48,10 +46,10 @@
       - "'ip access-group ACL1v4 out' in result.rendered"
       - result.rendered | length == 7
 
-- name: Idempotence - Rendered
+- name: Idempotence - rendered
   register: result
   cisco.nxos.nxos_acl_interfaces: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false

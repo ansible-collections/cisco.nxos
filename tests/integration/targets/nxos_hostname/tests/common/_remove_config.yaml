@@ -1,3 +1,4 @@
+---
 - name: Reset hostname
   cisco.nxos.nxos_config:
     lines: "hostname {{ current_hostname }}"

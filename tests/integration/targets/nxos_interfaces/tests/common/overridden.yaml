@@ -1,13 +1,13 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_interfaces overridden integration tests connection={{ ansible_connection }}"
 
-- set_fact:
+- ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
 - block:
-    - name: setup1
+    - name: Setup1
       cisco.nxos.nxos_config: &id003
         lines:
           - "default interface {{ test_int1 }}"
@@ -38,8 +38,7 @@
 
         - assert:
             that:
-              - ansible_facts.network_resources.interfaces|symmetric_difference(result.before)|length
-                == 0
+              - ansible_facts.network_resources.interfaces|symmetric_difference(result.before)|length == 0
               - result.changed == true
               - "'interface {{ test_int1 }}' in result.commands"
               - "'shutdown' in result.commands"
@@ -51,8 +50,7 @@
 
         - assert:
             that:
-              - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length
-                == 0
+              - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length == 0
 
         - name: Idempotence - Overridden
           register: result

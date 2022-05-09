@@ -1,11 +1,11 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/default_facts.yaml"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }}/default_facts.yaml"
 
-- name: test getting default facts
+- name: Test getting default facts
   register: result
   cisco.nxos.nxos_facts:
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'default' in result.ansible_facts.ansible_net_gather_subset"
@@ -21,4 +21,4 @@
       - result.ansible_facts.ansible_net_version is defined
       - result.ansible_facts.ansible_network_resources == {}
 
-- debug: msg="END cli/default.yaml"
+- ansible.builtin.debug: msg="END cli/default.yaml"

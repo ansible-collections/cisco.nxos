@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lldp_interfaces parsed integration tests connection={{ansible_connection}}"
 
 - name: Enable lldp
@@ -17,25 +17,23 @@
     - name: Parsed
       register: result
       cisco.nxos.nxos_lldp_interfaces: &id001
-        running_config:
-          "interface Ethernet1/1\n  lldp receive\n  no lldp transmit\n\
-          interface Ethernet1/2\n  no lldp receive\n  lldp tlv-set vlan 12\ninterface\
-          \ Ethernet1/3\n  lldp tlv-set management-address 192.0.2.12\n"
+        running_config: "interface Ethernet1/1\n  lldp receive\n  no lldp transmit\ninterface Ethernet1/2\n  no lldp receive\n  lldp tlv-set vlan 12\ninterface Ethernet1/3\n\
+          \  lldp tlv-set management-address 192.0.2.12\n"
         state: parsed
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.parsed == parsed
 
-    - name: Idempotence - Parsed
+    - name: Idempotence - parsed
       register: result
       cisco.nxos.nxos_lldp_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that: result.changed == false
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lldp
         state: disabled

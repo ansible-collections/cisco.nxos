@@ -1,7 +1,7 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_traps sanity test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_snmp_traps sanity test"
 
-- name: Setup - Remove snmp_traps if configured
+- name: Setup - remove snmp_traps if configured
   cisco.nxos.nxos_snmp_traps: &id006
     group: all
     state: disabled
@@ -13,15 +13,15 @@
         group: bridge
         state: enabled
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_traps: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -31,13 +31,13 @@
         group: bridge
         state: disabled
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_traps: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure all snmp trap groups
       register: result
@@ -45,7 +45,7 @@
         group: all
         state: enabled
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - block:
         - name: Idempotence Check
@@ -59,16 +59,15 @@
       register: result
       cisco.nxos.nxos_snmp_traps: *id006
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Cleanup Idempotence
+    - name: Cleanup idempotence
       register: result
       cisco.nxos.nxos_snmp_traps: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Cleanup
       cisco.nxos.nxos_snmp_traps: *id006
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_traps sanity
-        test"
+    - ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_snmp_traps sanity test"

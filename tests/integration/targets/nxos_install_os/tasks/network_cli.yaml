@@ -1,18 +1,16 @@
 ---
-- name: collect common test cases
-  find:
+- name: Collect common test cases
+  ansible.builtin.find:
     paths: "{{ role_path }}/tests/common"
     patterns: "{{ testcase }}.yaml"
   connection: local
   register: test_cases
 
-- name: set test_items
-  set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
+- name: Set test_items
+  ansible.builtin.set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
 
-- name: run test cases (ansible_connection=ansible.netcommon.network_cli)
-  include:
-    "{{ test_case_to_run }} ansible_connection=ansible.netcommon.network_cli
-    connection={{ cli }}"
+- name: Run test cases (ansible_connection=ansible.netcommon.network_cli)
+  ansible.builtin.include: "{{ test_case_to_run }} ansible_connection=ansible.netcommon.network_cli connection={{ cli }}"
   with_items: "{{ test_items }}"
   loop_control:
     loop_var: test_case_to_run

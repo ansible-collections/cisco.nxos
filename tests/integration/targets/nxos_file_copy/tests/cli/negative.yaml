@@ -1,7 +1,7 @@
 ---
-- debug: msg="START nxos_file_copy negative test"
+- ansible.builtin.debug: msg="START nxos_file_copy negative test"
 
-- set_fact:
+- ansible.builtin.set_fact:
     test_source_file: "data.cfg"
     test_destination_file: "test_destination_file"
 
@@ -14,11 +14,11 @@
     file_system: "invalid_media_type:"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result is search('Invalid nxos filesystem invalid_media_type:')
 
-- name: Attempt to copy source file that does not exist on Ansible controller
+- name: Attempt to copy source file that does not exist on ansible controller
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
@@ -27,10 +27,9 @@
     file_system: "bootflash:"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
-      - result is search('Local file ./data.cfg_does_not_exist not
-        found')
+      - result is search('Local file ./data.cfg_does_not_exist not found')
 
 - name: Try and copy file using an invalid remote scp server name
   register: result
@@ -46,7 +45,7 @@
     remote_scp_server_password: "{{ temp_passwd }}"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == True
@@ -69,12 +68,12 @@
     remote_scp_server_password: "{{ temp_passwd }}"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == True
 
-- pause:
+- ansible.builtin.pause:
     seconds: 10
 
 - name: Try and copy file using an invalid username
@@ -91,7 +90,7 @@
     remote_scp_server_password: "{{ temp_passwd }}"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == True
@@ -111,10 +110,10 @@
     remote_scp_server_password: invalid_password
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == True
       - "'Too many authentication failures' in result.module_stderr"
 
-- debug: msg="END nxos_file_copy negative test"
+- ansible.builtin.debug: msg="END nxos_file_copy negative test"

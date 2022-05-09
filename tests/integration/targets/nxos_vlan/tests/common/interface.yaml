@@ -1,29 +1,29 @@
 ---
-- set_fact: testint1="{{ nxos_int1 }}"
+- ansible.builtin.set_fact: testint1="{{ nxos_int1 }}"
 
-- set_fact: testint2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact: testint2="{{ nxos_int2 }}"
 
-- name: setup - remove vlan used in test
+- name: Setup - remove vlan used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - no vlan 100
 
-- name: setup - remove vlan from interfaces used in test(part1)
+- name: Setup - remove vlan from interfaces used in test(part1)
   cisco.nxos.nxos_config:
     lines:
       - no switchport access vlan 100
     parents: switchport
     before: interface {{ testint1 }}
 
-- name: setup - remove vlan from interfaces used in test(part2)
+- name: Setup - remove vlan from interfaces used in test(part2)
   cisco.nxos.nxos_config:
     lines:
       - no switchport access vlan 100
     parents: switchport
     before: interface {{ testint2 }}
 
-- name: create vlan
+- name: Create vlan
   cisco.nxos.nxos_vlan:
     vlan_id: 100
 
@@ -38,7 +38,7 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
@@ -54,7 +54,7 @@
   register: result
   cisco.nxos.nxos_vlan: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -66,7 +66,7 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == false
 
@@ -78,7 +78,7 @@
     associated_interfaces:
       - test
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == True
 
@@ -89,7 +89,7 @@
     interfaces:
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
@@ -101,23 +101,23 @@
   register: result
   cisco.nxos.nxos_vlan: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown(part1)
+- name: Teardown(part1)
   cisco.nxos.nxos_config:
     lines:
       - no vlan 100
 
-- name: teardown - remove vlan from interfaces used in test(part1)
+- name: Teardown - remove vlan from interfaces used in test(part1)
   cisco.nxos.nxos_config:
     lines:
       - no switchport access vlan 100
     parents: switchport
     before: interface {{ testint1 }}
 
-- name: teardown - remove vlan from interfaces used in test(part2)
+- name: Teardown - remove vlan from interfaces used in test(part2)
   cisco.nxos.nxos_config:
     lines:
       - no switchport access vlan 100

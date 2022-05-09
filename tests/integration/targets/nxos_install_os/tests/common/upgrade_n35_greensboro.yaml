@@ -1,25 +1,25 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_os_install upgrade"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_os_install upgrade"
   when: connection is defined
 
-- set_fact: image_dir='/auto/fe_ssr/agents-ci/agents_images/release_images/greensboro/REL_7_0_3_I7_4/'
+- ansible.builtin.set_fact: image_dir='/auto/fe_ssr/agents-ci/agents_images/release_images/greensboro/REL_7_0_3_I7_4/'
 
-- set_fact: checkmode='no'
+- ansible.builtin.set_fact: checkmode='no'
 
-- set_fact: issu='desired'
+- ansible.builtin.set_fact: issu='desired'
 
-- set_fact: copy_images=False
+- ansible.builtin.set_fact: copy_images=False
 
-- set_fact: force=False
+- ansible.builtin.set_fact: force=False
 
-- set_fact: delete_files=False
+- ansible.builtin.set_fact: delete_files=False
 
-- set_fact:
+- ansible.builtin.set_fact:
     delete_image_list:
       - nxos*.bin
       - n3500*.bin
 
-- set_fact: si='nxos.7.0.3.I7.4.bin'
+- ansible.builtin.set_fact: si='nxos.7.0.3.I7.4.bin'
 
-- name: Upgrade N3500 Device to Greensboro Release Image
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+- name: Upgrade n3500 device to greensboro release image
+  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

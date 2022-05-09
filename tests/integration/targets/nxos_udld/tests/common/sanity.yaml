@@ -1,14 +1,12 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_udld sanity test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_udld sanity test"
 
-- set_fact: udld_run="true"
+- ansible.builtin.set_fact: udld_run="true"
 
-- set_fact: udld_run="false"
-  when:
-    ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3',
-    'lt'))))
+- ansible.builtin.set_fact: udld_run="false"
+  when: ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3', 'lt'))))
 
-- set_fact: udld_run="false"
+- ansible.builtin.set_fact: udld_run="false"
   when: titanium
 
 - block:
@@ -23,15 +21,15 @@
         aggressive: enabled
         msg_time: 20
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_udld: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -44,45 +42,45 @@
       cisco.nxos.nxos_udld: &id003
         aggressive: disabled
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_udld: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure udld3
       register: result
       cisco.nxos.nxos_udld: &id005
         msg_time: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_udld: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure udld again
       register: result
       cisco.nxos.nxos_udld: *id001
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remove udld config
       register: result
       cisco.nxos.nxos_udld: &id006
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_udld: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   when: udld_run
   always:
     - name: Disable udld
@@ -91,4 +89,4 @@
         feature: udld
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_udld sanity test"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_udld sanity test"

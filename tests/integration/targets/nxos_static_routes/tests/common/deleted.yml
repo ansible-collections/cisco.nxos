@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_static_routes deleted integration tests connection = {{ ansible_connection }}"
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Gather static_routes facts
@@ -12,14 +12,14 @@
           - "!min"
         gather_network_resources: static_routes
 
-    - name: Delete all routes based on VRF
+    - name: Delete all routes based on vrf
       cisco.nxos.nxos_static_routes:
         config:
           - vrf: trial_vrf
         state: deleted
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'vrf context trial_vrf' in result.commands"
@@ -27,9 +27,9 @@
           - "'no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
           - "result.commands | length == 3"
 
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Delete routes based on AFI in a VRF
+    - name: Delete routes based on afi in a vrf
       cisco.nxos.nxos_static_routes:
         config:
           - vrf: trial_vrf
@@ -38,7 +38,7 @@
         state: deleted
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'vrf context trial_vrf' in result.commands"
@@ -46,11 +46,11 @@
           - "'no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
           - "result.commands | length == 3"
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Deleted (All routes)
+    - name: Deleted (all routes)
       cisco.nxos.nxos_static_routes: &deleted
         state: deleted
       register: result
@@ -58,7 +58,7 @@
     - name: Gather static_routes post facts
       cisco.nxos.nxos_facts: *facts
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'vrf context trial_vrf' in result.commands"
           - "'no ip route 192.0.2.64/28 192.0.2.22 tag 4' in result.commands"
@@ -73,9 +73,9 @@
       cisco.nxos.nxos_static_routes: *deleted
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == false"
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

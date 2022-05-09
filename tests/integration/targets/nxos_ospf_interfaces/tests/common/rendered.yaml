@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_ospf_interfaces rendered integration tests on connection={{ ansible_connection }}
 
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
@@ -12,7 +12,7 @@
               - process_id: "100"
                 area:
                   area_id: 1.1.1.1
-                  secondaries: False
+                  secondaries: false
             multi_areas:
               - 11.11.11.11
           - afi: ipv6
@@ -28,12 +28,12 @@
         address_family:
           - afi: ipv4
             authentication:
-              enable: True
+              enable: true
               key_chain: test-1
             cost: 100
           - afi: ipv6
             network: broadcast
-            shutdown: True
+            shutdown: true
       - name: "{{ nxos_int3 }}"
         address_family:
           - afi: ipv4
@@ -42,8 +42,7 @@
   register: result
 
 - name: Assert that correct set of commands were rendered
-  assert:
+  ansible.builtin.assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
-        \ == 0 }}"
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
       - result.changed == False

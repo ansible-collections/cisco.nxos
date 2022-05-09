@@ -1,9 +1,7 @@
 ---
-- debug:
-    msg="START common/lessthanorequal.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START common/lessthanorequal.yaml on connection={{ ansible_connection }}"
 
-- name: test le operator
+- name: Test le operator
   register: result
   cisco.nxos.nxos_command:
     commands:
@@ -12,11 +10,11 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.eth_ip_mask le 32
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: test <= operator
+- name: Test <= operator
   register: result
   cisco.nxos.nxos_command:
     commands:
@@ -25,10 +23,8 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.eth_ip_mask <= 32
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- debug:
-    msg="END common/lessthanorequal.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="END common/lessthanorequal.yaml on connection={{ ansible_connection }}"

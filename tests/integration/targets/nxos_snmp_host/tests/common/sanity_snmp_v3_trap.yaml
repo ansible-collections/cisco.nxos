@@ -1,18 +1,16 @@
 ---
-- set_fact: snmp_type="trap"
+- ansible.builtin.set_fact: snmp_type="trap"
 
-- set_fact: snmp_version="v3"
+- ansible.builtin.set_fact: snmp_version="v3"
 
-- set_fact: snmp_auth="priv"
+- ansible.builtin.set_fact: snmp_auth="priv"
 
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
-    }} {{ snmp_version }} sanity test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type }} {{ snmp_version }} sanity test"
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact: intname="{{ nxos_int1 }}"
   when: platform is not search('N5K|N6K')
 
-- name: Setup - Remove snmp_host if configured
+- name: Setup - remove snmp_host if configured
   ignore_errors: true
   cisco.nxos.nxos_snmp_host: &id007
     snmp_host: 192.0.2.3
@@ -41,15 +39,15 @@
         src_intf: "{{ intname|default(omit) }}"
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_host: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -71,7 +69,7 @@
         - assert: *id004
       when: platform is not search('N35|N5K|N6K')
 
-    - name: remove some configuration
+    - name: Remove some configuration
       register: result
       cisco.nxos.nxos_snmp_host: &id005
         snmp_host: 192.0.2.3
@@ -81,13 +79,13 @@
         vrf_filter: management
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_host: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - block:
         - name: remove some more configuration
@@ -111,18 +109,16 @@
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Cleanup Idempotence
+    - name: Cleanup idempotence
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Cleanup
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 
-    - debug:
-        msg="END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
-        }} {{ snmp_version }} sanity test"
+    - ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type }} {{ snmp_version }} sanity test"

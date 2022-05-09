@@ -1,20 +1,20 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp parameter test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_bgp parameter test"
 
-- name: Disable feature BGP
+- name: Disable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature BGP
+- name: Enable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
 - block:
-    - name: set multi vrf params
+    - name: Set multi vrf params
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id001
@@ -32,20 +32,20 @@
         log_neighbor_changes: true
         maxas_limit: 50
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: reset multi vrf params
+    - name: Reset multi vrf params
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id003
@@ -63,16 +63,16 @@
         maxas_limit: default
         router_id: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: set clusterid
+    - name: Set clusterid
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id005
@@ -80,16 +80,16 @@
         vrf: "{{ item }}"
         cluster_id: 10.0.0.1
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: reset cluster_id
+    - name: Reset cluster_id
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id006
@@ -97,16 +97,16 @@
         vrf: "{{ item }}"
         cluster_id: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: set confederation
+    - name: Set confederation
       register: result
       cisco.nxos.nxos_bgp: &id007
         asn: 65535
@@ -116,30 +116,30 @@
           - 22
           - 18
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: reset confederation
+    - name: Reset confederation
       register: result
       cisco.nxos.nxos_bgp: &id008
         asn: 65535
         confederation_id: default
         confederation_peers: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: set confederation_local_as
+    - name: Set confederation_local_as
       register: result
       cisco.nxos.nxos_bgp: &id009
         asn: 65535
@@ -151,15 +151,15 @@
           - 22
           - 18
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: reset confederation local_as
+    - name: Reset confederation local_as
       register: result
       cisco.nxos.nxos_bgp: &id010
         asn: 65535
@@ -168,15 +168,15 @@
         confederation_id: default
         confederation_peers: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: set local_as
+    - name: Set local_as
       register: result
       cisco.nxos.nxos_bgp: &id011
         asn: 65535
@@ -184,15 +184,15 @@
         local_as: 33
         confederation_id: 99
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id011
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: reset local_as
+    - name: Reset local_as
       register: result
       cisco.nxos.nxos_bgp: &id012
         asn: 65535
@@ -200,15 +200,15 @@
         confederation_id: default
         local_as: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id012
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: set default vrf params
+    - name: Set default vrf params
       register: result
       cisco.nxos.nxos_bgp: &id013
         asn: 65535
@@ -221,15 +221,15 @@
         flush_routes: true
         shutdown: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id013
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: reset default vrf params
+    - name: Reset default vrf params
       register: result
       cisco.nxos.nxos_bgp: &id014
         asn: 65535
@@ -239,13 +239,13 @@
         flush_routes: false
         shutdown: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp: *id014
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Disable feature bgp
       ignore_errors: true
@@ -253,4 +253,4 @@
         feature: bgp
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_bgp parameter test"
+    - ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_bgp parameter test"

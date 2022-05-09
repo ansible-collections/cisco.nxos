@@ -1,7 +1,7 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_ntp sanity test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_ntp sanity test"
 
-- name: Setup - Remove ntp if configured
+- name: Setup - remove ntp if configured
   ignore_errors: true
   cisco.nxos.nxos_ntp: &id005
     server: 1.2.3.4
@@ -22,15 +22,15 @@
         source_addr: 192.0.2.5
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -44,25 +44,25 @@
         source_addr: default
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove ntp config
       register: result
       cisco.nxos.nxos_ntp: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence Check
+    - name: Remove idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure ntp again
       register: result
@@ -72,13 +72,13 @@
         prefer: enabled
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove source interface
       register: result
@@ -86,27 +86,27 @@
         source_int: default
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove ntp
       register: result
       cisco.nxos.nxos_ntp: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence Check
+    - name: Remove idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Remove ntp config
       cisco.nxos.nxos_ntp: *id005
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_ntp sanity test"
+    - ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_ntp sanity test"

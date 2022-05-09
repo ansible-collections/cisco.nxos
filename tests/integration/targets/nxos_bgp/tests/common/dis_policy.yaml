@@ -1,28 +1,28 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp parameter test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_bgp parameter test"
 
-- debug: msg="This bgp_disable_policy is not supported on {{ image_version }}"
+- ansible.builtin.debug: msg="This bgp_disable_policy is not supported on {{ image_version }}"
   when: imagetag is search("A8|D1")
 
-- set_fact: bgp_disable_policy="false"
+- ansible.builtin.set_fact: bgp_disable_policy="false"
 
-- set_fact: bgp_disable_policy="true"
+- ansible.builtin.set_fact: bgp_disable_policy="true"
   when: imagetag is not search("A8|D1")
 
-- name: Disable feature BGP
+- name: Disable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature BGP
+- name: Enable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
 - block:
-    - name: set disable policy
+    - name: Set disable policy
       register: result
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: &id001
@@ -31,22 +31,22 @@
         disable_policy_batching_ipv4_prefix_list: v4_p
         disable_policy_batching_ipv6_prefix_list: v6_p
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
       when: bgp_disable_policy
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
       when: bgp_disable_policy
 
-    - name: reset disable policy
+    - name: Reset disable policy
       register: result
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: &id003
@@ -55,18 +55,18 @@
         disable_policy_batching_ipv4_prefix_list: default
         disable_policy_batching_ipv6_prefix_list: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: bgp_disable_policy
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: bgp_disable_policy
   rescue:
-    - debug: msg="Tests can fail on A8 or helsinki images"
+    - ansible.builtin.debug: msg="Tests can fail on A8 or helsinki images"
   always:
     - name: Disable feature bgp
       ignore_errors: true
@@ -74,4 +74,4 @@
         feature: bgp
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_bgp parameter test"
+    - ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_bgp parameter test"

@@ -1,44 +1,44 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vtp_domain sanity test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_vtp_domain sanity test"
 
-- set_fact: vtp_run="true"
+- ansible.builtin.set_fact: vtp_run="true"
 
-- set_fact: vtp_run="false"
+- ansible.builtin.set_fact: vtp_run="false"
   when: platform is search('N3K-F|N9K-F')
 
 - block:
-    - name: disable feature vtp
+    - name: Disable feature vtp
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: vtp
         state: disabled
 
-    - name: enable feature vtp
+    - name: Enable feature vtp
       cisco.nxos.nxos_feature:
         feature: vtp
         state: enabled
 
-    - name: configure vtp domain
+    - name: Configure vtp domain
       register: result
       cisco.nxos.nxos_vtp_domain: &id001
         domain: ntc
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_vtp_domain: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   when: vtp_run
   always:
-    - name: disable feature vtp
+    - name: Disable feature vtp
       cisco.nxos.nxos_feature:
         feature: vtp
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vtp_domain sanity test"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_vtp_domain sanity test"

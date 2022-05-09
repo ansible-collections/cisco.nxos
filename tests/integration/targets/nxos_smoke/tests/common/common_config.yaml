@@ -4,13 +4,13 @@
 
 # hit NetworkConfig
 # Select interface for test
-- debug: msg="START connection={{ ansible_connection }} common/common_config.yaml"
-- debug: msg="Using provider={{ connection.transport }}"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} common/common_config.yaml"
+- ansible.builtin.debug: msg="Using provider={{ connection.transport }}"
   when: ansible_connection == "local"
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact: intname="{{ nxos_int1 }}"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     commands:
       - no description
@@ -20,54 +20,54 @@
     match: none
     provider: "{{ connection }}"
 
-- name: collect any backup files
-  find: &backups
+- name: Collect any backup files
+  ansible.builtin.find: &backups
     paths: "{{ role_path }}/backup"
     pattern: "{{ inventory_hostname_short }}_config*"
   connection: local
   register: backup_files
 
-- name: delete backup files
-  file:
+- name: Delete backup files
+  ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
   with_items: "{{backup_files.files|default([])}}"
 
-- name: configure device with config
+- name: Configure device with config
   cisco.nxos.nxos_config:
     commands:
       - description this is a test
       - shutdown
     parents:
       - "interface {{ intname }}"
-    backup: yes
+    backup: true
     provider: "{{ connection }}"
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == true"
       - "result.updates is defined"
 
-- name: collect any backup files
-  find: *backups
+- name: Collect any backup files
+  ansible.builtin.find: *backups
   connection: local
   register: backup_files
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "backup_files.files is defined"
 
 # hit block/sublevel sections
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config: &clear
     lines: no ip access-list test
     provider: "{{ connection }}"
     match: none
-  ignore_errors: yes
+  ignore_errors: true
 
 # hit NetworkConfig._diff_exact
-- name: configure sub level command using block replace - exact
+- name: Configure sub level command using block replace - exact
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -80,7 +80,7 @@
     match: exact
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == true"
       - "'ip access-list test' in result.updates"
@@ -90,7 +90,7 @@
       - "'40 permit ip 192.0.2.4/32 any log' in result.updates"
 
 # hit NetworkConfig._diff_strict
-- name: configure sub level command using block replace strict
+- name: Configure sub level command using block replace strict
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -103,13 +103,13 @@
     match: strict
   register: result
 
-- name: teardown
+- name: Teardown
   nxos_config: *clear
 
 # hit CustomNetworkConfig
 - block:
-    - name: create static route
-      cisco.nxos.nxos_static_route: &configure
+    - name: Create static route
+      cisco.nxos.nxos_static_route:
         prefix: "192.168.20.64/24"
         next_hop: "192.0.2.3"
         route_name: testing
@@ -119,26 +119,11 @@
         provider: "{{ connection }}"
       register: result
 
-    - assert: &true
+    - ansible.builtin.assert: &true
         that:
           - "result.changed == true"
 
-    - name: remove static route
-      cisco.nxos.nxos_static_route: &remove
-        prefix: "192.168.20.64/24"
-        next_hop: "192.0.2.3"
-        route_name: testing
-        pref: 100
-        tag: 5500
-        vrf: testing
-        state: absent
-        provider: "{{ connection }}"
-      register: result
-
-    - assert: *true
-
-  always:
-    - name: remove static route
+    - name: Remove static route
       cisco.nxos.nxos_static_route:
         prefix: "192.168.20.64/24"
         next_hop: "192.0.2.3"
@@ -148,13 +133,28 @@
         vrf: testing
         state: absent
         provider: "{{ connection }}"
-      ignore_errors: yes
+      register: result
 
-    - name: remove static route aggregate
+    - ansible.builtin.assert: *true
+
+  always:
+    - name: Remove static route
+      cisco.nxos.nxos_static_route:
+        prefix: "192.168.20.64/24"
+        next_hop: "192.0.2.3"
+        route_name: testing
+        pref: 100
+        tag: 5500
+        vrf: testing
+        state: absent
+        provider: "{{ connection }}"
+      ignore_errors: true
+
+    - name: Remove static route aggregate
       cisco.nxos.nxos_static_route:
         aggregate:
           - { prefix: "192.168.22.64/24", next_hop: "192.0.2.3" }
           - { prefix: "192.168.24.64/24", next_hop: "192.0.2.3" }
         state: absent
         provider: "{{ connection }}"
-      ignore_errors: yes
+      ignore_errors: true

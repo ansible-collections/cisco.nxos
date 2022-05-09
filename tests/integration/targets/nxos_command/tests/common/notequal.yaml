@@ -1,7 +1,7 @@
 ---
-- debug: msg="START common/notequal.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START common/notequal.yaml on connection={{ ansible_connection }}"
 
-- name: test neq operator
+- name: Test neq operator
   register: result
   cisco.nxos.nxos_command:
     commands:
@@ -10,12 +10,12 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.state neq down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.stdout is defined
 
-- name: test != operator
+- name: Test != operator
   register: result
   cisco.nxos.nxos_command:
     commands:
@@ -24,9 +24,9 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.state != down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.stdout is defined
 
-- debug: msg="END common/notequal.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END common/notequal.yaml on connection={{ ansible_connection }}"

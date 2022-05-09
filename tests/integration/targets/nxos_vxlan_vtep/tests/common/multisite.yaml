@@ -1,5 +1,5 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vxlan_vtep multisite sanity test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_vxlan_vtep multisite sanity test"
 
 - name: Enable feature nv overlay - multisite
   cisco.nxos.nxos_config:
@@ -21,7 +21,7 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: configure vxlan_vtep
+    - name: Configure vxlan_vtep
       register: result
       cisco.nxos.nxos_vxlan_vtep: &id001
         interface: nve1
@@ -33,21 +33,21 @@
         multisite_border_gateway_interface: Loopback10
         shutdown: false
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep: *id001
 
-    - assert: &id003
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: reset vxlan_vtep
+    - name: Reset vxlan_vtep
       register: result
-      cisco.nxos.nxos_vxlan_vtep: &id004
+      cisco.nxos.nxos_vxlan_vtep: &id003
         interface: nve1
         description: default
         host_reachability: false
@@ -57,15 +57,15 @@
         multisite_border_gateway_interface: default
         shutdown: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: reset Idempotence
+    - name: Reset idempotence
       register: result
-      cisco.nxos.nxos_vxlan_vtep: *id004
+      cisco.nxos.nxos_vxlan_vtep: *id003
 
-    - assert: *id003
+    - ansible.builtin.assert: *id004
 
-    - name: remove vxlan_vtep
+    - name: Remove vxlan_vtep
       register: result
       cisco.nxos.nxos_vxlan_vtep: &id005
         interface: nve1
@@ -76,15 +76,15 @@
         shutdown: true
         state: absent
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep: *id005
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -108,4 +108,4 @@
     feature: nve
     state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vxlan_vtep sanity test"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_vxlan_vtep sanity test"

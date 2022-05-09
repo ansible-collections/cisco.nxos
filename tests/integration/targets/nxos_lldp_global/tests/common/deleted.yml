@@ -1,19 +1,17 @@
 ---
-- debug:
-    msg:
-      Start nxos_lldp_global deleted integration tests connection = {{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: Start nxos_lldp_global deleted integration tests connection = {{ ansible_connection }}
 
 - block:
-    - set_fact: cfg_port_id=True
+    - ansible.builtin.set_fact: cfg_port_id=True
       when: platform is not search('N[567]K') and imagetag is not search("I[2345]")
 
-    - name: feature off to cleanup lldp
+    - name: Feature off to cleanup lldp
       cisco.nxos.nxos_feature: &id003
         feature: lldp
         state: disabled
 
-    - name: Enable LLDP feature
+    - name: Enable lldp feature
       cisco.nxos.nxos_feature:
         feature: lldp
         state: enabled
@@ -46,7 +44,7 @@
       cisco.nxos.nxos_lldp_global: &id002
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lldp_global == result.before
           - "'no lldp holdtime 125' in result.commands"
@@ -56,7 +54,7 @@
           - "result.changed == true "
           - result.after | length == 0
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'no lldp portid-subtype 1' in result.commands"
           - "'lldp tlv-select power-management' in result.commands"
@@ -65,7 +63,7 @@
     - name: Gather lldp_global post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "ansible_facts.network_resources == {} "
 
@@ -73,11 +71,11 @@
       register: result
       cisco.nxos.nxos_lldp_global: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature: *id003
   when: platform is not search('N35')

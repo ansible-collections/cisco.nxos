@@ -1,14 +1,14 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_prefix_lists overridden integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Override all prefix-lists configuration with provided configuration
-      cisco.nxos.nxos_prefix_lists: &id003
+      cisco.nxos.nxos_prefix_lists: &id001
         config:
           - afi: ipv4
             prefix_lists:
@@ -28,30 +28,29 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['before'][0] == merged['after'][0] }}"
           - "{{ result['before'][1] == merged['after'][1] }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ overridden['after'][0] == result['after'][0] }}"
 
-    - name: Override all prefix-lists configuration with provided configuration (IDEMPOTENT)
+    - name: Override all prefix-lists configuration with provided configuration (idempotent)
       register: result
-      cisco.nxos.nxos_prefix_lists: *id003
+      cisco.nxos.nxos_prefix_lists: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,9 +1,11 @@
 ---
 - block:
-    - include: cli.yaml
+    - name: Include the cli tasks
+      ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
   always:
-    - include: nxapi.yaml
+    - name: Include the nx-api tasks
+      ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi

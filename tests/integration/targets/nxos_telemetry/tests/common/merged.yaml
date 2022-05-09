@@ -1,14 +1,12 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_telemetry merged sanity
-    test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_telemetry merged sanity test"
 
-- set_fact: source_interface="Loopback55"
+- ansible.builtin.set_fact: source_interface="Loopback55"
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- set_fact: command_list_length=30
+- ansible.builtin.set_fact: command_list_length=30
 
-- set_fact: command_list_length=31
+- ansible.builtin.set_fact: command_list_length=31
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
 - name: Setup
@@ -18,7 +16,7 @@
     state: disabled
 
 - block:
-    - name: Gather Telemetry Facts Before Changes
+    - name: Gather telemetry facts before changes
       cisco.nxos.nxos_facts: &id001
         gather_subset:
           - "!all"
@@ -70,7 +68,7 @@
               data_source: NX-API
               path:
                 name: '"show bgp l2vpn evpn summary"'
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: foo
 
@@ -86,7 +84,7 @@
               data_source: DME
               path:
                 name: sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: foo
 
@@ -94,7 +92,7 @@
               data_source: DME
               path:
                 name: sys/ospf
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
           subscriptions:
@@ -116,7 +114,7 @@
                 id: 55
                 sample_interval: 2000
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - result.before|length == 0
@@ -134,18 +132,14 @@
           - "'ip address 192.168.0.2 port 60001 protocol grpc encoding gpb' in result.commands"
           - "'sensor-group 8' in result.commands"
           - "'data-source NX-API' in result.commands"
-          - result.commands is search("path .*show bgp l2vpn evpn summary.* depth
-            0 query-condition foo filter-condition foo")
+          - result.commands is search("path .*show bgp l2vpn evpn summary.* depth 0 query-condition foo filter-condition foo")
           - "'sensor-group 2' in result.commands"
           - "'data-source NX-API' in result.commands"
-          - result.commands is search("path .*show ip bgp neighbors.* depth unbounded
-            query-condition foo filter-condition foo")
+          - result.commands is search("path .*show ip bgp neighbors.* depth unbounded query-condition foo filter-condition foo")
           - "'sensor-group 55' in result.commands"
           - "'data-source DME' in result.commands"
-          - "'path sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]\
-            \ depth 0 query-condition foo filter-condition foo' in result.commands"
-          - "'path sys/ospf depth 0 query-condition foo filter-condition or(eq(ethpmPhysIf.operSt,\"\
-            down\"),eq(ethpmPhysIf.operSt,\"up\"))' in result.commands"
+          - "'path sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11] depth 0 query-condition foo filter-condition foo' in result.commands"
+          - "'path sys/ospf depth 0 query-condition foo filter-condition or(eq(ethpmPhysIf.operSt,\"down\"),eq(ethpmPhysIf.operSt,\"up\"))' in result.commands"
           - "'subscription 44' in result.commands"
           - "'dst-grp 10' in result.commands"
           - "'dst-grp 2' in result.commands"
@@ -156,29 +150,27 @@
           - "'snsr-grp 55 sample-interval 2000' in result.commands"
           - result.commands|length == {{ command_list_length }}
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'source-interface loopback55' in result.commands"
       when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length
-            == 0
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0
 
-    - name: Gather Telemetry Facts After Changes
+    - name: Gather telemetry facts after changes
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length
-            == 0
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length == 0
 
     - name: Telemetry - merged - idempotence
       register: result
       cisco.nxos.nxos_telemetry: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -227,7 +219,7 @@
               data_source: NX-API
               path:
                 name: '"show bgp l2vpn evpn summary"'
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: foo
 
@@ -243,7 +235,7 @@
               data_source: DME
               path:
                 name: sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: foo
 
@@ -251,7 +243,7 @@
               data_source: DME
               path:
                 name: sys/ospf
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
           subscriptions:
@@ -273,14 +265,14 @@
                 id: 55
                 sample_interval: 2000
 
-    - set_fact:
+    - ansible.builtin.set_fact:
         test_list:
           - telemetry
           - certificate /bootflash/local_server.crt localhost
           - subscription 44
           - snsr-grp 8 sample-interval 1000
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - test_list|symmetric_difference(result.commands)|length == 0
@@ -289,7 +281,7 @@
       register: result
       cisco.nxos.nxos_telemetry: *id003
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -298,5 +290,4 @@
       ignore_errors: true
       cisco.nxos.nxos_feature: *id004
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_telemetry merged
-        sanity test"
+    - ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_telemetry merged sanity test"

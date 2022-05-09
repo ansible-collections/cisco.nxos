@@ -1,9 +1,9 @@
 ---
-- debug: msg="START common/defaults.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START common/defaults.yaml on connection={{ ansible_connection }}"
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact: intname="{{ nxos_int1 }}"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     commands:
       - no description
@@ -12,7 +12,7 @@
       - interface {{ intname }}
     match: none
 
-- name: configure device with defaults included
+- name: Configure device with defaults included
   register: result
   cisco.nxos.nxos_config:
     commands:
@@ -22,14 +22,14 @@
       - interface {{ intname }}
     defaults: true
 
-- debug: var=result
+- ansible.builtin.debug: var=result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.updates is defined
 
-- name: check device with defaults included
+- name: Check device with defaults included
   register: result
   cisco.nxos.nxos_config:
     commands:
@@ -39,11 +39,11 @@
       - interface {{ intname }}
     defaults: true
 
-- debug: var=result
+- ansible.builtin.debug: var=result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.updates is not defined
 
-- debug: msg="END common/defaults.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END common/defaults.yaml on connection={{ ansible_connection }}"

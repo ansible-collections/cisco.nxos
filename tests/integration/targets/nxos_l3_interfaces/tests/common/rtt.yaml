@@ -1,11 +1,11 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_l3_interfaces round trip integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Prepare interfaces (switch to L3)
+    - name: Prepare interfaces (switch to l3)
       cisco.nxos.nxos_interfaces:
         config:
           - name: "{{ nxos_int1 }}"
@@ -16,7 +16,7 @@
             mode: layer3
         state: merged
 
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.nxos.nxos_l3_interfaces:
         config:
@@ -44,8 +44,8 @@
         gather_network_resources:
           - l3_interfaces
 
-    - name: Set reserved interface IP config and config to revert
-      set_fact:
+    - name: Set reserved interface ip config and config to revert
+      ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         config_to_revert:
           - name: "{{ nxos_int1 }}"
@@ -69,7 +69,7 @@
         config: "{{ config_to_revert + mgmt }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
@@ -79,11 +79,11 @@
         config: "{{ ansible_facts['network_resources']['l3_interfaces'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - base_config['after'] == revert['after']
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_l3_interfaces round trip integration tests on connection={{ ansible_connection }}

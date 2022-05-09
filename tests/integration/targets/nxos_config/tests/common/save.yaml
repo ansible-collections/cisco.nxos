@@ -1,9 +1,9 @@
 ---
-- debug: msg="START common/save.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START common/save.yaml on connection={{ ansible_connection }}"
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact: intname="{{ nxos_int1 }}"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     commands:
       - no description
@@ -12,22 +12,22 @@
       - interface {{ intname }}
     match: none
 
-- name: save config
+- name: Save config
   register: result
   cisco.nxos.nxos_config:
     save_when: always
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: save should always run
+- name: Save should always run
   register: result
   cisco.nxos.nxos_config:
     save_when: always
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- debug: msg="END common/save.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END common/save.yaml on connection={{ ansible_connection }}"

@@ -1,5 +1,5 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_ntp_auth sanity test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_ntp_auth sanity test"
 
 - name: Configure text ntp authentication
   ignore_errors: true
@@ -17,7 +17,7 @@
         authentication: false
         state: present
 
-    - assert: &id001
+    - ansible.builtin.assert: &id001
         that:
           - result.changed == true
 
@@ -29,7 +29,7 @@
         authentication: false
         state: absent
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
     - name: Configure encrypt ntp authentication
       register: result
@@ -39,13 +39,13 @@
         auth_type: encrypt
         state: present
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
-    - name: Check Idempotence - Configure encrypt ntp authentication
+    - name: Check idempotence - configure encrypt ntp authentication
       register: result
       cisco.nxos.nxos_ntp_auth: *id002
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -55,13 +55,13 @@
         authentication: true
         state: present
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
-    - name: Check Idempotence - Turn on authentication
+    - name: Check idempotence - turn on authentication
       register: result
       cisco.nxos.nxos_ntp_auth: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Turn off authentication
       register: result
@@ -69,13 +69,13 @@
         authentication: false
         state: present
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
-    - name: Check Idempotence - Turn off authentication
+    - name: Check idempotence - turn off authentication
       register: result
       cisco.nxos.nxos_ntp_auth: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Add trusted key
       register: result
@@ -84,13 +84,13 @@
         trusted_key: true
         state: present
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
-    - name: Check Idempotence - Add trusted key
+    - name: Check idempotence - add trusted key
       register: result
       cisco.nxos.nxos_ntp_auth: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove trusted key
       register: result
@@ -99,13 +99,13 @@
         trusted_key: false
         state: present
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
-    - name: Check Idempotence - Remove trusted key
+    - name: Check idempotence - remove trusted key
       register: result
       cisco.nxos.nxos_ntp_auth: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove encrypt ntp authentication
       register: result
@@ -116,16 +116,16 @@
         authentication: true
         state: absent
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
-    - name: Check Idempotence - Remove encrypt ntp authentication
+    - name: Check idempotence - remove encrypt ntp authentication
       register: result
       cisco.nxos.nxos_ntp_auth: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Cleanup ntp auth config
       ignore_errors: true
       cisco.nxos.nxos_ntp_auth: *id009
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_ntp_auth sanity test"
+    - ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_ntp_auth sanity test"

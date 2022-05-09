@@ -1,7 +1,7 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_gir sanity test"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }} nxos_gir sanity test"
 
-- set_fact: gir_run='{{ true if (platform is not search("N35")) else false }}'
+- ansible.builtin.set_fact: gir_run='{{ true if (platform is not search("N35")) else false }}'
 
 - name: Setup0
   ignore_errors: true
@@ -23,15 +23,15 @@
       cisco.nxos.nxos_gir: &id001
         system_mode_maintenance_on_reload_reset_reason: manual_reload
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_gir: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -41,26 +41,26 @@
         system_mode_maintenance_on_reload_reset_reason: manual_reload
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_gir: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Put system in maintenance mode with timeout
       register: result
       cisco.nxos.nxos_gir: &id005
         system_mode_maintenance_timeout: 30
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_gir: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove maintenance mode timeout
       register: result
@@ -68,23 +68,23 @@
         system_mode_maintenance_timeout: 30
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_gir: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Put system in maintenance mode
       register: result
       cisco.nxos.nxos_gir:
         system_mode_maintenance: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
   when: gir_run
   rescue:
-    - debug: msg="connection={{ ansible_connection }} nxos_gir failure detected"
+    - ansible.builtin.debug: msg="connection={{ ansible_connection }} nxos_gir failure detected"
   always:
     - name: Remove snapshots
       ignore_errors: true
@@ -104,4 +104,4 @@
       cisco.nxos.nxos_gir:
         system_mode_maintenance: false
 
-- debug: msg="END connection={{ ansible_connection }} nxos_gir sanity test"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }} nxos_gir sanity test"

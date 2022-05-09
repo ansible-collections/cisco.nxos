@@ -1,11 +1,9 @@
 ---
-- debug:
-    msg="START common/src_match_none.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="START common/src_match_none.yaml on connection={{ ansible_connection }}"
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact: intname="{{ nxos_int1 }}"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     commands:
       - no description
@@ -14,7 +12,7 @@
       - interface {{ intname }}
     match: none
 
-- name: configure device with config
+- name: Configure device with config
   register: result
   cisco.nxos.nxos_config:
     commands:
@@ -25,12 +23,12 @@
     match: none
     defaults: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.updates is defined
 
-- name: check device with config
+- name: Check device with config
   register: result
   cisco.nxos.nxos_config:
     commands:
@@ -40,10 +38,9 @@
       - interface {{ intname }}
     defaults: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.updates is not defined
 
-- debug: msg="END common/src_match_none.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug: msg="END common/src_match_none.yaml on connection={{ ansible_connection }}"

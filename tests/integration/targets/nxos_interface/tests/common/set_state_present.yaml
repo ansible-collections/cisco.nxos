@@ -1,32 +1,32 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/set_state_present.yaml"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }}/set_state_present.yaml"
 
-- name: setup
+- name: Setup
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - no interface Loopback1
 
-- name: set state=present
+- name: Set state=present
   register: result
   cisco.nxos.nxos_interface:
     interface: Loopback1
     state: present
     description: Configured by Ansible - Layer3
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: verify state=present
+- name: Verify state=present
   register: result
   cisco.nxos.nxos_interface:
     interface: Loopback1
     state: present
     description: Configured by Ansible - Layer3
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- debug: msg="END connection={{ ansible_connection }}/set_state_present.yaml"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }}/set_state_present.yaml"

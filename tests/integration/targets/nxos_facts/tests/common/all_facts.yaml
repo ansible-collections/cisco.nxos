@@ -1,13 +1,13 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/all_facts.yaml"
+- ansible.builtin.debug: msg="START connection={{ ansible_connection }}/all_facts.yaml"
 
-- name: test getting all facts
+- name: Test getting all facts
   register: result
   cisco.nxos.nxos_facts:
     gather_subset:
       - all
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'config' in result.ansible_facts.ansible_net_gather_subset"
@@ -28,10 +28,10 @@
     gather_network_resources: all
 
 - name: Assert that correct available_network_resources returned
-  assert:
+  ansible.builtin.assert:
     that:
       - result.changed == false
       - "{{ result['ansible_facts']['available_network_resources'] | symmetric_difference(result['ansible_facts']['ansible_net_gather_network_resources']) |length\
         \ == 0 }}"
 
-- debug: msg="END connection={{ ansible_connection }}/all_facts.yaml"
+- ansible.builtin.debug: msg="END connection={{ ansible_connection }}/all_facts.yaml"

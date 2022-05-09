@@ -1,12 +1,12 @@
 ---
-- debug: msg="START common/sanity.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="START common/sanity.yaml on connection={{ ansible_connection }}"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines: ip access-list test
     match: none
 
-- name: nxos_config sanity test
+- name: Nxos_config sanity test
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -18,7 +18,7 @@
     before: no ip access-list test
     match: exact
 
-- name: nxos_config sanity test - replace block
+- name: Nxos_config sanity test - replace block
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -29,25 +29,25 @@
     before: no ip access-list test
     replace: block
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
 
-- debug: msg='Verify https://github.com/ansible/ansible/issues/50635'
+- ansible.builtin.debug: msg='Verify https://github.com/ansible/ansible/issues/50635'
 
-- name: PUT INTERFACE INTO DEFAULT STATE
+- name: Put interface into default state
   cisco.nxos.nxos_config:
     lines:
       - default interface {{ nxos_int1 }}
 
-- name: MAKE INTERFACE A SWITCHPORT
+- name: Make interface a switchport
   cisco.nxos.nxos_config:
     lines:
       - switchport
     parents: interface {{ nxos_int1 }}
 
-- name: CONFIGURE EDGE TRUNK TYPE
+- name: Configure edge trunk type
   register: result
   cisco.nxos.nxos_config: &id001
     lines:
@@ -56,16 +56,16 @@
       - spanning-tree port type edge
     parents: interface {{ nxos_int1 }}
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: IDEMPOTENCE CHECK
+- name: Idempotence check
   register: result
   cisco.nxos.nxos_config: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- debug: msg="END common/sanity.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug: msg="END common/sanity.yaml on connection={{ ansible_connection }}"

@@ -1,3 +1,4 @@
+---
 - name: Populate interface - 1
   cisco.nxos.nxos_config:
     lines:

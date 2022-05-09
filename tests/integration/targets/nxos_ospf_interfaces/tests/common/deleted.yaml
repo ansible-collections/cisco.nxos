@@ -1,14 +1,14 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_ospf_interfaces deleted integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _setup.yaml
+- ansible.builtin.include_tasks: _setup.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
-- set_fact:
+- ansible.builtin.set_fact:
     int1:
       name: "{{ nxos_int1 }}"
     int2:
@@ -17,22 +17,22 @@
       name: "{{ nxos_int3 }}"
 
 - block:
-    - name: Delete OSPF config from a single interface
-      cisco.nxos.nxos_ospf_interfaces: &id005
+    - name: Delete ospf config from a single interface
+      cisco.nxos.nxos_ospf_interfaces: &id001
         config:
           - name: "{{ nxos_int1 }}"
         state: deleted
       register: result
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - result["before"][0] == merged["after"][0]
           - result["before"][1] == merged["after"][1]
           - result["before"][2] == merged["after"][2]
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - '"interface {{ nxos_int1 }}" in result.commands'
           - '"no ip router ospf 100 area 1.1.1.1 secondaries none" in result.commands'
@@ -44,57 +44,57 @@
           - result.commands|length == 7
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - result["after"][0] == int1
           - result["after"][1] == merged["after"][1]
           - result["after"][2] == merged["after"][2]
 
-    - name: Delete OSPF config from a single interface (IDEMPOTENT)
+    - name: Delete ospf config from a single interface (idempotent)
       register: result
-      cisco.nxos.nxos_ospf_interfaces: *id005
+      cisco.nxos.nxos_ospf_interfaces: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Delete OSPF config from all interfaces
-      cisco.nxos.nxos_ospf_interfaces: &id007
+    - name: Delete ospf config from all interfaces
+      cisco.nxos.nxos_ospf_interfaces: &id002
         state: deleted
       register: result
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - result["before"][0] == merged["after"][0]
           - result["before"][1] == merged["after"][1]
           - result["before"][2] == merged["after"][2]
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - result["after"][0] == int1
           - result["after"][1] == int2
           - result["after"][2] == int3
 
-    - name: Delete OSPF config from all interfaces (IDEMPOTENT)
+    - name: Delete ospf config from all interfaces (idempotent)
       register: result
-      cisco.nxos.nxos_ospf_interfaces: *id007
+      cisco.nxos.nxos_ospf_interfaces: *id002
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

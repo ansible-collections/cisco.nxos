@@ -1,14 +1,14 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_prefix_lists replaced integration tests connection={{ ansible_connection }}"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Replace prefix-lists configurations of listed prefix-lists with provided configurations
-      cisco.nxos.nxos_prefix_lists: &id002
+      cisco.nxos.nxos_prefix_lists: &id001
         config:
           - afi: ipv4
             prefix_lists:
@@ -28,34 +28,31 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['before'][0] == merged['after'][0] }}"
           - "{{ result['before'][1] == merged['after'][1] }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ replaced['after'][0] == result['after'][0] }}"
           - "{{ replaced['after'][1] == result['after'][1] }}"
 
-    - name:
-        Replace prefix-lists configurations of listed prefix-lists with provided configurations
-        (IDEMPOTENT)
+    - name: Replace prefix-lists configurations of listed prefix-lists with provided configurations (idempotent)
       register: result
-      cisco.nxos.nxos_prefix_lists: *id002
+      cisco.nxos.nxos_prefix_lists: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

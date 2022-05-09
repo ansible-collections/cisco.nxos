@@ -1,12 +1,12 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_l2_interfaces replaced integration tests connection={{ ansible_connection }}
 
-- set_fact:
+- ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- name: setup1
+- name: Setup1
   ignore_errors: true
   cisco.nxos.nxos_config: &id003
     lines:
@@ -14,14 +14,14 @@
       - "default interface {{ test_int2 }}"
 
 - block:
-    - name: setup2
+    - name: Setup2
       cisco.nxos.nxos_config:
         lines:
           - "switchport"
           - "switchport access vlan 5"
         parents: "interface {{ test_int1 }}"
 
-    - name: setup3
+    - name: Setup3
       cisco.nxos.nxos_config:
         lines:
           - "switchport"
@@ -51,7 +51,7 @@
               allowed_vlans: 25-27
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
@@ -64,19 +64,19 @@
     - name: Gather l2_interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.after) == []
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_l2_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       ignore_errors: true
       cisco.nxos.nxos_config: *id003

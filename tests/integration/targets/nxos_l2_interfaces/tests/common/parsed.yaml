@@ -1,8 +1,6 @@
 ---
-- debug:
-    msg:
-      START nxos_l2_interfaces parsed integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: START nxos_l2_interfaces parsed integration tests on connection={{ ansible_connection }}
 
 - block:
     # Interfaces used in the task don't actually exist on the appliance
@@ -27,11 +25,8 @@
           interface loopback1
         state: parsed
 
-    - assert:
-        that: "{{ parsed | symmetric_difference(result['parsed']) |length==0\
-          \ }}"
+    - ansible.builtin.assert:
+        that: "{{ parsed | symmetric_difference(result['parsed']) |length==0 }}"
 
-- debug:
-    msg:
-      END nxos_l2_interfaces parsed integration tests on connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: END nxos_l2_interfaces parsed integration tests on connection={{ ansible_connection }}

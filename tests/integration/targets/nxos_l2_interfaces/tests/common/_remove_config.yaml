@@ -1,3 +1,4 @@
+---
 - name: Cleanup
   ignore_errors: true
   cisco.nxos.nxos_config:
