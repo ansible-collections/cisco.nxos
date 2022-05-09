@@ -101,7 +101,11 @@ def change_key(task, old, new):
 
 
 def update_include_cli(data):
-    match = [idx for idx, item in enumerate(data) if item.get("include") == "cli.yaml"]
+    match = [
+        idx
+        for idx, item in enumerate(data)
+        if item.get("include") == "cli.yaml"
+    ]
     if not match:
         return
 
@@ -115,7 +119,9 @@ def update_include_cli(data):
 
 def update_include_nxapi(data):
     match = [
-        idx for idx, item in enumerate(data) if item.get("include") == "nxapi.yaml"
+        idx
+        for idx, item in enumerate(data)
+        if item.get("include") == "nxapi.yaml"
     ]
     if not match:
         return

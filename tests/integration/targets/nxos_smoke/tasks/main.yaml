@@ -3,8 +3,16 @@
 # This block/always ensures the hostname gets changed back to
 # the correct name.
 - block:
-    - { name: Include the cli tasks, ansible.builtin.include_tasks: cli.yaml, tags: ["cli"] }
-    - { name: Include the nx-api tasks, ansible.builtin.include_tasks: nxapi.yaml, tags: ["nxapi"] }
+    - {
+        name: Include the cli tasks,
+        ansible.builtin.include_tasks: cli.yaml,
+        tags: ["cli"],
+      }
+    - {
+        name: Include the nx-api tasks,
+        ansible.builtin.include_tasks: nxapi.yaml,
+        tags: ["nxapi"],
+      }
 
   always:
     - name: "Change hostname back to {{ inventory_hostname_short }}"

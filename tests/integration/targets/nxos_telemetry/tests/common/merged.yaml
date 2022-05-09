@@ -139,7 +139,7 @@
           - "'sensor-group 55' in result.commands"
           - "'data-source DME' in result.commands"
           - "'path sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11] depth 0 query-condition foo filter-condition foo' in result.commands"
-          - "'path sys/ospf depth 0 query-condition foo filter-condition or(eq(ethpmPhysIf.operSt,\"down\"),eq(ethpmPhysIf.operSt,\"up\"))' in result.commands"
+          - '''path sys/ospf depth 0 query-condition foo filter-condition or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))'' in result.commands'
           - "'subscription 44' in result.commands"
           - "'dst-grp 10' in result.commands"
           - "'dst-grp 2' in result.commands"
