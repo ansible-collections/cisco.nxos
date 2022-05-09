@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_interface_ospf sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_interface_ospf sanity
     test"
 
 - set_fact: testint="{{ nxos_int1 }}"
@@ -10,7 +11,7 @@
     - bfd
   ignore_errors: true
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: disabled
 
 - name: Setup - Enable features
@@ -18,7 +19,7 @@
     - ospf
     - bfd
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: enabled
 
 - name: Put interface into default state
@@ -45,11 +46,10 @@
       - no interface loopback77
 
 - block:
-
     - name: configure ospf interface
       register: result
       cisco.nxos.nxos_interface_ospf: &id001
-        interface: '{{ nxos_int1|upper }}'
+        interface: "{{ nxos_int1|upper }}"
         ospf: 1
         area: 12345678
         bfd: enable
@@ -75,7 +75,7 @@
     - name: Modify properties
       register: result
       cisco.nxos.nxos_interface_ospf: &id003
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         ospf: 1
         area: 12345678
         cost: 66
@@ -96,7 +96,7 @@
     - name: default properties
       register: result
       cisco.nxos.nxos_interface_ospf: &id005
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         ospf: 1
         area: 12345678
         bfd: default
@@ -116,7 +116,7 @@
     - name: Message_digest properties
       register: result
       cisco.nxos.nxos_interface_ospf: &id006
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         ospf: 1
         area: 12345678
         message_digest: true
@@ -137,7 +137,7 @@
     - name: Message_digest defaults
       register: result
       cisco.nxos.nxos_interface_ospf: &id007
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         ospf: 1
         area: 12345678
         message_digest: false
@@ -255,7 +255,7 @@
     - name: remove ospf interface config
       register: result
       cisco.nxos.nxos_interface_ospf: &id012
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         ospf: 1
         area: 12345678
         bfd: disable
@@ -273,14 +273,13 @@
 
     - assert: *id004
   always:
-
     - name: Disable features
       loop:
         - ospf
         - bfd
       ignore_errors: true
       cisco.nxos.nxos_feature:
-        feature: '{{ item }}'
+        feature: "{{ item }}"
         state: disabled
 
     - name: Interface cleanup
@@ -291,5 +290,6 @@
       ignore_errors: true
       cisco.nxos.nxos_config: *id014
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_interface_ospf sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_interface_ospf sanity
         test"

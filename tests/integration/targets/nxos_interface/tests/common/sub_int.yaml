@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_interface sub-interface
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_interface sub-interface
     test"
 
 - set_fact: testint="{{ nxos_int1 }}"
@@ -7,18 +8,18 @@
 - name: Setup - delete sub-interface
   ignore_errors: true
   cisco.nxos.nxos_interface: &id003
-    name: '{{ testint }}.20'
+    name: "{{ testint }}.20"
     state: absent
 
 - name: Setup - Ensure the interface is layer3
   cisco.nxos.nxos_interface:
-    name: '{{ testint }}'
+    name: "{{ testint }}"
     mode: layer3
 
 - name: Create sub-interface
   register: result
   cisco.nxos.nxos_interface: &id001
-    name: '{{ testint }}.20'
+    name: "{{ testint }}.20"
     description: sub-interface Configured by Ansible
     admin_state: up
     mtu: 800
@@ -38,7 +39,7 @@
 - name: Make admin_state down
   register: result
   cisco.nxos.nxos_interface: &id002
-    name: '{{ testint }}.20'
+    name: "{{ testint }}.20"
     description: sub-interface Configured by Ansible
     admin_state: down
     mtu: 800
@@ -71,5 +72,6 @@
     that:
       - result.changed == false
 
-- debug: msg="END connection={{ ansible_connection }} nxos_interface sub-interface
+- debug:
+    msg="END connection={{ ansible_connection }} nxos_interface sub-interface
     test"

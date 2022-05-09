@@ -21,7 +21,6 @@
       - evpn multisite border-gateway 10
 
 - block:
-
     - name: configure vxlan_vtep
       register: result
       cisco.nxos.nxos_vxlan_vtep: &id001
@@ -91,8 +90,8 @@
 
     - name: Disable multisite border gateway - multisite
       cisco.nxos.nxos_config:
-       lines:
-         - no evpn multisite border-gateway 10
+        lines:
+          - no evpn multisite border-gateway 10
   when: multiout is not search("Invalid command")
 
 - name: Disable nv overlay evpn

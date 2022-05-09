@@ -32,11 +32,11 @@
   cisco.nxos.nxos_vlan: &id001
     vlan_id: 100
     interfaces:
-      - '{{ testint1 }}'
-      - '{{ testint2 }}'
+      - "{{ testint1 }}"
+      - "{{ testint2 }}"
     associated_interfaces:
-      - '{{ testint1 }}'
-      - '{{ testint2 }}'
+      - "{{ testint1 }}"
+      - "{{ testint2 }}"
 
 - assert:
     that:
@@ -63,8 +63,8 @@
   cisco.nxos.nxos_vlan:
     vlan_id: 100
     associated_interfaces:
-      - '{{ testint1 }}'
-      - '{{ testint2 }}'
+      - "{{ testint1 }}"
+      - "{{ testint2 }}"
 
 - assert:
     that:
@@ -87,7 +87,7 @@
   cisco.nxos.nxos_vlan: &id002
     vlan_id: 100
     interfaces:
-      - '{{ testint2 }}'
+      - "{{ testint2 }}"
 
 - assert:
     that:

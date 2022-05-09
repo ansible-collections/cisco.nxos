@@ -4,7 +4,8 @@
 
 - set_fact:
     mode: delay
-  when: platform is not search('N3K|N5K|N6K|N7K') and imagetag is not search('A8|I2')
+  when:
+    platform is not search('N3K|N5K|N6K|N7K') and imagetag is not search('A8|I2')
     and image_version is not search ('9.2') and chassis_type is not search('C95')
 
 - name: setup1
@@ -15,7 +16,6 @@
       - "no feature lacp"
 
 - block:
-
     - name: setup2
       cisco.nxos.nxos_config:
         lines:
@@ -36,8 +36,8 @@
     - name: Gather lacp_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lacp_interfaces
 
     - name: deleted
@@ -71,6 +71,5 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_config: *id002

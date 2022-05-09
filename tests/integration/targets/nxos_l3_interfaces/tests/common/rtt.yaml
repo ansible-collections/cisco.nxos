@@ -31,7 +31,7 @@
               - address: 2001:db8:2000::1/32
                 tag: 6
           - name: "{{ nxos_int2 }}"
-            ipv4: 
+            ipv4:
               - address: 192.0.2.81/28
         state: merged
       tags: base_config
@@ -39,17 +39,17 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - l3_interfaces
-    
+
     - name: Set reserved interface IP config and config to revert
       set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         config_to_revert:
           - name: "{{ nxos_int1 }}"
-            ipv4: 
+            ipv4:
               - address: 203.0.113.67/26
           - name: "{{ nxos_int2 }}"
             ipv4:
@@ -71,7 +71,7 @@
 
     - assert:
         that:
-        - result.changed == true
+          - result.changed == true
 
     - name: Revert back to base config using facts round trip
       register: revert

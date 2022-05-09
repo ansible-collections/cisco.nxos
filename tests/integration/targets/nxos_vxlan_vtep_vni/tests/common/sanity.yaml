@@ -1,9 +1,9 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity
     test"
 
 - block:
-
     - name: Apply N7K specific setup config
       include: targets/nxos_vxlan_vtep/tasks/platform/n7k/setup.yaml
       when: platform is match('N7K')
@@ -95,7 +95,6 @@
         host_reachability: false
 
     - block:
-
         - name: configure vxlan_vtep_vni
           register: result
           cisco.nxos.nxos_vxlan_vtep_vni:
@@ -231,7 +230,6 @@
       when: (platform is search('N9K'))
   when: (platform is search("N7K|N9K"))
   always:
-
     - name: Apply N7K specific cleanup config
       include: targets/nxos_vxlan_vtep/tasks/platform/n7k/cleanup.yaml
       when: platform is match('N7K')

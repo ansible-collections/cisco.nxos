@@ -10,7 +10,6 @@
     lines: feature fabric forwarding
 
 - block:
-
     - include: cli.yaml
       tags:
         - cli
@@ -26,7 +25,7 @@
         state: disabled
       vars:
         ansible_connection: ansible.netcommon.network_cli
-    
+
     - name: Disable fabric forwarding
       cisco.nxos.nxos_config:
         lines: no feature fabric forwarding

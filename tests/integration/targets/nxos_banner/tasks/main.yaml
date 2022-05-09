@@ -1,5 +1,5 @@
 ---
-- set_fact: 
+- set_fact:
     banner_exec_image_ok: False
     banner_motd_image_ok: False
 

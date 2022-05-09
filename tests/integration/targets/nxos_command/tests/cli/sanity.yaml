@@ -7,7 +7,6 @@
     state: disabled
 
 - block:
-
     - name: Run show running-config bgp - should fail
       ignore_errors: true
       register: result
@@ -55,10 +54,8 @@
 
     - assert: *id001
   rescue:
-
     - debug: msg="nxos_command sanity test failure detected"
   always:
-
     - name: Disable feature bgp
       cisco.nxos.nxos_feature:
         feature: bgp

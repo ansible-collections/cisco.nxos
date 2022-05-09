@@ -6,7 +6,6 @@
     ansible_connection: ansible.netcommon.network_cli
 
 - block:
-
     - include: cli.yaml
       tags:
         - cli

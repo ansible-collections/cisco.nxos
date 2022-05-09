@@ -14,13 +14,12 @@
     state: enabled
 
 - block:
-
     - name: set multi vrf params
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id001
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         router_id: 192.0.2.1
         bestpath_always_compare_med: true
         bestpath_aspath_multipath_relax: true
@@ -38,7 +37,7 @@
           - result.changed == true
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id001
 
@@ -47,11 +46,11 @@
           - result.changed == false
 
     - name: reset multi vrf params
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id003
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         bestpath_always_compare_med: false
         bestpath_aspath_multipath_relax: false
         bestpath_compare_routerid: false
@@ -67,41 +66,41 @@
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id003
 
     - assert: *id004
 
     - name: set clusterid
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id005
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         cluster_id: 10.0.0.1
 
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id005
 
     - assert: *id004
 
     - name: reset cluster_id
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id006
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         cluster_id: default
 
     - assert: *id002
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id006
 
@@ -248,7 +247,6 @@
 
     - assert: *id004
   always:
-
     - name: Disable feature bgp
       ignore_errors: true
       cisco.nxos.nxos_feature:

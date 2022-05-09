@@ -8,7 +8,6 @@
     state: absent
 
 - block:
-
     - name: Configure ntp with master and default stratum
       register: result
       cisco.nxos.nxos_ntp_options: &id001
@@ -92,10 +91,10 @@
 
     - assert: *id004
   always:
-
     - name: Cleanup ntp config
       register: result
       cisco.nxos.nxos_ntp_options: *id007
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_ntp_options sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_ntp_options sanity
         test"

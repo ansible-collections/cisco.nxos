@@ -22,7 +22,6 @@
     state: enabled
 
 - block:
-
     - name: set disable policy
       register: result
       when: bgp_disable_policy
@@ -67,10 +66,8 @@
     - assert: *id004
       when: bgp_disable_policy
   rescue:
-
     - debug: msg="Tests can fail on A8 or helsinki images"
   always:
-
     - name: Disable feature bgp
       ignore_errors: true
       cisco.nxos.nxos_feature:

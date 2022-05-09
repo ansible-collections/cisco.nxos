@@ -52,7 +52,7 @@
   assert:
     that:
       - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
-            \ == 0 }}"
+        \ == 0 }}"
 
 - name: Gather BGP facts
   cisco.nxos.nxos_bgp_neighbor_address_family:

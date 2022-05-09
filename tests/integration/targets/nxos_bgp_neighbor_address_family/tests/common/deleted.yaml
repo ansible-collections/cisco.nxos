@@ -25,7 +25,7 @@
                       safi: unicast
         state: deleted
       register: result
-    
+
     - name: Assert that before dicts were correctly generated
       assert:
         that:
@@ -34,7 +34,7 @@
           - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) |length\
             \ == 0 }}"
           - merged['after']['as_number'] == result['before']['as_number']
-    
+
     - name: Assert that correct set of commands were generated
       assert:
         that:
@@ -49,7 +49,7 @@
           - "{{ deleted['after']['vrfs'] | symmetric_difference(result['after']['vrfs']) |length\
             \ == 0 }}"
           - deleted['after']['as_number'] == result['after']['as_number']
-    
+
     - include_tasks: _remove_config.yaml
 
     - include_tasks: _populate_config.yaml
@@ -64,12 +64,12 @@
         that:
           - "{{ result['commands'] | symmetric_difference(deleted_all['commands']) |length\
             \ == 0 }}"
-  
+
     - name: Assert that after dicts were correctly generated
       assert:
         that:
           - deleted_all['after'] == result['after']
-    
+
     - name: Delete all BGP neighbor AF configs (IDEMPOTENT)
       cisco.nxos.nxos_bgp_neighbor_address_family: *deleted_all
       register: result

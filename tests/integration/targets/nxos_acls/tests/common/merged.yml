@@ -5,18 +5,14 @@
 - include_tasks: remove_config.yaml
 
 - block:
-
     - name: Merged
       register: result
       cisco.nxos.nxos_acls: &id001
         config:
-
           - afi: ipv4
             acls:
-
               - name: ACL1v4
                 aces:
-
                   - grant: deny
                     destination:
                       address: 192.0.2.64
@@ -44,10 +40,8 @@
 
           - afi: ipv6
             acls:
-
               - name: ACL1v6
                 aces:
-
                   - grant: permit
                     sequence: 10
                     source:
@@ -65,13 +59,13 @@
           - "'50 deny tcp any lt smtp 192.0.2.64 0.0.0.255 ack fin' in result.commands"
           - "'ipv6 access-list ACL1v6' in result.commands"
           - "'10 permit sctp any host 2001:db8:12::128' in result.commands"
-          - 'result.commands | length == 5 '
+          - "result.commands | length == 5 "
 
     - name: Gather acls facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: acls
 
     - assert:
@@ -90,13 +84,10 @@
       register: result
       cisco.nxos.nxos_acls:
         config:
-
           - afi: ipv4
             acls:
-
               - name: ACL1v4
                 aces:
-
                   - grant: permit
                     protocol: tcp
                     source:
@@ -113,5 +104,4 @@
           - result.failed == True
           - "'Cannot update existing ACE ACL1v4 of ACL 20 with state merged. Please use state replaced or overridden.' in result.msg"
   always:
-
     - include_tasks: remove_config.yaml

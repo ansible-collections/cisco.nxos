@@ -5,7 +5,7 @@
 - set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
-    test_int3: '{{ nxos_int3 }}'
+    test_int3: "{{ nxos_int3 }}"
 
 - include_tasks: _remove_config.yaml
 
@@ -31,7 +31,6 @@
       - evpn multisite border-gateway 10
 
 - block:
-
     - name: setup1 - deleted
       ignore_errors: true
       cisco.nxos.nxos_config:
@@ -53,8 +52,8 @@
     - name: Gather l3_interfaces facts deleted
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l3_interfaces
 
     - name: deleted
@@ -99,13 +98,11 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: &id002
         config:
-
-          - name: '{{ test_int3 }}'
+          - name: "{{ test_int3 }}"
             redirects: false
             unreachables: true
             evpn_multisite_tracking: fabric-tracking
             ipv4:
-
               - address: 192.168.10.2/24
         state: merged
 
@@ -122,8 +119,8 @@
     - name: Gather l3_interfaces facts - merged
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l3_interfaces
 
     - assert:
@@ -162,21 +159,19 @@
     - name: Gather l3_interfaces facts
       cisco.nxos.nxos_facts: &id003
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l3_interfaces
 
     - name: Replaced
       register: result
       cisco.nxos.nxos_l3_interfaces: &id004
         config:
-
-          - name: '{{ test_int3 }}'
+          - name: "{{ test_int3 }}"
             redirects: false
             unreachables: false
             evpn_multisite_tracking: fabric-tracking
             ipv4:
-
               - address: 192.168.20.2/24
                 tag: 5
 
@@ -226,7 +221,7 @@
         - "{{ test_int2 }}"
         - "{{ test_int3 }}"
 
-    - name: setup3 - overidden 
+    - name: setup3 - overidden
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int1 }}"
@@ -239,15 +234,15 @@
     - name: Gather l3_interfaces facts
       cisco.nxos.nxos_facts: &id006
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: l3_interfaces
-    
+
     - name: Store reserved interface IP config
       set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         overriden_config:
-          - name: '{{ test_int3 }}'
+          - name: "{{ test_int3 }}"
             ipv4:
               - address: 10.1.1.3/24
             evpn_multisite_tracking: dci-tracking
@@ -299,7 +294,7 @@
 
     - name: Gather pre-facts
       cisco.nxos.nxos_facts:
-        gather_subset: ['!all', '!min']
+        gather_subset: ["!all", "!min"]
         gather_network_resources: l3_interfaces
 
     # Interfaces used here doesn't actually exist on the device
@@ -334,7 +329,7 @@
     - name: Make sure that rendered task actually did not make any changes to the device
       assert:
         that: "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == [] }}"
-  
+
     - include_tasks: _remove_config.yaml
 
     # Interfaces used in the task don't actually exist on the appliance
@@ -357,8 +352,9 @@
         state: parsed
 
     - assert:
-       that: "{{ parsed_multi | symmetric_difference(result['parsed']) |length==0\
-         \ }}"
+        that:
+          "{{ parsed_multi | symmetric_difference(result['parsed']) |length==0\
+          \ }}"
 
   when: multiout is not search("Invalid command")
 

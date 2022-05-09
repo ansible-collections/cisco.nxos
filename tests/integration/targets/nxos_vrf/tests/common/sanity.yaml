@@ -23,27 +23,26 @@
     feature: bgp
     state: enabled
 
-- name: 'Setup: Enable nv overlay evpn'
+- name: "Setup: Enable nv overlay evpn"
   ignore_errors: true
   when: platform is match("N5K|N6K")
   cisco.nxos.nxos_config:
     commands:
       - nv overlay evpn
-    provider: '{{ connection }}'
+    provider: "{{ connection }}"
 
 - block:
-
     - name: Ensure ntc VRF exists on switch
       register: result
       cisco.nxos.nxos_vrf: &id001
         vrf: ntc
         admin_state: down
         description: testing
-        vni: '{{vnind|default(omit)}}'
-        rd: '{{rdnd|default(omit)}}'
+        vni: "{{vnind|default(omit)}}"
+        rd: "{{rdnd|default(omit)}}"
         interfaces:
-          - '{{ intname1 }}'
-          - '{{ intname2 }}'
+          - "{{ intname1 }}"
+          - "{{ intname2 }}"
 
     - assert: &id002
         that:
@@ -65,8 +64,8 @@
       cisco.nxos.nxos_vrf: &id003
         vrf: ntc
         admin_state: up
-        vni: '{{vnid|default(omit)}}'
-        rd: '{{rdd|default(omit)}}'
+        vni: "{{vnid|default(omit)}}"
+        rd: "{{rdd|default(omit)}}"
         interfaces: default
 
     - assert: *id002
@@ -94,14 +93,13 @@
 
     - assert: *id004
   always:
-
-    - name: 'Setup: Disable nv overlay evpn'
+    - name: "Setup: Disable nv overlay evpn"
       ignore_errors: true
       when: platform is match("N5K|N6K")
       cisco.nxos.nxos_config:
         commands:
           - no nv overlay evpn
-        provider: '{{ connection }}'
+        provider: "{{ connection }}"
 
     - name: Disable feature BGP
       ignore_errors: true

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxos nxapi/net_system.yaml on connection={{ ansible_connection
+- debug:
+    msg="START nxos nxapi/net_system.yaml on connection={{ ansible_connection
     }}"
 
 - name: setup

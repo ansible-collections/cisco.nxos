@@ -12,5 +12,5 @@
   assert:
     that:
       - "{{ merged['after']['address_family'] | symmetric_difference(result['parsed']['address_family']) |length\
-            \ == 0 }}"
+        \ == 0 }}"
       - merged['after']['as_number'] == result['parsed']['as_number']

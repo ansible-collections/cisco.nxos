@@ -3,7 +3,6 @@
     msg: Start nxos_lldp_global merged integration tests connection={{ansible_connection}}
 
 - block:
-
     - set_fact:
         port_id: 1
         tlv_power_mgmt:
@@ -25,8 +24,8 @@
         config:
           reinit: 5
           timer: 40
-          port_id: '{{port_id|default(omit)}}'
-          tlv_select: '{{tlv_power_mgmt|default(omit)}}'
+          port_id: "{{port_id|default(omit)}}"
+          tlv_select: "{{tlv_power_mgmt|default(omit)}}"
         state: merged
 
     - assert:
@@ -49,8 +48,8 @@
     - name: Gather lldp_global facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lldp_global
 
     - assert:
@@ -66,7 +65,6 @@
           - result.changed == false
           - result.commands | length == 0
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature: *id002
   when: platform is not search('N35')

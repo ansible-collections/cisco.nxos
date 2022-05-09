@@ -20,6 +20,6 @@
           - "{{ merged['after']['vrfs'] | symmetric_difference(result['gathered']['vrfs']) |length\
             \ == 0 }}"
           - merged['after']['as_number'] == result['gathered']['as_number']
-  
+
   always:
     - include_tasks: _remove_config.yaml

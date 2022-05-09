@@ -5,7 +5,8 @@
 
 - set_fact: snmp_auth="priv"
 
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
     }} {{ snmp_version }} sanity test"
 
 - set_fact: intname="{{ nxos_int1 }}"
@@ -21,27 +22,26 @@
   cisco.nxos.nxos_snmp_host: &id007
     snmp_host: 192.0.2.3
     community: TESTING
-    version: '{{ snmp_version }}'
-    snmp_type: '{{ snmp_type }}'
-    v3: '{{ snmp_auth }}'
+    version: "{{ snmp_version }}"
+    snmp_type: "{{ snmp_type }}"
+    v3: "{{ snmp_auth }}"
     vrf: management
     vrf_filter: management
-    src_intf: '{{ intname|default(omit) }}'
+    src_intf: "{{ intname|default(omit) }}"
     state: absent
 
 - block:
-
     - name: Configure snmp host
       register: result
       cisco.nxos.nxos_snmp_host: &id001
         snmp_host: 192.0.2.3
         community: TESTING
-        v3: '{{ snmp_auth|default(omit) }}'
-        version: '{{ snmp_version }}'
-        snmp_type: '{{ snmp_type }}'
+        v3: "{{ snmp_auth|default(omit) }}"
+        version: "{{ snmp_version }}"
+        snmp_type: "{{ snmp_type }}"
         vrf: management
         vrf_filter: management
-        src_intf: '{{ intname|default(omit) }}'
+        src_intf: "{{ intname|default(omit) }}"
         state: present
 
     - assert: &id002
@@ -57,7 +57,6 @@
           - result.changed == false
 
     - block:
-
         - name: Add another vrf to filter
           register: result
           cisco.nxos.nxos_snmp_host: &id003
@@ -78,7 +77,7 @@
       register: result
       cisco.nxos.nxos_snmp_host: &id005
         snmp_host: 192.0.2.3
-        src_intf: '{{ intname|default(omit) }}'
+        src_intf: "{{ intname|default(omit) }}"
         vrf: management
         vrf_filter: management
         state: absent
@@ -92,7 +91,6 @@
     - assert: *id004
 
     - block:
-
         - name: remove some more configuration
           register: result
           cisco.nxos.nxos_snmp_host: &id006
@@ -122,10 +120,10 @@
     - assert: *id004
   when: run
   always:
-
     - name: Cleanup
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
         }} {{ snmp_version }} sanity test"

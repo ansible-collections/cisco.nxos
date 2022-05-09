@@ -34,7 +34,6 @@
       - evpn multisite border-gateway 10
 
 - block:
-
     - name: Configure BGP_AF Route Target Name
       register: result
       cisco.nxos.nxos_bgp_af: &id001
@@ -90,7 +89,7 @@
 
     - assert: *id003
 
-    - name: Remove BGP - Route Target 
+    - name: Remove BGP - Route Target
       register: result
       cisco.nxos.nxos_bgp_af: &id006
         asn: 65535
@@ -103,8 +102,8 @@
 
     - name: Disable multisite border gateway - multisite
       cisco.nxos.nxos_config:
-       lines:
-         - no evpn multisite border-gateway 10
+        lines:
+          - no evpn multisite border-gateway 10
   when: multiout is not search("Invalid command")
 
 - name: Disable feature bgp - multisite

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_community sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_snmp_community sanity
     test"
 
 - name: Setup - Remove snmp_contact if configured
@@ -8,7 +9,6 @@
     state: absent
 
 - block:
-
     - name: Configure snmp contact
       register: result
       cisco.nxos.nxos_snmp_contact: &id001
@@ -53,9 +53,9 @@
 
     - assert: *id004
   always:
-
     - name: Cleanup
       cisco.nxos.nxos_snmp_contact: *id005
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_community sanity
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_snmp_community sanity
         test"

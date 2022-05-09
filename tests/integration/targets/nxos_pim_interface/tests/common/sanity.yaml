@@ -1,27 +1,28 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_pim_interface sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_pim_interface sanity
     test"
 
-- name: 'Setup: Disable features'
+- name: "Setup: Disable features"
   loop:
     - pim
     - bfd
   ignore_errors: true
   cisco.nxos.nxos_feature: &id011
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: disabled
 
-- name: 'Setup: Enable features'
+- name: "Setup: Enable features"
   loop:
     - pim
     - bfd
   cisco.nxos.nxos_feature:
-    feature: '{{ item }}'
+    feature: "{{ item }}"
     state: enabled
 
 - set_fact: testint="{{ nxos_int1 }}"
 
-- name: 'Setup: Put interface {{ testint }} into a default state'
+- name: "Setup: Put interface {{ testint }} into a default state"
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -29,23 +30,22 @@
 
 - name: Ensure {{testint}} is layer3
   cisco.nxos.nxos_interface:
-    interface: '{{ testint }}'
+    interface: "{{ testint }}"
     mode: layer3
     description: Configured by Ansible - Layer3
     admin_state: up
     state: present
 
 - block:
-
     - name: Configure nxos_pim_interface state absent
       cisco.nxos.nxos_pim_interface: &id010
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         state: absent
 
     - name: configure jp policy and type
       register: result
       cisco.nxos.nxos_pim_interface: &id001
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         jp_policy_in: JPIN
         jp_policy_out: JPOUT
         jp_type_in: routemap
@@ -68,7 +68,7 @@
     - name: configure neighbor policy and rm
       register: result
       cisco.nxos.nxos_pim_interface: &id003
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         neighbor_policy: NPR
         neighbor_type: routemap
 
@@ -86,7 +86,7 @@
     - name: configure neighbor policy and prefix
       register: result
       cisco.nxos.nxos_pim_interface: &id005
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         neighbor_policy: NPPF
         neighbor_type: prefix
 
@@ -101,7 +101,7 @@
     - name: configure hello_auth_key
       register: result
       cisco.nxos.nxos_pim_interface:
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         hello_auth_key: password1
 
     - assert: *id002
@@ -109,7 +109,7 @@
     - name: configure pim other params
       register: result
       cisco.nxos.nxos_pim_interface: &id006
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         dr_prio: 10
         hello_interval: 40
         sparse: true
@@ -128,7 +128,7 @@
     - name: configure negative
       register: result
       cisco.nxos.nxos_pim_interface: &id007
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         sparse: false
         border: false
         bfd: disable
@@ -148,7 +148,7 @@
     - name: configure state default
       register: result
       cisco.nxos.nxos_pim_interface: &id008
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         state: default
 
     - assert: *id002
@@ -162,7 +162,7 @@
     - name: configure border
       register: result
       cisco.nxos.nxos_pim_interface: &id009
-        interface: '{{ testint }}'
+        interface: "{{ testint }}"
         border: true
         state: present
 
@@ -186,7 +186,6 @@
 
     - assert: *id004
   always:
-
     - name: Disable feature PIM
       loop:
         - pim

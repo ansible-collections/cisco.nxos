@@ -17,7 +17,6 @@
     commands: nv overlay evpn
 
 - block:
-
     - name: Configure vrf af ipv4
       register: result
       cisco.nxos.nxos_vrf_af: &id001
@@ -121,7 +120,6 @@
     - assert: *id004
   when: not platform is search("N35|N3L")
   always:
-
     - name: Remove vrf
       ignore_errors: true
       cisco.nxos.nxos_config:

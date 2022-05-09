@@ -8,7 +8,6 @@
     state: enabled
 
 - block:
-
     - name: Configure ospf
       register: result
       cisco.nxos.nxos_ospf: &id001
@@ -27,14 +26,12 @@
         that:
           - result.changed == false
   rescue:
-
     - name: Disable feature OSPF
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: ospf
         state: disabled
   always:
-
     - name: Unconfigure ospf
       register: result
       cisco.nxos.nxos_ospf: &id003

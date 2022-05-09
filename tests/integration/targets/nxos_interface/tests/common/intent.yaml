@@ -5,7 +5,7 @@
 
 - set_fact: testint2="{{ nxos_int2 }}"
 
-- name: 'Setup: Put interfaces into a default state'
+- name: "Setup: Put interfaces into a default state"
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -15,7 +15,7 @@
 - name: Check intent arguments
   register: result
   cisco.nxos.nxos_interface:
-    name: '{{ testint2 }}'
+    name: "{{ testint2 }}"
     admin_state: up
     tx_rate: ge(0)
     rx_rate: ge(0)
@@ -33,7 +33,7 @@
   ignore_errors: true
   register: result
   cisco.nxos.nxos_interface:
-    name: '{{ testint2 }}'
+    name: "{{ testint2 }}"
     admin_state: down
     tx_rate: gt(10000)
     rx_rate: lt(0)
@@ -48,18 +48,17 @@
   register: result
   cisco.nxos.nxos_interface:
     aggregate:
-
-      - name: '{{ testint1 }}'
+      - name: "{{ testint1 }}"
         description: Test aggregation on first interface
 
-      - name: '{{ testint2 }}'
+      - name: "{{ testint2 }}"
         mode: layer3
 
 - assert:
     that:
       - result.changed == true
 
-- name: 'TearDown: Put interfaces into a default state'
+- name: "TearDown: Put interfaces into a default state"
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:

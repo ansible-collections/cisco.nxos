@@ -18,7 +18,7 @@
         state: replaced
       ignore_errors: True
       register: result
-    
+
     - assert:
         that:
           - result.failed == True
@@ -32,7 +32,7 @@
         state: merged
       ignore_errors: True
       register: result
-    
+
     - assert:
         that:
           - result.failed == True

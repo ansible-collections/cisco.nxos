@@ -24,7 +24,6 @@
     state: absent
 
 - block:
-
     - name: Configure BGP defaults
       register: result
       cisco.nxos.nxos_bgp: &id001
@@ -77,11 +76,11 @@
         graceful_restart_helper: true
         graceful_restart_timers_restart: 130
         graceful_restart_timers_stalepath_time: 310
-        isolate: '{{isolate|default(omit)}}'
+        isolate: "{{isolate|default(omit)}}"
         log_neighbor_changes: true
         maxas_limit: 50
-        neighbor_down_fib_accelerate: '{{neighbor_down_fib_accelerate|default(omit)}}'
-        reconnect_interval: '{{reconnect_interval|default(omit)}}'
+        neighbor_down_fib_accelerate: "{{neighbor_down_fib_accelerate|default(omit)}}"
+        reconnect_interval: "{{reconnect_interval|default(omit)}}"
         shutdown: true
         timer_bestpath_limit: 255
         timer_bgp_hold: 110
@@ -118,7 +117,6 @@
         feature: bgp
         state: disabled
   rescue:
-
     - name: Cleanup BGP
       ignore_errors: true
       cisco.nxos.nxos_bgp: *id002
@@ -129,5 +127,4 @@
         feature: bgp
         state: disabled
   always:
-
     - debug: msg="END connection={{ ansible_connection }} nxos_bgp sanity test"

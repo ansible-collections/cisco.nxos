@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_telemetry gathered sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_telemetry gathered sanity
     test"
 
 - name: Setup 1

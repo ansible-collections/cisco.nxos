@@ -10,7 +10,8 @@
   register: result
   cisco.nxos.nxos_config:
     diff_against: intended
-    intended_config: "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
+    intended_config:
+      "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
       \ }}"
 
 - assert:
@@ -23,9 +24,11 @@
   register: result
   cisco.nxos.nxos_config:
     diff_against: intended
-    intended_config: "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
+    intended_config:
+      "{{ lookup('file', '{{ role_path }}/templates/basic/intended_running_config')\
       \ }}"
-    running_config: "{{ lookup('file', '{{ role_path }}/templates/basic/base_running_config')\
+    running_config:
+      "{{ lookup('file', '{{ role_path }}/templates/basic/base_running_config')\
       \ }}"
 
 - assert:

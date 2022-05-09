@@ -15,7 +15,7 @@
               address: 00c1.4c00.bd15
               role: secondary
         state: rendered
-        
+
     - assert:
         that: "{{ rendered | symmetric_difference(result['rendered'])\
           \ |length==0 }}"
@@ -25,12 +25,12 @@
       cisco.nxos.nxos_lacp:
         state: gathered
 
-    - name: Make sure that rendered task actually did not make any changes to the
+    - name:
+        Make sure that rendered task actually did not make any changes to the
         device
       assert:
         that: "{{ result['gathered'] == {} }}"
   always:
-
     - include_tasks: _remove_config.yaml
 
 - debug:

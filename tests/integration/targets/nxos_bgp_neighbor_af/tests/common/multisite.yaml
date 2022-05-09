@@ -1,6 +1,7 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp_neighbor_af multisite 
-     sanity test"
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_bgp_neighbor_af multisite
+    sanity test"
 
 - set_fact: soft_reconfiguration_ina="always"
   when: imagetag is not search("D1|N1")
@@ -37,7 +38,6 @@
       - evpn multisite border-gateway 10
 
 - block:
-
     - name: Configure eBGP - multisite
       cisco.nxos.nxos_bgp_neighbor:
         asn: 65535
@@ -88,8 +88,8 @@
 
     - name: Disable multisite border gateway - multisite
       cisco.nxos.nxos_config:
-       lines:
-         - no evpn multisite border-gateway 10
+        lines:
+          - no evpn multisite border-gateway 10
   when: multiout is not search("Invalid command")
 
 - name: Disable feature bgp - multisite
@@ -112,5 +112,6 @@
     lines:
       - no nv overlay evpn
 
-- debug: msg="END connection={{ ansible_connection }} nxos_bgp_neighbor_af multisite 
-     sanity test"
+- debug:
+    msg="END connection={{ ansible_connection }} nxos_bgp_neighbor_af multisite
+    sanity test"

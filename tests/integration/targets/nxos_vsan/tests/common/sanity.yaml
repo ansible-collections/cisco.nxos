@@ -7,34 +7,31 @@
     the tests"
 
 - block:
-
     - name: Setup - Remove vsan if configured
       ignore_errors: true
       cisco.nxos.nxos_vsan: &id002
         vsan:
-
-          - id: '{{ vsan1 | int }}'
+          - id: "{{ vsan1 | int }}"
             remove: true
 
-          - id: '{{ vsan2 | int }}'
+          - id: "{{ vsan2 | int }}"
             remove: true
 
     - name: Configure vsan
       register: result
       cisco.nxos.nxos_vsan: &id001
         vsan:
-
-          - id: '{{ vsan1 | int }}'
+          - id: "{{ vsan1 | int }}"
             name: vsan-SAN-A
             suspend: true
             interface:
-              - '{{intA1}}'
+              - "{{intA1}}"
             remove: false
 
-          - id: '{{ vsan2 | int }}'
+          - id: "{{ vsan2 | int }}"
             name: vsan-SAN-B
             interface:
-              - '{{intB1}}'
+              - "{{intB1}}"
             remove: false
 
     - assert:
@@ -60,6 +57,5 @@
         that:
           - result.commands == []
   always:
-
     - name: Remove vsan config
       cisco.nxos.nxos_vsan: *id002

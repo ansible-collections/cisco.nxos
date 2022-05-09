@@ -2,13 +2,11 @@
 - debug: msg="START connection={{ ansible_connection }} nxos_vxlan_vtep sanity test"
 
 - block:
-
     - set_fact: global_mcast_group_L2="225.1.1.2"
 
     - set_fact: def_global_mcast_group_L2="default"
 
     - block:
-
         - set_fact: global_mcast_group_L3="225.1.1.1"
 
         - set_fact: def_global_mcast_group_L3="default"
@@ -23,13 +21,12 @@
       register: tcam_state
       cisco.nxos.nxos_command:
         commands:
-
-          - command: show hardware access-list tcam region | incl arp-ether | sed
+          - command:
+              show hardware access-list tcam region | incl arp-ether | sed
               's/.*size = *//'
             output: text
 
     - block:
-
         - set_fact: global_suppress_arp="true"
 
         - set_fact: def_global_suppress_arp="false"
@@ -37,7 +34,6 @@
   when: platform is search('N9K') and (major_version is version('9.2', 'ge'))
 
 - block:
-
     - name: Apply N7K specific setup config
       include: targets/nxos_vxlan_vtep/tasks/platform/n7k/setup.yaml
       when: platform is match('N7K')
@@ -50,7 +46,6 @@
         match: none
 
     - block:
-
         - name: Enable feature ngmvpn
           cisco.nxos.nxos_config:
             commands:
@@ -59,7 +54,6 @@
       when: global_mcast_group_L3 is defined
 
     - block:
-
         - name: configure vxlan_vtep
           register: result
           cisco.nxos.nxos_vxlan_vtep: &id001
@@ -68,10 +62,11 @@
             host_reachability: true
             source_interface: Loopback0
             source_interface_hold_down_time: 30
-            global_ingress_replication_bgp: '{{ global_ingress_replication_bgp|default(omit)
-              }}'
-            global_suppress_arp: '{{ global_suppress_arp|default(omit) }}'
-            global_mcast_group_L3: '{{ global_mcast_group_L3|default(omit) }}'
+            global_ingress_replication_bgp:
+              "{{ global_ingress_replication_bgp|default(omit)
+              }}"
+            global_suppress_arp: "{{ global_suppress_arp|default(omit) }}"
+            global_mcast_group_L3: "{{ global_mcast_group_L3|default(omit) }}"
             shutdown: false
 
         - assert: &id002
@@ -94,10 +89,11 @@
             host_reachability: false
             source_interface_hold_down_time: default
             source_interface: default
-            global_ingress_replication_bgp: '{{ def_global_ingress_replication_bgp|default(omit)
-              }}'
-            global_suppress_arp: '{{ def_global_suppress_arp|default(omit) }}'
-            global_mcast_group_L3: '{{ def_global_mcast_group_L3|default(omit) }}'
+            global_ingress_replication_bgp:
+              "{{ def_global_ingress_replication_bgp|default(omit)
+              }}"
+            global_suppress_arp: "{{ def_global_suppress_arp|default(omit) }}"
+            global_mcast_group_L3: "{{ def_global_mcast_group_L3|default(omit) }}"
             shutdown: true
 
         - assert: *id002
@@ -113,7 +109,7 @@
           cisco.nxos.nxos_vxlan_vtep: &id005
             interface: nve1
             host_reachability: true
-            global_mcast_group_L2: '{{ global_mcast_group_L2|default(omit) }}'
+            global_mcast_group_L2: "{{ global_mcast_group_L2|default(omit) }}"
 
         - assert: *id002
 
@@ -128,7 +124,7 @@
           cisco.nxos.nxos_vxlan_vtep: &id006
             interface: nve1
             host_reachability: false
-            global_mcast_group_L2: '{{ def_global_mcast_group_L2|default(omit) }}'
+            global_mcast_group_L2: "{{ def_global_mcast_group_L2|default(omit) }}"
 
         - assert: *id002
 
@@ -140,7 +136,6 @@
       when: (platform is search('N9K'))
 
     - block:
-
         - name: configure vxlan_vtep
           register: result
           cisco.nxos.nxos_vxlan_vtep: &id007
@@ -204,7 +199,6 @@
           - result.changed == false
   when: (platform is search("N7K|N9K"))
   always:
-
     - name: Apply N7K specific cleanup config
       include: targets/nxos_vxlan_vtep/tasks/platform/n7k/cleanup.yaml
       when: platform is match('N7K')

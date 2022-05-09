@@ -12,7 +12,6 @@
     state: absent
 
 - block:
-
     - name: Configure ntp
       register: result
       cisco.nxos.nxos_ntp: &id001
@@ -107,7 +106,6 @@
 
     - assert: *id004
   always:
-
     - name: Remove ntp config
       cisco.nxos.nxos_ntp: *id005
 

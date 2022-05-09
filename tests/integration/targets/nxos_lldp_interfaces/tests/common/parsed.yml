@@ -7,18 +7,18 @@
     feature: lldp
 
 - block:
-
     - name: Gather lldp interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lldp_interfaces
 
     - name: Parsed
       register: result
       cisco.nxos.nxos_lldp_interfaces: &id001
-        running_config: "interface Ethernet1/1\n  lldp receive\n  no lldp transmit\n\
+        running_config:
+          "interface Ethernet1/1\n  lldp receive\n  no lldp transmit\n\
           interface Ethernet1/2\n  no lldp receive\n  lldp tlv-set vlan 12\ninterface\
           \ Ethernet1/3\n  lldp tlv-set management-address 192.0.2.12\n"
         state: parsed
@@ -35,7 +35,6 @@
     - assert:
         that: result.changed == false
   always:
-
     - name: teardown
       cisco.nxos.nxos_feature:
         feature: lldp

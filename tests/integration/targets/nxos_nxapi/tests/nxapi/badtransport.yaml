@@ -8,7 +8,7 @@
     enable_http: false
     enable_sandbox: false
     https_port: 9443
-    provider: '{{ nxapi }}'
+    provider: "{{ nxapi }}"
 
 - assert:
     that:

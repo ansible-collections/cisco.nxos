@@ -21,50 +21,50 @@ merged:
     - router-id 203.0.113.20
   after:
     processes:
-    - process_id: '100'
-      router_id: 203.0.113.20
-    - address_family:
-        afi: ipv6
-        safi: unicast
-        redistribute:
-        - protocol: direct
-          route_map: ospf102-direct-connect
-        - id: '120'
-          protocol: eigrp
-          route_map: rmap_1
-        areas:
-        - area_id: 0.0.0.100
-          filter_list:
-          - direction: out
-            route_map: rmap_2
-          - direction: in
-            route_map: rmap_1
-          ranges:
-          - not_advertise: true
-            prefix: 2001:db2::/32
-          - cost: 120
-            prefix: 2001:db3::/32
-      process_id: '102'
-      router_id: 198.51.100.1
-      vrfs:
-      - areas:
-        - area_id: 0.0.0.102
-          nssa:
-            default_information_originate: true
-            no_summary: true
-        - area_id: 0.0.0.103
-          nssa:
-            no_summary: True
-            translate:
-              type7:
-                always: true
-        router_id: 198.51.100.129
-        vrf: zone1
-      - auto_cost:
-          reference_bandwidth: 45
-          unit: Gbps
-        vrf: zone2
-    
+      - process_id: "100"
+        router_id: 203.0.113.20
+      - address_family:
+          afi: ipv6
+          safi: unicast
+          redistribute:
+            - protocol: direct
+              route_map: ospf102-direct-connect
+            - id: "120"
+              protocol: eigrp
+              route_map: rmap_1
+          areas:
+            - area_id: 0.0.0.100
+              filter_list:
+                - direction: out
+                  route_map: rmap_2
+                - direction: in
+                  route_map: rmap_1
+              ranges:
+                - not_advertise: true
+                  prefix: 2001:db2::/32
+                - cost: 120
+                  prefix: 2001:db3::/32
+        process_id: "102"
+        router_id: 198.51.100.1
+        vrfs:
+          - areas:
+              - area_id: 0.0.0.102
+                nssa:
+                  default_information_originate: true
+                  no_summary: true
+              - area_id: 0.0.0.103
+                nssa:
+                  no_summary: True
+                  translate:
+                    type7:
+                      always: true
+            router_id: 198.51.100.129
+            vrf: zone1
+          - auto_cost:
+              reference_bandwidth: 45
+              unit: Gbps
+            vrf: zone2
+
 replaced:
   commands:
     - router ospfv3 102
@@ -80,35 +80,35 @@ replaced:
     - no vrf zone2
   after:
     processes:
-    - process_id: '100'
-      router_id: 203.0.113.20
-    - address_family:
-        afi: ipv6
-        areas:
-        - area_id: 0.0.0.100
-          filter_list:
-          - direction: in
-            route_map: rmap_8
-          ranges:
-          - not_advertise: true
-            prefix: 2001:db2::/32
-        redistribute:
-        - protocol: direct
-          route_map: ospf102-direct-connect
-        - id: "130"
-          protocol: eigrp
-          route_map: rmap_1
-        safi: unicast
-      process_id: '102'
-      router_id: 198.51.100.1
-      vrfs:
-      - areas:
-        - area_id: 0.0.0.102
-          nssa:
-            default_information_originate: true
-            no_summary: true
-        router_id: 198.51.100.129
-        vrf: zone1
+      - process_id: "100"
+        router_id: 203.0.113.20
+      - address_family:
+          afi: ipv6
+          areas:
+            - area_id: 0.0.0.100
+              filter_list:
+                - direction: in
+                  route_map: rmap_8
+              ranges:
+                - not_advertise: true
+                  prefix: 2001:db2::/32
+          redistribute:
+            - protocol: direct
+              route_map: ospf102-direct-connect
+            - id: "130"
+              protocol: eigrp
+              route_map: rmap_1
+          safi: unicast
+        process_id: "102"
+        router_id: 198.51.100.1
+        vrfs:
+          - areas:
+              - area_id: 0.0.0.102
+                nssa:
+                  default_information_originate: true
+                  no_summary: true
+            router_id: 198.51.100.129
+            vrf: zone1
 overridden:
   commands:
     - no router ospfv3 100
@@ -127,9 +127,9 @@ overridden:
     - no vrf zone2
   after:
     processes:
-      - process_id: '104'
+      - process_id: "104"
         router_id: 203.0.113.20
-      - process_id: '102'
+      - process_id: "102"
         router_id: 198.51.100.1
         shutdown: True
         address_family:
@@ -138,5 +138,5 @@ overridden:
 deleted:
   after:
     processes:
-      - process_id: '100'
+      - process_id: "100"
         router_id: 203.0.113.20

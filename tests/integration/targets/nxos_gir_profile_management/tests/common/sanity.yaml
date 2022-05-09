@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_gir_profile_management
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_gir_profile_management
     sanity test"
 
 - name: Setup - Remove maintenace mode profiles
@@ -21,7 +22,6 @@
     state: enabled
 
 - block:
-
     - name: Create maintenace mode profile
       register: result
       cisco.nxos.nxos_gir_profile_management: &id001
@@ -85,11 +85,10 @@
     - assert: *id004
   when: not ( platform is match('N35')) and not titanium
   rescue:
-
-    - debug: msg="connection={{ ansible_connection }} nxos_gir_profile_management
+    - debug:
+        msg="connection={{ ansible_connection }} nxos_gir_profile_management
         failure detected"
   always:
-
     - name: Remove normal mode profile
       cisco.nxos.nxos_gir_profile_management: *id006
 
@@ -101,5 +100,6 @@
         feature: eigrp
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_gir_profile_management
+    - debug:
+        msg="END connection={{ ansible_connection }} nxos_gir_profile_management
         sanity test"

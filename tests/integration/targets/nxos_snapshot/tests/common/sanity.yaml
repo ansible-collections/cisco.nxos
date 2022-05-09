@@ -15,7 +15,6 @@
   when: imagetag is search("D1")
 
 - block:
-
     - name: create snapshot
       register: result
       cisco.nxos.nxos_snapshot: &id001
@@ -37,7 +36,6 @@
           - result.changed == false
 
     - block:
-
         - name: Add section
           register: result
           cisco.nxos.nxos_snapshot: &id003
@@ -113,7 +111,6 @@
     - assert: *id004
   when: snapshot_run
   always:
-
     - name: delete all sections
       ignore_errors: true
       cisco.nxos.nxos_config:

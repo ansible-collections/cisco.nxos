@@ -1,11 +1,11 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vrf_interface sanity
+- debug:
+    msg="START connection={{ ansible_connection }} nxos_vrf_interface sanity
     test"
 
 - set_fact: intname="{{ nxos_int1 }}"
 
 - block:
-
     - name: put interface in L3
       cisco.nxos.nxos_config:
         commands:
@@ -18,7 +18,7 @@
       register: result
       cisco.nxos.nxos_vrf_interface: &id001
         vrf: ntc
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         state: present
 
     - assert: &id002
@@ -37,7 +37,7 @@
       register: result
       cisco.nxos.nxos_vrf_interface: &id003
         vrf: ntc
-        interface: '{{ intname }}'
+        interface: "{{ intname }}"
         state: absent
 
     - assert: *id002
@@ -48,7 +48,6 @@
 
     - assert: *id004
   always:
-
     - name: put interface in default mode
       ignore_errors: true
       cisco.nxos.nxos_config:

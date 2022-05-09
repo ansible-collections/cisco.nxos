@@ -10,12 +10,12 @@ gathered:
     mode: "ce"
     name: "vlan5"
     state: suspend
-  
+
   - vlan_id: 6
     enabled: True
     mode: "ce"
     state: active
-  
+
   - vlan_id: 7
     enabled: False
     mode: "ce"
@@ -35,12 +35,12 @@ parsed:
     mode: "ce"
     name: "vlan5"
     state: suspend
-  
+
   - vlan_id: 6
     enabled: True
     mode: "ce"
     state: active
-  
+
   - vlan_id: 7
     enabled: True
     mode: "ce"

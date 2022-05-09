@@ -24,14 +24,13 @@
     state: enabled
 
 - block:
-
     - name: set helsinki
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
       cisco.nxos.nxos_bgp: &id001
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         graceful_restart_timers_restart: 130
         graceful_restart_timers_stalepath_time: 310
         neighbor_down_fib_accelerate: true
@@ -45,7 +44,7 @@
       when: test_helsinki
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
       cisco.nxos.nxos_bgp: *id001
@@ -56,12 +55,12 @@
       when: test_helsinki
 
     - name: reset helsinki
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
       cisco.nxos.nxos_bgp: &id003
         asn: 65535
-        vrf: '{{ item }}'
+        vrf: "{{ item }}"
         graceful_restart: true
         graceful_restart_timers_restart: default
         graceful_restart_timers_stalepath_time: default
@@ -74,7 +73,7 @@
       when: test_helsinki
 
     - name: Check Idempotence
-      with_items: '{{ vrfs }}'
+      with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
       cisco.nxos.nxos_bgp: *id003
@@ -82,10 +81,8 @@
     - assert: *id004
       when: test_helsinki
   rescue:
-
     - debug: msg="Tests can fail on helsinki images"
   always:
-
     - name: Disable feature bgp
       ignore_errors: true
       when: test_helsinki
