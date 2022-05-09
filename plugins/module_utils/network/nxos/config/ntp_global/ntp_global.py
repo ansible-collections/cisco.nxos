@@ -105,11 +105,6 @@ class Ntp_global(ResourceModule):
 
             for wkey, wentry in iteritems(wantx):
                 hentry = havex.pop(wkey, {})
-
-                # pop aliased keys to preserve idempotence
-                if x in ["peers", "servers"]:
-                    wentry.pop("use_vrf", None)
-
                 if wentry != hentry:
                     if x in keys[1:3] and self.state in [
                         "overridden",

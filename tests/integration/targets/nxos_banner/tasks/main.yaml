@@ -1,12 +1,14 @@
 ---
 - set_fact:
-    banner_exec_image_ok: False
-    banner_motd_image_ok: False
+    banner_exec_image_ok: false
+    banner_motd_image_ok: false
 
-- include: cli.yaml
+- name: Include the CLI tasks
+  ansible.builtin.include_tasks: cli.yaml
   tags:
     - cli
 
-- include: nxapi.yaml
+- name: Include the NX-API tasks
+  ansible.builtin.include_tasks: nxapi.yaml
   tags:
     - nxapi
