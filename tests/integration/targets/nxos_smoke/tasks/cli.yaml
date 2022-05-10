@@ -26,7 +26,7 @@
       authorize: true
 
 - name: run test cases (connection=network_cli)
-  ansible.builtin.include_tasks: "{{ test_case_to_run }} ansible_connection=network_cli connection={{ cli }}"
+  ansible.builtin.include_tasks: "{{ test_case_to_run }}"
   with_items: "{{ test_items }}"
   loop_control:
     loop_var: test_case_to_run
@@ -38,5 +38,8 @@
 #  loop_control:
 #    loop_var: test_case_to_run
 
+  vars:
+    ansible_connection: network_cli
+    connection: "{{ cli }}"
 - name: run test cases (connection=network_cli)
   include: "{{ role_path }}/tests/common/caching.yaml ansible_connection=ansible.netcommon.network_cli ansible_network_single_user_mode=True connection={{ cli }}"
