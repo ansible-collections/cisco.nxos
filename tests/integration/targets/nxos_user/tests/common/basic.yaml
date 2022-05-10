@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_user basic test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_user basic test
 
 - name: Remove old entries of user
   cisco.nxos.nxos_user: &rem
@@ -24,7 +25,8 @@
     roles: network-operator
     state: present
 
-- debug: msg="{{result}}"
+- ansible.builtin.debug:
+    msg: "{{result}}"
 
 - assert:
     that:
@@ -63,7 +65,7 @@
     name: ansibletest_failed
     configured_password: abc
   register: result
-  ignore_errors: True
+  ignore_errors: true
 
 - assert:
     that:
@@ -117,7 +119,7 @@
     role: invalid_role
     state: present
   register: result
-  ignore_errors: True
+  ignore_errors: true
 
 - assert:
     that:
@@ -138,4 +140,5 @@
     lines:
       - no role name customrole
 
-- debug: msg="END connection={{ ansible_connection }} nxos_user basic test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_user basic test

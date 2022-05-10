@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vrf_af sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vrf_af sanity test
 
 - name: Configure feature bgp
   cisco.nxos.nxos_feature:
@@ -141,4 +142,5 @@
         feature: bgp
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vrf_af sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vrf_af sanity test

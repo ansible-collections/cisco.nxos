@@ -1,7 +1,9 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp parameter test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_bgp parameter test
 
-- debug: msg="This test is not supported on {{ image_version }}"
+- ansible.builtin.debug:
+    msg: This test is not supported on {{ image_version }}
   when: imagetag is search("D1")
 
 - set_fact: test_helsinki="false"
@@ -81,7 +83,8 @@
     - assert: *id004
       when: test_helsinki
   rescue:
-    - debug: msg="Tests can fail on helsinki images"
+    - ansible.builtin.debug:
+        msg: Tests can fail on helsinki images
   always:
     - name: Disable feature bgp
       ignore_errors: true
@@ -90,4 +93,5 @@
         feature: bgp
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_bgp parameter test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_bgp parameter test

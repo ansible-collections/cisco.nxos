@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_l2_interface aggregate
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_l2_interface aggregate test
 
 - set_fact: intname1="{{ nxos_int1 }}"
 
@@ -112,6 +111,5 @@
             access_vlan: 15
         state: absent
 
-- debug:
-    msg="END connection={{ ansible_connection }} nxos_l2_interface aggregate
-    test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_l2_interface aggregate test

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vrf sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vrf sanity test
 
 - set_fact: intname1="{{ nxos_int1 }}"
 
@@ -107,4 +108,5 @@
         feature: bgp
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_vrf sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_vrf sanity test

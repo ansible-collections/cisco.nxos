@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_interface sub-interface
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_interface sub-interface test
 
 - set_fact: testint="{{ nxos_int1 }}"
 
@@ -72,6 +71,5 @@
     that:
       - result.changed == false
 
-- debug:
-    msg="END connection={{ ansible_connection }} nxos_interface sub-interface
-    test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_interface sub-interface test

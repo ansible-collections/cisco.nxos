@@ -1,5 +1,6 @@
 ---
-- debug: msg="START common/output.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START common/output.yaml on connection={{ ansible_connection }}
 
 - name: get output for single command
   register: result
@@ -22,4 +23,5 @@
     that:
       - result.changed == false
 
-- debug: msg="END common/output.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/output.yaml on connection={{ ansible_connection }}

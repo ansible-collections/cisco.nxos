@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxapi/sanity.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START nxapi/sanity.yaml on connection={{ ansible_connection }}
 
 - name: Disable feature BGP
   cisco.nxos.nxos_feature:
@@ -54,11 +55,13 @@
 
     - assert: *id001
   rescue:
-    - debug: msg="nxos_command sanity test failure detected"
+    - ansible.builtin.debug:
+        msg: nxos_command sanity test failure detected
   always:
     - name: Disable feature bgp
       cisco.nxos.nxos_feature:
         feature: bgp
         state: disabled
 
-- debug: msg="END nxapi/sanity.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END nxapi/sanity.yaml on connection={{ ansible_connection }}

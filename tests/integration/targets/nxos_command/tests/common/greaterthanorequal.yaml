@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START common/greaterthanorequal.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: START common/greaterthanorequal.yaml on connection={{ ansible_connection }}
 
 - name: test ge operator
   register: result
@@ -29,6 +28,5 @@
     that:
       - result.changed == false
 
-- debug:
-    msg="END common/greaterthanorequal.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: END common/greaterthanorequal.yaml on connection={{ ansible_connection }}

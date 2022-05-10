@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vtp_domain sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vtp_domain sanity test
 
 - set_fact: vtp_run="true"
 
@@ -41,4 +42,5 @@
         feature: vtp
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vtp_domain sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vtp_domain sanity test

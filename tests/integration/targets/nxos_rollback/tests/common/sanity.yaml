@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_rollback sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_rollback sanity test
 
 - name: delete existing checkpoint file
   ignore_errors: true
@@ -21,4 +22,5 @@
   ignore_errors: true
   cisco.nxos.nxos_config: *id001
 
-- debug: msg="END connection={{ ansible_connection }} nxos_rollback sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_rollback sanity test

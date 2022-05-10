@@ -1,5 +1,6 @@
 ---
-- debug: msg="START common/lessthan.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START common/lessthan.yaml on connection={{ ansible_connection }}
 
 - name: test lt operator
   register: result
@@ -27,4 +28,5 @@
     that:
       - result.changed == false
 
-- debug: msg="END common/lessthan.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/lessthan.yaml on connection={{ ansible_connection }}

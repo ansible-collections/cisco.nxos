@@ -1,17 +1,14 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_overlay_global sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_overlay_global sanity test
 
 - set_fact: overlay_global_supported="false"
 
 - set_fact: overlay_global_supported="true"
-  when:
-    platform is search("N35NG|N7K|^N9K$") or ( platform is match("N9k-F") and
-    imagetag is version('F3', 'ne'))
+  when: platform is search("N35NG|N7K|^N9K$") or ( platform is match("N9k-F") and imagetag is version('F3', 'ne'))
 
-- debug: msg="Platform {{ platform }} running Image version {{ image_version }}
-    supports nxos_overlay_global"
+- ansible.builtin.debug:
+    msg: Platform {{ platform }} running Image version {{ image_version }} supports nxos_overlay_global
   when: overlay_global_supported
 
 - block:
@@ -92,6 +89,5 @@
       cisco.nxos.nxos_evpn_global:
         nv_overlay_evpn: false
 
-    - debug:
-        msg="END connection={{ ansible_connection }} nxos_overlay_global sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_overlay_global sanity test

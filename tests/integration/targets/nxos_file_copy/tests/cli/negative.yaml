@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxos_file_copy negative test"
+- ansible.builtin.debug:
+    msg: START nxos_file_copy negative test
 
 - set_fact:
     test_source_file: "data.cfg"
@@ -29,8 +30,7 @@
 
 - assert:
     that:
-      - result is search('Local file ./data.cfg_does_not_exist not
-        found')
+      - result is search('Local file ./data.cfg_does_not_exist not found')
 
 - name: Try and copy file using an invalid remote scp server name
   register: result
@@ -117,4 +117,5 @@
       - result.failed == True
       - "'Too many authentication failures' in result.module_stderr"
 
-- debug: msg="END nxos_file_copy negative test"
+- ansible.builtin.debug:
+    msg: END nxos_file_copy negative test

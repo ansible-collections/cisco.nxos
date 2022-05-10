@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxapi/sublevel_strict.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/sublevel_strict.yaml
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -55,4 +56,5 @@
     lines: no ip access-list test
     match: none
 
-- debug: msg="END nxapi/sublevel_strict.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/sublevel_strict.yaml

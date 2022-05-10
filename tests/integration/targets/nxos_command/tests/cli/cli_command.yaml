@@ -23,4 +23,5 @@
       - result.failed == true
       - result.msg is defined
 
-- debug: msg="END cli/cli_command.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END cli/cli_command.yaml on connection={{ ansible_connection }}

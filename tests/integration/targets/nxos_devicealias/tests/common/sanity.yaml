@@ -1,6 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_devicealias sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_devicealias sanity test
 
 - name: Setup - Remove device alias if configured
   ignore_errors: true
@@ -29,10 +29,8 @@
 
     - assert:
         that:
-          - result.commands == ["terminal dont-ask", "device-alias database", "device-alias
-            name ansible_test1_add pwwn 57:bb:cc:dd:ee:ff:11:67", "device-alias
-            name ansible_test2_add pwwn 65:22:21:20:19:18:1a:0d", "device-alias
-            commit", "no terminal dont-ask"]
+          - result.commands == ["terminal dont-ask", "device-alias database", "device-alias name ansible_test1_add pwwn 57:bb:cc:dd:ee:ff:11:67", "device-alias name
+            ansible_test2_add pwwn 65:22:21:20:19:18:1a:0d", "device-alias commit", "no terminal dont-ask"]
 
     - name: Idempotence Check
       register: result
@@ -49,6 +47,5 @@
     - name: Remove device alias config
       cisco.nxos.nxos_devicealias: *id002
 
-    - debug:
-        msg="END connection={{ ansible_connection }} nxos_devicealias sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_devicealias sanity test

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/mulitlevel.yaml"
+- ansible.builtin.debug:
+    msg: START cli/mulitlevel.yaml
 
 - name: get config
   register: config
@@ -49,4 +50,5 @@
       - no feature bgp
     match: none
 
-- debug: msg="END cli/mulitlevel.yaml"
+- ansible.builtin.debug:
+    msg: END cli/mulitlevel.yaml

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos common/net_user.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos common/net_user.yaml
 
 - name: Remove old entries of user - setup
   ansible.netcommon.net_user:
@@ -24,4 +25,5 @@
     name: ansibletest1
     state: absent
 
-- debug: msg="END connection={{ ansible_connection }} nxos common/net_user.yaml"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos common/net_user.yaml

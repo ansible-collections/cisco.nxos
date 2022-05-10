@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/enable.yaml"
+- ansible.builtin.debug:
+    msg: START cli/enable.yaml
 
 - name: Setup - put NXAPI in stopped state
   register: result
@@ -29,4 +30,5 @@
   assert:
     that: result.changed == false
 
-- debug: msg="END cli/enable.yaml"
+- ansible.builtin.debug:
+    msg: END cli/enable.yaml

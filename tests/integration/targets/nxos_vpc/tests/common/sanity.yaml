@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vpc sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vpc sanity test
 
 - block:
     - set_fact: delay_restore_orphan_port=25
@@ -122,9 +123,7 @@
         peer_gw: true
         delay_restore: default
         delay_restore_interface_vlan: default
-        delay_restore_orphan_port:
-          "{{ def_delay_restore_orphan_port|default(omit)
-          }}"
+        delay_restore_orphan_port: "{{ def_delay_restore_orphan_port|default(omit) }}"
 
     - assert: *id002
 
@@ -175,4 +174,5 @@
         feature: vpc
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vpc sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vpc sanity test

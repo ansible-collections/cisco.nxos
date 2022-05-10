@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/misc_tests.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START cli/misc_tests.yaml on connection={{ ansible_connection }}
 
 - block:
     - name: Test that provider values are properly ignored

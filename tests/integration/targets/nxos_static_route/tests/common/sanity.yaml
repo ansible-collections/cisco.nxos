@@ -1,6 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_static_route sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_static_route sanity test
 
 - set_fact: test_track_feature="true"
 
@@ -11,12 +11,14 @@
     lines:
       - track 1 ip sla 1
 
-- debug: msg="cmd result {{ cmd_result }}"
+- ansible.builtin.debug:
+    msg: cmd result {{ cmd_result }}
 
 - set_fact: test_track_feature="false"
   when: cmd_result.failed
 
-- debug: msg="Test Track Feature {{ test_track_feature }}"
+- ansible.builtin.debug:
+    msg: Test Track Feature {{ test_track_feature }}
 
 - name: Setup and teardown, remove test routes if present
   with_items: "{{ vrfs }}"
@@ -203,4 +205,5 @@
       ignore_errors: true
       cisco.nxos.nxos_static_route: *id009
 
-- debug: msg="END connection={{ ansible_connection }} nxos_static_route sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_static_route sanity test

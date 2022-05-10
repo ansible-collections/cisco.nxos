@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_interface sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_interface sanity test
 
 - set_fact: testint="{{ nxos_int1 }}"
 
@@ -127,5 +128,5 @@
         feature: interface-vlan
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_interface sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_interface sanity test

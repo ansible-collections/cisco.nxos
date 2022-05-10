@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_vpc_interface sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vpc_interface sanity test
 
 - block:
     - name: enable feature vpc
@@ -135,5 +134,5 @@
         feature: vpc
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vpc_interface sanity
-    test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vpc_interface sanity test

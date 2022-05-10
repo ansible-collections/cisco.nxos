@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_aaa_server radius.yaml
-    sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_aaa_server radius.yaml sanity test
 
 - name: Setup
   ignore_errors: true
@@ -86,12 +85,12 @@
 
     - assert: *id003
   rescue:
-    - debug: msg="connection={{ ansible_connection }} nxos_aaa_server failure detected"
+    - ansible.builtin.debug:
+        msg: connection={{ ansible_connection }} nxos_aaa_server failure detected
   always:
     - name: Remove radius server configuration
       register: result
       cisco.nxos.nxos_aaa_server: *id004
 
-- debug:
-    msg="END connection={{ ansible_connection }} nxos_aaa_server radius.yaml
-    sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_aaa_server radius.yaml sanity test

@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START common/nonidempotent.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: START common/nonidempotent.yaml on connection={{ ansible_connection }}
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -34,5 +33,5 @@
     lines: hostname switch
     match: none
 
-- debug: msg="END common/nonidempotent.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: END common/nonidempotent.yaml on connection={{ ansible_connection }}

@@ -1,5 +1,6 @@
 ---
-- debug: msg='START cli/sublevel_strict.yaml'
+- ansible.builtin.debug:
+    msg: START cli/sublevel_strict.yaml
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -56,4 +57,5 @@
     commands: no ip access-list test
     match: none
 
-- debug: msg='END cli/sublevel_strict.yaml'
+- ansible.builtin.debug:
+    msg: END cli/sublevel_strict.yaml

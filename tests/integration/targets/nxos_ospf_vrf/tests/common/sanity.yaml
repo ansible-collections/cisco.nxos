@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_ospf_vrf sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_ospf_vrf sanity test
 
 - set_fact: def_met_default="default"
   when: imagetag is not search("I7")
@@ -134,4 +135,5 @@
         feature: "{{ item }}"
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_ospf_vrf sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_ospf_vrf sanity test

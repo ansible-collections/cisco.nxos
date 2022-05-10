@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/sanity.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/sanity.yaml
 
 - block:
     - name: remove configuration
@@ -125,4 +126,5 @@
     - name: Re-configure hostname
       cisco.nxos.nxos_system: *id001
 
-    - debug: msg="END connection={{ ansible_connection }}/sanity.yaml"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }}/sanity.yaml

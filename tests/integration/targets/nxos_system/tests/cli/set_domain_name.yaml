@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/set_domain_name.yaml"
+- ansible.builtin.debug:
+    msg: START cli/set_domain_name.yaml
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -29,4 +30,5 @@
     lines: no ip domain-name eng.ansible.com
     match: none
 
-- debug: msg="END cli/set_domain_name.yaml"
+- ansible.builtin.debug:
+    msg: END cli/set_domain_name.yaml

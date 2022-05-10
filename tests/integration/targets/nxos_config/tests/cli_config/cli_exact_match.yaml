@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START cli_config/cli_exact_match.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: START cli_config/cli_exact_match.yaml on connection={{ ansible_connection }}
 
 - name: setup - remove configuration
   ansible.netcommon.cli_config:
@@ -32,6 +31,5 @@
     config: no ip access-list test
     diff_match: none
 
-- debug:
-    msg="END cli_config/cli_exact_match.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: END cli_config/cli_exact_match.yaml on connection={{ ansible_connection }}

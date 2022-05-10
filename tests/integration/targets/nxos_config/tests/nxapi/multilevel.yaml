@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxapi/mulitlevel.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/mulitlevel.yaml
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -38,4 +39,5 @@
     lines: no feature bgp
     match: none
 
-- debug: msg="END nxapi/mulitlevel.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/mulitlevel.yaml

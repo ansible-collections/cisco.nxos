@@ -1,6 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp_neighbor sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_bgp_neighbor sanity test
 
 - set_fact: intname="{{ nxos_int1 }}"
 
@@ -343,4 +343,5 @@
         feature: "{{ item }}"
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_bgp_neighbor sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_bgp_neighbor sanity test

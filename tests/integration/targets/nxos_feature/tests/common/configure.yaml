@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/configure.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/configure.yaml
 
 - name: setup
   cisco.nxos.nxos_config: &teardown
@@ -93,4 +94,5 @@
 - name: teardown
   cisco.nxos.nxos_config: *teardown
 
-- debug: msg="END connection={{ ansible_connection }}/configure.yaml"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }}/configure.yaml

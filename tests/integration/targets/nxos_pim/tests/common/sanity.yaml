@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_pim sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_pim sanity test
 
 - name: "Setup: Disable features"
   ignore_errors: true
@@ -78,4 +79,5 @@
         feature: "{{ item }}"
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_pim sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_pim sanity test

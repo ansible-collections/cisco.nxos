@@ -1,5 +1,6 @@
 ---
-- debug: msg="START common/contains.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START common/contains.yaml on connection={{ ansible_connection }}
 
 - name: test contains operator
   register: result
@@ -15,4 +16,5 @@
     that:
       - result.changed == false
 
-- debug: msg="END common/contains.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/contains.yaml on connection={{ ansible_connection }}

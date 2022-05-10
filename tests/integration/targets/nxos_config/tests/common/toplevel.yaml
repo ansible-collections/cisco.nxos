@@ -1,5 +1,6 @@
 ---
-- debug: msg='START common/toplevel.yaml on connection={{ ansible_connection }}'
+- ansible.builtin.debug:
+    msg: START common/toplevel.yaml on connection={{ ansible_connection }}
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -30,4 +31,5 @@
     lines: hostname switch
     match: none
 
-- debug: msg='END common/toplevel.yaml on connection={{ ansible_connection }}'
+- ansible.builtin.debug:
+    msg: END common/toplevel.yaml on connection={{ ansible_connection }}

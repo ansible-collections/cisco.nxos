@@ -1,6 +1,8 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} common/misc_tests.yaml"
-- debug: msg="Using provider={{ connection.transport }}"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} common/misc_tests.yaml
+- ansible.builtin.debug:
+    msg: Using provider={{ connection.transport }}
   when: ansible_connection == "local"
 
 - name: hit conditional for lists of 10 or more commands

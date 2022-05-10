@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snapshot sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_snapshot sanity test
 
 - set_fact: snapshot_run="true"
 
@@ -123,4 +124,5 @@
       cisco.nxos.nxos_snapshot:
         action: delete_all
 
-- debug: msg="END connection={{ ansible_connection }} nxos_snapshot sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_snapshot sanity test

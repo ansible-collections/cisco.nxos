@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_facts sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_facts sanity test
 
 - name: nxos_facts gather hardware facts
   register: result
@@ -58,4 +59,5 @@
       - "'features' in result.ansible_facts.ansible_net_gather_subset"
       - result.ansible_facts.ansible_net_features_enabled is defined
 
-- debug: msg="END connection={{ ansible_connection }} nxos_facts sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_facts sanity test

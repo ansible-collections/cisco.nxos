@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_evpn_vni sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_evpn_vni sanity test
 
 - set_fact: nvoe_supported="{{ platform is not search('N3K|N3L|N35')}}"
 
@@ -106,4 +107,5 @@
             state: disabled
       when: nvoe_supported
 
-- debug: msg="END connection={{ ansible_connection }} nxos_evpn_vni sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_evpn_vni sanity test

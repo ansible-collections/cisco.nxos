@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bfd_global sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_bfd_global sanity test
 
 - name: set facts common
   set_fact:
@@ -162,4 +163,5 @@
         lines: no interface loopback1
         match: none
 
-- debug: msg="END connection={{ ansible_connection }} nxos_bfd_global sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_bfd_global sanity test

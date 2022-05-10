@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxapi/set_domain_list.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/set_domain_list.yaml
 
 - name: setup
   ignore_errors: true
@@ -115,4 +116,5 @@
       - no ip domain-list {{ item }}
     match: none
 
-- debug: msg="END nxapi/set_domain_search.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/set_domain_search.yaml

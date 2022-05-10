@@ -1,5 +1,6 @@
 ---
-- debug: msg="START common/invalid.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START common/invalid.yaml on connection={{ ansible_connection }}
 
 - name: run invalid command
   register: result
@@ -24,4 +25,5 @@
     that:
       - result.failed == true
 
-- debug: msg="END common/invalid.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/invalid.yaml on connection={{ ansible_connection }}

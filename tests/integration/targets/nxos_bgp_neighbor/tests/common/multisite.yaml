@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_bgp_neighbor multisite sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_bgp_neighbor multisite sanity test
 
 - set_fact: intname="{{ nxos_int1 }}"
 
@@ -59,13 +58,13 @@
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id001
 
-    - assert: &id003
+    - assert: &id004
         that:
           - result.changed == false
 
     - name: Configure BGP neighbor2 - multisite
       register: result
-      cisco.nxos.nxos_bgp_neighbor: &id004
+      cisco.nxos.nxos_bgp_neighbor: &id003
         asn: 65535
         neighbor: 192.0.2.3/32
         peer_type: disable
@@ -74,9 +73,9 @@
 
     - name: Check Idempotence
       register: result
-      cisco.nxos.nxos_bgp_neighbor: *id004
+      cisco.nxos.nxos_bgp_neighbor: *id003
 
-    - assert: *id003
+    - assert: *id004
 
     - name: Configure BGP neighbor3 - multisite
       register: result
@@ -91,7 +90,7 @@
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id005
 
-    - assert: *id003
+    - assert: *id004
 
     - name: Disable multisite border gateway - multisite
       cisco.nxos.nxos_config:
@@ -118,4 +117,5 @@
     lines:
       - no nv overlay evpn
 
-- debug: msg="END connection={{ ansible_connection }} nxos_bgp_neighbor multisite sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_bgp_neighbor multisite sanity test

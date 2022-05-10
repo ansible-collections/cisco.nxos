@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_telemetry merged sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_telemetry merged sanity test
 
 - set_fact: source_interface="Loopback55"
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
@@ -70,7 +69,7 @@
               data_source: NX-API
               path:
                 name: '"show bgp l2vpn evpn summary"'
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: foo
 
@@ -86,7 +85,7 @@
               data_source: DME
               path:
                 name: sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: foo
 
@@ -94,7 +93,7 @@
               data_source: DME
               path:
                 name: sys/ospf
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
           subscriptions:
@@ -134,18 +133,14 @@
           - "'ip address 192.168.0.2 port 60001 protocol grpc encoding gpb' in result.commands"
           - "'sensor-group 8' in result.commands"
           - "'data-source NX-API' in result.commands"
-          - result.commands is search("path .*show bgp l2vpn evpn summary.* depth
-            0 query-condition foo filter-condition foo")
+          - result.commands is search("path .*show bgp l2vpn evpn summary.* depth 0 query-condition foo filter-condition foo")
           - "'sensor-group 2' in result.commands"
           - "'data-source NX-API' in result.commands"
-          - result.commands is search("path .*show ip bgp neighbors.* depth unbounded
-            query-condition foo filter-condition foo")
+          - result.commands is search("path .*show ip bgp neighbors.* depth unbounded query-condition foo filter-condition foo")
           - "'sensor-group 55' in result.commands"
           - "'data-source DME' in result.commands"
-          - "'path sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]\
-            \ depth 0 query-condition foo filter-condition foo' in result.commands"
-          - "'path sys/ospf depth 0 query-condition foo filter-condition or(eq(ethpmPhysIf.operSt,\"\
-            down\"),eq(ethpmPhysIf.operSt,\"up\"))' in result.commands"
+          - "'path sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11] depth 0 query-condition foo filter-condition foo' in result.commands"
+          - "'path sys/ospf depth 0 query-condition foo filter-condition or(eq(ethpmPhysIf.operSt,\"down\"),eq(ethpmPhysIf.operSt,\"up\"))' in result.commands"
           - "'subscription 44' in result.commands"
           - "'dst-grp 10' in result.commands"
           - "'dst-grp 2' in result.commands"
@@ -163,16 +158,14 @@
 
     - assert:
         that:
-          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length
-            == 0
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0
 
     - name: Gather Telemetry Facts After Changes
       cisco.nxos.nxos_facts: *id001
 
     - assert:
         that:
-          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length
-            == 0
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length == 0
 
     - name: Telemetry - merged - idempotence
       register: result
@@ -227,7 +220,7 @@
               data_source: NX-API
               path:
                 name: '"show bgp l2vpn evpn summary"'
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: foo
 
@@ -243,7 +236,7 @@
               data_source: DME
               path:
                 name: sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: foo
 
@@ -251,7 +244,7 @@
               data_source: DME
               path:
                 name: sys/ospf
-                depth: 0
+                depth: 00
                 query_condition: foo
                 filter_condition: or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
           subscriptions:
@@ -298,5 +291,5 @@
       ignore_errors: true
       cisco.nxos.nxos_feature: *id004
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_telemetry merged
-        sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_telemetry merged sanity test

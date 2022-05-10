@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/set_hostname.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/set_hostname.yaml
 
 - block:
     - name: setup
@@ -30,4 +31,5 @@
         lines: hostname switch
         match: none
 
-    - debug: msg="END connection={{ ansible_connection }}/set_hostname.yaml"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }}/set_hostname.yaml
