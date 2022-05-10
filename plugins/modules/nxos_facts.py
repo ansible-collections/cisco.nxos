@@ -220,7 +220,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
     FACT_RESOURCE_SUBSETS,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
+    nxos_argument_spec
 )
 
 
