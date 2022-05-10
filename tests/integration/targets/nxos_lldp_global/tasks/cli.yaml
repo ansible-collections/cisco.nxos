@@ -3,7 +3,7 @@
   find:
     paths: "{{ role_path }}/tests/common"
     patterns: "{{ testcase }}.yml"
-    use_regex: True
+    use_regex: true
   connection: local
   register: test_cases
 
@@ -22,7 +22,9 @@
   set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
 
 - name: run test cases (connection=ansible.netcommon.network_cli)
-  include: "{{ test_case_to_run }} ansible_connection=ansible.netcommon.network_cli"
+  ansible.builtin.include_tasks: "{{ test_case_to_run }}"
   with_items: "{{ test_items }}"
   loop_control:
     loop_var: test_case_to_run
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

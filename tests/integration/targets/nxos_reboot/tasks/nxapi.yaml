@@ -21,9 +21,11 @@
   set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
 
 - name: run test cases (connection=ansible.netcommon.httpapi)
-  include: "{{ test_case_to_run }} ansible_connection=ansible.netcommon.httpapi
-    connection={{ nxapi }}"
+  ansible.builtin.include_tasks: "{{ test_case_to_run }}"
   with_items: "{{ test_items }}"
   loop_control:
     loop_var: test_case_to_run
   tags: nxapi_httpapi
+  vars:
+    ansible_connection: ansible.netcommon.httpapi
+    connection: "{{ nxapi }}"
