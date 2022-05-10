@@ -1,0 +1,3 @@
+---
+trivial:
+  - Switch to FQCN for include of test case
