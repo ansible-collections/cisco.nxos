@@ -11,6 +11,7 @@
   set_fact: skip_test=True
   when: result.stdout[0] is not search('MDS')
 
-- include: cli.yaml
+- name: Include the CLI tasks
+  ansible.builtin.include_tasks: cli.yaml
   tags: cli
   when: not skip_test

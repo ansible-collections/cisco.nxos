@@ -20,13 +20,13 @@
   set_fact:
     temp_passwd: "{{ lookup('password', 'length=15 chars=ascii_letters') }}"
   delegate_to: localhost
-  no_log: True
+  no_log: true
 
 - name: Configure temporary user for test
   cisco.nxos.nxos_user:
     name: temp_user
     configured_password: "{{ temp_passwd }}"
-  no_log: True
+  no_log: true
 
 - name: Setup - Turn on feature scp-server
   cisco.nxos.nxos_feature:
@@ -61,11 +61,13 @@
     ansible_connection: ansible.netcommon.network_cli
 
 - block:
-    - include: cli.yaml
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
       tags: cli
       when: run_test
 
-    - include: nxapi.yaml
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
       tags: nxapi
       when: run_test
   always:
