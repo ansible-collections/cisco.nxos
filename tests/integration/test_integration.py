@@ -32,4 +32,4 @@ def test_integration(ansible_project, environment):
             env=environment,
         )
     except subprocess.CalledProcessError as exc:
-        pytest.fail(msg=f"Integration test failed: {ansible_project.role}")
+        pytest.fail(reason=f"Integration test failed: {ansible_project.role}")
