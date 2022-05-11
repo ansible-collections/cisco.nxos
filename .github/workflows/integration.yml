@@ -11,7 +11,7 @@ jobs:
     uses: ansible-network/github_actions/.github/workflows/integration.yml@main
     with:
       network_os: cisco.nxos.nxos
-      pytest_addopts: "--role-excludes=snmp_server"
+      pytest_addopts: "-d --tx '10*popen//python=python --role-excludes=snmp_server"
 
     secrets:
       cml_ssh_password: ${{ secrets.cml_ssh_password }}
