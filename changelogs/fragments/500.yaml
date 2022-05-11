@@ -1,0 +1,3 @@
+---
+trivial:
+  - Undo `=` style formatting for set_fact tasks
