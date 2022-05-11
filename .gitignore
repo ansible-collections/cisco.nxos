@@ -1,9 +1,3 @@
-# Linked collection directory
-collections/
-
-# Any virl residue
-.virl
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
