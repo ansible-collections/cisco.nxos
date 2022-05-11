@@ -7,26 +7,9 @@
 - name: Grep admin user SNMP localized key
   set_fact:
     admin_snmp_passwd: "{{ result['stdout'][0] | regex_search('snmp-server user admin network-admin auth (md5|sha) (\\S+)', '\\2') }}"
-
-- name: Find admin user SNMP localized key
-  set_fact:
-    admin_snmp_passwd: "{{ admin_snmp_passwd[0] }}"
-
-- name: Grep admin user SNMP localized key (second)
-  set_fact:
-    admin_snmp_passwd_2: "{{ result['stdout'][0] | regex_search('snmp-server user admin auth (md5|sha) (\\S+)', '\\2') }}"
-
-- name: Find admin user SNMP localized key (second)
-  set_fact:
-    admin_snmp_passwd_2: "{{ admin_snmp_passwd_2[0] }}"
-
-- name: Grep admin user SNMP engineID (second)
-  set_fact:
-    admin_snmp_engineid_2: "{{ result['stdout'][0] | regex_search('admin auth (md5|sha) (\\S+) priv (\\S+) localizedkey engineID (\\S+)', '\\4') }}"
-
-- name: Find admin user SNMP engineID (second)
-  set_fact:
-    admin_snmp_engineid_2: "{{ admin_snmp_engineid_2[0] }}"
+    ansible_snmp_passwd: "{{ result['stdout'][0] | regex_search('snmp-server user ansible network-admin auth (md5|sha) (\\S+)', '\\2') }}"
+    admin_priv_passwd: "{{ result['stdout'][0] | regex_search('snmp-server user admin network-admin auth (md5|sha) (\\S+) priv (\\S+)', '\\3') }}"
+    ansible_priv_passwd: "{{ result['stdout'][0] | regex_search('snmp-server user ansible network-admin auth (md5|sha) (\\S+) priv (\\S+)', '\\3') }}"
 
 - name: Include the CLI tasks
   ansible.builtin.include_tasks: cli.yaml

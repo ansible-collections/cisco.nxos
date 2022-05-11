@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - "`nxos_snmp_server` - Add new option localizedv2_key for snmp users."
+trivial:
+  - Test updates for new lab environment.

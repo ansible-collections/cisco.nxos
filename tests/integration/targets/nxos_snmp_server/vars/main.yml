@@ -7,18 +7,18 @@ merged:
           group: network-admin
           authentication:
             algorithm: md5
-            password: "{{ admin_snmp_passwd }}"
-            localized_key: True
+            password: "{{ admin_snmp_passwd[0] }}"
+            localizedv2_key: True
             priv:
-              privacy_password: "{{ admin_snmp_passwd }}"
+              privacy_password: "{{ admin_priv_passwd[0] }}"
         - authentication:
             algorithm: md5
-            engine_id: "{{ admin_snmp_engineid_2 }}"
-            localized_key: true
-            password: "{{ admin_snmp_passwd_2 }}"
+            localizedv2_key: true
+            password: "{{ ansible_snmp_passwd[0] }}"
             priv:
-              privacy_password: "{{ admin_snmp_passwd_2 }}"
-          user: admin
+              privacy_password: "{{ ansible_priv_passwd[0] }}"
+          group: network-admin
+          user: ansible
   commands:
     - snmp-server contact nxosswitchadmin@localhost
     - snmp-server location serverroom-1
@@ -62,22 +62,22 @@ merged:
         clock_change_notification: true
     users:
       auth:
-        - authentication:
-            algorithm: md5
-            localized_key: true
-            password: "{{ admin_snmp_passwd }}"
-            priv:
-              privacy_password: "{{ admin_snmp_passwd }}"
+        - user: admin
           group: network-admin
-          user: admin
+          authentication:
+            algorithm: md5
+            password: "{{ admin_snmp_passwd[0] }}"
+            localizedv2_key: True
+            priv:
+              privacy_password: "{{ admin_priv_passwd[0] }}"
         - authentication:
             algorithm: md5
-            engine_id: "{{ admin_snmp_engineid_2 }}"
-            localized_key: true
-            password: "{{ admin_snmp_passwd_2 }}"
+            localizedv2_key: true
+            password: "{{ ansible_snmp_passwd[0] }}"
             priv:
-              privacy_password: "{{ admin_snmp_passwd_2 }}"
-          user: admin
+              privacy_password: "{{ ansible_priv_passwd[0] }}"
+          group: network-admin
+          user: ansible
         - authentication:
             algorithm: md5
             localized_key: true
@@ -141,19 +141,19 @@ replaced:
           group: network-admin
           authentication:
             algorithm: md5
-            password: "{{ admin_snmp_passwd }}"
-            localized_key: True
+            password: "{{ admin_snmp_passwd[0] }}"
+            localizedv2_key: True
             priv:
-              privacy_password: "{{ admin_snmp_passwd }}"
+              privacy_password: "{{ admin_priv_passwd[0] }}"
 
-        - user: admin
-          authentication:
+        - authentication:
             algorithm: md5
-            engine_id: "{{ admin_snmp_engineid_2 }}"
-            localized_key: true
-            password: "{{ admin_snmp_passwd_2 }}"
+            localizedv2_key: true
+            password: "{{ ansible_snmp_passwd[0] }}"
             priv:
-              privacy_password: "{{ admin_snmp_passwd_2 }}"
+              privacy_password: "{{ ansible_priv_passwd[0] }}"
+          group: network-admin
+          user: ansible
 
         - user: snmp_user_1
           group: network-operator
