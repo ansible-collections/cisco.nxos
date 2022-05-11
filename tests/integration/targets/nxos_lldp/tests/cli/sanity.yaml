@@ -1,5 +1,6 @@
 ---
-- debug: msg="START TRANSPORT:CLI nxos_lldp sanity test"
+- ansible.builtin.debug:
+    msg: START TRANSPORT:CLI nxos_lldp sanity test
 
 - name: Make sure LLDP is not running before tests
   cisco.nxos.nxos_feature:
@@ -44,4 +45,5 @@
     that:
       - result.changed == false
 
-- debug: msg="END TRANSPORT:CLI nxos_lldp sanity test"
+- ansible.builtin.debug:
+    msg: END TRANSPORT:CLI nxos_lldp sanity test

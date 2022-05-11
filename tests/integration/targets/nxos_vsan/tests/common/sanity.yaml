@@ -1,10 +1,9 @@
 ---
-- debug: msg="START nxos_vsan sanity test with connection={{ ansible_connection
-    }} "
+- ansible.builtin.debug:
+    msg: "START nxos_vsan sanity test with connection={{ ansible_connection }} "
 
-- debug: msg="Using vsans {{ vsan1 }}, {{ vsan2 }} for running this sanity test,
-    please make sure these are not used in the setup, these will be deleted after
-    the tests"
+- ansible.builtin.debug:
+    msg: Using vsans {{ vsan1 }}, {{ vsan2 }} for running this sanity test, please make sure these are not used in the setup, these will be deleted after the tests
 
 - block:
     - name: Setup - Remove vsan if configured
@@ -40,10 +39,8 @@
 
     - assert:
         that:
-          - result.commands == ["terminal dont-ask", "vsan database", "vsan 922",
-            "vsan 922 name vsan-SAN-A", "vsan 922 suspend", "vsan 922 interface
-            fc1/1", "vsan 923", "vsan 923 name vsan-SAN-B", "no vsan 923 suspend",
-            "vsan 923 interface fc1/2", "no terminal dont-ask"]
+          - result.commands == ["terminal dont-ask", "vsan database", "vsan 922", "vsan 922 name vsan-SAN-A", "vsan 922 suspend", "vsan 922 interface fc1/1", "vsan
+            923", "vsan 923 name vsan-SAN-B", "no vsan 923 suspend", "vsan 923 interface fc1/2", "no terminal dont-ask"]
 
     - name: Idempotence Check
       register: result

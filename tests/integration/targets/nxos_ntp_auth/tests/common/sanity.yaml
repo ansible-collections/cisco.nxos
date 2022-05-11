@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_ntp_auth sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_ntp_auth sanity test
 
 - name: Configure text ntp authentication
   ignore_errors: true
@@ -128,4 +129,5 @@
       ignore_errors: true
       cisco.nxos.nxos_ntp_auth: *id009
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_ntp_auth sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_ntp_auth sanity test

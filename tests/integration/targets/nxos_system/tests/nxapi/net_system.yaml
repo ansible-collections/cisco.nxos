@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START nxos nxapi/net_system.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: START nxos nxapi/net_system.yaml on connection={{ ansible_connection }}
 
 - name: setup
   ignore_errors: true
@@ -31,5 +30,5 @@
       - no ip domain-list redhat.com
     match: none
 
-- debug: msg="END nxos nxapi/net_system.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: END nxos nxapi/net_system.yaml on connection={{ ansible_connection }}

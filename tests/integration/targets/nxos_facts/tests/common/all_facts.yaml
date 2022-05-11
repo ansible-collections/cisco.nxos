@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/all_facts.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/all_facts.yaml
 
 - name: test getting all facts
   register: result
@@ -34,4 +35,5 @@
       - "{{ result['ansible_facts']['available_network_resources'] | symmetric_difference(result['ansible_facts']['ansible_net_gather_network_resources']) |length\
         \ == 0 }}"
 
-- debug: msg="END connection={{ ansible_connection }}/all_facts.yaml"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }}/all_facts.yaml

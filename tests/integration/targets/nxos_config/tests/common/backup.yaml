@@ -1,5 +1,6 @@
 ---
-- debug: msg="START common/backup.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START common/backup.yaml on connection={{ ansible_connection }}
 
 - set_fact: intname="{{ nxos_int1 }}"
 
@@ -122,4 +123,5 @@
     that:
       - backup_file.files is defined
 
-- debug: msg="END common/backup.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/backup.yaml on connection={{ ansible_connection }}

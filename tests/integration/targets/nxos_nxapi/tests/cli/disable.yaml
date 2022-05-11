@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/disable.yaml"
+- ansible.builtin.debug:
+    msg: START cli/disable.yaml
 
 - name: Disable NXAPI
   register: result
@@ -25,4 +26,5 @@
   assert:
     that: result.changed == false
 
-- debug: msg="END cli/disable.yaml"
+- ansible.builtin.debug:
+    msg: END cli/disable.yaml

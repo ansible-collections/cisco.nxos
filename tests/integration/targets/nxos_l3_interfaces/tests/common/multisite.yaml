@@ -210,7 +210,7 @@
 
     - name: setup1 - overidden
       ignore_errors: true
-      cisco.nxos.nxos_config: &id005
+      cisco.nxos.nxos_config: &id007
         lines:
           - "no system default switchport"
           - "default interface {{ item }}"
@@ -232,7 +232,7 @@
           - "  evpn multisite dci-tracking"
 
     - name: Gather l3_interfaces facts
-      cisco.nxos.nxos_facts: &id006
+      cisco.nxos.nxos_facts: &id005
         gather_subset:
           - "!all"
           - "!min"
@@ -249,7 +249,7 @@
 
     - name: Overridden
       register: result
-      cisco.nxos.nxos_l3_interfaces: &id007
+      cisco.nxos.nxos_l3_interfaces: &id006
         config: "{{ overriden_config + mgmt }}"
         state: overridden
 
@@ -269,7 +269,7 @@
           - result.commands|length == 9
 
     - name: Gather l3_interfaces post facts
-      cisco.nxos.nxos_facts: *id006
+      cisco.nxos.nxos_facts: *id005
 
     - assert:
         that:
@@ -277,7 +277,7 @@
 
     - name: Idempotence - Overridden
       register: result
-      cisco.nxos.nxos_l3_interfaces: *id007
+      cisco.nxos.nxos_l3_interfaces: *id006
 
     - assert:
         that:
@@ -286,7 +286,7 @@
 
     - name: teardown - overdidden
       ignore_errors: true
-      cisco.nxos.nxos_config: *id005
+      cisco.nxos.nxos_config: *id007
       loop:
         - "{{ test_int1 }}"
         - "{{ test_int2 }}"
@@ -294,7 +294,9 @@
 
     - name: Gather pre-facts
       cisco.nxos.nxos_facts:
-        gather_subset: ["!all", "!min"]
+        gather_subset:
+          - "!all"
+          - "!min"
         gather_network_resources: l3_interfaces
 
     # Interfaces used here doesn't actually exist on the device
@@ -307,7 +309,7 @@
               - address: 192.168.1.100/24
                 tag: 5
               - address: 10.1.1.1/24
-                secondary: True
+                secondary: true
                 tag: 10
             evpn_multisite_tracking: fabric-tracking
           - name: Ethernet1/800
@@ -318,8 +320,7 @@
         state: rendered
 
     - assert:
-        that: "{{ rendered_multi | symmetric_difference(result['rendered'])\
-          \ |length==0 }}"
+        that: "{{ rendered_multi | symmetric_difference(result['rendered']) |length==0 }}"
 
     - name: Gather l3_interfaces facts from the device and assert that its empty
       register: result
@@ -352,9 +353,7 @@
         state: parsed
 
     - assert:
-        that:
-          "{{ parsed_multi | symmetric_difference(result['parsed']) |length==0\
-          \ }}"
+        that: "{{ parsed_multi | symmetric_difference(result['parsed']) |length==0 }}"
 
   when: multiout is not search("Invalid command")
 
@@ -372,4 +371,5 @@
     feature: nve
     state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_l3_interfaces multisite test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_l3_interfaces multisite test

@@ -25,7 +25,8 @@
   cisco.nxos.nxos_command:
     commands: terminal dont-ask ; reload
 
-- debug: msg=" {{ result['install_state'] }}"
+- ansible.builtin.debug:
+    msg: " {{ result['install_state'] }}"
   when: not force
 
 - name: Wait for device to come back up with new image
@@ -37,7 +38,8 @@
     host: "{{ inventory_hostname }}"
   when: result.changed and not checkmode
 
-- debug: msg='Wait 5 mins to allow system to stabilize'
+- ansible.builtin.debug:
+    msg: Wait 5 mins to allow system to stabilize
   when: result.changed and not checkmode
 
 - pause:

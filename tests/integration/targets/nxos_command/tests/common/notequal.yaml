@@ -1,5 +1,6 @@
 ---
-- debug: msg="START common/notequal.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START common/notequal.yaml on connection={{ ansible_connection }}
 
 - name: test neq operator
   register: result
@@ -29,4 +30,5 @@
       - result.changed == false
       - result.stdout is defined
 
-- debug: msg="END common/notequal.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/notequal.yaml on connection={{ ansible_connection }}

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_os_install upgrade"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_os_install upgrade
   when: connection is defined
 
 - set_fact: image_dir='/auto/fe_ssr/agents-ci/agents_images/release_images/730_N11/'

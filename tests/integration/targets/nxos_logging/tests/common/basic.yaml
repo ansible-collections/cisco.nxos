@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_logging basic test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_logging basic test
 
 - name: Workaround to clear logging logfile size
   ignore_errors: true
@@ -15,7 +16,7 @@
   register: result
   cisco.nxos.nxos_logging: &id001
     dest: console
-    dest_level: 0
+    dest_level: 00
     state: present
 
 - assert:
@@ -52,7 +53,7 @@
 - block:
     - name: Logfile logging with level
       register: result
-      cisco.nxos.nxos_logging: &id005
+      cisco.nxos.nxos_logging: &id004
         dest: logfile
         name: test
         dest_level: 1
@@ -65,14 +66,14 @@
 
     - name: Logfile logging with level (idempotent)
       register: result
-      cisco.nxos.nxos_logging: *id005
+      cisco.nxos.nxos_logging: *id004
 
     - assert: *id003
   when: platform is not search('N5K|N7K') and imagetag is not search("A8")
 
 - name: Configure module with level
   register: result
-  cisco.nxos.nxos_logging: &id006
+  cisco.nxos.nxos_logging: &id005
     dest: module
     dest_level: 2
 
@@ -83,13 +84,13 @@
 
 - name: Configure module with level (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id006
+  cisco.nxos.nxos_logging: *id005
 
 - assert: *id003
 
 - name: Configure monitor with level
   register: result
-  cisco.nxos.nxos_logging: &id007
+  cisco.nxos.nxos_logging: &id006
     dest: monitor
     dest_level: 3
 
@@ -100,13 +101,13 @@
 
 - name: Configure monitor with level (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id007
+  cisco.nxos.nxos_logging: *id006
 
 - assert: *id003
 
 - name: Configure monitor with level 5 (edge case)
   register: result
-  cisco.nxos.nxos_logging: &id008
+  cisco.nxos.nxos_logging: &id007
     dest: monitor
     dest_level: 5
 
@@ -117,13 +118,13 @@
 
 - name: Configure monitor with level 5 (edge case) (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id008
+  cisco.nxos.nxos_logging: *id007
 
 - assert: *id003
 
 - name: Configure facility with level
   register: result
-  cisco.nxos.nxos_logging: &id009
+  cisco.nxos.nxos_logging: &id008
     facility: daemon
     facility_level: 4
 
@@ -134,13 +135,13 @@
 
 - name: Configure facility with level (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id009
+  cisco.nxos.nxos_logging: *id008
 
 - assert: *id003
 
 - name: Configure Remote Logging
   register: result
-  cisco.nxos.nxos_logging: &id010
+  cisco.nxos.nxos_logging: &id009
     dest: server
     remote_server: test-syslogserver.com
     facility: auth
@@ -151,18 +152,17 @@
 - assert:
     that:
       - result.changed == true
-      - '"logging server test-syslogserver.com 1 facility auth use-vrf management"
-        in result.commands'
+      - '"logging server test-syslogserver.com 1 facility auth use-vrf management" in result.commands'
 
 - name: Configure Remote Logging (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id010
+  cisco.nxos.nxos_logging: *id009
 
 - assert: *id003
 
 - name: Configure Source Interface for Logging
   register: result
-  cisco.nxos.nxos_logging: &id011
+  cisco.nxos.nxos_logging: &id010
     interface: mgmt0
 
 - assert:
@@ -172,7 +172,7 @@
 
 - name: Configure Source Interface for Logging (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id011
+  cisco.nxos.nxos_logging: *id010
 
 - assert:
     that:
@@ -180,7 +180,7 @@
 
 - name: remove logging as collection tearDown
   register: result
-  cisco.nxos.nxos_logging: &id012
+  cisco.nxos.nxos_logging: &id011
     aggregate:
       - dest: console
         dest_level: 3
@@ -230,24 +230,24 @@
 
 - name: remove aggregate logging (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id012
+  cisco.nxos.nxos_logging: *id011
 
 - assert: *id003
 
 - block:
     - name: Configure Logging message
       register: result
-      cisco.nxos.nxos_logging: &id013
+      cisco.nxos.nxos_logging: &id012
         interface_message: add-interface-description
         state: present
 
-    - assert: &id014
+    - assert: &id013
         that:
           - result.changed == true
 
     - name: Configure Logging message (idempotent)
       register: result
-      cisco.nxos.nxos_logging: *id013
+      cisco.nxos.nxos_logging: *id012
 
     - assert: *id003
 
@@ -257,12 +257,12 @@
         interface_message: add-interface-description
         state: absent
 
-    - assert: *id014
+    - assert: *id013
   when: platform is not search('N5K') and imagetag is not search("A8")
 
 - name: Logfile logging with level and size
   register: result
-  cisco.nxos.nxos_logging: &id015
+  cisco.nxos.nxos_logging: &id014
     dest: logfile
     name: test
     dest_level: 1
@@ -276,7 +276,7 @@
 
 - name: Logfile logging with level and size (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id015
+  cisco.nxos.nxos_logging: *id014
 
 - assert: *id003
 
@@ -289,11 +289,11 @@
     file_size: 16384
     state: absent
 
-- assert: *id014
+- assert: *id013
 
 - name: Set up logging event link enable
   register: result
-  cisco.nxos.nxos_logging: &id016
+  cisco.nxos.nxos_logging: &id015
     event: link-enable
 
 - assert:
@@ -303,27 +303,27 @@
 
 - name: Set up logging event link enable again (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id016
+  cisco.nxos.nxos_logging: *id015
 
 - assert: *id003
 
 - name: Remove logging event link enable
   register: result
-  cisco.nxos.nxos_logging: &id017
+  cisco.nxos.nxos_logging: &id016
     event: link-enable
     state: absent
 
-- assert: *id014
+- assert: *id013
 
 - name: Remove logging event link enable again (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id017
+  cisco.nxos.nxos_logging: *id016
 
 - assert: *id003
 
 - name: Set up logging event link default
   register: result
-  cisco.nxos.nxos_logging: &id018
+  cisco.nxos.nxos_logging: &id017
     event: link-default
 
 - assert:
@@ -333,27 +333,27 @@
 
 - name: Set up logging event link default again (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id018
+  cisco.nxos.nxos_logging: *id017
 
 - assert: *id003
 
 - name: Remove logging event link default
   register: result
-  cisco.nxos.nxos_logging: &id019
+  cisco.nxos.nxos_logging: &id018
     event: link-default
     state: absent
 
-- assert: *id014
+- assert: *id013
 
 - name: Remove logging event link default again (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id019
+  cisco.nxos.nxos_logging: *id018
 
 - assert: *id003
 
 - name: Set up logging event trunk enable
   register: result
-  cisco.nxos.nxos_logging: &id020
+  cisco.nxos.nxos_logging: &id019
     event: trunk-enable
 
 - assert:
@@ -363,27 +363,27 @@
 
 - name: Set up logging event trunk enable again (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id020
+  cisco.nxos.nxos_logging: *id019
 
 - assert: *id003
 
 - name: Remove logging event trunk enable
   register: result
-  cisco.nxos.nxos_logging: &id021
+  cisco.nxos.nxos_logging: &id020
     event: trunk-enable
     state: absent
 
-- assert: *id014
+- assert: *id013
 
 - name: Remove logging event trunk enable again (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id021
+  cisco.nxos.nxos_logging: *id020
 
 - assert: *id003
 
 - name: Set up logging event trunk default
   register: result
-  cisco.nxos.nxos_logging: &id022
+  cisco.nxos.nxos_logging: &id021
     event: trunk-default
 
 - assert:
@@ -393,35 +393,35 @@
 
 - name: Set up logging event trunk default again (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id022
+  cisco.nxos.nxos_logging: *id021
 
 - assert: *id003
 
 - name: Remove logging event trunk default
   register: result
-  cisco.nxos.nxos_logging: &id023
+  cisco.nxos.nxos_logging: &id022
     event: trunk-default
     state: absent
 
-- assert: *id014
+- assert: *id013
 
 - name: Remove logging event trunk default again (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id023
+  cisco.nxos.nxos_logging: *id022
 
 - assert: *id003
 
 - name: Set up Logging Timestamp
   register: result
-  cisco.nxos.nxos_logging: &id024
+  cisco.nxos.nxos_logging: &id023
     timestamp: microseconds
     state: present
 
-- assert: *id014
+- assert: *id013
 
 - name: Set up Logging Timestamp (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id024
+  cisco.nxos.nxos_logging: *id023
 
 - assert: *id003
 
@@ -431,20 +431,20 @@
     timestamp: microseconds
     state: absent
 
-- assert: *id014
+- assert: *id013
 
 - name: Set up Facility ethpm Link UP Error
   register: result
-  cisco.nxos.nxos_logging: &id025
+  cisco.nxos.nxos_logging: &id024
     facility: ethpm
     facility_link_status: link-up-error
     state: present
 
-- assert: *id014
+- assert: *id013
 
 - name: Set up Facility ethpm Link UP Error (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id025
+  cisco.nxos.nxos_logging: *id024
 
 - assert: *id003
 
@@ -455,20 +455,20 @@
     facility_link_status: link-up-error
     state: absent
 
-- assert: *id014
+- assert: *id013
 
 - name: Set up Facility ethpm Link DOWN Error
   register: result
-  cisco.nxos.nxos_logging: &id026
+  cisco.nxos.nxos_logging: &id025
     facility: ethpm
     facility_link_status: link-down-error
     state: present
 
-- assert: *id014
+- assert: *id013
 
 - name: Set up Facility ethpm Link DOWN Error (idempotent)
   register: result
-  cisco.nxos.nxos_logging: *id026
+  cisco.nxos.nxos_logging: *id025
 
 - assert: *id003
 
@@ -479,6 +479,7 @@
     facility_link_status: link-down-error
     state: absent
 
-- assert: *id014
+- assert: *id013
 
-- debug: msg="END connection={{ ansible_connection }} nxos_logging basic test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_logging basic test

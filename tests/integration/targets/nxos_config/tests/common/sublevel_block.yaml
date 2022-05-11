@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg='START common/sublevel_block.yaml on connection={{ ansible_connection
-    }}'
+- ansible.builtin.debug:
+    msg: START common/sublevel_block.yaml on connection={{ ansible_connection }}
 
 - name: setup
   ignore_errors: true
@@ -47,5 +46,5 @@
 - name: teardown
   cisco.nxos.nxos_config: *id001
 
-- debug: msg='END common/sublevel_block.yaml on connection={{ ansible_connection
-    }}'
+- ansible.builtin.debug:
+    msg: END common/sublevel_block.yaml on connection={{ ansible_connection }}

@@ -1,5 +1,6 @@
 ---
-- debug: msg="END cli_config/backup.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END cli_config/backup.yaml on connection={{ ansible_connection }}
 
 - set_fact: can_become="true"
 
@@ -116,4 +117,5 @@
     that:
       - backup_file.files is defined
 
-- debug: msg="END cli_config/backup.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END cli_config/backup.yaml on connection={{ ansible_connection }}

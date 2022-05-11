@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_acl sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_acl sanity test
 
 - set_fact: time_range="ans-range"
   when: platform is not search('N35|N5K|N6K')
@@ -227,4 +228,5 @@
 
 - assert: *id004
 
-- debug: msg="END connection={{ ansible_connection }} nxos_acl sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_acl sanity test

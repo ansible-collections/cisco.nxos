@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/set_domain_list.yaml"
+- ansible.builtin.debug:
+    msg: START cli/set_domain_list.yaml
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -109,4 +110,5 @@
       - no ip domain-list eng.ansible.com
     match: none
 
-- debug: msg="END cli/set_domain_search.yaml"
+- ansible.builtin.debug:
+    msg: END cli/set_domain_search.yaml

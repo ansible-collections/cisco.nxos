@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/not_hardware_facts.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/not_hardware_facts.yaml
 
 - name: test not hardware
   register: result
@@ -16,4 +17,5 @@
       - "'hardware' not in result.ansible_facts.ansible_net_gather_subset"
       - result.ansible_facts.ansible_net_filesystems is not defined
 
-- debug: msg="END connection={{ ansible_connection }}/not_hardware_facts.yaml"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }}/not_hardware_facts.yaml

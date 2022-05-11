@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/set_state_absent.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/set_state_absent.yaml
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -26,4 +27,5 @@
     that:
       - result.changed == false
 
-- debug: msg="END connection={{ ansible_connection }}/set_state_absent.yaml"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }}/set_state_absent.yaml

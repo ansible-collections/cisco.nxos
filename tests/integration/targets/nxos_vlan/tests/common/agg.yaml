@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/agg.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/agg.yaml
 
 - name: setup - remove vlan used in test
   ignore_errors: true
@@ -117,4 +118,5 @@
   ignore_errors: true
   cisco.nxos.nxos_config: *id005
 
-- debug: msg="END connection={{ ansible_connection }}/agg.yaml"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }}/agg.yaml

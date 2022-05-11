@@ -4,8 +4,10 @@
 
 # hit NetworkConfig
 # Select interface for test
-- debug: msg="START connection={{ ansible_connection }} common/common_config.yaml"
-- debug: msg="Using provider={{ connection.transport }}"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} common/common_config.yaml
+- ansible.builtin.debug:
+    msg: Using provider={{ connection.transport }}
   when: ansible_connection == "local"
 
 - set_fact: intname="{{ nxos_int1 }}"
@@ -40,7 +42,7 @@
       - shutdown
     parents:
       - "interface {{ intname }}"
-    backup: yes
+    backup: true
     provider: "{{ connection }}"
   register: result
 
@@ -64,7 +66,7 @@
     lines: no ip access-list test
     provider: "{{ connection }}"
     match: none
-  ignore_errors: yes
+  ignore_errors: true
 
 # hit NetworkConfig._diff_exact
 - name: configure sub level command using block replace - exact
@@ -109,7 +111,7 @@
 # hit CustomNetworkConfig
 - block:
     - name: create static route
-      cisco.nxos.nxos_static_route: &configure
+      cisco.nxos.nxos_static_route:
         prefix: "192.168.20.64/24"
         next_hop: "192.0.2.3"
         route_name: testing
@@ -124,7 +126,7 @@
           - "result.changed == true"
 
     - name: remove static route
-      cisco.nxos.nxos_static_route: &remove
+      cisco.nxos.nxos_static_route:
         prefix: "192.168.20.64/24"
         next_hop: "192.0.2.3"
         route_name: testing
@@ -148,13 +150,15 @@
         vrf: testing
         state: absent
         provider: "{{ connection }}"
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: remove static route aggregate
       cisco.nxos.nxos_static_route:
         aggregate:
-          - { prefix: "192.168.22.64/24", next_hop: "192.0.2.3" }
-          - { prefix: "192.168.24.64/24", next_hop: "192.0.2.3" }
+          - prefix: "192.168.22.64/24"
+            next_hop: "192.0.2.3"
+          - prefix: "192.168.24.64/24"
+            next_hop: "192.0.2.3"
         state: absent
         provider: "{{ connection }}"
-      ignore_errors: yes
+      ignore_errors: true

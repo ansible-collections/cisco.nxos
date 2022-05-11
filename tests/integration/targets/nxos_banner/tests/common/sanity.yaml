@@ -1,16 +1,18 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_banner sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_banner sanity test
 
 - set_fact:
-    banner_exec_image_ok: True
+    banner_exec_image_ok: true
   when: platform is search("N7K|N3K-F")
 
 - set_fact:
-    banner_motd_image_ok: True
+    banner_motd_image_ok: true
   when: imagetag is not search("I7") and ansible_connection != "ansible.netcommon.httpapi"
 
 - block:
-    - debug: msg="START nxos_banner exec tests"
+    - ansible.builtin.debug:
+        msg: START nxos_banner exec tests
 
     - name: setup exec
       cisco.nxos.nxos_banner: &id002
@@ -27,8 +29,7 @@
     - assert:
         that:
           - result.changed == true
-          - "'banner exec @\nthis is my exec banner\nthat has a multiline\nstring\n\
-            @' in result.commands"
+          - "'banner exec @\nthis is my exec banner\nthat has a multiline\nstring\n@' in result.commands"
 
     - name: Set exec again (idempotent)
       register: result
@@ -73,4 +74,5 @@
       cisco.nxos.nxos_banner: *id004
   when: banner_motd_image_ok == True
 
-- debug: msg="END connection={{ ansible_connection }} nxos_banner sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_banner sanity test

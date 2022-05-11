@@ -1,6 +1,7 @@
 ---
 - block:
-    - debug: msg="START connection={{ ansible_connection }} common/caching.yaml"
+    - ansible.builtin.debug:
+        msg: START connection={{ ansible_connection }} common/caching.yaml
 
     - name: Set system defaults for switchports
       cisco.nxos.nxos_config:

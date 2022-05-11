@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_igmp sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_igmp sanity test
 
 - set_fact: restart="true"
   when: platform is not match("N35")
@@ -63,4 +64,5 @@
       ignore_errors: true
       cisco.nxos.nxos_igmp: *id005
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_igmp sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_igmp sanity test

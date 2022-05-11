@@ -1,6 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_ntp_options sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_ntp_options sanity test
 
 - name: Apply default ntp config
   ignore_errors: true
@@ -95,6 +95,5 @@
       register: result
       cisco.nxos.nxos_ntp_options: *id007
 
-    - debug:
-        msg="END connection={{ ansible_connection }} nxos_ntp_options sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_ntp_options sanity test

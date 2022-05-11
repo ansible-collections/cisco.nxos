@@ -1,5 +1,6 @@
 ---
-- debug: msg="START TRANSPORT:CLI nxos_l3_interface sanity test"
+- ansible.builtin.debug:
+    msg: START TRANSPORT:CLI nxos_l3_interface sanity test
 
 - set_fact: testint2="{{ nxos_int2 }}"
 
@@ -119,4 +120,5 @@
     that:
       - result.changed == false
 
-- debug: msg="END TRANSPORT:CLI nxos_l3_interface sanity test"
+- ansible.builtin.debug:
+    msg: END TRANSPORT:CLI nxos_l3_interface sanity test

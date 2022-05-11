@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_vrf intent & aggregate
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vrf intent & aggregate test
 
 - set_fact: testint1="{{ nxos_int1 }}"
 
@@ -191,6 +190,5 @@
     lines:
       - no vrf context test2
 
-- debug:
-    msg="END connection={{ ansible_connection }} nxos_vrf intent & aggregate
-    test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vrf intent & aggregate test

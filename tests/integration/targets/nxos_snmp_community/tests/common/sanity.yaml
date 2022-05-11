@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_snmp_community sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_snmp_community sanity test
 
 - name: Setup - Remove snmp_community if configured - 1
   ignore_errors: true
@@ -158,6 +157,5 @@
     - name: Cleanup
       cisco.nxos.nxos_snmp_community: *id010
 
-    - debug:
-        msg="END connection={{ ansible_connection }} nxos_snmp_community sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_snmp_community sanity test

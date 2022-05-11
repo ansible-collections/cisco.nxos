@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_user sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_snmp_user sanity test
 
 - set_fact: delete_last_user_allowed='true'
 
@@ -103,4 +104,5 @@
       when: platform is search('N5K|N6K|N9K-F')
       cisco.nxos.nxos_user: *id007
 
-- debug: msg="END connection={{ ansible_connection }} nxos_snmp_user sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_snmp_user sanity test

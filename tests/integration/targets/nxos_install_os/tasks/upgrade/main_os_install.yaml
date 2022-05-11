@@ -1,5 +1,6 @@
 ---
-- debug: msg="***WARNING*** Remove meta end_play to verify this module ***WARNING***"
+- ansible.builtin.debug:
+    msg: "***WARNING*** Remove meta end_play to verify this module ***WARNING***"
 
 - meta: end_play
 

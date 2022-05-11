@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_hsrp sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_hsrp sanity test
 
 - set_fact: intname1="{{ nxos_int1 }}"
 
@@ -148,4 +149,5 @@
         feature: hsrp
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_hsrp sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_hsrp sanity test

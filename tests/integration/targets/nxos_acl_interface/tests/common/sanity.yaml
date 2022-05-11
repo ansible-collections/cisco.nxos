@@ -1,12 +1,12 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_acl_interface sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_acl_interface sanity test
 
 - set_fact: intname="{{ nxos_int1 }}"
 
 - name: Interface selected for this test
-  debug: msg="{{ intname }}"
+  ansible.builtin.debug:
+    msg: "{{ intname }}"
 
 - name: "Setup: Put interface into a default state"
   ignore_errors: true
@@ -116,6 +116,5 @@
       ignore_errors: true
       cisco.nxos.nxos_acl: *id008
 
-    - debug:
-        msg="END connection={{ ansible_connection }} nxos_acl_interface sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_acl_interface sanity test

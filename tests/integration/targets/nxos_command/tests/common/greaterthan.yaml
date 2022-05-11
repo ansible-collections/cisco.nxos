@@ -1,6 +1,6 @@
 ---
-- debug: msg="START common/greaterthan.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: START common/greaterthan.yaml on connection={{ ansible_connection }}
 
 - name: test gt operator
   register: result
@@ -28,4 +28,5 @@
     that:
       - result.changed == false
 
-- debug: msg="END common/greaterthan.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/greaterthan.yaml on connection={{ ansible_connection }}

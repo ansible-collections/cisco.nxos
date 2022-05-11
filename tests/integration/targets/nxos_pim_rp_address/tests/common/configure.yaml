@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_pim_rp_address sanity"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_pim_rp_address sanity
 
 - block:
     - set_fact: bidir_true="true"
@@ -210,4 +211,5 @@
     - name: Disable feature PIM
       cisco.nxos.nxos_feature: *id014
 
-- debug: msg="END connection={{ ansible_connection }} nxos_pim_rp_address sanity"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_pim_rp_address sanity

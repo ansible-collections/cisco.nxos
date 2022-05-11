@@ -3,9 +3,8 @@
 
 - set_fact: snmp_version="v1"
 
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
-    }} {{ snmp_version }} sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type }} {{ snmp_version }} sanity test
 
 - set_fact: intname="{{ nxos_int1 }}"
   when: platform is not search('N5K|N6K')
@@ -118,6 +117,5 @@
     - name: Cleanup
       cisco.nxos.nxos_snmp_host: *id007
 
-    - debug:
-        msg="END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
-        }} {{ snmp_version }} sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type }} {{ snmp_version }} sanity test

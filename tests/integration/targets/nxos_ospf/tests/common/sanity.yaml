@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_ospf sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_ospf sanity test
 
 - name: Enable feature OSPF
   ignore_errors: true
@@ -46,4 +47,5 @@
 
     - assert: *id004
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_ospf sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_ospf sanity test

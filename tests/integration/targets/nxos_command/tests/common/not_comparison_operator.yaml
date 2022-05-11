@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START common/not_comparison_operator.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: START common/not_comparison_operator.yaml on connection={{ ansible_connection }}
 
 - name: test 'not' keyword in wait_for
   register: result
@@ -17,6 +16,5 @@
     that:
       - result.changed == false
 
-- debug:
-    msg="END common/not_comparison_operator.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: END common/not_comparison_operator.yaml on connection={{ ansible_connection }}

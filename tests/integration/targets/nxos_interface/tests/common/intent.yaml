@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_interface intent test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_interface intent test
 
 - set_fact: testint1="{{ nxos_int1 }}"
 
@@ -65,4 +66,5 @@
       - default interface {{ testint1 }}
       - default interface {{ testint2 }}
 
-- debug: msg="END connection={{ ansible_connection }} nxos_interface intent test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_interface intent test

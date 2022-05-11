@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_logging purge test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_logging purge test
 
 - name: Purge logging configuration first
   cisco.nxos.nxos_logging:
@@ -10,7 +11,7 @@
       register: result
       cisco.nxos.nxos_logging:
         dest: console
-        dest_level: 0
+        dest_level: 00
         state: present
 
     - assert:
@@ -86,7 +87,7 @@
       cisco.nxos.nxos_logging:
         aggregate:
           - dest: console
-            dest_level: 0
+            dest_level: 00
 
           - dest: monitor
             dest_level: 3
@@ -106,4 +107,5 @@
           - '"no logging monitor" in result.commands'
   when: ansible_connection != "local"
 
-- debug: msg="END connection={{ ansible_connection }} nxos_logging purge test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_logging purge test

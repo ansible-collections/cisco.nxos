@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp_af multisite sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_bgp_af multisite sanity test
 
 - name: Enable feature BGP - multisite
   ignore_errors: true
@@ -15,7 +16,7 @@
 
 - name: Setup - multisite
   ignore_errors: true
-  cisco.nxos.nxos_bgp: &id012
+  cisco.nxos.nxos_bgp:
     asn: 65535
     state: absent
 
@@ -51,13 +52,13 @@
       register: result
       cisco.nxos.nxos_bgp_af: *id001
 
-    - assert: &id003
+    - assert: &id004
         that:
           - result.changed == false
 
     - name: Configure BGP_AF  Route Target Default
       register: result
-      cisco.nxos.nxos_bgp_af: &id004
+      cisco.nxos.nxos_bgp_af: &id003
         asn: 65535
         afi: l2vpn
         safi: evpn
@@ -68,9 +69,9 @@
 
     - name: Check Idempotence
       register: result
-      cisco.nxos.nxos_bgp_af: *id004
+      cisco.nxos.nxos_bgp_af: *id003
 
-    - assert: *id003
+    - assert: *id004
 
     - name: Configure BGP_AF 1 Route Target All
       register: result
@@ -87,11 +88,11 @@
       register: result
       cisco.nxos.nxos_bgp_af: *id005
 
-    - assert: *id003
+    - assert: *id004
 
     - name: Remove BGP - Route Target
       register: result
-      cisco.nxos.nxos_bgp_af: &id006
+      cisco.nxos.nxos_bgp_af:
         asn: 65535
         afi: l2vpn
         safi: evpn
@@ -127,4 +128,5 @@
     lines:
       - no nv overlay evpn
 
-- debug: msg="END connection={{ ansible_connection }} nxos_bgp_af multisite sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_bgp_af multisite sanity test

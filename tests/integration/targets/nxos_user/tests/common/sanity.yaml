@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_user parameter test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_user parameter test
 
 - set_fact: idem="true"
 
@@ -44,9 +45,8 @@
 
     - assert: *id004
 
-    - debug:
-        msg="skipping sshkey test as the key needs to be created on the server
-        first"
+    - ansible.builtin.debug:
+        msg: skipping sshkey test as the key needs to be created on the server first
 
     - name: Collection of users
       register: result
@@ -91,4 +91,5 @@
       ignore_errors: true
       cisco.nxos.nxos_user: *id006
 
-- debug: msg="END connection={{ ansible_connection }} nxos_user parameter test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_user parameter test

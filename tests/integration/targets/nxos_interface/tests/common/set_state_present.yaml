@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/set_state_present.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/set_state_present.yaml
 
 - name: setup
   ignore_errors: true
@@ -29,4 +30,5 @@
     that:
       - result.changed == false
 
-- debug: msg="END connection={{ ansible_connection }}/set_state_present.yaml"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }}/set_state_present.yaml

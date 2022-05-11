@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/invalid_subset.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/invalid_subset.yaml
 
 - name: test invalid subset (foobar)
   register: result
@@ -14,4 +15,5 @@
       - result.failed == true
       - "'Subset must be one of' in result.msg"
 
-- debug: msg="END connection={{ ansible_connection }}/invalid_subset.yaml"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }}/invalid_subset.yaml

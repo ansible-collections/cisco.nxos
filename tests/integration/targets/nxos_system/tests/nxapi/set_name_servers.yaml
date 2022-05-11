@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxapi/set_name_servers.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/set_name_servers.yaml
 
 - name: setup
   ignore_errors: true
@@ -77,4 +78,5 @@
   ignore_errors: true
   cisco.nxos.nxos_config: *id002
 
-- debug: msg="END nxapi/set_name_servers.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/set_name_servers.yaml

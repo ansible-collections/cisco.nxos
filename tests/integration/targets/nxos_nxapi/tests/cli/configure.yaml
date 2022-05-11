@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/configure.yaml"
+- ansible.builtin.debug:
+    msg: START cli/configure.yaml
 
 - set_fact: nxapi_sandbox_option="yes"
   when: platform is search('N7K')
@@ -137,4 +138,5 @@
       cisco.nxos.nxos_nxapi:
         state: present
 
-    - debug: msg="END cli/configure.yaml"
+    - ansible.builtin.debug:
+        msg: END cli/configure.yaml

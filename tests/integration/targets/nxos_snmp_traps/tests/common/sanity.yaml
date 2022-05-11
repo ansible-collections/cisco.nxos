@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_traps sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_snmp_traps sanity test
 
 - name: Setup - Remove snmp_traps if configured
   cisco.nxos.nxos_snmp_traps: &id006
@@ -70,5 +71,5 @@
     - name: Cleanup
       cisco.nxos.nxos_snmp_traps: *id006
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_traps sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_snmp_traps sanity test

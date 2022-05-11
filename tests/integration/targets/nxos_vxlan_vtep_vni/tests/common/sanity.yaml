@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity test
 
 - block:
     - name: Apply N7K specific setup config
@@ -247,5 +246,5 @@
         feature: nve
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity
-    test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity test

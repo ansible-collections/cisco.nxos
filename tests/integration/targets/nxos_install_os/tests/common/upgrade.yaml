@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_os_install upgrade"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_os_install upgrade
   when: connection is defined
 
 - set_fact: image_dir='/Users/mwiebe/Projects/nxos_ansible/images/'
@@ -45,4 +46,5 @@
 - name: Upgrade to 7.0.3.I7.2
   include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
-- debug: msg="END connection={{ ansible_connection }} nxos_os_install upgrade"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_os_install upgrade

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START common/src_basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START common/src_basic.yaml on connection={{ ansible_connection }}
 
 - set_fact: intname="loopback1"
 
@@ -33,4 +34,5 @@
       - result.changed == false
       - result.updates is not defined
 
-- debug: msg="END common/src_basic.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/src_basic.yaml on connection={{ ansible_connection }}

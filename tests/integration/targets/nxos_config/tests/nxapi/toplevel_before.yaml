@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxapi/toplevel_before.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/toplevel_before.yaml
 
 - name: setup
   cisco.nxos.nxos_config:
@@ -37,4 +38,5 @@
       - hostname switch
     match: none
 
-- debug: msg="END nxapi/toplevel_before.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/toplevel_before.yaml

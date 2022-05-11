@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_file_copy sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_file_copy sanity test
 
 - set_fact:
     test_source_file: "data.cfg"
@@ -61,9 +62,7 @@
 
           - "'Sent: File copied to remote device.' in result.transfer_status"
 
-    - name:
-        Idempotence - Copy {{ test_source_file }} file from Ansible controller
-        to bootflash
+    - name: Idempotence - Copy {{ test_source_file }} file from Ansible controller to bootflash
       register: result
       cisco.nxos.nxos_file_copy: *id001
 
@@ -75,9 +74,7 @@
       register: result
       cisco.nxos.nxos_command: *id002
 
-    - name:
-        Copy {{ test_source_file }} file from Ansible controller to bootflash
-        renamed as {{ test_destination_file }}
+    - name: Copy {{ test_source_file }} file from Ansible controller to bootflash renamed as {{ test_destination_file }}
       register: result
       cisco.nxos.nxos_file_copy: &id003
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
@@ -93,9 +90,7 @@
           - "'{{ test_destination_file }}' in result.remote_file"
           - "'Sent: File copied to remote device.' in result.transfer_status"
 
-    - name:
-        Idempotence - Copy {{ test_source_file }} file from Ansible controller
-        to bootflash renamed as {{ test_destination_file }}
+    - name: Idempotence - Copy {{ test_source_file }} file from Ansible controller to bootflash renamed as {{ test_destination_file }}
       register: result
       cisco.nxos.nxos_file_copy: *id003
 
@@ -117,9 +112,7 @@
 
     - assert: *id004
 
-    - name:
-        Initiate copy from nxos device to copy {{ test_destination_file }} to
-        bootflash:dir1/dir2/dir3/{{ test_destination_file }}_copy
+    - name: Initiate copy from nxos device to copy {{ test_destination_file }} to bootflash:dir1/dir2/dir3/{{ test_destination_file }}_copy
       register: result
       cisco.nxos.nxos_file_copy: &id005
         file_pull: true
@@ -140,8 +133,7 @@
           - "'bootflash:dir1/dir2/dir3/{{ test_destination_file }}_copy' in result.local_file"
           - "'/{{ test_destination_file }}' in result.remote_file"
 
-          - "'Received: File copied/pulled to nxos device from remote scp server.'\
-            \ in result.transfer_status"
+          - "'Received: File copied/pulled to nxos device from remote scp server.' in result.transfer_status"
           - "'{{ mgmt0_ip }}' in result.remote_scp_server"
 
     - pause:
@@ -153,9 +145,7 @@
 
     - assert: *id006
 
-    - name:
-        Initiate copy with sftp from nxos device to copy /bootflash/{{ test_destination_file }} to
-        bootflash:dir2/dir2/dir3/{{ test_destination_file }}_another_copy
+    - name: Initiate copy with sftp from nxos device to copy /bootflash/{{ test_destination_file }} to bootflash:dir2/dir2/dir3/{{ test_destination_file }}_another_copy
       register: result
       cisco.nxos.nxos_file_copy:
         file_pull: true
@@ -177,8 +167,7 @@
           - "'bootflash:dir1/dir2/dir3/{{ test_destination_file }}_another_copy' in result.local_file"
           - "'/bootflash/{{ test_destination_file }}' in result.remote_file"
 
-          - "'Received: File copied/pulled to nxos device from remote scp server.'\
-            \ in result.transfer_status"
+          - "'Received: File copied/pulled to nxos device from remote scp server.' in result.transfer_status"
           - "'{{ mgmt0_ip }}' in result.remote_scp_server"
 
   always:
@@ -203,5 +192,5 @@
         feature: sftp-server
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_file_copy sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_file_copy sanity test

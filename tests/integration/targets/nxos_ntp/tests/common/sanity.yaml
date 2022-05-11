@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_ntp sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_ntp sanity test
 
 - name: Setup - Remove ntp if configured
   ignore_errors: true
@@ -109,4 +110,5 @@
     - name: Remove ntp config
       cisco.nxos.nxos_ntp: *id005
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_ntp sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_ntp sanity test

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_gir sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_gir sanity test
 
 - set_fact: gir_run='{{ true if (platform is not search("N35")) else false }}'
 
@@ -84,7 +85,8 @@
     - assert: *id002
   when: gir_run
   rescue:
-    - debug: msg="connection={{ ansible_connection }} nxos_gir failure detected"
+    - ansible.builtin.debug:
+        msg: connection={{ ansible_connection }} nxos_gir failure detected
   always:
     - name: Remove snapshots
       ignore_errors: true
@@ -104,4 +106,5 @@
       cisco.nxos.nxos_gir:
         system_mode_maintenance: false
 
-- debug: msg="END connection={{ ansible_connection }} nxos_gir sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_gir sanity test

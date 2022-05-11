@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/set_name_servers.yaml"
+- ansible.builtin.debug:
+    msg: START cli/set_name_servers.yaml
 
 - name: setup
   cisco.nxos.nxos_config: &id002
@@ -70,4 +71,5 @@
   ignore_errors: true
   cisco.nxos.nxos_config: *id002
 
-- debug: msg="END cli/set_name_servers.yaml"
+- ansible.builtin.debug:
+    msg: END cli/set_name_servers.yaml

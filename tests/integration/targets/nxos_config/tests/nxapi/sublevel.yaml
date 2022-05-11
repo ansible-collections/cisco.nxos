@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxapi/sublevel.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/sublevel.yaml
 
 - name: setup
   ignore_errors: true
@@ -34,4 +35,5 @@
     lines: no ip access-list test
     match: none
 
-- debug: msg="END nxapi/sublevel.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/sublevel.yaml

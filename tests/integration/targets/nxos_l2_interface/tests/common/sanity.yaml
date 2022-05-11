@@ -1,11 +1,12 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_l2_interface sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_l2_interface sanity test
 
 - set_fact: intname="{{ nxos_int1 }}"
 
 - name: Interface selected for this test
-  debug: msg="{{ intname }}"
+  ansible.builtin.debug:
+    msg: "{{ intname }}"
 
 - name: Setup interface
   ignore_errors: true
@@ -67,9 +68,7 @@
 
     - assert: *id004
 
-    - name:
-        Ensure interface is a trunk port and ensure 2-50 are being tagged (doesn't
-        mean others aren't also being tagged)
+    - name: Ensure interface is a trunk port and ensure 2-50 are being tagged (doesn't mean others aren't also being tagged)
       register: result
       cisco.nxos.nxos_l2_interface: &id005
         name: "{{ intname }}"
@@ -107,9 +106,7 @@
 
     - assert: *id002
 
-    - name:
-        Check Idempotence Reconfigure interface trunk port and ensure 2-50 are
-        being tagged
+    - name: Check Idempotence Reconfigure interface trunk port and ensure 2-50 are being tagged
       register: result
       cisco.nxos.nxos_l2_interface: *id005
 
@@ -153,4 +150,5 @@
       ignore_errors: true
       cisco.nxos.nxos_config: *id009
 
-- debug: msg="END connection={{ ansible_connection }} nxos_l2_interface sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_l2_interface sanity test

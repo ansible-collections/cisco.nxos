@@ -3,8 +3,10 @@
 # nxos_config -> to_list
 # nxos_interface -> conditional, remove_default_spec
 
-- debug: msg="START connection={{ ansible_connection }} common/common_utils.yaml"
-- debug: msg="Using provider={{ connection.transport }}"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} common/common_utils.yaml
+- ansible.builtin.debug:
+    msg: Using provider={{ connection.transport }}
   when: ansible_connection == "local"
 
 # hit ComplexList
@@ -48,7 +50,7 @@
       - "default interface {{ testint1 }}"
       - "default interface {{ testint2 }}"
     provider: "{{ connection }}"
-  ignore_errors: yes
+  ignore_errors: true
 
   register: result
 
@@ -72,7 +74,7 @@
     tx_rate: lt(0)
     rx_rate: lt(0)
     provider: "{{ connection }}"
-  ignore_errors: yes
+  ignore_errors: true
   register: result
 
 - assert:
@@ -84,11 +86,10 @@
 - name: aggregate definition of interface
   cisco.nxos.nxos_interface:
     aggregate:
-      - {
-          name: "{{ testint1 }}",
-          description: "Test aggregation on first interface",
-        }
-      - { name: "{{ testint2 }}", mode: layer3 }
+      - name: "{{ testint1 }}"
+        description: "Test aggregation on first interface"
+      - name: "{{ testint2 }}"
+        mode: layer3
     provider: "{{ connection }}"
   register: result
 
@@ -102,4 +103,4 @@
       - "default interface {{ testint1 }}"
       - "default interface {{ testint2 }}"
     provider: "{{ connection }}"
-  ignore_errors: yes
+  ignore_errors: true

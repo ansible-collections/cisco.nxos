@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_pim_interface sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_pim_interface sanity test
 
 - name: "Setup: Disable features"
   loop:
@@ -192,5 +191,5 @@
         - bfd
       cisco.nxos.nxos_feature: *id011
 
-- debug: msg="END connection={{ ansible_connection }} nxos_pim_interface sanity
-    test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_pim_interface sanity test

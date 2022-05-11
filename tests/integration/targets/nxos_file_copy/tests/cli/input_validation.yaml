@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxos_file_copy input_validation test"
+- ansible.builtin.debug:
+    msg: START nxos_file_copy input_validation test
 
 - name: Input Validation - param should be type <path>
   register: result
@@ -77,4 +78,5 @@
     that:
       - result is search("'value of file_pull_protocol must be one of:' scp, sftp, http, https, tftp, ftp, got: foobar")
 
-- debug: msg="END nxos_file_copy input_validation test"
+- ansible.builtin.debug:
+    msg: END nxos_file_copy input_validation test

@@ -1,5 +1,6 @@
 ---
-- debug: msg="START nxapi/set_domain_name.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/set_domain_name.yaml
 
 - name: setup
   ignore_errors: true
@@ -30,4 +31,5 @@
     lines: no ip domain-name eng.ansible.com
     match: none
 
-- debug: msg="END nxapi/set_domain_name.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/set_domain_name.yaml

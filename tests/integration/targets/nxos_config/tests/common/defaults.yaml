@@ -1,5 +1,6 @@
 ---
-- debug: msg="START common/defaults.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START common/defaults.yaml on connection={{ ansible_connection }}
 
 - set_fact: intname="{{ nxos_int1 }}"
 
@@ -22,7 +23,8 @@
       - interface {{ intname }}
     defaults: true
 
-- debug: var=result
+- ansible.builtin.debug:
+    var: result
 
 - assert:
     that:
@@ -39,11 +41,13 @@
       - interface {{ intname }}
     defaults: true
 
-- debug: var=result
+- ansible.builtin.debug:
+    var: result
 
 - assert:
     that:
       - result.changed == false
       - result.updates is not defined
 
-- debug: msg="END common/defaults.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/defaults.yaml on connection={{ ansible_connection }}

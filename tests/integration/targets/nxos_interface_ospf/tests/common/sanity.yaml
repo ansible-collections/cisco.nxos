@@ -1,7 +1,6 @@
 ---
-- debug:
-    msg="START connection={{ ansible_connection }} nxos_interface_ospf sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_interface_ospf sanity test
 
 - set_fact: testint="{{ nxos_int1 }}"
 
@@ -290,6 +289,5 @@
       ignore_errors: true
       cisco.nxos.nxos_config: *id014
 
-    - debug:
-        msg="END connection={{ ansible_connection }} nxos_interface_ospf sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_interface_ospf sanity test

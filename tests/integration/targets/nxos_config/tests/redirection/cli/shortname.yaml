@@ -1,5 +1,6 @@
 ---
-- debug: msg="START cli/shortname.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START cli/shortname.yaml on connection={{ ansible_connection }}
 
 - name: Use src with module alias
   register: result
@@ -34,4 +35,5 @@
     that:
       - backup_file.files is defined
 
-- debug: msg="END cli/shortname.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END cli/shortname.yaml on connection={{ ansible_connection }}

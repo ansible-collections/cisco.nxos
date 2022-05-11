@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_bgp parameter test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_bgp parameter test
 
 - set_fact: bgp_best_path_limit="false"
 
@@ -98,7 +99,8 @@
     - assert: *id004
       when: bgp_suppress_fib_supported
   rescue:
-    - debug: msg="Tests can fail on I2/I4/A8/Fretta or helsinki images"
+    - ansible.builtin.debug:
+        msg: Tests can fail on I2/I4/A8/Fretta or helsinki images
   always:
     - name: Disable feature bgp
       ignore_errors: true
@@ -106,4 +108,5 @@
         feature: bgp
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_bgp parameter test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_bgp parameter test

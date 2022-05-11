@@ -1,5 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vrrp sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vrrp sanity test
 
 - block:
     - name: Enable interface-vlan
@@ -128,4 +129,5 @@
         feature: vrrp
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vrrp sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vrrp sanity test
