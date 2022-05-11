@@ -10,7 +10,8 @@
     msg: Using provider={{ connection.transport }}
   when: ansible_connection == "local"
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    intname: "{{ nxos_int1 }}"
 
 - name: setup
   cisco.nxos.nxos_config:

@@ -5,7 +5,8 @@
     commands:
       - show vdc current-vdc | json
 
-- set_fact: vdcid="{{ vdcout.stdout_lines[0].name }}"
+- ansible.builtin.set_fact:
+    vdcid: "{{ vdcout.stdout_lines[0].name }}"
 
 - name: Configure VDC setting limit-resource module-type f3
   ignore_errors: true
@@ -14,9 +15,7 @@
       - terminal dont-ask ; vdc {{ vdcid }} ;  limit-resource module-type f3
     match: none
 
-- name:
-    Previous command is asynchronous and can take a while.  Allow time for it
-    to complete
+- name: Previous command is asynchronous and can take a while.  Allow time for it to complete
   pause:
     seconds: 45
 
@@ -27,9 +26,7 @@
       - terminal dont-ask ; vdc {{ vdcid }} ; allocate interface unallocated-interfaces
     match: none
 
-- name:
-    Previous command is asynchronous and can take a while.  Allow time for it
-    to complete
+- name: Previous command is asynchronous and can take a while.  Allow time for it to complete
   pause:
     seconds: 45
 

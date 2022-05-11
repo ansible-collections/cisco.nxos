@@ -1,10 +1,13 @@
 ---
-- set_fact: run_test="true"
+- ansible.builtin.set_fact:
+    run_test: true
 
-- set_fact: run_test="false"
+- ansible.builtin.set_fact:
+    run_test: false
   when: platform is not search("N9K")
 
-- set_fact: run_test="false"
+- ansible.builtin.set_fact:
+    run_test: false
   when: imagetag is search("I2|I3|I4|I5|I6")
 
 - name: Fetch mgmt interface information

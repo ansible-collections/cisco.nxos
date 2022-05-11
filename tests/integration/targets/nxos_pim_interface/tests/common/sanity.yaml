@@ -19,7 +19,8 @@
     feature: "{{ item }}"
     state: enabled
 
-- set_fact: testint="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    testint: "{{ nxos_int1 }}"
 
 - name: "Setup: Put interface {{ testint }} into a default state"
   ignore_errors: true

@@ -6,7 +6,8 @@
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- set_fact: test_shutdown
+- ansible.builtin.set_fact:
+    test_shutdown:
   when: platform is not search('N3[5KL]|N[56]K|titanium')
 
 - name: "setup0: clean up (interfaces) attributes on all interfaces"

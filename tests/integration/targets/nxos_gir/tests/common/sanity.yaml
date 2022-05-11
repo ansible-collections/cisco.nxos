@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_gir sanity test
 
-- set_fact: gir_run='{{ true if (platform is not search("N35")) else false }}'
+- ansible.builtin.set_fact:
+    gir_run: '{{ true if (platform is not search("N35")) else false }}'
 
 - name: Setup0
   ignore_errors: true

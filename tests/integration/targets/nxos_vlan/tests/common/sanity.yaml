@@ -2,9 +2,11 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_vlan sanity test
 
-- set_fact: testint1="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    testint1: "{{ nxos_int1 }}"
 
-- set_fact: testint2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact:
+    testint2: "{{ nxos_int2 }}"
 
 - block:
     - name: Install and Enable FabricPath feature set

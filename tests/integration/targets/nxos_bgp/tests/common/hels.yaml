@@ -6,9 +6,11 @@
     msg: This test is not supported on {{ image_version }}
   when: imagetag is search("D1")
 
-- set_fact: test_helsinki="false"
+- ansible.builtin.set_fact:
+    test_helsinki: false
 
-- set_fact: test_helsinki="true"
+- ansible.builtin.set_fact:
+    test_helsinki: true
   when: imagetag is not search("D1")
 
 - name: Disable feature BGP

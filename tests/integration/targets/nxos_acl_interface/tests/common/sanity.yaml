@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_acl_interface sanity test
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    intname: "{{ nxos_int1 }}"
 
 - name: Interface selected for this test
   ansible.builtin.debug:

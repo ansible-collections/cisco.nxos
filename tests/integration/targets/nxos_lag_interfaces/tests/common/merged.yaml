@@ -1,12 +1,12 @@
 ---
 - debug:
-    msg:
-      Start nxos_lag_interfaces merged integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_lag_interfaces merged integration tests connection={{ ansible_connection }}
 
-- set_fact: test_int1="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
 
-- set_fact: test_int2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact:
+    test_int2: "{{ nxos_int2 }}"
 
 - name: Enable feature lacp
   cisco.nxos.nxos_feature:
@@ -22,7 +22,7 @@
       - no interface port-channel 20
 
 - name: setup2
-  cisco.nxos.nxos_lag_interfaces: &id002
+  cisco.nxos.nxos_lag_interfaces: &id003
     state: deleted
 
 - block:
@@ -52,8 +52,7 @@
 
     - assert:
         that:
-          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.after)|length
-            == 0
+          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.after)|length == 0
 
     - name: Idempotence - Merged
       register: result
@@ -71,7 +70,7 @@
 
     - name: Merged - No Members
       register: result
-      cisco.nxos.nxos_lag_interfaces: &id003
+      cisco.nxos.nxos_lag_interfaces: &id002
         config:
           - name: port-channel11
             members:
@@ -87,7 +86,7 @@
 
     - name: Idempotence - Merged - No Members
       register: result
-      cisco.nxos.nxos_lag_interfaces: *id003
+      cisco.nxos.nxos_lag_interfaces: *id002
 
     - assert:
         that:
@@ -96,7 +95,7 @@
   always:
     - name: Teardown
       ignore_errors: true
-      cisco.nxos.nxos_lag_interfaces: *id002
+      cisco.nxos.nxos_lag_interfaces: *id003
 
     - name: Disable feature lacp
       cisco.nxos.nxos_feature:

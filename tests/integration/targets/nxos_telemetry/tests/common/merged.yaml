@@ -2,12 +2,15 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_telemetry merged sanity test
 
-- set_fact: source_interface="Loopback55"
+- ansible.builtin.set_fact:
+    source_interface: Loopback55
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- set_fact: command_list_length=30
+- ansible.builtin.set_fact:
+    command_list_length: 30
 
-- set_fact: command_list_length=31
+- ansible.builtin.set_fact:
+    command_list_length: 31
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
 - name: Setup

@@ -2,17 +2,22 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_telemetry replaced sanity test
 
-- set_fact: source_interface="Loopback55"
+- ansible.builtin.set_fact:
+    source_interface: Loopback55
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- set_fact: command_list_length=27
+- ansible.builtin.set_fact:
+    command_list_length: 27
 
-- set_fact: command_list_length=28
+- ansible.builtin.set_fact:
+    command_list_length: 28
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- set_fact: dict_facts_length=6
+- ansible.builtin.set_fact:
+    dict_facts_length: 6
 
-- set_fact: dict_facts_length=7
+- ansible.builtin.set_fact:
+    dict_facts_length: 7
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
 - name: Setup - disable feature telemetry

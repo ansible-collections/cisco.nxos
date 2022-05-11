@@ -1,7 +1,9 @@
 ---
-- set_fact: ignore_errors_httpapi='no'
+- ansible.builtin.set_fact:
+    ignore_errors_httpapi: false
 
-- set_fact: ignore_errors_httpapi='yes'
+- ansible.builtin.set_fact:
+    ignore_errors_httpapi: true
   when: ansible_connection == 'ansible.netcommon.httpapi'
 
 - include: targets/nxos_install_os/tasks/upgrade/enable_scp_server.yaml

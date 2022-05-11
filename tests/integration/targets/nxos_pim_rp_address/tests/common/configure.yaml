@@ -3,15 +3,19 @@
     msg: START connection={{ ansible_connection }} nxos_pim_rp_address sanity
 
 - block:
-    - set_fact: bidir_true="true"
+    - ansible.builtin.set_fact:
+        bidir_true: true
 
-    - set_fact: bidir_false="false"
+    - ansible.builtin.set_fact:
+        bidir_false: false
   when: platform is not search('N3L')
 
 - block:
-    - set_fact: pim_prefix_list="pim_prefix_list"
+    - ansible.builtin.set_fact:
+        pim_prefix_list: pim_prefix_list
 
-    - set_fact: pim_route_map="pim_route_map"
+    - ansible.builtin.set_fact:
+        pim_route_map: pim_route_map
   when: platform is not search('N3L|N7K')
 
 - block:
