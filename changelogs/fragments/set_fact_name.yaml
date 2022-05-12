@@ -1,0 +1,3 @@
+---
+trivial:
+  - Add name to `set_fact` where missing and update to FQCN
