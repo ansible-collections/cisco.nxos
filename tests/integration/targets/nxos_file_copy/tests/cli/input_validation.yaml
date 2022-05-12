@@ -21,7 +21,7 @@
 
 - assert:
     that:
-      - result is search("argument 'file_pull_timeout' is of type <class 'str'> and we were unable to convert to int")
+      - result is search("argument 'file_pull_timeout' is of type <class 'ansible.parsing.yaml.objects.AnsibleUnicode'> and we were unable to convert to int")
 
 - name: Input Validation - param should be type <bool>
   register: result
@@ -31,7 +31,7 @@
 
 - assert:
     that:
-      - result is search("argument 'file_pull' is of type <class 'str'> and we were unable to convert to bool")
+      - result is search("argument 'file_pull' is of type <class 'ansible.parsing.yaml.objects.AnsibleUnicode'> and we were unable to convert to bool")
 
 - name: Input Validation - param <file_pull> <remote_file> dependency
   register: result
