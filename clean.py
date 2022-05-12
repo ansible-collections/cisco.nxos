@@ -90,6 +90,22 @@ BUILTINS = (
 )
 
 
+def oxfordcomma(listed, condition):
+    """Format a list into a sentence.
+    :param listed: List of string entries to modify
+    :param condition: String to splice into string, usually 'and'
+    :returns: Modified string
+    """
+    listed = [f"'{str(entry)}'" for entry in listed]
+    if len(listed) == 0:
+        return ""
+    if len(listed) == 1:
+        return listed[0]
+    if len(listed) == 2:
+        return f"{listed[0]} {condition} {listed[1]}"
+    return f"{', '.join(listed[:-1])}, {condition} {listed[-1]}"
+
+
 def change_key(task: CommentedMap, old: str, new: str) -> None:
     """Change a key in a task.
 
@@ -111,11 +127,7 @@ def update_include_cli(data: CommentedSeq) -> bool:
     :param data: The task list
     :return: Whether the include_cli task was updated
     """
-    match = [
-        idx
-        for idx, item in enumerate(data)
-        if item.get("include") == "cli.yaml"
-    ]
+    match = [idx for idx, item in enumerate(data) if item.get("include") == "cli.yaml"]
     if not match:
         return False
 
@@ -134,9 +146,7 @@ def update_include_nxapi(data: CommentedSeq) -> bool:
     :return: Whether the include_nxapi task was updated
     """
     match = [
-        idx
-        for idx, item in enumerate(data)
-        if item.get("include") == "nxapi.yaml"
+        idx for idx, item in enumerate(data) if item.get("include") == "nxapi.yaml"
     ]
     if not match:
         return False
@@ -198,9 +208,7 @@ def update_include_test_case(list_of_tasks) -> bool:
     if not match:
         return False
     for entry in match:
-        change_key(
-            list_of_tasks[entry], "include", "ansible.builtin.include_tasks"
-        )
+        change_key(list_of_tasks[entry], "include", "ansible.builtin.include_tasks")
         values = (
             list_of_tasks[entry]
             .get("ansible.builtin.include_tasks")
@@ -214,9 +222,9 @@ def update_include_test_case(list_of_tasks) -> bool:
         list_of_tasks[entry]["vars"] = {}
         for var_pair in var_pairs.split(" "):
             key, value = var_pair.split("=")
-            list_of_tasks[entry]["vars"][key] = value.replace(
-                "{{", "{{ "
-            ).replace("}}", " }}")
+            list_of_tasks[entry]["vars"][key] = value.replace("{{", "{{ ").replace(
+                "}}", " }}"
+            )
 
     return True
 
@@ -293,20 +301,36 @@ def undo_set_fact_equal(list_of_tasks) -> bool:
             list_of_tasks[entry].ca.items.pop("set_fact")
             commented = True
 
-        change_key(
-            list_of_tasks[entry], "set_fact", "ansible.builtin.set_fact"
-        )
+        change_key(list_of_tasks[entry], "set_fact", "ansible.builtin.set_fact")
 
         if commented:
-            list_of_tasks[entry]["ansible.builtin.set_fact"].ca.items[
-                last_key
-            ] = [
+            list_of_tasks[entry]["ansible.builtin.set_fact"].ca.items[last_key] = [
                 None,
                 None,
                 ct,
                 None,
             ]
 
+    return True
+
+
+def update_set_fact_name(list_of_tasks) -> bool:
+    match = []
+    for idx, task in enumerate(list_of_tasks):
+        if task.get("set_fact") or task.get("ansible.builtin.set_fact"):
+            match.append(idx)
+
+    if not match:
+        return False
+
+    for entry in match:
+        if list_of_tasks[entry].get("set_fact"):
+            change_key(list_of_tasks[entry], "set_fact", "ansible.builtin.set_fact")
+        if "name" not in list_of_tasks[entry]:
+            facts = sorted(list_of_tasks[entry]["ansible.builtin.set_fact"].keys())
+            name = f"Set a fact for {oxfordcomma(facts, 'and')}"
+            list_of_tasks[entry]["name"] = name
+            list_of_tasks[entry].move_to_end("name", last=False)
     return True
 
 
@@ -385,7 +409,8 @@ def update_list_of_tasks(list_of_tasks) -> bool:
     # updated.append(capitalize_names(list_of_tasks))
     # updated.append(update_include_test_case(list_of_tasks))
     # updated.append(undo_debug_equal(list_of_tasks))
-    updated.append(undo_set_fact_equal(list_of_tasks))
+    # updated.append(undo_set_fact_equal(list_of_tasks))
+    updated.append(update_set_fact_name(list_of_tasks))
     return any(updated)
 
 
