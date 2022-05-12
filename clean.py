@@ -2,7 +2,6 @@
 """A test files updater."""
 
 import logging
-from pyrsistent import v
 import ruamel.yaml
 
 from pathlib import Path
@@ -112,7 +111,11 @@ def update_include_cli(data: CommentedSeq) -> bool:
     :param data: The task list
     :return: Whether the include_cli task was updated
     """
-    match = [idx for idx, item in enumerate(data) if item.get("include") == "cli.yaml"]
+    match = [
+        idx
+        for idx, item in enumerate(data)
+        if item.get("include") == "cli.yaml"
+    ]
     if not match:
         return False
 
@@ -131,7 +134,9 @@ def update_include_nxapi(data: CommentedSeq) -> bool:
     :return: Whether the include_nxapi task was updated
     """
     match = [
-        idx for idx, item in enumerate(data) if item.get("include") == "nxapi.yaml"
+        idx
+        for idx, item in enumerate(data)
+        if item.get("include") == "nxapi.yaml"
     ]
     if not match:
         return False
@@ -193,7 +198,9 @@ def update_include_test_case(list_of_tasks) -> bool:
     if not match:
         return False
     for entry in match:
-        change_key(list_of_tasks[entry], "include", "ansible.builtin.include_tasks")
+        change_key(
+            list_of_tasks[entry], "include", "ansible.builtin.include_tasks"
+        )
         values = (
             list_of_tasks[entry]
             .get("ansible.builtin.include_tasks")
@@ -207,9 +214,9 @@ def update_include_test_case(list_of_tasks) -> bool:
         list_of_tasks[entry]["vars"] = {}
         for var_pair in var_pairs.split(" "):
             key, value = var_pair.split("=")
-            list_of_tasks[entry]["vars"][key] = value.replace("{{", "{{ ").replace(
-                "}}", " }}"
-            )
+            list_of_tasks[entry]["vars"][key] = value.replace(
+                "{{", "{{ "
+            ).replace("}}", " }}")
 
     return True
 
@@ -256,9 +263,19 @@ def undo_set_fact_equal(list_of_tasks) -> bool:
                     except ValueError:
                         pass
             if new_value is None:
-                if value.strip("'").strip('"') in ["True", "true", "yes", "Yes"]:
+                if value.strip("'").strip('"') in [
+                    "True",
+                    "true",
+                    "yes",
+                    "Yes",
+                ]:
                     new_value = True
-                elif value.strip("'").strip('"') in ["False", "false", "no", "No"]:
+                elif value.strip("'").strip('"') in [
+                    "False",
+                    "false",
+                    "no",
+                    "No",
+                ]:
                     new_value = False
                 else:
                     new_value = (
@@ -276,10 +293,14 @@ def undo_set_fact_equal(list_of_tasks) -> bool:
             list_of_tasks[entry].ca.items.pop("set_fact")
             commented = True
 
-        change_key(list_of_tasks[entry], "set_fact", "ansible.builtin.set_fact")
+        change_key(
+            list_of_tasks[entry], "set_fact", "ansible.builtin.set_fact"
+        )
 
         if commented:
-            list_of_tasks[entry]["ansible.builtin.set_fact"].ca.items[last_key] = [
+            list_of_tasks[entry]["ansible.builtin.set_fact"].ca.items[
+                last_key
+            ] = [
                 None,
                 None,
                 ct,

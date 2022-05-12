@@ -5,7 +5,8 @@ import logging
 import pytest
 
 
-def test_integration(ansible_project, environment):
+def run(ansible_project, environment):
+    __tracebackhide__ = True
     args = [
         "ansible-navigator",
         "run",
@@ -25,11 +26,20 @@ def test_integration(ansible_project, environment):
         "--skip-tags",
         "local,nxapi",
     ]
-    logging.info(" ".join(args))
-    try:
-        subprocess.check_call(
-            args,
-            env=environment,
-        )
-    except subprocess.CalledProcessError as exc:
+    process = subprocess.run(
+        args=args,
+        env=environment,
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        check=False,
+        shell=False,
+    )
+    if process.returncode:
+        print(process.stdout.decode("utf-8"))
+        print(process.stderr.decode("utf-8"))
+
         pytest.fail(reason=f"Integration test failed: {ansible_project.role}")
+
+
+def test_integration(ansible_project, environment):
+    run(ansible_project, environment)
