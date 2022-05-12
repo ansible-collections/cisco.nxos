@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_bgp_af sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'advertise_l2vpn_evpn'
+  ansible.builtin.set_fact:
     advertise_l2vpn_evpn: true
   when: platform is search('N9K')
 
@@ -209,26 +210,26 @@
         dampening_reuse_time: 2
         dampening_suppress_time: 3
         inject_map:
-          - - lax_inject_map
-            - lax_exist_map
-          - - nyc_inject_map
-            - nyc_exist_map
-            - copy-attributes
-          - - fsd_inject_map
-            - fsd_exist_map
+          -   - lax_inject_map
+              - lax_exist_map
+          -   - nyc_inject_map
+              - nyc_exist_map
+              - copy-attributes
+          -   - fsd_inject_map
+              - fsd_exist_map
         networks:
-          - - 10.0.0.0/16
-            - routemap_LA
-          - - 192.168.1.1/32
-            - Chicago
-          - - 192.168.2.0/24
-          - - 192.168.3.0/24
-            - routemap_NYC
+          -   - 10.0.0.0/16
+              - routemap_LA
+          -   - 192.168.1.1/32
+              - Chicago
+          -   - 192.168.2.0/24
+          -   - 192.168.3.0/24
+              - routemap_NYC
         redistribute:
-          - - direct
-            - rm_direct
-          - - lisp
-            - rm_lisp
+          -   - direct
+              - rm_direct
+          -   - lisp
+              - rm_lisp
         state: present
 
     - assert: *id002
@@ -254,13 +255,13 @@
         dampening_reuse_time: 20
         dampening_suppress_time: 30
         inject_map:
-          - - fsd_inject_map
-            - fsd_exist_map
+          -   - fsd_inject_map
+              - fsd_exist_map
         networks:
-          - - 192.168.2.0/24
+          -   - 192.168.2.0/24
         redistribute:
-          - - lisp
-            - rm_lisp
+          -   - lisp
+              - rm_lisp
         state: present
 
     - assert: *id002

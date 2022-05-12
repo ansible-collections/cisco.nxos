@@ -2,7 +2,8 @@
 - debug:
     msg: Start nxos_l2_interfaces merged integration tests connection={{ ansible_connection }}
 
-- set_fact:
+- name: Set a fact for 'test_int1'
+  ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
 
 - name: setup1

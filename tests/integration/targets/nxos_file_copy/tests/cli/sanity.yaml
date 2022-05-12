@@ -2,11 +2,13 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_file_copy sanity test
 
-- set_fact:
+- name: Set a fact for 'test_destination_file' and 'test_source_file'
+  ansible.builtin.set_fact:
     test_source_file: "data.cfg"
     test_destination_file: "test_destination_file"
 
-- set_fact:
+- name: Set a fact for 'sftp_root_dir'
+  ansible.builtin.set_fact:
     sftp_root_dir: "{% if major_version is version('9.2', 'ge') %}/bootflash{% else %}/{% endif %}"
 
 - name: Setup - Remove existing file

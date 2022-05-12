@@ -1,14 +1,14 @@
 ---
 - debug:
-    msg:
-      Start nxos_hsrp_interfaces replaced integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_hsrp_interfaces replaced integration tests connection={{ ansible_connection }}
 
-- set_fact:
+- name: Set a fact for 'test_int1' and 'test_int2'
+  ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- set_fact:
+- name: Set a fact for 'bfd_disable' and 'bfd_enable'
+  ansible.builtin.set_fact:
     bfd_enable: enable
     bfd_disable: disable
   when: platform is not search('N35')

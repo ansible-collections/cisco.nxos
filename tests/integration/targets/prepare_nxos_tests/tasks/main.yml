@@ -1,6 +1,6 @@
 ---
 - name: Set inventory vars here temporarily
-  set_fact:
+  ansible.builtin.set_fact:
     chassis_type: "C9300v"
     cli:
       transport: "cli"
@@ -20,7 +20,7 @@
     nxos_int3: "Ethernet1/3"
     platform: "N9K"
     prepare_nxos_tests_task: false
-    titanium: False
+    titanium: false
 
 - name: Run the prepare steps if requested
   ansible.builtin.include_tasks: prepare.yml

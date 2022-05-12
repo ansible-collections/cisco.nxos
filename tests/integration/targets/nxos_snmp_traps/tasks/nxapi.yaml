@@ -13,7 +13,8 @@
   connection: local
   register: nxapi_cases
 
-- set_fact:
+- name: Set a fact for 'test_cases'
+  ansible.builtin.set_fact:
     test_cases:
       files: "{{ test_cases.files + nxapi_cases.files }}"
 

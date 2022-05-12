@@ -1,14 +1,17 @@
 ---
-- ansible.builtin.set_fact:
+- name: Set a fact for 'snmp_type'
+  ansible.builtin.set_fact:
     snmp_type: trap
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'snmp_version'
+  ansible.builtin.set_fact:
     snmp_version: v1
 
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type }} {{ snmp_version }} sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname'
+  ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
   when: platform is not search('N5K|N6K')
 

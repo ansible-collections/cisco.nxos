@@ -41,9 +41,11 @@
     match: none
 
 # hit conditional()
-- ansible.builtin.set_fact:
+- name: Set a fact for 'testint1'
+  ansible.builtin.set_fact:
     testint1: "{{ nxos_int1 }}"
-- ansible.builtin.set_fact:
+- name: Set a fact for 'testint2'
+  ansible.builtin.set_fact:
     testint2: "{{ nxos_int2 }}"
 
 - name: "Setup: Put interfaces into a default state"

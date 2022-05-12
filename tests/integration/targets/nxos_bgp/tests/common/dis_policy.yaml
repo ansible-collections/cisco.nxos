@@ -6,10 +6,12 @@
     msg: This bgp_disable_policy is not supported on {{ image_version }}
   when: imagetag is search("A8|D1")
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'bgp_disable_policy'
+  ansible.builtin.set_fact:
     bgp_disable_policy: false
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'bgp_disable_policy'
+  ansible.builtin.set_fact:
     bgp_disable_policy: true
   when: imagetag is not search("A8|D1")
 

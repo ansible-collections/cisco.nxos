@@ -2,7 +2,8 @@
 - debug:
     msg: "Start nxos_interfaces replaced integration tests connection={{ ansible_connection }}"
 
-- set_fact:
+- name: Set a fact for 'test_int1' and 'test_int2'
+  ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
@@ -37,8 +38,7 @@
 
         - assert:
             that:
-              - ansible_facts.network_resources.interfaces|symmetric_difference(result.before)|length
-                == 0
+              - ansible_facts.network_resources.interfaces|symmetric_difference(result.before)|length == 0
               - result.changed == true
               - "'interface {{ test_int1 }}' in result.commands"
               - "'description Configured by Ansible' in result.commands"
@@ -49,8 +49,7 @@
 
         - assert:
             that:
-              - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length
-                == 0
+              - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length == 0
 
         - name: Idempotence - Replaced
           register: result
@@ -74,10 +73,10 @@
           cisco.nxos.nxos_interfaces:
             config:
               - name: "{{ test_int1 }}"
-                enabled: False
+                enabled: false
               - name: "{{ test_int2 }}"
                 description: TEST-INTF-2
-                enabled: True
+                enabled: true
             state: replaced
           register: result
 

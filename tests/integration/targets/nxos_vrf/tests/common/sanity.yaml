@@ -2,25 +2,31 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_vrf sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname1'
+  ansible.builtin.set_fact:
     intname1: "{{ nxos_int1 }}"
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname2'
+  ansible.builtin.set_fact:
     intname2: "{{ nxos_int2 }}"
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'rdnd'
+  ansible.builtin.set_fact:
     rdnd: "1:2"
   when: (platform is not match("N35|N7K")) and ((imagetag != 'I2'))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'rdd'
+  ansible.builtin.set_fact:
     rdd: default
   when: (platform is not match("N35|N7K")) and ((imagetag != 'I2'))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'vnind'
+  ansible.builtin.set_fact:
     vnind: "5000"
   when: platform is not match("N35|N7K|N3L")
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'vnid'
+  ansible.builtin.set_fact:
     vnid: default
   when: platform is not match("N35|N7K|N3L")
 

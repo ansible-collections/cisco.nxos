@@ -4,7 +4,8 @@
 
 - include_tasks: _remove_config.yaml
 
-- set_fact:
+- name: Set a fact for 'test_int1', 'test_int2', and 'test_int3'
+  ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
     test_int3: "{{ nxos_int3 }}"
@@ -39,7 +40,7 @@
         gather_network_resources: l3_interfaces
 
     - name: Store reserved interface IP config
-      set_fact:
+      ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         overriden_config:
           - name: "{{ test_int3 }}"

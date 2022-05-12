@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START nxos_file_copy negative test
 
-- set_fact:
+- name: Set a fact for 'test_destination_file' and 'test_source_file'
+  ansible.builtin.set_fact:
     test_source_file: "data.cfg"
     test_destination_file: "test_destination_file"
 

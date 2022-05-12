@@ -2,25 +2,30 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_bgp_neighbor sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname'
+  ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'log_neighbor_changese'
+  ansible.builtin.set_fact:
     log_neighbor_changese: enable
   when: (imagetag and imagetag is not search("D1|N1"))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'log_neighbor_changesd'
+  ansible.builtin.set_fact:
     log_neighbor_changesd: disable
   when: (imagetag and imagetag is not search("D1|N1"))
 
 - debug:
     var: titanium
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'remove_private_asa'
+  ansible.builtin.set_fact:
     remove_private_asa: all
   when: not titanium
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'remove_private_asr'
+  ansible.builtin.set_fact:
     remove_private_asr: replace-as
   when: not titanium
 

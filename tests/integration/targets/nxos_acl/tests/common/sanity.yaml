@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_acl sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'time_range'
+  ansible.builtin.set_fact:
     time_range: ans-range
   when: platform is not search('N35|N5K|N6K')
 

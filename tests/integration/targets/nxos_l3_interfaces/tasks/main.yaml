@@ -1,5 +1,6 @@
 ---
-- set_fact:
+- name: Set a fact for 'rsvd_intf'
+  ansible.builtin.set_fact:
     rsvd_intf: "{{ rsvd_intf|default('mgmt0') }}"
 
 - block:

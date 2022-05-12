@@ -52,7 +52,8 @@
     commands: show password strength-check
   register: pwd
 
-- set_fact:
+- name: Set a fact for 'pwdchck'
+  ansible.builtin.set_fact:
     pwdchck: "{{ True if pwd is search('enabled') else False }}"
 
 - name: Enable password check (if disabled by default) for failure test

@@ -45,7 +45,7 @@
           - l3_interfaces
 
     - name: Set reserved interface IP config and config to revert
-      set_fact:
+      ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         config_to_revert:
           - name: "{{ nxos_int1 }}"

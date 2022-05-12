@@ -5,7 +5,7 @@
   register: result
 
 - name: Set current hostname
-  set_fact:
+  ansible.builtin.set_fact:
     current_hostname: "{{ result['stdout'][0].split(' ')[1] }}"
 
 - block:

@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_ospf_vrf sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'def_met_default'
+  ansible.builtin.set_fact:
     def_met_default: default
   when: imagetag is not search("I7")
 

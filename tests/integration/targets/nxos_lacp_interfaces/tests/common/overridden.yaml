@@ -2,11 +2,10 @@
 - debug:
     msg: Start nxos_lacp_interfaces overridden integration tests connection={{ ansible_connection }}
 
-- set_fact:
+- name: Set a fact for 'mode'
+  ansible.builtin.set_fact:
     mode: delay
-  when:
-    platform is not search('N3K|N5K|N6K|N7K') and imagetag is not search('A8|I2')
-    and image_version is not search ('9.2') and chassis_type is not search('C95')
+  when: platform is not search('N3K|N5K|N6K|N7K') and imagetag is not search('A8|I2') and image_version is not search ('9.2') and chassis_type is not search('C95')
 
 - name: setup1
   cisco.nxos.nxos_config: &id003
@@ -52,8 +51,7 @@
 
     - assert:
         that:
-          - ansible_facts.network_resources.lacp_interfaces|symmetric_difference(result.before)|length
-            == 0
+          - ansible_facts.network_resources.lacp_interfaces|symmetric_difference(result.before)|length == 0
           - result.changed == true
           - "'interface port-channel10' in result.commands"
           - "'no lacp min-links' in result.commands"
@@ -72,8 +70,7 @@
 
     - assert:
         that:
-          - ansible_facts.network_resources.lacp_interfaces|symmetric_difference(result.after)|length
-            == 0
+          - ansible_facts.network_resources.lacp_interfaces|symmetric_difference(result.after)|length == 0
 
     - name: Idempotence - Overridden
       register: result

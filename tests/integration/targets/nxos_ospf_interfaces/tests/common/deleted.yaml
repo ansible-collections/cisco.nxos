@@ -8,7 +8,8 @@
 
 - include_tasks: _populate_config.yaml
 
-- set_fact:
+- name: Set a fact for 'int1', 'int2', and 'int3'
+  ansible.builtin.set_fact:
     int1:
       name: "{{ nxos_int1 }}"
     int2:
@@ -18,7 +19,7 @@
 
 - block:
     - name: Delete OSPF config from a single interface
-      cisco.nxos.nxos_ospf_interfaces: &id005
+      cisco.nxos.nxos_ospf_interfaces: &id001
         config:
           - name: "{{ nxos_int1 }}"
         state: deleted
@@ -52,7 +53,7 @@
 
     - name: Delete OSPF config from a single interface (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_ospf_interfaces: *id005
+      cisco.nxos.nxos_ospf_interfaces: *id001
 
     - name: Assert that task was idempotent
       assert:
@@ -63,7 +64,7 @@
     - include_tasks: _populate_config.yaml
 
     - name: Delete OSPF config from all interfaces
-      cisco.nxos.nxos_ospf_interfaces: &id007
+      cisco.nxos.nxos_ospf_interfaces: &id002
         state: deleted
       register: result
 
@@ -88,7 +89,7 @@
 
     - name: Delete OSPF config from all interfaces (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_ospf_interfaces: *id007
+      cisco.nxos.nxos_ospf_interfaces: *id002
 
     - name: Assert that task was idempotent
       assert:

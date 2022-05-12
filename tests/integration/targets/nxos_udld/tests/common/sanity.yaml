@@ -2,14 +2,17 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_udld sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'udld_run'
+  ansible.builtin.set_fact:
     udld_run: true
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'udld_run'
+  ansible.builtin.set_fact:
     udld_run: false
   when: ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3', 'lt'))))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'udld_run'
+  ansible.builtin.set_fact:
     udld_run: false
   when: titanium
 

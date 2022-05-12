@@ -2,11 +2,13 @@
 - debug:
     msg: "Start nxos_interfaces deleted integration tests connection={{ ansible_connection }}"
 
-- set_fact:
+- name: Set a fact for 'test_int1' and 'test_int2'
+  ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'test_shutdown'
+  ansible.builtin.set_fact:
     test_shutdown: "{{ platform is search('N3[5KL]|N[56]K|titanium') }}"
 
 - name: "setup0: clean up (interfaces) attributes on all interfaces"
