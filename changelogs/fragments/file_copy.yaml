@@ -1,0 +1,3 @@
+---
+trivial:
+  - Fix file copy test validation message.
