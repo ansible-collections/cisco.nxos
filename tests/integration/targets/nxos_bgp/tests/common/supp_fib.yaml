@@ -2,14 +2,18 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_bgp parameter test
 
-- set_fact: bgp_best_path_limit="false"
+- ansible.builtin.set_fact:
+    bgp_best_path_limit: false
 
-- set_fact: bgp_best_path_limit="true"
+- ansible.builtin.set_fact:
+    bgp_best_path_limit: true
   when: imagetag is not search("I2")
 
-- set_fact: bgp_suppress_fib_supported="false"
+- ansible.builtin.set_fact:
+    bgp_suppress_fib_supported: false
 
-- set_fact: bgp_suppress_fib_supported="true"
+- ansible.builtin.set_fact:
+    bgp_suppress_fib_supported: true
   when: imagetag is not search("A8|D1|I2|I4")
 
 - name: Disable feature BGP

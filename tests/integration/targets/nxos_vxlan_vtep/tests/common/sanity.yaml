@@ -3,9 +3,11 @@
     msg: START connection={{ ansible_connection }} nxos_vxlan_vtep sanity test
 
 - block:
-    - set_fact: global_mcast_group_L2="225.1.1.2"
+    - ansible.builtin.set_fact:
+        global_mcast_group_L2: 225.1.1.2
 
-    - set_fact: def_global_mcast_group_L2="default"
+    - ansible.builtin.set_fact:
+        def_global_mcast_group_L2: default
 
     - block:
         - set_fact: global_mcast_group_L3="225.1.1.1"

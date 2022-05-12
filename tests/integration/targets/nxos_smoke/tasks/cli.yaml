@@ -18,7 +18,8 @@
       files: "{{ test_cases.files + cli_cases.files }}"
 
 - name: set test_items
-  set_fact: test_items="{{ test_cases.files | map(attribute='path') | list }}"
+  ansible.builtin.set_fact:
+    test_items: "{{ test_cases.files | map(attribute='path') | list }}"
 
 - set_fact:
     cli:

@@ -1,7 +1,9 @@
 ---
-- set_fact: testint1="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    testint1: "{{ nxos_int1 }}"
 
-- set_fact: testint2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact:
+    testint2: "{{ nxos_int2 }}"
 
 - name: setup - remove vlan used in test
   ignore_errors: true

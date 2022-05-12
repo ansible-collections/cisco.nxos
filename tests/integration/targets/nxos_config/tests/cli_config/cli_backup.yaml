@@ -2,9 +2,11 @@
 - ansible.builtin.debug:
     msg: END cli_config/backup.yaml on connection={{ ansible_connection }}
 
-- set_fact: can_become="true"
+- ansible.builtin.set_fact:
+    can_become: true
 
-- set_fact: can_become="false"
+- ansible.builtin.set_fact:
+    can_become: false
   when: platform is search('N9K') and (major_version is version('10.', 'ge'))
 
 - name: delete configurable backup file path

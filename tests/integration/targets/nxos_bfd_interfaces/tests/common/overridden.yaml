@@ -1,12 +1,12 @@
 ---
 - debug:
-    msg:
-      Start nxos_bfd_interfaces overridden integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_bfd_interfaces overridden integration tests connection={{ ansible_connection }}
 
-- set_fact: test_int1="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
 
-- set_fact: test_int2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact:
+    test_int2: "{{ nxos_int2 }}"
 
 - set_fact:
     bfd_enable: enable

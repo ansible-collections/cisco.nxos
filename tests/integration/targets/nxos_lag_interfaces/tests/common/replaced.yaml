@@ -1,12 +1,12 @@
 ---
 - debug:
-    msg:
-      Start nxos_lag_interfaces replaced integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_lag_interfaces replaced integration tests connection={{ ansible_connection }}
 
-- set_fact: test_int1="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
 
-- set_fact: test_int2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact:
+    test_int2: "{{ nxos_int2 }}"
 
 - name: enable feature lacp
   cisco.nxos.nxos_feature:
@@ -55,16 +55,14 @@
 
     - assert:
         that:
-          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length
-            == 0
+          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length == 0
 
     - name: Gather LAG interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
     - assert:
         that:
-          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.after)|length
-            == 0
+          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.after)|length == 0
 
     - name: Idempotence - Replaced
       register: result

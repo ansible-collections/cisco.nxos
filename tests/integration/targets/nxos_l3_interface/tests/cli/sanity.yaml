@@ -2,13 +2,17 @@
 - ansible.builtin.debug:
     msg: START TRANSPORT:CLI nxos_l3_interface sanity test
 
-- set_fact: testint2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact:
+    testint2: "{{ nxos_int2 }}"
 
-- set_fact: testint3="{{ nxos_int3 }}"
+- ansible.builtin.set_fact:
+    testint3: "{{ nxos_int3 }}"
 
-- set_fact: ipv6_address=""
+- ansible.builtin.set_fact:
+    ipv6_address: ""
 
-- set_fact: ipv6_address="33:db::2/8"
+- ansible.builtin.set_fact:
+    ipv6_address: 33:db::2/8
   when: ipv6_supported
 
 - name: Setup - remove address from interface prior to testing(Part1)

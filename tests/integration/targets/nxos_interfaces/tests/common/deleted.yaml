@@ -6,8 +6,8 @@
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- set_fact: test_shutdown
-  when: platform is not search('N3[5KL]|N[56]K|titanium')
+- ansible.builtin.set_fact:
+    test_shutdown: "{{ platform is search('N3[5KL]|N[56]K|titanium') }}"
 
 - name: "setup0: clean up (interfaces) attributes on all interfaces"
   cisco.nxos.nxos_interfaces:
@@ -48,7 +48,7 @@
         that:
           - result.after|length == 0
           - "'shutdown' in result.commands"
-      when: test_shutdown is defined
+      when: test_shutdown
 
     - name: Idempotence - deleted
       register: result
@@ -58,7 +58,7 @@
         that:
           - result.changed == false
           - result.commands|length == 0
-      when: test_shutdown is defined
+      when: test_shutdown
   always:
     - name: teardown
       cisco.nxos.nxos_config: *id002

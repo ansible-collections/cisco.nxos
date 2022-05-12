@@ -1,11 +1,10 @@
 ---
 - debug:
-    msg:
-      Start nxos_lldp_global deleted integration tests connection = {{ ansible_connection
-      }}
+    msg: Start nxos_lldp_global deleted integration tests connection = {{ ansible_connection }}
 
 - block:
-    - set_fact: cfg_port_id=True
+    - ansible.builtin.set_fact:
+        cfg_port_id: true
       when: platform is not search('N[567]K') and imagetag is not search("I[2345]")
 
     - name: feature off to cleanup lldp

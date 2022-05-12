@@ -3,17 +3,23 @@
     msg: START connection={{ ansible_connection }} nxos_os_install upgrade
   when: connection is defined
 
-- set_fact: image_dir='/auto/fe_ssr/agents-ci/agents_images/release_images/greensboro/REL_7_0_3_I7_4/'
+- ansible.builtin.set_fact:
+    image_dir: /auto/fe_ssr/agents-ci/agents_images/release_images/greensboro/REL_7_0_3_I7_4/
 
-- set_fact: checkmode='no'
+- ansible.builtin.set_fact:
+    checkmode: false
 
-- set_fact: issu='desired'
+- ansible.builtin.set_fact:
+    issu: desired
 
-- set_fact: copy_images=True
+- ansible.builtin.set_fact:
+    copy_images: true
 
-- set_fact: force=False
+- ansible.builtin.set_fact:
+    force: false
 
-- set_fact: delete_files=True
+- ansible.builtin.set_fact:
+    delete_files: true
 
 - set_fact:
     delete_image_list:
@@ -29,7 +35,8 @@
       - no nxapi ssl ciphers weak
     match: none
 
-- set_fact: si='nxos.7.0.3.I7.4.bin'
+- ansible.builtin.set_fact:
+    si: nxos.7.0.3.I7.4.bin
 
 - name: Upgrade N9k Device to Greensboro Release Image
   include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

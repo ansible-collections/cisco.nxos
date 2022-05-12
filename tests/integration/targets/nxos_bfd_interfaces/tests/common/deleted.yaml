@@ -1,10 +1,9 @@
 ---
 - debug:
-    msg:
-      Start nxos_bfd_interfaces deleted integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_bfd_interfaces deleted integration tests connection={{ ansible_connection }}
 
-- set_fact: test_int1="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
 
 - set_fact:
     bfd_enable: enable

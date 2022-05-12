@@ -2,17 +2,22 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_snapshot sanity test
 
-- set_fact: snapshot_run="true"
+- ansible.builtin.set_fact:
+    snapshot_run: true
 
-- set_fact: snapshot_run="false"
+- ansible.builtin.set_fact:
+    snapshot_run: false
   when: titanium and (ansible_connection is match('nxapi'))
 
-- set_fact: snapshot_run="false"
+- ansible.builtin.set_fact:
+    snapshot_run: false
   when: platform is match('N35')
 
-- set_fact: add_sec="true"
+- ansible.builtin.set_fact:
+    add_sec: true
 
-- set_fact: add_sec="false"
+- ansible.builtin.set_fact:
+    add_sec: false
   when: imagetag is search("D1")
 
 - block:

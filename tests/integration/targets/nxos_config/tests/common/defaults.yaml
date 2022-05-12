@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START common/defaults.yaml on connection={{ ansible_connection }}
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    intname: "{{ nxos_int1 }}"
 
 - name: setup
   cisco.nxos.nxos_config:

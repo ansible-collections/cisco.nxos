@@ -2,9 +2,11 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_vtp_domain sanity test
 
-- set_fact: vtp_run="true"
+- ansible.builtin.set_fact:
+    vtp_run: true
 
-- set_fact: vtp_run="false"
+- ansible.builtin.set_fact:
+    vtp_run: false
   when: platform is search('N3K-F|N9K-F')
 
 - block:

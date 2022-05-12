@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_static_route sanity test
 
-- set_fact: test_track_feature="true"
+- ansible.builtin.set_fact:
+    test_track_feature: true
 
 - name: configure track
   register: cmd_result
@@ -14,7 +15,8 @@
 - ansible.builtin.debug:
     msg: cmd result {{ cmd_result }}
 
-- set_fact: test_track_feature="false"
+- ansible.builtin.set_fact:
+    test_track_feature: false
   when: cmd_result.failed
 
 - ansible.builtin.debug:

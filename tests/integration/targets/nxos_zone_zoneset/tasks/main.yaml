@@ -5,10 +5,12 @@
     commands: show version | grep MDS
 
 - name: Set skip_test flag to false
-  set_fact: skip_test=False
+  ansible.builtin.set_fact:
+    skip_test: false
 
 - name: Set skip_test flag to true if not MDS
-  set_fact: skip_test=True
+  ansible.builtin.set_fact:
+    skip_test: true
   when: result.stdout[0] is not search('MDS')
 
 - name: Include the CLI tasks

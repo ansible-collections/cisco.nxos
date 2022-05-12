@@ -6,7 +6,8 @@
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- set_fact: enabled=true
+- ansible.builtin.set_fact:
+    enabled: true
   when: platform is not search('N3[5KL]|N[56]K|titanium')
 
 - block:
@@ -45,8 +46,7 @@
 
     - assert:
         that:
-          - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length
-            == 0
+          - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length == 0
 
     - name: Idempotence - Merged
       register: result
@@ -69,7 +69,7 @@
       cisco.nxos.nxos_interfaces:
         config:
           - name: "{{ test_int2 }}"
-            enabled: False
+            enabled: false
             mode: layer2
             description: Test
         state: merged

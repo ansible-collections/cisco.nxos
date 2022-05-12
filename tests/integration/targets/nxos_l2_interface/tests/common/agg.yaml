@@ -2,9 +2,11 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_l2_interface aggregate test
 
-- set_fact: intname1="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    intname1: "{{ nxos_int1 }}"
 
-- set_fact: intname2="{{ nxos_int2 }}"
+- ansible.builtin.set_fact:
+    intname2: "{{ nxos_int2 }}"
 
 - name: Setup vlans
   cisco.nxos.nxos_vlan:

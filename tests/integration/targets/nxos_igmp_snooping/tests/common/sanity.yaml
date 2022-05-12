@@ -5,14 +5,18 @@
 - meta: end_host
   when: platform is search('N6K')
 
-- set_fact: gt_run="false"
+- ansible.builtin.set_fact:
+    gt_run: false
 
 - block:
-    - set_fact: gt_run="true"
+    - ansible.builtin.set_fact:
+        gt_run: true
 
-    - set_fact: group_timeout="never"
+    - ansible.builtin.set_fact:
+        group_timeout: never
 
-    - set_fact: def_group_timeout="default"
+    - ansible.builtin.set_fact:
+        def_group_timeout: default
   when: platform is not search('N35|N5K|N6K')
 
 - name: Setup

@@ -1,19 +1,25 @@
 ---
-- set_fact: snmp_type="inform"
+- ansible.builtin.set_fact:
+    snmp_type: inform
 
-- set_fact: snmp_version="v3"
+- ansible.builtin.set_fact:
+    snmp_version: v3
 
-- set_fact: snmp_auth="priv"
+- ansible.builtin.set_fact:
+    snmp_auth: priv
 
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type }} {{ snmp_version }} sanity test
 
-- set_fact: intname="{{ nxos_int1 }}"
+- ansible.builtin.set_fact:
+    intname: "{{ nxos_int1 }}"
   when: platform is not search('N5K|N6K')
 
-- set_fact: run="true"
+- ansible.builtin.set_fact:
+    run: true
 
-- set_fact: run="false"
+- ansible.builtin.set_fact:
+    run: false
   when: platform is match('N35')
 
 - name: Setup - Remove snmp_host if configured
