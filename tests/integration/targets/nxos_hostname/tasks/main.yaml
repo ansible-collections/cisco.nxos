@@ -2,7 +2,7 @@
 - name: Fetch current hostname
   cisco.nxos.nxos_command:
     commands: show running-config | section ^hostname
-  register: result
+  register: hname_result
 
 - name: Set current hostname (default)
   set_fact:
@@ -11,7 +11,7 @@
 - name: Set current hostname
   ansible.builtin.set_fact:
     current_hostname: "{{ result['stdout'][0].split(' ')[1] }}"
-  when: result.stdout[0] != ""
+  when: hname_result.stdout[0] != ""
 
 - block:
     - name: Include the CLI tasks
@@ -28,3 +28,9 @@
       cisco.nxos.nxos_config:
         lines: "hostname {{ current_hostname }}"
         match: none
+      when: hname_result.stdout[0] != ""
+
+    - name: Reset hostname (default)
+      cisco.nxos.nxos_config:
+        lines: "no hostname"
+      when: hname_result.stdout[0] == ""
