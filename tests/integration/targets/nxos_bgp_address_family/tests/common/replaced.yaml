@@ -24,8 +24,8 @@
                   non_critical_delay: 180
               aggregate_address:
                 - prefix: 203.0.113.0/24
-                  as_set: True
-                  summary_only: True
+                  as_set: true
+                  summary_only: true
             - afi: ipv4
               safi: unicast
               vrf: site-1
@@ -35,25 +35,20 @@
     - name: Assert that before dicts were correctly generated
       assert:
         that:
-          - "{{ merged['after']['address_family'] | symmetric_difference(result['before']['address_family']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['address_family'] | symmetric_difference(result['before']['address_family']) |length == 0 }}"
 
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
-            \ |length == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-          - "{{ replaced['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length\
-            \ == 0 }}"
+          - "{{ replaced['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length == 0 }}"
           - replaced['after']['as_number'] == result['after']['as_number']
 
-    - name:
-        Replace device configurations of listed OSPF processes with provided configurarions
-        (IDEMPOTENT)
+    - name: Replace device configurations of listed OSPF processes with provided configurarions (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_bgp_address_family: *replaced
 

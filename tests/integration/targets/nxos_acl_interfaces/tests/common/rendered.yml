@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start nxos_acl_interfaces rendered tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_acl_interfaces rendered tests connection={{ ansible_connection }}
 
 - name: Rendered
   register: result

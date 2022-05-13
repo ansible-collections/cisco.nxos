@@ -11,5 +11,5 @@
       - "no ip route 192.0.2.36/30 192.0.2.48 name test_route2 2"
       - "no vrf context trial_vrf"
       - "default interface {{ nxos_int2 }}"
-  ignore_errors: yes
+  ignore_errors: true
   #error is thrown if we deleted trial_vrf when it is not present already. ignore_errors circumvents it

@@ -8,7 +8,7 @@
 
 - block:
     - name: Delete all BGP config from the device
-      cisco.nxos.nxos_bgp_global: &id003
+      cisco.nxos.nxos_bgp_global: &id001
         state: purged
       register: result
 
@@ -30,7 +30,7 @@
 
     - name: Delete all BGP config from the device (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_bgp_global: *id003
+      cisco.nxos.nxos_bgp_global: *id001
 
     - name: Assert that task was idempotent
       assert:

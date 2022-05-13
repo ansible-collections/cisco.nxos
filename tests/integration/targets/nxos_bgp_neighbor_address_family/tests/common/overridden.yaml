@@ -23,34 +23,29 @@
                   address_family:
                     - afi: ipv4
                       safi: unicast
-                      suppress_inactive: True
+                      suppress_inactive: true
                       next_hop_self:
-                        set: True
+                        set: true
         state: overridden
       register: result
 
     - name: Assert that before dicts were correctly generated
       assert:
         that:
-          - "{{ merged['after']['neighbors'] | symmetric_difference(result['before']['neighbors']) |length\
-            \ == 0 }}"
-          - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['neighbors'] | symmetric_difference(result['before']['neighbors']) |length == 0 }}"
+          - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) |length == 0 }}"
           - merged['after']['as_number'] == result['before']['as_number']
 
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-          - "{{ overridden['after']['neighbors'] | symmetric_difference(result['after']['neighbors']) |length\
-            \ == 0 }}"
-          - "{{ overridden['after']['vrfs'] | symmetric_difference(result['after']['vrfs']) |length\
-            \ == 0 }}"
+          - "{{ overridden['after']['neighbors'] | symmetric_difference(result['after']['neighbors']) |length == 0 }}"
+          - "{{ overridden['after']['vrfs'] | symmetric_difference(result['after']['vrfs']) |length == 0 }}"
           - overridden['after']['as_number'] == result['after']['as_number']
 
     - name: Override all BGP AF configuration with provided configuration (IDEMPOTENT)

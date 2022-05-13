@@ -19,8 +19,8 @@
                   route_map: rmap1
               aggregate_address:
                 - prefix: 203.0.113.0/24
-                  as_set: True
-                  summary_only: True
+                  as_set: true
+                  summary_only: true
             - afi: ipv4
               safi: unicast
               vrf: site-1
@@ -30,25 +30,20 @@
     - name: Assert that before dicts were correctly generated
       assert:
         that:
-          - "{{ merged['after']['address_family'] | symmetric_difference(result['before']['address_family']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['address_family'] | symmetric_difference(result['before']['address_family']) |length == 0 }}"
 
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
-            \ |length == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-          - "{{ overridden['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length\
-            \ == 0 }}"
+          - "{{ overridden['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length == 0 }}"
           - overridden['after']['as_number'] == result['after']['as_number']
 
-    - name:
-        Replace device configurations of listed OSPF processes with provided configurarions
-        (IDEMPOTENT)
+    - name: Replace device configurations of listed OSPF processes with provided configurarions (IDEMPOTENT)
       register: result
       cisco.nxos.nxos_bgp_address_family: *overridden
 

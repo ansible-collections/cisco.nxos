@@ -1,3 +1,4 @@
+---
 - name: Remove existing logging configuration
   cisco.nxos.nxos_ntp_global:
     state: deleted

@@ -8,7 +8,7 @@
 
 - block:
     - name: Override all route-maps configuration with provided configuration
-      cisco.nxos.nxos_route_maps: &id003
+      cisco.nxos.nxos_route_maps: &id001
         config:
           - route_map: rmap1
             entries:
@@ -26,7 +26,7 @@
                         - AllowPrefix1
                 set:
                   community:
-                    local_as: True
+                    local_as: true
         state: overridden
       register: result
 
@@ -39,8 +39,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
@@ -49,7 +48,7 @@
 
     - name: Override all route-maps configuration with provided configuration (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_route_maps: *id003
+      cisco.nxos.nxos_route_maps: *id001
 
     - name: Assert that task was idempotent
       assert:

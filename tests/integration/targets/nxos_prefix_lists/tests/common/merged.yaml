@@ -49,8 +49,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
@@ -58,9 +57,7 @@
           - "{{ merged['after'][0] == result['after'][0] }}"
           - "{{ merged['after'][1] == result['after'][1] }}"
 
-    - name:
-        Merge the provided configuration with the existing running configuration
-        (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
       cisco.nxos.nxos_prefix_lists: *id001
       register: result
 
@@ -82,7 +79,7 @@
                     action: permit
                     prefix: 198.51.100.128/26
       register: result
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:

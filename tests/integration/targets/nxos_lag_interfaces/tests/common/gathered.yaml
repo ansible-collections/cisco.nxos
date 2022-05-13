@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START nxos_lag_interfaces gathered integration tests on connection={{ ansible_connection
-      }}
+    msg: START nxos_lag_interfaces gathered integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -15,12 +13,9 @@
         state: gathered
 
     - assert:
-        that: "{{ result['gathered'] | symmetric_difference(gathered)\
-          \ |length == 0 }}"
+        that: "{{ result['gathered'] | symmetric_difference(gathered) |length == 0 }}"
   always:
     - include_tasks: _remove_config.yaml
 
     - debug:
-        msg:
-          END nxos_lag_interfaces gathered integration tests on connection={{ ansible_connection
-          }}
+        msg: END nxos_lag_interfaces gathered integration tests on connection={{ ansible_connection }}

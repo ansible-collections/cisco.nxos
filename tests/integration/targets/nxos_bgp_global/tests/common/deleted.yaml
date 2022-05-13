@@ -8,7 +8,7 @@
 
 - block:
     - name: Delete BGP configs handled by this module
-      cisco.nxos.nxos_bgp_global: &id003
+      cisco.nxos.nxos_bgp_global: &id001
         state: deleted
       register: result
 
@@ -23,8 +23,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ result['commands'] | symmetric_difference(deleted['commands']) |length\
-            \ == 0 }}"
+          - "{{ result['commands'] | symmetric_difference(deleted['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
@@ -33,7 +32,7 @@
 
     - name: Delete BGP configs handled by this module (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_bgp_global: *id003
+      cisco.nxos.nxos_bgp_global: *id001
 
     - name: Assert that task was idempotent
       assert:

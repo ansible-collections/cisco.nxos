@@ -8,7 +8,7 @@
 
 - block:
     - name: Replace prefix-lists configurations of listed prefix-lists with provided configurations
-      cisco.nxos.nxos_prefix_lists: &id002
+      cisco.nxos.nxos_prefix_lists: &id001
         config:
           - afi: ipv4
             prefix_lists:
@@ -36,8 +36,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
@@ -45,11 +44,9 @@
           - "{{ replaced['after'][0] == result['after'][0] }}"
           - "{{ replaced['after'][1] == result['after'][1] }}"
 
-    - name:
-        Replace prefix-lists configurations of listed prefix-lists with provided configurations
-        (IDEMPOTENT)
+    - name: Replace prefix-lists configurations of listed prefix-lists with provided configurations (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_prefix_lists: *id002
+      cisco.nxos.nxos_prefix_lists: *id001
 
     - name: Assert that task was idempotent
       assert:

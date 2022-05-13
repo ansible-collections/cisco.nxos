@@ -63,15 +63,14 @@
     - include_tasks: _populate_config.yaml
 
     - name: Delete all prefix-lists
-      cisco.nxos.nxos_prefix_lists: &id006
+      cisco.nxos.nxos_prefix_lists: &id001
         state: deleted
       register: result
 
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
@@ -80,7 +79,7 @@
 
     - name: Delete all prefix-lists (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_prefix_lists: *id006
+      cisco.nxos.nxos_prefix_lists: *id001
 
     - name: Assert that task was idempotent
       assert:

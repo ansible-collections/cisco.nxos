@@ -40,8 +40,7 @@
           - "'40 remark Replaced ACE' in result.commands"
           - "'ipv6 access-list ACL2v6' in result.commands"
           - "'no 10 deny ipv6 any host 2001:db8:3000::36' in result.commands"
-          - "'no 20 permit tcp host 2001:db8:2000:2::2 host 2001:db8:2000:ab::2'\
-            \ in result.commands"
+          - "'no 20 permit tcp host 2001:db8:2000:2::2 host 2001:db8:2000:ab::2' in result.commands"
           - result.commands|length == 10
 
     - name: Gather static_routes post facts

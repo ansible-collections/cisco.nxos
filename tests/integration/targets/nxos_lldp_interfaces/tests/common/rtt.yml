@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start nxos_lldp_interfaces round trip integration tests on connection={{
-      ansible_connection }}
+    msg: Start nxos_lldp_interfaces round trip integration tests on connection={{ ansible_connection }}
 
 - name: Enable lldp
   cisco.nxos.nxos_feature:
@@ -63,9 +61,7 @@
 
     - name: Assert that config was reverted
       assert:
-        that:
-          "{{ base_config['after'] | symmetric_difference(revert['after']) |length\
-          \ == 0 }}"
+        that: "{{ base_config['after'] | symmetric_difference(revert['after']) |length == 0 }}"
   always:
     - name: teardown
       cisco.nxos.nxos_feature:

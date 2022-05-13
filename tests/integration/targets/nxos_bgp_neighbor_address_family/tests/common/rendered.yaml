@@ -34,9 +34,9 @@
               address_family:
                 - afi: ipv4
                   safi: unicast
-                  suppress_inactive: True
+                  suppress_inactive: true
                   next_hop_self:
-                    set: True
+                    set: true
             - neighbor_address: 203.0.113.2
               address_family:
                 - afi: ipv6
@@ -44,15 +44,14 @@
                 - afi: ipv4
                   safi: multicast
                   send_community:
-                    set: True
+                    set: true
     state: rendered
   register: result
 
 - name: Assert that correct set of commands were rendered
   assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
-        \ == 0 }}"
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
 
 - name: Gather BGP facts
   cisco.nxos.nxos_bgp_neighbor_address_family:

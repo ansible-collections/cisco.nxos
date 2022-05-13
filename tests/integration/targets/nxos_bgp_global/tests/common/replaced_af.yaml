@@ -6,7 +6,7 @@
   cisco.nxos.nxos_config: &remove
     lines:
       - no router bgp 65536
-  ignore_errors: True
+  ignore_errors: true
 
 - name: "Setup - 1 (Add neighbor with AF config)"
   cisco.nxos.nxos_config:
@@ -32,13 +32,13 @@
           as_number: 65536
           router_id: 198.51.100.2
           maxas_limit: 20
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           neighbors:
             - neighbor_address: 192.0.2.1
               remote_as: 65537
         state: replaced
       register: result
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Assert that the task failed
       assert:
@@ -48,7 +48,7 @@
 
     - name: Remove pre-existing BGP configurations
       cisco.nxos.nxos_config: *remove
-      ignore_errors: True
+      ignore_errors: true
 
     - name: "Setup - 2 (Add neighbor with AF config under a VRF)"
       cisco.nxos.nxos_config:
@@ -75,17 +75,17 @@
           as_number: 65536
           router_id: 198.51.100.2
           maxas_limit: 20
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           neighbors:
             - neighbor_address: 192.0.2.1
               remote_as: 65537
           vrfs:
             - vrf: site-1
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
         state: replaced
       register: result
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Assert that the task failed
       assert:
@@ -95,7 +95,7 @@
 
     - name: Remove pre-existing BGP configurations
       cisco.nxos.nxos_config: *remove
-      ignore_errors: True
+      ignore_errors: true
 
     - name: "Setup - 3 (Add a VRF with AF config)"
       cisco.nxos.nxos_config:
@@ -123,17 +123,17 @@
           as_number: 65536
           router_id: 198.51.100.2
           maxas_limit: 20
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           neighbors:
             - neighbor_address: 192.0.2.1
               remote_as: 65537
           vrfs:
             - vrf: site-2
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
         state: replaced
       register: result
-      ignore_errors: True
+      ignore_errors: true
 
     - name: Assert that the task failed
       assert:

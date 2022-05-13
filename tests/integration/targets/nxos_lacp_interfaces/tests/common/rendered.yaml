@@ -20,12 +20,11 @@
               max: 15
               min: 2
             convergence:
-              graceful: True
+              graceful: true
         state: rendered
 
     - assert:
-        that: "{{ rendered | symmetric_difference(result['rendered'])\
-          \ |length==0 }}"
+        that: "{{ rendered | symmetric_difference(result['rendered']) |length==0 }}"
 
     - name: Gather lacp_interfaces facts from the device and assert that its empty
       register: result

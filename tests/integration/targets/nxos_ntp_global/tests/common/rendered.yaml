@@ -3,15 +3,15 @@
     msg: START nxos_ntp_global rendered integration tests on connection={{ ansible_connection }}
 
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
-  cisco.nxos.nxos_ntp_global: &id001
+  cisco.nxos.nxos_ntp_global:
     config:
       access_group:
         peer:
           - access_list: PeerAcl1
         serve:
           - access_list: ServeAcl1
-      authenticate: True
-      logging: True
+      authenticate: true
+      logging: true
       master:
         stratum: 2
       peers:
@@ -22,7 +22,7 @@
           vrf: default
         - peer: 192.0.2.2
           key_id: 2
-          prefer: True
+          prefer: true
           vrf: siteA
       servers:
         - server: 198.51.100.1
@@ -37,6 +37,5 @@
 - name: Assert that correct set of commands were rendered
   assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
-        \ == 0 }}"
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
       - result.changed == False

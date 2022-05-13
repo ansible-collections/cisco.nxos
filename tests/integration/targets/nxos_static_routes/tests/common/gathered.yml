@@ -6,7 +6,7 @@
 
 - block:
     - name: Gather static_routes facts
-      cisco.nxos.nxos_facts: &facts
+      cisco.nxos.nxos_facts:
         gather_subset:
           - "!all"
           - "!min"

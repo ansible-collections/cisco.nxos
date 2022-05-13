@@ -25,7 +25,7 @@
                         direction: out
                     ranges:
                       - prefix: 2001:db2::/32
-                        not_advertise: True
+                        not_advertise: true
                       - prefix: 2001:db3::/32
                         cost: 120
                 redistribute:
@@ -40,14 +40,14 @@
                   areas:
                     - area_id: 0.0.0.102
                       nssa:
-                        default_information_originate: True
-                        no_summary: True
+                        default_information_originate: true
+                        no_summary: true
                     - area_id: 0.0.0.103
                       nssa:
-                        no_summary: True
+                        no_summary: true
                         translate:
                           type7:
-                            always: True
+                            always: true
                 - vrf: zone2
                   auto_cost:
                     reference_bandwidth: 45
@@ -62,18 +62,14 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-          - "{{ merged['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
 
-    - name:
-        Merge the provided configuration with the existing running configuration
-        (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
       cisco.nxos.nxos_ospfv3: *id001
       register: result
 

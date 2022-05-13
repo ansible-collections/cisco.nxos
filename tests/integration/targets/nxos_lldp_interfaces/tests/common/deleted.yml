@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start nxos_lldp_interfaces deleted integration tests connection = {{ ansible_connection
-      }}
+    msg: Start nxos_lldp_interfaces deleted integration tests connection = {{ ansible_connection }}
 
 - name: Enable LLDP feature
   cisco.nxos.nxos_feature:

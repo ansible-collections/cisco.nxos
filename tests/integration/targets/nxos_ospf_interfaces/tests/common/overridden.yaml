@@ -10,7 +10,7 @@
 
 - block:
     - name: Override all OSPF interfaces configuration with provided configuration
-      cisco.nxos.nxos_ospf_interfaces: &id003
+      cisco.nxos.nxos_ospf_interfaces: &id001
         config:
           - name: Ethernet1/1
             address_family:
@@ -19,7 +19,7 @@
                   - process_id: "100"
                     area:
                       area_id: 1.1.1.1
-                      secondaries: False
+                      secondaries: false
                 multi_areas:
                   - 11.11.11.12
         state: overridden
@@ -35,8 +35,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
-            \ |length == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
@@ -45,11 +44,9 @@
           - result['after'][1]  == overridden['after'][1]
           - result['after'][2]  == overridden['after'][2]
 
-    - name:
-        Override all OSPF interfaces configuration with provided configuration
-        (IDEMPOTENT)
+    - name: Override all OSPF interfaces configuration with provided configuration (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_ospf_interfaces: *id003
+      cisco.nxos.nxos_ospf_interfaces: *id001
 
     - name: Assert that task was idempotent
       assert:
