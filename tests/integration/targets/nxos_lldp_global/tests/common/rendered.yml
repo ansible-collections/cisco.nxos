@@ -13,22 +13,19 @@
           port_id: 1
           reinit: 5
           tlv_select:
-            dcbxp: yes
-            power_management: yes
+            dcbxp: true
+            power_management: true
         state: rendered
 
     - assert:
-        that: "{{ rendered | symmetric_difference(result['rendered'])\
-          \ |length==0 }}"
+        that: "{{ rendered | symmetric_difference(result['rendered']) |length==0 }}"
 
     - name: Gather lldp_global facts from the device and assert that its empty
       register: result
       cisco.nxos.nxos_lldp_global:
         state: gathered
 
-    - name:
-        Make sure that rendered task actually did not make any changes to the
-        device
+    - name: Make sure that rendered task actually did not make any changes to the device
       assert:
         that: "{{ result['gathered'] == {} }}"
   always:

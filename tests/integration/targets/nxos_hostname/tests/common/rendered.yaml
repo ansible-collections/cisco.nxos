@@ -3,7 +3,7 @@
     msg: START nxos_hostname rendered integration tests on connection={{ ansible_connection }}
 
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
-  cisco.nxos.nxos_hostname: &id001
+  cisco.nxos.nxos_hostname:
     config:
       hostname: NXOSv-9k
     state: rendered

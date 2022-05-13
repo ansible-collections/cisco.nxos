@@ -97,7 +97,7 @@
                     sequence: 20
                     precedence: 5
         state: merged
-      ignore_errors: True
+      ignore_errors: true
 
     - assert:
         that:

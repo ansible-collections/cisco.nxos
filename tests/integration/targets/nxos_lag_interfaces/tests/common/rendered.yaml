@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      START nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
-      }}
+    msg: START nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection }}
 
 - include_tasks: _remove_config.yaml
 
@@ -24,8 +22,7 @@
         state: rendered
 
     - assert:
-        that: "{{ rendered | symmetric_difference(result['rendered'])\
-          \ |length==0 }}"
+        that: "{{ rendered | symmetric_difference(result['rendered']) |length==0 }}"
 
     - name: Gather l2_interfaces facts from the device and assert that its empty
       register: result
@@ -39,6 +36,4 @@
     - include_tasks: _remove_config.yaml
 
 - debug:
-    msg:
-      END nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection
-      }}
+    msg: END nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection }}

@@ -8,7 +8,7 @@
 
 - block:
     - name: Delete single route-map
-      cisco.nxos.nxos_route_maps: &id005
+      cisco.nxos.nxos_route_maps:
         config:
           - route_map: rmap1
         state: deleted
@@ -38,15 +38,14 @@
     - include_tasks: _populate_config.yaml
 
     - name: Delete all route-maps
-      cisco.nxos.nxos_route_maps: &id006
+      cisco.nxos.nxos_route_maps: &id001
         state: deleted
       register: result
 
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
@@ -55,7 +54,7 @@
 
     - name: Delete all route-maps (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_route_maps: *id006
+      cisco.nxos.nxos_route_maps: *id001
 
     - name: Assert that task was idempotent
       assert:

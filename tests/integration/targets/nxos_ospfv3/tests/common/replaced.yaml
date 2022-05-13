@@ -8,7 +8,7 @@
 
 - block:
     - name: Replace device configurations of listed OSPFv3 processes with provided configurations
-      cisco.nxos.nxos_ospfv3: &id002
+      cisco.nxos.nxos_ospfv3: &id001
         config:
           processes:
             - process_id: 102
@@ -36,34 +36,29 @@
                   areas:
                     - area_id: 0.0.0.102
                       nssa:
-                        default_information_originate: True
-                        no_summary: True
+                        default_information_originate: true
+                        no_summary: true
         state: replaced
       register: result
 
     - name: Assert that before dicts are correctly generated
       assert:
         that:
-          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length == 0 }}"
 
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
-            \ |length == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       assert:
         that:
-          - "{{ replaced['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
-            \ == 0 }}"
+          - "{{ replaced['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
 
-    - name:
-        Replace device configurations of listed OSPF processes with provided configurarions
-        (IDEMPOTENT)
+    - name: Replace device configurations of listed OSPF processes with provided configurarions (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_ospfv3: *id002
+      cisco.nxos.nxos_ospfv3: *id001
 
     - name: Assert that task was idempotent
       assert:
@@ -74,7 +69,6 @@
     - name: Assert that before dict is correctly generated
       assert:
         that:
-          - "{{ replaced['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
-            \ == 0 }}"
+          - "{{ replaced['after']['processes'] | symmetric_difference(result['before']['processes']) |length == 0 }}"
   always:
     - include_tasks: _remove_config.yaml

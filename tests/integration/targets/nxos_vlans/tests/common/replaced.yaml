@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start nxos_vlans replaced integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_vlans replaced integration tests connection={{ ansible_connection }}
 
 - name: setup1
   cisco.nxos.nxos_config: &id003

@@ -1,8 +1,6 @@
 ---
 - debug:
-    msg:
-      Start nxos_vlans deleted integration tests connection={{ ansible_connection
-      }}
+    msg: Start nxos_vlans deleted integration tests connection={{ ansible_connection }}
 
 - name: setup
   cisco.nxos.nxos_config:

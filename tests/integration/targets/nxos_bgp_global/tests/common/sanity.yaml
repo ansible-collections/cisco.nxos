@@ -13,10 +13,10 @@
           as_number: "65538"
           router_id: 198.51.100.2
           bestpath:
-            compare_neighborid: True
-            cost_community_ignore: True
+            compare_neighborid: true
+            cost_community_ignore: true
         state: replaced
-      ignore_errors: True
+      ignore_errors: true
       register: result
 
     - assert:
@@ -30,7 +30,7 @@
           as_number: "65538"
           router_id: 198.51.100.9
         state: merged
-      ignore_errors: True
+      ignore_errors: true
       register: result
 
     - assert:

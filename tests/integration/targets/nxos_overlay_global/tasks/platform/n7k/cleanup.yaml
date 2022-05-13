@@ -6,9 +6,7 @@
       - terminal dont-ask ; vdc {{ vdcid }} ;  no limit-resource module-type f3
     match: none
 
-- name:
-    Previous command is asynchronous and can take a while.  Allow time for it
-    to complete
+- name: Previous command is asynchronous and can take a while.  Allow time for it to complete
   pause:
     seconds: 45
 
@@ -19,7 +17,6 @@
       - terminal dont-ask ; vdc {{ vdcid }} ; allocate interface unallocated-interfaces
     match: none
 
-- name: Previous command is asynchronous can take a while.  Allow time for it to
-    complete
+- name: Previous command is asynchronous can take a while.  Allow time for it to complete
   pause:
     seconds: 45

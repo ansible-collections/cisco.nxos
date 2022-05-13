@@ -81,6 +81,5 @@
 - name: Assert that correct set of commands were rendered
   assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
-        \ == 0 }}"
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
       - result.changed == False

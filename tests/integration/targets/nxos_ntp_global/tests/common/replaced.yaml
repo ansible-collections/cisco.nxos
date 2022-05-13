@@ -8,14 +8,14 @@
 
 - block:
     - name: Replace logging global configurations of listed logging global with provided configurations
-      cisco.nxos.nxos_ntp_global: &id002
+      cisco.nxos.nxos_ntp_global: &id001
         config:
           access_group:
             peer:
               - access_list: PeerAcl2
             serve:
               - access_list: ServeAcl2
-          logging: True
+          logging: true
           master:
             stratum: 2
           peers:
@@ -26,7 +26,7 @@
               vrf: default
             - peer: 192.0.2.5
               key_id: 2
-              prefer: True
+              prefer: true
               vrf: siteA
           servers:
             - server: 198.51.100.1
@@ -43,8 +43,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
@@ -53,7 +52,7 @@
 
     - name: Replace logging global configurations with provided configurations (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_ntp_global: *id002
+      cisco.nxos.nxos_ntp_global: *id001
 
     - name: Assert that task was idempotent
       assert:

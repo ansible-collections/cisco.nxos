@@ -44,7 +44,7 @@
 
           - name: "{{ nxos_int3 }}"
             description: WRONG-TEST-INTF-3
-            enabled: False
+            enabled: false
         state: overridden
 
     - assert:

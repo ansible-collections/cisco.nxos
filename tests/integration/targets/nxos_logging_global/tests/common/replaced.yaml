@@ -8,7 +8,7 @@
 
 - block:
     - name: Replace logging global configurations of listed logging global with provided configurations
-      cisco.nxos.nxos_logging_global: &id002
+      cisco.nxos.nxos_logging_global: &id001
         config:
           monitor:
             severity: warning
@@ -45,8 +45,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
@@ -55,7 +54,7 @@
 
     - name: Replace logging global configurations with provided configurations (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_logging_global: *id002
+      cisco.nxos.nxos_logging_global: *id001
 
     - name: Assert that task was idempotent
       assert:

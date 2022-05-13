@@ -1,0 +1,3 @@
+---
+trivial:
+  - Fixes line length, bools, and anchor/aliases

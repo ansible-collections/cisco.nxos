@@ -18,9 +18,8 @@
       register: result
       cisco.nxos.nxos_lldp_interfaces: &id001
         running_config:
-          "interface Ethernet1/1\n  lldp receive\n  no lldp transmit\n\
-          interface Ethernet1/2\n  no lldp receive\n  lldp tlv-set vlan 12\ninterface\
-          \ Ethernet1/3\n  lldp tlv-set management-address 192.0.2.12\n"
+          "interface Ethernet1/1\n  lldp receive\n  no lldp transmit\ninterface Ethernet1/2\n  no lldp receive\n  lldp tlv-set vlan 12\ninterface Ethernet1/3\n\
+          \  lldp tlv-set management-address 192.0.2.12\n"
         state: parsed
 
     - assert:

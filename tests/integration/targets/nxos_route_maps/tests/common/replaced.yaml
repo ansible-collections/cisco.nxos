@@ -8,7 +8,7 @@
 
 - block:
     - name: Replace route-maps configurations of listed route-maps with provided configurations
-      cisco.nxos.nxos_route_maps: &id002
+      cisco.nxos.nxos_route_maps: &id001
         config:
           - route_map: rmap1
             entries:
@@ -26,7 +26,7 @@
                         - AllowPrefix1
                 set:
                   community:
-                    local_as: True
+                    local_as: true
         state: replaced
       register: result
 
@@ -39,8 +39,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
@@ -48,11 +47,9 @@
           - "{{ replaced['after'][0] == result['after'][0] }}"
           - "{{ replaced['after'][1] == result['after'][1] }}"
 
-    - name:
-        Replace route-maps configurations of listed route-maps with provided configurations
-        (IDEMPOTENT)
+    - name: Replace route-maps configurations of listed route-maps with provided configurations (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_route_maps: *id002
+      cisco.nxos.nxos_route_maps: *id001
 
     - name: Assert that task was idempotent
       assert:

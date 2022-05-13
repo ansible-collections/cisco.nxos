@@ -1,3 +1,4 @@
+---
 - debug:
     msg: "Start nxos_interfaces purged integration tests connection={{ ansible_connection }}"
 
@@ -42,4 +43,4 @@
         - "no interface {{ nxos_int1 }}.100"
         - "no interface port-channel10"
         - "no interface port-channel11"
-      ignore_errors: True
+      ignore_errors: true

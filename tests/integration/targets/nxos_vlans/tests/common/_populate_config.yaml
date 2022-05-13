@@ -1,3 +1,4 @@
+---
 - name: Populate config
   cisco.nxos.nxos_config:
     lines:

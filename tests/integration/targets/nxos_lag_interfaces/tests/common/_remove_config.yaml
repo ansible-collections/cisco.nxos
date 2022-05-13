@@ -1,3 +1,4 @@
+---
 - name: Remove config
   cisco.nxos.nxos_config:
     lines:
@@ -8,4 +9,4 @@
       - "no interface port-channel19"
       - "no interface port-channel20"
       - "no feature lacp"
-  ignore_errors: True
+  ignore_errors: true

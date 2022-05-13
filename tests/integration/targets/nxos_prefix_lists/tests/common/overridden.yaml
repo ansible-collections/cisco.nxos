@@ -8,7 +8,7 @@
 
 - block:
     - name: Override all prefix-lists configuration with provided configuration
-      cisco.nxos.nxos_prefix_lists: &id003
+      cisco.nxos.nxos_prefix_lists: &id001
         config:
           - afi: ipv4
             prefix_lists:
@@ -36,8 +36,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
@@ -46,7 +45,7 @@
 
     - name: Override all prefix-lists configuration with provided configuration (IDEMPOTENT)
       register: result
-      cisco.nxos.nxos_prefix_lists: *id003
+      cisco.nxos.nxos_prefix_lists: *id001
 
     - name: Assert that task was idempotent
       assert:

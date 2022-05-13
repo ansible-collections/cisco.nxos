@@ -12,16 +12,16 @@
           router_id: 198.51.100.2
           bestpath:
             as_path:
-              multipath_relax: True
-            compare_neighborid: True
-            cost_community_ignore: True
+              multipath_relax: true
+            compare_neighborid: true
+            cost_community_ignore: true
           confederation:
             identifier: 42
             peers:
               - 65020
               - 65030
               - 65040
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           maxas_limit: 20
           neighbors:
             - neighbor_address: 198.51.100.20
@@ -30,15 +30,15 @@
               remote_as: 65537
               description: NBR-1
               low_memory:
-                exempt: True
+                exempt: true
             - neighbor_address: 198.51.100.21
               remote_as: 65537
           neighbor_down:
-            fib_accelerate: True
+            fib_accelerate: true
           vrfs:
             - vrf: site-1
               local_as: 200
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 192.0.2.10
                   description: site-1-nbr-1
@@ -48,13 +48,13 @@
                   description: site-1-nbr-2
             - vrf: site-2
               local_as: 300
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 203.0.113.2
                   description: site-2-nbr-1
                   remote_as: 65539
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
       register: result
 
     - name: Assert that before dicts were correctly generated
@@ -64,17 +64,14 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
         that:
           - merged['after'] == result['after']
 
-    - name:
-        Merge the provided configuration with the existing running configuration
-        (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
       cisco.nxos.nxos_bgp_global: *id001
       register: result
 

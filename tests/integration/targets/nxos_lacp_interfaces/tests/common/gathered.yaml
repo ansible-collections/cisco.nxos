@@ -13,8 +13,7 @@
         state: gathered
 
     - assert:
-        that: "{{ result['gathered'] | symmetric_difference(gathered)\
-          \ |length == 0 }}"
+        that: "{{ result['gathered'] | symmetric_difference(gathered) |length == 0 }}"
   always:
     - include_tasks: _remove_config.yaml
 

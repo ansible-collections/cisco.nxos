@@ -8,7 +8,7 @@
 
 - block:
     - name: Delete BGP configs handled by this module
-      cisco.nxos.nxos_bgp_neighbor_address_family: &id003
+      cisco.nxos.nxos_bgp_neighbor_address_family:
         config:
           as_number: 65536
           neighbors:
@@ -29,25 +29,20 @@
     - name: Assert that before dicts were correctly generated
       assert:
         that:
-          - "{{ merged['after']['neighbors'] | symmetric_difference(result['before']['neighbors']) |length\
-            \ == 0 }}"
-          - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['neighbors'] | symmetric_difference(result['before']['neighbors']) |length == 0 }}"
+          - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) |length == 0 }}"
           - merged['after']['as_number'] == result['before']['as_number']
 
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
         that:
-          - "{{ deleted['after']['neighbors'] | symmetric_difference(result['after']['neighbors']) |length\
-            \ == 0 }}"
-          - "{{ deleted['after']['vrfs'] | symmetric_difference(result['after']['vrfs']) |length\
-            \ == 0 }}"
+          - "{{ deleted['after']['neighbors'] | symmetric_difference(result['after']['neighbors']) |length == 0 }}"
+          - "{{ deleted['after']['vrfs'] | symmetric_difference(result['after']['vrfs']) |length == 0 }}"
           - deleted['after']['as_number'] == result['after']['as_number']
 
     - include_tasks: _remove_config.yaml
@@ -62,8 +57,7 @@
     - name: Assert that correct set of commands were generated
       assert:
         that:
-          - "{{ result['commands'] | symmetric_difference(deleted_all['commands']) |length\
-            \ == 0 }}"
+          - "{{ result['commands'] | symmetric_difference(deleted_all['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
       assert:
