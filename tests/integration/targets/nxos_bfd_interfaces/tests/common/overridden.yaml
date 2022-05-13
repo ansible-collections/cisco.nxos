@@ -2,13 +2,16 @@
 - debug:
     msg: Start nxos_bfd_interfaces overridden integration tests connection={{ ansible_connection }}
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'test_int1'
+  ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'test_int2'
+  ansible.builtin.set_fact:
     test_int2: "{{ nxos_int2 }}"
 
-- set_fact:
+- name: Set a fact for 'bfd_disable' and 'bfd_enable'
+  ansible.builtin.set_fact:
     bfd_enable: enable
     bfd_disable: disable
   when: platform is not search('N5K|N6K')

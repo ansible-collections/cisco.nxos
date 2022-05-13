@@ -2,7 +2,8 @@
 - debug:
     msg: Start nxos_l3_interfaces deleted integration tests connection={{ ansible_connection }}
 
-- set_fact:
+- name: Set a fact for 'subint3' and 'test_int3'
+  ansible.builtin.set_fact:
     test_int3: "{{ nxos_int3 }}"
     subint3: "{{ nxos_int3 }}.42"
 

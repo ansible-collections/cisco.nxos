@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_evpn_vni sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'nvoe_supported'
+  ansible.builtin.set_fact:
     nvoe_supported: "{{ platform is not search('N3K|N3L|N35')}}"
 
 - name: Setup

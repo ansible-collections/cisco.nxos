@@ -2,17 +2,21 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_rpm sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'smu_run'
+  ansible.builtin.set_fact:
     smu_run: false
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'smu_run'
+  ansible.builtin.set_fact:
     smu_run: true
   when: ((platform is search('N9K')) and (imagetag and 'I' in imagetag and (imagetag is version_compare('I2', 'ge'))))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'sdk_run'
+  ansible.builtin.set_fact:
     sdk_run: false
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'sdk_run'
+  ansible.builtin.set_fact:
     sdk_run: true
   when: ((platform is search('N9K')) and (imagetag and 'I' in imagetag and (imagetag is version_compare('I6', 'ge'))))
 

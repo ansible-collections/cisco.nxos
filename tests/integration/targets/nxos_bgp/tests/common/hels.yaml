@@ -6,10 +6,12 @@
     msg: This test is not supported on {{ image_version }}
   when: imagetag is search("D1")
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'test_helsinki'
+  ansible.builtin.set_fact:
     test_helsinki: false
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'test_helsinki'
+  ansible.builtin.set_fact:
     test_helsinki: true
   when: imagetag is not search("D1")
 

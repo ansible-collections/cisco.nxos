@@ -5,7 +5,8 @@
     commands:
       - show vdc current-vdc | json
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'vdcid'
+  ansible.builtin.set_fact:
     vdcid: "{{ vdcout.stdout_lines[0].name }}"
 
 - name: Configure VDC setting limit-resource module-type f3

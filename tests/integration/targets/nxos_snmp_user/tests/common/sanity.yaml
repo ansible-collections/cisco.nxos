@@ -2,14 +2,17 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_snmp_user sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'delete_last_user_allowed'
+  ansible.builtin.set_fact:
     delete_last_user_allowed: true
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'delete_last_user_allowed'
+  ansible.builtin.set_fact:
     delete_last_user_allowed: false
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'delete_last_user_allowed'
+  ansible.builtin.set_fact:
     delete_last_user_allowed: false
   when: platform is search('N5K|N6K|N9K-F')
 

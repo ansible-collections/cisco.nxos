@@ -28,7 +28,7 @@
           - "vlans"
 
     - name: Set default vlan (vlan1) config and config to revert
-      set_fact:
+      ansible.builtin.set_fact:
         default_vlan: "{{ ansible_facts.network_resources.vlans|selectattr('vlan_id', 'equalto', 1)|list }}"
         config_to_revert:
           - vlan_id: 3

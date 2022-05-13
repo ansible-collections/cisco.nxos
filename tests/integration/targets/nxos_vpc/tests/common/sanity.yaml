@@ -3,10 +3,12 @@
     msg: START connection={{ ansible_connection }} nxos_vpc sanity test
 
 - block:
-    - ansible.builtin.set_fact:
+    - name: Set a fact for 'delay_restore_orphan_port'
+      ansible.builtin.set_fact:
         delay_restore_orphan_port: 25
 
-    - ansible.builtin.set_fact:
+    - name: Set a fact for 'def_delay_restore_orphan_port'
+      ansible.builtin.set_fact:
         def_delay_restore_orphan_port: default
   when: platform is not search("N35|N5K|N6K")
 

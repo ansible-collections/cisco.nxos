@@ -5,11 +5,11 @@
   register: result
 
 - name: Store mgmt interface IP address
-  set_fact:
+  ansible.builtin.set_fact:
     mgmt0_ip: "{{ result['stdout'][0]['TABLE_interface']['ROW_interface']['eth_ip_addr'] }}"
 
 - name: Generate and store random password for temp user
-  set_fact:
+  ansible.builtin.set_fact:
     temp_passwd: "{{ lookup('password', 'length=15 chars=ascii_letters') }}"
   delegate_to: localhost
   no_log: true

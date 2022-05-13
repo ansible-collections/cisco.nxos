@@ -2,14 +2,17 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_telemetry deleted sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'source_interface'
+  ansible.builtin.set_fact:
     source_interface: Loopback55
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'before_keys_length'
+  ansible.builtin.set_fact:
     before_keys_length: 6
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'before_keys_length'
+  ansible.builtin.set_fact:
     before_keys_length: 7
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 

@@ -10,7 +10,8 @@
     msg: Using provider={{ connection.transport }}
   when: ansible_connection == "local"
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname'
+  ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
 
 - name: setup

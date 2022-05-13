@@ -2,14 +2,17 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_telemetry merged sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'source_interface'
+  ansible.builtin.set_fact:
     source_interface: Loopback55
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'command_list_length'
+  ansible.builtin.set_fact:
     command_list_length: 30
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'command_list_length'
+  ansible.builtin.set_fact:
     command_list_length: 31
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
@@ -269,7 +272,8 @@
                 id: 55
                 sample_interval: 2000
 
-    - set_fact:
+    - name: Set a fact for 'test_list'
+      ansible.builtin.set_fact:
         test_list:
           - telemetry
           - certificate /bootflash/local_server.crt localhost

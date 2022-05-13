@@ -6,10 +6,12 @@
     msg: This bgp_isolate is not supported on {{ image_version }}
   when: imagetag is search("A8")
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'bgp_isolate'
+  ansible.builtin.set_fact:
     bgp_isolate: false
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'bgp_isolate'
+  ansible.builtin.set_fact:
     bgp_isolate: true
   when: imagetag is not search("A8")
 

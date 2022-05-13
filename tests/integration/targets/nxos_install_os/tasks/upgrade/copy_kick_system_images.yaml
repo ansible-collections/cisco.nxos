@@ -1,8 +1,10 @@
 ---
-- ansible.builtin.set_fact:
+- name: Set a fact for 'ignore_errors_httpapi'
+  ansible.builtin.set_fact:
     ignore_errors_httpapi: false
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'ignore_errors_httpapi'
+  ansible.builtin.set_fact:
     ignore_errors_httpapi: true
   when: ansible_connection == 'ansible.netcommon.httpapi'
 

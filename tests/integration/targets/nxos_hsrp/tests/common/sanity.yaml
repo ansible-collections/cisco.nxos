@@ -2,10 +2,12 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_hsrp sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname1'
+  ansible.builtin.set_fact:
     intname1: "{{ nxos_int1 }}"
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname2'
+  ansible.builtin.set_fact:
     intname2: "{{ nxos_int2 }}"
 
 - block:

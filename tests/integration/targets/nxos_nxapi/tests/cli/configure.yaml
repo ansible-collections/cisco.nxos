@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START cli/configure.yaml
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'nxapi_sandbox_option'
+  ansible.builtin.set_fact:
     nxapi_sandbox_option: true
   when: platform is search('N7K')
 

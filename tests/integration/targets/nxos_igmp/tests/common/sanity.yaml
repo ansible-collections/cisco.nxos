@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_igmp sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'restart'
+  ansible.builtin.set_fact:
     restart: true
   when: platform is not match("N35")
 

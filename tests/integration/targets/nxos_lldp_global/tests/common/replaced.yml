@@ -3,7 +3,8 @@
     msg: Start nxos_lldp_global replaced integration tests connection = {{ansible_connection}}
 
 - block:
-    - set_fact:
+    - name: Set a fact for 'port_id' and 'tlv_power_mgmt'
+      ansible.builtin.set_fact:
         port_id: 1
         tlv_power_mgmt:
           power_management: false

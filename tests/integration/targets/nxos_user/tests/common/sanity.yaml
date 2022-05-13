@@ -2,10 +2,12 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_user parameter test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'idem'
+  ansible.builtin.set_fact:
     idem: true
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'idem'
+  ansible.builtin.set_fact:
     idem: false
   when: ((platform is search('N7K')) and (imagetag and imagetag is search("D1")))
 

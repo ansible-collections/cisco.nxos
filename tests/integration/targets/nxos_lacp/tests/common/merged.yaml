@@ -6,7 +6,8 @@
   cisco.nxos.nxos_feature:
     feature: lacp
 
-- set_fact:
+- name: Set a fact for 'mac'
+  ansible.builtin.set_fact:
     mac:
       address: 00c1.4c00.bd15
       role: primary
