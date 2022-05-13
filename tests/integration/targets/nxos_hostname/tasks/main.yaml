@@ -4,9 +4,14 @@
     commands: show running-config | section ^hostname
   register: result
 
+- name: Set current hostname (default)
+  set_fact:
+    current_hostname: "switch"
+
 - name: Set current hostname
   ansible.builtin.set_fact:
     current_hostname: "{{ result['stdout'][0].split(' ')[1] }}"
+  when: result.stdout[0] != ""
 
 - block:
     - name: Include the CLI tasks
