@@ -11,7 +11,7 @@ jobs:
     uses: ansible-network/github_actions/.github/workflows/unit_simple.yml@main
     with:
       collection_dependencies: >-
-        git+https://github.com/ansible-collections/ansible.utils.git
+        git+https://github.com/ansible-collections/ansible.utils.git,
         git+https://github.com/ansible-collections/ansible.netcommon.git
       matrix_exclude: >-
         [
