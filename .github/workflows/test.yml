@@ -1,4 +1,4 @@
-name: Units (dependencies from galaxy)
+name: Test collection
 on:
   push:
     branches: [main]
@@ -7,10 +7,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  unit:
+  sanity:
+    uses: ansible-network/github_actions/.github/workflows/sanity.yml@main
+  unit-galaxy:
+    uses: ansible-network/github_actions/.github/workflows/unit_simple.yml@main
+  unit-source:
     uses: ansible-network/github_actions/.github/workflows/unit_simple.yml@main
     with:
-      collection_dependencies: >-
+      collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
       matrix_exclude: >-
