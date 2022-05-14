@@ -8,4 +8,7 @@ on:
 
 jobs:
   unit:
-    uses: ansible-network/github_actions/.github/workflows/unit.yml@main
+    uses: ansible-network/github_actions/.github/workflows/unit_simple.yml@main
+  with:
+    collection_dependencies: >-
+      ansible.netcommon>=2.6.1
