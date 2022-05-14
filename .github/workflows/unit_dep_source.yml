@@ -1,4 +1,4 @@
-name: Units
+name: Units (dependencies from galaxy)
 on:
   push:
     branches: [main]

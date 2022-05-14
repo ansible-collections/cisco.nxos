@@ -1,0 +1,30 @@
+name: Units (dependencies from galaxy)
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  unit:
+    uses: ansible-network/github_actions/.github/workflows/unit_simple.yml@main
+    with:
+      collection_dependencies: >-
+        git+https://github.com/ansible-collections/ansible.utils.git
+        git+https://github.com/ansible-collections/ansible.netcommon.git
+      matrix_exclude: >-
+        [
+          {
+            "ansible-version": "stable-2.9",
+            "python-version": "3.8"
+          },
+          {
+            "ansible-version": "stable-2.9",
+            "python-version": "3.9"
+          },
+          {
+            "ansible-version": "stable-2.9",
+            "python-version": "3.10"
+          }
+        ]
