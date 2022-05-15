@@ -34,8 +34,8 @@ jobs:
     steps:
     - run: >-
         python -c "assert set(
-        ${{ needs.sanity.result }},
-        ${{ needs.unit-galaxy.result }},
-        ${{ needs.unit-source.result }}
+        '${{ needs.sanity.result }}',
+        '${{ needs.unit-galaxy.result }}',
+        '${{ needs.unit-source.result }}'
         ) == set('success')"
       
