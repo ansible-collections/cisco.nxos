@@ -33,6 +33,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: >-
-        python -c "assert '${{ (needs.sanity.result == 'success' ||
-        needs.unit-galaxy.result == 'success' ||
-        needs.unit-source.result == 'success' )}}' == 'True'"
+        python -c "assert set(
+        ${{ needs.sanity.result }},
+        ${{ needs.unit-galaxy.result }},
+        ${{ needs.unit-source.result }}
+        ) == set('success')"
+      
