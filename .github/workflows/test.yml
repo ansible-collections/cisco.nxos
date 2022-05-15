@@ -30,7 +30,7 @@ jobs:
           always() && 
           (
             needs.sanity.result != 'success' || 
-            needs.unit-galaxy.result != 'success') ||
+            needs.unit-galaxy.result != 'success' ||
             needs.unit-source.result != 'success'
           )
       }}
