@@ -33,9 +33,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: >-
-        python -c "assert set(
+        python -c "assert set([
         '${{ needs.sanity.result }}',
         '${{ needs.unit-galaxy.result }}',
         '${{ needs.unit-source.result }}'
-        ) == set('success')"
+        ]) == set('success')"
       
