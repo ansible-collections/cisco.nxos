@@ -33,10 +33,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: >-
-        python -c "assert ${{ (needs.sanity.result == 'success' ||
+        python -c "assert '${{ (needs.sanity.result == 'success' ||
         needs.unit-galaxy.result == 'success' ||
-        needs.unit-source.result == 'success' ) ? 'success' : 'failure' }}
-        == 'success'"
-
-
-
+        needs.unit-source.result == 'success' )}}' == 'True'"
