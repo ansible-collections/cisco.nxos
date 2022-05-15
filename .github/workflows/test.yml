@@ -24,7 +24,7 @@ jobs:
           }
         ]
 
-  report_status:
+  all_green:
     if: ${{ always() }}
     needs:
     - sanity
