@@ -52,7 +52,7 @@
         state: present
         peer_type: fabric_border_leaf
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -60,7 +60,7 @@
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -71,13 +71,13 @@
         neighbor: 192.0.2.3/32
         peer_type: disable
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure BGP neighbor3 - multisite
       register: result
@@ -86,13 +86,13 @@
         neighbor: 192.0.2.3/32
         peer_type: fabric_external
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Disable multisite border gateway - multisite
       cisco.nxos.nxos_config:
@@ -110,7 +110,7 @@
     feature: "{{ item }}"
     state: disabled
 
-- pause:
+- ansible.builtin.pause:
     seconds: 5
 
 - name: Remove nv overlay evpn - multisite

@@ -58,7 +58,7 @@
       - spanning-tree port type edge
     parents: interface {{ nxos_int1 }}
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -66,7 +66,7 @@
   register: result
   cisco.nxos.nxos_config: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

@@ -33,11 +33,11 @@
               - "{{intB1}}"
             remove: false
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == ["terminal dont-ask", "vsan database", "vsan 922", "vsan 922 name vsan-SAN-A", "vsan 922 suspend", "vsan 922 interface fc1/1", "vsan
             923", "vsan 923 name vsan-SAN-B", "no vsan 923 suspend", "vsan 923 interface fc1/2", "no terminal dont-ask"]
@@ -46,11 +46,11 @@
       register: result
       cisco.nxos.nxos_vsan: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == []
   always:

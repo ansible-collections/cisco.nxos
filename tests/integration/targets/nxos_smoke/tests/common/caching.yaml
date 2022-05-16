@@ -25,7 +25,7 @@
             mode: layer3
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - '"interface {{ nxos_int1 }}" in result.commands'
           - '"description Configured by Ansible (L2)" in result.commands'
@@ -38,7 +38,7 @@
       register: result
       cisco.nxos.nxos_interfaces: *merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == False
 
@@ -52,7 +52,7 @@
               allowed_vlans: 2,4,15
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - '"interface {{ nxos_int1 }}" in result.commands'
           - '"switchport trunk native vlan 10" in result.commands'
@@ -63,7 +63,7 @@
       register: result
       cisco.nxos.nxos_l2_interfaces: *mergedl2
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == False
 
@@ -76,7 +76,7 @@
               - address: 203.0.113.1/24
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - '"interface {{ nxos_int2 }}" in result.commands'
           - '"ip address 203.0.113.1/24" in result.commands'
@@ -86,7 +86,7 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *mergedl3
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == False
 

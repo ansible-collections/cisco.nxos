@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_l2_interfaces deleted integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'test_int1' and 'test_int2'
@@ -42,7 +42,7 @@
       cisco.nxos.nxos_l2_interfaces: &id001
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.before)|length == 0
           - result.changed == true
@@ -57,7 +57,7 @@
       register: result
       cisco.nxos.nxos_l2_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

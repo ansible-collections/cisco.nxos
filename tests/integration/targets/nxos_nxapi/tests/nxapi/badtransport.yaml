@@ -11,7 +11,7 @@
     https_port: 9443
     provider: "{{ nxapi }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed and result.msg is search('Transport')
 

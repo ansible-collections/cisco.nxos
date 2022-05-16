@@ -34,7 +34,7 @@
         multisite_border_gateway_interface: Loopback10
         shutdown: false
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -42,7 +42,7 @@
       register: result
       cisco.nxos.nxos_vxlan_vtep: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -58,13 +58,13 @@
         multisite_border_gateway_interface: default
         shutdown: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: reset Idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: remove vxlan_vtep
       register: result
@@ -77,7 +77,7 @@
         shutdown: true
         state: absent
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
@@ -85,7 +85,7 @@
       register: result
       cisco.nxos.nxos_vxlan_vtep: *id005
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 

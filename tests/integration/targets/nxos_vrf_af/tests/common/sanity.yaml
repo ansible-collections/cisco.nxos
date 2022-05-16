@@ -25,7 +25,7 @@
         afi: ipv4
         route_target_both_auto_evpn: true
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -33,7 +33,7 @@
       register: result
       cisco.nxos.nxos_vrf_af: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -44,13 +44,13 @@
         afi: ipv6
         route_target_both_auto_evpn: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_vrf_af: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove router target4
       register: result
@@ -59,13 +59,13 @@
         afi: ipv4
         route_target_both_auto_evpn: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_vrf_af: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove router target6
       register: result
@@ -74,13 +74,13 @@
         afi: ipv6
         route_target_both_auto_evpn: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_vrf_af: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove vrf af v6
       register: result
@@ -90,16 +90,16 @@
         route_target_both_auto_evpn: true
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 30
 
     - name: Remove Idempotence
       register: result
       cisco.nxos.nxos_vrf_af: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove vrf af v4
       register: result
@@ -109,16 +109,16 @@
         route_target_both_auto_evpn: true
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 30
 
     - name: Remove Idempotence
       register: result
       cisco.nxos.nxos_vrf_af: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   when: not platform is search("N35|N3L")
   always:
     - name: Remove vrf

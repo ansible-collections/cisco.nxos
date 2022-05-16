@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lacp replaced integration tests connection={{ ansible_connection }}
 
 - name: Enable lacp feature
@@ -39,7 +39,7 @@
             mac: "{{ mac2|default(omit) }}"
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lacp == result.before
           - result.changed == true
@@ -48,7 +48,7 @@
           - "'lacp system-priority 12' in result.commands"
       when: platform is not search('N9K')
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lacp == result.before
           - result.changed == true
@@ -62,7 +62,7 @@
     - name: Gather lacp interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lacp == result.after
       when: platform is search('N9K') and imagetag is not search('I[2-6]')
@@ -71,7 +71,7 @@
       register: result
       cisco.nxos.nxos_lacp: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -89,7 +89,7 @@
             priority: 1
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - result.commands|length == 3

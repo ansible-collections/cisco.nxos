@@ -20,7 +20,7 @@
   cisco.nxos.nxos_config:
     save_when: always
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -29,7 +29,7 @@
   cisco.nxos.nxos_config:
     save_when: always
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 

@@ -12,7 +12,7 @@
   ansible.netcommon.cli_config: &id001
     config: "{{ lookup('template', 'basic/config.j2') }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -20,7 +20,7 @@
   register: result
   ansible.netcommon.cli_config: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -33,7 +33,7 @@
     config: "{{ lookup('template', 'basic/config.j2') }}"
     defaults: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 

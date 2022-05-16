@@ -15,7 +15,7 @@
     state: present
     description: Configured by Ansible - Layer3
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -26,7 +26,7 @@
     state: present
     description: Configured by Ansible - Layer3
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

@@ -28,7 +28,7 @@
         text: "this is my exec banner\nthat has a multiline\nstring"
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'banner exec @\nthis is my exec banner\nthat has a multiline\nstring\n@' in result.commands"
@@ -37,7 +37,7 @@
       register: result
       cisco.nxos.nxos_banner: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands | length == 0
@@ -59,7 +59,7 @@
         text: "Junk motd banner\nover multiple lines"
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'banner motd @\nJunk motd banner\nover multiple lines\n@' in result.commands"
@@ -68,7 +68,7 @@
       register: result
       cisco.nxos.nxos_banner: *id003
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 

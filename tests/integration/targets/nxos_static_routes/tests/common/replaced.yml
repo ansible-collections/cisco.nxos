@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_static_routes replaced integration tests connection = {{ansible_connection}}"
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Gather static_routes post facts
@@ -31,7 +31,7 @@
         state: replaced
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'configure terminal' in result.commands"
@@ -44,9 +44,9 @@
       cisco.nxos.nxos_static_routes: *replaced
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == false"
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

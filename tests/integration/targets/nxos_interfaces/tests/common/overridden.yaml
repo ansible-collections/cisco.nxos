@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_interfaces overridden integration tests connection={{ ansible_connection }}"
 
 - name: Set a fact for 'test_int1' and 'test_int2'

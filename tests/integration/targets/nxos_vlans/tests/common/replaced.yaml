@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_vlans replaced integration tests connection={{ ansible_connection }}
 
 - name: setup1
@@ -31,7 +31,7 @@
             state: suspend
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == ansible_facts.network_resources.vlans|length
           - result.changed == true
@@ -43,7 +43,7 @@
     - name: Gather vlans post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|length == ansible_facts.network_resources.vlans|length
 
@@ -51,7 +51,7 @@
       register: result
       cisco.nxos.nxos_vlans: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

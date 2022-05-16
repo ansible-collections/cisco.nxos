@@ -49,7 +49,7 @@
         description: Testing
         admin_state: down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"vrf context test1" in result.commands'
@@ -63,7 +63,7 @@
   register: result
   cisco.nxos.nxos_vrf: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -78,7 +78,7 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.failed == false
@@ -91,7 +91,7 @@
   register: result
   cisco.nxos.nxos_vrf: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -103,7 +103,7 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == false
 
@@ -115,7 +115,7 @@
     associated_interfaces:
       - test
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == True
 
@@ -126,7 +126,7 @@
     interfaces:
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
@@ -136,7 +136,7 @@
   register: result
   cisco.nxos.nxos_vrf: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -152,7 +152,7 @@
         admin_state: down
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no vrf context test1" in result.commands'
@@ -162,7 +162,7 @@
   register: result
   cisco.nxos.nxos_vrf: *id004
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

@@ -50,7 +50,7 @@
         direction: egress
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -58,7 +58,7 @@
       register: result
       cisco.nxos.nxos_acl_interface: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -70,13 +70,13 @@
         direction: ingress
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence ingress
       register: result
       cisco.nxos.nxos_acl_interface: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Cleanup acl interface egress
       register: result
@@ -86,13 +86,13 @@
         direction: egress
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence egress cleanup
       register: result
       cisco.nxos.nxos_acl_interface: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Cleanup acl interface ingress
       register: result
@@ -102,13 +102,13 @@
         direction: ingress
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence ingress cleanup
       register: result
       cisco.nxos.nxos_acl_interface: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   rescue:
     - name: Put test interface into default state.
       ignore_errors: true

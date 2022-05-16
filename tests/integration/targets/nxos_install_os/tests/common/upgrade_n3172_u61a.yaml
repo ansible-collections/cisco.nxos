@@ -42,4 +42,4 @@
     ki: n3000-uk9-kickstart.6.0.2.U6.1a.bin
 
 - name: Upgrade N3500 Device to U61a Release Image
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

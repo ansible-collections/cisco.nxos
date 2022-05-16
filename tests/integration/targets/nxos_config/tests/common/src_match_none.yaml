@@ -26,7 +26,7 @@
     match: none
     defaults: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.updates is defined
@@ -41,7 +41,7 @@
       - interface {{ intname }}
     defaults: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.updates is not defined

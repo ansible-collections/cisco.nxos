@@ -1,12 +1,12 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_ospf_interfaces overridden integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _setup.yaml
+- ansible.builtin.include_tasks: _setup.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Override all OSPF interfaces configuration with provided configuration
@@ -26,19 +26,19 @@
       register: result
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - result["before"][0] == merged["after"][0]
           - result["before"][1] == merged["after"][1]
           - result["before"][2] == merged["after"][2]
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - result['after'][0]  == overridden['after'][0]
           - result['after'][1]  == overridden['after'][1]
@@ -49,9 +49,9 @@
       cisco.nxos.nxos_ospf_interfaces: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

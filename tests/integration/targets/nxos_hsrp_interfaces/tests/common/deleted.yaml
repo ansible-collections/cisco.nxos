@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_hsrp_interfaces deleted integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'test_int1' and 'test_int2'
@@ -14,7 +14,7 @@
   when: platform is not search('N35')
 
 - block:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
     - name: setup2
       cisco.nxos.nxos_config:
@@ -39,7 +39,7 @@
             bfd: "{{ bfd_disable|default(omit)}}"
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no hsrp bfd' in result.commands"
@@ -49,10 +49,10 @@
       register: result
       cisco.nxos.nxos_hsrp_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

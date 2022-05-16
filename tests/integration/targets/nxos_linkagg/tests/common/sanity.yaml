@@ -47,7 +47,7 @@
     group: 20
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface port-channel 20" in result.commands'
@@ -56,7 +56,7 @@
   register: result
   cisco.nxos.nxos_linkagg: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -70,7 +70,7 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
@@ -82,7 +82,7 @@
   register: result
   cisco.nxos.nxos_linkagg: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -95,7 +95,7 @@
     members:
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
@@ -105,7 +105,7 @@
   register: result
   cisco.nxos.nxos_linkagg: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -115,7 +115,7 @@
     group: 20
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no interface port-channel 20" in result.commands'
@@ -124,7 +124,7 @@
   register: result
   cisco.nxos.nxos_linkagg: *id004
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -138,7 +138,7 @@
       - group: 100
         min_links: 4
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface port-channel 20" in result.commands'
@@ -150,7 +150,7 @@
   register: result
   cisco.nxos.nxos_linkagg: *id005
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -165,7 +165,7 @@
         min_links: 4
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no interface port-channel 20" in result.commands'
@@ -175,7 +175,7 @@
   register: result
   cisco.nxos.nxos_linkagg: *id006
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

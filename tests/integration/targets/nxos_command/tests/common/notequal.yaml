@@ -11,7 +11,7 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.state neq down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.stdout is defined
@@ -25,7 +25,7 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.state != down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.stdout is defined

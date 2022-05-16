@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_bgp_global replaced integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Replace BGP configuration with provided configuration
@@ -44,17 +44,17 @@
       register: result
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - replaced['after'] == result['after']
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - merged['after'] == result['before']
 
@@ -63,14 +63,14 @@
       cisco.nxos.nxos_bgp_global: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
     - name: Assert that before dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - replaced['after'] == result['before']
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

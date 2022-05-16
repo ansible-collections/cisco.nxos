@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_hsrp_interfaces parsed integration tests on connection={{ ansible_connection }}
 
 - block:
@@ -16,8 +16,8 @@
             hsrp bfd
         state: parsed
 
-    - assert:
+    - ansible.builtin.assert:
         that: "{{ parsed | symmetric_difference(result['parsed']) |length==0 }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_hsrp_interfaces parsed integration tests on connection={{ ansible_connection }}

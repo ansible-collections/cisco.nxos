@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acls gathered integration tests connection={{ansible_connection}}"
 
-- include_tasks: populate_config.yaml
+- ansible.builtin.include_tasks: populate_config.yaml
 
 - block:
     - name: Gather acls facts
@@ -17,7 +17,7 @@
       cisco.nxos.nxos_acls: &id001
         state: gathered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - ansible_facts.network_resources.acls == result.gathered
@@ -26,8 +26,8 @@
       register: result
       cisco.nxos.nxos_acls: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: remove_config.yaml
+    - ansible.builtin.include_tasks: remove_config.yaml

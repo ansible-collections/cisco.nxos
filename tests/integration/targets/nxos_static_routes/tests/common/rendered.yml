@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_static_routes rendered tests connection={{ ansible_connection }}"
 
 - name: Rendered
@@ -30,7 +30,7 @@
     state: rendered
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == false"
       - "'configure terminal' in result.rendered"
@@ -44,6 +44,6 @@
   nxos_static_routes: *rendered
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == false"

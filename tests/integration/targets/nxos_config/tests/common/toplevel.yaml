@@ -12,7 +12,7 @@
   cisco.nxos.nxos_config:
     lines: hostname foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'hostname foo' in result.updates"
@@ -22,7 +22,7 @@
   cisco.nxos.nxos_config:
     lines: hostname foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

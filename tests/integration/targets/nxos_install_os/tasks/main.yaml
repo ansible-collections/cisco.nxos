@@ -1,6 +1,6 @@
 ---
-- include: network_cli.yaml
+- ansible.builtin.include: network_cli.yaml
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
-- include: httpapi.yaml
+- ansible.builtin.include: httpapi.yaml
   when: ansible_connection == 'ansible.netcommon.httpapi'

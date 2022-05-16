@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_l2_interfaces merged integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'test_int1'
@@ -30,7 +30,7 @@
               allowed_vlans: 200
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
@@ -45,7 +45,7 @@
           - "!min"
         gather_network_resources: l2_interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.after) == []
 
@@ -53,7 +53,7 @@
       register: result
       cisco.nxos.nxos_l2_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -68,7 +68,7 @@
               allowed_vlans: 10-12
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
@@ -83,7 +83,7 @@
           - "!min"
         gather_network_resources: l2_interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.l2_interfaces|symmetric_difference(result.after) == []
 
@@ -91,7 +91,7 @@
       register: result
       cisco.nxos.nxos_l2_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

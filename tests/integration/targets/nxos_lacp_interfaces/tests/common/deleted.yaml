@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lacp_interfaces deleted integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'mode'
@@ -44,7 +44,7 @@
       cisco.nxos.nxos_lacp_interfaces: &id001
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lacp_interfaces|symmetric_difference(result.before)|length == 0
           - result.after|length == 0
@@ -54,7 +54,7 @@
           - "'interface port-channel10' in result.commands"
           - "'no lacp max-bundle' in result.commands"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'no lacp mode delay' in result.commands"
           - result.commands|length == 5
@@ -64,7 +64,7 @@
       register: result
       cisco.nxos.nxos_lacp_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

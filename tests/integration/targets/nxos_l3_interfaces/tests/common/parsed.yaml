@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_l3_interfaces parsed integration tests on connection={{ ansible_connection }}
 
 - block:
@@ -20,8 +20,8 @@
             vrf member management
         state: parsed
 
-    - assert:
+    - ansible.builtin.assert:
         that: "{{ parsed | symmetric_difference(result['parsed']) |length==0 }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_l3_interface parsed integration tests on connection={{ ansible_connection }}

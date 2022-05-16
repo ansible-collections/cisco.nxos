@@ -15,7 +15,7 @@
     feature: bgp
     state: enabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -25,7 +25,7 @@
     feature: bgp
     state: enabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -35,7 +35,7 @@
     feature: bgp
     state: disabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -45,7 +45,7 @@
     feature: bgp
     state: disabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -55,7 +55,7 @@
     feature: fabric forwarding
     state: enabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == True
       - "'feature fabric forwarding' in result.commands"
@@ -66,7 +66,7 @@
     feature: fabric forwarding
     state: enabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == False
 
@@ -76,7 +76,7 @@
     feature: fabric forwarding
     state: disabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == True
       - "'no feature fabric forwarding' in result.commands"
@@ -87,7 +87,7 @@
     feature: fabric forwarding
     state: disabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == False
 

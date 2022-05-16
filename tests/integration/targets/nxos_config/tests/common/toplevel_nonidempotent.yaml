@@ -13,7 +13,7 @@
     lines: hostname foo
     match: strict
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'hostname foo' in result.updates"
@@ -24,7 +24,7 @@
     lines: hostname foo
     match: strict
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 

@@ -23,7 +23,7 @@
         source_addr: 192.0.2.5
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -31,7 +31,7 @@
       register: result
       cisco.nxos.nxos_ntp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -45,25 +45,25 @@
         source_addr: default
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence Check
       register: result
       cisco.nxos.nxos_ntp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove ntp config
       register: result
       cisco.nxos.nxos_ntp: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remove Idempotence Check
       register: result
       cisco.nxos.nxos_ntp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure ntp again
       register: result
@@ -73,13 +73,13 @@
         prefer: enabled
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence Check
       register: result
       cisco.nxos.nxos_ntp: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove source interface
       register: result
@@ -87,25 +87,25 @@
         source_int: default
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence Check
       register: result
       cisco.nxos.nxos_ntp: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove ntp
       register: result
       cisco.nxos.nxos_ntp: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remove Idempotence Check
       register: result
       cisco.nxos.nxos_ntp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Remove ntp config
       cisco.nxos.nxos_ntp: *id005

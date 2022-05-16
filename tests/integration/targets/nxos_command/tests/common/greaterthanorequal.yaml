@@ -11,7 +11,7 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.eth_ip_mask ge 0
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -24,7 +24,7 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.eth_ip_mask >= 0
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acl_interfaces merged integration tests connection = {{ansible_connection}}
 
-- include_tasks: remove_config.yaml
+- ansible.builtin.include_tasks: remove_config.yaml
 
-- include_tasks: populate_acl.yaml
+- ansible.builtin.include_tasks: populate_acl.yaml
 
 - block:
     - name: Gather acl interfaces facts
@@ -46,7 +46,7 @@
                     direction: in
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == True
           - "'interface Ethernet1/2' in result.commands"
@@ -62,8 +62,8 @@
       register: result
       cisco.nxos.nxos_acl_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: remove_config.yaml
+    - ansible.builtin.include_tasks: remove_config.yaml

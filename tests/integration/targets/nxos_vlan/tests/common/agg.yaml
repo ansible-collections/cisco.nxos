@@ -22,7 +22,7 @@
     vlan_state: active
     admin_state: up
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"vlan 102" in result.commands'
@@ -34,7 +34,7 @@
   register: result
   cisco.nxos.nxos_vlan: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -50,7 +50,7 @@
     vlan_state: active
     admin_state: down
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"vlan 102" in result.commands'
@@ -61,7 +61,7 @@
   register: result
   cisco.nxos.nxos_vlan: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -71,7 +71,7 @@
     vlan_id: 1
     purge: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no vlan 102" in result.commands'
@@ -81,7 +81,7 @@
   register: result
   cisco.nxos.nxos_vlan: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -99,7 +99,7 @@
       - vlan_id: 103
     purge: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"vlan 102" in result.commands'
@@ -110,7 +110,7 @@
   register: result
   cisco.nxos.nxos_vlan: *id004
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

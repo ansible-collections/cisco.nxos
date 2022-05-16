@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_l3_interfaces replaced integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'subint3' and 'test_int3'
@@ -7,7 +7,7 @@
     test_int3: "{{ nxos_int3 }}"
     subint3: "{{ nxos_int3 }}.42"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - name: setup1
   ignore_errors: true
@@ -51,7 +51,7 @@
                 secondary: true
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
@@ -65,7 +65,7 @@
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
@@ -73,7 +73,7 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -85,14 +85,14 @@
           - name: "{{ subint3 }}"
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface {{ subint3 }}' in result.commands"
           - "'no encapsulation dot1q' in result.commands"
           - "'no ip address' in result.commands"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'ip redirects' in result.commands"
       when: platform is match('N[3567]')
@@ -101,7 +101,7 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *id003
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -112,4 +112,4 @@
         lines:
           - "no interface {{ subint3 }}"
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

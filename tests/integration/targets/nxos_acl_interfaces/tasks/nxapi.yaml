@@ -1,13 +1,13 @@
 ---
 - name: collect common test cases
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/tests/common"
     patterns: "{{ testcase }}.yml"
   connection: local
   register: test_cases
 
 - name: collect nxapi test cases
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/tests/nxapi"
     patterns: "{{ testcase }}.yml"
   connection: local

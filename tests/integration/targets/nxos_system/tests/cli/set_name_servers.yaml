@@ -18,7 +18,7 @@
       - 192.0.2.2
       - 192.0.2.3
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip name-server 192.0.2.1' in result.commands"
@@ -33,7 +33,7 @@
       - 192.0.2.2
       - 192.0.2.3
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -44,7 +44,7 @@
       - 192.0.2.1
       - 192.0.2.2
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - result.commands|length == 1
@@ -55,7 +55,7 @@
   cisco.nxos.nxos_system: &id001
     name_servers: default
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -63,7 +63,7 @@
   register: result
   cisco.nxos.nxos_system: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

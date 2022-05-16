@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acls rendered tests connection={{ ansible_connection }}
 
 - name: Rendered
@@ -50,7 +50,7 @@
                 protocol: sctp
     state: rendered
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'ip access-list ACL1v4' in result.rendered"
@@ -64,6 +64,6 @@
   register: result
   cisco.nxos.nxos_acls: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false

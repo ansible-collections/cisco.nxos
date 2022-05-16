@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     # Interfaces used here doesn't actually exist on the device
@@ -21,7 +21,7 @@
                 mode: passive
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that: "{{ rendered | symmetric_difference(result['rendered']) |length==0 }}"
 
     - name: Gather l2_interfaces facts from the device and assert that its empty
@@ -30,10 +30,10 @@
         state: gathered
 
     - name: Make sure that rendered
-      assert:
+      ansible.builtin.assert:
         that: "{{ result['gathered'] == [] }}"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_lag_interfaces rendered integration tests on connection={{ ansible_connection }}

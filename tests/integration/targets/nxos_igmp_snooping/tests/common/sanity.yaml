@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_igmp_snooping sanity test
 
-- meta: end_host
+- ansible.builtin.meta: end_host
   when: platform is search('N6K')
 
 - name: Set a fact for 'gt_run'
@@ -37,7 +37,7 @@
         v3_report_supp: true
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -87,7 +87,7 @@
         group_timeout: "{{def_group_timeout|default(omit)}}"
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: gt_run
 
     - block:
@@ -102,7 +102,7 @@
       register: result
       cisco.nxos.nxos_igmp_snooping: *id006
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - block:
         - name: Check Idempotence - Configure igmp snooping with default values

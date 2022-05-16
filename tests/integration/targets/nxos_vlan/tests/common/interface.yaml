@@ -42,7 +42,7 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
@@ -58,7 +58,7 @@
   register: result
   cisco.nxos.nxos_vlan: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -70,7 +70,7 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == false
 
@@ -82,7 +82,7 @@
     associated_interfaces:
       - test
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == True
 
@@ -93,7 +93,7 @@
     interfaces:
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
@@ -105,7 +105,7 @@
   register: result
   cisco.nxos.nxos_vlan: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

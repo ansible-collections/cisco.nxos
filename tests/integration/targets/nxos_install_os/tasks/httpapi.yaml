@@ -1,6 +1,6 @@
 ---
 - name: collect common test cases
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/tests/common"
     patterns: "{{ testcase }}.yaml"
   connection: local

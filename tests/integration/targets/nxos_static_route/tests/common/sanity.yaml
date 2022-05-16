@@ -63,7 +63,7 @@
         tag: 5500
         vrf: "{{ item }}"
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -72,7 +72,7 @@
       register: result
       cisco.nxos.nxos_static_route: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -87,14 +87,14 @@
         tag: default
         vrf: "{{ item }}"
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Change Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_static_route: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure static route with track
       with_items: "{{ vrfs }}"
@@ -109,7 +109,7 @@
         track: 1
         vrf: "{{ item }}"
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: test_track_feature
 
     - name: Config track Idempotence
@@ -118,7 +118,7 @@
       when: test_track_feature
       cisco.nxos.nxos_static_route: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: test_track_feature
 
     - name: configure static route with not configured track
@@ -135,7 +135,7 @@
         track: 2
         vrf: "{{ item }}"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == True
       when: test_track_feature
@@ -151,14 +151,14 @@
         vrf: "{{ item }}"
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remove Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_static_route: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure static route(aggregate)
       register: result
@@ -170,13 +170,13 @@
           - prefix: 192.168.24.64/24
             next_hop: 192.0.2.3
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: configure static route aggregate(Idempotence)
       register: result
       cisco.nxos.nxos_static_route: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: remove static route aggregate
       register: result
@@ -189,13 +189,13 @@
             next_hop: 192.0.2.3
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: remove static route aggregate(Idempotence)
       register: result
       cisco.nxos.nxos_static_route: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: remove track
       ignore_errors: true

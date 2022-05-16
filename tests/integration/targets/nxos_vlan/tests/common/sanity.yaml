@@ -36,7 +36,7 @@
       cisco.nxos.nxos_vlan: &id001
         vlan_range: 2-10,20,50,55-60,100-150
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -44,7 +44,7 @@
       register: result
       cisco.nxos.nxos_vlan: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -58,7 +58,7 @@
         name: WEB
         mapped_vni: 5555
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: platform is search('N9K')
 
     - name: web1 Idempotence
@@ -66,7 +66,7 @@
       when: platform is search('N9K')
       cisco.nxos.nxos_vlan: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: platform is search('N9K')
 
     - name: change name and vni to default
@@ -79,7 +79,7 @@
         name: default
         mapped_vni: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: platform is search('N9K')
 
     - name: web2 Idempotence
@@ -87,7 +87,7 @@
       when: platform is search('N9K')
       cisco.nxos.nxos_vlan: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: platform is search('N9K')
 
     - name: Ensure VLAN 50 exists with the name WEB and is in the shutdown state
@@ -99,7 +99,7 @@
         admin_state: down
         name: WEB
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: platform is search('N3K|N7K')
 
     - name: web3 Idempotence
@@ -107,7 +107,7 @@
       when: platform is search('N3K|N7K')
       cisco.nxos.nxos_vlan: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: platform is search('N3K|N7K')
 
     - name: Change name to default
@@ -119,7 +119,7 @@
         admin_state: up
         name: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: platform is search('N3K|N7K')
 
     - name: web4 Idempotence
@@ -127,7 +127,7 @@
       when: platform is search('N3K|N7K')
       cisco.nxos.nxos_vlan: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: platform is search('N3K|N7K')
 
     - name: Change mode
@@ -137,7 +137,7 @@
         vlan_id: 50
         mode: fabricpath
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: platform is search('N5K|N7K')
 
     - name: mode1 Idempotence
@@ -145,7 +145,7 @@
       when: platform is search('N5K|N7K')
       cisco.nxos.nxos_vlan: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: platform is search('N5K|N7K')
 
     - name: Change mode again
@@ -155,7 +155,7 @@
         vlan_id: 50
         mode: ce
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: platform is search('N5K|N7K')
 
     - name: mode2 Idempotence
@@ -163,7 +163,7 @@
       when: platform is search('N5K|N7K')
       cisco.nxos.nxos_vlan: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: platform is search('N5K|N7K')
 
     - name: Ensure VLAN is NOT on the device
@@ -172,13 +172,13 @@
         vlan_id: 50
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: no vlan Idempotence
       register: result
       cisco.nxos.nxos_vlan: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Add interfaces to vlan
       register: result
@@ -189,13 +189,13 @@
           - "{{ testint1 }}"
           - "{{ testint2 }}"
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Addint idempotence
       register: result
       cisco.nxos.nxos_vlan: *id011
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove interfaces from vlan
       register: result
@@ -203,13 +203,13 @@
         vlan_id: 101
         interfaces: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remint idempotence
       register: result
       cisco.nxos.nxos_vlan: *id012
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Remove int from vlan
       ignore_errors: true

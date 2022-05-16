@@ -8,7 +8,7 @@
   cisco.nxos.nxos_feature:
     feature: invalid
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
 

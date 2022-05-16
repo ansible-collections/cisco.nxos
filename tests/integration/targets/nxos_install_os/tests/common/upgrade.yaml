@@ -42,7 +42,7 @@
     ki: n3000-uk9-kickstart.6.0.2.U6.1a.bin
 
 - name: Upgrade to U6.1a
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
 - name: Set a fact for 'si'
   ansible.builtin.set_fact:
@@ -53,7 +53,7 @@
     ki: n3000-uk9-kickstart.6.0.2.U6.2a.bin
 
 - name: Upgrade to U6.2a
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
 - name: Set a fact for 'si'
   ansible.builtin.set_fact:
@@ -64,14 +64,14 @@
     ki: n3000-s2-kickstart.8.0.1.bin
 
 - name: Upgrade to U6.3a
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
 - name: Set a fact for 'si'
   ansible.builtin.set_fact:
     si: nxos.7.0.3.I7.2.bin
 
 - name: Upgrade to 7.0.3.I7.2
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
 - ansible.builtin.debug:
     msg: END connection={{ ansible_connection }} nxos_os_install upgrade

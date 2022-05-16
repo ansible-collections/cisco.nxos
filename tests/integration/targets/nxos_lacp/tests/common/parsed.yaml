@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_lacp parsed integration tests on connection={{ ansible_connection }}
 
 - block:
@@ -11,8 +11,8 @@
           lacp system-mac 00c1.4c00.bd15 role secondary
         state: parsed
 
-    - assert:
+    - ansible.builtin.assert:
         that: "{{ parsed == result['parsed'] }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_lacp parsed integration tests on connection={{ ansible_connection }}

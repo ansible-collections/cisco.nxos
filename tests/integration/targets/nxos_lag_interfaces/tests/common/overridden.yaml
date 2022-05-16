@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lag_interfaces overridden integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'test_int1', 'test_int2', and 'test_int3'
@@ -51,7 +51,7 @@
               - member: "{{ test_int3 }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length == 0
           - result.changed == true
@@ -59,7 +59,7 @@
     - name: Gather LAG interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.after)|length == 0
 
@@ -67,7 +67,7 @@
       register: result
       cisco.nxos.nxos_lag_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -88,7 +88,7 @@
         state: overridden
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed ==  True"
           - "'interface Ethernet1/9' in result.commands"

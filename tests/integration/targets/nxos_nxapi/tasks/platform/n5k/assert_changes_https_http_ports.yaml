@@ -1,6 +1,6 @@
 ---
 - name: Assert HTTPS && HTTP configuration changes
-  assert:
+  ansible.builtin.assert:
     that:
       - result.stdout[0].https_port is defined
       - result.stdout[0].http_port is defined

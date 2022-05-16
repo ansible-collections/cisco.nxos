@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_l3_interfaces overridden integration tests connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - name: Set a fact for 'test_int1', 'test_int2', and 'test_int3'
   ansible.builtin.set_fact:
@@ -53,7 +53,7 @@
         config: "{{ overriden_config + mgmt }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
@@ -68,7 +68,7 @@
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
@@ -76,7 +76,7 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

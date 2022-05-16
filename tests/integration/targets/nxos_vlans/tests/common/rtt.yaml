@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_vlans round trip integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Apply the provided configuration (Base config)
@@ -45,7 +45,7 @@
         config: "{{ config_to_revert + default_vlan }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
@@ -55,11 +55,11 @@
         config: "{{ ansible_facts['network_resources']['vlans'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - base_config['after'] == revert['after']
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_vlans round trip integration tests on connection={{ ansible_connection }}

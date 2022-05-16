@@ -37,7 +37,7 @@
         admin_state: up
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -45,7 +45,7 @@
       register: result
       cisco.nxos.nxos_interface: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -58,13 +58,13 @@
         admin_state: down
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_interface: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Create VLAN Interfaces
       with_items: &id005
@@ -84,7 +84,7 @@
         interface: "{{ item.os_svi_int }}"
         description: "{{ item.os_svi_desc }}"
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Configure Required SVI
       register: result
@@ -102,20 +102,20 @@
           - name: vlan712
             ipv4: 192.168.5.1/24
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Create VLAN Interfaces Idempotence Check
       with_items: *id005
       register: result
       cisco.nxos.nxos_interface: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure Required SVI Idempotence Check
       register: result
       cisco.nxos.nxos_l3_interface: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Set interface back to default
       ignore_errors: true

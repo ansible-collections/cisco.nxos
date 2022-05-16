@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_static_routes parsed tests connection={{ ansible_connection }}"
 
 - name: Parsed
@@ -13,7 +13,7 @@
     state: parsed
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == false"
       - "result.parsed == parsed"
@@ -22,5 +22,5 @@
   cisco.nxos.nxos_static_routes: *parsed
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that: "result.changed == false"

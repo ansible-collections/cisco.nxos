@@ -26,7 +26,7 @@
       cisco.nxos.nxos_evpn_global: &id001
         nv_overlay_evpn: true
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -34,7 +34,7 @@
       register: result
       cisco.nxos.nxos_evpn_global: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -43,13 +43,13 @@
       cisco.nxos.nxos_evpn_global: &id003
         nv_overlay_evpn: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: CHECK DEMPOTENCE - Disable nv overlay evpn
       register: result
       cisco.nxos.nxos_evpn_global: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   when: not ( platform is search('N3K|N35|N3L'))
   rescue:
     - ansible.builtin.debug:

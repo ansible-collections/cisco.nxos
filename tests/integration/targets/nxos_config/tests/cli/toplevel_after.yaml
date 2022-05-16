@@ -15,7 +15,7 @@
     lines: hostname foo
     after: snmp-server contact bar
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'hostname foo' in result.updates"
@@ -27,7 +27,7 @@
     lines: hostname foo
     after: snmp-server contact foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

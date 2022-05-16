@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lldp_global merged integration tests connection={{ansible_connection}}
 
 - block:
@@ -29,19 +29,19 @@
           tlv_select: "{{tlv_power_mgmt|default(omit)}}"
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == 0
           - result.changed == true
           - "'lldp reinit 5' in result.commands"
           - "'lldp timer 40' in result.commands"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'lldp portid-subtype 1' in result.commands"
       when: port_id is defined
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'no lldp tlv-select power-management' in result.commands"
       when: tlv_power_mgmt is defined
@@ -53,7 +53,7 @@
           - "!min"
         gather_network_resources: lldp_global
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lldp_global == result.after
 
@@ -61,7 +61,7 @@
       register: result
       cisco.nxos.nxos_lldp_global: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands | length == 0

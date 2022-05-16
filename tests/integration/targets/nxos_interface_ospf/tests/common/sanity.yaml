@@ -61,7 +61,7 @@
         network: point-to-point
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -69,7 +69,7 @@
       register: result
       cisco.nxos.nxos_interface_ospf: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -86,13 +86,13 @@
         network: broadcast
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: default properties
       register: result
@@ -106,13 +106,13 @@
         dead_interval: default
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Message_digest properties
       register: result
@@ -127,13 +127,13 @@
         message_digest_password: b69f7bc54725b1bfd1ea93afa7b09400
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Message_digest defaults
       register: result
@@ -148,13 +148,13 @@
         message_digest_password: default
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: create port-channel and loopback interfaces
       cisco.nxos.nxos_config:
@@ -187,13 +187,13 @@
         dead_interval: 75
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence for port-channel10
       register: result
       cisco.nxos.nxos_interface_ospf: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure ospf interface port-channel11 using lower case name
       register: result
@@ -207,13 +207,13 @@
         dead_interval: 75
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence for port-channel11
       register: result
       cisco.nxos.nxos_interface_ospf: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure ospf interface loopback55
       register: result
@@ -226,13 +226,13 @@
         dead_interval: 75
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence for loopback55
       register: result
       cisco.nxos.nxos_interface_ospf: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure ospf interface loopback77 using lower case name
       register: result
@@ -245,13 +245,13 @@
         dead_interval: 75
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence for loopback77
       register: result
       cisco.nxos.nxos_interface_ospf: *id011
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: remove ospf interface config
       register: result
@@ -266,13 +266,13 @@
         dead_interval: 75
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id012
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Disable features
       loop:

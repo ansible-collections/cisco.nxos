@@ -19,7 +19,7 @@
     dest_level: 00
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging console 0" in result.commands'
@@ -28,7 +28,7 @@
   register: result
   cisco.nxos.nxos_logging: *id001
 
-- assert: &id003
+- ansible.builtin.assert: &id003
     that:
       - result.changed == false
 
@@ -39,7 +39,7 @@
     dest_level: 2
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging console 2" in result.commands'
@@ -48,7 +48,7 @@
   register: result
   cisco.nxos.nxos_logging: *id002
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - block:
     - name: Logfile logging with level
@@ -59,7 +59,7 @@
         dest_level: 1
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - '"logging logfile test 1" in result.commands'
@@ -68,7 +68,7 @@
       register: result
       cisco.nxos.nxos_logging: *id004
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
   when: platform is not search('N5K|N7K') and imagetag is not search("A8")
 
 - name: Configure module with level
@@ -77,7 +77,7 @@
     dest: module
     dest_level: 2
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging module 2" in result.commands'
@@ -86,7 +86,7 @@
   register: result
   cisco.nxos.nxos_logging: *id005
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Configure monitor with level
   register: result
@@ -94,7 +94,7 @@
     dest: monitor
     dest_level: 3
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging monitor 3" in result.commands'
@@ -103,7 +103,7 @@
   register: result
   cisco.nxos.nxos_logging: *id006
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Configure monitor with level 5 (edge case)
   register: result
@@ -111,7 +111,7 @@
     dest: monitor
     dest_level: 5
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging monitor 5" in result.commands'
@@ -120,7 +120,7 @@
   register: result
   cisco.nxos.nxos_logging: *id007
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Configure facility with level
   register: result
@@ -128,7 +128,7 @@
     facility: daemon
     facility_level: 4
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging level daemon 4" in result.commands'
@@ -137,7 +137,7 @@
   register: result
   cisco.nxos.nxos_logging: *id008
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Configure Remote Logging
   register: result
@@ -149,7 +149,7 @@
     use_vrf: management
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging server test-syslogserver.com 1 facility auth use-vrf management" in result.commands'
@@ -158,14 +158,14 @@
   register: result
   cisco.nxos.nxos_logging: *id009
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Configure Source Interface for Logging
   register: result
   cisco.nxos.nxos_logging: &id010
     interface: mgmt0
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging source-interface mgmt 0" in result.commands'
@@ -174,7 +174,7 @@
   register: result
   cisco.nxos.nxos_logging: *id010
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -207,7 +207,7 @@
       - interface: mgmt0
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no logging logfile" in result.commands'
@@ -218,7 +218,7 @@
       - '"no logging source-interface" in result.commands'
   when: platform is not search('N5K|N7K') and imagetag is not search("A8")
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no logging level daemon 4" in result.commands'
@@ -232,7 +232,7 @@
   register: result
   cisco.nxos.nxos_logging: *id011
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - block:
     - name: Configure Logging message
@@ -241,7 +241,7 @@
         interface_message: add-interface-description
         state: present
 
-    - assert: &id013
+    - ansible.builtin.assert: &id013
         that:
           - result.changed == true
 
@@ -249,7 +249,7 @@
       register: result
       cisco.nxos.nxos_logging: *id012
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Remove Logging message
       register: result
@@ -257,7 +257,7 @@
         interface_message: add-interface-description
         state: absent
 
-    - assert: *id013
+    - ansible.builtin.assert: *id013
   when: platform is not search('N5K') and imagetag is not search("A8")
 
 - name: Logfile logging with level and size
@@ -269,7 +269,7 @@
     file_size: 16384
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging logfile test 1 size 16384" in result.commands'
@@ -278,7 +278,7 @@
   register: result
   cisco.nxos.nxos_logging: *id014
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Remove logfile logging with level and size
   register: result
@@ -289,14 +289,14 @@
     file_size: 16384
     state: absent
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Set up logging event link enable
   register: result
   cisco.nxos.nxos_logging: &id015
     event: link-enable
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging event link-status enable" in result.commands'
@@ -305,7 +305,7 @@
   register: result
   cisco.nxos.nxos_logging: *id015
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Remove logging event link enable
   register: result
@@ -313,20 +313,20 @@
     event: link-enable
     state: absent
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Remove logging event link enable again (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id016
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Set up logging event link default
   register: result
   cisco.nxos.nxos_logging: &id017
     event: link-default
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging event link-status default" in result.commands'
@@ -335,7 +335,7 @@
   register: result
   cisco.nxos.nxos_logging: *id017
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Remove logging event link default
   register: result
@@ -343,20 +343,20 @@
     event: link-default
     state: absent
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Remove logging event link default again (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id018
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Set up logging event trunk enable
   register: result
   cisco.nxos.nxos_logging: &id019
     event: trunk-enable
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging event trunk-status enable" in result.commands'
@@ -365,7 +365,7 @@
   register: result
   cisco.nxos.nxos_logging: *id019
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Remove logging event trunk enable
   register: result
@@ -373,20 +373,20 @@
     event: trunk-enable
     state: absent
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Remove logging event trunk enable again (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id020
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Set up logging event trunk default
   register: result
   cisco.nxos.nxos_logging: &id021
     event: trunk-default
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging event trunk-status default" in result.commands'
@@ -395,7 +395,7 @@
   register: result
   cisco.nxos.nxos_logging: *id021
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Remove logging event trunk default
   register: result
@@ -403,13 +403,13 @@
     event: trunk-default
     state: absent
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Remove logging event trunk default again (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id022
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Set up Logging Timestamp
   register: result
@@ -417,13 +417,13 @@
     timestamp: microseconds
     state: present
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Set up Logging Timestamp (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id023
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Remove Logging Timestamp
   register: result
@@ -431,7 +431,7 @@
     timestamp: microseconds
     state: absent
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Set up Facility ethpm Link UP Error
   register: result
@@ -440,13 +440,13 @@
     facility_link_status: link-up-error
     state: present
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Set up Facility ethpm Link UP Error (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id024
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Remove Facility ethpm Link UP Error
   register: result
@@ -455,7 +455,7 @@
     facility_link_status: link-up-error
     state: absent
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Set up Facility ethpm Link DOWN Error
   register: result
@@ -464,13 +464,13 @@
     facility_link_status: link-down-error
     state: present
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - name: Set up Facility ethpm Link DOWN Error (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id025
 
-- assert: *id003
+- ansible.builtin.assert: *id003
 
 - name: Remove Facility ethpm Link DOWN Error
   register: result
@@ -479,7 +479,7 @@
     facility_link_status: link-down-error
     state: absent
 
-- assert: *id013
+- ansible.builtin.assert: *id013
 
 - ansible.builtin.debug:
     msg: END connection={{ ansible_connection }} nxos_logging basic test

@@ -41,4 +41,4 @@
     ki: n7000-s2-kickstart.8.0.1.bin
 
 - name: Upgrade N7k Device to Atherton Release Image
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

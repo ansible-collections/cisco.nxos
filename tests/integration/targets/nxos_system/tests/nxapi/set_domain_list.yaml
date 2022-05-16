@@ -19,7 +19,7 @@
       - ansible.com
       - redhat.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip domain-list ansible.com' in result.commands"
@@ -32,7 +32,7 @@
       - ansible.com
       - redhat.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -42,7 +42,7 @@
     domain_search:
       - ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'no ip domain-list redhat.com' in result.commands"
@@ -53,7 +53,7 @@
     domain_search:
       - ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -64,7 +64,7 @@
       - ansible.com
       - redhat.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip domain-list redhat.com' in result.commands"
@@ -76,7 +76,7 @@
       - ansible.com
       - redhat.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -87,7 +87,7 @@
       - ansible.com
       - eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'no ip domain-list redhat.com' in result.commands"
@@ -101,7 +101,7 @@
       - ansible.com
       - eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

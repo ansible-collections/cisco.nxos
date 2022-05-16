@@ -6,7 +6,7 @@
   register: result
   cisco.nxos.nxos_facts:
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'default' in result.ansible_facts.ansible_net_gather_subset"

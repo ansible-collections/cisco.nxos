@@ -1,13 +1,13 @@
 ---
 - name: collect common test cases
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/tests/common"
     patterns: "{{ testcase }}.yaml"
   connection: local
   register: test_cases
 
 - name: collect cli test cases
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/tests/cli"
     patterns: "{{ testcase }}.yaml"
   connection: local
@@ -45,4 +45,5 @@
 #    loop_var: test_case_to_run
 
 - name: run test cases (connection=network_cli)
-  include: "{{ role_path }}/tests/common/caching.yaml ansible_connection=ansible.netcommon.network_cli ansible_network_single_user_mode=True connection={{ cli }}"
+  ansible.builtin.include: "{{ role_path }}/tests/common/caching.yaml ansible_connection=ansible.netcommon.network_cli ansible_network_single_user_mode=True connection={{\
+    \ cli }}"

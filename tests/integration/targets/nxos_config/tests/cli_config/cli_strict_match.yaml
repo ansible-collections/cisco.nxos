@@ -14,7 +14,7 @@
     diff_match: strict
     diff_replace: block
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 

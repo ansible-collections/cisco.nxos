@@ -22,7 +22,7 @@
         interface: "{{ intname }}"
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -30,7 +30,7 @@
       register: result
       cisco.nxos.nxos_vrf_interface: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -41,13 +41,13 @@
         interface: "{{ intname }}"
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remove Idempotence
       register: result
       cisco.nxos.nxos_vrf_interface: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: put interface in default mode
       ignore_errors: true

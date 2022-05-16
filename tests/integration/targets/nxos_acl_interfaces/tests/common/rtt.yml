@@ -1,12 +1,12 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acl_interfaces round trip integration tests connection = {{ansible_connection}}
 
-- include_tasks: remove_config.yaml
+- ansible.builtin.include_tasks: remove_config.yaml
 
-- include_tasks: populate_acl.yaml
+- ansible.builtin.include_tasks: populate_acl.yaml
 
-- include_tasks: populate_config.yaml
+- ansible.builtin.include_tasks: populate_config.yaml
 
 - block:
     - name: RTT- Apply provided configuration
@@ -69,7 +69,7 @@
         state: overridden
 
     - name: Assert that changes were applied
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed==True
           - "'interface Ethernet1/2' in result.commands"
@@ -90,7 +90,7 @@
         state: overridden
 
     - name: Assert that config was reverted
-      assert:
+      ansible.builtin.assert:
         that:
           - result.changed==True
           - "'interface Ethernet1/2' in result.commands"
@@ -104,4 +104,4 @@
           - "'ip port access-group PortACL in' in result.commands"
           - "'no ipv6 port traffic-filter NewACLv6 in' in result.commands"
   always:
-    - include_tasks: remove_config.yaml
+    - ansible.builtin.include_tasks: remove_config.yaml

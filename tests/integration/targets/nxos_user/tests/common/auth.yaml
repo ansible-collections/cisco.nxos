@@ -8,17 +8,15 @@
         configured_password: pasS!123
 
     - name: test login
-      expect:
-        command:
-          ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22) }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
+      ansible.builtin.expect:
+        command: ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22) }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
           show version
         responses:
           (?i)password: pasS!123
 
     - name: test login with invalid password (should fail)
-      expect:
-        command:
-          ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22) }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
+      ansible.builtin.expect:
+        command: ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22) }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
           show version
         responses:
           (?i)password: badpass
@@ -26,7 +24,7 @@
       register: results
 
     - name: check that attempt failed
-      assert:
+      ansible.builtin.assert:
         that:
           - results.failed
   always:

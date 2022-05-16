@@ -25,7 +25,7 @@
     tx_rate: ge(0)
     rx_rate: ge(0)
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == false
 
@@ -43,7 +43,7 @@
     tx_rate: gt(10000)
     rx_rate: lt(0)
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
       - "'tx_rate gt(10000)' in result.failed_conditions"
@@ -59,7 +59,7 @@
       - name: "{{ testint2 }}"
         mode: layer3
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 

@@ -22,7 +22,7 @@
       register: result
       cisco.nxos.nxos_aaa_server: *id001
 
-    - assert: &id003
+    - ansible.builtin.assert: &id003
         that:
           - result.changed == false
 
@@ -35,7 +35,7 @@
         directed_request: enabled
         state: present
 
-    - assert: &id005
+    - ansible.builtin.assert: &id005
         that:
           - result.changed == true
 
@@ -43,13 +43,13 @@
       register: result
       cisco.nxos.nxos_aaa_server: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Remove radius server configuration
       register: result
       cisco.nxos.nxos_aaa_server: *id004
 
-    - assert: *id005
+    - ansible.builtin.assert: *id005
 
     - name: Configure radius server with global key
       register: result
@@ -59,13 +59,13 @@
         global_key: test_key
         state: present
 
-    - assert: *id005
+    - ansible.builtin.assert: *id005
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id006
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Remove radius server configuration
       register: result
@@ -77,13 +77,13 @@
         directed_request: default
         state: default
 
-    - assert: *id005
+    - ansible.builtin.assert: *id005
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id007
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
   rescue:
     - ansible.builtin.debug:
         msg: connection={{ ansible_connection }} nxos_aaa_server failure detected

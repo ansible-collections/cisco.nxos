@@ -14,7 +14,7 @@
     roles: network-operator
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"username" in result.commands[0]'

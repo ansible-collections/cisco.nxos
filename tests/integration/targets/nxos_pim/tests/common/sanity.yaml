@@ -32,7 +32,7 @@
           - 239.128.1.0/24
           - 224.0.0.0/8
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -40,7 +40,7 @@
       register: result
       cisco.nxos.nxos_pim: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -50,25 +50,25 @@
         bfd: disable
         ssm_range: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: ssm_range default idempotence
       register: result
       cisco.nxos.nxos_pim: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure ssm_range none
       register: result
       cisco.nxos.nxos_pim: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: ssm_range none idempotence
       register: result
       cisco.nxos.nxos_pim: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: "Teardown: Disable features"
       ignore_errors: true

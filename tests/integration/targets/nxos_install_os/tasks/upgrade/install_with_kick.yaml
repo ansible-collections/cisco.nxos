@@ -30,7 +30,7 @@
   when: not force
 
 - name: Wait for device to come back up with new image
-  wait_for:
+  ansible.builtin.wait_for:
     port: 22
     state: started
     timeout: 500
@@ -42,6 +42,6 @@
     msg: Wait 5 mins to allow system to stabilize
   when: result.changed and not checkmode
 
-- pause:
+- ansible.builtin.pause:
     seconds: 300
   when: result.changed and not checkmode

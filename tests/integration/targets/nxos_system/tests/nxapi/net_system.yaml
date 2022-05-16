@@ -17,7 +17,7 @@
       - ansible.com
       - redhat.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip domain-list ansible.com' in result.commands"
