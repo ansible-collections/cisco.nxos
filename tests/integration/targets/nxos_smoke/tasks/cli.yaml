@@ -45,5 +45,6 @@
 #    loop_var: test_case_to_run
 
 - name: run test cases (connection=network_cli)
-  ansible.builtin.include: "{{ role_path }}/tests/common/caching.yaml ansible_connection=ansible.netcommon.network_cli ansible_network_single_user_mode=True connection={{\
+  ansible.builtin.include:
+    "{{ role_path }}/tests/common/caching.yaml ansible_connection=ansible.netcommon.network_cli ansible_network_single_user_mode=True connection={{\
     \ cli }}"
