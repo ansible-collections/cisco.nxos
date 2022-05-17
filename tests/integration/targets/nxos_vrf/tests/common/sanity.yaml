@@ -57,7 +57,7 @@
           - "{{ intname1 }}"
           - "{{ intname2 }}"
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -65,11 +65,11 @@
       register: result
       cisco.nxos.nxos_vrf: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 30
 
     - name: Remove config
@@ -81,13 +81,13 @@
         rd: "{{rdd|default(omit)}}"
         interfaces: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_vrf: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Ensure ntc VRF does not exist on switch
       register: result
@@ -95,16 +95,16 @@
         vrf: ntc
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 30
 
     - name: Remove Idempotence
       register: result
       cisco.nxos.nxos_vrf: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: "Setup: Disable nv overlay evpn"
       ignore_errors: true

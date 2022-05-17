@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START cli/cli_command.yaml on connection={{ ansible_connection }}
 
 - name: get output for single command
@@ -7,7 +7,7 @@
   ansible.netcommon.cli_command:
     command: show version
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.stdout is defined
@@ -18,7 +18,7 @@
   ansible.netcommon.cli_command:
     command: show foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
       - result.msg is defined

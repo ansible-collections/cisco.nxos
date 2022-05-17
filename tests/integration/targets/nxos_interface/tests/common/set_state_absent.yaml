@@ -13,7 +13,7 @@
     interface: Loopback1
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -23,7 +23,7 @@
     interface: Loopback1
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

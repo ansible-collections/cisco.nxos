@@ -125,20 +125,20 @@
       cisco.nxos.nxos_telemetry: &id002
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no telemetry' in result.commands"
           - result.before|dict2items|length == {{ before_keys_length }}
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0
 
     - name: Gather Telemetry Facts After Changes
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length == 0
 
@@ -146,7 +146,7 @@
       register: result
       cisco.nxos.nxos_telemetry: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

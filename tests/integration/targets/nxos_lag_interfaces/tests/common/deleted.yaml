@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lag_interfaces deleted integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'test_int1'
@@ -10,7 +10,7 @@
   ansible.builtin.set_fact:
     test_int2: "{{ nxos_int2 }}"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - name: enable feature lacp
   cisco.nxos.nxos_feature:
@@ -38,14 +38,14 @@
       cisco.nxos.nxos_lag_interfaces: &id002
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length == 0
 
     - name: Gather LAG interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           # the module should not remove the implicitly created port-channel
           - result.after|length == 1
@@ -55,11 +55,11 @@
       register: result
       cisco.nxos.nxos_lag_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
     - name: disable feature lacp
       cisco.nxos.nxos_feature:

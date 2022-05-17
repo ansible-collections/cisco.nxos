@@ -12,7 +12,7 @@
   cisco.nxos.nxos_system:
     domain_name: eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -21,7 +21,7 @@
   cisco.nxos.nxos_system:
     domain_name: eng.ansible.com
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

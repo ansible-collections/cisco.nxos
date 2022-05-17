@@ -7,7 +7,7 @@
   cisco.nxos.nxos_facts:
     gather_subset: hardware
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'hardware' in result.ansible_facts.ansible_net_gather_subset"
@@ -22,7 +22,7 @@
   cisco.nxos.nxos_facts:
     gather_subset: config
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'config' in result.ansible_facts.ansible_net_gather_subset"
@@ -37,7 +37,7 @@
       - hardware
       - config
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'hardware' in result.ansible_facts.ansible_net_gather_subset"
@@ -53,7 +53,7 @@
   cisco.nxos.nxos_facts:
     gather_subset: features
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'features' in result.ansible_facts.ansible_net_gather_subset"

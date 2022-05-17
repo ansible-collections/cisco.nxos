@@ -21,7 +21,7 @@
         hostname: switch
         domain_name: test.example.com
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -29,7 +29,7 @@
       register: result
       cisco.nxos.nxos_system: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -40,13 +40,13 @@
           - 8.8.8.8
           - 8.8.4.4
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure name servers with VRF support
       register: result
@@ -58,51 +58,51 @@
           - server: 8.8.4.4
             vrf: management
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure domain lookup1
       register: result
       cisco.nxos.nxos_system: &id006
         domain_lookup: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure domain lookup2
       register: result
       cisco.nxos.nxos_system: *id007
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure system mtu
       register: result
       cisco.nxos.nxos_system: &id008
         system_mtu: 3000
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: default configuration
       register: result
@@ -112,13 +112,13 @@
         name_servers: default
         system_mtu: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: remove configuration
       cisco.nxos.nxos_system: *id010

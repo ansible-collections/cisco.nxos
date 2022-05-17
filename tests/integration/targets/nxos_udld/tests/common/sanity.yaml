@@ -28,7 +28,7 @@
         aggressive: enabled
         msg_time: 20
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -36,7 +36,7 @@
       register: result
       cisco.nxos.nxos_udld: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -49,45 +49,45 @@
       cisco.nxos.nxos_udld: &id003
         aggressive: disabled
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_udld: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure udld3
       register: result
       cisco.nxos.nxos_udld: &id005
         msg_time: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_udld: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure udld again
       register: result
       cisco.nxos.nxos_udld: *id001
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remove udld config
       register: result
       cisco.nxos.nxos_udld: &id006
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_udld: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   when: udld_run
   always:
     - name: Disable udld

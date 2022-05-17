@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_prefix_lists gathered integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Gather prefix-lists facts using gathered
@@ -13,10 +13,10 @@
         state: gathered
 
     - name: Assert that facts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - result["gathered"][0] == merged["after"][0]
           - result["gathered"][1] == merged["after"][1]
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

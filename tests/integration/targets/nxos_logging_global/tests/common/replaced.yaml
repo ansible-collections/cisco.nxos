@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_logging_global replaced integration tests connection={{ ansible_connection }}"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Replace logging global configurations of listed logging global with provided configurations
@@ -38,17 +38,17 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['after'] == result['before'] }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - replaced['after'] == result['after']
 
@@ -57,10 +57,10 @@
       cisco.nxos.nxos_logging_global: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

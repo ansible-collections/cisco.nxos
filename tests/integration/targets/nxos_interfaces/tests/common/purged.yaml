@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_interfaces purged integration tests connection={{ ansible_connection }}"
 
 - block:
@@ -21,7 +21,7 @@
         state: purged
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - '"no interface {{ nxos_int1 }}.100" in result.commands'
           - '"no interface port-channel10" in result.commands'
@@ -32,7 +32,7 @@
       cisco.nxos.nxos_interfaces: *purged
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == False
   always:

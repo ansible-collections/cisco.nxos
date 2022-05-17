@@ -21,7 +21,7 @@
     provider: "{{ connection }}"
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.stdout|length == 10
 

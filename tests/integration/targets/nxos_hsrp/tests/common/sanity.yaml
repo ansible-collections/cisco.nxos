@@ -44,7 +44,7 @@
         auth_type: md5
         auth_string: 7 1234
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -52,7 +52,7 @@
       register: result
       cisco.nxos.nxos_hsrp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -68,13 +68,13 @@
         auth_type: md5
         auth_string: 0 1234
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: change group 100
       register: result
@@ -88,13 +88,13 @@
         auth_type: md5
         auth_string: 0 1234
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: configure group 200
       register: result
@@ -106,13 +106,13 @@
         auth_type: text
         auth_string: "1234"
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: change group 200
       register: result
@@ -124,13 +124,13 @@
         auth_type: text
         auth_string: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: remove nxos_hsrp
       register: result
@@ -139,13 +139,13 @@
         interface: "{{ intname1 }}"
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remove Idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Disable feature hsrp
       ignore_errors: true

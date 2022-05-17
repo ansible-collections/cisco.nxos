@@ -15,7 +15,7 @@
       - result[0] contains NX-OS
       - result[1].TABLE_interface.ROW_interface.interface contains mgmt
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

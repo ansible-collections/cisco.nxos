@@ -1,6 +1,6 @@
 ---
 - name: Assert HTTP configuration changes
-  assert:
+  ansible.builtin.assert:
     that:
       - result.stdout[0]['TABLE_listen_on_port']['ROW_listen_on_port'].l_port
       - result.stdout[0]['TABLE_listen_on_port']['ROW_listen_on_port'].l_port|string is search("80")
@@ -8,7 +8,7 @@
   when: result.stdout[0].TABLE_listen_on_port is defined
 
 - name: Assert HTTP configuration changes 9.2 or greater
-  assert:
+  ansible.builtin.assert:
     that:
       - result.stdout[0]['http_port']
       - result.stdout[0]['http_port']|string is search("80")

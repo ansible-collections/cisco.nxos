@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lacp merged integration tests connection={{ ansible_connection }}
 
 - name: Enable lacp
@@ -23,7 +23,7 @@
             mac: "{{ mac|default(omit) }}"
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == 0
           - result.changed == true
@@ -32,7 +32,7 @@
           - result.commands|length == 2
       when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == 0
           - result.changed == true
@@ -47,7 +47,7 @@
           - "!min"
         gather_network_resources: lacp
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lacp == result.after
 
@@ -55,7 +55,7 @@
       register: result
       cisco.nxos.nxos_lacp: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

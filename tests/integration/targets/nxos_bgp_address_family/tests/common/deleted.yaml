@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_bgp_address_family deleted integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - name: Setup more AFs
   cisco.nxos.nxos_config:
@@ -35,23 +35,23 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted['before']['address_family'] | symmetric_difference(result['before']['address_family']) |length == 0 }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['commands'] | symmetric_difference(deleted['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ deleted['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length == 0 }}"
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - include_tasks: _populate_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
     - name: Delete all BGP configs handled by this module
       cisco.nxos.nxos_bgp_address_family: &id001
@@ -59,17 +59,17 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['after']['address_family'] | symmetric_difference(result['before']['address_family']) |length == 0 }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['commands'] | symmetric_difference(deleted_all['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - deleted_all['after'] == result['after']
 
@@ -78,10 +78,10 @@
       register: result
 
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_bfd_interfaces replaced integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'test_int1'
@@ -43,13 +43,13 @@
             echo: disable
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no bfd echo' in result.commands"
         msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "{{ 'bfd' in result.commands }}"
         msg: "Assert failed. 'result.commands': {{ result.commands }}"
@@ -59,7 +59,7 @@
       register: result
       cisco.nxos.nxos_bfd_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

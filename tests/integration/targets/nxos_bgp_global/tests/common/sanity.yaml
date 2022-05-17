@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_bgp_global sanity integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Replace BGP configuration with different ASN (should fail)
@@ -19,7 +19,7 @@
       ignore_errors: true
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == True
           - "'BGP is already configured with ASN 65536. Please remove it with state purged before configuring new ASN' in result.msg"
@@ -33,9 +33,9 @@
       ignore_errors: true
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == True
           - "'BGP is already configured with ASN 65536. Please remove it with state purged before configuring new ASN' in result.msg"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

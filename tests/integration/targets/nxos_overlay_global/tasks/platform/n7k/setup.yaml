@@ -17,7 +17,7 @@
     match: none
 
 - name: Previous command is asynchronous and can take a while.  Allow time for it to complete
-  pause:
+  ansible.builtin.pause:
     seconds: 45
 
 - name: Configure VDC setting allocate interface unallocated-interfaces
@@ -28,7 +28,7 @@
     match: none
 
 - name: Previous command is asynchronous and can take a while.  Allow time for it to complete
-  pause:
+  ansible.builtin.pause:
     seconds: 45
 
 - name: Configure Additional N7K requiste features

@@ -28,7 +28,7 @@
       cisco.nxos.nxos_vtp_domain: &id001
         domain: ntc
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
@@ -36,7 +36,7 @@
       register: result
       cisco.nxos.nxos_vtp_domain: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   when: vtp_run

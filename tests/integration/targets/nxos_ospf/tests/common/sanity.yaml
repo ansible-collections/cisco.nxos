@@ -15,7 +15,7 @@
         ospf: 1
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -23,7 +23,7 @@
       register: result
       cisco.nxos.nxos_ospf: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
   rescue:
@@ -39,13 +39,13 @@
         ospf: 1
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_ospf: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - ansible.builtin.debug:
         msg: END connection={{ ansible_connection }} nxos_ospf sanity test

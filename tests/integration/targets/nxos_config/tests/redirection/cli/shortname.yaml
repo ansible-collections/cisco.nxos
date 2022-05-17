@@ -7,7 +7,7 @@
   cisco.nxos.config:
     src: basic/config.j2
 
-- assert:
+- ansible.builtin.assert:
     that:
       # make sure that the template content was read and not the path
       - result.changed == true
@@ -21,17 +21,17 @@
       filename: backup_with_alias.cfg
       dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
 - name: check if the backup file-4 exist
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup_with_alias.cfg"
   register: backup_file
   connection: local
 
-- assert:
+- ansible.builtin.assert:
     that:
       - backup_file.files is defined
 

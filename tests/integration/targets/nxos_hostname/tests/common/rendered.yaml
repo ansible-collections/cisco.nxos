@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_hostname rendered integration tests on connection={{ ansible_connection }}
 
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
@@ -10,7 +10,7 @@
   register: result
 
 - name: Assert that correct set of commands were rendered
-  assert:
+  ansible.builtin.assert:
     that:
       - merged['commands'] == result['rendered']
       - result.changed == False

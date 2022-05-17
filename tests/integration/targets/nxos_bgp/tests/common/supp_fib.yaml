@@ -41,7 +41,7 @@
         vrf: "{{ item }}"
         timer_bestpath_limit: 255
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -50,7 +50,7 @@
       register: result
       cisco.nxos.nxos_bgp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -62,7 +62,7 @@
         vrf: "{{ item }}"
         timer_bestpath_limit: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
@@ -70,7 +70,7 @@
       when: bgp_best_path_limit
       cisco.nxos.nxos_bgp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: bgp_best_path_limit
 
     - name: set suppress fib
@@ -79,7 +79,7 @@
         asn: 65535
         suppress_fib_pending: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: bgp_suppress_fib_supported
 
     - name: Check Idempotence
@@ -87,7 +87,7 @@
       when: bgp_suppress_fib_supported
       cisco.nxos.nxos_bgp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: bgp_suppress_fib_supported
 
     - name: reset suppress fib
@@ -96,7 +96,7 @@
         asn: 65535
         suppress_fib_pending: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: bgp_suppress_fib_supported
 
     - name: Check Idempotence
@@ -104,7 +104,7 @@
       when: bgp_suppress_fib_supported
       cisco.nxos.nxos_bgp: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: bgp_suppress_fib_supported
   rescue:
     - ansible.builtin.debug:

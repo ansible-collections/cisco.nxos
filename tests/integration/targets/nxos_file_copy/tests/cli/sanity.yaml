@@ -55,7 +55,7 @@
         file_system: "bootflash:"
         connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'bootflash:' in result.file_system"
@@ -68,7 +68,7 @@
       register: result
       cisco.nxos.nxos_file_copy: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -84,7 +84,7 @@
         file_system: "bootflash:"
         connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'bootflash:' in result.file_system"
@@ -112,7 +112,7 @@
         file_system: "bootflash:"
         connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Initiate copy from nxos device to copy {{ test_destination_file }} to bootflash:dir1/dir2/dir3/{{ test_destination_file }}_copy
       register: result
@@ -127,7 +127,7 @@
         remote_scp_server_password: "{{ temp_passwd }}"
         connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-    - assert: &id006
+    - ansible.builtin.assert: &id006
         that:
           - result.changed == true
           - "'copy scp:' in result.copy_cmd"
@@ -138,14 +138,14 @@
           - "'Received: File copied/pulled to nxos device from remote scp server.' in result.transfer_status"
           - "'{{ mgmt0_ip }}' in result.remote_scp_server"
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 60
 
     - name: Overwrite the file
       register: result
       cisco.nxos.nxos_file_copy: *id005
 
-    - assert: *id006
+    - ansible.builtin.assert: *id006
 
     - name: Initiate copy with sftp from nxos device to copy /bootflash/{{ test_destination_file }} to bootflash:dir2/dir2/dir3/{{ test_destination_file }}_another_copy
       register: result
@@ -161,7 +161,7 @@
         remote_scp_server_password: "{{ temp_passwd }}"
         connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'copy sftp:' in result.copy_cmd"

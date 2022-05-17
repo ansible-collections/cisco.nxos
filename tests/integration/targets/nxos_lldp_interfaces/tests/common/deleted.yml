@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lldp_interfaces deleted integration tests connection = {{ ansible_connection }}
 
 - name: Enable LLDP feature
@@ -27,7 +27,7 @@
           - name: Ethernet1/2
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface Ethernet1/2' in result.commands"
@@ -47,7 +47,7 @@
       cisco.nxos.nxos_lldp_interfaces: &id001
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lldp_interfaces == result.before
           - "'interface Ethernet1/1' in result.commands"
@@ -61,7 +61,7 @@
       register: result
       cisco.nxos.nxos_lldp_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

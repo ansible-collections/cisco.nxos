@@ -9,7 +9,7 @@
     gather_subset:
       - foobar
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == true

@@ -56,7 +56,7 @@
         rewrite_evpn_rt_asn: true
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -64,7 +64,7 @@
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -79,13 +79,13 @@
         rewrite_evpn_rt_asn: false
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Disable multisite border gateway - multisite
       cisco.nxos.nxos_config:
@@ -104,7 +104,7 @@
     feature: nv overlay
     state: disabled
 
-- pause:
+- ansible.builtin.pause:
     seconds: 5
 
 - name: Remove nv overlay evpn - multisite

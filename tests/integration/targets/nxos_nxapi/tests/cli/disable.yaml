@@ -14,7 +14,7 @@
       - show feature | grep nxapi
 
 - name: Assert NXAPI is disabled
-  assert:
+  ansible.builtin.assert:
     that: result.stdout[0]  is search('disabled')
 
 - name: Disable NXAPI again
@@ -23,7 +23,7 @@
     state: absent
 
 - name: Assert idempotence
-  assert:
+  ansible.builtin.assert:
     that: result.changed == false
 
 - ansible.builtin.debug:

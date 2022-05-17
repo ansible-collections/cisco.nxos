@@ -1,12 +1,12 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acl_interfaces replaced integration tests connection = {{ansible_connection}}
 
-- include_tasks: remove_config.yaml
+- ansible.builtin.include_tasks: remove_config.yaml
 
-- include_tasks: populate_acl.yaml
+- ansible.builtin.include_tasks: populate_acl.yaml
 
-- include_tasks: populate_config.yaml
+- ansible.builtin.include_tasks: populate_config.yaml
 
 - block:
     - name: Replaced
@@ -29,7 +29,7 @@
                     port: true
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed==True
           - "'interface Ethernet1/5' in result.commands"
@@ -47,7 +47,7 @@
           - "!min"
         gather_network_resources: acl_interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.acl_interfaces == result.after
 
@@ -55,8 +55,8 @@
       register: result
       cisco.nxos.nxos_acl_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: remove_config.yaml
+    - ansible.builtin.include_tasks: remove_config.yaml

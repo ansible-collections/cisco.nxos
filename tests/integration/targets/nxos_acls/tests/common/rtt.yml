@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acls round trip integration tests connection = {{ansible_connection}}
 
 - block:
@@ -61,7 +61,7 @@
                     protocol: sctp
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == True
           - "'no ip access-list ACL1v4' in result.commands"
@@ -75,7 +75,7 @@
         config: "{{ ansible_facts['network_resources']['acls'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == True
           - "'ip access-list ACL1v4' in result.commands"
@@ -84,4 +84,4 @@
           - "'no ipv6 access-list ACL1v6' in result.commands"
           - "result.commands | length == 4 "
   always:
-    - include_tasks: remove_config.yaml
+    - ansible.builtin.include_tasks: remove_config.yaml

@@ -12,7 +12,7 @@
       - result[0] == not QWERTYQWERTYQWERTY
       - result[0] matches not QWERTYQWERTYQWERTY
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

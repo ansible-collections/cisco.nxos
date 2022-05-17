@@ -1,12 +1,12 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acl_interfaces overridden integration tests connection = {{ansible_connection}}
 
-- include_tasks: remove_config.yaml
+- ansible.builtin.include_tasks: remove_config.yaml
 
-- include_tasks: populate_acl.yaml
+- ansible.builtin.include_tasks: populate_acl.yaml
 
-- include_tasks: populate_config.yaml
+- ansible.builtin.include_tasks: populate_config.yaml
 
 - block:
     - name: Overridden
@@ -35,7 +35,7 @@
                     port: true
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == True
           - "'interface Ethernet1/2' in result.commands"
@@ -60,7 +60,7 @@
     - name: Gather acls post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.acl_interfaces == result.after
 
@@ -68,8 +68,8 @@
       register: result
       cisco.nxos.nxos_acl_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-    - include_tasks: remove_config.yaml
+    - ansible.builtin.include_tasks: remove_config.yaml

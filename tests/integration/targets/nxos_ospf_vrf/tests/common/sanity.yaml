@@ -41,7 +41,7 @@
         passive_interface: true
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -49,7 +49,7 @@
       register: result
       cisco.nxos.nxos_ospf_vrf: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -68,13 +68,13 @@
         passive_interface: true
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_ospf_vrf: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure ospf vrf
       register: result
@@ -88,13 +88,13 @@
         vrf: default
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_ospf_vrf: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Unconfigure ospf vrf
       register: result
@@ -103,13 +103,13 @@
         vrf: default
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_ospf_vrf: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: def_met_default is defined
 
     - name: Unconfigure ospf vrf
@@ -119,13 +119,13 @@
         vrf: test
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_ospf_vrf: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: def_met_default is defined
   always:
     - name: Disable features

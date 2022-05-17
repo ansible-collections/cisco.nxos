@@ -12,7 +12,7 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.state foo up
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
       - result.msg is defined

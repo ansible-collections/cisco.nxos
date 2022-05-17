@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_static_routes overridden tests connection={{ ansible_connection }}"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Gather static_routes facts
@@ -35,7 +35,7 @@
         state: overridden
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'vrf context trial_vrf' in result.commands"
@@ -52,9 +52,9 @@
       cisco.nxos.nxos_static_routes: *overridden
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == false"
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

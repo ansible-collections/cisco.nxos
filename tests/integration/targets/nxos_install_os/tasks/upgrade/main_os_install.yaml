@@ -2,6 +2,6 @@
 - ansible.builtin.debug:
     msg: "***WARNING*** Remove meta end_play to verify this module ***WARNING***"
 
-- meta: end_play
+- ansible.builtin.meta: end_play
 
-- include: targets/nxos_install_os/tasks/upgrade/install_os.yaml
+- ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/install_os.yaml

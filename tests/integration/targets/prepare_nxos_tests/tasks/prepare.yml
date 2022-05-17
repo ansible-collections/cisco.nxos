@@ -148,13 +148,13 @@
     imagemr: "{{ image_version[11:12] }}"
   when: image_version is search("\d\.\d\(\d\)\S\S\S\S\(\d\)")
 
-- debug:
+- ansible.builtin.debug:
     msg: IMAGE VERSION {{ image_version }}
 
-- debug:
+- ansible.builtin.debug:
     msg: IMAGE TAG {{ imagetag }}
 
-- debug:
+- ansible.builtin.debug:
     msg: IMAGE MR {{ imagemr }}
 
 - name: Set a fact for 'ipv6_supported'

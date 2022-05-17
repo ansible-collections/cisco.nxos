@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acl_interfaces parsed integration tests connection={{ansible_connection}}"
 
 - block:
@@ -18,7 +18,7 @@
           ip port access-group PortACL in\n"
         state: parsed
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.parsed == parsed
@@ -27,5 +27,5 @@
       register: result
       cisco.nxos.nxos_acl_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that: result.changed == false

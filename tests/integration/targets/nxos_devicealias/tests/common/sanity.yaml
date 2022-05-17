@@ -23,11 +23,11 @@
           - name: ansible_test2_add
             pwwn: 65:22:21:20:19:18:1a:0d
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == ["terminal dont-ask", "device-alias database", "device-alias name ansible_test1_add pwwn 57:bb:cc:dd:ee:ff:11:67", "device-alias name
             ansible_test2_add pwwn 65:22:21:20:19:18:1a:0d", "device-alias commit", "no terminal dont-ask"]
@@ -36,11 +36,11 @@
       register: result
       cisco.nxos.nxos_devicealias: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == []
   always:

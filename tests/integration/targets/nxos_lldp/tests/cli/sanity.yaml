@@ -12,7 +12,7 @@
   cisco.nxos.nxos_lldp:
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"feature lldp" in result.commands'
@@ -22,7 +22,7 @@
   cisco.nxos.nxos_lldp:
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -31,7 +31,7 @@
   cisco.nxos.nxos_lldp:
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no feature lldp" in result.commands'
@@ -41,7 +41,7 @@
   cisco.nxos.nxos_lldp:
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

@@ -44,7 +44,7 @@
         timer_bgp_hold: 110
         timer_bgp_keepalive: 45
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
       when: test_helsinki
@@ -55,7 +55,7 @@
       when: test_helsinki
       cisco.nxos.nxos_bgp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
       when: test_helsinki
@@ -75,7 +75,7 @@
         timer_bgp_hold: default
         timer_bgp_keepalive: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: test_helsinki
 
     - name: Check Idempotence
@@ -84,7 +84,7 @@
       when: test_helsinki
       cisco.nxos.nxos_bgp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: test_helsinki
   rescue:
     - ansible.builtin.debug:

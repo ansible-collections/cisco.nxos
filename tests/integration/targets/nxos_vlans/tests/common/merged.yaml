@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_vlans merged integration tests connection={{ ansible_connection }}
 
 - name: setup
@@ -20,7 +20,7 @@
             state: suspend
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           # default vlan
@@ -39,7 +39,7 @@
           - "!min"
         gather_network_resources: vlans
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|length == ansible_facts.network_resources.vlans|length
 
@@ -47,7 +47,7 @@
       register: result
       cisco.nxos.nxos_vlans: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

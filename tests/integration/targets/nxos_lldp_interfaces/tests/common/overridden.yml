@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lldp_interfaces overridden tests connection={{ ansible_connection }}
 
 - name: Enable LLDP feature
@@ -32,7 +32,7 @@
               vlan: 12
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lldp_interfaces == result.before
           - "'interface Ethernet1/1' in result.commands"
@@ -46,7 +46,7 @@
     - name: Gather lldp_interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lldp_interfaces == result.after
 
@@ -54,7 +54,7 @@
       register: result
       cisco.nxos.nxos_lldp_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

@@ -12,7 +12,7 @@
         confirm: true
   always:
     - name: Wait for device to come back up
-      wait_for:
+      ansible.builtin.wait_for:
         port: 22
         state: started
         timeout: 600

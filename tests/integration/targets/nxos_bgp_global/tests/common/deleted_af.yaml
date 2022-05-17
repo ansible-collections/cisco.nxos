@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_bgp_global deleted_af integration tests connection={{ ansible_connection}}
 
 - name: Remove pre-existing BGP configurations
@@ -33,7 +33,7 @@
       ignore_errors: true
 
     - name: Assert that the task failed
-      assert:
+      ansible.builtin.assert:
         that:
           - result.failed == True
           - "'Neighbor 203.0.113.2 has address-family configurations. Please use the nxos_bgp_neighbor_af module to remove those first.' in result.msg"
@@ -67,7 +67,7 @@
       ignore_errors: true
 
     - name: Assert that the task failed
-      assert:
+      ansible.builtin.assert:
         that:
           - result.failed == True
           - "'VRF site-1 has address-family configurations. Please use the nxos_bgp_af module to remove those first.' in result.msg"
@@ -103,7 +103,7 @@
       ignore_errors: true
 
     - name: Assert that the task failed
-      assert:
+      ansible.builtin.assert:
         that:
           - result.failed == True
           - "'VRF site-1 has address-family configurations. Please use the nxos_bgp_af module to remove those first.' in result.msg"

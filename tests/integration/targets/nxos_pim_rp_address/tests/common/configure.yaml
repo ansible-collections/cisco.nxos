@@ -41,7 +41,7 @@
         bidir: "{{ bidir_true|default(omit) }}"
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -49,7 +49,7 @@
       register: result
       cisco.nxos.nxos_pim_rp_address: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -108,13 +108,13 @@
         group_list: 224.0.0.0/8
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: 1.4 Idempotence remove rp_address + group_list
       register: result
       cisco.nxos.nxos_pim_rp_address: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: 2.0 Configure rp_address + prefix_list (bidir_true)
       register: result
@@ -124,13 +124,13 @@
         bidir: "{{ bidir_true|default(omit) }}"
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: 2.0 Idempotence rp_address + prefix_list (bidir_true)
       register: result
       cisco.nxos.nxos_pim_rp_address: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - block:
         - name: 2.1 Configure rp_address + prefix_list (bidir_false)
@@ -158,13 +158,13 @@
         bidir: "{{ bidir_false|default(omit)}}"
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: 2.2 Idempotence remove rp_address + prefix_list (bidir_false)
       register: result
       cisco.nxos.nxos_pim_rp_address: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: 3.0 Configure rp_address + route_map + (bidir_true)
       register: result
@@ -174,13 +174,13 @@
         bidir: "{{ bidir_true|default(omit) }}"
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: 3.0 Idempotence rp_address + route_map + (bidir_true)
       register: result
       cisco.nxos.nxos_pim_rp_address: *id011
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - block:
         - name: 3.1 Configure rp_address + route_map (bidir_false)
@@ -208,13 +208,13 @@
         bidir: "{{ bidir_false|default(omit)}}"
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: 3.2 Idempotence remove rp_address + route_map (bidir_false)
       register: result
       cisco.nxos.nxos_pim_rp_address: *id013
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Disable feature PIM
       cisco.nxos.nxos_feature: *id014

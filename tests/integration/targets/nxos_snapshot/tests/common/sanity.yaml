@@ -34,7 +34,7 @@
         description: Ansible
         save_snapshot_locally: true
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -42,7 +42,7 @@
       register: result
       cisco.nxos.nxos_snapshot: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -77,13 +77,13 @@
         row_id: ROW_intf
         element_key1: intf-name
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: compare snapshots
       cisco.nxos.nxos_snapshot:
@@ -100,26 +100,26 @@
         snapshot_name: test_snapshot2
         action: delete
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: delete all snapshots
       register: result
       cisco.nxos.nxos_snapshot: &id007
         action: delete_all
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Conf Idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   when: snapshot_run
   always:
     - name: delete all sections

@@ -14,7 +14,7 @@
         dest_level: 00
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - '"logging console 0" in result.commands'
@@ -25,7 +25,7 @@
         timestamp: microseconds
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - '"logging timestamp microseconds" in result.commands'
@@ -36,7 +36,7 @@
         dest: monitor
         dest_level: 3
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - '"logging monitor 3" in result.commands'
@@ -47,7 +47,7 @@
         facility: daemon
         facility_level: 4
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - '"logging level daemon 4" in result.commands'
@@ -57,7 +57,7 @@
       cisco.nxos.nxos_config:
         lines: logging level virtual-service 7
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
@@ -66,7 +66,7 @@
       cisco.nxos.nxos_logging:
         purge: true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - '"no logging level virtual-service 7" in result.commands'
@@ -98,7 +98,7 @@
             facility_level: 4
         state: absent
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - '"no logging console" in result.commands'

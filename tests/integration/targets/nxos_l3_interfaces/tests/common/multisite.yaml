@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_l3_interfaces multisite integration tests connection={{ ansible_connection }}
 
 - name: Set a fact for 'test_int1', 'test_int2', and 'test_int3'
@@ -8,7 +8,7 @@
     test_int2: "{{ nxos_int2 }}"
     test_int3: "{{ nxos_int3 }}"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - name: Enable feature nv overlay - multisite
   cisco.nxos.nxos_config:
@@ -64,7 +64,7 @@
           - name: "{{ test_int3 }}"
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
@@ -79,12 +79,12 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
     - name: setup1 - merged
       ignore_errors: true
@@ -107,7 +107,7 @@
               - address: 192.168.10.2/24
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface {{ test_int3 }}' in result.commands"
@@ -124,7 +124,7 @@
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
@@ -132,12 +132,12 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
     - name: setup1 - replaced
       ignore_errors: true
@@ -180,7 +180,7 @@
                 secondary: true
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
@@ -194,7 +194,7 @@
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id003
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
@@ -202,12 +202,12 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *id004
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
     - name: setup1 - overidden
       ignore_errors: true
@@ -254,7 +254,7 @@
         config: "{{ overriden_config + mgmt }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
@@ -272,7 +272,7 @@
     - name: Gather l3_interfaces post facts
       cisco.nxos.nxos_facts: *id005
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
@@ -280,7 +280,7 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *id006
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -320,7 +320,7 @@
             evpn_multisite_tracking: dci-tracking
         state: rendered
 
-    - assert:
+    - ansible.builtin.assert:
         that: "{{ rendered_multi | symmetric_difference(result['rendered']) |length==0 }}"
 
     - name: Gather l3_interfaces facts from the device and assert that its empty
@@ -329,10 +329,10 @@
         state: gathered
 
     - name: Make sure that rendered task actually did not make any changes to the device
-      assert:
+      ansible.builtin.assert:
         that: "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == [] }}"
 
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
     # Interfaces used in the task don't actually exist on the appliance
     - name: Use parsed state to convert externally supplied config to structured format
@@ -353,7 +353,7 @@
             vrf member management
         state: parsed
 
-    - assert:
+    - ansible.builtin.assert:
         that: "{{ parsed_multi | symmetric_difference(result['parsed']) |length==0 }}"
 
   when: multiout is not search("Invalid command")

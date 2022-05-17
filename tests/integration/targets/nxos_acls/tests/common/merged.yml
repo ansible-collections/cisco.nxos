@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acls merged integration tests connection={{ansible_connection}}"
 
-- include_tasks: remove_config.yaml
+- ansible.builtin.include_tasks: remove_config.yaml
 
 - block:
     - name: Merged
@@ -51,7 +51,7 @@
                     protocol: sctp
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == True
           - "'ip access-list ACL1v4' in result.commands"
@@ -68,7 +68,7 @@
           - "!min"
         gather_network_resources: acls
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.acls == result.after
 
@@ -76,7 +76,7 @@
       register: result
       cisco.nxos.nxos_acls: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -99,9 +99,9 @@
         state: merged
       ignore_errors: true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == True
           - "'Cannot update existing ACE ACL1v4 of ACL 20 with state merged. Please use state replaced or overridden.' in result.msg"
   always:
-    - include_tasks: remove_config.yaml
+    - ansible.builtin.include_tasks: remove_config.yaml

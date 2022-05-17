@@ -1,7 +1,7 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_route_maps merged integration tests connection={{ ansible_connection }}"
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Merge the provided configuration with the existing running configuration
@@ -80,16 +80,16 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that: "{{ result['before'] == [] }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['after'][0] == result['after'][0] }}"
           - "{{ merged['after'][1] == result['after'][1] }}"
@@ -99,9 +99,9 @@
       register: result
 
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

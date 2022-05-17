@@ -25,7 +25,7 @@
     parents: ip access-list test
     match: exact
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip access-list test' in result.updates"
@@ -47,7 +47,7 @@
     parents: ip access-list test
     match: exact
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

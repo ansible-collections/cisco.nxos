@@ -39,7 +39,7 @@
         portchannel: 10
         vpc: 10
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -47,7 +47,7 @@
       register: result
       cisco.nxos.nxos_vpc_interface: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -58,7 +58,7 @@
         portchannel: 11
         peer_link: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: image_version != "7.0(3)I5(1)"
 
     - name: Conf Idempotence
@@ -66,7 +66,7 @@
       when: image_version != "7.0(3)I5(1)"
       cisco.nxos.nxos_vpc_interface: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: image_version != "7.0(3)I5(1)"
 
     - name: Configure vpc port channel
@@ -76,7 +76,7 @@
         portchannel: 11
         peer_link: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: image_version != "7.0(3)I5(1)"
 
     - name: Conf Idempotence
@@ -84,7 +84,7 @@
       when: image_version != "7.0(3)I5(1)"
       cisco.nxos.nxos_vpc_interface: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: image_version != "7.0(3)I5(1)"
 
     - name: remove vpc port channel
@@ -94,13 +94,13 @@
         vpc: 10
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remove Idempotence
       register: result
       cisco.nxos.nxos_vpc_interface: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: remove vpc
       ignore_errors: true

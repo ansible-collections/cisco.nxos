@@ -12,7 +12,7 @@
   when: platform is search('N9K') and (major_version is version('10.', 'ge'))
 
 - name: delete configurable backup file path
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   with_items:
@@ -20,14 +20,14 @@
     - "{{ role_path }}/backup/backup.cfg"
 
 - name: collect any backup files
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/backup"
     pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_files
   connection: local
 
 - name: delete backup files
-  file:
+  ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
   with_items: "{{backup_files.files|default([])}}"
@@ -38,18 +38,18 @@
   ansible.netcommon.cli_config:
     backup: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
 - name: collect any backup files
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/backup"
     pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_files
   connection: local
 
-- assert:
+- ansible.builtin.assert:
     that:
       - backup_files.files is defined
 
@@ -62,17 +62,17 @@
       filename: backup.cfg
       dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
 - name: check if the backup file-1 exist
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg"
   register: backup_file
   connection: local
 
-- assert:
+- ansible.builtin.assert:
     that:
       - backup_file.files is defined
 
@@ -84,17 +84,17 @@
     backup_options:
       filename: backup.cfg
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
 - name: check if the backup file-2 exist
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/backup/backup.cfg"
   register: backup_file
   connection: local
 
-- assert:
+- ansible.builtin.assert:
     that:
       - backup_file.files is defined
 
@@ -106,18 +106,18 @@
     backup_options:
       dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
 - name: check if the backup file-3 exist
-  find:
+  ansible.builtin.find:
     paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
     pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_file
   connection: local
 
-- assert:
+- ansible.builtin.assert:
     that:
       - backup_file.files is defined
 

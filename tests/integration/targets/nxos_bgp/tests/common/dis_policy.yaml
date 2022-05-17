@@ -37,7 +37,7 @@
         disable_policy_batching_ipv4_prefix_list: v4_p
         disable_policy_batching_ipv6_prefix_list: v6_p
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
       when: bgp_disable_policy
@@ -47,7 +47,7 @@
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
       when: bgp_disable_policy
@@ -61,7 +61,7 @@
         disable_policy_batching_ipv4_prefix_list: default
         disable_policy_batching_ipv6_prefix_list: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: bgp_disable_policy
 
     - name: Check Idempotence
@@ -69,7 +69,7 @@
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: bgp_disable_policy
   rescue:
     - ansible.builtin.debug:

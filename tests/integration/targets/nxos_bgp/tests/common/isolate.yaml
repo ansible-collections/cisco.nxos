@@ -35,7 +35,7 @@
         asn: 65535
         isolate: false
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
       when: bgp_isolate
@@ -45,7 +45,7 @@
       when: bgp_isolate
       cisco.nxos.nxos_bgp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
       when: bgp_isolate
@@ -57,7 +57,7 @@
         asn: 65535
         isolate: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: bgp_isolate
 
     - name: Check Idempotence
@@ -65,7 +65,7 @@
       when: bgp_isolate
       cisco.nxos.nxos_bgp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: bgp_isolate
   rescue:
     - ansible.builtin.debug:

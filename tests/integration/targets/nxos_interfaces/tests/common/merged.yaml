@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_interfaces merged integration tests connection={{ ansible_connection }}"
 
 - name: Set a fact for 'test_int1' and 'test_int2'
@@ -28,13 +28,13 @@
             enabled: "{{ enabled|default(omit)}}"
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
           - "'description Configured by Ansible' in result.commands"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'no shutdown' in result.commands"
       when: enabled is defined
@@ -46,7 +46,7 @@
           - "!min"
         gather_network_resources: interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length == 0
 
@@ -54,7 +54,7 @@
       register: result
       cisco.nxos.nxos_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -77,7 +77,7 @@
         state: merged
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'interface {{ test_int2 }}' in result.commands"
           - "'shutdown' in result.commands"

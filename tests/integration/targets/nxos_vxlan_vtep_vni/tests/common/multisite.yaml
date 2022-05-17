@@ -40,7 +40,7 @@
         vni: 8000
         multisite_ingress_replication: enable
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -48,7 +48,7 @@
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -59,13 +59,13 @@
         vni: 8000
         multisite_ingress_replication: disable
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure optimized multisite ingress replication - multisite
       register: result
@@ -74,13 +74,13 @@
         vni: 8000
         multisite_ingress_replication: optimized
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Disable multisite border gateway - multisite
       cisco.nxos.nxos_config:
@@ -94,7 +94,7 @@
     feature: nv overlay
     state: disabled
 
-- pause:
+- ansible.builtin.pause:
     seconds: 5
 
 - name: Remove nv overlay evpn - multisite

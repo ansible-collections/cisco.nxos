@@ -40,7 +40,7 @@
     time_range: "{{time_range|default(omit)}}"
     state: present
 
-- assert: &id002
+- ansible.builtin.assert: &id002
     that:
       - result.changed == true
 
@@ -48,7 +48,7 @@
   register: result
   cisco.nxos.nxos_acl: *id001
 
-- assert: &id004
+- ansible.builtin.assert: &id004
     that:
       - result.changed == false
 
@@ -78,13 +78,13 @@
     time_range: "{{time_range|default(omit)}}"
     state: present
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 
 - name: Check Idempotence
   register: result
   cisco.nxos.nxos_acl: *id003
 
-- assert: *id004
+- ansible.builtin.assert: *id004
 
 - name: ace remark
   register: result
@@ -95,13 +95,13 @@
     remark: test_remark
     state: present
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 
 - name: Check Idempotence
   register: result
   cisco.nxos.nxos_acl: *id005
 
-- assert: *id004
+- ansible.builtin.assert: *id004
 
 - name: change remark
   register: result
@@ -112,13 +112,13 @@
     remark: changed_remark
     state: present
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 
 - name: Check Idempotence
   register: result
   cisco.nxos.nxos_acl: *id006
 
-- assert: *id004
+- ansible.builtin.assert: *id004
 
 - name: ace 30
   register: result
@@ -133,13 +133,13 @@
     precedence: network
     state: present
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 
 - name: Check Idempotence
   register: result
   cisco.nxos.nxos_acl: *id007
 
-- assert: *id004
+- ansible.builtin.assert: *id004
 
 - name: change ace 30 options
   register: result
@@ -153,13 +153,13 @@
     precedence: network
     state: present
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 
 - name: Check Idempotence
   register: result
   cisco.nxos.nxos_acl: *id008
 
-- assert: *id004
+- ansible.builtin.assert: *id004
 
 - name: ace 40
   register: result
@@ -175,13 +175,13 @@
     precedence: network
     state: present
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 
 - name: Check Idempotence
   register: result
   cisco.nxos.nxos_acl: *id009
 
-- assert: *id004
+- ansible.builtin.assert: *id004
 
 - name: change ace 40
   register: result
@@ -195,13 +195,13 @@
     precedence: network
     state: present
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 
 - name: Check Idempotence
   register: result
   cisco.nxos.nxos_acl: *id010
 
-- assert: *id004
+- ansible.builtin.assert: *id004
 
 - name: remove ace 30
   register: result
@@ -210,25 +210,25 @@
     seq: 30
     state: absent
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 
 - name: Check Idempotence
   register: result
   cisco.nxos.nxos_acl: *id011
 
-- assert: *id004
+- ansible.builtin.assert: *id004
 
 - name: Remove ACL
   register: result
   cisco.nxos.nxos_acl: *id012
 
-- assert: *id002
+- ansible.builtin.assert: *id002
 
 - name: Check Idempotence
   register: result
   cisco.nxos.nxos_acl: *id012
 
-- assert: *id004
+- ansible.builtin.assert: *id004
 
 - ansible.builtin.debug:
     msg: END connection={{ ansible_connection }} nxos_acl sanity test

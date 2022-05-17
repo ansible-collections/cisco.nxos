@@ -13,7 +13,7 @@
       cisco.nxos.nxos_system:
         hostname: foo
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
@@ -22,7 +22,7 @@
       cisco.nxos.nxos_system:
         hostname: foo
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:

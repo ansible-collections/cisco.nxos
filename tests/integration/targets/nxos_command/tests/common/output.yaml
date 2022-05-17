@@ -8,7 +8,7 @@
     commands:
       - show version
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -19,7 +19,7 @@
       - show version
       - show interface
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

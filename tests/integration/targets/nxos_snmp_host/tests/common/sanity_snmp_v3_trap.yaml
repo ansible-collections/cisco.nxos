@@ -48,7 +48,7 @@
         src_intf: "{{ intname|default(omit) }}"
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -56,7 +56,7 @@
       register: result
       cisco.nxos.nxos_snmp_host: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -88,13 +88,13 @@
         vrf_filter: management
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence Check
       register: result
       cisco.nxos.nxos_snmp_host: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - block:
         - name: remove some more configuration
@@ -118,13 +118,13 @@
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Cleanup Idempotence
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Cleanup
       register: result

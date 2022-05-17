@@ -50,7 +50,7 @@
     name: "{{ testint2 }}"
     ipv4: 192.168.22.1/24
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -58,7 +58,7 @@
   register: result
   cisco.nxos.nxos_l3_interface: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -69,7 +69,7 @@
     ipv4: 192.168.22.1/24
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -77,7 +77,7 @@
   register: result
   cisco.nxos.nxos_l3_interface: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -92,7 +92,7 @@
         ipv4: 192.168.20.1/24
         ipv6: "{{ ipv6_address }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -100,7 +100,7 @@
   register: result
   cisco.nxos.nxos_l3_interface: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -116,7 +116,7 @@
         ipv6: "{{ ipv6_address }}"
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -124,7 +124,7 @@
   register: result
   cisco.nxos.nxos_l3_interface: *id004
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

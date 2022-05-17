@@ -16,7 +16,7 @@
     log_neighbor_changesd: disable
   when: (imagetag and imagetag is not search("D1|N1"))
 
-- debug:
+- ansible.builtin.debug:
     var: titanium
 
 - name: Set a fact for 'remove_private_asa'
@@ -71,7 +71,7 @@
         shutdown: true
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -80,7 +80,7 @@
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -108,14 +108,14 @@
         shutdown: false
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove BGP
       with_items: "{{ vrfs }}"
@@ -126,14 +126,14 @@
         vrf: "{{ item }}"
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure BGP neighbor3
       with_items: "{{ vrfs }}"
@@ -146,14 +146,14 @@
         remove_private_as: "{{remove_private_asa|default(omit)}}"
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure BGP neighbor4
       with_items: "{{ vrfs }}"
@@ -166,21 +166,21 @@
         remove_private_as: "{{remove_private_asr|default(omit)}}"
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove BGP
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Configure BGP neighbor 3des password
       with_items: "{{ vrfs }}"
@@ -193,21 +193,21 @@
         pwd: 386c0565965f89de
         pwd_type: 3des
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove BGP
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Configure BGP neighbor type 7 password
       with_items: "{{ vrfs }}"
@@ -220,14 +220,14 @@
         pwd: 386c0565965f89de
         pwd_type: cisco_type_7
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove BGP neighbor password
       with_items: "{{ vrfs }}"
@@ -240,21 +240,21 @@
         pwd: default
         pwd_type: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove BGP
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Configure BGP neighbor transport type passive
       with_items: "{{ vrfs }}"
@@ -266,14 +266,14 @@
         remote_as: 30
         transport_passive_only: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id011
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure BGP neighbor transport type default
       with_items: "{{ vrfs }}"
@@ -285,14 +285,14 @@
         remote_as: 30
         transport_passive_only: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id012
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove BGP
       with_items: "{{ vrfs }}"
@@ -303,14 +303,14 @@
         vrf: "{{ item }}"
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check Idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id013
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure BFD enable
       register: result
@@ -320,13 +320,13 @@
         bfd: enable
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check BFD enable Idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id014
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure BFD disable Idempotence
       register: result
@@ -336,13 +336,13 @@
         bfd: disable
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check BFD disable Idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id015
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: "Teardown: Disable features"
       loop:

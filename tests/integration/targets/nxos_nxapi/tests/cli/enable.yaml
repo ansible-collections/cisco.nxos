@@ -19,7 +19,7 @@
       - show feature | grep nxapi
 
 - name: Assert NXAPI is enabled
-  assert:
+  ansible.builtin.assert:
     that: result.stdout[0]  is search('enabled')
 
 - name: Enable NXAPI again
@@ -27,7 +27,7 @@
   cisco.nxos.nxos_nxapi:
 
 - name: Assert idempotence
-  assert:
+  ansible.builtin.assert:
     that: result.changed == false
 
 - ansible.builtin.debug:

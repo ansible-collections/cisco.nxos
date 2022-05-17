@@ -16,7 +16,7 @@
     file_system: "invalid_media_type:"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result is search('Invalid nxos filesystem invalid_media_type:')
 
@@ -29,7 +29,7 @@
     file_system: "bootflash:"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result is search('Local file ./data.cfg_does_not_exist not found')
 
@@ -47,7 +47,7 @@
     remote_scp_server_password: "{{ temp_passwd }}"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == True
@@ -70,12 +70,12 @@
     remote_scp_server_password: "{{ temp_passwd }}"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == True
 
-- pause:
+- ansible.builtin.pause:
     seconds: 10
 
 - name: Try and copy file using an invalid username
@@ -92,7 +92,7 @@
     remote_scp_server_password: "{{ temp_passwd }}"
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == True
@@ -112,7 +112,7 @@
     remote_scp_server_password: invalid_password
     connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == True

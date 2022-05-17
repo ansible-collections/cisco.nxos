@@ -115,7 +115,7 @@
         fabricpath_slow_timer: "{{ nd_fab_slow | default(omit) }}"
         fabricpath_vlan: "{{ nd_fab_vlan | default(omit) }}"
 
-    - assert: &id005
+    - ansible.builtin.assert: &id005
         that:
           - result.changed == true
 
@@ -123,7 +123,7 @@
       register: result
       cisco.nxos.nxos_bfd_global: *id004
 
-    - assert: &id007
+    - ansible.builtin.assert: &id007
         that:
           - result.changed == false
 
@@ -145,13 +145,13 @@
         fabricpath_slow_timer: "{{ fab_slow | default(omit) }}"
         fabricpath_vlan: "{{ fab_vlan | default(omit) }}"
 
-    - assert: *id005
+    - ansible.builtin.assert: *id005
 
     - name: bfd_def idempotence
       register: result
       cisco.nxos.nxos_bfd_global: *id006
 
-    - assert: *id007
+    - ansible.builtin.assert: *id007
   always:
     - name: Teardown
       ignore_errors: true

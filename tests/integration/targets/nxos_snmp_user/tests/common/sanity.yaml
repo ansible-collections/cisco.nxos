@@ -30,7 +30,7 @@
     name: ntc
     state: absent
 
-- pause:
+- ansible.builtin.pause:
     seconds: 5
 
 - block:
@@ -44,7 +44,7 @@
         privacy: HelloU$er1
         encrypt: true
 
-    - assert: &id001
+    - ansible.builtin.assert: &id001
         that:
           - result.changed == true
 
@@ -54,13 +54,13 @@
         user: ntc
         group: network-admin
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_snmp_user: *id002
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -71,16 +71,16 @@
         group: network-admin
         state: absent
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 5
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_snmp_user: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - block:
         - name: delete snmp user

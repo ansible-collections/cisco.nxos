@@ -16,7 +16,7 @@
           - show run all | inc nxapi | inc ciphers
 
     - name: Assert weak ciphers configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl ciphers weak'
 
@@ -25,7 +25,7 @@
       cisco.nxos.nxos_nxapi: *id001
 
     - name: Assert configuration is idempotent
-      assert: &id003
+      ansible.builtin.assert: &id003
         that:
           - result.changed == false
 
@@ -42,7 +42,7 @@
           - show run all | inc nxapi | inc ciphers
 
     - name: Assert strong ciphers configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'no nxapi ssl ciphers weak'
 
@@ -51,7 +51,7 @@
       cisco.nxos.nxos_nxapi: *id002
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
 
     - name: Configure NXAPI HTTPs w/default TLSv1
       register: result
@@ -65,7 +65,7 @@
           - show run all | inc nxapi | inc protocols
 
     - name: Assert NXAPI HTTPs w/default TLSv1 configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1'
 
@@ -74,7 +74,7 @@
       cisco.nxos.nxos_nxapi: *id004
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
 
     - name: Configure NXAPI HTTPs TLSv1.1 -default TLSv1
       register: result
@@ -90,7 +90,7 @@
           - show run all | inc nxapi | inc protocols
 
     - name: Assert NXAPI HTTPs w/TLSv1.1 configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1.1'
 
@@ -99,7 +99,7 @@
       cisco.nxos.nxos_nxapi: *id005
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
 
     - name: Configure NXAPI HTTPs TLSv1.2 -default TLSv1
       register: result
@@ -115,7 +115,7 @@
           - show run all | inc nxapi | inc protocols
 
     - name: Assert NXAPI HTTPs w/TLSv1.2 configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1.2'
 
@@ -124,7 +124,7 @@
       cisco.nxos.nxos_nxapi: *id006
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
 
     - name: Configure NXAPI HTTPs w/TLS1.2 +default TLSv1
       register: result
@@ -140,7 +140,7 @@
           - show run all | inc nxapi | inc protocols
 
     - name: Assert NXAPI HTTPs w/TLS1.2 +default TLSv1 configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1 TLSv1.2'
 
@@ -149,7 +149,7 @@
       cisco.nxos.nxos_nxapi: *id007
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
 
     - name: Configure NXAPI HTTPs w/TLS1.2 TLS1.1 -default TLSv1
       register: result
@@ -167,7 +167,7 @@
           - show run all | inc nxapi | inc protocols
 
     - name: Assert NXAPI HTTPs w/TLS1.2 TLS1.2 -default TLSv1 configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1.1 TLSv1.2'
 
@@ -176,7 +176,7 @@
       cisco.nxos.nxos_nxapi: *id008
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
 
     - name: Configure NXAPI HTTPs w/TLS1.2 TLS1.1 +default TLSv1
       register: result
@@ -193,7 +193,7 @@
           - show run all | inc nxapi | inc protocols
 
     - name: Assert NXAPI HTTPs w/TLS1.2 TLS1.1 +default TLSv1 configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1 TLSv1.1 TLSv1.2'
 
@@ -202,7 +202,7 @@
       cisco.nxos.nxos_nxapi: *id009
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
 
     - name: Configure NXAPI HTTPs with explicit TLS1.2 TLS1.1 TLSv1
       register: result
@@ -220,7 +220,7 @@
           - show run all | inc nxapi | inc protocols
 
     - name: Assert NXAPI HTTPs w/TLS1.2 TLS1.2 TLSv1 configuration
-      assert:
+      ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1 TLSv1.1 TLSv1.2'
 
@@ -229,7 +229,7 @@
       cisco.nxos.nxos_nxapi: *id010
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
   always:
     - name: Cleanup - Disable NXAPI
       register: result

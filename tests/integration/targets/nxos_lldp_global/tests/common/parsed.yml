@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_lldp_global parsed integration tests on connection={{ ansible_connection }}
 
 - block:
@@ -13,8 +13,8 @@
           no lldp tlv-select system-description
         state: parsed
 
-    - assert:
+    - ansible.builtin.assert:
         that: "{{ parsed == result['parsed'] }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_lldp_global parsed integration tests on connection={{ ansible_connection }}

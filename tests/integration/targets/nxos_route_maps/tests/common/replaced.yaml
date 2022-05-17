@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_route_maps replaced integration tests connection={{ ansible_connection }}"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Replace route-maps configurations of listed route-maps with provided configurations
@@ -31,18 +31,18 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['before'][0] == merged['after'][0] }}"
           - "{{ result['before'][1] == merged['after'][1] }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ replaced['after'][0] == result['after'][0] }}"
           - "{{ replaced['after'][1] == result['after'][1] }}"
@@ -52,10 +52,10 @@
       cisco.nxos.nxos_route_maps: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

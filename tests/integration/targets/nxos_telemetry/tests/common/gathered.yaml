@@ -34,7 +34,7 @@
         state: gathered
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "{{ result['gathered'] == gathered }}"
   always:

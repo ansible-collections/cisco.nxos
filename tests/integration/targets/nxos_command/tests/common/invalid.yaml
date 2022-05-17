@@ -9,7 +9,7 @@
     commands:
       - show foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
 
@@ -21,7 +21,7 @@
       - show version
       - show foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
 

@@ -121,7 +121,7 @@
                 id: 55
                 sample_interval: 2000
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - result.before|length == 0
@@ -157,19 +157,19 @@
           - "'snsr-grp 55 sample-interval 2000' in result.commands"
           - result.commands|length == {{ command_list_length }}
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'source-interface loopback55' in result.commands"
       when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0
 
     - name: Gather Telemetry Facts After Changes
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length == 0
 
@@ -177,7 +177,7 @@
       register: result
       cisco.nxos.nxos_telemetry: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -280,7 +280,7 @@
           - subscription 44
           - snsr-grp 8 sample-interval 1000
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - test_list|symmetric_difference(result.commands)|length == 0
@@ -289,7 +289,7 @@
       register: result
       cisco.nxos.nxos_telemetry: *id003
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

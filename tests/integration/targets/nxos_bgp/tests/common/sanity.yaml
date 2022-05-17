@@ -38,7 +38,7 @@
         router_id: 192.0.2.1
         state: present
 
-    - assert: &id003
+    - ansible.builtin.assert: &id003
         that:
           - result.changed == true
 
@@ -46,7 +46,7 @@
       register: result
       cisco.nxos.nxos_bgp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -54,13 +54,13 @@
       register: result
       cisco.nxos.nxos_bgp: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_bgp: *id002
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure BGP non defaults
       register: result
@@ -99,25 +99,25 @@
         suppress_fib_pending: true
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_bgp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove BGP
       register: result
       cisco.nxos.nxos_bgp: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_bgp: *id002
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Disable feature bgp
       cisco.nxos.nxos_feature:

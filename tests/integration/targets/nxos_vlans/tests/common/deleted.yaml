@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_vlans deleted integration tests connection={{ ansible_connection }}
 
 - name: setup
@@ -25,7 +25,7 @@
           - vlan_id: 6
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == ansible_facts.network_resources.vlans|length
           - result.after|length == 1
@@ -38,7 +38,7 @@
       register: result
       cisco.nxos.nxos_vlans: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

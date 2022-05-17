@@ -22,7 +22,7 @@
         address: 8.8.8.8
         state: present
 
-    - assert: &id003
+    - ansible.builtin.assert: &id003
         that:
           - result.changed == true
 
@@ -30,7 +30,7 @@
       register: result
       cisco.nxos.nxos_aaa_server_host: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -38,13 +38,13 @@
       register: result
       cisco.nxos.nxos_aaa_server_host: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id002
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure tacacs server non defaults
       register: result
@@ -55,13 +55,13 @@
         tacacs_port: 89
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure some defaults on tacacs server
       register: result
@@ -72,13 +72,13 @@
         tacacs_port: 100
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure tacacs server with clear text pwd
       register: result
@@ -91,19 +91,19 @@
         key: hello
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check NOT Idempotent
       register: result
       cisco.nxos.nxos_aaa_server_host: *id007
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Remove tacacs server configuration
       register: result
       cisco.nxos.nxos_aaa_server_host: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Configure tacacs server with type 7 encryption
       register: result
@@ -116,13 +116,13 @@
         key: hello
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure tacacs server with new type 7 encryption key
       register: result
@@ -135,7 +135,7 @@
         key: helloback
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'key 7' in result.updates[0]"
@@ -144,7 +144,7 @@
       register: result
       cisco.nxos.nxos_aaa_server_host: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure tacacs server with default key
       register: result
@@ -157,13 +157,13 @@
         key: default
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure tacacs server with all def
       register: result
@@ -175,13 +175,13 @@
         key: default
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Check Idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id011
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   rescue:
     - ansible.builtin.debug:
         msg: connection={{ ansible_connection }} nxos_aaa_server_host failure detected
