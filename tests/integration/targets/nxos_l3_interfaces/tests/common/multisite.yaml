@@ -32,7 +32,7 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: setup1 - deleted
+    - name: Setup1 - deleted
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
@@ -41,7 +41,7 @@
           - "interface {{ test_int3 }}"
           - "  no switchport"
 
-    - name: setup3 - deleted
+    - name: Setup3 - deleted
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int3 }}"
@@ -57,7 +57,7 @@
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_l3_interfaces: &id001
         config:
@@ -86,7 +86,7 @@
 
     - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: setup1 - merged
+    - name: Setup1 - merged
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
@@ -128,7 +128,7 @@
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_l3_interfaces: *id002
 
@@ -139,7 +139,7 @@
 
     - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: setup1 - replaced
+    - name: Setup1 - replaced
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:
@@ -148,7 +148,7 @@
           - "interface {{ test_int3 }}"
           - "  no switchport"
 
-    - name: setup3 - replaced
+    - name: Setup3 - replaced
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int3 }}"
@@ -198,7 +198,7 @@
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_l3_interfaces: *id004
 
@@ -209,7 +209,7 @@
 
     - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: setup1 - overidden
+    - name: Setup1 - overidden
       ignore_errors: true
       cisco.nxos.nxos_config: &id007
         lines:
@@ -222,7 +222,7 @@
         - "{{ test_int2 }}"
         - "{{ test_int3 }}"
 
-    - name: setup3 - overidden
+    - name: Setup3 - overidden
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int1 }}"
@@ -239,7 +239,7 @@
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - name: Store reserved interface IP config
+    - name: Store reserved interface ip config
       ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         overriden_config:
@@ -276,7 +276,7 @@
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: Idempotence - Overridden
+    - name: Idempotence - overridden
       register: result
       cisco.nxos.nxos_l3_interfaces: *id006
 
@@ -285,7 +285,7 @@
           - result.changed == false
           - result.commands|length == 0
 
-    - name: teardown - overdidden
+    - name: Teardown - overdidden
       ignore_errors: true
       cisco.nxos.nxos_config: *id007
       loop:

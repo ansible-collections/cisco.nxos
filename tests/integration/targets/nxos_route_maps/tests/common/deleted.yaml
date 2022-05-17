@@ -52,7 +52,7 @@
         that:
           - result["after"] == []
 
-    - name: Delete all route-maps (IDEMPOTENT)
+    - name: Delete all route-maps (idempotent)
       register: result
       cisco.nxos.nxos_route_maps: *id001
 

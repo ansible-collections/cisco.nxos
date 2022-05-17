@@ -2,11 +2,11 @@
 - ansible.builtin.debug:
     msg: START cli/diff.yaml on connection={{ ansible_connection }}
 
-- name: setup hostname
+- name: Setup hostname
   cisco.nxos.nxos_config:
     lines: hostname switch
 
-- name: nxos_config diff against retrieved config
+- name: Nxos_config diff against retrieved config
   diff: true
   register: result
   cisco.nxos.nxos_config:
@@ -18,7 +18,7 @@
       - "'hostname an-nxos9k-01.ansible.com' in result['diff']['after']"
       - "'hostname switch' in result['diff']['before']"
 
-- name: nxos_config diff against provided running_config
+- name: Nxos_config diff against provided running_config
   diff: true
   register: result
   cisco.nxos.nxos_config:

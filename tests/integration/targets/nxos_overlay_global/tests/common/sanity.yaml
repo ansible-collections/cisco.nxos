@@ -20,11 +20,11 @@
       cisco.nxos.nxos_evpn_global:
         nv_overlay_evpn: true
 
-    - name: Apply N7K specific setup config
+    - name: Apply n7k specific setup config
       ansible.builtin.include: tasks/platform/n7k/setup.yaml
       when: platform is match('N7K')
 
-    - name: Configure Additional N7K requiste features
+    - name: Configure additional n7k requiste features
       when: platform is match('N7K')
       cisco.nxos.nxos_config:
         commands:
@@ -48,7 +48,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_overlay_global: *id001
 
@@ -63,7 +63,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_overlay_global: *id003
 
@@ -76,14 +76,14 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_overlay_global: *id005
 
     - ansible.builtin.assert: *id004
   when: overlay_global_supported
   always:
-    - name: Apply N7K specific cleanup config
+    - name: Apply n7k specific cleanup config
       ansible.builtin.include: tasks/platform/n7k/cleanup.yaml
       when: platform is match('N7K')
 

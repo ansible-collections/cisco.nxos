@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START nxos_file_copy input_validation test
 
-- name: Input Validation - param should be type <path>
+- name: Input validation - param should be type <path>
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
@@ -13,7 +13,7 @@
     that:
       - not result is search('argument remote_file is of type')
 
-- name: Input Validation - param should be type <int>
+- name: Input validation - param should be type <int>
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
@@ -23,7 +23,7 @@
     that:
       - result is search("argument 'file_pull_timeout' is of type .* and we were unable to convert to int")
 
-- name: Input Validation - param should be type <bool>
+- name: Input validation - param should be type <bool>
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
@@ -33,7 +33,7 @@
     that:
       - result is search("argument 'file_pull' is of type .* and we were unable to convert to bool")
 
-- name: Input Validation - param <file_pull> <remote_file> dependency
+- name: Input validation - param <file_pull> <remote_file> dependency
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
@@ -43,7 +43,7 @@
     that:
       - result is search("file_pull is True but all of the following are missing: remote_file, remote_scp_server")
 
-- name: Input Validation - param <file_pull> <remote_scp_server> dependency
+- name: Input validation - param <file_pull> <remote_scp_server> dependency
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
@@ -54,7 +54,7 @@
     that:
       - result is search("file_pull is True but all of the following are missing: remote_file, remote_scp_server")
 
-- name: Input Validation - remote_scp_server params together
+- name: Input validation - remote_scp_server params together
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
@@ -64,7 +64,7 @@
     that:
       - result is search('parameters are required together: remote_scp_server, remote_scp_server_user')
 
-- name: Input Validation - param <file_pull_protocol> should only accept strings, which are included in choices
+- name: Input validation - param <file_pull_protocol> should only accept strings, which are included in choices
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:

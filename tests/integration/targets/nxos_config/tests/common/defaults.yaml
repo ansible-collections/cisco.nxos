@@ -6,7 +6,7 @@
   ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     commands:
       - no description
@@ -15,7 +15,7 @@
       - interface {{ intname }}
     match: none
 
-- name: configure device with defaults included
+- name: Configure device with defaults included
   register: result
   cisco.nxos.nxos_config:
     commands:
@@ -33,7 +33,7 @@
       - result.changed == true
       - result.updates is defined
 
-- name: check device with defaults included
+- name: Check device with defaults included
   register: result
   cisco.nxos.nxos_config:
     commands:

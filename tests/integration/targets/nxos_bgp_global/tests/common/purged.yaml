@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Delete all BGP config from the device
+    - name: Delete all bgp config from the device
       cisco.nxos.nxos_bgp_global: &id001
         state: purged
       register: result
@@ -28,7 +28,7 @@
         that:
           - result['after'] == {}
 
-    - name: Delete all BGP config from the device (IDEMPOTENT)
+    - name: Delete all bgp config from the device (idempotent)
       register: result
       cisco.nxos.nxos_bgp_global: *id001
 

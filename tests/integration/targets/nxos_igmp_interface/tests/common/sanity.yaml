@@ -11,7 +11,7 @@
     restart: true
   when: platform is not match("N35")
 
-- name: Enable feature PIM
+- name: Enable feature pim
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: pim
@@ -25,7 +25,7 @@
     match: none
 
 - block:
-    - name: put interface in L3 and enable PIM
+    - name: Put interface in l3 and enable pim
       cisco.nxos.nxos_config:
         commands:
           - no switchport
@@ -59,7 +59,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence - Configure igmp interface with non-default values
+    - name: Check idempotence - configure igmp interface with non-default values
       register: result
       cisco.nxos.nxos_igmp_interface: *id001
 
@@ -92,13 +92,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure igmp interface with some default values
+    - name: Check idempotence - configure igmp interface with some default values
       register: result
       cisco.nxos.nxos_igmp_interface: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: restart igmp
+    - name: Restart igmp
       cisco.nxos.nxos_igmp_interface:
         interface: "{{ intname }}"
         restart: "{{restart|default(omit)}}"
@@ -112,7 +112,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure igmp interface with default oif_ps
+    - name: Check idempotence - configure igmp interface with default oif_ps
       register: result
       cisco.nxos.nxos_igmp_interface: *id005
 
@@ -131,7 +131,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure igmp interface with oif_routemap
+    - name: Check idempotence - configure igmp interface with oif_routemap
       register: result
       cisco.nxos.nxos_igmp_interface: *id006
 
@@ -145,7 +145,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure igmp interface with default state
+    - name: Check idempotence - configure igmp interface with default state
       register: result
       cisco.nxos.nxos_igmp_interface: *id007
 
@@ -159,7 +159,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure igmp interface with absent state
+    - name: Check idempotence - configure igmp interface with absent state
       register: result
       cisco.nxos.nxos_igmp_interface: *id008
 
@@ -175,7 +175,7 @@
           - default interface {{ intname }}
         match: none
 
-    - name: Disable feature PIM
+    - name: Disable feature pim
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: pim

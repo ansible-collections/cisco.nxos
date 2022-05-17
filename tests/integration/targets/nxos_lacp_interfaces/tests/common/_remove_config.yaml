@@ -1,5 +1,5 @@
 ---
-- name: Remove Config
+- name: Remove config
   cisco.nxos.nxos_config:
     lines:
       - "no interface port-channel5"

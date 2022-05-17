@@ -3,7 +3,7 @@
     msg: "Start nxos_interfaces purged integration tests connection={{ ansible_connection }}"
 
 - block:
-    - name: setup2
+    - name: Setup2
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ nxos_int1 }}.100"
@@ -28,7 +28,7 @@
           - result.commands|length == 2
           - result.changed == True
 
-    - name: Purge virtual interfaces from running-config (IDEMPOTENT)
+    - name: Purge virtual interfaces from running-config (idempotent)
       cisco.nxos.nxos_interfaces: *purged
       register: result
 

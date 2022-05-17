@@ -15,20 +15,20 @@
     bgp_disable_policy: true
   when: imagetag is not search("A8|D1")
 
-- name: Disable feature BGP
+- name: Disable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature BGP
+- name: Enable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
 - block:
-    - name: set disable policy
+    - name: Set disable policy
       register: result
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: &id001
@@ -42,7 +42,7 @@
           - result.changed == true
       when: bgp_disable_policy
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: *id001
@@ -52,7 +52,7 @@
           - result.changed == false
       when: bgp_disable_policy
 
-    - name: reset disable policy
+    - name: Reset disable policy
       register: result
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: &id003
@@ -64,7 +64,7 @@
     - ansible.builtin.assert: *id002
       when: bgp_disable_policy
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       when: bgp_disable_policy
       cisco.nxos.nxos_bgp: *id003

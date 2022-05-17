@@ -2,12 +2,12 @@
 - ansible.builtin.debug:
     msg: START cli/sublevel.yaml
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
 
-- name: configure sub level command
+- name: Configure sub level command
   register: result
   cisco.nxos.nxos_config:
     lines: 10 permit ip any any log
@@ -19,7 +19,7 @@
       - "'ip access-list test' in result.updates"
       - "'10 permit ip any any log' in result.updates"
 
-- name: configure sub level command idempotent check
+- name: Configure sub level command idempotent check
   register: result
   cisco.nxos.nxos_config:
     lines: 10 permit ip any any log
@@ -29,7 +29,7 @@
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none

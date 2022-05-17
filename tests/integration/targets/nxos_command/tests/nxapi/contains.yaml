@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START common/contains.yaml on connection={{ ansible_connection }}
 
-- name: test contains operator
+- name: Test contains operator
   register: result
   cisco.nxos.nxos_command:
     commands:

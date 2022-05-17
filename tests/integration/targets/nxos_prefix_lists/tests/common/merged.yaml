@@ -57,7 +57,7 @@
           - "{{ merged['after'][0] == result['after'][0] }}"
           - "{{ merged['after'][1] == result['after'][1] }}"
 
-    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_prefix_lists: *id001
       register: result
 
@@ -67,7 +67,7 @@
           - result['changed'] == false
           - result.commands|length == 0
 
-    - name: Attempt to update an existing prefix-list entry (SHOULD FAIL)
+    - name: Attempt to update an existing prefix-list entry (should fail)
       cisco.nxos.nxos_prefix_lists:
         config:
           - afi: ipv4

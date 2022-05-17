@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Gather OSPFv3 facts using gathered
+    - name: Gather ospfv3 facts using gathered
       register: result
       cisco.nxos.nxos_ospfv3:
         state: gathered

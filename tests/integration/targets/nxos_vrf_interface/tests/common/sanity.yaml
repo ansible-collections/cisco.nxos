@@ -7,7 +7,7 @@
     intname: "{{ nxos_int1 }}"
 
 - block:
-    - name: put interface in L3
+    - name: Put interface in l3
       cisco.nxos.nxos_config:
         commands:
           - no switchport
@@ -26,7 +26,7 @@
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_vrf_interface: *id001
 
@@ -34,7 +34,7 @@
         that:
           - result.changed == false
 
-    - name: Ensure ntc VRF does not exist on interface
+    - name: Ensure ntc vrf does not exist on interface
       register: result
       cisco.nxos.nxos_vrf_interface: &id003
         vrf: ntc
@@ -43,13 +43,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       register: result
       cisco.nxos.nxos_vrf_interface: *id003
 
     - ansible.builtin.assert: *id004
   always:
-    - name: put interface in default mode
+    - name: Put interface in default mode
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines: default interface {{ intname }}

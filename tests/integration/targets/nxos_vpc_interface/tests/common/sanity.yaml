@@ -3,26 +3,26 @@
     msg: START connection={{ ansible_connection }} nxos_vpc_interface sanity test
 
 - block:
-    - name: enable feature vpc
+    - name: Enable feature vpc
       cisco.nxos.nxos_feature:
         feature: vpc
         state: enabled
 
-    - name: create port-channel10
+    - name: Create port-channel10
       cisco.nxos.nxos_config:
         commands:
           - interface port-channel10
           - switchport
         match: none
 
-    - name: create port-channel11
+    - name: Create port-channel11
       cisco.nxos.nxos_config:
         commands:
           - interface port-channel11
           - switchport
         match: none
 
-    - name: configure vpc
+    - name: Configure vpc
       cisco.nxos.nxos_vpc:
         state: present
         domain: 100
@@ -43,7 +43,7 @@
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_vpc_interface: *id001
 
@@ -61,7 +61,7 @@
     - ansible.builtin.assert: *id002
       when: image_version != "7.0(3)I5(1)"
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       when: image_version != "7.0(3)I5(1)"
       cisco.nxos.nxos_vpc_interface: *id003
@@ -79,7 +79,7 @@
     - ansible.builtin.assert: *id002
       when: image_version != "7.0(3)I5(1)"
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       when: image_version != "7.0(3)I5(1)"
       cisco.nxos.nxos_vpc_interface: *id005
@@ -87,7 +87,7 @@
     - ansible.builtin.assert: *id004
       when: image_version != "7.0(3)I5(1)"
 
-    - name: remove vpc port channel
+    - name: Remove vpc port channel
       register: result
       cisco.nxos.nxos_vpc_interface: &id006
         portchannel: 10
@@ -96,13 +96,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       register: result
       cisco.nxos.nxos_vpc_interface: *id006
 
     - ansible.builtin.assert: *id004
   always:
-    - name: remove vpc
+    - name: Remove vpc
       ignore_errors: true
       cisco.nxos.nxos_vpc:
         state: absent
@@ -114,14 +114,14 @@
         peer_gw: true
         auto_recovery: false
 
-    - name: remove vpc port channel
+    - name: Remove vpc port channel
       ignore_errors: true
       cisco.nxos.nxos_vpc_interface:
         portchannel: 10
         vpc: 10
         state: absent
 
-    - name: remove port channel
+    - name: Remove port channel
       ignore_errors: true
       cisco.nxos.nxos_config:
         commands:
@@ -129,7 +129,7 @@
           - no interface port-channel11
         match: none
 
-    - name: disable feature vpc
+    - name: Disable feature vpc
       cisco.nxos.nxos_feature:
         feature: vpc
         state: disabled

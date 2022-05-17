@@ -6,7 +6,7 @@
 
 - ansible.builtin.include_tasks: _populate_config.yaml
 
-- name: Setup more AFs
+- name: Setup more afs
   cisco.nxos.nxos_config:
     lines:
       - "router bgp 65536"
@@ -18,7 +18,7 @@
     ansible_connection: ansible.netcommon.network_cli
 
 - block:
-    - name: Delete BGP configs handled by this module
+    - name: Delete bgp configs handled by this module
       cisco.nxos.nxos_bgp_address_family:
         config:
           as_number: 65536
@@ -53,7 +53,7 @@
 
     - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Delete all BGP configs handled by this module
+    - name: Delete all bgp configs handled by this module
       cisco.nxos.nxos_bgp_address_family: &id001
         state: deleted
       register: result
@@ -73,7 +73,7 @@
         that:
           - deleted_all['after'] == result['after']
 
-    - name: Delete all BGP configs handled by this module (IDEMPOTENT)
+    - name: Delete all bgp configs handled by this module (idempotent)
       cisco.nxos.nxos_bgp_address_family: *id001
       register: result
 

@@ -1,16 +1,16 @@
 ---
 - block:
-    - name: Include the CLI tasks
+    - name: Include the cli tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
 
-    - name: Include the NX-API tasks
+    - name: Include the nx-api tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
   always:
-    - name: Set Baud Rate Back to 9600 so our tests don't break
+    - name: Set baud rate back to 9600 so our tests don't break
       connection: ansible.netcommon.network_cli
       cisco.nxos.nxos_config:
         lines:

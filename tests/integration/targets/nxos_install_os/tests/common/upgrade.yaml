@@ -41,7 +41,7 @@
   ansible.builtin.set_fact:
     ki: n3000-uk9-kickstart.6.0.2.U6.1a.bin
 
-- name: Upgrade to U6.1a
+- name: Upgrade to u6.1a
   ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
 - name: Set a fact for 'si'
@@ -52,7 +52,7 @@
   ansible.builtin.set_fact:
     ki: n3000-uk9-kickstart.6.0.2.U6.2a.bin
 
-- name: Upgrade to U6.2a
+- name: Upgrade to u6.2a
   ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
 - name: Set a fact for 'si'
@@ -63,14 +63,14 @@
   ansible.builtin.set_fact:
     ki: n3000-s2-kickstart.8.0.1.bin
 
-- name: Upgrade to U6.3a
+- name: Upgrade to u6.3a
   ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
 - name: Set a fact for 'si'
   ansible.builtin.set_fact:
     si: nxos.7.0.3.I7.2.bin
 
-- name: Upgrade to 7.0.3.I7.2
+- name: Upgrade to 7.0.3.i7.2
   ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
 - ansible.builtin.debug:

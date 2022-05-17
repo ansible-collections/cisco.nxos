@@ -23,7 +23,7 @@
       - no interface port-channel 19
       - no interface port-channel 20
 
-- name: setup2
+- name: Setup2
   cisco.nxos.nxos_lag_interfaces: &id003
     state: deleted
 
@@ -45,7 +45,7 @@
           - result.before|length == 0
           - result.changed == true
 
-    - name: Gather LAG interfaces facts
+    - name: Gather lag interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
           - "!all"
@@ -56,7 +56,7 @@
         that:
           - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.after)|length == 0
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_lag_interfaces: *id001
 
@@ -70,7 +70,7 @@
         lines:
           - interface port-channel 11
 
-    - name: Merged - No Members
+    - name: Merged - no members
       register: result
       cisco.nxos.nxos_lag_interfaces: &id002
         config:
@@ -86,7 +86,7 @@
         that:
           - result.changed == true
 
-    - name: Idempotence - Merged - No Members
+    - name: Idempotence - merged - no members
       register: result
       cisco.nxos.nxos_lag_interfaces: *id002
 

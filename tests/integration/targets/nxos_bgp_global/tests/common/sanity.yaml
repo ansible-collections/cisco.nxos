@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replace BGP configuration with different ASN (should fail)
+    - name: Replace bgp configuration with different asn (should fail)
       cisco.nxos.nxos_bgp_global:
         config:
           as_number: "65538"
@@ -24,7 +24,7 @@
           - result.failed == True
           - "'BGP is already configured with ASN 65536. Please remove it with state purged before configuring new ASN' in result.msg"
 
-    - name: Merge BGP configuration with different ASN (should fail)
+    - name: Merge bgp configuration with different asn (should fail)
       cisco.nxos.nxos_bgp_global:
         config:
           as_number: "65538"

@@ -16,7 +16,7 @@
     - ansible.builtin.debug:
         msg: START nxos_banner exec tests
 
-    - name: setup exec
+    - name: Setup exec
       cisco.nxos.nxos_banner: &id002
         banner: exec
         state: absent
@@ -42,12 +42,12 @@
           - result.changed == false
           - result.commands | length == 0
 
-    - name: teardown exec
+    - name: Teardown exec
       cisco.nxos.nxos_banner: *id002
   when: banner_exec_image_ok == True
 
 - block:
-    - name: setup motd
+    - name: Setup motd
       cisco.nxos.nxos_banner: &id004
         banner: motd
         state: absent
@@ -72,7 +72,7 @@
         that:
           - result.changed == false
 
-    - name: teardown motd
+    - name: Teardown motd
       cisco.nxos.nxos_banner: *id004
   when: banner_motd_image_ok == True
 

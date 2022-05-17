@@ -50,7 +50,7 @@
         that:
           - replaced['after'] == result['after']
 
-    - name: Override all logging configuration with provided configuration (IDEMPOTENT)
+    - name: Override all logging configuration with provided configuration (idempotent)
       register: result
       cisco.nxos.nxos_ntp_global: *id001
 

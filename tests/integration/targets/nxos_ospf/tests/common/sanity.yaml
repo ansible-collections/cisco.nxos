@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_ospf sanity test
 
-- name: Enable feature OSPF
+- name: Enable feature ospf
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: ospf
@@ -19,7 +19,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_ospf: *id001
 
@@ -27,7 +27,7 @@
         that:
           - result.changed == false
   rescue:
-    - name: Disable feature OSPF
+    - name: Disable feature ospf
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: ospf
@@ -41,7 +41,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_ospf: *id003
 

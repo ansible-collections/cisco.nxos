@@ -10,7 +10,7 @@
           power_management: false
       when: platform is not search('N[567]K') and imagetag is not search("I[2345]")
 
-    - name: feature off to cleanup lldp
+    - name: Feature off to cleanup lldp
       cisco.nxos.nxos_feature: &id002
         feature: lldp
         state: disabled
@@ -78,7 +78,7 @@
         that:
           - ansible_facts.network_resources.lldp_global == result.after
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_lldp_global: *id001
 
@@ -87,6 +87,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature: *id002
   when: platform is not search('N35')

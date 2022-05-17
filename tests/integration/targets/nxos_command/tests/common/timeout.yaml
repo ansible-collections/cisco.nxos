@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START common/timeout.yaml on connection={{ ansible_connection }}
 
-- name: test bad condition
+- name: Test bad condition
   register: result
   ignore_errors: true
   cisco.nxos.nxos_command:

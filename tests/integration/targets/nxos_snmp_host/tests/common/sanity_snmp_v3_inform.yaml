@@ -28,7 +28,7 @@
     run: false
   when: platform is match('N35')
 
-- name: Setup - Remove snmp_host if configured
+- name: Setup - remove snmp_host if configured
   ignore_errors: true
   cisco.nxos.nxos_snmp_host: &id007
     snmp_host: 192.0.2.3
@@ -59,7 +59,7 @@
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_host: *id001
 
@@ -84,7 +84,7 @@
         - assert: *id004
       when: platform is not search('N35|N5K|N6K')
 
-    - name: remove some configuration
+    - name: Remove some configuration
       register: result
       cisco.nxos.nxos_snmp_host: &id005
         snmp_host: 192.0.2.3
@@ -95,7 +95,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_host: *id005
 
@@ -124,7 +124,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Cleanup Idempotence
+    - name: Cleanup idempotence
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 

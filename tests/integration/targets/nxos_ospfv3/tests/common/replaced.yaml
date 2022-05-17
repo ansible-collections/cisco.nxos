@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replace device configurations of listed OSPFv3 processes with provided configurations
+    - name: Replace device configurations of listed ospfv3 processes with provided configurations
       cisco.nxos.nxos_ospfv3: &id001
         config:
           processes:
@@ -56,7 +56,7 @@
         that:
           - "{{ replaced['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
 
-    - name: Replace device configurations of listed OSPF processes with provided configurarions (IDEMPOTENT)
+    - name: Replace device configurations of listed ospf processes with provided configurarions (idempotent)
       register: result
       cisco.nxos.nxos_ospfv3: *id001
 

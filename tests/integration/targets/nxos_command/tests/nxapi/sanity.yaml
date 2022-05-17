@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START nxapi/sanity.yaml on connection={{ ansible_connection }}
 
-- name: Disable feature BGP
+- name: Disable feature bgp
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
@@ -19,12 +19,12 @@
         that:
           - result.failed == true
 
-    - name: Enable feature BGP
+    - name: Enable feature bgp
       cisco.nxos.nxos_feature:
         feature: bgp
         state: enabled
 
-    - name: Configure BGP defaults
+    - name: Configure bgp defaults
       register: result
       cisco.nxos.nxos_bgp:
         asn: 65535

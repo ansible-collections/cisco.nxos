@@ -26,7 +26,7 @@
         that:
           - merged['after'] == result['after']
 
-    - name: Override hostname configuration with provided configuration (IDEMPOTENT)
+    - name: Override hostname configuration with provided configuration (idempotent)
       cisco.nxos.nxos_hostname: *id001
       register: result
 

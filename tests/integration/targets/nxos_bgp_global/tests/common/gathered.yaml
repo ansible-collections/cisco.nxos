@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Gather BGP facts using gathered
+    - name: Gather bgp facts using gathered
       register: result
       cisco.nxos.nxos_bgp_global:
         state: gathered

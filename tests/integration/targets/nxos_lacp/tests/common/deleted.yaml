@@ -27,7 +27,7 @@
           - "!min"
         gather_network_resources: lacp
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_lacp: &id002
         state: deleted
@@ -65,7 +65,7 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled

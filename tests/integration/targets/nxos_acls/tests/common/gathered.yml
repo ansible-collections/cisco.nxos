@@ -22,7 +22,7 @@
           - result.changed == false
           - ansible_facts.network_resources.acls == result.gathered
 
-    - name: Idempotence - Gathered
+    - name: Idempotence - gathered
       register: result
       cisco.nxos.nxos_acls: *id001
 

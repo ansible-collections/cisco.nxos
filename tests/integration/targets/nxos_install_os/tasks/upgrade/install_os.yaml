@@ -13,7 +13,7 @@
 
 - ansible.builtin.meta: reset_connection
 
-- name: Check installed OS for newly installed version {{ tv }}
+- name: Check installed os for newly installed version {{ tv }}
   register: output
   cisco.nxos.nxos_command:
     commands:

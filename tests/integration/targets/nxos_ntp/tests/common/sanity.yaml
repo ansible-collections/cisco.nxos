@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_ntp sanity test
 
-- name: Setup - Remove ntp if configured
+- name: Setup - remove ntp if configured
   ignore_errors: true
   cisco.nxos.nxos_ntp: &id005
     server: 1.2.3.4
@@ -27,7 +27,7 @@
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id001
 
@@ -47,7 +47,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id003
 
@@ -59,7 +59,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence Check
+    - name: Remove idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id005
 
@@ -75,7 +75,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id006
 
@@ -89,7 +89,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id007
 
@@ -101,7 +101,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence Check
+    - name: Remove idempotence check
       register: result
       cisco.nxos.nxos_ntp: *id005
 

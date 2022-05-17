@@ -11,7 +11,7 @@
   ansible.builtin.set_fact:
     sftp_root_dir: "{% if major_version is version('9.2', 'ge') %}/bootflash{% else %}/{% endif %}"
 
-- name: Setup - Remove existing file
+- name: Setup - remove existing file
   ignore_errors: true
   cisco.nxos.nxos_command: &id002
     commands:
@@ -23,17 +23,17 @@
       - rmdir dir1/dir2
       - rmdir dir1
 
-- name: Setup - Turn on feature scp-server
+- name: Setup - turn on feature scp-server
   cisco.nxos.nxos_feature:
     feature: scp-server
     state: enabled
 
-- name: Setup - Turn on feature sftp-server
+- name: Setup - turn on feature sftp-server
   cisco.nxos.nxos_feature:
     feature: sftp-server
     state: enabled
 
-- name: Setup - Backup admin password if ansible_user is not admin
+- name: Setup - backup admin password if ansible_user is not admin
   cisco.nxos.nxos_command:
     commands:
       - command: show running-config | include "username admin password"
@@ -41,14 +41,14 @@
   no_log: true
   when: ansible_user != "admin"
 
-- name: Setup - Change admin password if ansible_user is not admin
+- name: Setup - change admin password if ansible_user is not admin
   cisco.nxos.nxos_user:
     name: admin
     configured_password: "{{ temp_passwd }}"
   when: ansible_user != "admin"
 
 - block:
-    - name: Copy {{ test_source_file }} file from Ansible controller to bootflash
+    - name: Copy {{ test_source_file }} file from ansible controller to bootflash
       register: result
       cisco.nxos.nxos_file_copy: &id001
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
@@ -64,7 +64,7 @@
 
           - "'Sent: File copied to remote device.' in result.transfer_status"
 
-    - name: Idempotence - Copy {{ test_source_file }} file from Ansible controller to bootflash
+    - name: Idempotence - copy {{ test_source_file }} file from ansible controller to bootflash
       register: result
       cisco.nxos.nxos_file_copy: *id001
 
@@ -72,11 +72,11 @@
         that:
           - result.changed == false
 
-    - name: Setup - Remove existing file
+    - name: Setup - remove existing file
       register: result
       cisco.nxos.nxos_command: *id002
 
-    - name: Copy {{ test_source_file }} file from Ansible controller to bootflash renamed as {{ test_destination_file }}
+    - name: Copy {{ test_source_file }} file from ansible controller to bootflash renamed as {{ test_destination_file }}
       register: result
       cisco.nxos.nxos_file_copy: &id003
         local_file: "{{ role_path }}/fixtures/{{ test_source_file }}"
@@ -92,7 +92,7 @@
           - "'{{ test_destination_file }}' in result.remote_file"
           - "'Sent: File copied to remote device.' in result.transfer_status"
 
-    - name: Idempotence - Copy {{ test_source_file }} file from Ansible controller to bootflash renamed as {{ test_destination_file }}
+    - name: Idempotence - copy {{ test_source_file }} file from ansible controller to bootflash renamed as {{ test_destination_file }}
       register: result
       cisco.nxos.nxos_file_copy: *id003
 

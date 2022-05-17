@@ -2,14 +2,14 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_snmp_community sanity test
 
-- name: Setup - Remove snmp_community if configured - 1
+- name: Setup - remove snmp_community if configured - 1
   ignore_errors: true
   cisco.nxos.nxos_snmp_community: &id005
     community: TESTING7
     group: network-operator
     state: absent
 
-- name: Setup - Remove snmp_community if configured - 2
+- name: Setup - remove snmp_community if configured - 2
   ignore_errors: true
   cisco.nxos.nxos_snmp_community: &id010
     community: TEST
@@ -28,7 +28,7 @@
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id001
 
@@ -45,7 +45,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id003
 
@@ -57,7 +57,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id005
 
@@ -72,7 +72,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id006
 
@@ -84,7 +84,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id005
 
@@ -100,7 +100,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id007
 
@@ -116,7 +116,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id008
 
@@ -132,7 +132,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id009
 

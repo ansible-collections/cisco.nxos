@@ -1,5 +1,5 @@
 ---
-- name: Populate Config
+- name: Populate config
   cisco.nxos.nxos_bgp_neighbor_address_family:
     config:
       as_number: 65536

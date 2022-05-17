@@ -12,7 +12,7 @@
     name: "{{ testint }}.20"
     state: absent
 
-- name: Setup - Ensure the interface is layer3
+- name: Setup - ensure the interface is layer3
   cisco.nxos.nxos_interface:
     name: "{{ testint }}"
     mode: layer3
@@ -29,7 +29,7 @@
     that:
       - result.changed == true
 
-- name: Create sub-interface (Idempotence)
+- name: Create sub-interface (idempotence)
   register: result
   cisco.nxos.nxos_interface: *id001
 
@@ -49,7 +49,7 @@
     that:
       - result.changed == true
 
-- name: Create sub-interface (Idempotence)
+- name: Create sub-interface (idempotence)
   register: result
   cisco.nxos.nxos_interface: *id002
 
@@ -65,7 +65,7 @@
     that:
       - result.changed == true
 
-- name: Remove sub-interface (Idempotence)
+- name: Remove sub-interface (idempotence)
   register: result
   cisco.nxos.nxos_interface: *id003
 

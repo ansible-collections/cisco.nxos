@@ -6,7 +6,7 @@
   ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     commands:
       - no description
@@ -15,7 +15,7 @@
       - interface {{ intname }}
     match: none
 
-- name: save config
+- name: Save config
   register: result
   cisco.nxos.nxos_config:
     save_when: always
@@ -24,7 +24,7 @@
     that:
       - result.changed == true
 
-- name: save should always run
+- name: Save should always run
   register: result
   cisco.nxos.nxos_config:
     save_when: always

@@ -7,14 +7,14 @@
     time_range: ans-range
   when: platform is not search('N35|N5K|N6K')
 
-- name: "Setup: Cleanup possibly existing acl."
+- name: "Setup: cleanup possibly existing acl."
   ignore_errors: true
   cisco.nxos.nxos_acl: &id012
     name: TEST_ACL
     seq: 10
     state: delete_acl
 
-- name: Configure ACE10
+- name: Configure ace10
   register: result
   cisco.nxos.nxos_acl: &id001
     name: TEST_ACL
@@ -44,7 +44,7 @@
     that:
       - result.changed == true
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id001
 
@@ -52,7 +52,7 @@
     that:
       - result.changed == false
 
-- name: Change ACE10
+- name: Change ace10
   register: result
   cisco.nxos.nxos_acl: &id003
     name: TEST_ACL
@@ -80,13 +80,13 @@
 
 - ansible.builtin.assert: *id002
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id003
 
 - ansible.builtin.assert: *id004
 
-- name: ace remark
+- name: Ace remark
   register: result
   cisco.nxos.nxos_acl: &id005
     name: TEST_ACL
@@ -97,13 +97,13 @@
 
 - ansible.builtin.assert: *id002
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id005
 
 - ansible.builtin.assert: *id004
 
-- name: change remark
+- name: Change remark
   register: result
   cisco.nxos.nxos_acl: &id006
     name: TEST_ACL
@@ -114,13 +114,13 @@
 
 - ansible.builtin.assert: *id002
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id006
 
 - ansible.builtin.assert: *id004
 
-- name: ace 30
+- name: Ace 30
   register: result
   cisco.nxos.nxos_acl: &id007
     name: TEST_ACL
@@ -135,13 +135,13 @@
 
 - ansible.builtin.assert: *id002
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id007
 
 - ansible.builtin.assert: *id004
 
-- name: change ace 30 options
+- name: Change ace 30 options
   register: result
   cisco.nxos.nxos_acl: &id008
     name: TEST_ACL
@@ -155,13 +155,13 @@
 
 - ansible.builtin.assert: *id002
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id008
 
 - ansible.builtin.assert: *id004
 
-- name: ace 40
+- name: Ace 40
   register: result
   cisco.nxos.nxos_acl: &id009
     name: TEST_ACL
@@ -177,13 +177,13 @@
 
 - ansible.builtin.assert: *id002
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id009
 
 - ansible.builtin.assert: *id004
 
-- name: change ace 40
+- name: Change ace 40
   register: result
   cisco.nxos.nxos_acl: &id010
     name: TEST_ACL
@@ -197,13 +197,13 @@
 
 - ansible.builtin.assert: *id002
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id010
 
 - ansible.builtin.assert: *id004
 
-- name: remove ace 30
+- name: Remove ace 30
   register: result
   cisco.nxos.nxos_acl: &id011
     name: TEST_ACL
@@ -212,19 +212,19 @@
 
 - ansible.builtin.assert: *id002
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id011
 
 - ansible.builtin.assert: *id004
 
-- name: Remove ACL
+- name: Remove acl
   register: result
   cisco.nxos.nxos_acl: *id012
 
 - ansible.builtin.assert: *id002
 
-- name: Check Idempotence
+- name: Check idempotence
   register: result
   cisco.nxos.nxos_acl: *id012
 

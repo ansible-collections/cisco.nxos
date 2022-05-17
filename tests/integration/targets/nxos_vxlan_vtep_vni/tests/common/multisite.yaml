@@ -28,7 +28,7 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: configure vxlan_vtep - multisite
+    - name: Configure vxlan_vtep - multisite
       cisco.nxos.nxos_vxlan_vtep:
         interface: nve1
         host_reachability: true

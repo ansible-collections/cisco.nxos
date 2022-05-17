@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_snmp_community sanity test
 
-- name: Setup - Remove snmp_contact if configured
+- name: Setup - remove snmp_contact if configured
   cisco.nxos.nxos_snmp_contact: &id005
     contact: Test
     state: absent
@@ -18,7 +18,7 @@
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_contact: *id001
 
@@ -34,7 +34,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_contact: *id003
 
@@ -46,7 +46,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_contact: *id005
 

@@ -6,7 +6,7 @@
     msg: "***WARNING*** Set run_nxos_reboot_test to True to verify this module ***WARNING***"
 
 - block:
-    - name: Reboot Switch
+    - name: Reboot switch
       ignore_errors: true
       cisco.nxos.nxos_reboot:
         confirm: true

@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Delete all prefix-lists for an AFI
+    - name: Delete all prefix-lists for an afi
       cisco.nxos.nxos_prefix_lists:
         config:
           - afi: ipv4
@@ -77,7 +77,7 @@
         that:
           - result["after"] == []
 
-    - name: Delete all prefix-lists (IDEMPOTENT)
+    - name: Delete all prefix-lists (idempotent)
       register: result
       cisco.nxos.nxos_prefix_lists: *id001
 

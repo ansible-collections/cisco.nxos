@@ -2,13 +2,13 @@
 - ansible.builtin.debug:
     msg: START nxapi/set_domain_name.yaml
 
-- name: setup
+- name: Setup
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines: no ip domain-name eng.ansible.com
     match: none
 
-- name: configure domain_name
+- name: Configure domain_name
   register: result
   cisco.nxos.nxos_system:
     domain_name: eng.ansible.com
@@ -17,7 +17,7 @@
     that:
       - result.changed == true
 
-- name: verify domain_name
+- name: Verify domain_name
   register: result
   cisco.nxos.nxos_system:
     domain_name: eng.ansible.com
@@ -26,7 +26,7 @@
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config:
     lines: no ip domain-name eng.ansible.com
     match: none

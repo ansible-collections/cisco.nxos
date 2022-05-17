@@ -7,12 +7,12 @@
     nxapi_sandbox_option: true
   when: platform is search('N7K')
 
-- name: Setup - put NXAPI in stopped state
+- name: Setup - put nxapi in stopped state
   cisco.nxos.nxos_nxapi:
     state: absent
 
 - block:
-    - name: Configure NXAPI HTTPS
+    - name: Configure nxapi https
       register: result
       cisco.nxos.nxos_nxapi: &id001
         enable_http: false
@@ -34,7 +34,7 @@
     - ansible.builtin.include: tasks/platform/default/assert_changes_https.yaml
       when: platform is not search('N35|N5K|N6K|N7K')
 
-    - name: Configure NXAPI HTTPS again
+    - name: Configure nxapi https again
       register: result
       cisco.nxos.nxos_nxapi: *id001
 
@@ -43,7 +43,7 @@
         that:
           - result.changed == false
 
-    - name: Configure NXAPI HTTPS & HTTP
+    - name: Configure nxapi https & http
       register: result
       cisco.nxos.nxos_nxapi: &id002
         enable_http: true
@@ -65,14 +65,14 @@
     - ansible.builtin.include: tasks/platform/default/assert_changes_https_http.yaml
       when: platform is not search('N35|N5K|N6K|N7K')
 
-    - name: Configure NXAPI HTTPS & HTTP again
+    - name: Configure nxapi https & http again
       register: result
       cisco.nxos.nxos_nxapi: *id002
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
 
-    - name: Configure different NXAPI HTTPS & HTTP ports
+    - name: Configure different nxapi https & http ports
       register: result
       cisco.nxos.nxos_nxapi: &id004
         enable_http: true
@@ -95,14 +95,14 @@
     - ansible.builtin.include: tasks/platform/default/assert_changes_https_http_ports.yaml
       when: platform is not search('N35|N5K|N6K|N7K')
 
-    - name: Configure different NXAPI HTTPS & HTTP ports again
+    - name: Configure different nxapi https & http ports again
       register: result
       cisco.nxos.nxos_nxapi: *id004
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
 
-    - name: Configure NXAPI HTTP
+    - name: Configure nxapi http
       register: result
       cisco.nxos.nxos_nxapi: &id005
         enable_http: true
@@ -123,19 +123,19 @@
     - ansible.builtin.include: tasks/platform/default/assert_changes_http.yaml
       when: platform is not search('N35|N5K|N6K|N7K')
 
-    - name: Configure NXAPI HTTP again
+    - name: Configure nxapi http again
       register: result
       cisco.nxos.nxos_nxapi: *id005
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
   always:
-    - name: Cleanup - Disable NXAPI
+    - name: Cleanup - disable nxapi
       register: result
       cisco.nxos.nxos_nxapi:
         state: absent
 
-    - name: Cleanup - Re-enable NXAPI
+    - name: Cleanup - re-enable nxapi
       register: result
       cisco.nxos.nxos_nxapi:
         state: present

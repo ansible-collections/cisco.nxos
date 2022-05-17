@@ -32,7 +32,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_udld: *id001
 
@@ -51,7 +51,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_udld: *id003
 
@@ -64,7 +64,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_udld: *id005
 
@@ -83,7 +83,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_udld: *id006
 

@@ -37,5 +37,5 @@
   ansible.builtin.set_fact:
     si: nxos.7.0.3.I7.4.bin
 
-- name: Upgrade N3172 Device to Greensboro Release Image
+- name: Upgrade n3172 device to greensboro release image
   ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

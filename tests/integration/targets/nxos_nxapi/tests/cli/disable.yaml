@@ -2,22 +2,22 @@
 - ansible.builtin.debug:
     msg: START cli/disable.yaml
 
-- name: Disable NXAPI
+- name: Disable nxapi
   register: result
   cisco.nxos.nxos_nxapi:
     state: absent
 
-- name: Check NXAPI state
+- name: Check nxapi state
   register: result
   cisco.nxos.nxos_command:
     commands:
       - show feature | grep nxapi
 
-- name: Assert NXAPI is disabled
+- name: Assert nxapi is disabled
   ansible.builtin.assert:
     that: result.stdout[0]  is search('disabled')
 
-- name: Disable NXAPI again
+- name: Disable nxapi again
   register: result
   cisco.nxos.nxos_nxapi:
     state: absent

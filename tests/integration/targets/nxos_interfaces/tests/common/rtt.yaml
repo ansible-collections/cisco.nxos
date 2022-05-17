@@ -5,7 +5,7 @@
 - ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.nxos.nxos_interfaces:
         config:

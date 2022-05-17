@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: Start nxos_vlans merged integration tests connection={{ ansible_connection }}
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config: &id002
     lines:
       - "no vlan 2-100"
@@ -43,7 +43,7 @@
         that:
           - result.after|length == ansible_facts.network_resources.vlans|length
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_vlans: *id001
 
@@ -52,5 +52,5 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_config: *id002

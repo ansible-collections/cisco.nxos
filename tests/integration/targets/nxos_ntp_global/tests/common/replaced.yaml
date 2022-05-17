@@ -50,7 +50,7 @@
         that:
           - replaced['after'] == result['after']
 
-    - name: Replace logging global configurations with provided configurations (IDEMPOTENT)
+    - name: Replace logging global configurations with provided configurations (idempotent)
       register: result
       cisco.nxos.nxos_ntp_global: *id001
 

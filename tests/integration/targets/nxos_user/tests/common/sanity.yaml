@@ -43,7 +43,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: remove idempotency
+    - name: Remove idempotency
       register: result
       cisco.nxos.nxos_user: *id003
 
@@ -76,7 +76,7 @@
         - assert: *id004
       when: idem
 
-    - name: tearDown
+    - name: Teardown
       register: result
       cisco.nxos.nxos_user: &id006
         name: "{{ ansible_user }}"
@@ -84,13 +84,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: teardown idempotency
+    - name: Teardown idempotency
       register: result
       cisco.nxos.nxos_user: *id006
 
     - ansible.builtin.assert: *id004
   always:
-    - name: tearDown
+    - name: Teardown
       register: result
       ignore_errors: true
       cisco.nxos.nxos_user: *id006

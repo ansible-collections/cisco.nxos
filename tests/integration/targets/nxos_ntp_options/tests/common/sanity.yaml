@@ -19,7 +19,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence - Configure ntp with master and default stratum
+    - name: Check idempotence - configure ntp with master and default stratum
       register: result
       cisco.nxos.nxos_ntp_options: *id001
 
@@ -36,7 +36,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure ntp with master and non-default stratum
+    - name: Check idempotence - configure ntp with master and non-default stratum
       register: result
       cisco.nxos.nxos_ntp_options: *id003
 
@@ -52,7 +52,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure ntp with master and no logging
+    - name: Check idempotence - configure ntp with master and no logging
       register: result
       cisco.nxos.nxos_ntp_options: *id005
 
@@ -67,7 +67,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure ntp with logging and no master
+    - name: Check idempotence - configure ntp with logging and no master
       register: result
       cisco.nxos.nxos_ntp_options: *id006
 
@@ -85,7 +85,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Remove
+    - name: Check idempotence - remove
       register: result
       cisco.nxos.nxos_ntp_options: *id007
 

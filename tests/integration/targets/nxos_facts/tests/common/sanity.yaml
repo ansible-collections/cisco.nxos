@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_facts sanity test
 
-- name: nxos_facts gather hardware facts
+- name: Nxos_facts gather hardware facts
   register: result
   cisco.nxos.nxos_facts:
     gather_subset: hardware
@@ -17,7 +17,7 @@
       - result.ansible_facts.ansible_net_memfree_mb > 1
       - result.ansible_facts.ansible_net_memtotal_mb > 1
 
-- name: nxos_facts gather config facts
+- name: Nxos_facts gather config facts
   register: result
   cisco.nxos.nxos_facts:
     gather_subset: config
@@ -30,7 +30,7 @@
       - "'interfaces' not in result.ansible_facts.ansible_net_gather_subset"
       - result.ansible_facts.ansible_net_config is defined
 
-- name: nxos_facts gather config and hardware facts
+- name: Nxos_facts gather config and hardware facts
   register: result
   cisco.nxos.nxos_facts:
     gather_subset:
@@ -48,7 +48,7 @@
       - result.ansible_facts.ansible_net_memfree_mb > 1
       - result.ansible_facts.ansible_net_memtotal_mb > 1
 
-- name: nxos_facts gather features facts
+- name: Nxos_facts gather features facts
   register: result
   cisco.nxos.nxos_facts:
     gather_subset: features

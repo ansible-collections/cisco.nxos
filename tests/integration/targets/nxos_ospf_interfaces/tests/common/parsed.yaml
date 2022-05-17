@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START nxos_ospf_interfaces parsed integration tests on connection={{ ansible_connection }}
 
-- name: Parse externally provided OSPF interfaces config
+- name: Parse externally provided ospf interfaces config
   register: result
   cisco.nxos.nxos_ospf_interfaces:
     running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"

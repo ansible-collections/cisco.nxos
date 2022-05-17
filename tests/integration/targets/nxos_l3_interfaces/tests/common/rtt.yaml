@@ -5,7 +5,7 @@
 - ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Prepare interfaces (switch to L3)
+    - name: Prepare interfaces (switch to l3)
       cisco.nxos.nxos_interfaces:
         config:
           - name: "{{ nxos_int1 }}"
@@ -16,7 +16,7 @@
             mode: layer3
         state: merged
 
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.nxos.nxos_l3_interfaces:
         config:
@@ -44,7 +44,7 @@
         gather_network_resources:
           - l3_interfaces
 
-    - name: Set reserved interface IP config and config to revert
+    - name: Set reserved interface ip config and config to revert
       ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         config_to_revert:

@@ -7,7 +7,7 @@
     mode: delay
   when: platform is not search('N3K|N5K|N6K|N7K') and imagetag is not search('A8|I2') and image_version is not search ('9.2') and chassis_type is not search('C95')
 
-- name: setup1
+- name: Setup1
   cisco.nxos.nxos_config: &id002
     lines:
       - "no interface port-channel5"
@@ -15,7 +15,7 @@
       - "no feature lacp"
 
 - block:
-    - name: setup2
+    - name: Setup2
       cisco.nxos.nxos_config:
         lines:
           - "feature lacp"
@@ -24,7 +24,7 @@
           - "interface port-channel10"
           - "  lacp max-bundle 10"
 
-    - name: setup3 - L2 for mode command
+    - name: Setup3 - l2 for mode command
       when: mode is defined
       cisco.nxos.nxos_config:
         lines:
@@ -39,7 +39,7 @@
           - "!min"
         gather_network_resources: lacp_interfaces
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_lacp_interfaces: &id001
         state: deleted
@@ -69,5 +69,5 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_config: *id002

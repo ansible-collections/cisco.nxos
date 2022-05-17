@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START common/src_invalid.yaml on connection={{ ansible_connection }}
 
-- name: configure with invalid src
+- name: Configure with invalid src
   register: result
   ignore_errors: true
   cisco.nxos.nxos_config:

@@ -20,7 +20,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence - Configure igmp interface with non-default values
+    - name: Check idempotence - configure igmp interface with non-default values
       register: result
       cisco.nxos.nxos_igmp: *id001
 
@@ -38,7 +38,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure igmp with defaults
+    - name: Check idempotence - configure igmp with defaults
       register: result
       cisco.nxos.nxos_igmp: *id003
 
@@ -55,7 +55,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure igmp with state default
+    - name: Check idempotence - configure igmp with state default
       register: result
       cisco.nxos.nxos_igmp: *id005
 

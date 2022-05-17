@@ -61,7 +61,7 @@
     lines: password strength-check
   when: not pwdchck
 
-- name: Attempt to create user with weak password with pwd check enabled (SHOULD FAIL)
+- name: Attempt to create user with weak password with pwd check enabled (should fail)
   cisco.nxos.nxos_user:
     name: ansibletest_failed
     configured_password: abc
@@ -77,7 +77,7 @@
   cisco.nxos.nxos_config:
     lines: no password strength-check
 
-- name: Attempt to create user with weak password without pwd check enabled (SHOULD WARN)
+- name: Attempt to create user with weak password without pwd check enabled (should warn)
   cisco.nxos.nxos_user:
     name: ansibletest_warn
     configured_password: abc
@@ -127,7 +127,7 @@
       - result.failed == True
       - '"invalid role specified" in result.msg'
 
-- name: tearDown
+- name: Teardown
   register: result
   cisco.nxos.nxos_user: *rem
 

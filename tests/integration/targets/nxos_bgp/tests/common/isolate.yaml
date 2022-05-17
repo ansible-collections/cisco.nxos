@@ -15,20 +15,20 @@
     bgp_isolate: true
   when: imagetag is not search("A8")
 
-- name: Disable feature BGP
+- name: Disable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature BGP
+- name: Enable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
 - block:
-    - name: set isolate
+    - name: Set isolate
       register: result
       when: bgp_isolate
       cisco.nxos.nxos_bgp: &id001
@@ -40,7 +40,7 @@
           - result.changed == true
       when: bgp_isolate
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       when: bgp_isolate
       cisco.nxos.nxos_bgp: *id001
@@ -50,7 +50,7 @@
           - result.changed == false
       when: bgp_isolate
 
-    - name: reset isolate
+    - name: Reset isolate
       register: result
       when: bgp_isolate
       cisco.nxos.nxos_bgp: &id003
@@ -60,7 +60,7 @@
     - ansible.builtin.assert: *id002
       when: bgp_isolate
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       when: bgp_isolate
       cisco.nxos.nxos_bgp: *id003

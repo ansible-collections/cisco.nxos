@@ -46,7 +46,7 @@
         that:
           - ansible_facts.network_resources.lldp_interfaces == result.after
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_lldp_interfaces: *id001
 
@@ -55,7 +55,7 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lldp
         state: disabled

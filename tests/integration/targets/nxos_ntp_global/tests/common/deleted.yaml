@@ -26,7 +26,7 @@
         that:
           - result['after'] == {}
 
-    - name: Delete all logging configuration (IDEMPOTENT)
+    - name: Delete all logging configuration (idempotent)
       cisco.nxos.nxos_ntp_global: *del
       register: result
 

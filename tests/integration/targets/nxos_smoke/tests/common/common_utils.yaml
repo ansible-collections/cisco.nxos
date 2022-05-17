@@ -10,20 +10,20 @@
   when: ansible_connection == "local"
 
 # hit ComplexList
-- name: test contains operator
+- name: Test contains operator
   cisco.nxos.nxos_command:
     commands:
       - show version
     provider: "{{ connection }}"
 
 # hit to_list()
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines: hostname switch
     provider: "{{ connection }}"
     match: none
 
-- name: configure top level command
+- name: Configure top level command
   cisco.nxos.nxos_config:
     lines: hostname foo
     provider: "{{ connection }}"
@@ -34,7 +34,7 @@
       - "result.changed == true"
       - "'hostname foo' in result.updates"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines: hostname switch
     provider: "{{ connection }}"
@@ -48,7 +48,7 @@
   ansible.builtin.set_fact:
     testint2: "{{ nxos_int2 }}"
 
-- name: "Setup: Put interfaces into a default state"
+- name: "Setup: put interfaces into a default state"
   cisco.nxos.nxos_config:
     lines:
       - "default interface {{ testint1 }}"
@@ -87,7 +87,7 @@
       - "'tx_rate lt(0)' in result.failed_conditions"
       - "'rx_rate lt(0)' in result.failed_conditions"
 
-- name: aggregate definition of interface
+- name: Aggregate definition of interface
   cisco.nxos.nxos_interface:
     aggregate:
       - name: "{{ testint1 }}"
@@ -101,7 +101,7 @@
     that:
       - "result.changed == true"
 
-- name: "TearDown: Put interfaces into a default state"
+- name: "Teardown: put interfaces into a default state"
   cisco.nxos.nxos_config:
     lines:
       - "default interface {{ testint1 }}"

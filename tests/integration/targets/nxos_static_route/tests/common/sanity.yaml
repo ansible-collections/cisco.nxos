@@ -6,7 +6,7 @@
   ansible.builtin.set_fact:
     test_track_feature: true
 
-- name: configure track
+- name: Configure track
   register: cmd_result
   ignore_errors: true
   cisco.nxos.nxos_config:
@@ -52,7 +52,7 @@
     state: present
 
 - block:
-    - name: create static route
+    - name: Create static route
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_static_route: &id001
@@ -67,7 +67,7 @@
         that:
           - result.changed == true
 
-    - name: Conf static Idempotence
+    - name: Conf static idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_static_route: *id001
@@ -76,7 +76,7 @@
         that:
           - result.changed == false
 
-    - name: change static route
+    - name: Change static route
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_static_route: &id003
@@ -89,14 +89,14 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Change Idempotence
+    - name: Change idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_static_route: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: configure static route with track
+    - name: Configure static route with track
       with_items: "{{ vrfs }}"
       register: result
       when: test_track_feature
@@ -112,7 +112,7 @@
     - ansible.builtin.assert: *id002
       when: test_track_feature
 
-    - name: Config track Idempotence
+    - name: Config track idempotence
       with_items: "{{ vrfs }}"
       register: result
       when: test_track_feature
@@ -121,7 +121,7 @@
     - ansible.builtin.assert: *id004
       when: test_track_feature
 
-    - name: configure static route with not configured track
+    - name: Configure static route with not configured track
       with_items: "{{ vrfs }}"
       register: result
       ignore_errors: true
@@ -140,7 +140,7 @@
           - result.failed == True
       when: test_track_feature
 
-    - name: remove static route
+    - name: Remove static route
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_static_route: &id006
@@ -153,14 +153,14 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_static_route: *id006
 
     - ansible.builtin.assert: *id004
 
-    - name: configure static route(aggregate)
+    - name: Configure static route(aggregate)
       register: result
       cisco.nxos.nxos_static_route: &id007
         aggregate:
@@ -172,13 +172,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: configure static route aggregate(Idempotence)
+    - name: Configure static route aggregate(idempotence)
       register: result
       cisco.nxos.nxos_static_route: *id007
 
     - ansible.builtin.assert: *id004
 
-    - name: remove static route aggregate
+    - name: Remove static route aggregate
       register: result
       cisco.nxos.nxos_static_route: &id008
         aggregate:
@@ -191,20 +191,20 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: remove static route aggregate(Idempotence)
+    - name: Remove static route aggregate(idempotence)
       register: result
       cisco.nxos.nxos_static_route: *id008
 
     - ansible.builtin.assert: *id004
   always:
-    - name: remove track
+    - name: Remove track
       ignore_errors: true
       when: test_track_feature
       cisco.nxos.nxos_config:
         lines:
           - no track 1
 
-    - name: teardown test routes
+    - name: Teardown test routes
       with_items: "{{ vrfs }}"
       ignore_errors: true
       cisco.nxos.nxos_static_route: *id009

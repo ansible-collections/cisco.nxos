@@ -18,7 +18,7 @@
       name: "{{ nxos_int3 }}"
 
 - block:
-    - name: Delete OSPF config from a single interface
+    - name: Delete ospf config from a single interface
       cisco.nxos.nxos_ospf_interfaces: &id001
         config:
           - name: "{{ nxos_int1 }}"
@@ -51,7 +51,7 @@
           - result["after"][1] == merged["after"][1]
           - result["after"][2] == merged["after"][2]
 
-    - name: Delete OSPF config from a single interface (IDEMPOTENT)
+    - name: Delete ospf config from a single interface (idempotent)
       register: result
       cisco.nxos.nxos_ospf_interfaces: *id001
 
@@ -63,7 +63,7 @@
 
     - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Delete OSPF config from all interfaces
+    - name: Delete ospf config from all interfaces
       cisco.nxos.nxos_ospf_interfaces: &id002
         state: deleted
       register: result
@@ -87,7 +87,7 @@
           - result["after"][1] == int2
           - result["after"][2] == int3
 
-    - name: Delete OSPF config from all interfaces (IDEMPOTENT)
+    - name: Delete ospf config from all interfaces (idempotent)
       register: result
       cisco.nxos.nxos_ospf_interfaces: *id002
 

@@ -1,12 +1,12 @@
 ---
-- name: Enable Feature Privilege
+- name: Enable feature privilege
   connection: ansible.netcommon.network_cli
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - feature privilege
 
-- name: Enable Feature NXAPI
+- name: Enable feature nxapi
   connection: ansible.netcommon.network_cli
   cisco.nxos.nxos_nxapi:
     state: present

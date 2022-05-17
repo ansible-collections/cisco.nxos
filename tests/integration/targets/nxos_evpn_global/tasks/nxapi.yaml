@@ -1,12 +1,12 @@
 ---
-- name: collect common test cases
+- name: Collect common test cases
   ansible.builtin.find:
     paths: "{{ role_path }}/tests/common"
     patterns: "{{ testcase }}.yaml"
   connection: local
   register: test_cases
 
-- name: collect nxapi test cases
+- name: Collect nxapi test cases
   ansible.builtin.find:
     paths: "{{ role_path }}/tests/nxapi"
     patterns: "{{ testcase }}.yaml"
@@ -18,11 +18,11 @@
     test_cases:
       files: "{{ test_cases.files + nxapi_cases.files }}"
 
-- name: set test_items
+- name: Set test_items
   ansible.builtin.set_fact:
     test_items: "{{ test_cases.files | map(attribute='path') | list }}"
 
-- name: run test cases (connection=ansible.netcommon.httpapi)
+- name: Run test cases (connection=ansible.netcommon.httpapi)
   ansible.builtin.include_tasks: "{{ test_case_to_run }}"
   with_items: "{{ test_items }}"
   loop_control:

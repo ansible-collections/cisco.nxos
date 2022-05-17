@@ -66,7 +66,7 @@
           - "{{ merged['after']['vrfs'] | symmetric_difference(result['after']['vrfs']) |length == 0 }}"
           - merged['after']['as_number'] == result['after']['as_number']
 
-    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_bgp_neighbor_address_family: *id001
       register: result
 

@@ -33,7 +33,7 @@
       - "'lldp tlv-set management-address 192.0.2.12' in result.rendered"
       - result.rendered | length == 8
 
-- name: Idempotence - Rendered
+- name: Idempotence - rendered
   register: result
   cisco.nxos.nxos_lldp_interfaces: *id001
 

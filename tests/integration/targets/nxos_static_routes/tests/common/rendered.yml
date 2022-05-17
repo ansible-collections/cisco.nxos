@@ -40,7 +40,7 @@
       - "'ipv6 route 2001:db8:12::/32 2001:db8::1001 name rendered_route 3' in result.rendered"
       - "result.rendered | length == 5"
 
-- name: Idempotence - Rendered
+- name: Idempotence - rendered
   nxos_static_routes: *rendered
   register: result
 

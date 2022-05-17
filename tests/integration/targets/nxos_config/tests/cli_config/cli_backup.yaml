@@ -11,7 +11,7 @@
     can_become: false
   when: platform is search('N9K') and (major_version is version('10.', 'ge'))
 
-- name: delete configurable backup file path
+- name: Delete configurable backup file path
   ansible.builtin.file:
     path: "{{ item }}"
     state: absent
@@ -19,20 +19,20 @@
     - "{{ role_path }}/backup_test_dir/"
     - "{{ role_path }}/backup/backup.cfg"
 
-- name: collect any backup files
+- name: Collect any backup files
   ansible.builtin.find:
     paths: "{{ role_path }}/backup"
     pattern: "{{ inventory_hostname_short }}_config*"
   register: backup_files
   connection: local
 
-- name: delete backup files
+- name: Delete backup files
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
   with_items: "{{backup_files.files|default([])}}"
 
-- name: take config backup
+- name: Take config backup
   become: "{{ can_become }}"
   register: result
   ansible.netcommon.cli_config:
@@ -42,7 +42,7 @@
     that:
       - result.changed == true
 
-- name: collect any backup files
+- name: Collect any backup files
   ansible.builtin.find:
     paths: "{{ role_path }}/backup"
     pattern: "{{ inventory_hostname_short }}_config*"
@@ -53,7 +53,7 @@
     that:
       - backup_files.files is defined
 
-- name: take configuration backup in custom filename and directory path
+- name: Take configuration backup in custom filename and directory path
   become: "{{ can_become }}"
   register: result
   ansible.netcommon.cli_config:
@@ -66,7 +66,7 @@
     that:
       - result.changed == true
 
-- name: check if the backup file-1 exist
+- name: Check if the backup file-1 exist
   ansible.builtin.find:
     paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup.cfg"
   register: backup_file
@@ -76,7 +76,7 @@
     that:
       - backup_file.files is defined
 
-- name: take configuration backup in custom filename
+- name: Take configuration backup in custom filename
   become: "{{ can_become }}"
   register: result
   ansible.netcommon.cli_config:
@@ -88,7 +88,7 @@
     that:
       - result.changed == true
 
-- name: check if the backup file-2 exist
+- name: Check if the backup file-2 exist
   ansible.builtin.find:
     paths: "{{ role_path }}/backup/backup.cfg"
   register: backup_file
@@ -98,7 +98,7 @@
     that:
       - backup_file.files is defined
 
-- name: take configuration backup in custom path and default filename
+- name: Take configuration backup in custom path and default filename
   become: "{{ can_become }}"
   register: result
   ansible.netcommon.cli_config:
@@ -110,7 +110,7 @@
     that:
       - result.changed == true
 
-- name: check if the backup file-3 exist
+- name: Check if the backup file-3 exist
   ansible.builtin.find:
     paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
     pattern: "{{ inventory_hostname_short }}_config*"

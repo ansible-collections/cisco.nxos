@@ -20,20 +20,20 @@
     bgp_suppress_fib_supported: true
   when: imagetag is not search("A8|D1|I2|I4")
 
-- name: Disable feature BGP
+- name: Disable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature BGP
+- name: Enable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
 - block:
-    - name: set bestpath limit
+    - name: Set bestpath limit
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id001
@@ -45,7 +45,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: *id001
@@ -54,7 +54,7 @@
         that:
           - result.changed == false
 
-    - name: reset bestpath limit
+    - name: Reset bestpath limit
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id003
@@ -64,7 +64,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       when: bgp_best_path_limit
@@ -73,7 +73,7 @@
     - ansible.builtin.assert: *id004
       when: bgp_best_path_limit
 
-    - name: set suppress fib
+    - name: Set suppress fib
       register: result
       cisco.nxos.nxos_bgp: &id005
         asn: 65535
@@ -82,7 +82,7 @@
     - ansible.builtin.assert: *id002
       when: bgp_suppress_fib_supported
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       when: bgp_suppress_fib_supported
       cisco.nxos.nxos_bgp: *id005
@@ -90,7 +90,7 @@
     - ansible.builtin.assert: *id004
       when: bgp_suppress_fib_supported
 
-    - name: reset suppress fib
+    - name: Reset suppress fib
       register: result
       cisco.nxos.nxos_bgp: &id006
         asn: 65535
@@ -99,7 +99,7 @@
     - ansible.builtin.assert: *id002
       when: bgp_suppress_fib_supported
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       when: bgp_suppress_fib_supported
       cisco.nxos.nxos_bgp: *id006

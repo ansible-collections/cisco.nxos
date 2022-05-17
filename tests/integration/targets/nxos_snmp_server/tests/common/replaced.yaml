@@ -91,7 +91,7 @@
         that:
           - "{{ replaced['after'] == result['after'] }}"
 
-    - name: Replace snmp-server configurations of listed snmp-server with provided configurations (IDEMPOTENT)
+    - name: Replace snmp-server configurations of listed snmp-server with provided configurations (idempotent)
       register: result
       cisco.nxos.nxos_snmp_server: *id001
 

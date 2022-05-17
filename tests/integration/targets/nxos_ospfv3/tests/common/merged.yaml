@@ -69,7 +69,7 @@
         that:
           - "{{ merged['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
 
-    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_ospfv3: *id001
       register: result
 
