@@ -1,0 +1,3 @@
+---
+trivial:
+  - "Vendor in Version to fix sanity failures with >2.13 and Python 3.10."

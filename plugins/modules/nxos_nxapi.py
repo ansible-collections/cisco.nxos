@@ -157,7 +157,9 @@ updates:
 """
 import re
 
-from distutils.version import LooseVersion
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    Version,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     run_commands,
     load_config,
@@ -253,7 +255,7 @@ def map_obj_to_commands(want, have, module, warnings, capabilities):
             commands["sandbox"] = "no %s" % commands["sandbox"]
 
     if os_platform and os_version:
-        if (os_platform == "N9K" or os_platform == "N3K") and LooseVersion(
+        if (os_platform == "N9K" or os_platform == "N3K") and Version(
             os_version
         ) >= "9.2":
             if needs_update("ssl_strong_ciphers"):
