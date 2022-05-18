@@ -22,7 +22,7 @@
           - "result.changed == false"
           - "ansible_facts.network_resources.static_routes == result.gathered"
 
-    - name: Idempotence - Gathered
+    - name: Idempotence - gathered
       cisco.nxos.nxos_static_routes: *gathered
       register: result
 

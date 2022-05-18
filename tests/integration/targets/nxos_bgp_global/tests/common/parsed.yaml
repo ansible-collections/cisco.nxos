@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START nxos_bgp_global parsed integration tests on connection={{ ansible_connection }}
 
-- name: Parse externally provided BGP config
+- name: Parse externally provided bgp config
   register: result
   cisco.nxos.nxos_bgp_global:
     running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"

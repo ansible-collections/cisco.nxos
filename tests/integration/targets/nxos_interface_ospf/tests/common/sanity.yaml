@@ -6,7 +6,7 @@
   ansible.builtin.set_fact:
     testint: "{{ nxos_int1 }}"
 
-- name: Setup - Disable features
+- name: Setup - disable features
   loop:
     - ospf
     - bfd
@@ -15,7 +15,7 @@
     feature: "{{ item }}"
     state: disabled
 
-- name: Setup - Enable features
+- name: Setup - enable features
   loop:
     - ospf
     - bfd
@@ -47,7 +47,7 @@
       - no interface loopback77
 
 - block:
-    - name: configure ospf interface
+    - name: Configure ospf interface
       register: result
       cisco.nxos.nxos_interface_ospf: &id001
         interface: "{{ nxos_int1|upper }}"
@@ -65,7 +65,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id001
 
@@ -88,13 +88,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: default properties
+    - name: Default properties
       register: result
       cisco.nxos.nxos_interface_ospf: &id005
         interface: "{{ testint }}"
@@ -108,7 +108,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id005
 
@@ -129,7 +129,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id006
 
@@ -150,13 +150,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id007
 
     - ansible.builtin.assert: *id004
 
-    - name: create port-channel and loopback interfaces
+    - name: Create port-channel and loopback interfaces
       cisco.nxos.nxos_config:
         commands:
           - interface port-channel10
@@ -175,7 +175,7 @@
         parents:
           - interface {{ item }}
 
-    - name: configure ospf interface port-channel10
+    - name: Configure ospf interface port-channel10
       register: result
       cisco.nxos.nxos_interface_ospf: &id008
         interface: Port-channel10
@@ -189,13 +189,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence for port-channel10
+    - name: Check idempotence for port-channel10
       register: result
       cisco.nxos.nxos_interface_ospf: *id008
 
     - ansible.builtin.assert: *id004
 
-    - name: configure ospf interface port-channel11 using lower case name
+    - name: Configure ospf interface port-channel11 using lower case name
       register: result
       cisco.nxos.nxos_interface_ospf: &id009
         interface: port-channel11
@@ -209,13 +209,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence for port-channel11
+    - name: Check idempotence for port-channel11
       register: result
       cisco.nxos.nxos_interface_ospf: *id009
 
     - ansible.builtin.assert: *id004
 
-    - name: configure ospf interface loopback55
+    - name: Configure ospf interface loopback55
       register: result
       cisco.nxos.nxos_interface_ospf: &id010
         interface: LOOPBACK55
@@ -228,13 +228,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence for loopback55
+    - name: Check idempotence for loopback55
       register: result
       cisco.nxos.nxos_interface_ospf: *id010
 
     - ansible.builtin.assert: *id004
 
-    - name: configure ospf interface loopback77 using lower case name
+    - name: Configure ospf interface loopback77 using lower case name
       register: result
       cisco.nxos.nxos_interface_ospf: &id011
         interface: loopback77
@@ -247,13 +247,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence for loopback77
+    - name: Check idempotence for loopback77
       register: result
       cisco.nxos.nxos_interface_ospf: *id011
 
     - ansible.builtin.assert: *id004
 
-    - name: remove ospf interface config
+    - name: Remove ospf interface config
       register: result
       cisco.nxos.nxos_interface_ospf: &id012
         interface: "{{ testint }}"
@@ -268,7 +268,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_interface_ospf: *id012
 

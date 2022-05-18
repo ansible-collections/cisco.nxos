@@ -19,7 +19,7 @@
           - result.changed == true
           - '"logging console 0" in result.commands'
 
-    - name: Set up Logging Timestamp
+    - name: Set up logging timestamp
       register: result
       cisco.nxos.nxos_logging:
         timestamp: microseconds
@@ -82,7 +82,7 @@
               - result.changed == false
       when: imagetag is not search("A8")
 
-    - name: remove logging as collection tearDown
+    - name: Remove logging as collection teardown
       register: result
       cisco.nxos.nxos_logging:
         aggregate:

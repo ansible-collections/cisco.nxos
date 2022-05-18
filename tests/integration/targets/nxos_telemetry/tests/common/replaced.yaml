@@ -49,7 +49,7 @@
       - "    source-interface loopback55"
 
 - block:
-    - name: Gather Telemetry Facts Before Changes
+    - name: Gather telemetry facts before changes
       cisco.nxos.nxos_facts: &id001
         gather_subset:
           - "!all"
@@ -142,7 +142,7 @@
         that:
           - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0
 
-    - name: Gather Telemetry Facts After Changes
+    - name: Gather telemetry facts after changes
       cisco.nxos.nxos_facts: *id001
 
     - ansible.builtin.assert:

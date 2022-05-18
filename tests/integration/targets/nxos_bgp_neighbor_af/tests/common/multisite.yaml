@@ -7,13 +7,13 @@
     soft_reconfiguration_ina: always
   when: imagetag is not search("D1|N1")
 
-- name: Disable feature BGP - multisite
+- name: Disable feature bgp - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature BGP - multisite
+- name: Enable feature bgp - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
@@ -39,13 +39,13 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: Configure eBGP - multisite
+    - name: Configure ebgp - multisite
       cisco.nxos.nxos_bgp_neighbor:
         asn: 65535
         neighbor: 192.0.2.3
         remote_as: 2
 
-    - name: Configure BGP neighbor - multisite
+    - name: Configure bgp neighbor - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id001
         asn: 65535
@@ -60,7 +60,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: *id001
 
@@ -68,7 +68,7 @@
         that:
           - result.changed == false
 
-    - name: Configure BGP neighbor 1 - multisite
+    - name: Configure bgp neighbor 1 - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id003
         asn: 65535
@@ -81,7 +81,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: *id003
 

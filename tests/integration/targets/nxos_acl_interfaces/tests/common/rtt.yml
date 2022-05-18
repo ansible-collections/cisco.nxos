@@ -9,7 +9,7 @@
 - ansible.builtin.include_tasks: populate_config.yaml
 
 - block:
-    - name: RTT- Apply provided configuration
+    - name: Rtt- apply provided configuration
       cisco.nxos.nxos_acl_interfaces:
         config:
           - name: Ethernet1/2

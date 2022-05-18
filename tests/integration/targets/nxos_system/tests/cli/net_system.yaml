@@ -2,14 +2,14 @@
 - ansible.builtin.debug:
     msg: START nxos cli/net_system.yaml on connection={{ ansible_connection }}
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines:
       - no ip domain-list ansible.com
       - no ip domain-list redhat.com
     match: none
 
-- name: configure domain_list using platform agnostic module
+- name: Configure domain_list using platform agnostic module
   register: result
   ansible.netcommon.net_system:
     domain_search:
@@ -22,7 +22,7 @@
       - "'ip domain-list ansible.com' in result.commands"
       - "'ip domain-list redhat.com' in result.commands"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines:
       - no ip domain-list ansible.com

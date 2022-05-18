@@ -20,7 +20,7 @@
       - '"username" in result.commands[0]'
       - '"role network-operator" in result.commands[0]'
 
-- name: teardown
+- name: Teardown
   ansible.netcommon.net_user:
     name: ansibletest1
     state: absent

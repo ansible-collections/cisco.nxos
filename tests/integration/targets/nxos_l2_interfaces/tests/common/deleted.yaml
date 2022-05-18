@@ -7,7 +7,7 @@
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- name: setup1
+- name: Setup1
   ignore_errors: true
   cisco.nxos.nxos_config: &id002
     lines:
@@ -15,14 +15,14 @@
       - "default interface {{ test_int2 }}"
 
 - block:
-    - name: setup2
+    - name: Setup2
       cisco.nxos.nxos_config:
         lines:
           - "switchport"
           - "switchport trunk native vlan 10"
         parents: "interface {{ test_int1 }}"
 
-    - name: setup3
+    - name: Setup3
       cisco.nxos.nxos_config:
         lines:
           - "switchport"
@@ -37,7 +37,7 @@
           - "!min"
         gather_network_resources: l2_interfaces
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_l2_interfaces: &id001
         state: deleted
@@ -62,6 +62,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       ignore_errors: true
       cisco.nxos.nxos_config: *id002

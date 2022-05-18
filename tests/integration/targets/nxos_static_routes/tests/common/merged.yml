@@ -49,7 +49,7 @@
           - "'ip route 192.0.2.64/28 192.0.2.23 name merged_route 1' in result.commands"
           - "result.commands | length == 6"
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       cisco.nxos.nxos_static_routes: *merged
       register: result
 

@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Override all OSPFv3 configuration with provided configuration
+    - name: Override all ospfv3 configuration with provided configuration
       cisco.nxos.nxos_ospfv3: &id001
         config:
           processes:
@@ -34,7 +34,7 @@
         that:
           - "{{ overridden['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
 
-    - name: Override all OSPF configuration with provided configuration (IDEMPOTENT)
+    - name: Override all ospf configuration with provided configuration (idempotent)
       register: result
       cisco.nxos.nxos_ospfv3: *id001
 

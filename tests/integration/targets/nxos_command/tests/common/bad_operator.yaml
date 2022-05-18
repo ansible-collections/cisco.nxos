@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START common/bad_operator.yaml on connection={{ ansible_connection }}
 
-- name: test bad operator
+- name: Test bad operator
   register: result
   ignore_errors: true
   cisco.nxos.nxos_command:

@@ -13,7 +13,7 @@
         feature: vrrp
         state: enabled
 
-    - name: create int vlan 10
+    - name: Create int vlan 10
       cisco.nxos.nxos_config:
         commands: int vlan 10
 
@@ -29,7 +29,7 @@
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id001
 
@@ -47,7 +47,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id003
 
@@ -65,7 +65,7 @@
     - ansible.builtin.pause:
         seconds: 30
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id005
 
@@ -87,7 +87,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Reconfig Idempotence
+    - name: Reconfig idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id006
 
@@ -106,13 +106,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Reconfig Idempotence
+    - name: Reconfig idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id007
 
     - ansible.builtin.assert: *id004
   always:
-    - name: remove vrrp
+    - name: Remove vrrp
       ignore_errors: true
       cisco.nxos.nxos_vrrp: *id005
 

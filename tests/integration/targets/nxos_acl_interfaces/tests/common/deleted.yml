@@ -9,7 +9,7 @@
 - ansible.builtin.include_tasks: populate_config.yaml
 
 - block:
-    - name: Delete all ACLs configuration from given interface
+    - name: Delete all acls configuration from given interface
       register: result
       cisco.nxos.nxos_acl_interfaces: &id002
         config:
@@ -25,7 +25,7 @@
 
     - ansible.builtin.include_tasks: populate_config.yaml
 
-    - name: Delete all ACLs from all interfaces (from all interfaces)
+    - name: Delete all acls from all interfaces (from all interfaces)
       register: result
       cisco.nxos.nxos_acl_interfaces:
         config:

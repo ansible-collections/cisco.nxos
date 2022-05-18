@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_bgp_af multisite sanity test
 
-- name: Enable feature BGP - multisite
+- name: Enable feature bgp - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
@@ -35,7 +35,7 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: Configure BGP_AF Route Target Name
+    - name: Configure bgp_af route target name
       register: result
       cisco.nxos.nxos_bgp_af: &id001
         asn: 65535
@@ -48,7 +48,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp_af: *id001
 
@@ -56,7 +56,7 @@
         that:
           - result.changed == false
 
-    - name: Configure BGP_AF  Route Target Default
+    - name: Configure bgp_af  route target default
       register: result
       cisco.nxos.nxos_bgp_af: &id003
         asn: 65535
@@ -67,13 +67,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp_af: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure BGP_AF 1 Route Target All
+    - name: Configure bgp_af 1 route target all
       register: result
       cisco.nxos.nxos_bgp_af: &id005
         asn: 65535
@@ -84,13 +84,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp_af: *id005
 
     - ansible.builtin.assert: *id004
 
-    - name: Remove BGP - Route Target
+    - name: Remove bgp - route target
       register: result
       cisco.nxos.nxos_bgp_af:
         asn: 65535

@@ -26,7 +26,7 @@
   when: imagetag is search("D1")
 
 - block:
-    - name: create snapshot
+    - name: Create snapshot
       register: result
       cisco.nxos.nxos_snapshot: &id001
         action: create
@@ -38,7 +38,7 @@
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id001
 
@@ -66,7 +66,7 @@
         - assert: *id004
       when: add_sec
 
-    - name: create another snapshot
+    - name: Create another snapshot
       register: result
       cisco.nxos.nxos_snapshot: &id005
         action: create
@@ -79,13 +79,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id005
 
     - ansible.builtin.assert: *id004
 
-    - name: compare snapshots
+    - name: Compare snapshots
       cisco.nxos.nxos_snapshot:
         action: compare
         snapshot1: test_snapshot1
@@ -94,7 +94,7 @@
         compare_option: summary
         path: .
 
-    - name: delete snapshot
+    - name: Delete snapshot
       register: result
       cisco.nxos.nxos_snapshot: &id006
         snapshot_name: test_snapshot2
@@ -102,34 +102,34 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id006
 
     - ansible.builtin.assert: *id004
 
-    - name: delete all snapshots
+    - name: Delete all snapshots
       register: result
       cisco.nxos.nxos_snapshot: &id007
         action: delete_all
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id007
 
     - ansible.builtin.assert: *id004
   when: snapshot_run
   always:
-    - name: delete all sections
+    - name: Delete all sections
       ignore_errors: true
       cisco.nxos.nxos_config:
         commands:
           - snapshot section delete myshow
         match: none
 
-    - name: delete all snapshots
+    - name: Delete all snapshots
       ignore_errors: true
       cisco.nxos.nxos_snapshot:
         action: delete_all

@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START common/not_comparison_operator.yaml on connection={{ ansible_connection }}
 
-- name: test 'not' keyword in wait_for
+- name: Test 'not' keyword in wait_for
   register: result
   cisco.nxos.nxos_command:
     commands:

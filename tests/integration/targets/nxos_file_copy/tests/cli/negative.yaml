@@ -20,7 +20,7 @@
     that:
       - result is search('Invalid nxos filesystem invalid_media_type:')
 
-- name: Attempt to copy source file that does not exist on Ansible controller
+- name: Attempt to copy source file that does not exist on ansible controller
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:

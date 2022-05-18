@@ -9,7 +9,7 @@
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
-- name: setup1
+- name: Setup1
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -19,7 +19,7 @@
       - "  no switchport"
 
 - block:
-    - name: setup3
+    - name: Setup3
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ subint3 }}"
@@ -69,7 +69,7 @@
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_l3_interfaces: *id002
 
@@ -97,7 +97,7 @@
           - "'ip redirects' in result.commands"
       when: platform is match('N[3567]')
 
-    - name: Idempotence - Replaced with no attrs specified
+    - name: Idempotence - replaced with no attrs specified
       register: result
       cisco.nxos.nxos_l3_interfaces: *id003
 
@@ -106,7 +106,7 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown sub-interface
+    - name: Teardown sub-interface
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:

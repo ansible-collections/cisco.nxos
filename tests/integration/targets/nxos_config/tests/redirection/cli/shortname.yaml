@@ -13,7 +13,7 @@
       - result.changed == true
       - result.updates is defined
 
-- name: use module alias to take configuration backup
+- name: Use module alias to take configuration backup
   register: result
   cisco.nxos.config:
     backup: true
@@ -25,7 +25,7 @@
     that:
       - result.changed == true
 
-- name: check if the backup file-4 exist
+- name: Check if the backup file-4 exist
   ansible.builtin.find:
     paths: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}/backup_with_alias.cfg"
   register: backup_file

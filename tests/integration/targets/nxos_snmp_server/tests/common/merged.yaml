@@ -81,7 +81,7 @@
         that:
           - "{{ merged['after'] == result['after'] }}"
 
-    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_snmp_server: *id001
       register: result
 

@@ -5,7 +5,7 @@
 - ansible.builtin.include_tasks: populate_config.yaml
 
 - block:
-    - name: Deleted (All ACLs)
+    - name: Deleted (all acls)
       cisco.nxos.nxos_acls:
         config:
         state: deleted

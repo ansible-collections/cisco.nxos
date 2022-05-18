@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }}/not_hardware_facts.yaml
 
-- name: test not hardware
+- name: Test not hardware
   register: result
   cisco.nxos.nxos_facts:
     gather_subset:

@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: Start nxos_lldp_interfaces deleted integration tests connection = {{ ansible_connection }}
 
-- name: Enable LLDP feature
+- name: Enable lldp feature
   cisco.nxos.nxos_feature:
     feature: lldp
     state: enabled
@@ -66,7 +66,7 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lldp
         state: disabled

@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START nxos_bgp_neighbor_address_family parsed integration tests on connection={{ ansible_connection }}
 
-- name: Parse externally provided BGP config
+- name: Parse externally provided bgp config
   register: result
   cisco.nxos.nxos_bgp_neighbor_address_family:
     running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"

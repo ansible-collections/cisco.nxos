@@ -46,7 +46,7 @@
       - "'ip access-group ACL1v4 out' in result.rendered"
       - result.rendered | length == 7
 
-- name: Idempotence - Rendered
+- name: Idempotence - rendered
   register: result
   cisco.nxos.nxos_acl_interfaces: *id001
 

@@ -94,7 +94,7 @@
           - "{{ merged['after'][0] == result['after'][0] }}"
           - "{{ merged['after'][1] == result['after'][1] }}"
 
-    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_route_maps: *id001
       register: result
 

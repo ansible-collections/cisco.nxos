@@ -27,14 +27,14 @@
           - result.changed == false
           - result.parsed == parsed
 
-    - name: Idempotence - Parsed
+    - name: Idempotence - parsed
       register: result
       cisco.nxos.nxos_lldp_interfaces: *id001
 
     - ansible.builtin.assert:
         that: result.changed == false
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lldp
         state: disabled

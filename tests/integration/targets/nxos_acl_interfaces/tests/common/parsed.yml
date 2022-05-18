@@ -23,7 +23,7 @@
           - result.changed == false
           - result.parsed == parsed
 
-    - name: Idempotence - Parsed
+    - name: Idempotence - parsed
       register: result
       cisco.nxos.nxos_acl_interfaces: *id001
 

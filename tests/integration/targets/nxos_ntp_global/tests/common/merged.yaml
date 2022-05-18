@@ -50,7 +50,7 @@
         that:
           - "{{ merged['after'] == result['after'] }}"
 
-    - name: Merge the provided configuration with the existing running configuration (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_ntp_global: *id001
       register: result
 

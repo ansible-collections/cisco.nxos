@@ -6,7 +6,7 @@
   ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
 
-- name: "Setup: Disable features - multisite"
+- name: "Setup: disable features - multisite"
   loop:
     - bgp
     - bfd
@@ -16,7 +16,7 @@
     feature: "{{ item }}"
     state: disabled
 
-- name: "Setup: Enable features - multisite"
+- name: "Setup: enable features - multisite"
   loop:
     - bgp
     - bfd
@@ -41,7 +41,7 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: Configure BGP neighbor1 - multisite
+    - name: Configure bgp neighbor1 - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor: &id001
         asn: 65535
@@ -56,7 +56,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id001
 
@@ -64,7 +64,7 @@
         that:
           - result.changed == false
 
-    - name: Configure BGP neighbor2 - multisite
+    - name: Configure bgp neighbor2 - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor: &id003
         asn: 65535
@@ -73,13 +73,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure BGP neighbor3 - multisite
+    - name: Configure bgp neighbor3 - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor: &id005
         asn: 65535
@@ -88,7 +88,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp_neighbor: *id005
 
@@ -100,7 +100,7 @@
           - no evpn multisite border-gateway 10
   when: multiout is not search("Invalid command")
 
-- name: "Teardown: Disable features"
+- name: "Teardown: disable features"
   loop:
     - bgp
     - bfd

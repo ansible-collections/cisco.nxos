@@ -12,7 +12,7 @@
           - "!min"
         gather_network_resources: static_routes
 
-    - name: Delete all routes based on VRF
+    - name: Delete all routes based on vrf
       cisco.nxos.nxos_static_routes:
         config:
           - vrf: trial_vrf
@@ -29,7 +29,7 @@
 
     - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Delete routes based on AFI in a VRF
+    - name: Delete routes based on afi in a vrf
       cisco.nxos.nxos_static_routes:
         config:
           - vrf: trial_vrf
@@ -50,7 +50,7 @@
 
     - ansible.builtin.include_tasks: _populate_config.yaml
 
-    - name: Deleted (All routes)
+    - name: Deleted (all routes)
       cisco.nxos.nxos_static_routes: &deleted
         state: deleted
       register: result

@@ -15,14 +15,14 @@
     test_helsinki: true
   when: imagetag is not search("D1")
 
-- name: Disable feature BGP
+- name: Disable feature bgp
   ignore_errors: true
   when: test_helsinki
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature BGP
+- name: Enable feature bgp
   ignore_errors: true
   when: test_helsinki
   cisco.nxos.nxos_feature:
@@ -30,7 +30,7 @@
     state: enabled
 
 - block:
-    - name: set helsinki
+    - name: Set helsinki
       with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
@@ -49,7 +49,7 @@
           - result.changed == true
       when: test_helsinki
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
@@ -60,7 +60,7 @@
           - result.changed == false
       when: test_helsinki
 
-    - name: reset helsinki
+    - name: Reset helsinki
       with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
@@ -78,7 +78,7 @@
     - ansible.builtin.assert: *id002
       when: test_helsinki
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki

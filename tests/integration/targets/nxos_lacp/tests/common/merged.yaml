@@ -51,7 +51,7 @@
         that:
           - ansible_facts.network_resources.lacp == result.after
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_lacp: *id001
 
@@ -60,7 +60,7 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled

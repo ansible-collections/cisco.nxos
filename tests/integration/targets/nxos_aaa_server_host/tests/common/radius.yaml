@@ -21,7 +21,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id001
 
@@ -35,7 +35,7 @@
 
     - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id002
 
@@ -53,7 +53,7 @@
 
     - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id005
 
@@ -71,7 +71,7 @@
 
     - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id006
 
@@ -91,7 +91,7 @@
 
     - ansible.builtin.assert: *id003
 
-    - name: Check NOT Idempotent
+    - name: Check not idempotent
       register: result
       cisco.nxos.nxos_aaa_server_host: *id007
 
@@ -117,7 +117,7 @@
 
     - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id008
 
@@ -140,7 +140,7 @@
           - result.changed == true
           - "'key 7' in result.updates[0]"
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id009
 
@@ -160,7 +160,7 @@
 
     - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id010
 
@@ -179,7 +179,7 @@
 
     - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id011
 

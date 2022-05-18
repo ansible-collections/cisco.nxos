@@ -6,19 +6,19 @@
   ansible.builtin.set_fact:
     testint: "{{ nxos_int1 }}"
 
-- name: "Setup: Enable feature interface-vlan"
+- name: "Setup: enable feature interface-vlan"
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: interface-vlan
     state: enabled
 
-- name: "Setup: Put interface {{ testint }} into a default state"
+- name: "Setup: put interface {{ testint }} into a default state"
   ignore_errors: true
   cisco.nxos.nxos_config: &id008
     lines:
       - default interface {{ testint }}
 
-- name: "Setup: Remove possibly existing vlan interfaces"
+- name: "Setup: remove possibly existing vlan interfaces"
   ignore_errors: true
   cisco.nxos.nxos_config: &id009
     lines:
@@ -41,7 +41,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_interface: *id001
 
@@ -60,13 +60,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_interface: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: Create VLAN Interfaces
+    - name: Create vlan interfaces
       with_items: &id005
         - os_svi_int: vlan2
           os_svi_desc: SVI_VLAN2
@@ -86,7 +86,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Configure Required SVI
+    - name: Configure required svi
       register: result
       cisco.nxos.nxos_l3_interface: &id007
         aggregate:
@@ -104,14 +104,14 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Create VLAN Interfaces Idempotence Check
+    - name: Create vlan interfaces idempotence check
       with_items: *id005
       register: result
       cisco.nxos.nxos_interface: *id006
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure Required SVI Idempotence Check
+    - name: Configure required svi idempotence check
       register: result
       cisco.nxos.nxos_l3_interface: *id007
 
@@ -124,7 +124,7 @@
     - name: Remove vlan interfaces
       cisco.nxos.nxos_config: *id009
 
-    - name: "Setup: Disable feature interface-vlan"
+    - name: "Setup: disable feature interface-vlan"
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: interface-vlan

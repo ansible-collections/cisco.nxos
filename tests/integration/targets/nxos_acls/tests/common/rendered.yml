@@ -60,7 +60,7 @@
       - "'10 permit sctp any 2001:db8:12::/32' in result.rendered"
       - result.rendered | length == 5
 
-- name: Idempotence - Rendered
+- name: Idempotence - rendered
   register: result
   cisco.nxos.nxos_acls: *id001
 

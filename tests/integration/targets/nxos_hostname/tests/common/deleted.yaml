@@ -24,7 +24,7 @@
         that:
           - result['after'] == {}
 
-    - name: Delete hostname configuration (IDEMPOTENT)
+    - name: Delete hostname configuration (idempotent)
       cisco.nxos.nxos_hostname: *del
       register: result
 

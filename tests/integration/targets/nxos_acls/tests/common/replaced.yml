@@ -54,7 +54,7 @@
         that:
           - ansible_facts.network_resources.acls == result.after
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_acls: *id001
 

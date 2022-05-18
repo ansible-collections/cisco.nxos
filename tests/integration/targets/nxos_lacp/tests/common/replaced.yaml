@@ -67,7 +67,7 @@
           - ansible_facts.network_resources.lacp == result.after
       when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_lacp: *id002
 
@@ -98,7 +98,7 @@
           - "'lacp system-priority 1' in result.commands"
       when: platform is search('N9K') and imagetag is not search('I[2-6]')
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled

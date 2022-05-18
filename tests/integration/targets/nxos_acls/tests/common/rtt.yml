@@ -3,7 +3,7 @@
     msg: Start nxos_acls round trip integration tests connection = {{ansible_connection}}
 
 - block:
-    - name: RTT - Apply provided configuration
+    - name: Rtt - apply provided configuration
       cisco.nxos.nxos_acls:
         config:
           - afi: ipv4

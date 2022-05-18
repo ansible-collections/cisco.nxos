@@ -22,7 +22,7 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: configure vxlan_vtep
+    - name: Configure vxlan_vtep
       register: result
       cisco.nxos.nxos_vxlan_vtep: &id001
         interface: nve1
@@ -38,7 +38,7 @@
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep: *id001
 
@@ -46,7 +46,7 @@
         that:
           - result.changed == false
 
-    - name: reset vxlan_vtep
+    - name: Reset vxlan_vtep
       register: result
       cisco.nxos.nxos_vxlan_vtep: &id003
         interface: nve1
@@ -60,13 +60,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: reset Idempotence
+    - name: Reset idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: remove vxlan_vtep
+    - name: Remove vxlan_vtep
       register: result
       cisco.nxos.nxos_vxlan_vtep: &id005
         interface: nve1
@@ -81,7 +81,7 @@
         that:
           - result.changed == true
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep: *id005
 

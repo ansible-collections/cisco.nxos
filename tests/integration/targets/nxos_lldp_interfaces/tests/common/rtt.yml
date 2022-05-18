@@ -9,7 +9,7 @@
 - ansible.builtin.include_tasks: remove_config.yaml
 
 - block:
-    - name: RTT - Apply the provided configuration (base config)
+    - name: Rtt - apply the provided configuration (base config)
       register: base_config
       cisco.nxos.nxos_lldp_interfaces:
         config:
@@ -63,7 +63,7 @@
       ansible.builtin.assert:
         that: "{{ base_config['after'] | symmetric_difference(revert['after']) |length == 0 }}"
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lldp
         state: disabled

@@ -3,12 +3,12 @@
     msg: START connection={{ ansible_connection }}/set_hostname.yaml
 
 - block:
-    - name: setup
+    - name: Setup
       cisco.nxos.nxos_config:
         lines: hostname switch
         match: none
 
-    - name: configure hostname
+    - name: Configure hostname
       register: result
       cisco.nxos.nxos_system:
         hostname: foo
@@ -17,7 +17,7 @@
         that:
           - result.changed == true
 
-    - name: verify hostname
+    - name: Verify hostname
       register: result
       cisco.nxos.nxos_system:
         hostname: foo
@@ -26,7 +26,7 @@
         that:
           - result.changed == false
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_config:
         lines: hostname switch
         match: none

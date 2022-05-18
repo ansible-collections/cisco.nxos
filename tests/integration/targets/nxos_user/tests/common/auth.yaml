@@ -7,7 +7,7 @@
         state: present
         configured_password: pasS!123
 
-    - name: test login
+    - name: Test login
       ansible.builtin.expect:
         command:
           ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22) }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
@@ -15,7 +15,7 @@
         responses:
           (?i)password: pasS!123
 
-    - name: test login with invalid password (should fail)
+    - name: Test login with invalid password (should fail)
       ansible.builtin.expect:
         command:
           ssh auth_user@{{ ansible_ssh_host }} -p {{ ansible_ssh_port|default(22) }} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PubkeyAuthentication=no
@@ -25,12 +25,12 @@
       ignore_errors: true
       register: results
 
-    - name: check that attempt failed
+    - name: Check that attempt failed
       ansible.builtin.assert:
         that:
           - results.failed
   always:
-    - name: delete user
+    - name: Delete user
       register: result
       cisco.nxos.nxos_user:
         name: auth_user

@@ -5,7 +5,7 @@
     msg: Using provider={{ connection.transport }}
   when: ansible_connection == "local"
 
-- name: hit conditional for lists of 10 or more commands
+- name: Hit conditional for lists of 10 or more commands
   cisco.nxos.nxos_command:
     commands:
       - show hostname
@@ -25,7 +25,7 @@
     that:
       - result.stdout|length == 10
 
-- name: combine with provider
+- name: Combine with provider
   cisco.nxos.nxos_command:
     commands:
       - show hostname

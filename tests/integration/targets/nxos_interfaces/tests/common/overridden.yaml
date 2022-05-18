@@ -8,7 +8,7 @@
     test_int2: "{{ nxos_int2 }}"
 
 - block:
-    - name: setup1
+    - name: Setup1
       cisco.nxos.nxos_config: &id003
         lines:
           - "default interface {{ test_int1 }}"

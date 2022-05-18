@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START common/greaterthan.yaml on connection={{ ansible_connection }}
 
-- name: test gt operator
+- name: Test gt operator
   register: result
   cisco.nxos.nxos_command:
     commands:
@@ -15,7 +15,7 @@
     that:
       - result.changed == false
 
-- name: test > operator
+- name: Test > operator
   register: result
   cisco.nxos.nxos_command:
     commands:

@@ -5,7 +5,7 @@
 - ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Prepare interfaces (switch to L2)
+    - name: Prepare interfaces (switch to l2)
       cisco.nxos.nxos_interfaces:
         config:
           - name: "{{ nxos_int1 }}"
@@ -16,7 +16,7 @@
             mode: layer2
         state: merged
 
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.nxos.nxos_l2_interfaces:
         config:

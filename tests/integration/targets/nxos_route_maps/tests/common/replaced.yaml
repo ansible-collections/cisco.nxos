@@ -47,7 +47,7 @@
           - "{{ replaced['after'][0] == result['after'][0] }}"
           - "{{ replaced['after'][1] == result['after'][1] }}"
 
-    - name: Replace route-maps configurations of listed route-maps with provided configurations (IDEMPOTENT)
+    - name: Replace route-maps configurations of listed route-maps with provided configurations (idempotent)
       register: result
       cisco.nxos.nxos_route_maps: *id001
 

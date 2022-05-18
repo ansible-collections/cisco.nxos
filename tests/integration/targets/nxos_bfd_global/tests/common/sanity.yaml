@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_bfd_global sanity test
 
-- name: set facts common
+- name: Set facts common
   ansible.builtin.set_fact:
     echo: deleted
     nd_echo: loopback1
@@ -17,7 +17,7 @@
     slow: 2000
     nd_slow: 2001
 
-- name: set facts (exclude 5K/6K)
+- name: Set facts (exclude 5k/6k)
   ansible.builtin.set_fact:
     echo_rx: 50
     nd_echo_rx: 51
@@ -32,7 +32,7 @@
     nd_ipv4_slow: 2044
   when: platform is not search('N5K|N6K')
 
-- name: set facts (exclude 35/5K/6K)
+- name: Set facts (exclude 35/5k/6k)
   ansible.builtin.set_fact:
     ipv6_echo_rx: 50
     nd_ipv6_echo_rx: 56
@@ -42,13 +42,13 @@
     nd_ipv6_slow: 2046
   when: platform is not search('N35|N5K|N6K')
 
-- name: set facts (exclude 5K/6K/7K)
+- name: Set facts (exclude 5k/6k/7k)
   ansible.builtin.set_fact:
     startup: 5
     nd_startup: 6
   when: platform is not search('N35|N5K|N6K|N7K')
 
-- name: set facts 3k defaults (resets some values above)
+- name: Set facts 3k defaults (resets some values above)
   ansible.builtin.set_fact:
     echo_rx: 250
     interval: &id003
@@ -63,7 +63,7 @@
     ipv6_slow: 2000
   when: platform is search('N3K')
 
-- name: set facts fabricpath
+- name: Set facts fabricpath
   ansible.builtin.set_fact:
     fab_interval: *id001
     nd_fab_interval:
@@ -87,7 +87,7 @@
     lines: interface loopback1
     match: none
 
-- name: feature bfd init
+- name: Feature bfd init
   delay: 3
   retries: 1
   register: result
@@ -97,7 +97,7 @@
     slow_timer: "{{ nd_slow }}"
 
 - block:
-    - name: BFD non defaults
+    - name: Bfd non defaults
       register: result
       cisco.nxos.nxos_bfd_global: &id004
         echo_interface: "{{ nd_echo }}"
@@ -119,7 +119,7 @@
         that:
           - result.changed == true
 
-    - name: bfd_non_def idempotence
+    - name: Bfd_non_def idempotence
       register: result
       cisco.nxos.nxos_bfd_global: *id004
 
@@ -127,7 +127,7 @@
         that:
           - result.changed == false
 
-    - name: BFD defaults
+    - name: Bfd defaults
       register: result
       cisco.nxos.nxos_bfd_global: &id006
         echo_interface: "{{ echo }}"
@@ -147,7 +147,7 @@
 
     - ansible.builtin.assert: *id005
 
-    - name: bfd_def idempotence
+    - name: Bfd_def idempotence
       register: result
       cisco.nxos.nxos_bfd_global: *id006
 

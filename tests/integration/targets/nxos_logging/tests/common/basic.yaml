@@ -139,7 +139,7 @@
 
 - ansible.builtin.assert: *id003
 
-- name: Configure Remote Logging
+- name: Configure remote logging
   register: result
   cisco.nxos.nxos_logging: &id009
     dest: server
@@ -154,13 +154,13 @@
       - result.changed == true
       - '"logging server test-syslogserver.com 1 facility auth use-vrf management" in result.commands'
 
-- name: Configure Remote Logging (idempotent)
+- name: Configure remote logging (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id009
 
 - ansible.builtin.assert: *id003
 
-- name: Configure Source Interface for Logging
+- name: Configure source interface for logging
   register: result
   cisco.nxos.nxos_logging: &id010
     interface: mgmt0
@@ -170,7 +170,7 @@
       - result.changed == true
       - '"logging source-interface mgmt 0" in result.commands'
 
-- name: Configure Source Interface for Logging (idempotent)
+- name: Configure source interface for logging (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id010
 
@@ -178,7 +178,7 @@
     that:
       - result.changed == false
 
-- name: remove logging as collection tearDown
+- name: Remove logging as collection teardown
   register: result
   cisco.nxos.nxos_logging: &id011
     aggregate:
@@ -228,14 +228,14 @@
       - '"no logging source-interface" in result.commands'
   when: platform is search('N5K|N7K') or imagetag is search("A8")
 
-- name: remove aggregate logging (idempotent)
+- name: Remove aggregate logging (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id011
 
 - ansible.builtin.assert: *id003
 
 - block:
-    - name: Configure Logging message
+    - name: Configure logging message
       register: result
       cisco.nxos.nxos_logging: &id012
         interface_message: add-interface-description
@@ -245,13 +245,13 @@
         that:
           - result.changed == true
 
-    - name: Configure Logging message (idempotent)
+    - name: Configure logging message (idempotent)
       register: result
       cisco.nxos.nxos_logging: *id012
 
     - ansible.builtin.assert: *id003
 
-    - name: Remove Logging message
+    - name: Remove logging message
       register: result
       cisco.nxos.nxos_logging:
         interface_message: add-interface-description
@@ -411,7 +411,7 @@
 
 - ansible.builtin.assert: *id003
 
-- name: Set up Logging Timestamp
+- name: Set up logging timestamp
   register: result
   cisco.nxos.nxos_logging: &id023
     timestamp: microseconds
@@ -419,13 +419,13 @@
 
 - ansible.builtin.assert: *id013
 
-- name: Set up Logging Timestamp (idempotent)
+- name: Set up logging timestamp (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id023
 
 - ansible.builtin.assert: *id003
 
-- name: Remove Logging Timestamp
+- name: Remove logging timestamp
   register: result
   cisco.nxos.nxos_logging:
     timestamp: microseconds
@@ -433,7 +433,7 @@
 
 - ansible.builtin.assert: *id013
 
-- name: Set up Facility ethpm Link UP Error
+- name: Set up facility ethpm link up error
   register: result
   cisco.nxos.nxos_logging: &id024
     facility: ethpm
@@ -442,13 +442,13 @@
 
 - ansible.builtin.assert: *id013
 
-- name: Set up Facility ethpm Link UP Error (idempotent)
+- name: Set up facility ethpm link up error (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id024
 
 - ansible.builtin.assert: *id003
 
-- name: Remove Facility ethpm Link UP Error
+- name: Remove facility ethpm link up error
   register: result
   cisco.nxos.nxos_logging:
     facility: ethpm
@@ -457,7 +457,7 @@
 
 - ansible.builtin.assert: *id013
 
-- name: Set up Facility ethpm Link DOWN Error
+- name: Set up facility ethpm link down error
   register: result
   cisco.nxos.nxos_logging: &id025
     facility: ethpm
@@ -466,13 +466,13 @@
 
 - ansible.builtin.assert: *id013
 
-- name: Set up Facility ethpm Link DOWN Error (idempotent)
+- name: Set up facility ethpm link down error (idempotent)
   register: result
   cisco.nxos.nxos_logging: *id025
 
 - ansible.builtin.assert: *id003
 
-- name: Remove Facility ethpm Link DOWN Error
+- name: Remove facility ethpm link down error
   register: result
   cisco.nxos.nxos_logging:
     facility: ethpm

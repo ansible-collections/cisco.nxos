@@ -26,7 +26,7 @@
           - result.changed == false
           - ansible_facts.network_resources.acls == result.parsed
 
-    - name: Idempotence - Parsed
+    - name: Idempotence - parsed
       register: result
       cisco.nxos.nxos_acls: *id001
 

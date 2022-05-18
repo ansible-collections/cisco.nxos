@@ -30,7 +30,7 @@
         that:
           - result.changed == true
 
-    - name: CHECK IDEMPOTENCE - enable nv overlay evpn
+    - name: Check idempotence - enable nv overlay evpn
       register: result
       cisco.nxos.nxos_evpn_global: *id001
 
@@ -45,7 +45,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: CHECK DEMPOTENCE - Disable nv overlay evpn
+    - name: Check dempotence - disable nv overlay evpn
       register: result
       cisco.nxos.nxos_evpn_global: *id003
 
@@ -55,11 +55,11 @@
     - ansible.builtin.debug:
         msg: connection={{ ansible_connection }} nxos_evpn_global sanity test - FALURE ENCOUNTERED
   always:
-    - name: Cleanup - Disable nv overlay evpn
+    - name: Cleanup - disable nv overlay evpn
       ignore_errors: true
       cisco.nxos.nxos_config: *id005
 
-    - name: Cleanup - Disable feature nv overlay
+    - name: Cleanup - disable feature nv overlay
       ignore_errors: true
       cisco.nxos.nxos_feature: *id006
 

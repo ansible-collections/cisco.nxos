@@ -1,5 +1,5 @@
 ---
-- name: Assert HTTPS configuration changes
+- name: Assert https configuration changes
   ansible.builtin.assert:
     that:
       - result.stdout[0]['TABLE_listen_on_port']['ROW_listen_on_port'].l_port
@@ -7,7 +7,7 @@
       - result.stdout[0]['operation_status'].o_status == 'nxapi enabled'
   when: result.stdout[0].TABLE_listen_on_port is defined
 
-- name: Assert HTTPS configuration changes 9.2 or greater
+- name: Assert https configuration changes 9.2 or greater
   ansible.builtin.assert:
     that:
       - result.stdout[0]['https_port']

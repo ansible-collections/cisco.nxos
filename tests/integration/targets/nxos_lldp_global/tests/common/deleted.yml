@@ -8,12 +8,12 @@
         cfg_port_id: true
       when: platform is not search('N[567]K') and imagetag is not search("I[2345]")
 
-    - name: feature off to cleanup lldp
+    - name: Feature off to cleanup lldp
       cisco.nxos.nxos_feature: &id003
         feature: lldp
         state: disabled
 
-    - name: Enable LLDP feature
+    - name: Enable lldp feature
       cisco.nxos.nxos_feature:
         feature: lldp
         state: enabled
@@ -78,6 +78,6 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature: *id003
   when: platform is not search('N35')

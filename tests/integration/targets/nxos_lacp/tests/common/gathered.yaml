@@ -21,7 +21,7 @@
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled

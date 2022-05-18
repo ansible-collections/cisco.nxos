@@ -2,19 +2,19 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_gir_profile_management sanity test
 
-- name: Setup - Remove maintenace mode profiles
+- name: Setup - remove maintenace mode profiles
   ignore_errors: true
   cisco.nxos.nxos_gir_profile_management: &id005
     mode: maintenance
     state: absent
 
-- name: Setup - Remove normal mode profiles
+- name: Setup - remove normal mode profiles
   ignore_errors: true
   cisco.nxos.nxos_gir_profile_management: &id006
     mode: normal
     state: absent
 
-- name: Setup - Turn on feature eigrp
+- name: Setup - turn on feature eigrp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: eigrp
@@ -34,7 +34,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence - Create maintenace mode profile
+    - name: Check idempotence - create maintenace mode profile
       register: result
       cisco.nxos.nxos_gir_profile_management: *id001
 
@@ -53,7 +53,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Create normal mode profile
+    - name: Check idempotence - create normal mode profile
       register: result
       cisco.nxos.nxos_gir_profile_management: *id003
 
@@ -65,7 +65,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Remove maintenance mode profile
+    - name: Check idempotence - remove maintenance mode profile
       register: result
       cisco.nxos.nxos_gir_profile_management: *id005
 
@@ -77,7 +77,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Remove normal mode profile
+    - name: Check idempotence - remove normal mode profile
       register: result
       cisco.nxos.nxos_gir_profile_management: *id006
 

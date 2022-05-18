@@ -14,7 +14,7 @@
   ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     commands:
       - no description
@@ -24,20 +24,20 @@
     match: none
     provider: "{{ connection }}"
 
-- name: collect any backup files
+- name: Collect any backup files
   ansible.builtin.find: &backups
     paths: "{{ role_path }}/backup"
     pattern: "{{ inventory_hostname_short }}_config*"
   connection: local
   register: backup_files
 
-- name: delete backup files
+- name: Delete backup files
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: absent
   with_items: "{{backup_files.files|default([])}}"
 
-- name: configure device with config
+- name: Configure device with config
   cisco.nxos.nxos_config:
     commands:
       - description this is a test
@@ -53,7 +53,7 @@
       - "result.changed == true"
       - "result.updates is defined"
 
-- name: collect any backup files
+- name: Collect any backup files
   ansible.builtin.find: *backups
   connection: local
   register: backup_files
@@ -63,7 +63,7 @@
       - "backup_files.files is defined"
 
 # hit block/sublevel sections
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config: &clear
     lines: no ip access-list test
     provider: "{{ connection }}"
@@ -71,7 +71,7 @@
   ignore_errors: true
 
 # hit NetworkConfig._diff_exact
-- name: configure sub level command using block replace - exact
+- name: Configure sub level command using block replace - exact
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -94,7 +94,7 @@
       - "'40 permit ip 192.0.2.4/32 any log' in result.updates"
 
 # hit NetworkConfig._diff_strict
-- name: configure sub level command using block replace strict
+- name: Configure sub level command using block replace strict
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -107,12 +107,12 @@
     match: strict
   register: result
 
-- name: teardown
+- name: Teardown
   nxos_config: *clear
 
 # hit CustomNetworkConfig
 - block:
-    - name: create static route
+    - name: Create static route
       cisco.nxos.nxos_static_route:
         prefix: "192.168.20.64/24"
         next_hop: "192.0.2.3"
@@ -127,7 +127,7 @@
         that:
           - "result.changed == true"
 
-    - name: remove static route
+    - name: Remove static route
       cisco.nxos.nxos_static_route:
         prefix: "192.168.20.64/24"
         next_hop: "192.0.2.3"
@@ -142,7 +142,7 @@
     - ansible.builtin.assert: *true
 
   always:
-    - name: remove static route
+    - name: Remove static route
       cisco.nxos.nxos_static_route:
         prefix: "192.168.20.64/24"
         next_hop: "192.0.2.3"
@@ -154,7 +154,7 @@
         provider: "{{ connection }}"
       ignore_errors: true
 
-    - name: remove static route aggregate
+    - name: Remove static route aggregate
       cisco.nxos.nxos_static_route:
         aggregate:
           - prefix: "192.168.22.64/24"

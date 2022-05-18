@@ -18,7 +18,7 @@
         server_type: radius
         state: present
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id001
 
@@ -39,7 +39,7 @@
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id002
 
@@ -61,7 +61,7 @@
 
     - ansible.builtin.assert: *id005
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id006
 
@@ -79,7 +79,7 @@
 
     - ansible.builtin.assert: *id005
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id007
 

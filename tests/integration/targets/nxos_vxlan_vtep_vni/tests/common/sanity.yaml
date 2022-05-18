@@ -3,7 +3,7 @@
     msg: START connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity test
 
 - block:
-    - name: Apply N7K specific setup config
+    - name: Apply n7k specific setup config
       ansible.builtin.include: targets/nxos_vxlan_vtep/tasks/platform/n7k/setup.yaml
       when: platform is match('N7K')
 
@@ -13,12 +13,12 @@
           - feature nv overlay
         match: none
 
-    - name: configure vxlan_vtep
+    - name: Configure vxlan_vtep
       cisco.nxos.nxos_vxlan_vtep:
         interface: nve1
         host_reachability: true
 
-    - name: configure vxlan_vtep_vni assoc-vrf
+    - name: Configure vxlan_vtep_vni assoc-vrf
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: &id001
         interface: nve1
@@ -29,7 +29,7 @@
         that:
           - result.changed == true
 
-    - name: Conf 1 Idempotence
+    - name: Conf 1 idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: *id001
 
@@ -37,14 +37,14 @@
         that:
           - result.changed == false
 
-    - name: remove vxlan_vtep_vni
+    - name: Remove vxlan_vtep_vni
       cisco.nxos.nxos_vxlan_vtep_vni:
         interface: nve1
         vni: 6000
         assoc_vrf: true
         state: absent
 
-    - name: configure vxlan_vtep_vni
+    - name: Configure vxlan_vtep_vni
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni:
         interface: nve1
@@ -52,7 +52,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: configure vxlan_vtep_vni mcast
+    - name: Configure vxlan_vtep_vni mcast
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: &id003
         interface: nve1
@@ -61,13 +61,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf 3 Idempotence
+    - name: Conf 3 idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: configure vxlan_vtep_vni default mcast
+    - name: Configure vxlan_vtep_vni default mcast
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: &id005
         interface: nve1
@@ -76,19 +76,19 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf 4 Idempotence
+    - name: Conf 4 idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: *id005
 
     - ansible.builtin.assert: *id004
 
-    - name: remove config
+    - name: Remove config
       cisco.nxos.nxos_vxlan_vtep_vni: &id013
         interface: nve1
         vni: 8000
         state: absent
 
-    - name: configure vxlan_vtep
+    - name: Configure vxlan_vtep
       cisco.nxos.nxos_vxlan_vtep:
         interface: nve1
         host_reachability: false
@@ -229,11 +229,11 @@
       when: (platform is search('N9K'))
   when: (platform is search("N7K|N9K"))
   always:
-    - name: Apply N7K specific cleanup config
+    - name: Apply n7k specific cleanup config
       ansible.builtin.include: targets/nxos_vxlan_vtep/tasks/platform/n7k/cleanup.yaml
       when: platform is match('N7K')
 
-    - name: remove vxlan_vtep
+    - name: Remove vxlan_vtep
       ignore_errors: true
       cisco.nxos.nxos_vxlan_vtep:
         interface: nve1

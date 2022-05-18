@@ -18,7 +18,7 @@
       - "result.changed == false"
       - "result.parsed == parsed"
 
-- name: Idempotence - Parsed
+- name: Idempotence - parsed
   cisco.nxos.nxos_static_routes: *parsed
   register: result
 

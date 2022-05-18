@@ -43,7 +43,7 @@
         that:
           - "{{ overridden['after'][0] == result['after'][0] }}"
 
-    - name: Override all prefix-lists configuration with provided configuration (IDEMPOTENT)
+    - name: Override all prefix-lists configuration with provided configuration (idempotent)
       register: result
       cisco.nxos.nxos_prefix_lists: *id001
 

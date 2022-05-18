@@ -11,7 +11,7 @@
     testint2: "{{ nxos_int2 }}"
 
 - block:
-    - name: Install and Enable FabricPath feature set
+    - name: Install and enable fabricpath feature set
       when: platform is search('N5K|N7K')
       cisco.nxos.nxos_config:
         lines:
@@ -25,13 +25,13 @@
           - feature vn-segment-vlan-based
         match: none
 
-    - name: vlan teardown
+    - name: Vlan teardown
       ignore_errors: true
       cisco.nxos.nxos_vlan: &id013
         vlan_range: 2-200
         state: absent
 
-    - name: Ensure a range of VLANs are present on the switch
+    - name: Ensure a range of vlans are present on the switch
       register: result
       cisco.nxos.nxos_vlan: &id001
         vlan_range: 2-10,20,50,55-60,100-150
@@ -40,7 +40,7 @@
         that:
           - result.changed == true
 
-    - name: Vlan Idempotence
+    - name: Vlan idempotence
       register: result
       cisco.nxos.nxos_vlan: *id001
 
@@ -48,7 +48,7 @@
         that:
           - result.changed == false
 
-    - name: Ensure VLAN 50 exists with the name WEB and is in the shutdown state
+    - name: Ensure vlan 50 exists with the name web and is in the shutdown state
       register: result
       when: platform is search('N9K')
       cisco.nxos.nxos_vlan: &id003
@@ -61,7 +61,7 @@
     - ansible.builtin.assert: *id002
       when: platform is search('N9K')
 
-    - name: web1 Idempotence
+    - name: Web1 idempotence
       register: result
       when: platform is search('N9K')
       cisco.nxos.nxos_vlan: *id003
@@ -69,7 +69,7 @@
     - ansible.builtin.assert: *id004
       when: platform is search('N9K')
 
-    - name: change name and vni to default
+    - name: Change name and vni to default
       register: result
       when: platform is search('N9K')
       cisco.nxos.nxos_vlan: &id005
@@ -82,7 +82,7 @@
     - ansible.builtin.assert: *id002
       when: platform is search('N9K')
 
-    - name: web2 Idempotence
+    - name: Web2 idempotence
       register: result
       when: platform is search('N9K')
       cisco.nxos.nxos_vlan: *id005
@@ -90,7 +90,7 @@
     - ansible.builtin.assert: *id004
       when: platform is search('N9K')
 
-    - name: Ensure VLAN 50 exists with the name WEB and is in the shutdown state
+    - name: Ensure vlan 50 exists with the name web and is in the shutdown state
       register: result
       when: platform is search('N3K|N7K')
       cisco.nxos.nxos_vlan: &id006
@@ -102,7 +102,7 @@
     - ansible.builtin.assert: *id002
       when: platform is search('N3K|N7K')
 
-    - name: web3 Idempotence
+    - name: Web3 idempotence
       register: result
       when: platform is search('N3K|N7K')
       cisco.nxos.nxos_vlan: *id006
@@ -122,7 +122,7 @@
     - ansible.builtin.assert: *id002
       when: platform is search('N3K|N7K')
 
-    - name: web4 Idempotence
+    - name: Web4 idempotence
       register: result
       when: platform is search('N3K|N7K')
       cisco.nxos.nxos_vlan: *id007
@@ -140,7 +140,7 @@
     - ansible.builtin.assert: *id002
       when: platform is search('N5K|N7K')
 
-    - name: mode1 Idempotence
+    - name: Mode1 idempotence
       register: result
       when: platform is search('N5K|N7K')
       cisco.nxos.nxos_vlan: *id008
@@ -158,7 +158,7 @@
     - ansible.builtin.assert: *id002
       when: platform is search('N5K|N7K')
 
-    - name: mode2 Idempotence
+    - name: Mode2 idempotence
       register: result
       when: platform is search('N5K|N7K')
       cisco.nxos.nxos_vlan: *id009
@@ -166,7 +166,7 @@
     - ansible.builtin.assert: *id004
       when: platform is search('N5K|N7K')
 
-    - name: Ensure VLAN is NOT on the device
+    - name: Ensure vlan is not on the device
       register: result
       cisco.nxos.nxos_vlan: &id010
         vlan_id: 50
@@ -174,7 +174,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: no vlan Idempotence
+    - name: No vlan idempotence
       register: result
       cisco.nxos.nxos_vlan: *id010
 
@@ -215,7 +215,7 @@
       ignore_errors: true
       cisco.nxos.nxos_vlan: *id012
 
-    - name: vlan teardown final
+    - name: Vlan teardown final
       ignore_errors: true
       cisco.nxos.nxos_vlan: *id013
 

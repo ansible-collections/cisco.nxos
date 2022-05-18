@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replace specified neighbor AFs with given configuration
+    - name: Replace specified neighbor afs with given configuration
       cisco.nxos.nxos_bgp_neighbor_address_family: &replaced
         config:
           as_number: 65536
@@ -63,7 +63,7 @@
           - "{{ replaced['after']['vrfs'] | symmetric_difference(result['after']['vrfs']) |length == 0 }}"
           - replaced['after']['as_number'] == result['after']['as_number']
 
-    - name: Replace device configurations of listed OSPF processes with provided configurarions (IDEMPOTENT)
+    - name: Replace device configurations of listed ospf processes with provided configurarions (idempotent)
       register: result
       cisco.nxos.nxos_bgp_neighbor_address_family: *replaced
 

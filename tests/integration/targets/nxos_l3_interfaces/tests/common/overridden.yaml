@@ -10,7 +10,7 @@
     test_int2: "{{ nxos_int2 }}"
     test_int3: "{{ nxos_int3 }}"
 
-- name: setup1
+- name: Setup1
   ignore_errors: true
   cisco.nxos.nxos_config: &id003
     lines:
@@ -24,7 +24,7 @@
     - "{{ test_int3 }}"
 
 - block:
-    - name: setup3
+    - name: Setup3
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int1 }}"
@@ -39,7 +39,7 @@
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - name: Store reserved interface IP config
+    - name: Store reserved interface ip config
       ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         overriden_config:
@@ -72,7 +72,7 @@
         that:
           - result.after|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
 
-    - name: Idempotence - Overridden
+    - name: Idempotence - overridden
       register: result
       cisco.nxos.nxos_l3_interfaces: *id002
 
@@ -81,7 +81,7 @@
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       ignore_errors: true
       cisco.nxos.nxos_config: *id003
       loop:
