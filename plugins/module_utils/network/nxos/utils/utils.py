@@ -4,6 +4,7 @@ __metaclass__ = type
 import socket
 
 from itertools import groupby, count
+from functools import total_ordering
 from ansible.module_utils.six import iteritems
 
 LOGGING_SEVMAP = {
@@ -180,3 +181,33 @@ def vlan_list_to_range(cmd):
     for v in get_ranges(cmd):
         ranges.append("-".join(map(str, (v[0], v[-1])[: len(v)])))
     return ",".join(ranges)
+
+
+@total_ordering
+class Version:
+    """Simple class to compare arbitrary versions"""
+
+    def __init__(self, version_string):
+        self.components = version_string.split(".")
+
+    def __eq__(self, other):
+        other = _coerce(other)
+        if not isinstance(other, Version):
+            return NotImplemented
+
+        return self.components == other.components
+
+    def __lt__(self, other):
+        other = _coerce(other)
+        if not isinstance(other, Version):
+            return NotImplemented
+
+        return self.components < other.components
+
+
+def _coerce(other):
+    if isinstance(other, str):
+        other = Version(other)
+    if isinstance(other, (int, float)):
+        other = Version(str(other))
+    return other
