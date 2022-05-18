@@ -29,12 +29,12 @@
           - "subscription 100"
           - "snsr-grp 8 sample-interval 15000"
 
-    - name: Gather Telemetry Facts using gathered
+    - name: Gather telemetry facts using gathered
       cisco.nxos.nxos_telemetry:
         state: gathered
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "{{ result['gathered'] == gathered }}"
   always:

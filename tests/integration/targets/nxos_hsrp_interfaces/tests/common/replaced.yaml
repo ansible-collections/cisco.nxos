@@ -1,22 +1,22 @@
 ---
-- debug:
-    msg:
-      Start nxos_hsrp_interfaces replaced integration tests connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: Start nxos_hsrp_interfaces replaced integration tests connection={{ ansible_connection }}
 
-- set_fact:
+- name: Set a fact for 'test_int1' and 'test_int2'
+  ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- set_fact:
+- name: Set a fact for 'bfd_disable' and 'bfd_enable'
+  ansible.builtin.set_fact:
     bfd_enable: enable
     bfd_disable: disable
   when: platform is not search('N35')
 
 - block:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: setup2
+    - name: Setup2
       cisco.nxos.nxos_config:
         lines:
           - "feature bfd"
@@ -25,7 +25,7 @@
           - "  no switchport"
           - "  hsrp bfd"
 
-    - name: setup3
+    - name: Setup3
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int2 }}"
@@ -39,20 +39,20 @@
             bfd: "{{ bfd_disable|default(omit)}}"
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no hsrp bfd' in result.commands"
         msg: "Assert failed. 'result.commands': {{ result.commands }}"
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_hsrp_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

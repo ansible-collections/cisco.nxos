@@ -1,20 +1,20 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_bgp_global replaced integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replace BGP configuration with provided configuration
-      cisco.nxos.nxos_bgp_global: &id002
+    - name: Replace bgp configuration with provided configuration
+      cisco.nxos.nxos_bgp_global: &id001
         config:
           as_number: 65536
           router_id: 198.51.100.2
           bestpath:
-            compare_neighborid: True
-            cost_community_ignore: True
+            compare_neighborid: true
+            cost_community_ignore: true
           confederation:
             identifier: 42
             peers:
@@ -29,51 +29,48 @@
               remote_as: 65537
               description: NBR-1
               low_memory:
-                exempt: True
+                exempt: true
           neighbor_down:
-            fib_accelerate: True
+            fib_accelerate: true
           vrfs:
             - vrf: site-2
               local_as: 300
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 203.0.113.2
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
         state: replaced
       register: result
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands'])\
-            \ |length == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - replaced['after'] == result['after']
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - merged['after'] == result['before']
 
-    - name:
-        Replace device configurations of listed OSPF processes with provided configurarions
-        (IDEMPOTENT)
+    - name: Replace device configurations of listed ospf processes with provided configurarions (idempotent)
       register: result
-      cisco.nxos.nxos_bgp_global: *id002
+      cisco.nxos.nxos_bgp_global: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
     - name: Assert that before dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - replaced['after'] == result['before']
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

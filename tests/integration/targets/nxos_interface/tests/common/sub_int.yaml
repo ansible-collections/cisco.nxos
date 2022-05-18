@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_interface sub-interface test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'testint'
+  ansible.builtin.set_fact:
     testint: "{{ nxos_int1 }}"
 
 - name: Setup - delete sub-interface
@@ -11,7 +12,7 @@
     name: "{{ testint }}.20"
     state: absent
 
-- name: Setup - Ensure the interface is layer3
+- name: Setup - ensure the interface is layer3
   cisco.nxos.nxos_interface:
     name: "{{ testint }}"
     mode: layer3
@@ -24,15 +25,15 @@
     admin_state: up
     mtu: 800
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: Create sub-interface (Idempotence)
+- name: Create sub-interface (idempotence)
   register: result
   cisco.nxos.nxos_interface: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -44,15 +45,15 @@
     admin_state: down
     mtu: 800
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: Create sub-interface (Idempotence)
+- name: Create sub-interface (idempotence)
   register: result
   cisco.nxos.nxos_interface: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
@@ -60,15 +61,15 @@
   register: result
   cisco.nxos.nxos_interface: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: Remove sub-interface (Idempotence)
+- name: Remove sub-interface (idempotence)
   register: result
   cisco.nxos.nxos_interface: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

@@ -2,20 +2,21 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_acl_interface sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname'
+  ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
 
 - name: Interface selected for this test
   ansible.builtin.debug:
     msg: "{{ intname }}"
 
-- name: "Setup: Put interface into a default state"
+- name: "Setup: put interface into a default state"
   ignore_errors: true
   cisco.nxos.nxos_config: &id007
     lines:
       - default interface {{ intname }}
 
-- name: "Setup: Put interface into no switch port mode"
+- name: "Setup: put interface into no switch port mode"
   ignore_errors: true
   cisco.nxos.nxos_config:
     commands:
@@ -24,14 +25,14 @@
       - interface {{ intname }}
     match: none
 
-- name: "Setup: Cleanup possibly existing acl"
+- name: "Setup: cleanup possibly existing acl"
   ignore_errors: true
   cisco.nxos.nxos_acl: &id008
     name: ANSIBLE_ACL
     seq: 10
     state: delete_acl
 
-- name: Configure Supporting ACL
+- name: Configure supporting acl
   cisco.nxos.nxos_acl:
     name: ANSIBLE_ACL
     seq: 10
@@ -49,15 +50,15 @@
         direction: egress
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Check Idempotence egress
+    - name: Check idempotence egress
       register: result
       cisco.nxos.nxos_acl_interface: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -69,13 +70,13 @@
         direction: ingress
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence ingress
+    - name: Check idempotence ingress
       register: result
       cisco.nxos.nxos_acl_interface: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Cleanup acl interface egress
       register: result
@@ -85,13 +86,13 @@
         direction: egress
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence egress cleanup
+    - name: Check idempotence egress cleanup
       register: result
       cisco.nxos.nxos_acl_interface: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Cleanup acl interface ingress
       register: result
@@ -101,19 +102,19 @@
         direction: ingress
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence ingress cleanup
+    - name: Check idempotence ingress cleanup
       register: result
       cisco.nxos.nxos_acl_interface: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   rescue:
     - name: Put test interface into default state.
       ignore_errors: true
       cisco.nxos.nxos_config: *id007
   always:
-    - name: Remove possible configured ACL
+    - name: Remove possible configured acl
       ignore_errors: true
       cisco.nxos.nxos_acl: *id008
 

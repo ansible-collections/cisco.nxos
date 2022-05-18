@@ -2,24 +2,24 @@
 - ansible.builtin.debug:
     msg: START common/output.yaml on connection={{ ansible_connection }}
 
-- name: get output for single command
+- name: Get output for single command
   register: result
   cisco.nxos.nxos_command:
     commands:
       - show version
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: get output for multiple commands
+- name: Get output for multiple commands
   register: result
   cisco.nxos.nxos_command:
     commands:
       - show version
       - show interface
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

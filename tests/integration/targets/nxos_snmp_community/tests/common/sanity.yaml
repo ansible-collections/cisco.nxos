@@ -2,14 +2,14 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_snmp_community sanity test
 
-- name: Setup - Remove snmp_community if configured - 1
+- name: Setup - remove snmp_community if configured - 1
   ignore_errors: true
   cisco.nxos.nxos_snmp_community: &id005
     community: TESTING7
     group: network-operator
     state: absent
 
-- name: Setup - Remove snmp_community if configured - 2
+- name: Setup - remove snmp_community if configured - 2
   ignore_errors: true
   cisco.nxos.nxos_snmp_community: &id010
     community: TEST
@@ -24,15 +24,15 @@
         group: network-operator
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -43,25 +43,25 @@
         group: network-admin
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove snmp_community
       register: result
       cisco.nxos.nxos_snmp_community: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure snmp_community access read-only
       register: result
@@ -70,25 +70,25 @@
         access: ro
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove snmp_community
       register: result
       cisco.nxos.nxos_snmp_community: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure snmp_community access read-write
       register: result
@@ -98,13 +98,13 @@
         acl: ansible_acl
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Change acl
       register: result
@@ -114,13 +114,13 @@
         acl: new_acl
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove acl
       register: result
@@ -130,13 +130,13 @@
         acl: default
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_community: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Add partial match community
       register: result
@@ -146,7 +146,7 @@
         acl: default
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == True
           - "'snmp-server community TEST group network-admin' in result.commands"

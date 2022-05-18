@@ -2,96 +2,96 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }}/configure.yaml
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config: &teardown
     lines:
       - no feature bgp
       - no feature fabric forwarding
     match: none
 
-- name: enable bgp
+- name: Enable bgp
   register: result
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: verify bgp
+- name: Verify bgp
   register: result
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: disable bgp
+- name: Disable bgp
   register: result
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: verify bgp
+- name: Verify bgp
   register: result
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: verify fabric forwarding
+- name: Verify fabric forwarding
   register: result
   cisco.nxos.nxos_feature:
     feature: fabric forwarding
     state: enabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == True
       - "'feature fabric forwarding' in result.commands"
 
-- name: verify fabric forwarding (IDEMPOTENT)
+- name: Verify fabric forwarding (idempotent)
   register: result
   cisco.nxos.nxos_feature:
     feature: fabric forwarding
     state: enabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == False
 
-- name: verify fabric forwarding disable
+- name: Verify fabric forwarding disable
   register: result
   cisco.nxos.nxos_feature:
     feature: fabric forwarding
     state: disabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == True
       - "'no feature fabric forwarding' in result.commands"
 
-- name: verify fabric forwarding disabled (IDEMPOTENT)
+- name: Verify fabric forwarding disabled (idempotent)
   register: result
   cisco.nxos.nxos_feature:
     feature: fabric forwarding
     state: disabled
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == False
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config: *teardown
 
 - ansible.builtin.debug:

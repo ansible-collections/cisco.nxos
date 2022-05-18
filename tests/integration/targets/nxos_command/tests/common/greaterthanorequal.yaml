@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START common/greaterthanorequal.yaml on connection={{ ansible_connection }}
 
-- name: test ge operator
+- name: Test ge operator
   register: result
   cisco.nxos.nxos_command:
     commands:
@@ -11,11 +11,11 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.eth_ip_mask ge 0
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: test >= operator
+- name: Test >= operator
   register: result
   cisco.nxos.nxos_command:
     commands:
@@ -24,7 +24,7 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.eth_ip_mask >= 0
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

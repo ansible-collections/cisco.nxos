@@ -1,9 +1,9 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_prefix_lists rendered integration tests on connection={{ ansible_connection }}
 
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
-  cisco.nxos.nxos_prefix_lists: &id001
+  cisco.nxos.nxos_prefix_lists:
     config:
       - afi: ipv4
         prefix_lists:
@@ -41,8 +41,7 @@
   register: result
 
 - name: Assert that correct set of commands were rendered
-  assert:
+  ansible.builtin.assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
-        \ == 0 }}"
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
       - result.changed == False

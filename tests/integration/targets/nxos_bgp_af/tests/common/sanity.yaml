@@ -2,11 +2,12 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_bgp_af sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'advertise_l2vpn_evpn'
+  ansible.builtin.set_fact:
     advertise_l2vpn_evpn: true
   when: platform is search('N9K')
 
-- name: Enable feature BGP
+- name: Enable feature bgp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
@@ -31,7 +32,7 @@
         lines:
           - nv overlay evpn
 
-    - name: Configure BGP_AF 1
+    - name: Configure bgp_af 1
       register: result
       cisco.nxos.nxos_bgp_af: &id001
         asn: 65535
@@ -41,19 +42,19 @@
         advertise_l2vpn_evpn: "{{advertise_l2vpn_evpn|default(omit)}}"
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_bgp_af: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: Remove BGP
+    - name: Remove bgp
       register: result
       cisco.nxos.nxos_bgp_af:
         asn: 65535
@@ -62,9 +63,9 @@
         safi: unicast
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Configure BGP_AF 2
+    - name: Configure bgp_af 2
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id003
@@ -81,16 +82,16 @@
         default_information_originate: true
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure BGP_AF def2
+    - name: Configure bgp_af def2
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id005
@@ -107,16 +108,16 @@
         default_information_originate: false
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Remove BGP
+    - name: Remove bgp
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id008
@@ -126,9 +127,9 @@
         safi: unicast
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Configure BGP_AF 3
+    - name: Configure bgp_af 3
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id006
@@ -149,16 +150,16 @@
         table_map_filter: true
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure BGP_AF def3
+    - name: Configure bgp_af def3
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id007
@@ -179,23 +180,23 @@
         table_map_filter: false
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Remove BGP
+    - name: Remove bgp
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id008
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Configure BGP_AF 4
+    - name: Configure bgp_af 4
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id009
@@ -231,16 +232,16 @@
             - rm_lisp
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure BGP_AF 5
+    - name: Configure bgp_af 5
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id010
@@ -263,16 +264,16 @@
             - rm_lisp
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure BGP_AF def5
+    - name: Configure bgp_af def5
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id011
@@ -290,30 +291,30 @@
         redistribute: default
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id011
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Remove BGP
+    - name: Remove bgp
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id008
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   rescue:
-    - name: Cleanup BGP
+    - name: Cleanup bgp
       ignore_errors: true
       cisco.nxos.nxos_bgp: *id012
   always:
@@ -328,7 +329,7 @@
         feature: nv overlay
         state: disabled
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 5
 
     - name: Remove nv overlay evpn

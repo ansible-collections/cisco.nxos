@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_ntp_global merged integration tests connection={{ ansible_connection }}"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Merge the provided configuration with the existing running configuration
@@ -13,8 +13,8 @@
               - access_list: PeerAcl1
             serve:
               - access_list: ServeAcl1
-          authenticate: True
-          logging: True
+          authenticate: true
+          logging: true
           master:
             stratum: 2
           peers:
@@ -25,7 +25,7 @@
               vrf: default
             - peer: 192.0.2.2
               key_id: 2
-              prefer: True
+              prefer: true
               vrf: siteA
           servers:
             - server: 198.51.100.1
@@ -37,28 +37,25 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that: "{{ result['before'] == {} }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ merged['after'] == result['after'] }}"
 
-    - name:
-        Merge the provided configuration with the existing running configuration
-        (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_ntp_global: *id001
       register: result
 
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
@@ -69,11 +66,11 @@
           trusted_keys:
             - key_id: 12344
       register: result
-      ignore_errors: True
+      ignore_errors: true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.failed == True"
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

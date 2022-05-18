@@ -6,21 +6,23 @@
     msg: This test is not supported on {{ image_version }}
   when: imagetag is search("D1")
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'test_helsinki'
+  ansible.builtin.set_fact:
     test_helsinki: false
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'test_helsinki'
+  ansible.builtin.set_fact:
     test_helsinki: true
   when: imagetag is not search("D1")
 
-- name: Disable feature BGP
+- name: Disable feature bgp
   ignore_errors: true
   when: test_helsinki
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature BGP
+- name: Enable feature bgp
   ignore_errors: true
   when: test_helsinki
   cisco.nxos.nxos_feature:
@@ -28,7 +30,7 @@
     state: enabled
 
 - block:
-    - name: set helsinki
+    - name: Set helsinki
       with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
@@ -42,23 +44,23 @@
         timer_bgp_hold: 110
         timer_bgp_keepalive: 45
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
       when: test_helsinki
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
       cisco.nxos.nxos_bgp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
       when: test_helsinki
 
-    - name: reset helsinki
+    - name: Reset helsinki
       with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
@@ -73,16 +75,16 @@
         timer_bgp_hold: default
         timer_bgp_keepalive: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: test_helsinki
 
-    - name: Check Idempotence
+    - name: Check idempotence
       with_items: "{{ vrfs }}"
       register: result
       when: test_helsinki
       cisco.nxos.nxos_bgp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
       when: test_helsinki
   rescue:
     - ansible.builtin.debug:

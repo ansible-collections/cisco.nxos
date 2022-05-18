@@ -1,12 +1,15 @@
 ---
-- ansible.builtin.set_fact:
+- name: Set a fact for 'run_test'
+  ansible.builtin.set_fact:
     run_test: true
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'run_test'
+  ansible.builtin.set_fact:
     run_test: false
   when: platform is not search("N9K")
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'run_test'
+  ansible.builtin.set_fact:
     run_test: false
   when: imagetag is search("I2|I3|I4|I5|I6")
 
@@ -15,12 +18,12 @@
     commands: show interface mgmt 0 | json
   register: result
 
-- name: Store mgmt interface IP address
-  set_fact:
+- name: Store mgmt interface ip address
+  ansible.builtin.set_fact:
     mgmt0_ip: "{{ result['stdout'][0]['TABLE_interface']['ROW_interface']['eth_ip_addr'] }}"
 
 - name: Generate and store random password for temp user
-  set_fact:
+  ansible.builtin.set_fact:
     temp_passwd: "{{ lookup('password', 'length=15 chars=ascii_letters') }}"
   delegate_to: localhost
   no_log: true
@@ -31,12 +34,12 @@
     configured_password: "{{ temp_passwd }}"
   no_log: true
 
-- name: Setup - Turn on feature scp-server
+- name: Setup - turn on feature scp-server
   cisco.nxos.nxos_feature:
     feature: scp-server
     state: enabled
 
-- name: Setup - Backup admin password if ansible_user is not admin
+- name: Setup - backup admin password if ansible_user is not admin
   cisco.nxos.nxos_command:
     commands:
       - command: show running-config | include "username admin password"
@@ -44,13 +47,13 @@
   no_log: true
   when: ansible_user != "admin"
 
-- name: Setup - Change admin password if ansible_user is not admin
+- name: Setup - change admin password if ansible_user is not admin
   cisco.nxos.nxos_user:
     name: admin
     configured_password: "{{ temp_passwd }}"
   when: ansible_user != "admin"
 
-- name: Copy crt file from Ansible controller to bootflash
+- name: Copy crt file from ansible controller to bootflash
   register: result
   cisco.nxos.nxos_file_copy:
     local_file: "{{ role_path }}/tests/common/fixtures/{{ item }}"
@@ -64,12 +67,12 @@
     ansible_connection: ansible.netcommon.network_cli
 
 - block:
-    - name: Include the CLI tasks
+    - name: Include the cli tasks
       ansible.builtin.include_tasks: cli.yaml
       tags: cli
       when: run_test
 
-    - name: Include the NX-API tasks
+    - name: Include the nx-api tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags: nxapi
       when: run_test
@@ -84,7 +87,7 @@
         feature: scp-server
         state: disabled
 
-    - name: Setup - Remove existing file
+    - name: Setup - remove existing file
       ignore_errors: true
       cisco.nxos.nxos_command:
         commands:

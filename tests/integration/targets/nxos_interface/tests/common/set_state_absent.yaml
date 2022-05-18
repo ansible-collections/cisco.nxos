@@ -2,28 +2,28 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }}/set_state_absent.yaml
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines:
       - interface Loopback1
 
-- name: set state=absent
+- name: Set state=absent
   register: result
   cisco.nxos.nxos_interface:
     interface: Loopback1
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: verify state=absent
+- name: Verify state=absent
   register: result
   cisco.nxos.nxos_interface:
     interface: Loopback1
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 

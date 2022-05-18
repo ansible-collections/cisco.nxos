@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_l2_interface sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname'
+  ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
 
 - name: Interface selected for this test
@@ -15,7 +16,7 @@
     lines:
       - default interface {{ intname }}
 
-- name: Setup - Ensure interface is layer2
+- name: Setup - ensure interface is layer2
   cisco.nxos.nxos_interface:
     interface: "{{ intname }}"
     mode: layer2
@@ -37,19 +38,19 @@
         mode: access
         access_vlan: 20
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Sleep for 2 seconds on Fretta Platform
-      wait_for: timeout=2
+    - name: Sleep for 2 seconds on fretta platform
+      ansible.builtin.wait_for: timeout=2
       when: platform is match("N9K-F")
 
-    - name: access vlan Idempotence
+    - name: Access vlan idempotence
       register: result
       cisco.nxos.nxos_l2_interface: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -61,13 +62,13 @@
         native_vlan: 10
         trunk_allowed_vlans: 5-10
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: trunk vlan Idempotence
+    - name: Trunk vlan idempotence
       register: result
       cisco.nxos.nxos_l2_interface: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Ensure interface is a trunk port and ensure 2-50 are being tagged (doesn't mean others aren't also being tagged)
       register: result
@@ -77,13 +78,13 @@
         native_vlan: 10
         trunk_vlans: 2-50
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: tag vlan Idempotence
+    - name: Tag vlan idempotence
       register: result
       cisco.nxos.nxos_l2_interface: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove full trunk vlan range 2-50
       register: result
@@ -93,25 +94,25 @@
         trunk_vlans: 2-50
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence Remove full trunk vlan range 2-50
+    - name: Check idempotence remove full trunk vlan range 2-50
       register: result
       cisco.nxos.nxos_l2_interface: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Reconfigure interface trunk port and ensure 2-50 are being tagged
       register: result
       cisco.nxos.nxos_l2_interface: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence Reconfigure interface trunk port and ensure 2-50 are being tagged
+    - name: Check idempotence reconfigure interface trunk port and ensure 2-50 are being tagged
       register: result
       cisco.nxos.nxos_l2_interface: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Remove partial trunk vlan range 30-4094 are removed
       register: result
@@ -121,33 +122,33 @@
         trunk_vlans: 30-4094
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence Remove partial trunk vlan range 30-4094 are removed
+    - name: Check idempotence remove partial trunk vlan range 30-4094 are removed
       register: result
       cisco.nxos.nxos_l2_interface: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: put interface default state
+    - name: Put interface default state
       register: result
       cisco.nxos.nxos_l2_interface: *id008
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: default state idempotence
+    - name: Default state idempotence
       register: result
       cisco.nxos.nxos_l2_interface: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-    - name: remove vlans
+    - name: Remove vlans
       ignore_errors: true
       cisco.nxos.nxos_vlan:
         vlan_range: 5-10,20
         state: absent
 
-    - name: default interface
+    - name: Default interface
       ignore_errors: true
       cisco.nxos.nxos_config: *id009
 

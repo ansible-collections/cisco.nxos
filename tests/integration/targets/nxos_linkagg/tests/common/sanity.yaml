@@ -2,25 +2,27 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_linkagg sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'testint1'
+  ansible.builtin.set_fact:
     testint1: "{{ nxos_int1 }}"
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'testint2'
+  ansible.builtin.set_fact:
     testint2: "{{ nxos_int2 }}"
 
-- name: Enable feature LACP
+- name: Enable feature lacp
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: lacp
     state: enabled
 
-- name: setup - remove config used in test(part1)
+- name: Setup - remove config used in test(part1)
   cisco.nxos.nxos_config:
     lines:
       - no interface port-channel 20
       - no interface port-channel 100
 
-- name: setup - remove config used in test(part2)
+- name: Setup - remove config used in test(part2)
   ignore_errors: true
   loop:
     - interface {{ testint1 }}
@@ -30,7 +32,7 @@
       - no channel-group 20
     parents: "{{ item }}"
 
-- name: Put interface in L2 mode
+- name: Put interface in l2 mode
   when: platform is match("N35")
   cisco.nxos.nxos_interface:
     aggregate:
@@ -39,26 +41,26 @@
       - name: "{{testint2}}"
     mode: layer2
 
-- name: create linkagg
+- name: Create linkagg
   register: result
   cisco.nxos.nxos_linkagg: &id001
     group: 20
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface port-channel 20" in result.commands'
 
-- name: create linkagg(Idempotence)
+- name: Create linkagg(idempotence)
   register: result
   cisco.nxos.nxos_linkagg: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: set link aggregation group to members declaratively
+- name: Set link aggregation group to members declaratively
   register: result
   cisco.nxos.nxos_linkagg: &id002
     group: 20
@@ -68,7 +70,7 @@
       - "{{ testint1 }}"
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
@@ -76,15 +78,15 @@
       - '"interface {{ testint2 }}" in result.commands'
       - '"channel-group 20 force mode active" in result.commands'
 
-- name: set link aggregation group to members(Idempotence)
+- name: Set link aggregation group to members(idempotence)
   register: result
   cisco.nxos.nxos_linkagg: *id002
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: remove link aggregation group from member declaratively
+- name: Remove link aggregation group from member declaratively
   register: result
   cisco.nxos.nxos_linkagg: &id003
     group: 20
@@ -93,40 +95,40 @@
     members:
       - "{{ testint2 }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface {{ testint1 }}" in result.commands'
       - '"no channel-group 20" in result.commands'
 
-- name: remove link aggregation group from member(Idempotence)
+- name: Remove link aggregation group from member(idempotence)
   register: result
   cisco.nxos.nxos_linkagg: *id003
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: remove linkagg
+- name: Remove linkagg
   register: result
   cisco.nxos.nxos_linkagg: &id004
     group: 20
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no interface port-channel 20" in result.commands'
 
-- name: remove linkagg(Idempotence)
+- name: Remove linkagg(idempotence)
   register: result
   cisco.nxos.nxos_linkagg: *id004
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: create aggregate of linkagg definitions
+- name: Create aggregate of linkagg definitions
   register: result
   cisco.nxos.nxos_linkagg: &id005
     aggregate:
@@ -136,7 +138,7 @@
       - group: 100
         min_links: 4
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"interface port-channel 20" in result.commands'
@@ -144,15 +146,15 @@
       - '"interface port-channel 100" in result.commands'
       - '"lacp min-links 4" in result.commands'
 
-- name: create aggregate of linkagg definitions(Idempotence)
+- name: Create aggregate of linkagg definitions(idempotence)
   register: result
   cisco.nxos.nxos_linkagg: *id005
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: remove aggregate of linkagg definitions
+- name: Remove aggregate of linkagg definitions
   register: result
   cisco.nxos.nxos_linkagg: &id006
     aggregate:
@@ -163,27 +165,27 @@
         min_links: 4
     state: absent
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no interface port-channel 20" in result.commands'
       - '"no interface port-channel 100" in result.commands'
 
-- name: remove aggregate of linkagg definitions(Idempotence)
+- name: Remove aggregate of linkagg definitions(idempotence)
   register: result
   cisco.nxos.nxos_linkagg: *id006
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown - remove config used in test(part1)
+- name: Teardown - remove config used in test(part1)
   cisco.nxos.nxos_config:
     lines:
       - no interface port-channel 20
       - no interface port-channel 100
 
-- name: teardown - remove config used in test(part2)
+- name: Teardown - remove config used in test(part2)
   ignore_errors: true
   loop:
     - interface {{ testint1 }}
@@ -193,7 +195,7 @@
       - no channel-group 20
     parents: "{{ item }}"
 
-- name: Disable feature LACP
+- name: Disable feature lacp
   cisco.nxos.nxos_feature:
     feature: lacp
     state: disabled

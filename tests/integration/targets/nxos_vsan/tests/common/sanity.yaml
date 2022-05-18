@@ -6,7 +6,7 @@
     msg: Using vsans {{ vsan1 }}, {{ vsan2 }} for running this sanity test, please make sure these are not used in the setup, these will be deleted after the tests
 
 - block:
-    - name: Setup - Remove vsan if configured
+    - name: Setup - remove vsan if configured
       ignore_errors: true
       cisco.nxos.nxos_vsan: &id002
         vsan:
@@ -33,24 +33,24 @@
               - "{{intB1}}"
             remove: false
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == ["terminal dont-ask", "vsan database", "vsan 922", "vsan 922 name vsan-SAN-A", "vsan 922 suspend", "vsan 922 interface fc1/1", "vsan
             923", "vsan 923 name vsan-SAN-B", "no vsan 923 suspend", "vsan 923 interface fc1/2", "no terminal dont-ask"]
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_vsan: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == []
   always:

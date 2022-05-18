@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_lacp_interfaces parsed integration tests on connection={{ ansible_connection }}
 
 - block:
@@ -19,9 +19,8 @@
             description interface
         state: parsed
 
-    - assert:
-        that: "{{ parsed | symmetric_difference(result['parsed']) |length==0\
-          \ }}"
+    - ansible.builtin.assert:
+        that: "{{ parsed | symmetric_difference(result['parsed']) |length==0 }}"
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_lacp_interfaces parsed integration tests on connection={{ ansible_connection }}

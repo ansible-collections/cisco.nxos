@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_pim_interface sanity test
 
-- name: "Setup: Disable features"
+- name: "Setup: disable features"
   loop:
     - pim
     - bfd
@@ -11,7 +11,7 @@
     feature: "{{ item }}"
     state: disabled
 
-- name: "Setup: Enable features"
+- name: "Setup: enable features"
   loop:
     - pim
     - bfd
@@ -19,10 +19,11 @@
     feature: "{{ item }}"
     state: enabled
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'testint'
+  ansible.builtin.set_fact:
     testint: "{{ nxos_int1 }}"
 
-- name: "Setup: Put interface {{ testint }} into a default state"
+- name: "Setup: put interface {{ testint }} into a default state"
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -42,7 +43,7 @@
         interface: "{{ testint }}"
         state: absent
 
-    - name: configure jp policy and type
+    - name: Configure jp policy and type
       register: result
       cisco.nxos.nxos_pim_interface: &id001
         interface: "{{ testint }}"
@@ -53,7 +54,7 @@
         sparse: true
         border: true
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -61,52 +62,52 @@
       register: result
       cisco.nxos.nxos_pim_interface: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: configure neighbor policy and rm
+    - name: Configure neighbor policy and rm
       register: result
       cisco.nxos.nxos_pim_interface: &id003
         interface: "{{ testint }}"
         neighbor_policy: NPR
         neighbor_type: routemap
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check idempotence
       register: result
       cisco.nxos.nxos_pim_interface: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 5
 
-    - name: configure neighbor policy and prefix
+    - name: Configure neighbor policy and prefix
       register: result
       cisco.nxos.nxos_pim_interface: &id005
         interface: "{{ testint }}"
         neighbor_policy: NPPF
         neighbor_type: prefix
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check idempotence
       register: result
       cisco.nxos.nxos_pim_interface: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure hello_auth_key
+    - name: Configure hello_auth_key
       register: result
       cisco.nxos.nxos_pim_interface:
         interface: "{{ testint }}"
         hello_auth_key: password1
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: configure pim other params
+    - name: Configure pim other params
       register: result
       cisco.nxos.nxos_pim_interface: &id006
         interface: "{{ testint }}"
@@ -117,15 +118,15 @@
         bfd: enable
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check idempotence
       register: result
       cisco.nxos.nxos_pim_interface: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure negative
+    - name: Configure negative
       register: result
       cisco.nxos.nxos_pim_interface: &id007
         interface: "{{ testint }}"
@@ -134,59 +135,59 @@
         bfd: disable
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check idempotence
       register: result
       cisco.nxos.nxos_pim_interface: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 5
 
-    - name: configure state default
+    - name: Configure state default
       register: result
       cisco.nxos.nxos_pim_interface: &id008
         interface: "{{ testint }}"
         state: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check idempotence
       register: result
       cisco.nxos.nxos_pim_interface: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure border
+    - name: Configure border
       register: result
       cisco.nxos.nxos_pim_interface: &id009
         interface: "{{ testint }}"
         border: true
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check idempotence
       register: result
       cisco.nxos.nxos_pim_interface: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure state absent
+    - name: Configure state absent
       register: result
       cisco.nxos.nxos_pim_interface: *id010
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Check idempotence
       register: result
       cisco.nxos.nxos_pim_interface: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-    - name: Disable feature PIM
+    - name: Disable feature pim
       loop:
         - pim
         - bfd

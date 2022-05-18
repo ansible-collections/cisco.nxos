@@ -1,14 +1,15 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_l3_interfaces deleted integration tests connection={{ ansible_connection }}
 
-- set_fact:
+- name: Set a fact for 'subint3' and 'test_int3'
+  ansible.builtin.set_fact:
     test_int3: "{{ nxos_int3 }}"
     subint3: "{{ nxos_int3 }}.42"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- name: setup1
+- name: Setup1
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -18,7 +19,7 @@
       - "  no switchport"
 
 - block:
-    - name: setup3
+    - name: Setup3
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ subint3 }}"
@@ -34,14 +35,14 @@
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_l3_interfaces: &id001
         config:
           - name: "{{ subint3 }}"
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|symmetric_difference(ansible_facts.network_resources.l3_interfaces) == []
           - result.changed == true
@@ -56,12 +57,12 @@
       register: result
       cisco.nxos.nxos_l3_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       ignore_errors: true
       cisco.nxos.nxos_config:
         lines:

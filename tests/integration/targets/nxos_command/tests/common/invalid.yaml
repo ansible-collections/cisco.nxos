@@ -2,18 +2,18 @@
 - ansible.builtin.debug:
     msg: START common/invalid.yaml on connection={{ ansible_connection }}
 
-- name: run invalid command
+- name: Run invalid command
   register: result
   ignore_errors: true
   cisco.nxos.nxos_command:
     commands:
       - show foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
 
-- name: run commands that include invalid command
+- name: Run commands that include invalid command
   register: result
   ignore_errors: true
   cisco.nxos.nxos_command:
@@ -21,7 +21,7 @@
       - show version
       - show foo
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == true
 

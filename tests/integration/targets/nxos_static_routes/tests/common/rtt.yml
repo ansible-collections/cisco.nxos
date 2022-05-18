@@ -1,9 +1,9 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_static_routes round trip integration tests on connection={{ ansible_connection }}"
 
 - block:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
     - name: Apply the provided configuration(base config)
       cisco.nxos.nxos_static_routes:
@@ -55,7 +55,7 @@
       register: result
 
     - name: Assert that changes are applied
-      assert:
+      ansible.builtin.assert:
         that:
           - "result.changed == true"
           - "'configure terminal' in result.commands"
@@ -72,9 +72,9 @@
         state: overridden
       register: revert
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - " base_config['after'] | symmetric_difference(revert['after']) | length == 0"
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

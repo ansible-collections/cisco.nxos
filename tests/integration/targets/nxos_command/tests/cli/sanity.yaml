@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START cli/sanity.yaml on connection={{ ansible_connection }}
 
-- name: Disable feature BGP
+- name: Disable feature bgp
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
@@ -15,23 +15,23 @@
         commands:
           - sh running-config bgp
 
-    - assert: &id001
+    - ansible.builtin.assert: &id001
         that:
           - result.failed == true
 
-    - name: Enable feature BGP
+    - name: Enable feature bgp
       cisco.nxos.nxos_feature:
         feature: bgp
         state: enabled
 
-    - name: Configure BGP defaults
+    - name: Configure bgp defaults
       register: result
       cisco.nxos.nxos_bgp:
         asn: 65535
         router_id: 192.0.2.1
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
@@ -41,7 +41,7 @@
         commands:
           - sh running-config bgp
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == false
           - "'65535' in result.stdout[0]"
@@ -53,7 +53,7 @@
         commands:
           - show interface bief
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
   rescue:
     - ansible.builtin.debug:
         msg: nxos_command sanity test failure detected

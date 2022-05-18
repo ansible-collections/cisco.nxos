@@ -1,5 +1,5 @@
 ---
-- name: Enable BGP feature
+- name: Enable bgp feature
   cisco.nxos.nxos_feature:
     feature: bgp
   vars:
@@ -10,18 +10,18 @@
     lines: feature fabric forwarding
 
 - block:
-    - name: Include the CLI tasks
+    - name: Include the cli tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
 
-    - name: Include the NX-API tasks
+    - name: Include the nx-api tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
 
   always:
-    - name: Disable BGP feature
+    - name: Disable bgp feature
       cisco.nxos.nxos_feature:
         feature: bgp
         state: disabled

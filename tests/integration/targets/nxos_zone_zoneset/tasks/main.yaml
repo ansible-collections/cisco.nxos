@@ -1,5 +1,5 @@
 ---
-- name: Check platform type and skip if not MDS
+- name: Check platform type and skip if not mds
   register: result
   cisco.nxos.nxos_command:
     commands: show version | grep MDS
@@ -8,12 +8,12 @@
   ansible.builtin.set_fact:
     skip_test: false
 
-- name: Set skip_test flag to true if not MDS
+- name: Set skip_test flag to true if not mds
   ansible.builtin.set_fact:
     skip_test: true
   when: result.stdout[0] is not search('MDS')
 
-- name: Include the CLI tasks
+- name: Include the cli tasks
   ansible.builtin.include_tasks: cli.yaml
   tags: cli
   when: not skip_test

@@ -1,12 +1,12 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_static_routes gathered tests connection={{ ansible_connection }}"
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Gather static_routes facts
-      cisco.nxos.nxos_facts: &facts
+      cisco.nxos.nxos_facts:
         gather_subset:
           - "!all"
           - "!min"
@@ -17,18 +17,18 @@
         state: gathered
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == false"
           - "ansible_facts.network_resources.static_routes == result.gathered"
 
-    - name: Idempotence - Gathered
+    - name: Idempotence - gathered
       cisco.nxos.nxos_static_routes: *gathered
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "result.changed == false"
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -2,17 +2,17 @@
 - ansible.builtin.debug:
     msg: START cli_config/cli_basic.yaml on connection={{ ansible_connection }}
 
-- name: setup
+- name: Setup
   ansible.netcommon.cli_config: &id002
     config: "interface loopback1\nno description\nno shutdown\n"
     diff_match: none
 
-- name: configure device with config
+- name: Configure device with config
   register: result
   ansible.netcommon.cli_config: &id001
     config: "{{ lookup('template', 'basic/config.j2') }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -20,24 +20,24 @@
   register: result
   ansible.netcommon.cli_config: *id001
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: remove config
+- name: Remove config
   ansible.netcommon.cli_config: *id002
 
-- name: configure device with config
+- name: Configure device with config
   register: result
   ansible.netcommon.cli_config:
     config: "{{ lookup('template', 'basic/config.j2') }}"
     defaults: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: teardown
+- name: Teardown
   ansible.netcommon.cli_config: *id002
 
 - ansible.builtin.debug:

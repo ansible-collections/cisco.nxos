@@ -1,9 +1,9 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_logging_global rendered integration tests on connection={{ ansible_connection }}
 
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
-  cisco.nxos.nxos_logging_global: &id001
+  cisco.nxos.nxos_logging_global:
     config:
       console:
         severity: error
@@ -31,13 +31,12 @@
           facility: local6
           use_vrf: default
       origin_id:
-        hostname: True
+        hostname: true
     state: rendered
   register: result
 
 - name: Assert that correct set of commands were rendered
-  assert:
+  ansible.builtin.assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
-        \ == 0 }}"
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
       - result.changed == False

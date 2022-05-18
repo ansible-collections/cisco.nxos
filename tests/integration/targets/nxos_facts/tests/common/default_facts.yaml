@@ -2,11 +2,11 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }}/default_facts.yaml
 
-- name: test getting default facts
+- name: Test getting default facts
   register: result
   cisco.nxos.nxos_facts:
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'default' in result.ansible_facts.ansible_net_gather_subset"

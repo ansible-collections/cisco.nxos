@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_prefix_lists parsed integration tests on connection={{ ansible_connection }}
 
 - name: Parse externally provided prefix-lists configuration
@@ -9,7 +9,7 @@
     state: parsed
 
 - name: Assert that config was correctly parsed
-  assert:
+  ansible.builtin.assert:
     that:
       - "{{ merged['after'][0] == result['parsed'][0] }}"
       - "{{ merged['after'][1] == result['parsed'][1] }}"

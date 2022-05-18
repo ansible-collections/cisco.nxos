@@ -2,14 +2,14 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }}/invalid_subset.yaml
 
-- name: test invalid subset (foobar)
+- name: Test invalid subset (foobar)
   register: result
   ignore_errors: true
   cisco.nxos.nxos_facts:
     gather_subset:
       - foobar
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - result.failed == true

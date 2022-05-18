@@ -1,4 +1,5 @@
-- name: Remove Config
+---
+- name: Remove config
   cisco.nxos.nxos_config:
     lines:
       - "default interface {{ nxos_int1 }}"
@@ -6,4 +7,4 @@
       - "default interface {{ nxos_int3 }}"
       - "no interface loopback1"
       - "no interface loopback8"
-  ignore_errors: True
+  ignore_errors: true

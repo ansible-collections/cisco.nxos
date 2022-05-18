@@ -2,21 +2,26 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_telemetry replaced sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'source_interface'
+  ansible.builtin.set_fact:
     source_interface: Loopback55
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'command_list_length'
+  ansible.builtin.set_fact:
     command_list_length: 27
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'command_list_length'
+  ansible.builtin.set_fact:
     command_list_length: 28
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'dict_facts_length'
+  ansible.builtin.set_fact:
     dict_facts_length: 6
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'dict_facts_length'
+  ansible.builtin.set_fact:
     dict_facts_length: 7
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
@@ -44,7 +49,7 @@
       - "    source-interface loopback55"
 
 - block:
-    - name: Gather Telemetry Facts Before Changes
+    - name: Gather telemetry facts before changes
       cisco.nxos.nxos_facts: &id001
         gather_subset:
           - "!all"
@@ -91,7 +96,7 @@
                 id: 100
                 sample_interval: 2000
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - result.before|length == {{ dict_facts_length }}
@@ -128,19 +133,19 @@
           - "'use-vrf management' in result.commands"
           - result.commands|length == {{ command_list_length }}
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'no source-interface loopback55' in result.commands"
       when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0
 
-    - name: Gather Telemetry Facts After Changes
+    - name: Gather telemetry facts after changes
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length == 0
 
@@ -148,7 +153,7 @@
       register: result
       cisco.nxos.nxos_telemetry: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

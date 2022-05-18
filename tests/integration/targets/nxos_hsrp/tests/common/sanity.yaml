@@ -2,10 +2,12 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_hsrp sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname1'
+  ansible.builtin.set_fact:
     intname1: "{{ nxos_int1 }}"
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname2'
+  ansible.builtin.set_fact:
     intname2: "{{ nxos_int2 }}"
 
 - block:
@@ -14,7 +16,7 @@
         feature: hsrp
         state: enabled
 
-    - name: change int1 mode
+    - name: Change int1 mode
       cisco.nxos.nxos_config:
         commands:
           - no switchport
@@ -22,7 +24,7 @@
           - interface {{ intname1 }}
         match: none
 
-    - name: change int2 mode
+    - name: Change int2 mode
       cisco.nxos.nxos_config:
         commands:
           - no switchport
@@ -30,7 +32,7 @@
           - interface {{ intname2 }}
         match: none
 
-    - name: configure nxos_hsrp
+    - name: Configure nxos_hsrp
       register: result
       cisco.nxos.nxos_hsrp: &id001
         group: 1000
@@ -42,19 +44,19 @@
         auth_type: md5
         auth_string: 7 1234
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: configure group 100
+    - name: Configure group 100
       register: result
       cisco.nxos.nxos_hsrp: &id003
         group: 100
@@ -66,15 +68,15 @@
         auth_type: md5
         auth_string: 0 1234
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: change group 100
+    - name: Change group 100
       register: result
       cisco.nxos.nxos_hsrp: &id005
         group: 100
@@ -86,15 +88,15 @@
         auth_type: md5
         auth_string: 0 1234
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure group 200
+    - name: Configure group 200
       register: result
       cisco.nxos.nxos_hsrp: &id006
         group: 200
@@ -104,15 +106,15 @@
         auth_type: text
         auth_string: "1234"
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: change group 200
+    - name: Change group 200
       register: result
       cisco.nxos.nxos_hsrp: &id007
         group: 200
@@ -122,28 +124,28 @@
         auth_type: text
         auth_string: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Conf idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: remove nxos_hsrp
+    - name: Remove nxos_hsrp
       register: result
       cisco.nxos.nxos_hsrp: &id008
         group: 1000
         interface: "{{ intname1 }}"
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Disable feature hsrp
       ignore_errors: true

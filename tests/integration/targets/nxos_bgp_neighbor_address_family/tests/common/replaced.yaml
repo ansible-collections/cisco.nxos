@@ -1,13 +1,13 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_bgp_neighbor_address_family replaced integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replace specified neighbor AFs with given configuration
+    - name: Replace specified neighbor afs with given configuration
       cisco.nxos.nxos_bgp_neighbor_address_family: &replaced
         config:
           as_number: 65536
@@ -40,45 +40,38 @@
                     - afi: ipv4
                       safi: multicast
                       send_community:
-                        set: True
+                        set: true
         state: replaced
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['after']['neighbors'] | symmetric_difference(result['before']['neighbors']) |length\
-            \ == 0 }}"
-          - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['neighbors'] | symmetric_difference(result['before']['neighbors']) |length == 0 }}"
+          - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) |length == 0 }}"
           - merged['after']['as_number'] == result['before']['as_number']
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ replaced['after']['neighbors'] | symmetric_difference(result['after']['neighbors']) |length\
-            \ == 0 }}"
-          - "{{ replaced['after']['vrfs'] | symmetric_difference(result['after']['vrfs']) |length\
-            \ == 0 }}"
+          - "{{ replaced['after']['neighbors'] | symmetric_difference(result['after']['neighbors']) |length == 0 }}"
+          - "{{ replaced['after']['vrfs'] | symmetric_difference(result['after']['vrfs']) |length == 0 }}"
           - replaced['after']['as_number'] == result['after']['as_number']
 
-    - name:
-        Replace device configurations of listed OSPF processes with provided configurarions
-        (IDEMPOTENT)
+    - name: Replace device configurations of listed ospf processes with provided configurarions (idempotent)
       register: result
       cisco.nxos.nxos_bgp_neighbor_address_family: *replaced
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

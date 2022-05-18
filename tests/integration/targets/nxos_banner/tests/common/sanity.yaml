@@ -2,11 +2,13 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_banner sanity test
 
-- set_fact:
+- name: Set a fact for 'banner_exec_image_ok'
+  ansible.builtin.set_fact:
     banner_exec_image_ok: true
   when: platform is search("N7K|N3K-F")
 
-- set_fact:
+- name: Set a fact for 'banner_motd_image_ok'
+  ansible.builtin.set_fact:
     banner_motd_image_ok: true
   when: imagetag is not search("I7") and ansible_connection != "ansible.netcommon.httpapi"
 
@@ -14,7 +16,7 @@
     - ansible.builtin.debug:
         msg: START nxos_banner exec tests
 
-    - name: setup exec
+    - name: Setup exec
       cisco.nxos.nxos_banner: &id002
         banner: exec
         state: absent
@@ -26,7 +28,7 @@
         text: "this is my exec banner\nthat has a multiline\nstring"
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'banner exec @\nthis is my exec banner\nthat has a multiline\nstring\n@' in result.commands"
@@ -35,17 +37,17 @@
       register: result
       cisco.nxos.nxos_banner: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands | length == 0
 
-    - name: teardown exec
+    - name: Teardown exec
       cisco.nxos.nxos_banner: *id002
   when: banner_exec_image_ok == True
 
 - block:
-    - name: setup motd
+    - name: Setup motd
       cisco.nxos.nxos_banner: &id004
         banner: motd
         state: absent
@@ -57,7 +59,7 @@
         text: "Junk motd banner\nover multiple lines"
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'banner motd @\nJunk motd banner\nover multiple lines\n@' in result.commands"
@@ -66,11 +68,11 @@
       register: result
       cisco.nxos.nxos_banner: *id003
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
-    - name: teardown motd
+    - name: Teardown motd
       cisco.nxos.nxos_banner: *id004
   when: banner_motd_image_ok == True
 

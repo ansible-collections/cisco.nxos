@@ -1,0 +1,3 @@
+---
+trivial:
+  - Make file_copy validation test assertions work across multiple ansible versions.

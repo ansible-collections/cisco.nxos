@@ -1,10 +1,8 @@
 ---
-- debug:
-    msg:
-      Start nxos_vlans deleted integration tests connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: Start nxos_vlans deleted integration tests connection={{ ansible_connection }}
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines:
       - "no vlan 2-100"
@@ -19,7 +17,7 @@
           - "!min"
         gather_network_resources: vlans
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_vlans: &id001
         config:
@@ -27,7 +25,7 @@
           - vlan_id: 6
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == ansible_facts.network_resources.vlans|length
           - result.after|length == 1
@@ -40,12 +38,12 @@
       register: result
       cisco.nxos.nxos_vlans: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_config:
         lines:
           - "no vlan 5"

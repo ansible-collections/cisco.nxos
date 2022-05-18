@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_static_routes rendered tests connection={{ ansible_connection }}"
 
 - name: Rendered
@@ -30,7 +30,7 @@
     state: rendered
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == false"
       - "'configure terminal' in result.rendered"
@@ -40,10 +40,10 @@
       - "'ipv6 route 2001:db8:12::/32 2001:db8::1001 name rendered_route 3' in result.rendered"
       - "result.rendered | length == 5"
 
-- name: Idempotence - Rendered
+- name: Idempotence - rendered
   nxos_static_routes: *rendered
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - "result.changed == false"

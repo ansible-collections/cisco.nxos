@@ -2,7 +2,8 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_igmp sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'restart'
+  ansible.builtin.set_fact:
     restart: true
   when: platform is not match("N35")
 
@@ -15,15 +16,15 @@
         restart: false
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Check Idempotence - Configure igmp interface with non-default values
+    - name: Check idempotence - configure igmp interface with non-default values
       register: result
       cisco.nxos.nxos_igmp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -35,13 +36,13 @@
         restart: "{{restart|default(omit)}}"
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure igmp with defaults
+    - name: Check idempotence - configure igmp with defaults
       register: result
       cisco.nxos.nxos_igmp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure igmp non-defaults again
       register: result
@@ -52,13 +53,13 @@
       cisco.nxos.nxos_igmp: &id005
         state: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure igmp with state default
+    - name: Check idempotence - configure igmp with state default
       register: result
       cisco.nxos.nxos_igmp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
     - name: Configure igmp with default values
       register: result

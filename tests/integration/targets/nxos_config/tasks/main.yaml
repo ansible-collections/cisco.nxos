@@ -1,20 +1,20 @@
 ---
 - block:
-    - name: Include the CLI tasks
+    - name: Include the cli tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
 
-    - name: Include the NX-API tasks
+    - name: Include the nx-api tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
 
-    - include: cli_config.yaml
+    - ansible.builtin.include: cli_config.yaml
       tags:
         - cli_config
 
-    - include: redirection.yaml
+    - ansible.builtin.include: redirection.yaml
       when: ansible_version.full is version('2.10.0', '>=')
   always:
     - name: Change hostname back to {{ inventory_hostname_short }}

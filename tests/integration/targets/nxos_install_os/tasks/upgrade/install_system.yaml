@@ -1,5 +1,5 @@
 ---
-- name: Install OS image {{ si }}
+- name: Install os image {{ si }}
   check_mode: "{{ checkmode }}"
   register: result
   when: not force
@@ -17,7 +17,7 @@
       - no boot system
     match: line
 
-- name: Set OS image {{ si }} boot pointers
+- name: Set os image {{ si }} boot pointers
   when: force
   cisco.nxos.nxos_config:
     lines:
@@ -38,7 +38,7 @@
   when: not force
 
 - name: Wait for device to come back up with new image
-  wait_for:
+  ansible.builtin.wait_for:
     port: 22
     state: started
     timeout: 500
@@ -50,6 +50,6 @@
     msg: Wait 5 mins to allow system to stabilize
   when: result.changed and not checkmode
 
-- pause:
+- ansible.builtin.pause:
     seconds: 300
   when: result.changed and not checkmode

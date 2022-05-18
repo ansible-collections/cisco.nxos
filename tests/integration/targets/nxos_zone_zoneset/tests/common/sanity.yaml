@@ -15,8 +15,8 @@
           - id: "{{ vsan2 | int }}"
             remove: true
   block:
-    - ignore_errors: true
-      name: Setup - Remove vsan if configured
+    - name: Setup - remove vsan if configured
+      ignore_errors: true
       cisco.nxos.nxos_vsan:
         vsan:
           - id: "{{ vsan1 | int }}"
@@ -104,11 +104,11 @@
                   - name: zone21B
                 name: zsetname21
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == ["terminal dont-ask", "zone mode enhanced vsan 922", "zone name zoneA vsan 922", "member pwwn 11:11:11:11:11:11:11:11", "member device-alias
             test123", "zone name zoneB vsan 922", "member pwwn 10:11:11:11:11:11:11:11", "member pwwn 62:62:62:62:21:21:21:21", "zoneset name zsetname1 vsan 922",
@@ -117,19 +117,19 @@
             "member pwwn 62:62:62:62:21:21:21:21", "member device-alias somedummyname", "zoneset name zsetname21 vsan 923", "member zone21A", "member zone21B", "zoneset
             activate name zsetname21 vsan 923", "no terminal dont-ask"]
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_zone_zoneset: *id001
 
-    - name: Display Idempotence Check result
-      debug:
+    - name: Display idempotence check result
+      ansible.builtin.debug:
         var: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == []
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
 
@@ -169,23 +169,23 @@
               - name: zsetname21
                 remove: true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == ["terminal dont-ask", "no zone name zoneA vsan 922", "no zone name zoneB vsan 922", "no zoneset name zsetname1 vsan 922", "zone commit
             vsan 922", "no zone name zone21A vsan 923", "no zone name zone21B vsan 923", "no zoneset name zsetname21 vsan 923", "no terminal dont-ask"]
 
-    - name: Idempotence Check for zone/zoneset removal
+    - name: Idempotence check for zone/zoneset removal
       register: result
       cisco.nxos.nxos_zone_zoneset: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.commands == []
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false

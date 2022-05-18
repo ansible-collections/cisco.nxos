@@ -2,14 +2,17 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_telemetry merged sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'source_interface'
+  ansible.builtin.set_fact:
     source_interface: Loopback55
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'command_list_length'
+  ansible.builtin.set_fact:
     command_list_length: 30
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'command_list_length'
+  ansible.builtin.set_fact:
     command_list_length: 31
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
@@ -20,7 +23,7 @@
     state: disabled
 
 - block:
-    - name: Gather Telemetry Facts Before Changes
+    - name: Gather telemetry facts before changes
       cisco.nxos.nxos_facts: &id001
         gather_subset:
           - "!all"
@@ -118,7 +121,7 @@
                 id: 55
                 sample_interval: 2000
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - result.before|length == 0
@@ -154,19 +157,19 @@
           - "'snsr-grp 55 sample-interval 2000' in result.commands"
           - result.commands|length == {{ command_list_length }}
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'source-interface loopback55' in result.commands"
       when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0
 
-    - name: Gather Telemetry Facts After Changes
+    - name: Gather telemetry facts after changes
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length == 0
 
@@ -174,7 +177,7 @@
       register: result
       cisco.nxos.nxos_telemetry: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -269,14 +272,15 @@
                 id: 55
                 sample_interval: 2000
 
-    - set_fact:
+    - name: Set a fact for 'test_list'
+      ansible.builtin.set_fact:
         test_list:
           - telemetry
           - certificate /bootflash/local_server.crt localhost
           - subscription 44
           - snsr-grp 8 sample-interval 1000
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - test_list|symmetric_difference(result.commands)|length == 0
@@ -285,7 +289,7 @@
       register: result
       cisco.nxos.nxos_telemetry: *id003
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0

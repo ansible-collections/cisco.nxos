@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_pim sanity test
 
-- name: "Setup: Disable features"
+- name: "Setup: disable features"
   ignore_errors: true
   loop:
     - pim
@@ -11,7 +11,7 @@
     feature: "{{ item }}"
     state: disabled
 
-- name: "Setup: Enable features"
+- name: "Setup: enable features"
   loop:
     - pim
     - bfd
@@ -19,7 +19,7 @@
     feature: "{{ item }}"
     state: enabled
 
-- name: "Setup: Configure ssm_range none"
+- name: "Setup: configure ssm_range none"
   cisco.nxos.nxos_pim: &id005
     ssm_range: none
 
@@ -32,7 +32,7 @@
           - 239.128.1.0/24
           - 224.0.0.0/8
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -40,7 +40,7 @@
       register: result
       cisco.nxos.nxos_pim: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -50,27 +50,27 @@
         bfd: disable
         ssm_range: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: ssm_range default idempotence
+    - name: Ssm_range default idempotence
       register: result
       cisco.nxos.nxos_pim: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure ssm_range none
       register: result
       cisco.nxos.nxos_pim: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: ssm_range none idempotence
+    - name: Ssm_range none idempotence
       register: result
       cisco.nxos.nxos_pim: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-    - name: "Teardown: Disable features"
+    - name: "Teardown: disable features"
       ignore_errors: true
       loop:
         - pim

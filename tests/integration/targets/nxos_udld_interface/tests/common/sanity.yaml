@@ -2,25 +2,31 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_udld_interface sanity test
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'udld_run'
+  ansible.builtin.set_fact:
     udld_run: true
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'udld_enable'
+  ansible.builtin.set_fact:
     udld_enable: true
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'udld_run'
+  ansible.builtin.set_fact:
     udld_run: false
   when: ((platform is search('N9K-F')) and (imagetag and (imagetag is version_compare('F3', 'lt'))))
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'udld_run'
+  ansible.builtin.set_fact:
     udld_run: false
   when: titanium
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'udld_enable'
+  ansible.builtin.set_fact:
     udld_enable: false
   when: imagetag and imagetag is search("N1")
 
-- ansible.builtin.set_fact:
+- name: Set a fact for 'intname'
+  ansible.builtin.set_fact:
     intname: "{{ nxos_int1 }}"
 
 - block:
@@ -29,28 +35,28 @@
         feature: udld
         state: enabled
 
-    - name: put the interface into default state
+    - name: Put the interface into default state
       cisco.nxos.nxos_config:
         commands:
           - default interface {{intname}}
         match: none
 
-    - name: ensure interface is configured to be in aggressive mode
+    - name: Ensure interface is configured to be in aggressive mode
       register: result
       cisco.nxos.nxos_udld_interface: &id001
         interface: "{{ intname }}"
         mode: aggressive
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Conf1 Idempotence
+    - name: Conf1 idempotence
       register: result
       cisco.nxos.nxos_udld_interface: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 

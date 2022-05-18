@@ -16,7 +16,7 @@
     dest_level: 00
     state: present
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"logging console 0" in result.commands'
