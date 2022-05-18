@@ -29,6 +29,7 @@ jobs:
   all_green:
     if: ${{ always() }}
     needs:
+    - changelog
     - sanity
     - unit-galaxy
     - unit-source
