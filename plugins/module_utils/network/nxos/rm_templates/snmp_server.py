@@ -1410,7 +1410,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server
                 \suser\s(?P<user>\S+)
                 (\s(?P<group>[^auth]\S+))?
-                (\sauth\s(?P<algorithm>md5|sha)\s(?P<password>\S+))?
+                (\sauth\s(?P<algorithm>md5|sha|sha-256)\s(?P<password>\S+))?
                 (\spriv(\s(?P<aes_128>aes-128))?\s(?P<privacy_password>\S+))?
                 (\s(?P<localized_key>localizedkey))?
                 (\sengineID\s(?P<engine_id>\S+))?

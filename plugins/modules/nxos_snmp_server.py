@@ -579,7 +579,7 @@ options:
                   algorithm:
                     description: Select algorithm for authentication.
                     type: str
-                    choices: ["md5", "sha"]
+                    choices: ["md5", "sha", "sha-256"]
                   password:
                     description:
                       - Authentication password for user (Max Size 127).
