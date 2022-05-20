@@ -12,20 +12,14 @@ jobs:
   sanity:
     uses: ansible-network/github_actions/.github/workflows/sanity.yml@main
   unit-galaxy:
-    uses: ansible-network/github_actions/.github/workflows/unit_simple.yml@main
+    uses: ansible-network/github_actions/.github/workflows/unit_galaxy.yml@main
   unit-source:
-    uses: ansible-network/github_actions/.github/workflows/unit_simple.yml@main
+    uses: ansible-network/github_actions/.github/workflows/unit_source.yml@main
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
-      matrix_exclude: >-
-        [
-          {
-            "ansible-version": "stable-2.9"
-          }
-        ]
-
+  
   all_green:
     if: ${{ always() }}
     needs:
