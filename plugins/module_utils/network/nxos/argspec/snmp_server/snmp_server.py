@@ -368,7 +368,11 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "algorithm": {
                                             "type": "str",
-                                            "choices": ["md5", "sha", "sha-256"],
+                                            "choices": [
+                                                "md5",
+                                                "sha",
+                                                "sha-256",
+                                            ],
                                         },
                                         "password": {
                                             "type": "str",

@@ -674,6 +674,20 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     localized_key=True,
                                 ),
                             ),
+                            dict(
+                                user="snmp_user_4",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="sha-256",
+                                    password="0x5632724fb8ac3699296af26281e1d0f1",
+                                    engine_id="4:4:4:4:4",
+                                    priv=dict(
+                                        privacy_password="0x5632724fb8ac3699296af26281e1d0f1",
+                                        aes_128=True,
+                                    ),
+                                    localized_key=True,
+                                ),
+                            ),
                         ]
                     )
                 ),
@@ -688,6 +702,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
             " 0x5632724fb8ac3699296af26281e1d0f1 localizedkey engineID 3:3:3:3:3",
             "snmp-server user snmp_user_1 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1"
             " localizedkey engineID 1:1:1:1:1",
+            "snmp-server user snmp_user_4 network-admin auth sha-256 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128"
+            " 0x5632724fb8ac3699296af26281e1d0f1 localizedkey engineID 4:4:4:4:4",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -699,6 +715,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server user user2 network-admin auth md5 0x5632724fb8ac3699296af262 priv 0x5632724fb8ac3699296af262 localizedkey engineID 2:2:2:2:2
             snmp-server user user3 network-admin auth md5 0x5632724fb8ac3699296af262 priv aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3
             snmp-server user user1 network-admin auth md5 0x5632724fb8ac3699296af262 localizedkey engineID 1:1:1:1:1
+            snmp-server user user4 network-admin auth sha-256 0x5632724fb8ac3699296af262 priv aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 4:4:4:4:4
             """
         )
         set_module_args(
@@ -736,6 +753,20 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     algorithm="md5",
                                     password="0x5632724fb8ac3699296af262",
                                     engine_id="3:3:3:3:3",
+                                    priv=dict(
+                                        privacy_password="0x5632724fb8ac3699296af262",
+                                        aes_128=True,
+                                    ),
+                                    localized_key=True,
+                                ),
+                            ),
+                            dict(
+                                user="user4",
+                                group="network-admin",
+                                authentication=dict(
+                                    algorithm="sha-256",
+                                    password="0x5632724fb8ac3699296af262",
+                                    engine_id="4:4:4:4:4",
                                     priv=dict(
                                         privacy_password="0x5632724fb8ac3699296af262",
                                         aes_128=True,
