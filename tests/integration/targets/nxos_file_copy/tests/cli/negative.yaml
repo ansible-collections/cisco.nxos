@@ -56,7 +56,7 @@
 # file_pull_timeout > 30s has no effect in this case, since the device
 # shell gives up connecting to the bad IP after 30s and the response
 # on the shell triggers a standard error regex.
-- name: Try and copy file using an invalid remote scp server ip address
+- name: Try and copy file using an invalid remote scp server IP address
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:

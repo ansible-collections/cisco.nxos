@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml sanity test
 
-- name: Enable feature tacacs+
+- name: Enable 'feature tacacs\+'
   cisco.nxos.nxos_feature:
     feature: tacacs+
     state: enabled
@@ -17,7 +17,7 @@
     state: default
 
 - block:
-    - name: Configure tacacs server defaults
+    - name: Configure TACACS server defaults
       register: result
       cisco.nxos.nxos_aaa_server: &id001
         server_type: tacacs
@@ -31,7 +31,7 @@
         that:
           - result.changed == false
 
-    - name: Configure tacacs server non defaults
+    - name: Configure TACACS server non defaults
       register: result
       cisco.nxos.nxos_aaa_server: &id002
         server_type: tacacs
@@ -50,13 +50,13 @@
 
     - ansible.builtin.assert: *id003
 
-    - name: Remove tacacs server configuration
+    - name: Remove TACACS server configuration
       register: result
       cisco.nxos.nxos_aaa_server: *id004
 
     - ansible.builtin.assert: *id005
 
-    - name: Configure tacacs server with global key
+    - name: Configure TACACS server with global key
       register: result
       cisco.nxos.nxos_aaa_server: &id006
         server_type: tacacs
@@ -72,7 +72,7 @@
 
     - ansible.builtin.assert: *id003
 
-    - name: Remove tacacs server configuration
+    - name: Remove TACACS server configuration
       register: result
       cisco.nxos.nxos_aaa_server: &id007
         server_type: tacacs
@@ -93,11 +93,11 @@
     - ansible.builtin.debug:
         msg: connection={{ ansible_connection }} nxos_aaa_server failure detected
   always:
-    - name: Remove tacacs server configuration
+    - name: Remove TACACS server configuration
       register: result
       cisco.nxos.nxos_aaa_server: *id004
 
-    - name: Disable feature tacacs+
+    - name: Disable 'feature tacacs\+'
       cisco.nxos.nxos_feature:
         feature: tacacs+
         state: disabled

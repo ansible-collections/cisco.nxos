@@ -67,7 +67,7 @@
         that:
           - result.changed == true
 
-    - name: Conf static idempotence
+    - name: Configure static idempotence
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_static_route: *id001

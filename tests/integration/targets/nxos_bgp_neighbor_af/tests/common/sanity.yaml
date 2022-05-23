@@ -7,20 +7,20 @@
     soft_reconfiguration_ina: always
   when: imagetag is not search("D1|N1")
 
-- name: Disable feature bgp
+- name: Disable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature: &id013
     feature: bgp
     state: disabled
 
-- name: Enable feature bgp
+- name: Enable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
 - block:
-    - name: Configure bgp neighbor address-family
+    - name: Configure BGP neighbor address-family
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id001
         asn: 65535
@@ -63,7 +63,7 @@
         that:
           - result.changed == false
 
-    - name: Configure bgp neighbor address-family def1
+    - name: Configure BGP neighbor address-family def1
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id003
         asn: 65535
@@ -100,7 +100,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: "Setup: remove bgp config"
+    - name: "Setup: remove BGP configuration"
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id005
         asn: 65535
@@ -117,7 +117,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure bgp neighbor address-family
+    - name: Configure BGP neighbor address-family
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id006
         asn: 65535
@@ -144,7 +144,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure bgp neighbor address-family def2
+    - name: Configure BGP neighbor address-family def2
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id007
         asn: 65535
@@ -169,7 +169,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: "Setup: remove bgp config"
+    - name: "Setup: remove BGP configuration"
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: *id005
 
@@ -181,14 +181,14 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure ebgp
+    - name: Configure EBGP
       cisco.nxos.nxos_bgp_neighbor:
         asn: 65535
         vrf: blue
         neighbor: 192.0.2.3
         remote_as: 2
 
-    - name: Configure bgp neighbor 3
+    - name: Configure BGP neighbor 3
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id008
         asn: 65535
@@ -213,7 +213,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure bgp neighbor def3
+    - name: Configure BGP neighbor def3
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id009
         asn: 65535
@@ -236,7 +236,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: "Setup: remove bgp config"
+    - name: "Setup: remove BGP configuration"
       register: result
       cisco.nxos.nxos_bgp: &id012
         asn: 65535
@@ -244,13 +244,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Configure bgp neighbor af route_reflector_client
+    - name: Configure BGP neighbor AF route_reflector_client
       cisco.nxos.nxos_bgp_neighbor:
         asn: 65535
         neighbor: 192.0.2.2
         remote_as: 65535
 
-    - name: Configure bgp neighbor 4
+    - name: Configure BGP neighbor 4
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id010
         asn: 65535
@@ -267,7 +267,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure bgp neighbor def4
+    - name: Configure BGP neighbor def4
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id011
         asn: 65535
@@ -284,11 +284,11 @@
 
     - ansible.builtin.assert: *id004
   always:
-    - name: Cleanup bgp
+    - name: Cleanup BGP
       ignore_errors: true
       cisco.nxos.nxos_bgp: *id012
 
-    - name: Disable feature bgp
+    - name: Disable 'feature bgp'
       cisco.nxos.nxos_feature: *id013
 
     - ansible.builtin.debug:

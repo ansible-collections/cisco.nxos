@@ -2,19 +2,19 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_vxlan_vtep_vni multisite sanity test
 
-- name: Disable feature nv overlay - multisite
+- name: Disable 'feature nv overlay' - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: nv overlay
     state: disabled
 
-- name: Enable feature nv overlay - multisite
+- name: Enable 'feature nv overlay' - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: nv overlay
     state: enabled
 
-- name: Enable nv overlay evpn - multisite
+- name: Enable NV overlay EVPN - multisite
   when: platform is search('N9K')
   cisco.nxos.nxos_config:
     lines:
@@ -88,7 +88,7 @@
           - no evpn multisite border-gateway 10
   when: multiout is not search("Invalid command")
 
-- name: Disable feature nv overlay - multisite
+- name: Disable 'feature nv overlay' - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: nv overlay
@@ -97,7 +97,7 @@
 - ansible.builtin.pause:
     seconds: 5
 
-- name: Remove nv overlay evpn - multisite
+- name: Remove NV overlay EVPN - multisite
   when: platform is search('N9K')
   cisco.nxos.nxos_config:
     lines:

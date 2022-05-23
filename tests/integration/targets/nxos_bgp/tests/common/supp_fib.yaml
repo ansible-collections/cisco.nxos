@@ -20,13 +20,13 @@
     bgp_suppress_fib_supported: true
   when: imagetag is not search("A8|D1|I2|I4")
 
-- name: Disable feature bgp
+- name: Disable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature bgp
+- name: Enable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
@@ -73,7 +73,7 @@
     - ansible.builtin.assert: *id004
       when: bgp_best_path_limit
 
-    - name: Set suppress fib
+    - name: Set suppress FIB
       register: result
       cisco.nxos.nxos_bgp: &id005
         asn: 65535
@@ -90,7 +90,7 @@
     - ansible.builtin.assert: *id004
       when: bgp_suppress_fib_supported
 
-    - name: Reset suppress fib
+    - name: Reset suppress FIB
       register: result
       cisco.nxos.nxos_bgp: &id006
         asn: 65535
@@ -110,7 +110,7 @@
     - ansible.builtin.debug:
         msg: Tests can fail on I2/I4/A8/Fretta or helsinki images
   always:
-    - name: Disable feature bgp
+    - name: Disable 'feature bgp'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: bgp

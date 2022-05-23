@@ -7,31 +7,31 @@
   ansible.builtin.set_fact:
     testint2: "{{ nxos_int2 }}"
 
-- name: Setup - remove vlan used in test
+- name: Setup - remove VLAN used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - no vlan 100
 
-- name: Setup - remove vlan from interfaces used in test(part1)
+- name: Setup - remove VLAN from interfaces used in test(part1)
   cisco.nxos.nxos_config:
     lines:
       - no switchport access vlan 100
     parents: switchport
     before: interface {{ testint1 }}
 
-- name: Setup - remove vlan from interfaces used in test(part2)
+- name: Setup - remove VLAN from interfaces used in test(part2)
   cisco.nxos.nxos_config:
     lines:
       - no switchport access vlan 100
     parents: switchport
     before: interface {{ testint2 }}
 
-- name: Create vlan
+- name: Create VLAN
   cisco.nxos.nxos_vlan:
     vlan_id: 100
 
-- name: Add interfaces to vlan and check intent (config + intent)
+- name: Add interfaces to VLAN and check intent (config + intent)
   register: result
   cisco.nxos.nxos_vlan: &id001
     vlan_id: 100
@@ -86,7 +86,7 @@
     that:
       - result.failed == True
 
-- name: Remove interface from vlan
+- name: Remove interface from VLAN
   register: result
   cisco.nxos.nxos_vlan: &id002
     vlan_id: 100
@@ -114,14 +114,14 @@
     lines:
       - no vlan 100
 
-- name: Teardown - remove vlan from interfaces used in test(part1)
+- name: Teardown - remove VLAN from interfaces used in test(part1)
   cisco.nxos.nxos_config:
     lines:
       - no switchport access vlan 100
     parents: switchport
     before: interface {{ testint1 }}
 
-- name: Teardown - remove vlan from interfaces used in test(part2)
+- name: Teardown - remove VLAN from interfaces used in test(part2)
   cisco.nxos.nxos_config:
     lines:
       - no switchport access vlan 100

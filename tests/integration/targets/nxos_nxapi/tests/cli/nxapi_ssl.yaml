@@ -3,7 +3,7 @@
     - ansible.builtin.debug:
         msg: START cli/nxapi_ssl.yaml
 
-    - name: Configure nxapi https w/weak ciphers
+    - name: Configure NX-API https w/weak ciphers
       register: result
       cisco.nxos.nxos_nxapi: &id001
         enable_https: true
@@ -20,7 +20,7 @@
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl ciphers weak'
 
-    - name: Configure nxapi http w/weak ciphers again
+    - name: Configure NX-API http w/weak ciphers again
       register: result
       cisco.nxos.nxos_nxapi: *id001
 
@@ -29,7 +29,7 @@
         that:
           - result.changed == false
 
-    - name: Configure nxapi https w/strong ciphers
+    - name: Configure NX-API https w/strong ciphers
       register: result
       cisco.nxos.nxos_nxapi: &id002
         enable_https: true
@@ -46,14 +46,14 @@
         that:
           - result.stdout_lines[0][0] == 'no nxapi ssl ciphers weak'
 
-    - name: Configure nxapi https w/strong ciphers again
+    - name: Configure NX-API https w/strong ciphers again
       register: result
       cisco.nxos.nxos_nxapi: *id002
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
 
-    - name: Configure nxapi https w/default tlsv1
+    - name: Configure NX-API https w/default tlsv1
       register: result
       cisco.nxos.nxos_nxapi: &id004
         enable_https: true
@@ -64,19 +64,19 @@
         commands:
           - show run all | inc nxapi | inc protocols
 
-    - name: Assert nxapi https w/default tlsv1 configuration
+    - name: Assert NX-API https w/default tlsv1 configuration
       ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1'
 
-    - name: Configure nxapi https w/default again
+    - name: Configure NX-API https w/default again
       register: result
       cisco.nxos.nxos_nxapi: *id004
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
 
-    - name: Configure nxapi https tlsv1.1 -default tlsv1
+    - name: Configure NX-API https tlsv1.1 -default tlsv1
       register: result
       cisco.nxos.nxos_nxapi: &id005
         enable_https: true
@@ -89,19 +89,19 @@
         commands:
           - show run all | inc nxapi | inc protocols
 
-    - name: Assert nxapi https w/tlsv1.1 configuration
+    - name: Assert NX-API https w/tlsv1.1 configuration
       ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1.1'
 
-    - name: Configure nxapi https w/tlsv1.1 -default tlsv1 again
+    - name: Configure NX-API https w/tlsv1.1 -default tlsv1 again
       register: result
       cisco.nxos.nxos_nxapi: *id005
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
 
-    - name: Configure nxapi https tlsv1.2 -default tlsv1
+    - name: Configure NX-API https tlsv1.2 -default tlsv1
       register: result
       cisco.nxos.nxos_nxapi: &id006
         enable_https: true
@@ -114,19 +114,19 @@
         commands:
           - show run all | inc nxapi | inc protocols
 
-    - name: Assert nxapi https w/tlsv1.2 configuration
+    - name: Assert NX-API https w/tlsv1.2 configuration
       ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1.2'
 
-    - name: Configure nxapi https w/tlsv1.2 -default tlsv1 again
+    - name: Configure NX-API https w/tlsv1.2 -default tlsv1 again
       register: result
       cisco.nxos.nxos_nxapi: *id006
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
 
-    - name: Configure nxapi https w/tls1.2 +default tlsv1
+    - name: Configure NX-API https w/tls1.2 +default tlsv1
       register: result
       cisco.nxos.nxos_nxapi: &id007
         enable_https: true
@@ -139,19 +139,19 @@
         commands:
           - show run all | inc nxapi | inc protocols
 
-    - name: Assert nxapi https w/tls1.2 +default tlsv1 configuration
+    - name: Assert NX-API https w/tls1.2 +default tlsv1 configuration
       ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1 TLSv1.2'
 
-    - name: Configure nxapi https w/tls1.2 again
+    - name: Configure NX-API https w/tls1.2 again
       register: result
       cisco.nxos.nxos_nxapi: *id007
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
 
-    - name: Configure nxapi https w/tls1.2 tls1.1 -default tlsv1
+    - name: Configure NX-API https w/tls1.2 tls1.1 -default tlsv1
       register: result
       cisco.nxos.nxos_nxapi: &id008
         enable_https: true
@@ -166,19 +166,19 @@
         commands:
           - show run all | inc nxapi | inc protocols
 
-    - name: Assert nxapi https w/tls1.2 tls1.2 -default tlsv1 configuration
+    - name: Assert NX-API https w/tls1.2 tls1.2 -default tlsv1 configuration
       ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1.1 TLSv1.2'
 
-    - name: Configure nxapi https w/tls1.2 tls1.1 -default tlsv1 again
+    - name: Configure NX-API https w/tls1.2 tls1.1 -default tlsv1 again
       register: result
       cisco.nxos.nxos_nxapi: *id008
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
 
-    - name: Configure nxapi https w/tls1.2 tls1.1 +default tlsv1
+    - name: Configure NX-API https w/tls1.2 tls1.1 +default tlsv1
       register: result
       cisco.nxos.nxos_nxapi: &id009
         enable_https: true
@@ -192,19 +192,19 @@
         commands:
           - show run all | inc nxapi | inc protocols
 
-    - name: Assert nxapi https w/tls1.2 tls1.1 +default tlsv1 configuration
+    - name: Assert NX-API https w/tls1.2 tls1.1 +default tlsv1 configuration
       ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1 TLSv1.1 TLSv1.2'
 
-    - name: Configure nxapi https w/tls1.2 tls1.1 +default tlsv1 again
+    - name: Configure NX-API https w/tls1.2 tls1.1 +default tlsv1 again
       register: result
       cisco.nxos.nxos_nxapi: *id009
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
 
-    - name: Configure nxapi https with explicit tls1.2 tls1.1 tlsv1
+    - name: Configure NX-API https with explicit tls1.2 tls1.1 tlsv1
       register: result
       cisco.nxos.nxos_nxapi: &id010
         enable_https: true
@@ -219,30 +219,29 @@
         commands:
           - show run all | inc nxapi | inc protocols
 
-    - name: Assert nxapi https w/tls1.2 tls1.2 tlsv1 configuration
+    - name: Assert NX-API https w/tls1.2 tls1.2 tlsv1 configuration
       ansible.builtin.assert:
         that:
           - result.stdout_lines[0][0] == 'nxapi ssl protocols TLSv1 TLSv1.1 TLSv1.2'
 
-    - name: Configure nxapi https w/tls1.2 tls1.1 tlsv1 again
+    - name: Configure NX-API https w/tls1.2 tls1.1 tlsv1 again
       register: result
       cisco.nxos.nxos_nxapi: *id010
 
     - name: Assert configuration is idempotent
       ansible.builtin.assert: *id003
   always:
-    - name: Cleanup - disable nxapi
+    - name: Cleanup - disable NX-API
       register: result
       cisco.nxos.nxos_nxapi:
         state: absent
 
-    - name: Cleanup - re-enable nxapi
+    - name: Cleanup - re-enable NX-API
       register: result
       cisco.nxos.nxos_nxapi:
         state: present
 
     - ansible.builtin.debug:
         msg: END cli/nxapi_ssl.yaml
-  when:
-    (platform is match("N9K") or platform is match("N3K") or platform is match("N9K-F") or platform is match("N35") or platform is match("N3L")) and major_version
+  when: (platform is match("N9K") or platform is match("N3K") or platform is match("N9K-F") or platform is match("N35") or platform is match("N3L")) and major_version
     is version('9.2', '>=')

@@ -87,7 +87,7 @@
     lines: interface loopback1
     match: none
 
-- name: Feature bfd init
+- name: "'feature bfd' init"
   delay: 3
   retries: 1
   register: result

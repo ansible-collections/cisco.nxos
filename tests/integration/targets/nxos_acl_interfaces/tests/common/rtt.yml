@@ -89,7 +89,7 @@
         config: "{{ ansible_facts['network_resources']['acl_interfaces'] }}"
         state: overridden
 
-    - name: Assert that config was reverted
+    - name: Assert that configuration was reverted
       ansible.builtin.assert:
         that:
           - result.changed==True

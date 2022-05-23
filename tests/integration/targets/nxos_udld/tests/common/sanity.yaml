@@ -17,7 +17,7 @@
   when: titanium
 
 - block:
-    - name: Enable feature udld
+    - name: Enable 'feature udld'
       cisco.nxos.nxos_feature:
         feature: udld
         state: enabled
@@ -76,7 +76,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Remove udld config
+    - name: Remove udld configuration
       register: result
       cisco.nxos.nxos_udld: &id006
         state: absent

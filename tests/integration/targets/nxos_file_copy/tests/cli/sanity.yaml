@@ -23,12 +23,12 @@
       - rmdir dir1/dir2
       - rmdir dir1
 
-- name: Setup - turn on feature scp-server
+- name: Setup - turn on 'feature scp-server'
   cisco.nxos.nxos_feature:
     feature: scp-server
     state: enabled
 
-- name: Setup - turn on feature sftp-server
+- name: Setup - turn on 'feature sftp-server'
   cisco.nxos.nxos_feature:
     feature: sftp-server
     state: enabled
@@ -184,12 +184,12 @@
       no_log: true
       when: ansible_user != "admin"
 
-    - name: Turn off feature scp-server
+    - name: Turn off 'feature scp-server'
       cisco.nxos.nxos_feature:
         feature: scp-server
         state: disabled
 
-    - name: Turn off feature sftp-server
+    - name: Turn off 'feature sftp-server'
       cisco.nxos.nxos_feature:
         feature: sftp-server
         state: disabled

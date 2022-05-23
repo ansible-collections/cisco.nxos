@@ -10,7 +10,7 @@
   ansible.builtin.set_fact:
     testint2: "{{ nxos_int2 }}"
 
-- name: Setup - remove vrf from interfaces used in test(part1)
+- name: Setup - remove VRF from interfaces used in test(part1)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -18,7 +18,7 @@
     parents: no switchport
     before: interface {{ testint1 }}
 
-- name: Setup - remove vrf from interfaces used in test(part2)
+- name: Setup - remove VRF from interfaces used in test(part2)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -26,13 +26,13 @@
     parents: no switchport
     before: interface {{ testint2 }}
 
-- name: Setup - delete vrf test1 used in test
+- name: Setup - delete VRF test1 used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - no vrf context test1
 
-- name: Setup - remove vrf test2 used in test
+- name: Setup - remove VRF test2 used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -67,7 +67,7 @@
     that:
       - result.changed == false
 
-- name: Assign interfaces to vrf (config + intent)
+- name: Assign interfaces to VRF (config + intent)
   register: result
   cisco.nxos.nxos_vrf: &id002
     name: test1
@@ -95,7 +95,7 @@
     that:
       - result.changed == false
 
-- name: Check interfaces assigned to vrf (intent)
+- name: Check interfaces assigned to VRF (intent)
   register: result
   cisco.nxos.nxos_vrf:
     name: test1
@@ -107,7 +107,7 @@
     that:
       - result.failed == false
 
-- name: Assign interfaces to vrf (intent fail)
+- name: Assign interfaces to VRF (intent fail)
   register: result
   ignore_errors: true
   cisco.nxos.nxos_vrf:
@@ -119,7 +119,7 @@
     that:
       - result.failed == True
 
-- name: Remove interface from vrf
+- name: Remove interface from VRF
   register: result
   cisco.nxos.nxos_vrf: &id003
     name: test1
@@ -166,7 +166,7 @@
     that:
       - result.changed == false
 
-- name: Setup - remove vrf from interfaces used in test(part1)
+- name: Setup - remove VRF from interfaces used in test(part1)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -174,7 +174,7 @@
     parents: no switchport
     before: interface {{ testint1 }}
 
-- name: Setup - remove vrf from interfaces used in test(part2)
+- name: Setup - remove VRF from interfaces used in test(part2)
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -182,13 +182,13 @@
     parents: no switchport
     before: interface {{ testint2 }}
 
-- name: Setup - delete vrf test1 used in test
+- name: Setup - delete VRF test1 used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
       - no vrf context test1
 
-- name: Setup - remove vrf test2 used in test
+- name: Setup - remove VRF test2 used in test
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:

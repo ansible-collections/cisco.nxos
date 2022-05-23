@@ -48,7 +48,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure name servers with vrf support
+    - name: Configure name servers with VRF support
       register: result
       cisco.nxos.nxos_system: &id005
         name_servers:

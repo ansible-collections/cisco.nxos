@@ -2,17 +2,17 @@
 - ansible.builtin.debug:
     msg: START cli/mulitlevel.yaml
 
-- name: Get config
+- name: Get configuration
   register: config
   cisco.nxos.nxos_command:
     commands: show running-config
 
-- name: Enable feature bgp
+- name: Enable 'feature bgp'
   when: "'feature bgp' not in config.stdout[0]"
   cisco.nxos.nxos_config:
     lines: feature bgp
 
-- name: Remove bgp
+- name: Remove BGP
   when: "'router bgp 1' in config.stdout[0]"
   cisco.nxos.nxos_config:
     lines: no router bgp 1

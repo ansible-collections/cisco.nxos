@@ -15,13 +15,13 @@
     bgp_isolate: true
   when: imagetag is not search("A8")
 
-- name: Disable feature bgp
+- name: Disable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature bgp
+- name: Enable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
@@ -71,7 +71,7 @@
     - ansible.builtin.debug:
         msg: Tests can fail on A8 images
   always:
-    - name: Disable feature bgp
+    - name: Disable 'feature bgp'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: bgp

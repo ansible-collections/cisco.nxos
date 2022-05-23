@@ -107,7 +107,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Configure pim other params
+    - name: Configure PIM other params
       register: result
       cisco.nxos.nxos_pim_interface: &id006
         interface: "{{ testint }}"
@@ -187,7 +187,7 @@
 
     - ansible.builtin.assert: *id004
   always:
-    - name: Disable feature pim
+    - name: Disable 'feature pim'
       loop:
         - pim
         - bfd

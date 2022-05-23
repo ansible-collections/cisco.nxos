@@ -1,5 +1,5 @@
 ---
-- name: Include the cli tasks
+- name: Include the CLI tasks
   ansible.builtin.include_tasks: cli.yaml
   tags:
     - "cli"

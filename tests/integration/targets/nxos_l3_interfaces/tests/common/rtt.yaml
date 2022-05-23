@@ -44,7 +44,7 @@
         gather_network_resources:
           - l3_interfaces
 
-    - name: Set reserved interface ip config and config to revert
+    - name: Set reserved interface IP configuration and configuration to revert
       ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         config_to_revert:
@@ -73,7 +73,7 @@
         that:
           - result.changed == true
 
-    - name: Revert back to base config using facts round trip
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.nxos.nxos_l3_interfaces:
         config: "{{ ansible_facts['network_resources']['l3_interfaces'] }}"

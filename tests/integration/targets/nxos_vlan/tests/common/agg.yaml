@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }}/agg.yaml
 
-- name: Setup - remove vlan used in test
+- name: Setup - remove VLAN used in test
   ignore_errors: true
   cisco.nxos.nxos_config: &id005
     lines:
@@ -10,7 +10,7 @@
       - no vlan 103
       - no vlan 104
 
-- name: Configure vlan with aggregate
+- name: Configure VLAN with aggregate
   register: result
   cisco.nxos.nxos_vlan: &id001
     aggregate:
@@ -38,7 +38,7 @@
     that:
       - result.changed == false
 
-- name: Change property of existing vlan - admin_state down
+- name: Change property of existing VLAN - admin_state down
   register: result
   cisco.nxos.nxos_vlan: &id002
     aggregate:

@@ -12,7 +12,7 @@
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
-- name: Enable feature lacp
+- name: Enable 'feature lacp'
   cisco.nxos.nxos_feature:
     feature: lacp
 
@@ -61,7 +61,7 @@
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - name: Disable feature lacp
+    - name: Disable 'feature lacp'
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled
