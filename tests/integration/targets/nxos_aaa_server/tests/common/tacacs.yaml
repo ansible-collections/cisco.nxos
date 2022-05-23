@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_aaa_server tacacs.yaml sanity test
 
-- name: Enable 'feature tacacs\+'
+- name: Enable 'feature tacacs+'
   cisco.nxos.nxos_feature:
     feature: tacacs+
     state: enabled
@@ -97,7 +97,7 @@
       register: result
       cisco.nxos.nxos_aaa_server: *id004
 
-    - name: Disable 'feature tacacs\+'
+    - name: Disable 'feature tacacs+'
       cisco.nxos.nxos_feature:
         feature: tacacs+
         state: disabled
