@@ -27,7 +27,7 @@
         gather_network_resources:
           - "vlans"
 
-    - name: Set default vlan (vlan1) config and config to revert
+    - name: Set default VLAN (vlan1) configuration and configuration to revert
       ansible.builtin.set_fact:
         default_vlan: "{{ ansible_facts.network_resources.vlans|selectattr('vlan_id', 'equalto', 1)|list }}"
         config_to_revert:
@@ -49,7 +49,7 @@
         that:
           - result.changed == true
 
-    - name: Revert back to base config using facts round trip
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.nxos.nxos_vlans:
         config: "{{ ansible_facts['network_resources']['vlans'] }}"

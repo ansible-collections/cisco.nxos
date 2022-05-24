@@ -11,7 +11,7 @@
     restart: true
   when: platform is not match("N35")
 
-- name: Enable feature pim
+- name: Enable 'feature pim'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: pim
@@ -25,7 +25,7 @@
     match: none
 
 - block:
-    - name: Put interface in l3 and enable pim
+    - name: Put interface in layer 3 and enable PIM
       cisco.nxos.nxos_config:
         commands:
           - no switchport
@@ -34,7 +34,7 @@
           - interface {{ intname }}
         match: none
 
-    - name: Configure igmp interface with non-default values
+    - name: Configure IGMP interface with non-default values
       register: result
       cisco.nxos.nxos_igmp_interface: &id001
         interface: "{{ intname }}"
@@ -59,7 +59,7 @@
         that:
           - result.changed == true
 
-    - name: Check idempotence - configure igmp interface with non-default values
+    - name: Check idempotence - configure IGMP interface with non-default values
       register: result
       cisco.nxos.nxos_igmp_interface: *id001
 
@@ -67,7 +67,7 @@
         that:
           - result.changed == false
 
-    - name: Configure igmp interface with some default values
+    - name: Configure IGMP interface with some default values
       register: result
       cisco.nxos.nxos_igmp_interface: &id003
         interface: "{{ intname }}"
@@ -92,18 +92,18 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check idempotence - configure igmp interface with some default values
+    - name: Check idempotence - configure IGMP interface with some default values
       register: result
       cisco.nxos.nxos_igmp_interface: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: Restart igmp
+    - name: Restart IGMP
       cisco.nxos.nxos_igmp_interface:
         interface: "{{ intname }}"
         restart: "{{restart|default(omit)}}"
 
-    - name: Configure igmp interface with default oif_ps
+    - name: Configure IGMP interface with default oif_ps
       register: result
       cisco.nxos.nxos_igmp_interface: &id005
         interface: "{{ intname }}"
@@ -112,13 +112,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check idempotence - configure igmp interface with default oif_ps
+    - name: Check idempotence - configure IGMP interface with default oif_ps
       register: result
       cisco.nxos.nxos_igmp_interface: *id005
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure igmp interface with oif_routemap
+    - name: Configure IGMP interface with oif_routemap
       register: result
       cisco.nxos.nxos_igmp_interface: &id006
         interface: "{{ intname }}"
@@ -131,13 +131,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check idempotence - configure igmp interface with oif_routemap
+    - name: Check idempotence - configure IGMP interface with oif_routemap
       register: result
       cisco.nxos.nxos_igmp_interface: *id006
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure igmp interface with default state
+    - name: Configure IGMP interface with default state
       register: result
       cisco.nxos.nxos_igmp_interface: &id007
         interface: "{{ intname }}"
@@ -145,13 +145,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check idempotence - configure igmp interface with default state
+    - name: Check idempotence - configure IGMP interface with default state
       register: result
       cisco.nxos.nxos_igmp_interface: *id007
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure igmp interface with absent state
+    - name: Configure IGMP interface with absent state
       register: result
       cisco.nxos.nxos_igmp_interface: &id008
         interface: "{{ intname }}"
@@ -159,13 +159,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check idempotence - configure igmp interface with absent state
+    - name: Check idempotence - configure IGMP interface with absent state
       register: result
       cisco.nxos.nxos_igmp_interface: *id008
 
     - ansible.builtin.assert: *id004
   always:
-    - name: Configure igmp interface with absent state
+    - name: Configure IGMP interface with absent state
       register: result
       cisco.nxos.nxos_igmp_interface: *id008
 
@@ -175,7 +175,7 @@
           - default interface {{ intname }}
         match: none
 
-    - name: Disable feature pim
+    - name: Disable 'feature pim'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: pim

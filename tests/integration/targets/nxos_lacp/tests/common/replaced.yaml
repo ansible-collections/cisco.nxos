@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: Start nxos_lacp replaced integration tests connection={{ ansible_connection }}
 
-- name: Enable lacp feature
+- name: Enable 'feature lacp'
   cisco.nxos.nxos_feature:
     feature: lacp
 

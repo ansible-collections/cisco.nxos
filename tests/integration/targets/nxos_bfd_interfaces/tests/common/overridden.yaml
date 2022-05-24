@@ -38,7 +38,7 @@
         - "{{ test_int1 }}"
         - "{{ test_int2 }}"
 
-    - name: Setup initial bfd state
+    - name: Setup initial BFD state
       cisco.nxos.nxos_bfd_interfaces:
         config:
           - name: "{{ test_int1 }}"

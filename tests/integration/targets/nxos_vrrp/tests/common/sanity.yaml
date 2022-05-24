@@ -13,7 +13,7 @@
         feature: vrrp
         state: enabled
 
-    - name: Create int vlan 10
+    - name: Create int VLAN 10
       cisco.nxos.nxos_config:
         commands: int vlan 10
 
@@ -29,7 +29,7 @@
         that:
           - result.changed == true
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id001
 
@@ -47,13 +47,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: Ensure removal of the vrrp group config
+    - name: Ensure removal of the vrrp group configuration
       register: result
       cisco.nxos.nxos_vrrp: &id005
         interface: vlan10

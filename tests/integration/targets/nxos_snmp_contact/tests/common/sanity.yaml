@@ -8,7 +8,7 @@
     state: absent
 
 - block:
-    - name: Configure snmp contact
+    - name: Configure SNMP contact
       register: result
       cisco.nxos.nxos_snmp_contact: &id001
         contact: Testing
@@ -26,7 +26,7 @@
         that:
           - result.changed == false
 
-    - name: Change snmp contact
+    - name: Change SNMP contact
       register: result
       cisco.nxos.nxos_snmp_contact: &id003
         contact: Test
@@ -40,7 +40,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Remove snmp contact
+    - name: Remove SNMP contact
       register: result
       cisco.nxos.nxos_snmp_contact: *id005
 

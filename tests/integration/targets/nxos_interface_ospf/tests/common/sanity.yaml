@@ -29,7 +29,7 @@
     lines:
       - default interface {{ testint }}
 
-- name: Remove switchport config
+- name: Remove switchport configuration
   ignore_errors: true
   cisco.nxos.nxos_config:
     commands:
@@ -47,7 +47,7 @@
       - no interface loopback77
 
 - block:
-    - name: Configure ospf interface
+    - name: Configure OSPF interface
       register: result
       cisco.nxos.nxos_interface_ospf: &id001
         interface: "{{ nxos_int1|upper }}"
@@ -175,7 +175,7 @@
         parents:
           - interface {{ item }}
 
-    - name: Configure ospf interface port-channel10
+    - name: Configure OSPF interface port-channel10
       register: result
       cisco.nxos.nxos_interface_ospf: &id008
         interface: Port-channel10
@@ -195,7 +195,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure ospf interface port-channel11 using lower case name
+    - name: Configure OSPF interface port-channel11 using lower case name
       register: result
       cisco.nxos.nxos_interface_ospf: &id009
         interface: port-channel11
@@ -215,7 +215,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure ospf interface loopback55
+    - name: Configure OSPF interface loopback55
       register: result
       cisco.nxos.nxos_interface_ospf: &id010
         interface: LOOPBACK55
@@ -234,7 +234,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure ospf interface loopback77 using lower case name
+    - name: Configure OSPF interface loopback77 using lower case name
       register: result
       cisco.nxos.nxos_interface_ospf: &id011
         interface: loopback77
@@ -253,7 +253,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Remove ospf interface config
+    - name: Remove OSPF interface configuration
       register: result
       cisco.nxos.nxos_interface_ospf: &id012
         interface: "{{ testint }}"

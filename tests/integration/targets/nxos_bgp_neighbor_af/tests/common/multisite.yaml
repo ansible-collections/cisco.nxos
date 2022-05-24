@@ -7,25 +7,25 @@
     soft_reconfiguration_ina: always
   when: imagetag is not search("D1|N1")
 
-- name: Disable feature bgp - multisite
+- name: Disable 'feature bgp' - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature bgp - multisite
+- name: Enable 'feature bgp' - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
-- name: Enable feature nv overlay - multisite
+- name: Enable 'feature nv overlay' - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: nv overlay
     state: enabled
 
-- name: Enable nv overlay evpn - multisite
+- name: Enable NV overlay EVPN - multisite
   when: platform is search('N9K')
   cisco.nxos.nxos_config:
     lines:
@@ -39,13 +39,13 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: Configure ebgp - multisite
+    - name: Configure EBGP - multisite
       cisco.nxos.nxos_bgp_neighbor:
         asn: 65535
         neighbor: 192.0.2.3
         remote_as: 2
 
-    - name: Configure bgp neighbor - multisite
+    - name: Configure BGP neighbor - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id001
         asn: 65535
@@ -68,7 +68,7 @@
         that:
           - result.changed == false
 
-    - name: Configure bgp neighbor 1 - multisite
+    - name: Configure BGP neighbor 1 - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor_af: &id003
         asn: 65535
@@ -93,12 +93,12 @@
           - no evpn multisite border-gateway 10
   when: multiout is not search("Invalid command")
 
-- name: Disable feature bgp - multisite
+- name: Disable 'feature bgp' - multisite
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Disable feature nv overlay - multisite
+- name: Disable 'feature nv overlay' - multisite
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: nv overlay
@@ -107,7 +107,7 @@
 - ansible.builtin.pause:
     seconds: 5
 
-- name: Remove nv overlay evpn - multisite
+- name: Remove NV overlay EVPN - multisite
   when: platform is search('N9K')
   cisco.nxos.nxos_config:
     lines:

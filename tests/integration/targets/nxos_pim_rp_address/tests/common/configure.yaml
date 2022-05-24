@@ -23,12 +23,12 @@
   when: platform is not search('N3L|N7K')
 
 - block:
-    - name: Disable feature pim
+    - name: Disable 'feature pim'
       cisco.nxos.nxos_feature: &id014
         feature: pim
         state: disabled
 
-    - name: Enable feature pim
+    - name: Enable 'feature pim'
       cisco.nxos.nxos_feature:
         feature: pim
         state: enabled
@@ -216,7 +216,7 @@
 
     - ansible.builtin.assert: *id004
   always:
-    - name: Disable feature pim
+    - name: Disable 'feature pim'
       cisco.nxos.nxos_feature: *id014
 
 - ansible.builtin.debug:

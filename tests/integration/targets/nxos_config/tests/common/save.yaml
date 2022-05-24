@@ -15,7 +15,7 @@
       - interface {{ intname }}
     match: none
 
-- name: Save config
+- name: Save configuration
   register: result
   cisco.nxos.nxos_config:
     save_when: always

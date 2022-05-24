@@ -1,5 +1,5 @@
 ---
-- name: Remove existing lacp config
+- name: Remove existing lacp configuration
   cisco.nxos.nxos_config:
     lines:
       - "no lacp system-priority"

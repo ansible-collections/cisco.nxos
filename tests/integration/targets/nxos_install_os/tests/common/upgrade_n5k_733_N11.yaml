@@ -40,5 +40,5 @@
   ansible.builtin.set_fact:
     ki: n6000-uk9-kickstart.7.3.3.N1.1.bin
 
-- name: Upgrade n5k device to 7.3(3)n1(1) release image
+- name: Upgrade N5K device to 7.3(3)n1(1) release image
   ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

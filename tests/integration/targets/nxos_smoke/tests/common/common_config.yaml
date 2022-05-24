@@ -37,7 +37,7 @@
     state: absent
   with_items: "{{backup_files.files|default([])}}"
 
-- name: Configure device with config
+- name: Configure device with configuration
   cisco.nxos.nxos_config:
     commands:
       - description this is a test

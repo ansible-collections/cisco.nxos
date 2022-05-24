@@ -10,19 +10,19 @@
   ansible.builtin.set_fact:
     testint2: "{{ nxos_int2 }}"
 
-- name: Enable feature lacp
+- name: Enable 'feature lacp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: lacp
     state: enabled
 
-- name: Setup - remove config used in test(part1)
+- name: Setup - remove configuration used in test(part1)
   cisco.nxos.nxos_config:
     lines:
       - no interface port-channel 20
       - no interface port-channel 100
 
-- name: Setup - remove config used in test(part2)
+- name: Setup - remove configuration used in test(part2)
   ignore_errors: true
   loop:
     - interface {{ testint1 }}
@@ -32,7 +32,7 @@
       - no channel-group 20
     parents: "{{ item }}"
 
-- name: Put interface in l2 mode
+- name: Put interface in layer 2 mode
   when: platform is match("N35")
   cisco.nxos.nxos_interface:
     aggregate:
@@ -179,13 +179,13 @@
     that:
       - result.changed == false
 
-- name: Teardown - remove config used in test(part1)
+- name: Teardown - remove configuration used in test(part1)
   cisco.nxos.nxos_config:
     lines:
       - no interface port-channel 20
       - no interface port-channel 100
 
-- name: Teardown - remove config used in test(part2)
+- name: Teardown - remove configuration used in test(part2)
   ignore_errors: true
   loop:
     - interface {{ testint1 }}
@@ -195,7 +195,7 @@
       - no channel-group 20
     parents: "{{ item }}"
 
-- name: Disable feature lacp
+- name: Disable 'feature lacp'
   cisco.nxos.nxos_feature:
     feature: lacp
     state: disabled

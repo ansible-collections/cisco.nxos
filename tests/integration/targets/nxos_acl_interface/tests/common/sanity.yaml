@@ -25,14 +25,14 @@
       - interface {{ intname }}
     match: none
 
-- name: "Setup: cleanup possibly existing acl"
+- name: "Setup: cleanup possibly existing ACL"
   ignore_errors: true
   cisco.nxos.nxos_acl: &id008
     name: ANSIBLE_ACL
     seq: 10
     state: delete_acl
 
-- name: Configure supporting acl
+- name: Configure supporting ACL
   cisco.nxos.nxos_acl:
     name: ANSIBLE_ACL
     seq: 10
@@ -42,7 +42,7 @@
     dest: any
 
 - block:
-    - name: Configure acl interface egress
+    - name: Configure ACL interface egress
       register: result
       cisco.nxos.nxos_acl_interface: &id001
         name: ANSIBLE_ACL
@@ -62,7 +62,7 @@
         that:
           - result.changed == false
 
-    - name: Configure acl interface ingress
+    - name: Configure ACL interface ingress
       register: result
       cisco.nxos.nxos_acl_interface: &id003
         name: ANSIBLE_ACL
@@ -78,7 +78,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Cleanup acl interface egress
+    - name: Cleanup ACL interface egress
       register: result
       cisco.nxos.nxos_acl_interface: &id005
         name: ANSIBLE_ACL
@@ -94,7 +94,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Cleanup acl interface ingress
+    - name: Cleanup ACL interface ingress
       register: result
       cisco.nxos.nxos_acl_interface: &id006
         name: ANSIBLE_ACL
@@ -114,7 +114,7 @@
       ignore_errors: true
       cisco.nxos.nxos_config: *id007
   always:
-    - name: Remove possible configured acl
+    - name: Remove possible configured ACL
       ignore_errors: true
       cisco.nxos.nxos_acl: *id008
 

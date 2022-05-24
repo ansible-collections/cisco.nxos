@@ -40,5 +40,5 @@
   ansible.builtin.set_fact:
     ki: n7000-s2-kickstart.8.0.1.bin
 
-- name: Upgrade n7k device to atherton release image
+- name: Upgrade N7K device to atherton release image
   ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

@@ -53,7 +53,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Remove ntp config
+    - name: Remove ntp configuration
       register: result
       cisco.nxos.nxos_ntp: *id005
 
@@ -107,7 +107,7 @@
 
     - ansible.builtin.assert: *id004
   always:
-    - name: Remove ntp config
+    - name: Remove ntp configuration
       cisco.nxos.nxos_ntp: *id005
 
     - ansible.builtin.debug:

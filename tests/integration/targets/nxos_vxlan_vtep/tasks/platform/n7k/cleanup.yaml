@@ -1,5 +1,5 @@
 ---
-- name: Unconfigure vdc setting limit-resource module-type f3
+- name: Unconfigure VDC setting limit-resource module-type f3
   ignore_errors: true
   cisco.nxos.nxos_config:
     commands:
@@ -10,7 +10,7 @@
   ansible.builtin.pause:
     seconds: 45
 
-- name: Configure vdc setting allocate interface unallocated-interfaces
+- name: Configure VDC setting allocate interface unallocated-interfaces
   ignore_errors: true
   cisco.nxos.nxos_config:
     commands:

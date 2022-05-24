@@ -10,7 +10,7 @@
 
 - ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/enable_scp_server.yaml
 
-- name: Remove ssh known_hosts file before scp of image file
+- name: Remove SSH known_hosts file before scp of image file
   ignore_errors: true
   cisco.nxos.nxos_command:
     commands: run bash rm /var/home/admin/.ssh/known_hosts

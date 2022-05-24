@@ -44,5 +44,5 @@
   ansible.builtin.set_fact:
     si: nxos.9.2.1.bin
 
-- name: Upgrade n9k device to hamilton release image
+- name: Upgrade N9K device to hamilton release image
   ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

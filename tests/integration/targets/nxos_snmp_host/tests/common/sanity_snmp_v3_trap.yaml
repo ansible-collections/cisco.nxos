@@ -34,7 +34,7 @@
     state: absent
 
 - block:
-    - name: Configure snmp host
+    - name: Configure SNMP host
       register: result
       cisco.nxos.nxos_snmp_host: &id001
         snmp_host: 192.0.2.3

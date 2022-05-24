@@ -2,14 +2,14 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_ospf sanity test
 
-- name: Enable feature ospf
+- name: Enable 'feature ospf'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: ospf
     state: enabled
 
 - block:
-    - name: Configure ospf
+    - name: Configure OSPF
       register: result
       cisco.nxos.nxos_ospf: &id001
         ospf: 1
@@ -27,13 +27,13 @@
         that:
           - result.changed == false
   rescue:
-    - name: Disable feature ospf
+    - name: Disable 'feature ospf'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: ospf
         state: disabled
   always:
-    - name: Unconfigure ospf
+    - name: Unconfigure OSPF
       register: result
       cisco.nxos.nxos_ospf: &id003
         ospf: 1

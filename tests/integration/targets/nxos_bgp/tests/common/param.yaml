@@ -2,20 +2,20 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_bgp parameter test
 
-- name: Disable feature bgp
+- name: Disable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature bgp
+- name: Enable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
 - block:
-    - name: Set multi vrf params
+    - name: Set multi VRF params
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id001
@@ -46,7 +46,7 @@
         that:
           - result.changed == false
 
-    - name: Reset multi vrf params
+    - name: Reset multi VRF params
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp: &id003
@@ -209,7 +209,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Set default vrf params
+    - name: Set default VRF params
       register: result
       cisco.nxos.nxos_bgp: &id013
         asn: 65535
@@ -230,7 +230,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Reset default vrf params
+    - name: Reset default VRF params
       register: result
       cisco.nxos.nxos_bgp: &id014
         asn: 65535
@@ -248,7 +248,7 @@
 
     - ansible.builtin.assert: *id004
   always:
-    - name: Disable feature bgp
+    - name: Disable 'feature bgp'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: bgp

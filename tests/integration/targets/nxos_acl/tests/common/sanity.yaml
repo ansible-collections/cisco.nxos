@@ -141,7 +141,7 @@
 
 - ansible.builtin.assert: *id004
 
-- name: Change ace 30 options
+- name: Change ACE 30 options
   register: result
   cisco.nxos.nxos_acl: &id008
     name: TEST_ACL
@@ -183,7 +183,7 @@
 
 - ansible.builtin.assert: *id004
 
-- name: Change ace 40
+- name: Change ACE 40
   register: result
   cisco.nxos.nxos_acl: &id010
     name: TEST_ACL
@@ -203,7 +203,7 @@
 
 - ansible.builtin.assert: *id004
 
-- name: Remove ace 30
+- name: Remove ACE 30
   register: result
   cisco.nxos.nxos_acl: &id011
     name: TEST_ACL
@@ -218,7 +218,7 @@
 
 - ansible.builtin.assert: *id004
 
-- name: Remove acl
+- name: Remove ACL
   register: result
   cisco.nxos.nxos_acl: *id012
 

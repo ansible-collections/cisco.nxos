@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Override all bgp af configuration with provided configuration
+    - name: Override all BGP AF configuration with provided configuration
       cisco.nxos.nxos_bgp_address_family: &overridden
         config:
           as_number: 65536
@@ -43,7 +43,7 @@
           - "{{ overridden['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length == 0 }}"
           - overridden['after']['as_number'] == result['after']['as_number']
 
-    - name: Replace device configurations of listed ospf processes with provided configurarions (idempotent)
+    - name: Replace device configurations of listed OSPF processes with provided configurarions (idempotent)
       register: result
       cisco.nxos.nxos_bgp_address_family: *overridden
 

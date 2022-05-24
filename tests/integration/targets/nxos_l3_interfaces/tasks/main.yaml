@@ -4,11 +4,11 @@
     rsvd_intf: "{{ rsvd_intf|default('mgmt0') }}"
 
 - block:
-    - name: Include the cli tasks
+    - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
-    - name: Include the nx-api tasks
+    - name: Include the NX-API tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
