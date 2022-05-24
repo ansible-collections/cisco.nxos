@@ -16,7 +16,7 @@
   register: result
   cisco.nxos.nxos_logging: &id001
     dest: console
-    dest_level: 00
+    dest_level: 0
     state: present
 
 - ansible.builtin.assert:

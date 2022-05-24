@@ -6,14 +6,14 @@
   register: result
   ansible.netcommon.net_logging:
     dest: console
-    dest_level: 00
+    dest_level: 0
     state: absent
 
 - name: Set up console logging using platform agnostic module
   register: result
   ansible.netcommon.net_logging:
     dest: console
-    dest_level: 00
+    dest_level: 0
     state: present
 
 - ansible.builtin.assert:
@@ -25,7 +25,7 @@
   register: result
   ansible.netcommon.net_logging:
     dest: console
-    dest_level: 00
+    dest_level: 0
     state: absent
 
 - ansible.builtin.debug:
