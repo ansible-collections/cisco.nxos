@@ -8,7 +8,7 @@
   when: platform is not match("N35")
 
 - block:
-    - name: Configure igmp with non-default values
+    - name: Configure IGMP with non-default values
       register: result
       cisco.nxos.nxos_igmp: &id001
         flush_routes: true
@@ -20,7 +20,7 @@
         that:
           - result.changed == true
 
-    - name: Check idempotence - configure igmp interface with non-default values
+    - name: Check idempotence - configure IGMP interface with non-default values
       register: result
       cisco.nxos.nxos_igmp: *id001
 
@@ -28,7 +28,7 @@
         that:
           - result.changed == false
 
-    - name: Configure igmp defaults
+    - name: Configure IGMP defaults
       register: result
       cisco.nxos.nxos_igmp: &id003
         flush_routes: false
@@ -38,30 +38,30 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Check idempotence - configure igmp with defaults
+    - name: Check idempotence - configure IGMP with defaults
       register: result
       cisco.nxos.nxos_igmp: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure igmp non-defaults again
+    - name: Configure IGMP non-defaults again
       register: result
       cisco.nxos.nxos_igmp: *id001
 
-    - name: Configure igmp state as values
+    - name: Configure IGMP state as values
       register: result
       cisco.nxos.nxos_igmp: &id005
         state: default
 
     - ansible.builtin.assert: *id002
 
-    - name: Check idempotence - configure igmp with state default
+    - name: Check idempotence - configure IGMP with state default
       register: result
       cisco.nxos.nxos_igmp: *id005
 
     - ansible.builtin.assert: *id004
   always:
-    - name: Configure igmp with default values
+    - name: Configure IGMP with default values
       register: result
       ignore_errors: true
       cisco.nxos.nxos_igmp: *id005

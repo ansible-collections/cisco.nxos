@@ -6,7 +6,7 @@
   ansible.builtin.set_fact:
     testint: "{{ nxos_int1 }}"
 
-- name: "Setup: enable feature interface-vlan"
+- name: "Setup: enable 'feature interface-vlan'"
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: interface-vlan
@@ -18,7 +18,7 @@
     lines:
       - default interface {{ testint }}
 
-- name: "Setup: remove possibly existing vlan interfaces"
+- name: "Setup: remove possibly existing VLAN interfaces"
   ignore_errors: true
   cisco.nxos.nxos_config: &id009
     lines:
@@ -66,7 +66,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Create vlan interfaces
+    - name: Create VLAN interfaces
       with_items: &id005
         - os_svi_int: vlan2
           os_svi_desc: SVI_VLAN2
@@ -86,7 +86,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Configure required svi
+    - name: Configure required SVI
       register: result
       cisco.nxos.nxos_l3_interface: &id007
         aggregate:
@@ -104,14 +104,14 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Create vlan interfaces idempotence check
+    - name: Create VLAN interfaces idempotence check
       with_items: *id005
       register: result
       cisco.nxos.nxos_interface: *id006
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure required svi idempotence check
+    - name: Configure required SVI idempotence check
       register: result
       cisco.nxos.nxos_l3_interface: *id007
 
@@ -121,10 +121,10 @@
       ignore_errors: true
       cisco.nxos.nxos_config: *id008
 
-    - name: Remove vlan interfaces
+    - name: Remove VLAN interfaces
       cisco.nxos.nxos_config: *id009
 
-    - name: "Setup: disable feature interface-vlan"
+    - name: "Setup: disable 'feature interface-vlan'"
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: interface-vlan

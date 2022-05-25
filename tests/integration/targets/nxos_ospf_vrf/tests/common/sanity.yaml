@@ -25,7 +25,7 @@
     state: enabled
 
 - block:
-    - name: Configure ospf vrf
+    - name: Configure OSPF VRF
       register: result
       cisco.nxos.nxos_ospf_vrf: &id001
         ospf: 1
@@ -53,7 +53,7 @@
         that:
           - result.changed == false
 
-    - name: Configure ospf vrf
+    - name: Configure OSPF VRF
       register: result
       cisco.nxos.nxos_ospf_vrf: &id003
         ospf: 2
@@ -76,7 +76,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure ospf vrf
+    - name: Configure OSPF VRF
       register: result
       cisco.nxos.nxos_ospf_vrf: &id005
         ospf: 2
@@ -96,7 +96,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Unconfigure ospf vrf
+    - name: Unconfigure OSPF VRF
       register: result
       cisco.nxos.nxos_ospf_vrf: &id006
         ospf: 2
@@ -112,7 +112,7 @@
     - ansible.builtin.assert: *id004
       when: def_met_default is defined
 
-    - name: Unconfigure ospf vrf
+    - name: Unconfigure OSPF VRF
       register: result
       cisco.nxos.nxos_ospf_vrf: &id007
         ospf: 1

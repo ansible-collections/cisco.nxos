@@ -6,7 +6,7 @@
     lines:
       - feature privilege
 
-- name: Enable feature nxapi
+- name: Enable feature NX-API
   connection: ansible.netcommon.network_cli
   cisco.nxos.nxos_nxapi:
     state: present

@@ -8,7 +8,7 @@
     state: absent
 
 - block:
-    - name: Configure snmp location
+    - name: Configure SNMP location
       register: result
       cisco.nxos.nxos_snmp_location: &id001
         location: Testing
@@ -26,7 +26,7 @@
         that:
           - result.changed == false
 
-    - name: Change snmp location
+    - name: Change SNMP location
       register: result
       cisco.nxos.nxos_snmp_location: &id003
         location: Test
@@ -40,7 +40,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Remove snmp location
+    - name: Remove SNMP location
       register: result
       cisco.nxos.nxos_snmp_location: *id005
 

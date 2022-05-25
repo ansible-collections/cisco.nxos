@@ -7,13 +7,13 @@
     advertise_l2vpn_evpn: true
   when: platform is search('N9K')
 
-- name: Enable feature bgp
+- name: Enable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
-- name: Enable feature nv overlay
+- name: Enable 'feature nv overlay'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: nv overlay
@@ -26,13 +26,13 @@
     state: absent
 
 - block:
-    - name: Enable nv overlay evpn
+    - name: Enable NV overlay EVPN
       when: platform is search('N9K')
       cisco.nxos.nxos_config:
         lines:
           - nv overlay evpn
 
-    - name: Configure bgp_af 1
+    - name: Configure BGP_AF 1
       register: result
       cisco.nxos.nxos_bgp_af: &id001
         asn: 65535
@@ -54,7 +54,7 @@
         that:
           - result.changed == false
 
-    - name: Remove bgp
+    - name: Remove BGP
       register: result
       cisco.nxos.nxos_bgp_af:
         asn: 65535
@@ -65,7 +65,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Configure bgp_af 2
+    - name: Configure BGP_AF 2
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id003
@@ -91,7 +91,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure bgp_af def2
+    - name: Configure BGP_AF def2
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id005
@@ -117,7 +117,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Remove bgp
+    - name: Remove BGP
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id008
@@ -129,7 +129,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Configure bgp_af 3
+    - name: Configure BGP_AF 3
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id006
@@ -159,7 +159,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure bgp_af def3
+    - name: Configure BGP_AF def3
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id007
@@ -189,14 +189,14 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Remove bgp
+    - name: Remove BGP
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id008
 
     - ansible.builtin.assert: *id002
 
-    - name: Configure bgp_af 4
+    - name: Configure BGP_AF 4
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id009
@@ -241,7 +241,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure bgp_af 5
+    - name: Configure BGP_AF 5
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id010
@@ -273,7 +273,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure bgp_af def5
+    - name: Configure BGP_AF def5
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: &id011
@@ -300,7 +300,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Remove bgp
+    - name: Remove BGP
       with_items: "{{ vrfs }}"
       register: result
       cisco.nxos.nxos_bgp_af: *id008
@@ -314,16 +314,16 @@
 
     - ansible.builtin.assert: *id004
   rescue:
-    - name: Cleanup bgp
+    - name: Cleanup BGP
       ignore_errors: true
       cisco.nxos.nxos_bgp: *id012
   always:
-    - name: Disable feature bgp
+    - name: Disable 'feature bgp'
       cisco.nxos.nxos_feature:
         feature: bgp
         state: disabled
 
-    - name: Disable feature nv overlay
+    - name: Disable 'feature nv overlay'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: nv overlay
@@ -332,7 +332,7 @@
     - ansible.builtin.pause:
         seconds: 5
 
-    - name: Remove nv overlay evpn
+    - name: Remove NV overlay EVPN
       when: platform is search('N9K')
       cisco.nxos.nxos_config:
         lines:

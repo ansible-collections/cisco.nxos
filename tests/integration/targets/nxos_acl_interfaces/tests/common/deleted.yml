@@ -31,7 +31,7 @@
         config:
         state: deleted
 
-    - name: Gather acl interfaces facts
+    - name: Gather ACL interfaces facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
           - "!all"

@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START common/lessthan.yaml on connection={{ ansible_connection }}
 
-- name: Test lt operator
+- name: Test 'lt' operator
   register: result
   cisco.nxos.nxos_command:
     commands:

@@ -6,7 +6,7 @@
     msg: Using vsans {{ vsan1 }}, {{ vsan2 }} for running this sanity test, please make sure these are not used in the setup, these will be deleted after the tests
 
 - always:
-    - name: Remove vsan config
+    - name: Remove VSAN configuration
       cisco.nxos.nxos_vsan:
         vsan:
           - id: "{{ vsan1 | int }}"
@@ -15,7 +15,7 @@
           - id: "{{ vsan2 | int }}"
             remove: true
   block:
-    - name: Setup - remove vsan if configured
+    - name: Setup - remove VSAN if configured
       ignore_errors: true
       cisco.nxos.nxos_vsan:
         vsan:
@@ -25,7 +25,7 @@
           - id: "{{ vsan2 | int }}"
             remove: true
 
-    - name: Configure vsan
+    - name: Configure VSAN
       cisco.nxos.nxos_vsan:
         vsan:
           - id: "{{ vsan1 | int }}"

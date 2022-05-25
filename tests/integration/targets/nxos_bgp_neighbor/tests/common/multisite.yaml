@@ -26,7 +26,7 @@
     feature: "{{ item }}"
     state: enabled
 
-- name: Enable nv overlay evpn - multisite
+- name: Enable NV overlay EVPN - multisite
   when: platform is search('N9K')
   ignore_errors: true
   cisco.nxos.nxos_config:
@@ -41,7 +41,7 @@
       - evpn multisite border-gateway 10
 
 - block:
-    - name: Configure bgp neighbor1 - multisite
+    - name: Configure BGP neighbor1 - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor: &id001
         asn: 65535
@@ -64,7 +64,7 @@
         that:
           - result.changed == false
 
-    - name: Configure bgp neighbor2 - multisite
+    - name: Configure BGP neighbor2 - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor: &id003
         asn: 65535
@@ -79,7 +79,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Configure bgp neighbor3 - multisite
+    - name: Configure BGP neighbor3 - multisite
       register: result
       cisco.nxos.nxos_bgp_neighbor: &id005
         asn: 65535
@@ -113,7 +113,7 @@
 - ansible.builtin.pause:
     seconds: 5
 
-- name: Remove nv overlay evpn - multisite
+- name: Remove NV overlay EVPN - multisite
   when: platform is search('N9K')
   cisco.nxos.nxos_config:
     lines:

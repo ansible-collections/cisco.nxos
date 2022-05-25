@@ -20,7 +20,7 @@
         lines:
           - "feature lacp"
 
-    - name: Setup3 - l2 for mode command
+    - name: Setup3 - layer 2 for mode command
       when: mode is defined
       cisco.nxos.nxos_config:
         lines:

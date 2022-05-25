@@ -48,7 +48,7 @@
           - "{{ replaced['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length == 0 }}"
           - replaced['after']['as_number'] == result['after']['as_number']
 
-    - name: Replace device configurations of listed ospf processes with provided configurarions (idempotent)
+    - name: Replace device configurations of listed OSPF processes with provided configurarions (idempotent)
       register: result
       cisco.nxos.nxos_bgp_address_family: *replaced
 

@@ -18,7 +18,7 @@
     commands: show interface mgmt 0 | json
   register: result
 
-- name: Store mgmt interface ip address
+- name: Store mgmt interface IP address
   ansible.builtin.set_fact:
     mgmt0_ip: "{{ result['stdout'][0]['TABLE_interface']['ROW_interface']['eth_ip_addr'] }}"
 
@@ -34,7 +34,7 @@
     configured_password: "{{ temp_passwd }}"
   no_log: true
 
-- name: Setup - turn on feature scp-server
+- name: Setup - turn on 'feature scp-server'
   cisco.nxos.nxos_feature:
     feature: scp-server
     state: enabled
@@ -67,12 +67,12 @@
     ansible_connection: ansible.netcommon.network_cli
 
 - block:
-    - name: Include the cli tasks
+    - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags: cli
       when: run_test
 
-    - name: Include the nx-api tasks
+    - name: Include the NX-API tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags: nxapi
       when: run_test
@@ -82,7 +82,7 @@
         name: temp_user
         state: absent
 
-    - name: Turn off feature scp-server
+    - name: Turn off 'feature scp-server'
       cisco.nxos.nxos_feature:
         feature: scp-server
         state: disabled

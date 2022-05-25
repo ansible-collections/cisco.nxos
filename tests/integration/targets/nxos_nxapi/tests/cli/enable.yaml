@@ -2,27 +2,27 @@
 - ansible.builtin.debug:
     msg: START cli/enable.yaml
 
-- name: Setup - put nxapi in stopped state
+- name: Setup - put NX-API in stopped state
   register: result
   cisco.nxos.nxos_nxapi:
     state: absent
 
-- name: Enable nxapi
+- name: Enable NX-API
   register: result
   cisco.nxos.nxos_nxapi:
     state: present
 
-- name: Check nxapi state
+- name: Check NX-API state
   register: result
   cisco.nxos.nxos_command:
     commands:
       - show feature | grep nxapi
 
-- name: Assert nxapi is enabled
+- name: Assert NX-API is enabled
   ansible.builtin.assert:
     that: result.stdout[0]  is search('enabled')
 
-- name: Enable nxapi again
+- name: Enable NX-API again
   register: result
   cisco.nxos.nxos_nxapi:
 

@@ -8,7 +8,7 @@
     test_int2: "{{ nxos_int2 }}"
     test_int3: "{{ nxos_int3 }}"
 
-- name: Enable feature lacp
+- name: Enable 'feature lacp'
   cisco.nxos.nxos_feature:
     feature: lacp
 
@@ -99,7 +99,7 @@
       ignore_errors: true
       cisco.nxos.nxos_lag_interfaces: *id003
 
-    - name: Disable feature lacp
+    - name: Disable 'feature lacp'
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled

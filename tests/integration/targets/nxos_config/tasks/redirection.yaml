@@ -1,5 +1,5 @@
 ---
-- name: Collect all redirection cli test cases
+- name: Collect all redirection CLI test cases
   ansible.builtin.find:
     paths: "{{ role_path }}/tests/redirection/cli"
     patterns: "{{ testcase }}.yaml"

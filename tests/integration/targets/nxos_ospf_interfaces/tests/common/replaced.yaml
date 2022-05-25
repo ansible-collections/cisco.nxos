@@ -9,7 +9,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replace ospf configurations of listed interfaces with provided configurations
+    - name: Replace OSPF configurations of listed interfaces with provided configurations
       cisco.nxos.nxos_ospf_interfaces: &id001
         config:
           - name: "{{ nxos_int1 }}"
@@ -45,7 +45,7 @@
           - result['after'][1]  == replaced['after'][1]
           - result['after'][2]  == replaced['after'][2]
 
-    - name: Replace ospf configurations of listed interfaces with provided configurations (idempotent)
+    - name: Replace OSPF configurations of listed interfaces with provided configurations (idempotent)
       register: result
       cisco.nxos.nxos_ospf_interfaces: *id001
 

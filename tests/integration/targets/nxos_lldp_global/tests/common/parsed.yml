@@ -3,7 +3,7 @@
     msg: START nxos_lldp_global parsed integration tests on connection={{ ansible_connection }}
 
 - block:
-    - name: Use parsed state to convert externally supplied config to structured format
+    - name: Use parsed state to convert externally supplied configuration to structured format
       register: result
       cisco.nxos.nxos_lldp_global:
         running_config: |

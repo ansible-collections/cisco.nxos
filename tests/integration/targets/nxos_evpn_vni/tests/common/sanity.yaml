@@ -14,12 +14,12 @@
     match: none
 
 - block:
-    - name: Enable feature bgp
+    - name: Enable 'feature bgp'
       cisco.nxos.nxos_feature:
         feature: bgp
         state: enabled
 
-    - name: Enable nv overlay evpn
+    - name: Enable NV overlay EVPN
       cisco.nxos.nxos_config:
         lines: nv overlay evpn
         match: none
@@ -102,7 +102,7 @@
           ignore_errors: true
           cisco.nxos.nxos_config: *id007
 
-        - name: Disable feature bgp
+        - name: Disable 'feature bgp'
           ignore_errors: true
           cisco.nxos.nxos_feature:
             feature: bgp

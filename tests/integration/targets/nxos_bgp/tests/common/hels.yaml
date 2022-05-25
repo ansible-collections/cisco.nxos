@@ -15,14 +15,14 @@
     test_helsinki: true
   when: imagetag is not search("D1")
 
-- name: Disable feature bgp
+- name: Disable 'feature bgp'
   ignore_errors: true
   when: test_helsinki
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
-- name: Enable feature bgp
+- name: Enable 'feature bgp'
   ignore_errors: true
   when: test_helsinki
   cisco.nxos.nxos_feature:
@@ -90,7 +90,7 @@
     - ansible.builtin.debug:
         msg: Tests can fail on helsinki images
   always:
-    - name: Disable feature bgp
+    - name: Disable 'feature bgp'
       ignore_errors: true
       when: test_helsinki
       cisco.nxos.nxos_feature:

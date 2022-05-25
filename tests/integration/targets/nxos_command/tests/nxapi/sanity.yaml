@@ -2,13 +2,13 @@
 - ansible.builtin.debug:
     msg: START nxapi/sanity.yaml on connection={{ ansible_connection }}
 
-- name: Disable feature bgp
+- name: Disable 'feature bgp'
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
 - block:
-    - name: Run show running-config bgp - should fail
+    - name: Run show running-config BGP - should fail
       ignore_errors: true
       register: result
       cisco.nxos.nxos_command:
@@ -19,12 +19,12 @@
         that:
           - result.failed == true
 
-    - name: Enable feature bgp
+    - name: Enable 'feature bgp'
       cisco.nxos.nxos_feature:
         feature: bgp
         state: enabled
 
-    - name: Configure bgp defaults
+    - name: Configure BGP defaults
       register: result
       cisco.nxos.nxos_bgp:
         asn: 65535
@@ -35,7 +35,7 @@
         that:
           - result.changed == true
 
-    - name: Run show running-config bgp - should pass
+    - name: Run show running-config BGP - should pass
       register: result
       cisco.nxos.nxos_command:
         commands:
@@ -58,7 +58,7 @@
     - ansible.builtin.debug:
         msg: nxos_command sanity test failure detected
   always:
-    - name: Disable feature bgp
+    - name: Disable 'feature bgp'
       cisco.nxos.nxos_feature:
         feature: bgp
         state: disabled

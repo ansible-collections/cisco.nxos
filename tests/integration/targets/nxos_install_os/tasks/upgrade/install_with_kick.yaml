@@ -1,5 +1,5 @@
 ---
-- name: Install os image {{ si }}
+- name: Install OS image {{ si }}
   check_mode: "{{ checkmode }}"
   register: result
   when: not force
@@ -8,7 +8,7 @@
     kickstart_image_file: "{{ ki }}"
     issu: "{{ issu }}"
 
-- name: Set os image {{ si }} boot pointers
+- name: Set OS image {{ si }} boot pointers
   when: force
   cisco.nxos.nxos_config:
     lines:
