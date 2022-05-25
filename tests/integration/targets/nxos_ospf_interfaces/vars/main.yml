@@ -44,12 +44,12 @@ merged:
       address_family:
         - afi: ipv4
           authentication:
-            enable: True
+            enable: true
             key_chain: test-1
           cost: 100
         - afi: ipv6
           network: broadcast
-          shutdown: True
+          shutdown: true
     - name: "{{ nxos_int3 }}"
       address_family:
         - afi: ipv4
@@ -74,19 +74,19 @@ replaced:
             - process_id: "100"
               area:
                 area_id: 1.1.1.1
-                secondaries: False
+                secondaries: false
           multi_areas:
             - 11.11.11.12
     - name: "{{ nxos_int2 }}"
       address_family:
         - afi: ipv4
           authentication:
-            enable: True
+            enable: true
             key_chain: test-1
           cost: 100
         - afi: ipv6
           network: broadcast
-          shutdown: True
+          shutdown: true
     - name: "{{ nxos_int3 }}"
 overridden:
   commands:
@@ -113,7 +113,7 @@ overridden:
             - process_id: "100"
               area:
                 area_id: 1.1.1.1
-                secondaries: False
+                secondaries: false
           multi_areas:
             - 11.11.11.12
     - name: "{{ nxos_int2 }}"

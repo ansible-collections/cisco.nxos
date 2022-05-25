@@ -1,3 +1,4 @@
+---
 gathered:
   - name: "{{ nxos_int1 }}"
     port_priority: 5
