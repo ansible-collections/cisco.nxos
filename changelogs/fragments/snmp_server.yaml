@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - "`nxos_snmp_server` - Add support for sha-256 based based user authentication."

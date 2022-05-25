@@ -3290,6 +3290,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>md5</li>
                                     <li>sha</li>
+                                    <li>sha-256</li>
                         </ul>
                 </td>
                 <td>
