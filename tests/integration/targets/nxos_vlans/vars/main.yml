@@ -1,23 +1,24 @@
+---
 gathered:
   - vlan_id: 1
-    enabled: True
+    enabled: true
     mode: "ce"
     state: active
     name: default
 
   - vlan_id: 5
-    enabled: True
+    enabled: true
     mode: "ce"
     name: "vlan5"
     state: suspend
 
   - vlan_id: 6
-    enabled: True
+    enabled: true
     mode: "ce"
     state: active
 
   - vlan_id: 7
-    enabled: False
+    enabled: false
     mode: "ce"
     name: "vlan7"
     state: active
@@ -25,24 +26,24 @@ gathered:
 
 parsed:
   - vlan_id: 1
-    enabled: True
+    enabled: true
     mode: "ce"
     state: active
     name: default
 
   - vlan_id: 5
-    enabled: True
+    enabled: true
     mode: "ce"
     name: "vlan5"
     state: suspend
 
   - vlan_id: 6
-    enabled: True
+    enabled: true
     mode: "ce"
     state: active
 
   - vlan_id: 7
-    enabled: True
+    enabled: true
     mode: "ce"
     name: "vlan7"
     state: active

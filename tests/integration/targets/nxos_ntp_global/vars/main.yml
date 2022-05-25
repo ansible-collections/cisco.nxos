@@ -17,8 +17,8 @@ merged:
         - access_list: PeerAcl1
       serve:
         - access_list: ServeAcl1
-    authenticate: True
-    logging: True
+    authenticate: true
+    logging: true
     master:
       stratum: 2
     peers:
@@ -29,7 +29,7 @@ merged:
         vrf: default
       - peer: 192.0.2.2
         key_id: 2
-        prefer: True
+        prefer: true
         vrf: siteA
     servers:
       - server: 198.51.100.1
@@ -55,7 +55,7 @@ replaced:
         - access_list: PeerAcl2
       serve:
         - access_list: ServeAcl2
-    logging: True
+    logging: true
     master:
       stratum: 2
     peers:
@@ -66,7 +66,7 @@ replaced:
         vrf: default
       - peer: 192.0.2.5
         key_id: 2
-        prefer: True
+        prefer: true
         vrf: siteA
     servers:
       - server: 198.51.100.1

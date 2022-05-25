@@ -65,7 +65,7 @@
           data_source: NX-API
           path:
             name: '"show bgp l2vpn evpn summary"'
-            depth: 00
+            depth: 0
             query_condition: foo
             filter_condition: foo
 
@@ -81,7 +81,7 @@
           data_source: DME
           path:
             name: sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]
-            depth: 00
+            depth: 0
             query_condition: foo
             filter_condition: foo
 
@@ -89,7 +89,7 @@
           data_source: DME
           path:
             name: sys/ospf
-            depth: 00
+            depth: 0
             query_condition: foo
             filter_condition: or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
       subscriptions:

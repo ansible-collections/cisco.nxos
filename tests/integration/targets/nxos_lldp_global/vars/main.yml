@@ -1,9 +1,10 @@
+---
 gathered:
   reinit: 5
   timer: 35
   tlv_select:
     system:
-      name: False
+      name: false
   holdtime: 129
 
 rendered:

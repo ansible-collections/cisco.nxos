@@ -1,3 +1,4 @@
+---
 gathered:
   - name: port-channel10
     members:
