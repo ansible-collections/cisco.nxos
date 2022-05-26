@@ -19,7 +19,8 @@
     name: temp_user
     configured_password: "{{ temp_passwd }}"
 
-- block:
+- name: Run the CLI and NX-API tests
+  block:
     - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:

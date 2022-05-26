@@ -66,7 +66,8 @@
   vars:
     ansible_connection: ansible.netcommon.network_cli
 
-- block:
+- name: Run the CLI and NX-API tests
+  block:
     - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags: cli
@@ -88,7 +89,7 @@
         state: disabled
 
     - name: Setup - remove existing file
-      ignore_errors: true
+      ignore_errors: true # noqa ignore-errors
       cisco.nxos.nxos_command:
         commands:
           - terminal dont-ask

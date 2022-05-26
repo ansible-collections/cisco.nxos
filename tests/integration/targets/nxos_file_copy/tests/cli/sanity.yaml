@@ -147,7 +147,10 @@
 
     - ansible.builtin.assert: *id006
 
-    - name: Initiate copy with sftp from nxos device to copy /bootflash/{{ test_destination_file }} to bootflash:dir2/dir2/dir3/{{ test_destination_file }}_another_copy
+    - name: >-
+        Initiate copy with sftp from nxos device to copy
+        /bootflash/{{ test_destination_file }} to
+        bootflash:dir2/dir2/dir3/{{ test_destination_file }}_another_copy
       register: result
       cisco.nxos.nxos_file_copy:
         file_pull: true
