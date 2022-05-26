@@ -206,7 +206,7 @@ def get_aaa_host_info(module, server_type, address):
                 aaa_host_info["host_timeout"] = match.group(4)
             elif "tacacs" in body:
                 pattern = (
-                    r"\S+ host \S+(?:\s+key 7\s+(\S+))?(?:\s+port (\d+))?" r"(?:\s+timeout (\d+))?"
+                    r"\S+ host \S+(?:\s+key 7\s+(\S+))?(?:\s+port (\d+))?(?:\s+timeout (\d+))?"
                 )
                 match = re.search(pattern, body)
                 aaa_host_info["key"] = match.group(1)

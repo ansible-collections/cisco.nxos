@@ -167,7 +167,7 @@ def get_ntp_auth_key(key_id, module):
     authentication_key = {}
     command = "show run | inc ntp.authentication-key.{0}".format(key_id)
     auth_regex = (
-        r".*ntp\sauthentication-key\s(?P<key_id>\d+)\s" r"md5\s(?P<md5string>\S+)\s(?P<atype>\S+).*"
+        r".*ntp\sauthentication-key\s(?P<key_id>\d+)\smd5\s(?P<md5string>\S+)\s(?P<atype>\S+).*"
     )
 
     body = execute_show_command(command, module)[0]
