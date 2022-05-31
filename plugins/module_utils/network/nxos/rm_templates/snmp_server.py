@@ -66,6 +66,8 @@ def _tmplt_users_auth(data):
                 cmd += " {0}".format(priv["privacy_password"])
         if auth.get("localized_key", False):
             cmd += " localizedkey"
+        elif auth.get("localizedv2_key", False):
+            cmd += " localizedV2key"
         if "engine_id" in auth:
             cmd += " engineID {0}".format(auth["engine_id"])
 
@@ -1413,6 +1415,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sauth\s(?P<algorithm>md5|sha|sha-256)\s(?P<password>\S+))?
                 (\spriv(\s(?P<aes_128>aes-128))?\s(?P<privacy_password>\S+))?
                 (\s(?P<localized_key>localizedkey))?
+                (\s(?P<localizedv2_key>localizedV2key))?
                 (\sengineID\s(?P<engine_id>\S+))?
                 $""", re.VERBOSE),
             "setval": _tmplt_users_auth,
@@ -1427,6 +1430,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                                 "password": "'{{ password }}'",
                                 "engine_id": "'{{ engine_id }}'",
                                 "localized_key": "{{ not not localized_key }}",
+                                "localizedv2_key": "{{ not not localizedv2_key }}",
                                 "priv": {
                                     "privacy_password": "'{{ privacy_password }}'",
                                     "aes_128": "{{ not not aes_128 }}",
