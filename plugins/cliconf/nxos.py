@@ -18,6 +18,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -54,9 +55,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base import (
     CliconfBase,
     enable_mode,
@@ -88,42 +87,28 @@ class Cliconf(CliconfBase):
             reply = self.get("show version")
             platform_reply = self.get("show inventory")
 
-            match_sys_ver = re.search(
-                r"\s+system:\s+version\s*(\S+)", reply, re.M
-            )
+            match_sys_ver = re.search(r"\s+system:\s+version\s*(\S+)", reply, re.M)
             if match_sys_ver:
                 device_info["network_os_version"] = match_sys_ver.group(1)
             else:
-                match_kick_ver = re.search(
-                    r"\s+kickstart:\s+version\s*(\S+)", reply, re.M
-                )
+                match_kick_ver = re.search(r"\s+kickstart:\s+version\s*(\S+)", reply, re.M)
                 if match_kick_ver:
                     device_info["network_os_version"] = match_kick_ver.group(1)
 
             if "network_os_version" not in device_info:
-                match_sys_ver = re.search(
-                    r"\s+NXOS:\s+version\s*(\S+)", reply, re.M
-                )
+                match_sys_ver = re.search(r"\s+NXOS:\s+version\s*(\S+)", reply, re.M)
                 if match_sys_ver:
                     device_info["network_os_version"] = match_sys_ver.group(1)
 
-            match_chassis_id = re.search(
-                r"Hardware\n\s+cisco(.+)$", reply, re.M
-            )
+            match_chassis_id = re.search(r"Hardware\n\s+cisco(.+)$", reply, re.M)
             if match_chassis_id:
-                device_info["network_os_model"] = match_chassis_id.group(
-                    1
-                ).strip()
+                device_info["network_os_model"] = match_chassis_id.group(1).strip()
 
-            match_host_name = re.search(
-                r"\s+Device name:\s*(\S+)", reply, re.M
-            )
+            match_host_name = re.search(r"\s+Device name:\s*(\S+)", reply, re.M)
             if match_host_name:
                 device_info["network_os_hostname"] = match_host_name.group(1)
 
-            match_isan_file_name = re.search(
-                r"\s+system image file is:\s*(\S+)", reply, re.M
-            )
+            match_isan_file_name = re.search(r"\s+system image file is:\s*(\S+)", reply, re.M)
             if match_isan_file_name:
                 device_info["network_os_image"] = match_isan_file_name.group(1)
             else:
@@ -131,18 +116,12 @@ class Cliconf(CliconfBase):
                     r"\s+kickstart image file is:\s*(\S+)", reply, re.M
                 )
                 if match_kick_file_name:
-                    device_info[
-                        "network_os_image"
-                    ] = match_kick_file_name.group(1)
+                    device_info["network_os_image"] = match_kick_file_name.group(1)
 
             if "network_os_image" not in device_info:
-                match_isan_file_name = re.search(
-                    r"\s+NXOS image file is:\s*(\S+)", reply, re.M
-                )
+                match_isan_file_name = re.search(r"\s+NXOS image file is:\s*(\S+)", reply, re.M)
                 if match_isan_file_name:
-                    device_info[
-                        "network_os_image"
-                    ] = match_isan_file_name.group(1)
+                    device_info["network_os_image"] = match_isan_file_name.group(1)
 
             match_os_platform = re.search(
                 r'NAME: "Chassis",\s*DESCR:.*\n' r"PID:\s*(\S+)",
@@ -170,9 +149,7 @@ class Cliconf(CliconfBase):
         option_values = self.get_option_values()
 
         if candidate is None and device_operations["supports_generate_diff"]:
-            raise ValueError(
-                "candidate configuration is required to generate diff"
-            )
+            raise ValueError("candidate configuration is required to generate diff")
 
         if diff_match not in option_values["diff_match"]:
             raise ValueError(
@@ -192,9 +169,7 @@ class Cliconf(CliconfBase):
 
         if running and diff_match != "none" and diff_replace != "config":
             # running configuration
-            running_obj = NetworkConfig(
-                indent=2, contents=running, ignore_lines=diff_ignore_lines
-            )
+            running_obj = NetworkConfig(indent=2, contents=running, ignore_lines=diff_ignore_lines)
             configdiffobjs = candidate_obj.difference(
                 running_obj, path=path, match=diff_match, replace=diff_replace
             )
@@ -202,9 +177,7 @@ class Cliconf(CliconfBase):
         else:
             configdiffobjs = candidate_obj.items
 
-        diff["config_diff"] = (
-            dumps(configdiffobjs, "commands") if configdiffobjs else ""
-        )
+        diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
         return diff
 
     def get_config(self, source="running", format="text", flags=None):
@@ -217,9 +190,7 @@ class Cliconf(CliconfBase):
 
         lookup = {"running": "running-config", "startup": "startup-config"}
         if source not in lookup:
-            raise ValueError(
-                "fetching configuration from %s is not supported" % source
-            )
+            raise ValueError("fetching configuration from %s is not supported" % source)
 
         cmd = "show {0} ".format(lookup[source])
         if format and format != "text":
@@ -231,14 +202,10 @@ class Cliconf(CliconfBase):
 
         return self.send_command(cmd)
 
-    def edit_config(
-        self, candidate=None, commit=True, replace=None, comment=None
-    ):
+    def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
         resp = {}
         operations = self.get_device_operations()
-        self.check_edit_config_capability(
-            operations, candidate, commit, replace, comment
-        )
+        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
         results = []
         requests = []
 
@@ -300,9 +267,7 @@ class Cliconf(CliconfBase):
 
             output = cmd.pop("output", None)
             if output:
-                cmd["command"] = self._get_command_with_output(
-                    cmd["command"], output
-                )
+                cmd["command"] = self._get_command_with_output(cmd["command"], output)
 
             try:
                 out = self.send_command(**cmd)
@@ -316,8 +281,7 @@ class Cliconf(CliconfBase):
                     out = to_text(out, errors="surrogate_or_strict").strip()
                 except UnicodeError:
                     raise ConnectionError(
-                        message="Failed to decode output from %s: %s"
-                        % (cmd, to_text(out))
+                        message="Failed to decode output from %s: %s" % (cmd, to_text(out))
                     )
 
                 try:
@@ -370,15 +334,11 @@ class Cliconf(CliconfBase):
             re.compile(rb"(?i)Could not resolve hostname"),
             re.compile(rb"(?i)Too many authentication failures"),
             re.compile(rb"Access Denied"),
-            re.compile(
-                rb"(?i)Copying to\/from this server name is not permitted"
-            ),
+            re.compile(rb"(?i)Copying to\/from this server name is not permitted"),
         ]
 
         # set error regex for copy command
-        current_stderr_re = self._connection._get_terminal_std_re(
-            "terminal_stderr_re"
-        )
+        current_stderr_re = self._connection._get_terminal_std_re("terminal_stderr_re")
         current_stderr_re.extend(possible_errors_re)
 
         # do not change the ordering of this list
@@ -390,9 +350,7 @@ class Cliconf(CliconfBase):
 
         # set stdout regex for copy command to handle optional user prompts
         # based on different match conditions
-        current_stdout_re = self._connection._get_terminal_std_re(
-            "terminal_stdout_re"
-        )
+        current_stdout_re = self._connection._get_terminal_std_re("terminal_stdout_re")
         current_stdout_re.extend(possible_prompts_re)
 
         retry = 1
@@ -407,14 +365,10 @@ class Cliconf(CliconfBase):
                     output = self.send_command(command="y", strip_prompt=False)
 
                 if possible_prompts_re[1].search(to_bytes(output)):
-                    output = self.send_command(
-                        command="yes", strip_prompt=False
-                    )
+                    output = self.send_command(command="yes", strip_prompt=False)
 
                 if possible_prompts_re[2].search(to_bytes(output)):
-                    output = self.send_command(
-                        command=remotepassword, strip_prompt=False
-                    )
+                    output = self.send_command(command=remotepassword, strip_prompt=False)
                 if "Copy complete" in output:
                     file_pulled = True
             return file_pulled
@@ -440,12 +394,8 @@ class Cliconf(CliconfBase):
             # Match prompts ending in )# except those with (maint-mode)#
             config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
 
-            while config_prompt.match(
-                to_text(out, errors="surrogate_then_replace").strip()
-            ):
-                self._connection.queue_message(
-                    "vvvv", "wrong context, sending exit to device"
-                )
+            while config_prompt.match(to_text(out, errors="surrogate_then_replace").strip()):
+                self._connection.queue_message("vvvv", "wrong context, sending exit to device")
                 self._connection.send_command("exit")
                 out = self._connection.get_prompt()
 

@@ -19,21 +19,23 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
-from ansible_collections.cisco.nxos.plugins.modules import nxos_interfaces
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces import (
     Interfaces,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.interfaces.interfaces import (
     InterfacesFacts,
 )
+from ansible_collections.cisco.nxos.plugins.modules import nxos_interfaces
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -53,16 +55,12 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.edit_config"
@@ -133,9 +131,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             description test-loopback
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_INTF: intf
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
         playbook = dict(
@@ -293,9 +289,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             shutdown
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_INTF: intf
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
         playbook = dict(
@@ -437,9 +431,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             shutdown
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_INTF: intf
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
         playbook = dict(
@@ -502,9 +494,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             "no shutdown",
             "interface Ethernet1/4.101",
         ]
-        self.execute_module(
-            changed=True, commands=merged_legacy, device="legacy"
-        )
+        self.execute_module(changed=True, commands=merged_legacy, device="legacy")
 
         deleted = [
             "interface Ethernet1/2",
@@ -615,9 +605,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             shutdown
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_INTF: intf
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
         playbook = dict(
@@ -651,9 +639,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             no shutdown
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_INTF: intf
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
         playbook = dict()
@@ -693,9 +679,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           interface loopback1
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_INTF: intf
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
         playbook = dict()
@@ -736,9 +720,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             description sub-intf
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_RUN_INTF: intf
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
         playbook = dict(

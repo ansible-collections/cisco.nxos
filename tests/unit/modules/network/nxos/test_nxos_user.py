@@ -19,11 +19,14 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_user
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -71,9 +74,7 @@ class TestNxosUserModule(TestNxosModule):
                         {
                             "usr_name": "admin",
                             "expire_date": "this user account has no expiry date",
-                            "TABLE_role": {
-                                "ROW_role": {"role": "network-admin"}
-                            },
+                            "TABLE_role": {"ROW_role": {"role": "network-admin"}},
                         },
                         {
                             "usr_name": "ansible-test-1",
@@ -92,9 +93,7 @@ class TestNxosUserModule(TestNxosModule):
             "network_os_image": "bootflash:///m9100-s5ek9-mz.8.4.2b.bin",
             "network_os_platform": "DS-C9710",
         }
-        set_module_args(
-            dict(name="ansible-test-2", configured_password="ansible")
-        )
+        set_module_args(dict(name="ansible-test-2", configured_password="ansible"))
         self.execute_module(
             changed=True,
             commands=[

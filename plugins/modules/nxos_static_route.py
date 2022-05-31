@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -149,22 +150,22 @@ commands:
     sample: ["ip route 192.168.20.0/24 192.0.2.3 name testing 100"]
 """
 import re
+
 from copy import deepcopy
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-    run_commands,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
+    run_commands,
 )
 
 
@@ -178,9 +179,7 @@ def reconcile_candidate(module, candidate, prefix, want):
         flags = " | section '{0}' | include '^  ip route'".format(parents[0])
 
     # Find existing routes in this vrf/default
-    netcfg = CustomNetworkConfig(
-        indent=2, contents=get_config(module, flags=[flags])
-    )
+    netcfg = CustomNetworkConfig(indent=2, contents=get_config(module, flags=[flags]))
     routes = str(netcfg).split("\n")
     # strip whitespace from route strings
     routes = [i.strip() for i in routes]
@@ -223,9 +222,7 @@ def set_route_command(prefix, w, module):
             if get_configured_track(module, w["track"]):
                 route_cmd += " track {0}".format(w["track"])
             else:
-                module.fail_json(
-                    msg="Track {0} not configured on device".format(w["track"])
-                )
+                module.fail_json(msg="Track {0} not configured on device".format(w["track"]))
         else:
             module.fail_json(msg="Invalid track number, valid range is 1-512.")
     if w["route_name"] and w["route_name"] != "default":
@@ -267,13 +264,9 @@ def network_from_string(address, mask, module):
     for octect in octects:
         try:
             if int(octect) < 0 or int(octect) > 255:
-                module.fail_json(
-                    msg="Address may contain invalid values.", address=address
-                )
+                module.fail_json(msg="Address may contain invalid values.", address=address)
         except ValueError:
-            module.fail_json(
-                msg="Address may contain non-integer values.", address=address
-            )
+            module.fail_json(msg="Address may contain non-integer values.", address=address)
 
     try:
         if int(mask) < 0 or int(mask) > 32:
@@ -349,16 +342,12 @@ def main():
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
 
-    argument_spec = dict(
-        aggregate=dict(type="list", elements="dict", options=aggregate_spec)
-    )
+    argument_spec = dict(aggregate=dict(type="list", elements="dict", options=aggregate_spec))
 
     argument_spec.update(element_spec)
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     result = {"changed": False, "commands": []}

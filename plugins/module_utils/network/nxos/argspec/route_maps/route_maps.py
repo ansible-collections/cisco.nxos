@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -117,29 +118,19 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "source": {"type": "str"},
                                                 "group": {
                                                     "type": "dict",
-                                                    "options": {
-                                                        "prefix": {
-                                                            "type": "str"
-                                                        }
-                                                    },
+                                                    "options": {"prefix": {"type": "str"}},
                                                 },
                                                 "group_range": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "first": {
-                                                            "type": "str"
-                                                        },
-                                                        "last": {
-                                                            "type": "str"
-                                                        },
+                                                        "first": {"type": "str"},
+                                                        "last": {"type": "str"},
                                                     },
                                                 },
                                                 "rp": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "prefix": {
-                                                            "type": "str"
-                                                        },
+                                                        "prefix": {"type": "str"},
                                                         "rp_type": {
                                                             "type": "str",
                                                             "choices": [
@@ -190,29 +181,19 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "source": {"type": "str"},
                                                 "group": {
                                                     "type": "dict",
-                                                    "options": {
-                                                        "prefix": {
-                                                            "type": "str"
-                                                        }
-                                                    },
+                                                    "options": {"prefix": {"type": "str"}},
                                                 },
                                                 "group_range": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "first": {
-                                                            "type": "str"
-                                                        },
-                                                        "last": {
-                                                            "type": "str"
-                                                        },
+                                                        "first": {"type": "str"},
+                                                        "last": {"type": "str"},
                                                     },
                                                 },
                                                 "rp": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "prefix": {
-                                                            "type": "str"
-                                                        },
+                                                        "prefix": {"type": "str"},
                                                         "rp_type": {
                                                             "type": "str",
                                                             "choices": [
@@ -316,9 +297,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "half_life": {"type": "int"},
                                         "start_reuse_route": {"type": "int"},
-                                        "start_suppress_route": {
-                                            "type": "int"
-                                        },
+                                        "start_suppress_route": {"type": "int"},
                                         "max_suppress_time": {"type": "int"},
                                     },
                                 },
@@ -335,14 +314,10 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "gateway_ip": {
                                             "type": "dict",
-                                            "mutually_exclusive": [
-                                                ["ip", "use_nexthop"]
-                                            ],
+                                            "mutually_exclusive": [["ip", "use_nexthop"]],
                                             "options": {
                                                 "ip": {"type": "str"},
-                                                "use_nexthop": {
-                                                    "type": "bool"
-                                                },
+                                                "use_nexthop": {"type": "bool"},
                                             },
                                         }
                                     },
@@ -355,9 +330,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "address": {
                                             "type": "dict",
-                                            "options": {
-                                                "prefix_list": {"type": "str"}
-                                            },
+                                            "options": {"prefix_list": {"type": "str"}},
                                         },
                                         "precedence": {"type": "str"},
                                     },
@@ -367,9 +340,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "address": {
                                             "type": "dict",
-                                            "options": {
-                                                "prefix_list": {"type": "str"}
-                                            },
+                                            "options": {"prefix_list": {"type": "str"}},
                                         },
                                         "precedence": {"type": "str"},
                                     },
@@ -389,12 +360,8 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "bandwidth": {"type": "int"},
                                         "igrp_delay_metric": {"type": "int"},
-                                        "igrp_reliability_metric": {
-                                            "type": "int"
-                                        },
-                                        "igrp_effective_bandwidth_metric": {
-                                            "type": "int"
-                                        },
+                                        "igrp_reliability_metric": {"type": "int"},
+                                        "igrp_effective_bandwidth_metric": {"type": "int"},
                                         "igrp_mtu": {"type": "int"},
                                     },
                                 },

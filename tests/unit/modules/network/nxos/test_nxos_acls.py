@@ -5,18 +5,16 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.plugins.modules import nxos_acls
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import (
-    patch,
-    MagicMock,
-)
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    set_module_args,
-)
-from .nxos_module import TestNxosModule
 from textwrap import dedent
+
+from ansible_collections.cisco.nxos.plugins.modules import nxos_acls
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import MagicMock, patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
+
+from .nxos_module import TestNxosModule
 
 
 class TestNxosAclsModule(TestNxosModule):
@@ -39,16 +37,12 @@ class TestNxosAclsModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acls.acls.Acls.edit_config"
@@ -90,9 +84,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         fragments=True,
                                         sequence=20,
                                         protocol="tcp",
-                                        protocol_options=dict(
-                                            tcp=dict(ack=True)
-                                        ),
+                                        protocol_options=dict(tcp=dict(ack=True)),
                                     ),
                                     dict(
                                         destination=dict(
@@ -110,15 +102,11 @@ class TestNxosAclsModule(TestNxosModule):
                                     ),
                                     dict(
                                         grant="deny",
-                                        destination=dict(
-                                            prefix="2002:2:2:2::/64"
-                                        ),
+                                        destination=dict(prefix="2002:2:2:2::/64"),
                                         source=dict(prefix="2002:1:1:1::/64"),
                                         sequence=30,
                                         protocol="icmp",
-                                        protocol_options=dict(
-                                            icmp=dict(echo_request=True)
-                                        ),
+                                        protocol_options=dict(icmp=dict(echo_request=True)),
                                     ),
                                 ],
                             )
@@ -207,9 +195,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         sequence=50,
                                         protocol="icmp",
                                         protocol_options=dict(
-                                            icmp=dict(
-                                                administratively_prohibited=True
-                                            )
+                                            icmp=dict(administratively_prohibited=True)
                                         ),
                                     )
                                 ],
@@ -297,9 +283,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         sequence=50,
                                         protocol="icmp",
                                         protocol_options=dict(
-                                            icmp=dict(
-                                                administratively_prohibited=True
-                                            )
+                                            icmp=dict(administratively_prohibited=True)
                                         ),
                                     ),
                                     dict(remark="Overridden ACL"),
@@ -438,9 +422,7 @@ class TestNxosAclsModule(TestNxosModule):
             "10 permit sctp any any",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(
-            sorted(result["rendered"]), sorted(commands), result["rendered"]
-        )
+        self.assertEqual(sorted(result["rendered"]), sorted(commands), result["rendered"])
 
     def test_nxos_acls_parsed(self):
         set_module_args(

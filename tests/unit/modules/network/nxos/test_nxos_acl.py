@@ -18,12 +18,14 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import json
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_acl
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -60,9 +62,7 @@ class TestNxosAclModule(TestNxosModule):
                     command = obj["command"]
                 except ValueError:
                     command = item
-                filename = "%s.txt" % str(command).split(" | ", 1)[0].replace(
-                    " ", "_"
-                )
+                filename = "%s.txt" % str(command).split(" | ", 1)[0].replace(" ", "_")
                 output.append(load_fixture("nxos_acl", filename))
             return output
 
@@ -87,9 +87,7 @@ class TestNxosAclModule(TestNxosModule):
         )
 
     def test_nxos_acl_remove(self):
-        set_module_args(
-            dict(name="copp-system-p-acl-bgp", seq=10, state="absent")
-        )
+        set_module_args(dict(name="copp-system-p-acl-bgp", seq=10, state="absent"))
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -99,6 +97,4 @@ class TestNxosAclModule(TestNxosModule):
     def test_nxos_acl_delete_acl(self):
         set_module_args(dict(name="copp-system-p-acl-bgp", state="delete_acl"))
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"], ["no ip access-list copp-system-p-acl-bgp"]
-        )
+        self.assertEqual(result["commands"], ["no ip access-list copp-system-p-acl-bgp"])

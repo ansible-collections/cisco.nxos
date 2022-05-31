@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vrf
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -65,21 +67,15 @@ class TestNxosVrfModule(TestNxosModule):
 
     def test_nxos_vrf_present(self):
         set_module_args(dict(vrf="ntc", state="present", admin_state="up"))
-        self.execute_module(
-            changed=True, commands=["vrf context ntc", "no shutdown", "exit"]
-        )
+        self.execute_module(changed=True, commands=["vrf context ntc", "no shutdown", "exit"])
 
     def test_nxos_vrf_present_no_change(self):
-        set_module_args(
-            dict(vrf="management", state="present", admin_state="up")
-        )
+        set_module_args(dict(vrf="management", state="present", admin_state="up"))
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_vrf_absent(self):
         set_module_args(dict(vrf="management", state="absent"))
-        self.execute_module(
-            changed=True, commands=["no vrf context management"]
-        )
+        self.execute_module(changed=True, commands=["no vrf context management"])
 
     def test_nxos_vrf_absent_no_change(self):
         set_module_args(dict(vrf="ntc", state="absent"))

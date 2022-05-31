@@ -28,6 +28,7 @@ The module file for nxos_telemetry
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -313,6 +314,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.telemetry.telemetry import (
     TelemetryArgs,
 )
@@ -327,9 +329,7 @@ def main():
 
     :returns: the result form module invocation
     """
-    module = AnsibleModule(
-        argument_spec=TelemetryArgs.argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=TelemetryArgs.argument_spec, supports_check_mode=True)
 
     result = Telemetry(module).execute_module()
     module.exit_json(**result)

@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_nxapi
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -89,9 +91,7 @@ class TestNxosNxapiModule(TestNxosModule):
 
     def test_nxos_nxapi_disable(self):
         set_module_args(dict(state="absent"))
-        self.execute_module_devices(
-            changed=True, commands=["no feature nxapi"]
-        )
+        self.execute_module_devices(changed=True, commands=["no feature nxapi"])
 
     def test_nxos_nxapi_no_http(self):
         set_module_args(dict(https=True, http=False, https_port=8443))

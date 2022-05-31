@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -165,19 +166,20 @@ commands:
 
 
 import re
-import struct
 import socket
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
+import struct
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
+)
+
 
 BOOL_PARAMS = ["passive_interface", "message_digest"]
 PARAM_TO_COMMAND_KEYMAP = {
@@ -201,9 +203,7 @@ PARAM_TO_COMMAND_KEYMAP = {
 def get_value(arg, config, module):
     command = PARAM_TO_COMMAND_KEYMAP[arg]
     has_command = re.search(r"\s+{0}\s*$".format(command), config, re.M)
-    has_command_val = re.search(
-        r"(?:{0}\s)(?P<value>.*)$".format(command), config, re.M
-    )
+    has_command_val = re.search(r"(?:{0}\s)(?P<value>.*)$".format(command), config, re.M)
 
     if command == "ip router ospf":
         value = ""
@@ -231,9 +231,7 @@ def get_value(arg, config, module):
             elif arg == "message_digest_password":
                 value = value_list[3]
     elif arg == "passive_interface":
-        has_no_command = re.search(
-            r"\s+no\s+{0}\s*$".format(command), config, re.M
-        )
+        has_no_command = re.search(r"\s+no\s+{0}\s*$".format(command), config, re.M)
         if has_no_command:
             value = False
         elif has_command:
@@ -258,14 +256,12 @@ def get_value(arg, config, module):
 def get_existing(module, args):
     existing = {}
     netcfg = CustomNetworkConfig(indent=2, contents=get_config(module))
-    if module.params["interface"].startswith("loopback") or module.params[
-        "interface"
-    ].startswith("port-channel"):
+    if module.params["interface"].startswith("loopback") or module.params["interface"].startswith(
+        "port-channel"
+    ):
         parents = ["interface {0}".format(module.params["interface"])]
     else:
-        parents = [
-            "interface {0}".format(module.params["interface"].capitalize())
-        ]
+        parents = ["interface {0}".format(module.params["interface"].capitalize())]
     config = netcfg.get_section(parents)
     if "ospf" in config:
         for arg in args:
@@ -322,9 +318,7 @@ def get_custom_command(existing_cmd, proposed, key, module):
     commands = list()
 
     if key == "ip router ospf":
-        command = "{0} {1} area {2}".format(
-            key, proposed["ospf"], proposed["area"]
-        )
+        command = "{0} {1} area {2}".format(key, proposed["ospf"], proposed["area"])
         if command not in existing_cmd:
             commands.append(command)
 
@@ -335,10 +329,7 @@ def get_custom_command(existing_cmd, proposed, key, module):
             commands.append(command)
 
     elif key.startswith("ip ospf message-digest-key"):
-        if (
-            proposed["message_digest_key_id"] != "default"
-            and "options" not in key
-        ):
+        if proposed["message_digest_key_id"] != "default" and "options" not in key:
             if proposed["message_digest_encryption_type"] == "3des":
                 encryption_type = "3"
             elif proposed["message_digest_encryption_type"] == "cisco_type_7":
@@ -367,20 +358,16 @@ def state_present(module, existing, proposed, candidate):
             if existing_commands[key] == value:
                 continue
 
-        if key == "ip ospf passive-interface" and module.params.get(
-            "interface"
-        ).upper().startswith("LO"):
-            module.fail_json(
-                msg="loopback interface does not support passive_interface"
-            )
+        if key == "ip ospf passive-interface" and module.params.get("interface").upper().startswith(
+            "LO"
+        ):
+            module.fail_json(msg="loopback interface does not support passive_interface")
         if (
             key == "ip ospf network"
             and value == "broadcast"
             and module.params.get("interface").upper().startswith("LO")
         ):
-            module.fail_json(
-                msg="loopback interface does not support ospf network type broadcast"
-            )
+            module.fail_json(msg="loopback interface does not support ospf network type broadcast")
 
         if key == "ip ospf bfd":
             cmd = key
@@ -398,25 +385,17 @@ def state_present(module, existing, proposed, candidate):
         elif value == "default":
             if existing_commands.get(key):
                 commands.extend(
-                    get_default_commands(
-                        existing, proposed, existing_commands, key, module
-                    )
+                    get_default_commands(existing, proposed, existing_commands, key, module)
                 )
         else:
-            if key == "ip router ospf" or key.startswith(
-                "ip ospf message-digest-key"
-            ):
-                commands.extend(
-                    get_custom_command(commands, proposed, key, module)
-                )
+            if key == "ip router ospf" or key.startswith("ip ospf message-digest-key"):
+                commands.extend(get_custom_command(commands, proposed, key, module))
             else:
                 command = "{0} {1}".format(key, value.lower())
                 commands.append(command)
 
     if commands:
-        parents = [
-            "interface {0}".format(module.params["interface"].capitalize())
-        ]
+        parents = ["interface {0}".format(module.params["interface"].capitalize())]
         candidate.add(commands, parents=parents)
 
 
@@ -441,10 +420,7 @@ def state_absent(module, existing, proposed, candidate):
                 if "options" not in key:
                     if existing["message_digest_encryption_type"] == "3des":
                         encryption_type = "3"
-                    elif (
-                        existing["message_digest_encryption_type"]
-                        == "cisco_type_7"
-                    ):
+                    elif existing["message_digest_encryption_type"] == "cisco_type_7":
                         encryption_type = "7"
                     command = "no {0} {1} {2} {3} {4}".format(
                         key,
@@ -461,9 +437,7 @@ def state_absent(module, existing, proposed, candidate):
                 if value:
                     commands.append("no {0}".format(key))
             elif key == "ip router ospf":
-                command = "no {0} {1} area {2}".format(
-                    key, proposed["ospf"], proposed["area"]
-                )
+                command = "no {0} {1} area {2}".format(key, proposed["ospf"], proposed["area"])
                 if command not in commands:
                     commands.append(command)
             else:
@@ -498,23 +472,17 @@ def main():
         hello_interval=dict(required=False, type="str"),
         dead_interval=dict(required=False, type="str"),
         passive_interface=dict(required=False, type="bool"),
-        network=dict(
-            required=False, type="str", choices=["broadcast", "point-to-point"]
-        ),
+        network=dict(required=False, type="str", choices=["broadcast", "point-to-point"]),
         message_digest=dict(required=False, type="bool"),
         message_digest_key_id=dict(required=False, type="str"),
-        message_digest_algorithm_type=dict(
-            required=False, type="str", choices=["md5", "default"]
-        ),
+        message_digest_algorithm_type=dict(required=False, type="str", choices=["md5", "default"]),
         message_digest_encryption_type=dict(
             required=False,
             type="str",
             choices=["cisco_type_7", "3des", "default"],
         ),
         message_digest_password=dict(required=False, type="str", no_log=True),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
     )
 
     argument_spec.update(nxos_argument_spec)
@@ -563,9 +531,7 @@ def main():
     args = PARAM_TO_COMMAND_KEYMAP.keys()
 
     existing = get_existing(module, args)
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
 
     proposed = {}
     for key, value in proposed_args.items():
@@ -580,11 +546,7 @@ def main():
                 value = str(value).lower()
             if existing.get(key) or (not existing.get(key) and value):
                 proposed[key] = value
-            elif (
-                "passive_interface" in key
-                and existing.get(key) is None
-                and value is False
-            ):
+            elif "passive_interface" in key and existing.get(key) is None and value is False:
                 proposed[key] = value
 
     proposed["area"] = normalize_area(proposed["area"], module)

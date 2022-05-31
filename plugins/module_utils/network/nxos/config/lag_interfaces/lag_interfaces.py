@@ -12,20 +12,20 @@ created
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-    remove_empties,
     dict_diff,
+    remove_empties,
     search_obj_in_list,
+    to_list,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
 )
@@ -52,9 +52,7 @@ class Lag_interfaces(ConfigBase):
         facts, _warnings = Facts(self._module).get_facts(
             self.gather_subset, self.gather_network_resources, data=data
         )
-        lag_interfaces_facts = facts["ansible_network_resources"].get(
-            "lag_interfaces"
-        )
+        lag_interfaces_facts = facts["ansible_network_resources"].get("lag_interfaces")
         if not lag_interfaces_facts:
             return []
         return lag_interfaces_facts
@@ -103,9 +101,7 @@ class Lag_interfaces(ConfigBase):
                 self._module.fail_json(
                     msg="value of running_config parameter must not be empty for state parsed"
                 )
-            result["parsed"] = self.get_lag_interfaces_facts(
-                data=running_config
-            )
+            result["parsed"] = self.get_lag_interfaces_facts(data=running_config)
 
         if self.state in self.ACTION_STATES:
             result["before"] = existing_lag_interfaces_facts
@@ -132,9 +128,7 @@ class Lag_interfaces(ConfigBase):
                 w.update(remove_empties(w))
                 if "members" in w and w["members"]:
                     for item in w["members"]:
-                        item.update(
-                            {"member": normalize_interface(item["member"])}
-                        )
+                        item.update({"member": normalize_interface(item["member"])})
         have = existing_lag_interfaces_facts
         resp = self.set_state(want, have)
         return to_list(resp)
@@ -149,14 +143,9 @@ class Lag_interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    state
-                )
+                msg="value of config parameter must not be empty for state {0}".format(state)
             )
         commands = list()
 
@@ -198,9 +187,7 @@ class Lag_interfaces(ConfigBase):
         for h in have:
             obj_in_want = search_obj_in_list(h["name"], want, "name")
             if obj_in_want:
-                diff = self.diff_list_of_dicts(
-                    h.get("members", []), obj_in_want["members"]
-                )
+                diff = self.diff_list_of_dicts(h.get("members", []), obj_in_want["members"])
                 if not diff:
                     continue
             commands.extend(self.del_all_commands(h))
@@ -245,9 +232,7 @@ class Lag_interfaces(ConfigBase):
 
         diff = []
         for w_item in want:
-            h_item = (
-                search_obj_in_list(w_item["member"], have, key="member") or {}
-            )
+            h_item = search_obj_in_list(w_item["member"], have, key="member") or {}
             delta = dict_diff(h_item, w_item)
             if delta:
                 if h_item:
@@ -306,9 +291,7 @@ class Lag_interfaces(ConfigBase):
         else:
             if "members" not in obj_in_have:
                 obj_in_have["members"] = None
-            diff = self.diff_list_of_dicts(
-                w["members"], obj_in_have["members"]
-            )
+            diff = self.diff_list_of_dicts(w["members"], obj_in_have["members"])
             commands = self.add_commands(diff, w["name"])
         return commands
 
@@ -325,9 +308,7 @@ class Lag_interfaces(ConfigBase):
         commands = []
         obj_in_have = search_obj_in_list(w["name"], have, "name")
         if obj_in_have:
-            lst_to_del = self.intersect_list_of_dicts(
-                w["members"], obj_in_have["members"]
-            )
+            lst_to_del = self.intersect_list_of_dicts(w["members"], obj_in_have["members"])
             if lst_to_del:
                 for item in lst_to_del:
                     commands.append("interface" + " " + item["member"])

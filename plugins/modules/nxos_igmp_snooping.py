@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -98,14 +99,13 @@ commands:
 
 import re
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
+    nxos_argument_spec,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def execute_show_command(command, module, output="text"):
@@ -161,9 +161,7 @@ def get_igmp_snooping(module):
 
         link_local_grp_supp = str(body.get("glinklocalgrpsup")).lower()
         if "none" in link_local_grp_supp:
-            link_local_grp_supp = str(
-                body.get("GlobalLinkLocalGroupSupression")
-            ).lower()
+            link_local_grp_supp = str(body.get("GlobalLinkLocalGroupSupression")).lower()
         if link_local_grp_supp == "true" or link_local_grp_supp == "enabled":
             existing["link_local_grp_supp"] = True
         else:
@@ -201,9 +199,7 @@ def config_igmp_snooping(delta, existing, default=False):
         if value:
             if default and key == "group_timeout":
                 if existing.get(key):
-                    gt_command = "no " + CMDS.get(key).format(
-                        existing.get(key)
-                    )
+                    gt_command = "no " + CMDS.get(key).format(existing.get(key))
             elif value == "default" and key == "group_timeout":
                 if existing.get(key):
                     command = "no " + CMDS.get(key).format(existing.get(key))
@@ -237,9 +233,7 @@ def get_igmp_snooping_defaults():
         group_timeout=group_timeout,
     )
 
-    default = dict(
-        (param, value) for (param, value) in args.items() if value is not None
-    )
+    default = dict((param, value) for (param, value) in args.items() if value is not None)
 
     return default
 
@@ -271,9 +265,7 @@ def main():
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     results = {"changed": False, "commands": [], "warnings": warnings}
@@ -293,9 +285,7 @@ def main():
         group_timeout=group_timeout,
     )
 
-    proposed = dict(
-        (param, value) for (param, value) in args.items() if value is not None
-    )
+    proposed = dict((param, value) for (param, value) in args.items() if value is not None)
 
     existing = get_igmp_snooping(module)
 

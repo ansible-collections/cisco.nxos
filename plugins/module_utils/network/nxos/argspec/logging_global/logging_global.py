@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -245,9 +246,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "trustpoint": {
                                     "type": "dict",
-                                    "options": {
-                                        "client_identity": {"type": "str"}
-                                    },
+                                    "options": {"client_identity": {"type": "str"}},
                                 }
                             },
                         },

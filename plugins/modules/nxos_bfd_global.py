@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -135,16 +136,15 @@ cmds:
 
 
 import re
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     NxosCmdRef,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    load_config,
     nxos_argument_spec,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-)
-from ansible.module_utils.basic import AnsibleModule
+
 
 BFD_CMD_REF = """
 # The cmd_ref is a yaml formatted list of module commands.
@@ -309,9 +309,7 @@ def main():
         fabricpath_vlan=dict(required=False, type="int"),
     )
     argument_spec.update(nxos_argument_spec)
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()
 
     cmd_ref = NxosCmdRef(module, BFD_CMD_REF)

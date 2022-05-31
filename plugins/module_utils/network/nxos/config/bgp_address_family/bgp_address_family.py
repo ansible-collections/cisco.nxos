@@ -7,6 +7,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -17,24 +18,22 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+import re
+
 from copy import deepcopy
 
-import re
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
+    remove_empties,
 )
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_address_family import (
     Bgp_address_familyTemplate,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    remove_empties,
 )
 
 
@@ -117,18 +116,14 @@ class Bgp_address_family(ResourceModule):
 
         # if state is overridden or deleted, remove superfluos config
         if self.state in ["deleted", "overridden"]:
-            if (
-                haved and haved["as_number"] == wantd.get("as_number")
-            ) or not wantd:
+            if (haved and haved["as_number"] == wantd.get("as_number")) or not wantd:
                 remove = True if self.state == "deleted" else False
                 purge = True if not wantd else False
                 self._remove_af(want_af, have_af, remove=remove, purge=purge)
 
                 for k, hvrf in iteritems(hvrfs):
                     wvrf = wvrfs.get(k, {})
-                    self._remove_af(
-                        wvrf, hvrf, vrf=k, remove=remove, purge=purge
-                    )
+                    self._remove_af(wvrf, hvrf, vrf=k, remove=remove, purge=purge)
 
         if self.state in ["merged", "replaced", "overridden", "rendered"]:
             for k, want in iteritems(want_af):
@@ -147,9 +142,7 @@ class Bgp_address_family(ResourceModule):
                     self.commands.insert(cur_ptr, "vrf {0}".format(wk))
 
         if self.commands:
-            self.commands.insert(
-                0, "router bgp {as_number}".format(**haved or wantd)
-            )
+            self.commands.insert(0, "router bgp {as_number}".format(**haved or wantd))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -205,19 +198,13 @@ class Bgp_address_family(ResourceModule):
         # transform parameters which are
         # list of dicts to dict of dicts
         for item in entry.get("address_family", []):
-            item["aggregate_address"] = {
-                x["prefix"]: x for x in item.get("aggregate_address", [])
-            }
+            item["aggregate_address"] = {x["prefix"]: x for x in item.get("aggregate_address", [])}
             item["inject_map"] = {
-                (x["route_map"], x["exist_map"]): x
-                for x in item.get("inject_map", [])
+                (x["route_map"], x["exist_map"]): x for x in item.get("inject_map", [])
             }
-            item["networks"] = {
-                x["prefix"]: x for x in item.get("networks", [])
-            }
+            item["networks"] = {x["prefix"]: x for x in item.get("networks", [])}
             item["redistribute"] = {
-                (x.get("id"), x["protocol"]): x
-                for x in item.get("redistribute", [])
+                (x.get("id"), x["protocol"]): x for x in item.get("redistribute", [])
             }
 
         # transform all entries under
@@ -249,9 +236,7 @@ class Bgp_address_family(ResourceModule):
 
         # final structure: https://gist.github.com/NilashishC/628dae5fe39a4908e87c9e833bfbe57d
 
-    def _remove_af(
-        self, want_af, have_af, vrf=None, remove=False, purge=False
-    ):
+    def _remove_af(self, want_af, have_af, vrf=None, remove=False, purge=False):
         cur_ptr = len(self.commands)
         for k, v in iteritems(have_af):
             # first conditional is for deleted with config provided

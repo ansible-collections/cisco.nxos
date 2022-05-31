@@ -19,16 +19,17 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_ospfv3
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -54,9 +55,7 @@ class TestNxosOspfv3Module(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv3.ospfv3.Ospfv3Facts.get_config"
@@ -234,9 +233,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     dict(
                                         area_id="1.1.1.2",
                                         ranges=[
-                                            dict(
-                                                prefix="2001:db4::/32", cost=11
-                                            ),
+                                            dict(prefix="2001:db4::/32", cost=11),
                                             dict(
                                                 prefix="2001:db5::/32",
                                                 not_advertise=True,
@@ -291,9 +288,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     dict(
                                         area_id="1.1.1.2",
                                         ranges=[
-                                            dict(
-                                                prefix="2001:db4::/32", cost=11
-                                            ),
+                                            dict(prefix="2001:db4::/32", cost=11),
                                             dict(
                                                 prefix="2001:db5::/32",
                                                 not_advertise=True,
@@ -383,9 +378,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                             address_family=dict(
                                 afi="ipv6",
                                 safi="unicast",
-                                areas=[
-                                    dict(area_id="1.1.1.2", default_cost=200)
-                                ],
+                                areas=[dict(area_id="1.1.1.2", default_cost=200)],
                             ),
                         )
                     ]
@@ -422,9 +415,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 afi="ipv6",
                                 safi="unicast",
                                 default_information=dict(
-                                    originate=dict(
-                                        always=True, route_map="test-2"
-                                    )
+                                    originate=dict(always=True, route_map="test-2")
                                 ),
                             ),
                         )
@@ -460,9 +451,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                             address_family=dict(
                                 afi="ipv6",
                                 safi="unicast",
-                                default_information=dict(
-                                    originate=dict(set=False)
-                                ),
+                                default_information=dict(originate=dict(set=False)),
                             ),
                         )
                     ]
@@ -497,9 +486,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                             address_family=dict(
                                 afi="ipv6",
                                 safi="unicast",
-                                default_information=dict(
-                                    originate=dict(set=True)
-                                ),
+                                default_information=dict(originate=dict(set=True)),
                             ),
                         )
                     ]
@@ -531,9 +518,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                     processes=[
                         dict(
                             process_id="100",
-                            address_family=dict(
-                                afi="ipv6", safi="unicast", distance=35
-                            ),
+                            address_family=dict(afi="ipv6", safi="unicast", distance=35),
                         )
                     ]
                 ),
@@ -597,9 +582,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                     processes=[
                         dict(
                             process_id="100",
-                            address_family=dict(
-                                afi="ipv6", safi="unicast", maximum_paths=27
-                            ),
+                            address_family=dict(afi="ipv6", safi="unicast", maximum_paths=27),
                         )
                     ]
                 ),
@@ -682,9 +665,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         id="65563",
                                         route_map="test-3",
                                     ),
-                                    dict(
-                                        protocol="static", route_map="test-4"
-                                    ),
+                                    dict(protocol="static", route_map="test-4"),
                                 ],
                             ),
                         )
@@ -734,9 +715,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         id="65563",
                                         route_map="test-3",
                                     ),
-                                    dict(
-                                        protocol="static", route_map="test-4"
-                                    ),
+                                    dict(protocol="static", route_map="test-4"),
                                 ],
                             ),
                         )
@@ -1012,11 +991,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         no_summary=True,
                                         no_redistribution=True,
                                         route_map="test-1",
-                                        translate=dict(
-                                            type7=dict(
-                                                always=True, supress_fa=True
-                                            )
-                                        ),
+                                        translate=dict(type7=dict(always=True, supress_fa=True)),
                                     ),
                                 ),
                             ],
@@ -1051,9 +1026,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                     processes=[
                         dict(
                             process_id="100",
-                            areas=[
-                                dict(area_id="1.1.1.1", nssa=dict(set=False))
-                            ],
+                            areas=[dict(area_id="1.1.1.1", nssa=dict(set=False))],
                         )
                     ]
                 ),
@@ -1184,11 +1157,7 @@ class TestNxosOspfv3Module(TestNxosModule):
         )
         set_module_args(
             dict(
-                config=dict(
-                    processes=[
-                        dict(process_id="100", areas=[dict(area_id="1.1.1.3")])
-                    ]
-                ),
+                config=dict(processes=[dict(process_id="100", areas=[dict(area_id="1.1.1.3")])]),
                 state="replaced",
             ),
             ignore_provider_arg,
@@ -1211,9 +1180,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                     processes=[
                         dict(
                             process_id="100",
-                            auto_cost=dict(
-                                reference_bandwidth=100, unit="Gbps"
-                            ),
+                            auto_cost=dict(reference_bandwidth=100, unit="Gbps"),
                             flush_routes=True,
                             isolate=True,
                         )
@@ -1446,9 +1413,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                     processes=[
                         dict(
                             process_id="100",
-                            graceful_restart=dict(
-                                grace_period=50, helper_disable=True
-                            ),
+                            graceful_restart=dict(grace_period=50, helper_disable=True),
                         ),
                         dict(
                             process_id="102",
@@ -1533,11 +1498,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="102",
                             max_metric=dict(
-                                router_lsa=dict(
-                                    inter_area_prefix_lsa=dict(
-                                        max_metric_value=1800
-                                    )
-                                )
+                                router_lsa=dict(inter_area_prefix_lsa=dict(max_metric_value=1800))
                             ),
                         ),
                         dict(
@@ -1782,9 +1743,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                                 wait_period=1200,
                                                 wait_for_bgp_asn=65563,
                                             ),
-                                            inter_area_prefix_lsa=dict(
-                                                set=True
-                                            ),
+                                            inter_area_prefix_lsa=dict(set=True),
                                         )
                                     ),
                                 )
@@ -2163,9 +2122,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                         {"vrf": "blue", "router_id": "10.0.0.2"},
                         {
                             "vrf": "red",
-                            "areas": [
-                                {"area_id": "1.1.1.1", "nssa": {"set": True}}
-                            ],
+                            "areas": [{"area_id": "1.1.1.1", "nssa": {"set": True}}],
                         },
                     ],
                 },
@@ -2216,9 +2173,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                         {"vrf": "blue", "router_id": "10.0.0.2"},
                         {
                             "vrf": "red",
-                            "areas": [
-                                {"area_id": "1.1.1.1", "nssa": {"set": True}}
-                            ],
+                            "areas": [{"area_id": "1.1.1.1", "nssa": {"set": True}}],
                         },
                     ],
                 },

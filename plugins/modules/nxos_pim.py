@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -78,16 +79,15 @@ commands:
 
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
 )
 
 
@@ -157,16 +157,12 @@ def get_commands(module, existing, proposed, candidate):
 def main():
     argument_spec = dict(
         bfd=dict(required=False, type="str", choices=["enable", "disable"]),
-        ssm_range=dict(
-            required=False, type="list", default=[], elements="str"
-        ),
+        ssm_range=dict(required=False, type="list", default=[], elements="str"),
     )
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()
     result = {"changed": False, "commands": [], "warnings": warnings}
 

@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,6 +16,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -34,9 +36,7 @@ def _tmplt_maximum_prefix(data):
 
 class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None):
-        super(Bgp_neighbor_address_familyTemplate, self).__init__(
-            lines=lines, tmplt=self
-        )
+        super(Bgp_neighbor_address_familyTemplate, self).__init__(lines=lines, tmplt=self)
 
     # fmt: off
     PARSERS = [

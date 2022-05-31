@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -252,16 +253,15 @@ commands:
 
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
 )
 
 
@@ -327,9 +327,7 @@ DAMPENING_PARAMS = [
 
 def get_value(arg, config, module):
     command = PARAM_TO_COMMAND_KEYMAP[arg]
-    command_val_re = re.compile(
-        r"(?:{0}\s)(?P<value>.*)$".format(command), re.M
-    )
+    command_val_re = re.compile(r"(?:{0}\s)(?P<value>.*)$".format(command), re.M)
     has_command_val = command_val_re.search(config)
 
     if arg in ["networks", "redistribute", "inject_map"]:
@@ -343,9 +341,7 @@ def get_value(arg, config, module):
             value.append(tl)
 
     elif command == "distance":
-        distance_re = (
-            r".*distance\s(?P<d_ebgp>\w+)\s(?P<d_ibgp>\w+)\s(?P<d_local>\w+)"
-        )
+        distance_re = r".*distance\s(?P<d_ebgp>\w+)\s(?P<d_ibgp>\w+)\s(?P<d_local>\w+)"
         match_distance = re.match(distance_re, config, re.DOTALL)
 
         value = ""
@@ -388,9 +384,7 @@ def get_value(arg, config, module):
             value = True
 
     elif arg == "table_map":
-        tm_regex = re.compile(
-            r"(?:table-map\s)(?P<value>\S+)(\sfilter)?$", re.M
-        )
+        tm_regex = re.compile(r"(?:table-map\s)(?P<value>\S+)(\sfilter)?$", re.M)
         has_tablemap = tm_regex.search(config)
         value = ""
         if has_tablemap:
@@ -433,9 +427,7 @@ def get_existing(module, args, warnings):
     existing = {}
     netcfg = CustomNetworkConfig(indent=2, contents=get_config(module))
 
-    asn_regex = re.compile(
-        r".*router\sbgp\s(?P<existing_asn>\d+(\.\d+)?).*", re.DOTALL
-    )
+    asn_regex = re.compile(r".*router\sbgp\s(?P<existing_asn>\d+(\.\d+)?).*", re.DOTALL)
     match_asn = asn_regex.match(str(netcfg))
 
     if match_asn:
@@ -444,11 +436,7 @@ def get_existing(module, args, warnings):
         if module.params["vrf"] != "default":
             parents.append("vrf {0}".format(module.params["vrf"]))
 
-        parents.append(
-            "address-family {0} {1}".format(
-                module.params["afi"], module.params["safi"]
-            )
-        )
+        parents.append("address-family {0} {1}".format(module.params["afi"], module.params["safi"]))
         config = netcfg.get_section(parents)
 
         if config:
@@ -458,10 +446,7 @@ def get_existing(module, args, warnings):
                     if gv:
                         existing[arg] = gv
                     else:
-                        if (
-                            arg != "client_to_client"
-                            and arg in PARAM_TO_DEFAULT_KEYMAP.keys()
-                        ):
+                        if arg != "client_to_client" and arg in PARAM_TO_DEFAULT_KEYMAP.keys():
                             existing[arg] = PARAM_TO_DEFAULT_KEYMAP.get(arg)
                         else:
                             existing[arg] = gv
@@ -534,31 +519,22 @@ def default_existing(existing_value, key, value):
     if key == "network":
         for network in existing_value:
             if len(network) == 2:
-                commands.append(
-                    "no network {0} route-map {1}".format(
-                        network[0], network[1]
-                    )
-                )
+                commands.append("no network {0} route-map {1}".format(network[0], network[1]))
             elif len(network) == 1:
                 commands.append("no network {0}".format(network[0]))
 
     elif key == "inject-map":
         for maps in existing_value:
             if len(maps) == 2:
-                commands.append(
-                    "no inject-map {0} exist-map {1}".format(maps[0], maps[1])
-                )
+                commands.append("no inject-map {0} exist-map {1}".format(maps[0], maps[1]))
             elif len(maps) == 3:
                 commands.append(
-                    "no inject-map {0} exist-map {1} "
-                    "copy-attributes".format(maps[0], maps[1])
+                    "no inject-map {0} exist-map {1} " "copy-attributes".format(maps[0], maps[1])
                 )
 
     elif key == "redistribute":
         for maps in existing_value:
-            commands.append(
-                "no redistribute {0} route-map {1}".format(maps[0], maps[1])
-            )
+            commands.append("no redistribute {0} route-map {1}".format(maps[0], maps[1]))
 
     elif key == "retain route-target":
         if existing_value == "all":
@@ -589,9 +565,7 @@ def get_network_command(existing, key, value):
             if len(enet) == 1:
                 command = "no {0} {1}".format(key, enet[0])
             elif len(enet) == 2:
-                command = "no {0} {1} route-map {2}".format(
-                    key, enet[0], enet[1]
-                )
+                command = "no {0} {1} route-map {2}".format(key, enet[0], enet[1])
             if command:
                 commands.append(command)
     return commands
@@ -605,26 +579,18 @@ def get_inject_map_command(existing, key, value):
             maps = [maps]
         if maps not in existing_maps:
             if len(maps) == 2:
-                command = "inject-map {0} exist-map {1}".format(
-                    maps[0], maps[1]
-                )
+                command = "inject-map {0} exist-map {1}".format(maps[0], maps[1])
             elif len(maps) == 3:
-                command = (
-                    "inject-map {0} exist-map {1} "
-                    "copy-attributes".format(maps[0], maps[1])
-                )
+                command = "inject-map {0} exist-map {1} " "copy-attributes".format(maps[0], maps[1])
             if command:
                 commands.append(command)
     for emaps in existing_maps:
         if emaps not in value:
             if len(emaps) == 2:
-                command = "no inject-map {0} exist-map {1}".format(
-                    emaps[0], emaps[1]
-                )
+                command = "no inject-map {0} exist-map {1}".format(emaps[0], emaps[1])
             elif len(emaps) == 3:
-                command = (
-                    "no inject-map {0} exist-map {1} "
-                    "copy-attributes".format(emaps[0], emaps[1])
+                command = "no inject-map {0} exist-map {1} " "copy-attributes".format(
+                    emaps[0], emaps[1]
                 )
             if command:
                 commands.append(command)
@@ -642,9 +608,7 @@ def get_redistribute_command(existing, key, value):
             commands.append(command)
     for erule in existing_rules:
         if erule not in value:
-            command = "no redistribute {0} route-map {1}".format(
-                erule[0], erule[1]
-            )
+            command = "no redistribute {0} route-map {1}".format(erule[0], erule[1])
             commands.append(command)
     return commands
 
@@ -709,9 +673,7 @@ def state_present(module, existing, proposed, candidate):
                 commands.append(addr_family_command)
 
         elif key.startswith("table-map"):
-            table_map_commands = get_table_map_command(
-                module, existing, key, value
-            )
+            table_map_commands = get_table_map_command(module, existing, key, value)
             if table_map_commands:
                 commands.extend(table_map_commands)
 
@@ -723,23 +685,17 @@ def state_present(module, existing, proposed, candidate):
 
         elif value == "default":
             if key in PARAM_TO_DEFAULT_KEYMAP:
-                commands.append(
-                    "{0} {1}".format(key, PARAM_TO_DEFAULT_KEYMAP[key])
-                )
+                commands.append("{0} {1}".format(key, PARAM_TO_DEFAULT_KEYMAP[key]))
 
             elif existing_commands.get(key):
                 if key == "table-map-filter":
-                    default_tmf_command = get_default_table_map_filter(
-                        existing
-                    )
+                    default_tmf_command = get_default_table_map_filter(existing)
 
                     if default_tmf_command:
                         commands.extend(default_tmf_command)
                 else:
                     existing_value = existing_commands.get(key)
-                    default_command = default_existing(
-                        existing_value, key, value
-                    )
+                    default_command = default_existing(existing_value, key, value)
                     if default_command:
                         commands.extend(default_command)
         else:
@@ -749,23 +705,17 @@ def state_present(module, existing, proposed, candidate):
                     commands.extend(network_commands)
 
             elif key == "inject-map":
-                inject_map_commands = get_inject_map_command(
-                    existing, key, value
-                )
+                inject_map_commands = get_inject_map_command(existing, key, value)
                 if inject_map_commands:
                     commands.extend(inject_map_commands)
 
             elif key == "redistribute":
-                redistribute_commands = get_redistribute_command(
-                    existing, key, value
-                )
+                redistribute_commands = get_redistribute_command(existing, key, value)
                 if redistribute_commands:
                     commands.extend(redistribute_commands)
 
             elif key == "retain route-target":
-                retain_route_target_commands = get_retain_route_target_command(
-                    existing, key, value
-                )
+                retain_route_target_commands = get_retain_route_target_command(existing, key, value)
                 if retain_route_target_commands:
                     commands.extend(retain_route_target_commands)
 
@@ -793,11 +743,7 @@ def state_absent(module, candidate):
     if module.params["vrf"] != "default":
         parents.append("vrf {0}".format(module.params["vrf"]))
 
-    commands.append(
-        "no address-family {0} {1}".format(
-            module.params["afi"], module.params["safi"]
-        )
-    )
+    commands.append("no address-family {0} {1}".format(module.params["afi"], module.params["safi"]))
     candidate.add(commands, parents=parents)
 
 
@@ -805,9 +751,7 @@ def main():
     argument_spec = dict(
         asn=dict(required=True, type="str"),
         vrf=dict(required=False, type="str", default="default"),
-        safi=dict(
-            required=True, type="str", choices=["unicast", "multicast", "evpn"]
-        ),
+        safi=dict(required=True, type="str", choices=["unicast", "multicast", "evpn"]),
         afi=dict(
             required=True,
             type="str",
@@ -840,9 +784,7 @@ def main():
         suppress_inactive=dict(required=False, type="bool"),
         table_map=dict(required=False, type="str"),
         table_map_filter=dict(required=False, type="bool"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
         retain_route_target=dict(required=False, type="str"),
     )
 
@@ -885,10 +827,7 @@ def main():
             )
 
     if module.params["table_map_filter"] and not module.params["table_map"]:
-        module.fail_json(
-            msg="table_map param is needed when using"
-            " table_map_filter filter."
-        )
+        module.fail_json(msg="table_map param is needed when using" " table_map_filter filter.")
 
     args = PARAM_TO_COMMAND_KEYMAP.keys()
     existing = get_existing(module, args, warnings)
@@ -901,9 +840,7 @@ def main():
                 existing_asn=existing.get("asn"),
             )
 
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
 
     for arg in ["networks", "inject_map", "redistribute"]:
         if proposed_args.get(arg):

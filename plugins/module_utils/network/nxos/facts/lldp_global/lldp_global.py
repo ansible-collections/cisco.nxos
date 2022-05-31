@@ -11,14 +11,15 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lldp_global.lldp_global import (
     Lldp_globalArgs,
 )
@@ -58,9 +59,7 @@ class Lldp_globalFacts(object):
         ansible_facts["ansible_network_resources"].pop("lldp_global", None)
         facts = {}
         if objs:
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             facts["lldp_global"] = params["config"]
             facts = utils.remove_empties(facts)
         ansible_facts["ansible_network_resources"].update((facts))
@@ -79,9 +78,7 @@ class Lldp_globalFacts(object):
         config = deepcopy(spec)
         conf = re.split("\n", conf)
         for command in conf:
-            param = re.search(
-                r"(.*)lldp (\w+(-?)\w+)", command
-            )  # get the word after 'lldp'
+            param = re.search(r"(.*)lldp (\w+(-?)\w+)", command)  # get the word after 'lldp'
             if param:
                 # get the nested-dict/value for that param
                 key2 = re.search(r"%s(.*)" % param.group(2), command)
@@ -95,9 +92,7 @@ class Lldp_globalFacts(object):
                     key2 = key2.split()
                     key2[0] = key2[0].replace("-", "_")
                     if len(key2) == 1:
-                        if (
-                            "port" in key2[0] or "system" in key2[0]
-                        ):  # nested dicts
+                        if "port" in key2[0] or "system" in key2[0]:  # nested dicts
                             key2 = key2[0].split("_")
                             # config[tlv_select][system][name]=False
                             config[key1][key2[0]][key2[1]] = False

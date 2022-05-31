@@ -19,16 +19,17 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_global
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -43,9 +44,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_global.bgp_global.Bgp_globalFacts.get_config"
@@ -90,9 +89,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                         dict(
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
-                            password=dict(
-                                encryption=7, key="12090404011C03162E"
-                            ),
+                            password=dict(encryption=7, key="12090404011C03162E"),
                         ),
                     ],
                     vrfs=[
@@ -347,9 +344,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                         dict(
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
-                            password=dict(
-                                encryption=7, key="12090404011C03162E"
-                            ),
+                            password=dict(encryption=7, key="12090404011C03162E"),
                         ),
                     ],
                     vrfs=[
@@ -666,9 +661,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                         dict(
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
-                            password=dict(
-                                encryption=7, key="12090404011C03162E"
-                            ),
+                            password=dict(encryption=7, key="12090404011C03162E"),
                         ),
                     ],
                     vrfs=[
@@ -737,9 +730,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                         dict(
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
-                            password=dict(
-                                encryption=7, key="12090404011C03162E"
-                            ),
+                            password=dict(encryption=7, key="12090404011C03162E"),
                         ),
                     ],
                     vrfs=[

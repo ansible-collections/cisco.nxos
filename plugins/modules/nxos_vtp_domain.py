@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -89,18 +90,16 @@ changed:
 """
 
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-    run_commands,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
+import re
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
+    load_config,
+    nxos_argument_spec,
+    run_commands,
 )
-from ansible.module_utils.basic import AnsibleModule
-import re
 
 
 def execute_show_command(command, module, output="json"):
@@ -174,9 +173,7 @@ def main():
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 

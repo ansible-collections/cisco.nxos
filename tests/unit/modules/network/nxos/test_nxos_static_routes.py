@@ -5,16 +5,13 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_static_routes
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import (
-    patch,
-    MagicMock,
-)
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    set_module_args,
-)
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import MagicMock, patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
+
 from .nxos_module import TestNxosModule, load_fixture
 
 
@@ -38,16 +35,12 @@ class TestNxosStaticRoutesModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.static_routes.static_routes.Static_routes.edit_config"
@@ -70,9 +63,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
 
     def load_fixtures(self, commands=None, device=""):
         def load_from_file(*args, **kwargs):
-            non_vrf_data = [
-                "ip route 192.0.2.16/28 192.0.2.24 name initial_route"
-            ]
+            non_vrf_data = ["ip route 192.0.2.16/28 192.0.2.24 name initial_route"]
             vrf_data = [
                 "vrf context test\n  ip route 192.0.2.96/28 192.0.2.122 vrf dest_vrf"
                 "\n  ip route static bfd Vlan100 192.168.1.100\n  ipv6 route 2001:db8:12::/32 2001:db8::1001 name ipv6_route 3\n"
@@ -318,11 +309,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                 config=[
                     dict(
                         vrf="test",
-                        address_families=[
-                            dict(
-                                afi="ipv4", routes=[dict(dest="192.0.2.96/28")]
-                            )
-                        ],
+                        address_families=[dict(afi="ipv4", routes=[dict(dest="192.0.2.96/28")])],
                     )
                 ],
                 state="deleted",
@@ -401,9 +388,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
             "ipv6 route 1200:10::/64 Ethernet1/4 2048:ae12::/64 5",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(
-            sorted(result["rendered"]), sorted(commands), result["rendered"]
-        )
+        self.assertEqual(sorted(result["rendered"]), sorted(commands), result["rendered"])
 
     def test_nxos_static_routes_parsed(self):
         set_module_args(

@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -329,17 +330,14 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
-    load_config,
-    run_commands,
     get_connection,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    load_config,
     nxos_argument_spec,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
+    run_commands,
 )
 
 
@@ -403,18 +401,14 @@ def main():
         parents=dict(type="list", elements="str"),
         before=dict(type="list", elements="str"),
         after=dict(type="list", elements="str"),
-        match=dict(
-            default="line", choices=["line", "strict", "exact", "none"]
-        ),
+        match=dict(default="line", choices=["line", "strict", "exact", "none"]),
         replace=dict(default="line", choices=["line", "block", "config"]),
         running_config=dict(aliases=["config"]),
         intended_config=dict(),
         defaults=dict(type="bool", default=False),
         backup=dict(type="bool", default=False),
         backup_options=dict(type="dict", options=backup_spec),
-        save_when=dict(
-            choices=["always", "never", "modified", "changed"], default="never"
-        ),
+        save_when=dict(choices=["always", "never", "modified", "changed"], default="never"),
         diff_against=dict(choices=["running", "startup", "intended"]),
         diff_ignore_lines=dict(type="list", elements="str"),
     )
@@ -452,13 +446,9 @@ def main():
     replace_src = module.params["replace_src"]
     if replace_src:
         if module.params["replace"] != "config":
-            module.fail_json(
-                msg="replace: config is required with replace_src"
-            )
+            module.fail_json(msg="replace: config is required with replace_src")
 
-    if module.params["backup"] or (
-        module._diff and module.params["diff_against"] == "running"
-    ):
+    if module.params["backup"] or (module._diff and module.params["diff_against"] == "running"):
         contents = get_config(module, flags=flags)
         config = NetworkConfig(indent=2, contents=contents)
         if module.params["backup"]:
@@ -489,9 +479,7 @@ def main():
                     diff_replace=replace,
                 )
             except ConnectionError as exc:
-                module.fail_json(
-                    msg=to_text(exc, errors="surrogate_then_replace")
-                )
+                module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
             config_diff = response["config_diff"]
             if config_diff:
@@ -517,16 +505,10 @@ def main():
     if module.params["save_when"] == "always":
         save_config(module, result)
     elif module.params["save_when"] == "modified":
-        output = execute_show_commands(
-            module, ["show running-config", "show startup-config"]
-        )
+        output = execute_show_commands(module, ["show running-config", "show startup-config"])
 
-        running_config = NetworkConfig(
-            indent=2, contents=output[0], ignore_lines=diff_ignore_lines
-        )
-        startup_config = NetworkConfig(
-            indent=2, contents=output[1], ignore_lines=diff_ignore_lines
-        )
+        running_config = NetworkConfig(indent=2, contents=output[0], ignore_lines=diff_ignore_lines)
+        startup_config = NetworkConfig(indent=2, contents=output[1], ignore_lines=diff_ignore_lines)
 
         if running_config.sha1 != startup_config.sha1:
             save_config(module, result)
@@ -541,15 +523,11 @@ def main():
             contents = running_config
 
         # recreate the object in order to process diff_ignore_lines
-        running_config = NetworkConfig(
-            indent=2, contents=contents, ignore_lines=diff_ignore_lines
-        )
+        running_config = NetworkConfig(indent=2, contents=contents, ignore_lines=diff_ignore_lines)
 
         if module.params["diff_against"] == "running":
             if module.check_mode:
-                module.warn(
-                    "unable to perform diff against running-config due to check mode"
-                )
+                module.warn("unable to perform diff against running-config due to check mode")
                 contents = None
             else:
                 contents = config.config_text
@@ -565,9 +543,7 @@ def main():
             contents = module.params["intended_config"]
 
         if contents is not None:
-            base_config = NetworkConfig(
-                indent=2, contents=contents, ignore_lines=diff_ignore_lines
-            )
+            base_config = NetworkConfig(indent=2, contents=contents, ignore_lines=diff_ignore_lines)
 
             if running_config.sha1 != base_config.sha1:
                 if module.params["diff_against"] == "intended":
@@ -584,9 +560,7 @@ def main():
                     }
                 )
 
-    if result.get("changed") and any(
-        (module.params["src"], module.params["lines"])
-    ):
+    if result.get("changed") and any((module.params["src"], module.params["lines"])):
         msg = (
             "To ensure idempotency and correct diff the input configuration lines should be"
             " similar to how they appear if present in"

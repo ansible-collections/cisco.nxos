@@ -17,6 +17,7 @@
 # pylint: skip-file
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -157,20 +158,15 @@ updates:
 """
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    Version,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    run_commands,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
+    load_config,
+    nxos_argument_spec,
+    run_commands,
 )
-from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import Version
 
 
 def check_args(module, warnings, capabilities):
@@ -255,15 +251,11 @@ def map_obj_to_commands(want, have, module, warnings, capabilities):
             commands["sandbox"] = "no %s" % commands["sandbox"]
 
     if os_platform and os_version:
-        if (os_platform == "N9K" or os_platform == "N3K") and Version(
-            os_version
-        ) >= "9.2":
+        if (os_platform == "N9K" or os_platform == "N3K") and Version(os_version) >= "9.2":
             if needs_update("ssl_strong_ciphers"):
                 commands["ssl_strong_ciphers"] = "nxapi ssl ciphers weak"
                 if want["ssl_strong_ciphers"] is True:
-                    commands[
-                        "ssl_strong_ciphers"
-                    ] = "no nxapi ssl ciphers weak"
+                    commands["ssl_strong_ciphers"] = "no nxapi ssl ciphers weak"
 
             have_ssl_protocols = ""
             want_ssl_protocols = ""
@@ -274,9 +266,7 @@ def map_obj_to_commands(want, have, module, warnings, capabilities):
             }.items():
                 if needs_update(key):
                     if want.get(key) is True:
-                        want_ssl_protocols = " ".join(
-                            [want_ssl_protocols, value]
-                        )
+                        want_ssl_protocols = " ".join([want_ssl_protocols, value])
                 elif have.get(key) is True:
                     have_ssl_protocols = " ".join([have_ssl_protocols, value])
 
@@ -323,9 +313,7 @@ def parse_https(data):
 
 
 def parse_sandbox(data):
-    sandbox = [
-        item for item in data.split("\n") if re.search(r".*sandbox.*", item)
-    ]
+    sandbox = [item for item in data.split("\n") if re.search(r".*sandbox.*", item)]
     value = False
     if sandbox and sandbox[0] == "nxapi sandbox":
         value = True
@@ -408,19 +396,13 @@ def main():
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
-    warning_msg = (
-        "Module nxos_nxapi currently defaults to configure 'http port 80'. "
-    )
+    warning_msg = "Module nxos_nxapi currently defaults to configure 'http port 80'. "
     warning_msg += "Default behavior is changing to configure 'https port 443'"
     warning_msg += " when params 'http, http_port, https, https_port' are not set in the playbook"
-    module.deprecate(
-        msg=warning_msg, date="2022-06-01", collection_name="cisco.nxos"
-    )
+    module.deprecate(msg=warning_msg, date="2022-06-01", collection_name="cisco.nxos")
 
     capabilities = get_capabilities(module)
 

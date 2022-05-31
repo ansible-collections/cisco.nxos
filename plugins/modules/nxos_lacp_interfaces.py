@@ -28,6 +28,7 @@ The module file for nxos_lacp_interfaces
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -341,6 +342,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_interfacesArgs,
 )

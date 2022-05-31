@@ -4,21 +4,23 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import platform
 import re
 
+from ansible.module_utils.six import iteritems
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    run_commands,
-    get_config,
     get_capabilities,
+    get_config,
+    run_commands,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     get_interface_type,
     normalize_interface,
 )
-from ansible.module_utils.six import iteritems
 
 
 g_config = None
@@ -42,8 +44,7 @@ class FactsBase(object):
             return resp[0]
         except IndexError:
             self.warnings.append(
-                "command %s failed, facts for this command will not be populated"
-                % command_string
+                "command %s failed, facts for this command will not be populated" % command_string
             )
             return None
 
@@ -139,12 +140,8 @@ class Hardware(FactsBase):
 
         if data:
             if isinstance(data, dict):
-                self.facts["memtotal_mb"] = (
-                    int(data["memory_usage_total"]) / 1024
-                )
-                self.facts["memfree_mb"] = (
-                    int(data["memory_usage_free"]) / 1024
-                )
+                self.facts["memtotal_mb"] = int(data["memory_usage_total"]) / 1024
+                self.facts["memfree_mb"] = int(data["memory_usage_free"]) / 1024
             else:
                 self.facts["memtotal_mb"] = self.parse_memtotal_mb(data)
                 self.facts["memfree_mb"] = self.parse_memfree_mb(data)
@@ -191,13 +188,9 @@ class Interfaces(FactsBase):
         ]
     )
 
-    INTERFACE_IPV4_MAP = frozenset(
-        [("eth_ip_addr", "address"), ("eth_ip_mask", "masklen")]
-    )
+    INTERFACE_IPV4_MAP = frozenset([("eth_ip_addr", "address"), ("eth_ip_mask", "masklen")])
 
-    INTERFACE_SVI_IPV4_MAP = frozenset(
-        [("svi_ip_addr", "address"), ("svi_ip_mask", "masklen")]
-    )
+    INTERFACE_SVI_IPV4_MAP = frozenset([("svi_ip_addr", "address"), ("svi_ip_mask", "masklen")])
 
     INTERFACE_IPV6_MAP = frozenset([("addr", "address"), ("prefix", "subnet")])
 
@@ -221,9 +214,7 @@ class Interfaces(FactsBase):
 
         if data:
             if isinstance(data, dict):
-                self.facts["interfaces"] = self.populate_structured_interfaces(
-                    data
-                )
+                self.facts["interfaces"] = self.populate_structured_interfaces(data)
             else:
                 interfaces = self.parse_interfaces(data)
                 self.facts["interfaces"] = self.populate_interfaces(interfaces)
@@ -242,22 +233,16 @@ class Interfaces(FactsBase):
         data = self.run("show lldp neighbors", output="json")
         if data:
             if isinstance(data, dict):
-                self.facts["neighbors"].update(
-                    self.populate_structured_neighbors_lldp(data)
-                )
+                self.facts["neighbors"].update(self.populate_structured_neighbors_lldp(data))
             else:
                 self.facts["neighbors"].update(self.populate_neighbors(data))
 
         data = self.run("show cdp neighbors detail", output="json")
         if data:
             if isinstance(data, dict):
-                self.facts["neighbors"].update(
-                    self.populate_structured_neighbors_cdp(data)
-                )
+                self.facts["neighbors"].update(self.populate_structured_neighbors_cdp(data))
             else:
-                self.facts["neighbors"].update(
-                    self.populate_neighbors_cdp(data)
-                )
+                self.facts["neighbors"].update(self.populate_neighbors_cdp(data))
 
         self.facts["neighbors"].pop(None, None)  # Remove null key
 
@@ -278,15 +263,11 @@ class Interfaces(FactsBase):
                 intf.update(self.transform_dict(item, self.INTERFACE_MAP))
 
             if "eth_ip_addr" in item:
-                intf["ipv4"] = self.transform_dict(
-                    item, self.INTERFACE_IPV4_MAP
-                )
+                intf["ipv4"] = self.transform_dict(item, self.INTERFACE_IPV4_MAP)
                 self.facts["all_ipv4_addresses"].append(item["eth_ip_addr"])
 
             if "svi_ip_addr" in item:
-                intf["ipv4"] = self.transform_dict(
-                    item, self.INTERFACE_SVI_IPV4_MAP
-                )
+                intf["ipv4"] = self.transform_dict(item, self.INTERFACE_SVI_IPV4_MAP)
                 self.facts["all_ipv4_addresses"].append(item["svi_ip_addr"])
 
             interfaces[name] = intf
@@ -302,15 +283,11 @@ class Interfaces(FactsBase):
                 for item in data:
                     name = item["ROW_intf"]["intf-name"]
                     intf = self.facts["interfaces"][name]
-                    intf["ipv6"] = self.transform_dict(
-                        item, self.INTERFACE_IPV6_MAP
-                    )
+                    intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
                     try:
                         addr = item["ROW_intf"]["addr"]
                     except KeyError:
-                        addr = item["ROW_intf"]["TABLE_addr"]["ROW_addr"][
-                            "addr"
-                        ]
+                        addr = item["ROW_intf"]["TABLE_addr"]["ROW_addr"]["addr"]
                     self.facts["all_ipv6_addresses"].append(addr)
             else:
                 return ""
@@ -336,9 +313,7 @@ class Interfaces(FactsBase):
 
     def populate_structured_neighbors_cdp(self, data):
         objects = dict()
-        data = data["TABLE_cdp_neighbor_detail_info"][
-            "ROW_cdp_neighbor_detail_info"
-        ]
+        data = data["TABLE_cdp_neighbor_detail_info"]["ROW_cdp_neighbor_detail_info"]
 
         if isinstance(data, dict):
             data = [data]
@@ -369,9 +344,7 @@ class Interfaces(FactsBase):
                 match = re.match(r"^(\S+)", line)
                 if match:
                     key = match.group(1)
-                    if not key.startswith("admin") or not key.startswith(
-                        "IPv6 Interface"
-                    ):
+                    if not key.startswith("admin") or not key.startswith("IPv6 Interface"):
                         parsed[key] = line
         return parsed
 
@@ -381,18 +354,12 @@ class Interfaces(FactsBase):
             intf = dict()
             if get_interface_type(key) == "svi":
                 intf["state"] = self.parse_state(key, value, intf_type="svi")
-                intf["macaddress"] = self.parse_macaddress(
-                    value, intf_type="svi"
-                )
+                intf["macaddress"] = self.parse_macaddress(value, intf_type="svi")
                 intf["mtu"] = self.parse_mtu(value, intf_type="svi")
-                intf["bandwidth"] = self.parse_bandwidth(
-                    value, intf_type="svi"
-                )
+                intf["bandwidth"] = self.parse_bandwidth(value, intf_type="svi")
                 intf["type"] = self.parse_type(value, intf_type="svi")
                 if "Internet Address" in value:
-                    intf["ipv4"] = self.parse_ipv4_address(
-                        value, intf_type="svi"
-                    )
+                    intf["ipv4"] = self.parse_ipv4_address(value, intf_type="svi")
                 facts[key] = intf
             else:
                 intf["state"] = self.parse_state(key, value)
@@ -616,9 +583,7 @@ class Legacy(FactsBase):
         data = self.run("show interface", output="json")
         if data:
             if isinstance(data, dict):
-                self.facts[
-                    "interfaces_list"
-                ] = self.parse_structured_interfaces(data)
+                self.facts["interfaces_list"] = self.parse_structured_interfaces(data)
             else:
                 self.facts["interfaces_list"] = self.parse_interfaces(data)
 
@@ -646,13 +611,9 @@ class Legacy(FactsBase):
         data = self.run("show environment power", output="json")
         if data:
             if isinstance(data, dict):
-                self.facts[
-                    "power_supply_info"
-                ] = self.parse_structured_power_supply_info(data)
+                self.facts["power_supply_info"] = self.parse_structured_power_supply_info(data)
             else:
-                self.facts["power_supply_info"] = self.parse_power_supply_info(
-                    data
-                )
+                self.facts["power_supply_info"] = self.parse_power_supply_info(data)
 
     def parse_structured_interfaces(self, data):
         objects = list()

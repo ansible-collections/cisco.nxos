@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -181,20 +182,20 @@ import re
 from copy import deepcopy
 from functools import partial
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    run_commands,
-    load_config,
-    get_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
     to_list,
 )
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
+    run_commands,
+)
+
 
 BUILTIN_ROLES = [
     "network-admin",
@@ -307,9 +308,7 @@ def parse_roles(data):
 
 
 def map_config_to_obj(module):
-    out = run_commands(
-        module, [{"command": "show user-account", "output": "json"}]
-    )
+    out = run_commands(module, [{"command": "show user-account", "output": "json"}])
     data = out[0]
 
     objects = list()
@@ -404,9 +403,7 @@ def main():
     element_spec = dict(
         name=dict(),
         configured_password=dict(no_log=True),
-        update_password=dict(
-            default="always", choices=["on_create", "always"]
-        ),
+        update_password=dict(default="always", choices=["on_create", "always"]),
         roles=dict(type="list", aliases=["role"], elements="str"),
         sshkey=dict(no_log=False),
         state=dict(default="present", choices=["present", "absent"]),
@@ -468,11 +465,7 @@ def main():
                     module.fail_json(msg=resp)
                 else:
                     result["warnings"].extend(
-                        [
-                            x[9:]
-                            for x in resp.splitlines()
-                            if x.startswith("WARNING: ")
-                        ]
+                        [x[9:] for x in resp.splitlines() if x.startswith("WARNING: ")]
                     )
 
         result["changed"] = True

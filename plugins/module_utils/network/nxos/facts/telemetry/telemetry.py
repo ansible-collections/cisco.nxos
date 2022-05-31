@@ -11,32 +11,29 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.telemetry.telemetry import (
     TelemetryArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.cmdref.telemetry.telemetry import (
-    TMS_GLOBAL,
     TMS_DESTGROUP,
+    TMS_GLOBAL,
     TMS_SENSORGROUP,
     TMS_SUBSCRIPTION,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import NxosCmdRef
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.telemetry.telemetry import (
-    get_instance_data,
     cr_key_lookup,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.telemetry.telemetry import (
+    get_instance_data,
     normalize_data,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    NxosCmdRef,
 )
 
 
@@ -82,9 +79,7 @@ class TelemetryFacts(object):
 
         # Get Telemetry Global Data
         cmd_ref["TMS_GLOBAL"]["ref"] = []
-        cmd_ref["TMS_GLOBAL"]["ref"].append(
-            NxosCmdRef(self._module, TMS_GLOBAL)
-        )
+        cmd_ref["TMS_GLOBAL"]["ref"].append(NxosCmdRef(self._module, TMS_GLOBAL))
         ref = cmd_ref["TMS_GLOBAL"]["ref"][0]
         ref.set_context()
         ref.get_existing()
@@ -100,9 +95,7 @@ class TelemetryFacts(object):
         for line in device_cache_lines:
             if re.search(r"destination-group", line):
                 resource_key = line.strip()
-                cmd_ref["TMS_DESTGROUP"]["ref"].append(
-                    NxosCmdRef(self._module, TMS_DESTGROUP)
-                )
+                cmd_ref["TMS_DESTGROUP"]["ref"].append(NxosCmdRef(self._module, TMS_DESTGROUP))
                 ref = cmd_ref["TMS_DESTGROUP"]["ref"][-1]
                 ref.set_context([resource_key])
                 ref.get_existing(device_cache)
@@ -113,9 +106,7 @@ class TelemetryFacts(object):
         for line in device_cache_lines:
             if re.search(r"sensor-group", line):
                 resource_key = line.strip()
-                cmd_ref["TMS_SENSORGROUP"]["ref"].append(
-                    NxosCmdRef(self._module, TMS_SENSORGROUP)
-                )
+                cmd_ref["TMS_SENSORGROUP"]["ref"].append(NxosCmdRef(self._module, TMS_SENSORGROUP))
                 ref = cmd_ref["TMS_SENSORGROUP"]["ref"][-1]
                 ref.set_context([resource_key])
                 ref.get_existing(device_cache)
@@ -171,39 +162,24 @@ class TelemetryFacts(object):
                 for cr in cmd_ref[mo]["ref"]:
                     cr_keys = cr_key_lookup(key, mo)
                     for cr_key in cr_keys:
-                        if cr._ref.get(cr_key) and cr._ref[cr_key].get(
-                            "existing"
-                        ):
+                        if cr._ref.get(cr_key) and cr._ref[cr_key].get("existing"):
                             if isinstance(config[key], dict):
                                 for k in config[key].keys():
-                                    for existing_key in cr._ref[cr_key][
-                                        "existing"
-                                    ].keys():
-                                        config[key][k] = cr._ref[cr_key][
-                                            "existing"
-                                        ][existing_key][k]
+                                    for existing_key in cr._ref[cr_key]["existing"].keys():
+                                        config[key][k] = cr._ref[cr_key]["existing"][existing_key][
+                                            k
+                                        ]
                                 continue
                             if isinstance(config[key], list):
-                                for existing_key in cr._ref[cr_key][
-                                    "existing"
-                                ].keys():
-                                    data = get_instance_data(
-                                        key, cr_key, cr, existing_key
-                                    )
+                                for existing_key in cr._ref[cr_key]["existing"].keys():
+                                    data = get_instance_data(key, cr_key, cr, existing_key)
                                     config[key].append(data)
                                 continue
-                            for existing_key in cr._ref[cr_key][
-                                "existing"
-                            ].keys():
-                                config[key] = cr._ref[cr_key]["existing"][
-                                    existing_key
-                                ]
+                            for existing_key in cr._ref[cr_key]["existing"].keys():
+                                config[key] = cr._ref[cr_key]["existing"][existing_key]
                         elif cr._ref.get(cr_key):
                             data = get_instance_data(key, cr_key, cr, None)
-                            if (
-                                isinstance(config[key], list)
-                                and data not in config[key]
-                            ):
+                            if isinstance(config[key], list) and data not in config[key]:
                                 config[key].append(data)
 
         return utils.remove_empties(config)

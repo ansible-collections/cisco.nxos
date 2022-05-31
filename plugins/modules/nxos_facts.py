@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -212,16 +213,15 @@ vlan_list:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.facts.facts import (
     FactsArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
     FACT_RESOURCE_SUBSETS,
+    Facts,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import nxos_argument_spec
 
 
 def main():
@@ -233,17 +233,13 @@ def main():
     argument_spec = FactsArgs.argument_spec
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = []
 
     ansible_facts = {}
     if module.params.get("available_network_resources"):
-        ansible_facts["available_network_resources"] = sorted(
-            FACT_RESOURCE_SUBSETS.keys()
-        )
+        ansible_facts["available_network_resources"] = sorted(FACT_RESOURCE_SUBSETS.keys())
     result = Facts(module).get_facts()
     additional_facts, additional_warnings = result
     ansible_facts.update(additional_facts)

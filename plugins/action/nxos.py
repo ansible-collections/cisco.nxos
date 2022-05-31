@@ -18,6 +18,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import copy
@@ -25,17 +26,17 @@ import re
 import sys
 
 from ansible import constants as C
+from ansible.module_utils.connection import Connection
+from ansible.utils.display import Display
 from ansible_collections.ansible.netcommon.plugins.action.network import (
     ActionModule as ActionNetworkModule,
 )
-from ansible.module_utils.connection import Connection
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     load_provider,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_provider_spec,
-)
-from ansible.utils.display import Display
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import nxos_provider_spec
+
 
 display = Display()
 
@@ -45,9 +46,7 @@ class ActionModule(ActionNetworkModule):
         del tmp  # tmp no longer has any effect
 
         module_name = self._task.action.split(".")[-1]
-        self._config_module = (
-            True if module_name in ["nxos_config", "config"] else False
-        )
+        self._config_module = True if module_name in ["nxos_config", "config"] else False
         persistent_connection = self._play_context.connection.split(".")[-1]
 
         warnings = []
@@ -58,8 +57,7 @@ class ActionModule(ActionNetworkModule):
         ) and module_name in ("nxos_file_copy", "nxos_nxapi"):
             return {
                 "failed": True,
-                "msg": "Transport type 'nxapi' is not valid for '%s' module."
-                % (module_name),
+                "msg": "Transport type 'nxapi' is not valid for '%s' module." % (module_name),
             }
 
         if module_name == "nxos_file_copy":
@@ -79,9 +77,7 @@ class ActionModule(ActionNetworkModule):
             connect_ssh_port = self._task.args.get("connect_ssh_port", 22)
 
             if file_pull:
-                conn.set_option(
-                    "persistent_command_timeout", file_pull_timeout
-                )
+                conn.set_option("persistent_command_timeout", file_pull_timeout)
                 conn.set_option("port", connect_ssh_port)
 
         if module_name == "nxos_install_os":
@@ -90,30 +86,19 @@ class ActionModule(ActionNetworkModule):
                 persistent_command_timeout = C.PERSISTENT_COMMAND_TIMEOUT
                 persistent_connect_timeout = C.PERSISTENT_CONNECT_TIMEOUT
             else:
-                persistent_command_timeout = connection.get_option(
-                    "persistent_command_timeout"
-                )
-                persistent_connect_timeout = connection.get_option(
-                    "persistent_connect_timeout"
-                )
+                persistent_command_timeout = connection.get_option("persistent_command_timeout")
+                persistent_connect_timeout = connection.get_option("persistent_connect_timeout")
 
             display.vvvv(
-                "PERSISTENT_COMMAND_TIMEOUT is %s"
-                % str(persistent_command_timeout),
+                "PERSISTENT_COMMAND_TIMEOUT is %s" % str(persistent_command_timeout),
                 self._play_context.remote_addr,
             )
             display.vvvv(
-                "PERSISTENT_CONNECT_TIMEOUT is %s"
-                % str(persistent_connect_timeout),
+                "PERSISTENT_CONNECT_TIMEOUT is %s" % str(persistent_connect_timeout),
                 self._play_context.remote_addr,
             )
-            if (
-                persistent_command_timeout < 600
-                or persistent_connect_timeout < 600
-            ):
-                msg = (
-                    "PERSISTENT_COMMAND_TIMEOUT and PERSISTENT_CONNECT_TIMEOUT"
-                )
+            if persistent_command_timeout < 600 or persistent_connect_timeout < 600:
+                msg = "PERSISTENT_COMMAND_TIMEOUT and PERSISTENT_CONNECT_TIMEOUT"
                 msg += " must be set to 600 seconds or higher when using nxos_install_os module."
                 msg += " Current persistent_command_timeout setting:" + str(
                     persistent_command_timeout
@@ -134,16 +119,11 @@ class ActionModule(ActionNetworkModule):
 
             if module_name == "nxos_gir":
                 conn = Connection(self._connection.socket_path)
-                persistent_command_timeout = conn.get_option(
-                    "persistent_command_timeout"
-                )
+                persistent_command_timeout = conn.get_option("persistent_command_timeout")
                 gir_timeout = 200
                 if persistent_command_timeout < gir_timeout:
                     conn.set_option("persistent_command_timeout", gir_timeout)
-                    msg = (
-                        "timeout value extended to %ss for nxos_gir"
-                        % gir_timeout
-                    )
+                    msg = "timeout value extended to %ss for nxos_gir" % gir_timeout
                     display.warning(msg)
 
         elif self._play_context.connection == "local":
@@ -159,22 +139,11 @@ class ActionModule(ActionNetworkModule):
                 pc = copy.deepcopy(self._play_context)
                 pc.connection = "ansible.netcommon.network_cli"
                 pc.network_os = "cisco.nxos.nxos"
-                pc.remote_addr = (
-                    provider["host"] or self._play_context.remote_addr
-                )
-                pc.port = int(
-                    provider["port"] or self._play_context.port or 22
-                )
-                pc.remote_user = (
-                    provider["username"] or self._play_context.connection_user
-                )
-                pc.password = (
-                    provider["password"] or self._play_context.password
-                )
-                pc.private_key_file = (
-                    provider["ssh_keyfile"]
-                    or self._play_context.private_key_file
-                )
+                pc.remote_addr = provider["host"] or self._play_context.remote_addr
+                pc.port = int(provider["port"] or self._play_context.port or 22)
+                pc.remote_user = provider["username"] or self._play_context.connection_user
+                pc.password = provider["password"] or self._play_context.password
+                pc.private_key_file = provider["ssh_keyfile"] or self._play_context.private_key_file
                 pc.become = provider["authorize"] or False
                 if pc.become:
                     pc.become_method = "enable"
@@ -205,9 +174,7 @@ class ActionModule(ActionNetworkModule):
                     if provider["timeout"]
                     else connection.get_option("persistent_command_timeout")
                 )
-                connection.set_options(
-                    direct={"persistent_command_timeout": command_timeout}
-                )
+                connection.set_options(direct={"persistent_command_timeout": command_timeout})
 
                 socket_path = connection.run()
                 display.vvvv("socket_path: %s" % socket_path, pc.remote_addr)
@@ -221,9 +188,7 @@ class ActionModule(ActionNetworkModule):
                 task_vars["ansible_socket"] = socket_path
 
             else:
-                self._task.args[
-                    "provider"
-                ] = ActionModule.nxapi_implementation(
+                self._task.args["provider"] = ActionModule.nxapi_implementation(
                     provider, self._play_context
                 )
                 warnings.append(

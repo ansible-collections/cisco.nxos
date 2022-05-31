@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_interface_ospf
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -65,9 +67,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
 
     def test_bfd_1(self):
         # default -> enable
-        set_module_args(
-            dict(interface="ethernet1/33", ospf=1, area=1, bfd="enable")
-        )
+        set_module_args(dict(interface="ethernet1/33", ospf=1, area=1, bfd="enable"))
         self.execute_module(
             changed=True,
             commands=[
@@ -78,9 +78,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
         )
 
         # default -> disable
-        set_module_args(
-            dict(interface="ethernet1/33", ospf=1, area=1, bfd="disable")
-        )
+        set_module_args(dict(interface="ethernet1/33", ospf=1, area=1, bfd="disable"))
         self.execute_module(
             changed=True,
             commands=[
@@ -92,45 +90,29 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
 
     def test_bfd_2(self):
         # default -> default
-        set_module_args(
-            dict(interface="ethernet1/33.101", ospf=1, area=1, bfd="default")
-        )
+        set_module_args(dict(interface="ethernet1/33.101", ospf=1, area=1, bfd="default"))
         self.execute_module(changed=False)
 
         # enable -> default
-        set_module_args(
-            dict(interface="ethernet1/36", ospf=1, area=1, bfd="default")
-        )
-        self.execute_module(
-            changed=True, commands=["interface Ethernet1/36", "no ip ospf bfd"]
-        )
+        set_module_args(dict(interface="ethernet1/36", ospf=1, area=1, bfd="default"))
+        self.execute_module(changed=True, commands=["interface Ethernet1/36", "no ip ospf bfd"])
 
         # disable -> default
-        set_module_args(
-            dict(interface="ethernet1/37", ospf=1, area=1, bfd="default")
-        )
-        self.execute_module(
-            changed=True, commands=["interface Ethernet1/37", "no ip ospf bfd"]
-        )
+        set_module_args(dict(interface="ethernet1/37", ospf=1, area=1, bfd="default"))
+        self.execute_module(changed=True, commands=["interface Ethernet1/37", "no ip ospf bfd"])
 
     def test_bfd_3(self):
         # enable -> idempotence
-        set_module_args(
-            dict(interface="ethernet1/36", ospf=1, area=1, bfd="enable")
-        )
+        set_module_args(dict(interface="ethernet1/36", ospf=1, area=1, bfd="enable"))
         self.execute_module(changed=False)
 
         # disable -> idempotence
-        set_module_args(
-            dict(interface="ethernet1/37", ospf=1, area=1, bfd="disable")
-        )
+        set_module_args(dict(interface="ethernet1/37", ospf=1, area=1, bfd="disable"))
         self.execute_module(changed=False)
 
     def test_bfd_4(self):
         # None -> absent
-        set_module_args(
-            dict(interface="ethernet1/33.101", ospf=1, area=1, state="absent")
-        )
+        set_module_args(dict(interface="ethernet1/33.101", ospf=1, area=1, state="absent"))
         self.execute_module(
             changed=True,
             commands=[
@@ -179,9 +161,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
 
     def test_absent_1(self):
         # area only -> absent
-        set_module_args(
-            dict(interface="ethernet1/33.101", ospf=1, area=1, state="absent")
-        )
+        set_module_args(dict(interface="ethernet1/33.101", ospf=1, area=1, state="absent"))
         self.execute_module(
             changed=True,
             commands=[
@@ -191,19 +171,13 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
         )
 
         # None -> absent
-        set_module_args(
-            dict(interface="ethernet1/33", ospf=1, area=1, state="absent")
-        )
+        set_module_args(dict(interface="ethernet1/33", ospf=1, area=1, state="absent"))
         self.execute_module(changed=False)
 
     def test_loopback_interface_failed(self):
-        set_module_args(
-            dict(interface="loopback0", ospf=1, area=0, passive_interface=True)
-        )
+        set_module_args(dict(interface="loopback0", ospf=1, area=0, passive_interface=True))
         self.execute_module(failed=True, changed=False)
-        set_module_args(
-            dict(interface="loopback0", ospf=1, area=0, network="broadcast")
-        )
+        set_module_args(dict(interface="loopback0", ospf=1, area=0, network="broadcast"))
         self.execute_module(failed=True, changed=False)
 
     def test_nxos_interface_ospf_passive(self):
@@ -258,9 +232,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
             ],
         )
         # True -> default (absent)
-        set_module_args(
-            dict(interface="ethernet1/34", ospf=1, area=1, state="absent")
-        )
+        set_module_args(dict(interface="ethernet1/34", ospf=1, area=1, state="absent"))
         self.execute_module(
             changed=True,
             commands=[
@@ -283,9 +255,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
             commands=["interface Ethernet1/35", "ip ospf passive-interface"],
         )
         # False -> default (absent)
-        set_module_args(
-            dict(interface="ethernet1/35", ospf=1, area=1, state="absent")
-        )
+        set_module_args(dict(interface="ethernet1/35", ospf=1, area=1, state="absent"))
         self.execute_module(
             changed=True,
             commands=[

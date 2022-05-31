@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -17,17 +18,16 @@ based on the configuration.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    get_logging_sevmap,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.logging_global.logging_global import (
+    Logging_globalArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.logging_global import (
     Logging_globalTemplate,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.logging_global.logging_global import (
-    Logging_globalArgs,
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    get_logging_sevmap,
 )
 
 
@@ -62,9 +62,7 @@ class Logging_globalFacts(object):
             data = self.get_config(connection)
 
         # parse native config using the Logging_global template
-        logging_global_parser = Logging_globalTemplate(
-            lines=data.splitlines(), module=self._module
-        )
+        logging_global_parser = Logging_globalTemplate(lines=data.splitlines(), module=self._module)
         objs = logging_global_parser.parse()
 
         if objs:
@@ -83,9 +81,7 @@ class Logging_globalFacts(object):
         ansible_facts["ansible_network_resources"].pop("logging_global", None)
 
         params = utils.remove_empties(
-            logging_global_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+            logging_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
         )
 
         facts["logging_global"] = params.get("config", {})

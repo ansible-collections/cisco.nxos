@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -174,22 +175,20 @@ commands:
 """
 
 import re
+
 from copy import deepcopy
+
+from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    remove_default_spec,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
-    run_commands,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     normalize_interface,
-)
-from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    remove_default_spec,
+    nxos_argument_spec,
+    run_commands,
 )
 
 
@@ -230,15 +229,11 @@ def map_obj_to_commands(updates, module):
 
         if state == "absent":
             if obj_in_have:
-                members_to_remove = list(
-                    set(obj_in_have["members"]) - set(members)
-                )
+                members_to_remove = list(set(obj_in_have["members"]) - set(members))
                 if members_to_remove:
                     for m in members_to_remove:
                         commands.append("interface {0}".format(m))
-                        commands.append(
-                            "no channel-group {0}".format(obj_in_have["group"])
-                        )
+                        commands.append("no channel-group {0}".format(obj_in_have["group"]))
                         commands.append("exit")
                 commands.append("no interface port-channel {0}".format(group))
 
@@ -252,75 +247,43 @@ def map_obj_to_commands(updates, module):
                     for m in members:
                         commands.append("interface {0}".format(m))
                         if force:
-                            commands.append(
-                                "channel-group {0} force mode {1}".format(
-                                    group, mode
-                                )
-                            )
+                            commands.append("channel-group {0} force mode {1}".format(group, mode))
                         else:
-                            commands.append(
-                                "channel-group {0} mode {1}".format(
-                                    group, mode
-                                )
-                            )
+                            commands.append("channel-group {0} mode {1}".format(group, mode))
 
             else:
                 if members:
                     if not obj_in_have["members"]:
                         for m in members:
-                            commands.append(
-                                "interface port-channel {0}".format(group)
-                            )
+                            commands.append("interface port-channel {0}".format(group))
                             commands.append("exit")
                             commands.append("interface {0}".format(m))
                             if force:
                                 commands.append(
-                                    "channel-group {0} force mode {1}".format(
-                                        group, mode
-                                    )
+                                    "channel-group {0} force mode {1}".format(group, mode)
                                 )
                             else:
-                                commands.append(
-                                    "channel-group {0} mode {1}".format(
-                                        group, mode
-                                    )
-                                )
+                                commands.append("channel-group {0} mode {1}".format(group, mode))
 
                     elif set(members) != set(obj_in_have["members"]):
-                        missing_members = list(
-                            set(members) - set(obj_in_have["members"])
-                        )
+                        missing_members = list(set(members) - set(obj_in_have["members"]))
                         for m in missing_members:
-                            commands.append(
-                                "interface port-channel {0}".format(group)
-                            )
+                            commands.append("interface port-channel {0}".format(group))
                             commands.append("exit")
                             commands.append("interface {0}".format(m))
                             if force:
                                 commands.append(
-                                    "channel-group {0} force mode {1}".format(
-                                        group, mode
-                                    )
+                                    "channel-group {0} force mode {1}".format(group, mode)
                                 )
                             else:
-                                commands.append(
-                                    "channel-group {0} mode {1}".format(
-                                        group, mode
-                                    )
-                                )
+                                commands.append("channel-group {0} mode {1}".format(group, mode))
 
-                        superfluous_members = list(
-                            set(obj_in_have["members"]) - set(members)
-                        )
+                        superfluous_members = list(set(obj_in_have["members"]) - set(members))
                         for m in superfluous_members:
-                            commands.append(
-                                "interface port-channel {0}".format(group)
-                            )
+                            commands.append("interface port-channel {0}".format(group))
                             commands.append("exit")
                             commands.append("interface {0}".format(m))
-                            commands.append(
-                                "no channel-group {0}".format(group)
-                            )
+                            commands.append("no channel-group {0}".format(group))
 
                     else:
                         diff = get_diff(w, obj_in_have)
@@ -330,24 +293,18 @@ def map_obj_to_commands(updates, module):
                                 commands.append("interface {0}".format(i))
                                 if force:
                                     commands.append(
-                                        "channel-group {0} force mode {1}".format(
-                                            group, mode
-                                        )
+                                        "channel-group {0} force mode {1}".format(group, mode)
                                     )
                                 else:
                                     commands.append(
-                                        "channel-group {0} mode {1}".format(
-                                            group, mode
-                                        )
+                                        "channel-group {0} mode {1}".format(group, mode)
                                     )
 
     if purge:
         for h in have:
             obj_in_want = search_obj_in_list(h["group"], want)
             if not obj_in_want:
-                commands.append(
-                    "no interface port-channel {0}".format(h["group"])
-                )
+                commands.append("no interface port-channel {0}".format(h["group"]))
 
     return commands
 
@@ -371,9 +328,7 @@ def map_params_to_obj(module):
     else:
         members = None
         if module.params["members"]:
-            members = [
-                normalize_interface(i) for i in module.params["members"]
-            ]
+            members = [normalize_interface(i) for i in module.params["members"]]
 
         obj.append(
             {
@@ -405,9 +360,7 @@ def parse_mode(module, m):
 
     flags = ["| section interface.{0}".format(m)]
     config = get_config(module, flags=flags)
-    match = re.search(
-        r"channel-group [0-9]+ (force )?mode (\S+)", config, re.M
-    )
+    match = re.search(r"channel-group [0-9]+ (force )?mode (\S+)", config, re.M)
     if match:
         mode = match.group(2)
 
@@ -495,13 +448,9 @@ def main():
             type="str",
         ),
         min_links=dict(required=False, default=None, type="int"),
-        members=dict(
-            required=False, default=None, type="list", elements="str"
-        ),
+        members=dict(required=False, default=None, type="list", elements="str"),
         force=dict(required=False, default=False, type="bool"),
-        state=dict(
-            required=False, choices=["absent", "present"], default="present"
-        ),
+        state=dict(required=False, choices=["absent", "present"], default="present"),
     )
 
     aggregate_spec = deepcopy(element_spec)

@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,6 +16,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -88,13 +90,9 @@ def _tmplt_max_metric(proc):
         command = "no {0}".format(command)
     else:
         external_lsa = max_metric.get("router_lsa", {}).get("external_lsa", {})
-        stub_prefix_lsa = max_metric.get("router_lsa", {}).get(
-            "stub_prefix_lsa", {}
-        )
+        stub_prefix_lsa = max_metric.get("router_lsa", {}).get("stub_prefix_lsa", {})
         on_startup = max_metric.get("router_lsa", {}).get("on_startup", {})
-        inter_area_prefix_lsa = max_metric.get("router_lsa", {}).get(
-            "inter_area_prefix_lsa", {}
-        )
+        inter_area_prefix_lsa = max_metric.get("router_lsa", {}).get("inter_area_prefix_lsa", {})
         if external_lsa:
             command += " external-lsa"
             if external_lsa.get("max_metric_value"):
@@ -106,15 +104,11 @@ def _tmplt_max_metric(proc):
             if on_startup.get("wait_period"):
                 command += " {wait_period}".format(**on_startup)
             if on_startup.get("wait_for_bgp_asn"):
-                command += " wait-for bgp {wait_for_bgp_asn}".format(
-                    **on_startup
-                )
+                command += " wait-for bgp {wait_for_bgp_asn}".format(**on_startup)
         if inter_area_prefix_lsa:
             command += " inter-area-prefix-lsa"
             if inter_area_prefix_lsa.get("max_metric_value"):
-                command += " {max_metric_value}".format(
-                    **inter_area_prefix_lsa
-                )
+                command += " {max_metric_value}".format(**inter_area_prefix_lsa)
 
     return command
 

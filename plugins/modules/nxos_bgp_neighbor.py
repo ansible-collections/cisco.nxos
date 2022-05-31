@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -213,16 +214,15 @@ commands:
 
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
 )
 
 
@@ -274,14 +274,10 @@ PARAM_TO_DEFAULT_KEYMAP = {
 def get_value(arg, config):
     command = PARAM_TO_COMMAND_KEYMAP[arg]
     has_command = re.search(r"^\s+{0}$".format(command), config, re.M)
-    has_command_val = re.search(
-        r"(?:\s+{0}\s*)(?P<value>.*)$".format(command), config, re.M
-    )
+    has_command_val = re.search(r"(?:\s+{0}\s*)(?P<value>.*)$".format(command), config, re.M)
 
     if arg == "dynamic_capability":
-        has_no_command = re.search(
-            r"\s+no\s{0}\s*$".format(command), config, re.M
-        )
+        has_no_command = re.search(r"\s+no\s{0}\s*$".format(command), config, re.M)
         value = True
         if has_no_command:
             value = False
@@ -321,9 +317,7 @@ def get_value(arg, config):
 
                 if arg in ["timers_keepalive", "pwd_type"]:
                     value = split_value[0]
-                elif (
-                    arg in ["timers_holdtime", "pwd"] and len(split_value) == 2
-                ):
+                elif arg in ["timers_holdtime", "pwd"] and len(split_value) == 2:
                     value = split_value[1]
 
     return value
@@ -333,9 +327,7 @@ def get_existing(module, args, warnings):
     existing = {}
     netcfg = CustomNetworkConfig(indent=2, contents=get_config(module))
 
-    asn_regex = re.compile(
-        r".*router\sbgp\s(?P<existing_asn>\d+(\.\d+)?).*", re.S
-    )
+    asn_regex = re.compile(r".*router\sbgp\s(?P<existing_asn>\d+(\.\d+)?).*", re.S)
     match_asn = asn_regex.match(str(netcfg))
 
     if match_asn:
@@ -356,9 +348,7 @@ def get_existing(module, args, warnings):
             existing["neighbor"] = module.params["neighbor"]
             existing["vrf"] = module.params["vrf"]
     else:
-        warnings.append(
-            "The BGP process didn't exist but the task" " just created it."
-        )
+        warnings.append("The BGP process didn't exist but the task" " just created it.")
     return existing
 
 
@@ -421,11 +411,7 @@ def state_present(module, existing, proposed, candidate):
             elif key == "timers":
                 if proposed["timers_keepalive"] != PARAM_TO_DEFAULT_KEYMAP.get(
                     "timers_keepalive"
-                ) or proposed[
-                    "timers_holdtime"
-                ] != PARAM_TO_DEFAULT_KEYMAP.get(
-                    "timers_holdtime"
-                ):
+                ) or proposed["timers_holdtime"] != PARAM_TO_DEFAULT_KEYMAP.get("timers_holdtime"):
                     command = "timers {0} {1}".format(
                         proposed["timers_keepalive"],
                         proposed["timers_holdtime"],
@@ -514,9 +500,7 @@ def main():
         timers_holdtime=dict(required=False, type="str"),
         transport_passive_only=dict(required=False, type="bool"),
         update_source=dict(required=False, type="str"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
         peer_type=dict(
             required=False,
             type="str",
@@ -553,9 +537,7 @@ def main():
                 existing_asn=existing.get("asn"),
             )
 
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
     proposed = {}
     for key, value in proposed_args.items():
         if key not in ["asn", "vrf", "neighbor", "pwd_type"]:

@@ -19,12 +19,14 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import json
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_feature
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -84,16 +86,12 @@ class TestNxosFeatureModule(TestNxosModule):
     def test_nxos_feature_enable(self):
         set_module_args(dict(feature="nve", state="enabled"))
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"], ["terminal dont-ask", "feature nv overlay"]
-        )
+        self.assertEqual(result["commands"], ["terminal dont-ask", "feature nv overlay"])
 
     def test_nxos_feature_disable(self):
         set_module_args(dict(feature="ospf", state="disabled"))
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"], ["terminal dont-ask", "no feature ospf"]
-        )
+        self.assertEqual(result["commands"], ["terminal dont-ask", "no feature ospf"])
 
 
 class TestNxosFeatureModuleMDS(TestNxosModule):
@@ -158,16 +156,12 @@ class TestNxosFeatureModuleMDS(TestNxosModule):
     def test_nxos_feature_enable(self):
         set_module_args(dict(feature="fcrxbbcredit", state="enabled"))
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"], ["terminal dont-ask", "feature fcrxbbcredit"]
-        )
+        self.assertEqual(result["commands"], ["terminal dont-ask", "feature fcrxbbcredit"])
 
     def test_nxos_feature_disable(self):
         set_module_args(dict(feature="port-track", state="disabled"))
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"], ["terminal dont-ask", "no feature port-track"]
-        )
+        self.assertEqual(result["commands"], ["terminal dont-ask", "no feature port-track"])
 
     def test_nxos_feature_enable_already_enabled(self):
         set_module_args(dict(feature="analytics", state="enabled"))

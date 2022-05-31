@@ -11,9 +11,11 @@ current configuration (as dict) and the provided configuration (as dict).
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
@@ -21,9 +23,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_diff,
     to_list,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
     search_obj_in_list,
@@ -52,9 +53,7 @@ class Bfd_interfaces(ConfigBase):
         facts, _warnings = Facts(self._module).get_facts(
             self.gather_subset, self.gather_network_resources, data=data
         )
-        bfd_interfaces_facts = facts["ansible_network_resources"].get(
-            "bfd_interfaces", []
-        )
+        bfd_interfaces_facts = facts["ansible_network_resources"].get("bfd_interfaces", [])
 
         platform = facts.get("ansible_net_platform", "")
         return bfd_interfaces_facts, platform
@@ -81,9 +80,7 @@ class Bfd_interfaces(ConfigBase):
             existing_bfd_interfaces_facts, platform = [], ""
 
         if self.state in self.ACTION_STATES or self.state == "rendered":
-            commands.extend(
-                self.set_config(existing_bfd_interfaces_facts, platform)
-            )
+            commands.extend(self.set_config(existing_bfd_interfaces_facts, platform))
 
         if commands and self.state in self.ACTION_STATES:
             if not self._module.check_mode:
@@ -108,9 +105,7 @@ class Bfd_interfaces(ConfigBase):
                 self._module.fail_json(
                     msg="value of running_config parameter must not be empty for state parsed"
                 )
-            result["parsed"], platform = self.get_bfd_interfaces_facts(
-                data=running_config
-            )
+            result["parsed"], platform = self.get_bfd_interfaces_facts(data=running_config)
 
         if self.state in self.ACTION_STATES:
             result["before"] = existing_bfd_interfaces_facts
@@ -161,14 +156,9 @@ class Bfd_interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    state
-                )
+                msg="value of config parameter must not be empty for state {0}".format(state)
             )
 
         cmds = list()
@@ -222,9 +212,7 @@ class Bfd_interfaces(ConfigBase):
         for h in have:
             # Clean up bfd attrs for any interfaces not listed in the play
             h = flatten_dict(h)
-            obj_in_want = flatten_dict(
-                search_obj_in_list(h["name"], want, "name")
-            )
+            obj_in_want = flatten_dict(search_obj_in_list(h["name"], want, "name"))
             if obj_in_want:
                 # Let the 'want' loop handle all vals for this interface
                 continue
@@ -258,9 +246,7 @@ class Bfd_interfaces(ConfigBase):
         cmds = []
         if want:
             for w in want:
-                obj_in_have = flatten_dict(
-                    search_obj_in_list(w["name"], have, "name")
-                )
+                obj_in_have = flatten_dict(search_obj_in_list(w["name"], have, "name"))
                 cmds.extend(self.del_attribs(obj_in_have))
         else:
             for h in have:
@@ -314,9 +300,7 @@ class Bfd_interfaces(ConfigBase):
 
     def set_commands(self, want, have):
         cmds = []
-        obj_in_have = flatten_dict(
-            search_obj_in_list(want["name"], have, "name")
-        )
+        obj_in_have = flatten_dict(search_obj_in_list(want["name"], have, "name"))
         if not obj_in_have:
             cmds = self.add_commands(want)
         else:

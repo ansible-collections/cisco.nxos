@@ -19,16 +19,17 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_ntp_global
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from .nxos_module import TestNxosModule, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -43,9 +44,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ntp_global.ntp_global.Ntp_globalFacts.get_config"
@@ -329,9 +328,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                             prefer=True,
                         ),
                         dict(peer="192.168.1.2", key_id=3, use_vrf="siteB"),
-                        dict(
-                            peer="192.168.1.3", maxpoll=10, use_vrf="default"
-                        ),
+                        dict(peer="192.168.1.3", maxpoll=10, use_vrf="default"),
                     ],
                     servers=[
                         dict(
@@ -343,9 +340,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                             prefer=True,
                         ),
                         dict(server="203.0.113.2", key_id=3, use_vrf="siteB"),
-                        dict(
-                            server="203.0.113.3", maxpoll=10, use_vrf="default"
-                        ),
+                        dict(server="203.0.113.3", maxpoll=10, use_vrf="default"),
                     ],
                 ),
                 state="merged",
@@ -567,9 +562,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         self.assertEqual(set(result["commands"]), set(commands))
 
     def test_nxos_ntp_global_gathered_empty(self):
-        set_module_args(
-            dict(running_config="", state="gathered"), ignore_provider_arg
-        )
+        set_module_args(dict(running_config="", state="gathered"), ignore_provider_arg)
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], {})
 
@@ -603,9 +596,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp source-interface 192.168.1.100
             """
         )
-        set_module_args(
-            dict(running_config=cfg, state="parsed"), ignore_provider_arg
-        )
+        set_module_args(dict(running_config=cfg, state="parsed"), ignore_provider_arg)
         parsed = {
             "trusted_keys": [
                 {"key_id": 1001},

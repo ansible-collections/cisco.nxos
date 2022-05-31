@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -57,13 +58,12 @@ rebooted:
     sample: true
 """
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
 )
-from ansible.module_utils.basic import AnsibleModule
 
 
 def reboot(module):
@@ -76,9 +76,7 @@ def main():
     argument_spec = dict(confirm=dict(default=False, type="bool"))
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     results = dict(changed=False, warnings=warnings)

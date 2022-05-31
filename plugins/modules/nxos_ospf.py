@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -69,16 +70,16 @@ commands:
 """
 
 import re
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
 )
 
 
@@ -127,16 +128,12 @@ def state_absent(module, proposed, candidate):
 def main():
     argument_spec = dict(
         ospf=dict(required=True, type="str"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
     )
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     result = dict(changed=False, warnings=warnings)

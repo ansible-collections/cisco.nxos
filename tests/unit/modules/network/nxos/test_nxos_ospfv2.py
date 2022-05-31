@@ -19,16 +19,17 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_ospfv2
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -43,9 +44,7 @@ class TestNxosOspfv2Module(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv2.ospfv2.Ospfv2Facts.get_config"
@@ -85,12 +84,8 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.100",
                                     filter_list=[
-                                        dict(
-                                            route_map="rmap_1", direction="in"
-                                        ),
-                                        dict(
-                                            route_map="rmap_2", direction="out"
-                                        ),
+                                        dict(route_map="rmap_1", direction="in"),
+                                        dict(route_map="rmap_2", direction="out"),
                                     ],
                                     ranges=[
                                         dict(prefix="198.51.100.64/27"),
@@ -168,12 +163,8 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.100",
                                     filter_list=[
-                                        dict(
-                                            route_map="rmap_1", direction="in"
-                                        ),
-                                        dict(
-                                            route_map="rmap_2", direction="out"
-                                        ),
+                                        dict(route_map="rmap_1", direction="in"),
+                                        dict(route_map="rmap_2", direction="out"),
                                     ],
                                     ranges=[
                                         dict(prefix="198.51.100.64/27"),
@@ -335,12 +326,8 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.100",
                                     filter_list=[
-                                        dict(
-                                            route_map="rmap_1", direction="in"
-                                        ),
-                                        dict(
-                                            route_map="rmap_2", direction="out"
-                                        ),
+                                        dict(route_map="rmap_1", direction="in"),
+                                        dict(route_map="rmap_2", direction="out"),
                                     ],
                                     ranges=[
                                         dict(prefix="198.51.100.64/27"),
@@ -380,11 +367,7 @@ class TestNxosOspfv2Module(TestNxosModule):
         )
         set_module_args(
             dict(
-                config=dict(
-                    processes=[
-                        dict(process_id="300", router_id="203.0.113.20")
-                    ]
-                ),
+                config=dict(processes=[dict(process_id="300", router_id="203.0.113.20")]),
                 state="overridden",
             ),
             ignore_provider_arg,
@@ -440,12 +423,8 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.100",
                                     filter_list=[
-                                        dict(
-                                            route_map="rmap_1", direction="in"
-                                        ),
-                                        dict(
-                                            route_map="rmap_2", direction="out"
-                                        ),
+                                        dict(route_map="rmap_1", direction="in"),
+                                        dict(route_map="rmap_2", direction="out"),
                                     ],
                                     ranges=[
                                         dict(prefix="198.51.100.64/27"),
@@ -487,9 +466,7 @@ class TestNxosOspfv2Module(TestNxosModule):
         )
         set_module_args(
             dict(
-                config=dict(
-                    processes=[dict(process_id="100"), dict(process_id="300")]
-                ),
+                config=dict(processes=[dict(process_id="100"), dict(process_id="300")]),
                 state="deleted",
             ),
             ignore_provider_arg,
@@ -519,9 +496,7 @@ class TestNxosOspfv2Module(TestNxosModule):
         )
         set_module_args(
             dict(
-                config=dict(
-                    processes=[dict(process_id="400"), dict(process_id="500")]
-                ),
+                config=dict(processes=[dict(process_id="400"), dict(process_id="500")]),
                 state="deleted",
             ),
             ignore_provider_arg,
