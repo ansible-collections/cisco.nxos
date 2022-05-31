@@ -593,6 +593,9 @@ options:
                   localized_key:
                     description: Specifies whether the passwords are in localized key format.
                     type: bool
+                  localizedv2_key:
+                    description: Specifies whether the passwords are in localized V2 key format.
+                    type: bool
                   priv:
                     description: Encryption parameters for the user.
                     type: dict
