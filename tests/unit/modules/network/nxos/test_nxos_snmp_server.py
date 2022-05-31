@@ -703,9 +703,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     algorithm="md5",
                                     password="0x5632724fb8ac3699296af262",
                                     engine_id="2:2:2:2:2",
-                                    priv=dict(
-                                        privacy_password="0x5632724fb8ac3699296af262"
-                                    ),
+                                    priv=dict(privacy_password="0x5632724fb8ac3699296af262"),
                                     localizedv2_key=True,
                                 ),
                             ),
