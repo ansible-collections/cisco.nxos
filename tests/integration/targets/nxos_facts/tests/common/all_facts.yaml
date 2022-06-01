@@ -32,8 +32,10 @@
   ansible.builtin.assert:
     that:
       - result.changed == false
-      - "{{ result['ansible_facts']['available_network_resources'] | symmetric_difference(result['ansible_facts']['ansible_net_gather_network_resources']) |length\
-        \ == 0 }}"
+      - >-
+        {{ result['ansible_facts']['available_network_resources'] |
+        symmetric_difference(result['ansible_facts']['ansible_net_gather_network_resources']) |
+        length == 0 }}
 
 - ansible.builtin.debug:
     msg: END connection={{ ansible_connection }}/all_facts.yaml

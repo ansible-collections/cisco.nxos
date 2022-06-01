@@ -3,7 +3,8 @@
   ansible.builtin.set_fact:
     rsvd_intf: "{{ rsvd_intf|default('mgmt0') }}"
 
-- block:
+- name: Run the CLI and NX-API tests
+  block:
     - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:

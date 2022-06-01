@@ -31,8 +31,8 @@
     ansible_connection: httpapi
     connection: "{{ nxapi }}"
 # Temporarily disabling connection=local tests for CI issues
-#- name: run test cases (connection=local)
-#  include: "{{ test_case_to_run }} ansible_connection=local connection={{ nxapi }}"
-#  with_items: "{{ test_items }}"
-#  loop_control:
+# - name: run test cases (connection=local)
+#   include: "{{ test_case_to_run }} ansible_connection=local connection={{ nxapi }}"
+#   with_items: "{{ test_items }}"
+#   loop_control:
 #    loop_var: test_case_to_run

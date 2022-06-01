@@ -5,7 +5,7 @@
   register: hname_result
 
 - name: Set current hostname (default)
-  set_fact:
+  ansible.builtin.set_fact:
     current_hostname: "switch"
 
 - name: Set current hostname
@@ -13,7 +13,8 @@
     current_hostname: "{{ hname_result['stdout'][0].split(' ')[1] }}"
   when: hname_result.stdout[0] != ""
 
-- block:
+- name: Run the CLI and NX-API tests
+  block:
     - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
