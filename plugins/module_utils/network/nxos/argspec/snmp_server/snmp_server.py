@@ -380,6 +380,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                         },
                                         "engine_id": {"type": "str"},
                                         "localized_key": {"type": "bool"},
+                                        "localizedv2_key": {"type": "bool"},
                                         "priv": {
                                             "type": "dict",
                                             "options": {
