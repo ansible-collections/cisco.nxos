@@ -412,8 +412,6 @@ class Interfaces(ConfigBase):
 
     def add_commands(self, d, obj_in_have=None):
         commands = []
-        if not d:
-            return commands
         if obj_in_have is None:
             obj_in_have = {}
         # mode/switchport changes should occur before other changes
@@ -433,8 +431,11 @@ class Interfaces(ConfigBase):
         if "duplex" in d:
             commands.append("duplex " + d["duplex"])
         if "enabled" in d:
-            have_enabled = obj_in_have.get(
-                "enabled", self.default_enabled(d, obj_in_have)
+            have_enabled = (
+                obj_in_have.get(
+                    "enabled", self.default_enabled(d, obj_in_have)
+                )
+                or False
             )
             if d["enabled"] is False and have_enabled is True:
                 commands.append("shutdown")

@@ -310,7 +310,6 @@ class TestNxosInterfacesModule(TestNxosModule):
                 dict(name="Ethernet1/3", enabled=True),
                 dict(name="loopback3", enabled=True),
                 dict(name="port-channel3", enabled=True),
-                # Set default state on non-existent objs; no state changes but need to create intf
                 dict(name="loopback4", enabled=True),
                 dict(name="port-channel4", enabled=True),
                 dict(name="Ethernet1/4.101"),
@@ -329,7 +328,9 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface port-channel3",
             "no shutdown",
             "interface loopback4",
+            "no shutdown",
             "interface port-channel4",
+            "no shutdown",
             "interface Ethernet1/4.101",
         ]
         playbook["state"] = "merged"
@@ -367,7 +368,9 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface port-channel3",
             "no shutdown",
             "interface loopback4",
+            "no shutdown",
             "interface port-channel4",
+            "no shutdown",
             "interface Ethernet1/4.101",
         ]
         playbook["state"] = "replaced"
@@ -392,7 +395,9 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface loopback1",
             "shutdown",
             "interface loopback4",
+            "no shutdown",
             "interface port-channel4",
+            "no shutdown",
             "interface Ethernet1/4.101",
         ]
         playbook["state"] = "overridden"
@@ -468,7 +473,9 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface port-channel3",
             "no shutdown",
             "interface loopback4",
+            "no shutdown",
             "interface port-channel4",
+            "no shutdown",
             "interface Ethernet1/4.101",
         ]
         playbook["state"] = "merged"
@@ -490,7 +497,9 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface port-channel3",
             "no shutdown",
             "interface loopback4",
+            "no shutdown",
             "interface port-channel4",
+            "no shutdown",
             "interface Ethernet1/4.101",
         ]
         self.execute_module(
@@ -528,12 +537,34 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface port-channel3",
             "no shutdown",
             "interface loopback4",
+            "no shutdown",
             "interface port-channel4",
+            "no shutdown",
             "interface Ethernet1/4.101",
         ]
         playbook["state"] = "replaced"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=replaced)
+
+        playbook = dict(
+            config=[
+                # Set non-default states on existing objs
+                dict(name="Ethernet1/1", mode="layer3", enabled=True),
+                dict(name="loopback1", enabled=False),
+                # Set default states on existing objs
+                dict(name="Ethernet1/2", enabled=False),
+                dict(name="loopback2", enabled=True),
+                # Set explicit default state on existing objs (no chg)
+                dict(name="Ethernet1/3", enabled=False),
+                dict(name="loopback3", enabled=True),
+                dict(name="port-channel3", enabled=True),
+                # Set default state on non-existent objs; no state changes but need to create intf
+                dict(name="loopback4", enabled=True),
+                dict(name="port-channel4", enabled=True),
+                dict(name="Ethernet1/4.101", enabled=False),
+                dict(name="Ethernet1/4.102", enabled=True),
+            ]
+        )
 
         overridden = [
             "interface Ethernet1/2",
@@ -553,8 +584,12 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface loopback1",
             "shutdown",
             "interface loopback4",
+            "no shutdown",
             "interface port-channel4",
+            "no shutdown",
             "interface Ethernet1/4.101",
+            "interface Ethernet1/4.102",
+            "no shutdown",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook, ignore_provider_arg)

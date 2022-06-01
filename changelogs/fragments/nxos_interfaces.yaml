@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_interfaces` - Enable all virtual interfaces with `enabled` set to True (https://github.com/ansible-collections/cisco.nxos/issues/335)."
