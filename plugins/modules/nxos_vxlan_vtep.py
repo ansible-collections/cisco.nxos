@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -128,20 +129,18 @@ commands:
 
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    run_commands,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
+    run_commands,
+)
+
 
 BOOL_PARAMS = [
     "shutdown",
@@ -171,9 +170,7 @@ PARAM_TO_DEFAULT_KEYMAP = {
 
 def get_value(arg, config, module):
     if arg in BOOL_PARAMS:
-        REGEX = re.compile(
-            r"\s+{0}\s*$".format(PARAM_TO_COMMAND_KEYMAP[arg]), re.M
-        )
+        REGEX = re.compile(r"\s+{0}\s*$".format(PARAM_TO_COMMAND_KEYMAP[arg]), re.M)
         NO_SHUT_REGEX = re.compile(r"\s+no shutdown\s*$", re.M)
         value = False
         if arg == "shutdown":
@@ -195,9 +192,7 @@ def get_value(arg, config, module):
             r"(?:{0}\s)(?P<value>.*)$".format(PARAM_TO_COMMAND_KEYMAP[arg]),
             re.M,
         )
-        NO_DESC_REGEX = re.compile(
-            r"\s+{0}\s*$".format("no description"), re.M
-        )
+        NO_DESC_REGEX = re.compile(r"\s+{0}\s*$".format("no description"), re.M)
         SOURCE_INTF_REGEX = re.compile(
             r"(?:{0}\s)(?P<value>\S+)$".format(PARAM_TO_COMMAND_KEYMAP[arg]),
             re.M,
@@ -212,11 +207,7 @@ def get_value(arg, config, module):
             for line in config.splitlines():
                 try:
                     if PARAM_TO_COMMAND_KEYMAP[arg] in config:
-                        value = (
-                            SOURCE_INTF_REGEX.search(config)
-                            .group("value")
-                            .strip()
-                        )
+                        value = SOURCE_INTF_REGEX.search(config).group("value").strip()
                         break
                 except AttributeError:
                     value = ""
@@ -240,11 +231,7 @@ def get_value(arg, config, module):
             for line in config.splitlines():
                 try:
                     if PARAM_TO_COMMAND_KEYMAP[arg] in config:
-                        value = (
-                            SOURCE_INTF_REGEX.search(config)
-                            .group("value")
-                            .strip()
-                        )
+                        value = SOURCE_INTF_REGEX.search(config).group("value").strip()
                         break
                 except AttributeError:
                     value = ""
@@ -256,13 +243,9 @@ def get_value(arg, config, module):
 
 def get_existing(module, args):
     existing = {}
-    netcfg = CustomNetworkConfig(
-        indent=2, contents=get_config(module, flags=["all"])
-    )
+    netcfg = CustomNetworkConfig(indent=2, contents=get_config(module, flags=["all"]))
 
-    interface_string = "interface {0}".format(
-        module.params["interface"].lower()
-    )
+    interface_string = "interface {0}".format(module.params["interface"].lower())
     parents = [interface_string]
     config = netcfg.get_section(parents)
 
@@ -338,9 +321,7 @@ def gsa_tcam_check(module):
     This method checks the current TCAM allocation.
     Note that changing tcam_size requires a switch reboot to take effect.
     """
-    cmds = [
-        {"command": "show hardware access-list tcam region", "output": "json"}
-    ]
+    cmds = [{"command": "show hardware access-list tcam region", "output": "json"}]
     body = run_commands(module, cmds)
     if body:
         tcam_region = body[0]["TCAM_Region"]["TABLE_Sizes"]["ROW_Sizes"]
@@ -348,8 +329,7 @@ def gsa_tcam_check(module):
             [
                 i
                 for i in tcam_region
-                if i["type"].startswith("Ingress ARP-Ether ACL")
-                and i["tcam_size"] == "0"
+                if i["type"].startswith("Ingress ARP-Ether ACL") and i["tcam_size"] == "0"
             ]
         ):
             msg = (
@@ -396,9 +376,7 @@ def state_present(module, existing, proposed, candidate):
         candidate.add(commands, parents=parents)
     else:
         if not existing and module.params["interface"]:
-            commands = [
-                "interface {0}".format(module.params["interface"].lower())
-            ]
+            commands = ["interface {0}".format(module.params["interface"].lower())]
             candidate.add(commands, parents=[])
 
 
@@ -419,17 +397,13 @@ def main():
         shutdown=dict(required=False, type="bool"),
         source_interface=dict(required=False, type="str"),
         source_interface_hold_down_time=dict(required=False, type="str"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
         multisite_border_gateway_interface=dict(required=False, type="str"),
     )
 
     argument_spec.update(nxos_argument_spec)
 
-    mutually_exclusive = [
-        ("global_ingress_replication_bgp", "global_mcast_group_L2")
-    ]
+    mutually_exclusive = [("global_ingress_replication_bgp", "global_mcast_group_L2")]
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -445,9 +419,7 @@ def main():
     args = PARAM_TO_COMMAND_KEYMAP.keys()
 
     existing = get_existing(module, args)
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
     proposed = {}
     for key, value in proposed_args.items():
         if key != "interface":

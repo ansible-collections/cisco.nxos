@@ -5,10 +5,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_l3_interface
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -36,9 +38,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
 
     def load_fixtures(self, commands=None, device=""):
         self.load_config.return_value = None
-        self.get_config.return_value = load_fixture(
-            "nxos_l3_interface", self.mode
-        )
+        self.get_config.return_value = load_fixture("nxos_l3_interface", self.mode)
 
     def test_nxos_l3_interface_unknonw_ethernet(self):
         self.mode = "ethernet_noshut"
@@ -192,23 +192,17 @@ class TestNxosL3InterfaceModule(TestNxosModule):
     # Rem when missing
     def test_nxos_l3_interface_rem_missing_ipv4(self):
         self.mode = "ethernet_noshut"
-        set_module_args(
-            dict(name="Ethernet1/1", ipv4="192.168.0.1/24", state="absent")
-        )
+        set_module_args(dict(name="Ethernet1/1", ipv4="192.168.0.1/24", state="absent"))
         result = self.execute_module()
 
     def test_nxos_l3_interface_rem_missing_ipv4_on_e11(self):
         self.mode = "ethernet_noshut"
-        set_module_args(
-            dict(name="et1/1", ipv4="192.168.0.1/24", state="absent")
-        )
+        set_module_args(dict(name="et1/1", ipv4="192.168.0.1/24", state="absent"))
         result = self.execute_module()
 
     def test_nxos_l3_interface_rem_missing_ipv6(self):
         self.mode = "ethernet_noshut"
-        set_module_args(
-            dict(name="Ethernet1/1", ipv6="2001:db8::1/124", state="absent")
-        )
+        set_module_args(dict(name="Ethernet1/1", ipv6="2001:db8::1/124", state="absent"))
         result = self.execute_module()
 
     def test_nxos_l3_interface_rem_missing_ipv4_and_ipv6(self):
@@ -226,9 +220,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
     # Rem when existing
     def test_nxos_l3_interface_rem_existing_ipv4(self):
         self.mode = "ethernet_noshut_ipv4_ipv6"
-        set_module_args(
-            dict(name="Ethernet1/1", ipv4="192.168.0.1/24", state="absent")
-        )
+        set_module_args(dict(name="Ethernet1/1", ipv4="192.168.0.1/24", state="absent"))
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -237,9 +229,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
 
     def test_nxos_l3_interface_rem_existing_ipv4_on_e11(self):
         self.mode = "ethernet_noshut_ipv4_ipv6"
-        set_module_args(
-            dict(name="et1/1", ipv4="192.168.0.1/24", state="absent")
-        )
+        set_module_args(dict(name="et1/1", ipv4="192.168.0.1/24", state="absent"))
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -248,9 +238,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
 
     def test_nxos_l3_interface_rem_existing_ipv6(self):
         self.mode = "ethernet_noshut_ipv4_ipv6"
-        set_module_args(
-            dict(name="Ethernet1/1", ipv6="2001:db8::1/124", state="absent")
-        )
+        set_module_args(dict(name="Ethernet1/1", ipv6="2001:db8::1/124", state="absent"))
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -285,9 +273,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
     # Rem when existing with multiple IPv6
     def test_nxos_l3_interface_multiple_ipv6_rem_first(self):
         self.mode = "ethernet_noshut_multiple_ipv6"
-        set_module_args(
-            dict(name="Ethernet1/1", ipv6="2001:db8::1/124", state="absent")
-        )
+        set_module_args(dict(name="Ethernet1/1", ipv6="2001:db8::1/124", state="absent"))
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -300,9 +286,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
 
     def test_nxos_l3_interface_multiple_ipv6_rem_last(self):
         self.mode = "ethernet_noshut_multiple_ipv6"
-        set_module_args(
-            dict(name="Ethernet1/1", ipv6="2001:db8:2::1/124", state="absent")
-        )
+        set_module_args(dict(name="Ethernet1/1", ipv6="2001:db8:2::1/124", state="absent"))
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -388,8 +372,6 @@ class TestNxosL3InterfaceModule(TestNxosModule):
     # Rem unknown interface
     def test_nxos_l3_interface_rem_on_unknown_itf(self):
         self.mode = "ethernet_noshut"
-        set_module_args(
-            dict(name="Ethernet1/2", ipv4="192.168.0.1/24", state="absent")
-        )
+        set_module_args(dict(name="Ethernet1/2", ipv4="192.168.0.1/24", state="absent"))
         result = self.execute_module()
         self.assertEqual(result["warnings"], ["Unknown interface Ethernet1/2"])

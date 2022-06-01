@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -272,16 +273,15 @@ commands:
 
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
 )
 
 
@@ -348,18 +348,14 @@ def get_value(arg, config, module):
     ]
     command = PARAM_TO_COMMAND_KEYMAP[arg]
     has_command = re.search(r"^\s+{0}\s*".format(command), config, re.M)
-    has_command_val = re.search(
-        r"(?:{0}\s)(?P<value>.*)$".format(command), config, re.M
-    )
+    has_command_val = re.search(r"(?:{0}\s)(?P<value>.*)$".format(command), config, re.M)
     value = ""
 
     if arg in custom:
         value = get_custom_value(arg, config, module)
 
     elif arg == "next_hop_third_party":
-        has_no_command = re.search(
-            r"^\s+no\s+{0}\s*$".format(command), config, re.M
-        )
+        has_no_command = re.search(r"^\s+no\s+{0}\s*$".format(command), config, re.M)
         value = False
         if not has_no_command:
             value = True
@@ -372,9 +368,7 @@ def get_value(arg, config, module):
     elif command.startswith("advertise-map"):
         value = []
         has_adv_map = re.search(
-            r"{0}\s(?P<value1>.*)\s{1}\s(?P<value2>.*)$".format(
-                *command.split()
-            ),
+            r"{0}\s(?P<value1>.*)\s{1}\s(?P<value2>.*)$".format(*command.split()),
             config,
             re.M,
         )
@@ -453,9 +447,7 @@ def get_existing(module, args, warnings):
     existing = {}
     netcfg = CustomNetworkConfig(indent=2, contents=get_config(module))
 
-    asn_regex = re.compile(
-        r".*router\sbgp\s(?P<existing_asn>\d+(\.\d+)?).*", re.S
-    )
+    asn_regex = re.compile(r".*router\sbgp\s(?P<existing_asn>\d+(\.\d+)?).*", re.S)
     match_asn = asn_regex.match(str(netcfg))
 
     if match_asn:
@@ -466,11 +458,7 @@ def get_existing(module, args, warnings):
             parents.append("vrf {0}".format(module.params["vrf"]))
 
         parents.append("neighbor {0}".format(module.params["neighbor"]))
-        parents.append(
-            "address-family {0} {1}".format(
-                module.params["afi"], module.params["safi"]
-            )
-        )
+        parents.append("address-family {0} {1}".format(module.params["afi"], module.params["safi"]))
         config = netcfg.get_section(parents)
 
         if config:
@@ -484,9 +472,7 @@ def get_existing(module, args, warnings):
             existing["afi"] = module.params["afi"]
             existing["safi"] = module.params["safi"]
     else:
-        warnings.append(
-            "The BGP process didn't exist but the task just created it."
-        )
+        warnings.append("The BGP process didn't exist but the task just created it.")
 
     return existing
 
@@ -551,10 +537,7 @@ def fix_proposed(module, existing, proposed):
     elif allowas_in and allowas_in_max:
         proposed.pop("allowas_in")
 
-    if (
-        existing.get("send_community") == "none"
-        and proposed.get("send_community") == "default"
-    ):
+    if existing.get("send_community") == "none" and proposed.get("send_community") == "default":
         proposed.pop("send_community")
     return proposed
 
@@ -579,17 +562,11 @@ def state_present(module, existing, proposed, candidate):
 
         elif key.startswith("maximum-prefix"):
             if module.params["max_prefix_limit"] != "default":
-                command = "maximum-prefix {0}".format(
-                    module.params["max_prefix_limit"]
-                )
+                command = "maximum-prefix {0}".format(module.params["max_prefix_limit"])
                 if module.params["max_prefix_threshold"]:
-                    command += " {0}".format(
-                        module.params["max_prefix_threshold"]
-                    )
+                    command += " {0}".format(module.params["max_prefix_threshold"])
                 if module.params["max_prefix_interval"]:
-                    command += " restart {0}".format(
-                        module.params["max_prefix_interval"]
-                    )
+                    command += " restart {0}".format(module.params["max_prefix_interval"])
                 elif module.params["max_prefix_warning"]:
                     command += " warning-only"
                 commands.append(command)
@@ -600,9 +577,7 @@ def state_present(module, existing, proposed, candidate):
             commands.append("no {0}".format(key))
         elif key == "address-family":
             commands.append(
-                "address-family {0} {1}".format(
-                    module.params["afi"], module.params["safi"]
-                )
+                "address-family {0} {1}".format(module.params["afi"], module.params["safi"])
             )
         elif key.startswith("capability additional-paths"):
             command = key
@@ -611,9 +586,7 @@ def state_present(module, existing, proposed, candidate):
             commands.append(command)
         elif key.startswith("advertise-map"):
             direction = key.split()[1]
-            commands.append(
-                "advertise-map {1} {0} {2}".format(direction, *value)
-            )
+            commands.append("advertise-map {1} {0} {2}".format(direction, *value))
         elif key.split()[0] in ["filter-list", "prefix-list", "route-map"]:
             commands.append("{1} {0} {2}".format(value, *key.split()))
 
@@ -641,9 +614,7 @@ def state_present(module, existing, proposed, candidate):
 
         parents.append("neighbor {0}".format(module.params["neighbor"]))
 
-        af_command = "address-family {0} {1}".format(
-            module.params["afi"], module.params["safi"]
-        )
+        af_command = "address-family {0} {1}".format(module.params["afi"], module.params["safi"])
         parents.append(af_command)
         if af_command in commands:
             commands.remove(af_command)
@@ -657,11 +628,7 @@ def state_absent(module, existing, candidate):
         parents.append("vrf {0}".format(module.params["vrf"]))
 
     parents.append("neighbor {0}".format(module.params["neighbor"]))
-    commands.append(
-        "no address-family {0} {1}".format(
-            module.params["afi"], module.params["safi"]
-        )
-    )
+    commands.append("no address-family {0} {1}".format(module.params["afi"], module.params["safi"]))
     candidate.add(commands, parents=parents)
 
 
@@ -675,9 +642,7 @@ def main():
             type="str",
             choices=["ipv4", "ipv6", "vpnv4", "vpnv6", "l2vpn"],
         ),
-        safi=dict(
-            required=True, type="str", choices=["unicast", "multicast", "evpn"]
-        ),
+        safi=dict(required=True, type="str", choices=["unicast", "multicast", "evpn"]),
         additional_paths_receive=dict(
             required=False,
             type="str",
@@ -689,9 +654,7 @@ def main():
             choices=["enable", "disable", "inherit"],
         ),
         advertise_map_exist=dict(required=False, type="list", elements="str"),
-        advertise_map_non_exist=dict(
-            required=False, type="list", elements="str"
-        ),
+        advertise_map_non_exist=dict(required=False, type="list", elements="str"),
         allowas_in=dict(required=False, type="bool"),
         allowas_in_max=dict(required=False, type="str"),
         as_override=dict(required=False, type="bool"),
@@ -722,9 +685,7 @@ def main():
         suppress_inactive=dict(required=False, type="bool"),
         unsuppress_map=dict(required=False, type="str"),
         weight=dict(required=False, type="str"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
         rewrite_evpn_rt_asn=dict(required=False, type="bool"),
     )
     argument_spec.update(nxos_argument_spec)
@@ -750,9 +711,7 @@ def main():
         "max_prefix_threshold",
     ]:
         if module.params[key] and not module.params["max_prefix_limit"]:
-            module.fail_json(
-                msg="max_prefix_limit is required when using %s" % key
-            )
+            module.fail_json(msg="max_prefix_limit is required when using %s" % key)
     if module.params["vrf"] == "default" and module.params["soo"]:
         module.fail_json(msg="SOO is only allowed in non-default VRF")
 
@@ -771,9 +730,7 @@ def main():
         if module.params[param] == ["default"]:
             module.params[param] = "default"
 
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
 
     proposed = {}
     for key, value in proposed_args.items():

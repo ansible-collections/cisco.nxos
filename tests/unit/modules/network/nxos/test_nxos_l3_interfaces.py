@@ -19,21 +19,20 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import (
-    patch,
-    PropertyMock,
-)
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
-from ansible_collections.cisco.nxos.plugins.modules import nxos_l3_interfaces
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_interfaces.l3_interfaces import (
     L3_interfaces,
 )
+from ansible_collections.cisco.nxos.plugins.modules import nxos_l3_interfaces
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import PropertyMock, patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -53,16 +52,12 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_interfaces.l3_interfaces.L3_interfaces.edit_config"
@@ -113,9 +108,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             ip address 10.1.3.1/24
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
@@ -185,9 +178,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             ipv6 address 10::5/128
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
@@ -292,9 +283,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             ip address 10.25.25.25/24 secondary
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
@@ -434,9 +423,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             ipv6 address 10::13/128
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(
@@ -521,9 +508,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             no ip redirects
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(
@@ -533,9 +518,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
                     ipv4=[{"address": "192.168.1.1/24"}],
                 ),
                 dict(name="Ethernet1/2"),
-                dict(
-                    name="Ethernet1/3", redirects=True, unreachables=False
-                ),  # defaults
+                dict(name="Ethernet1/3", redirects=True, unreachables=False),  # defaults
                 dict(name="Ethernet1/4", redirects=False, unreachables=True),
             ]
         )
@@ -607,9 +590,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
           interface Ethernet1/2
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(
@@ -657,9 +638,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
           interface Ethernet1/2
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook["state"] = "deleted"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=False)
@@ -672,9 +651,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             ip address 10.1.1.1/24
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict()
 
         for i in ["merged", "replaced", "overridden"]:
@@ -700,12 +677,8 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             ip address 10.25.25.25/24 secondary
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
-        playbook = dict(
-            config=[dict(name="Ethernet1/3"), dict(name="Ethernet1/5")]
-        )
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
+        playbook = dict(config=[dict(name="Ethernet1/3"), dict(name="Ethernet1/5")])
         # Expected result commands for each 'state'
         deleted = [
             "interface Ethernet1/3",
@@ -762,9 +735,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             evpn multisite dci-tracking
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
@@ -844,9 +815,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             evpn multisite fabric-tracking
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="mgmt0", ipv4=[{"address": "10.0.0.254/24"}]),
@@ -989,16 +958,12 @@ class TestNxosL3InterfacesModule(TestNxosModule):
             ip address 192.168.1.1/24
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(
                     name="Vlan99",
-                    ipv4=[
-                        {"address": "192.168.1.1/24", "tag": 500}
-                    ],  # adding a tag
+                    ipv4=[{"address": "192.168.1.1/24", "tag": 500}],  # adding a tag
                 )
             ],
             state="replaced",
@@ -1022,9 +987,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
           interface loopback1
         """
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(state="gathered")
         gathered_facts = [
             {"name": "nve1"},

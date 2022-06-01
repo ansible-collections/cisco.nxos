@@ -26,6 +26,7 @@ The arg spec for the nxos_static_routes module
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -53,9 +54,7 @@ class Static_routesArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "admin_distance": {"type": "int"},
                                         "dest_vrf": {"type": "str"},
-                                        "forward_router_address": {
-                                            "type": "str"
-                                        },
+                                        "forward_router_address": {"type": "str"},
                                         "interface": {"type": "str"},
                                         "route_name": {"type": "str"},
                                         "tag": {"type": "int"},

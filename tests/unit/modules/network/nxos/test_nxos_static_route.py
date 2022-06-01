@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_static_route
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -49,16 +51,12 @@ class TestNxosStaticRouteModule(TestNxosModule):
         self.mock_get_config.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.get_config.return_value = load_fixture(
-            "", "nxos_static_route.cfg"
-        )
+        self.get_config.return_value = load_fixture("", "nxos_static_route.cfg")
         self.load_config.return_value = None
 
     def test_nxos_static_route_present(self):
         set_module_args(dict(prefix="192.168.20.64/24", next_hop="192.0.2.3"))
-        self.execute_module(
-            changed=True, commands=["ip route 192.168.20.0/24 192.0.2.3"]
-        )
+        self.execute_module(changed=True, commands=["ip route 192.168.20.0/24 192.0.2.3"])
 
     def test_nxos_static_route_present_no_defaults(self):
         set_module_args(
@@ -75,9 +73,7 @@ class TestNxosStaticRouteModule(TestNxosModule):
         )
 
     def test_nxos_static_route_present_vrf(self):
-        set_module_args(
-            dict(prefix="192.168.20.64/24", next_hop="192.0.2.3", vrf="test")
-        )
+        set_module_args(dict(prefix="192.168.20.64/24", next_hop="192.0.2.3", vrf="test"))
         self.execute_module(
             changed=True,
             sort=False,
@@ -92,19 +88,11 @@ class TestNxosStaticRouteModule(TestNxosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_static_route_absent(self):
-        set_module_args(
-            dict(prefix="10.10.30.12/24", next_hop="1.2.4.8", state="absent")
-        )
-        self.execute_module(
-            changed=True, commands=["no ip route 10.10.30.0/24 1.2.4.8"]
-        )
+        set_module_args(dict(prefix="10.10.30.12/24", next_hop="1.2.4.8", state="absent"))
+        self.execute_module(changed=True, commands=["no ip route 10.10.30.0/24 1.2.4.8"])
 
     def test_nxos_static_route_absent_no_change(self):
-        set_module_args(
-            dict(
-                prefix="192.168.20.6/24", next_hop="192.0.2.3", state="absent"
-            )
-        )
+        set_module_args(dict(prefix="192.168.20.6/24", next_hop="192.0.2.3", state="absent"))
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_static_route_absent_vrf(self):

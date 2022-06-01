@@ -19,14 +19,13 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import (
-    patch,
-    MagicMock,
-)
-from ansible_collections.cisco.nxos.plugins.modules import nxos_config
 from ansible_collections.cisco.nxos.plugins.cliconf.nxos import Cliconf
+from ansible_collections.cisco.nxos.plugins.modules import nxos_config
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import MagicMock, patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -76,18 +75,14 @@ class TestNxosConfigModule(TestNxosModule):
         self.mock_get_connection.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.get_config.return_value = load_fixture(
-            "nxos_config", "config.cfg"
-        )
+        self.get_config.return_value = load_fixture("nxos_config", "config.cfg")
         self.load_config.return_value = None
 
     def test_nxos_config_no_change(self):
         lines = ["hostname localhost"]
         args = dict(lines=lines)
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
-            )
+            return_value=self.cliconf_obj.get_diff("\n".join(lines), self.running_config)
         )
         set_module_args(args)
         result = self.execute_module()
@@ -109,9 +104,7 @@ class TestNxosConfigModule(TestNxosModule):
             "ip routing",
         ]
 
-        self.assertEqual(
-            sorted(config), sorted(result["commands"]), result["commands"]
-        )
+        self.assertEqual(sorted(config), sorted(result["commands"]), result["commands"])
 
     def test_nxos_config_replace_src(self):
         set_module_args(dict(replace_src="bootflash:config", replace="config"))
@@ -121,43 +114,33 @@ class TestNxosConfigModule(TestNxosModule):
             )
         )
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"], ["config replace bootflash:config"]
-        )
+        self.assertEqual(result["commands"], ["config replace bootflash:config"])
 
     def test_nxos_config_lines(self):
         lines = ["hostname switch01", "ip domain-name eng.ansible.com"]
         args = dict(lines=lines)
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
-            )
+            return_value=self.cliconf_obj.get_diff("\n".join(lines), self.running_config)
         )
         set_module_args(args)
 
         result = self.execute_module(changed=True)
         config = ["hostname switch01"]
 
-        self.assertEqual(
-            sorted(config), sorted(result["commands"]), result["commands"]
-        )
+        self.assertEqual(sorted(config), sorted(result["commands"]), result["commands"])
 
     def test_nxos_config_before(self):
         lines = ["hostname switch01", "ip domain-name eng.ansible.com"]
         args = dict(lines=lines, before=["before command"])
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
-            )
+            return_value=self.cliconf_obj.get_diff("\n".join(lines), self.running_config)
         )
         set_module_args(args)
 
         result = self.execute_module(changed=True)
         config = ["before command", "hostname switch01"]
 
-        self.assertEqual(
-            sorted(config), sorted(result["commands"]), result["commands"]
-        )
+        self.assertEqual(sorted(config), sorted(result["commands"]), result["commands"])
         self.assertEqual("before command", result["commands"][0])
 
     def test_nxos_config_after(self):
@@ -165,18 +148,14 @@ class TestNxosConfigModule(TestNxosModule):
         args = dict(lines=lines, after=["after command"])
 
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
-            )
+            return_value=self.cliconf_obj.get_diff("\n".join(lines), self.running_config)
         )
         set_module_args(args)
 
         result = self.execute_module(changed=True)
         config = ["after command", "hostname switch01"]
 
-        self.assertEqual(
-            sorted(config), sorted(result["commands"]), result["commands"]
-        )
+        self.assertEqual(sorted(config), sorted(result["commands"]), result["commands"])
         self.assertEqual("after command", result["commands"][-1])
 
     def test_nxos_config_parents(self):
@@ -279,17 +258,13 @@ class TestNxosConfigModule(TestNxosModule):
         self.assertEqual(self.get_config.call_args[1], dict(flags=["all"]))
 
     def test_nxos_config_defaults_false_backup_true(self):
-        set_module_args(
-            dict(lines=["hostname localhost"], defaults=False, backup=True)
-        )
+        set_module_args(dict(lines=["hostname localhost"], defaults=False, backup=True))
         result = self.execute_module(changed=True)
         self.assertEqual(self.get_config.call_count, 1)
         self.assertEqual(self.get_config.call_args[1], dict(flags=[]))
 
     def test_nxos_config_defaults_true_backup_true(self):
-        set_module_args(
-            dict(lines=["hostname localhost"], defaults=True, backup=True)
-        )
+        set_module_args(dict(lines=["hostname localhost"], defaults=True, backup=True))
         result = self.execute_module(changed=True)
         self.assertEqual(self.get_config.call_count, 1)
         self.assertEqual(self.get_config.call_args[1], dict(flags=["all"]))

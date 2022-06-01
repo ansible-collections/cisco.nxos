@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -108,14 +109,13 @@ changed:
     sample: true
 """
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
+    nxos_argument_spec,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 PARAM_TO_DEFAULT_KEYMAP = {"msg_time": "15"}
@@ -148,17 +148,11 @@ def get_commands_config_udld_global(delta, reset, existing):
     commands = []
     for param, value in delta.items():
         if param == "aggressive":
-            command = (
-                "udld aggressive"
-                if value == "enabled"
-                else "no udld aggressive"
-            )
+            command = "udld aggressive" if value == "enabled" else "no udld aggressive"
             commands.append(command)
         elif param == "msg_time":
             if value == "default":
-                if existing.get("msg_time") != PARAM_TO_DEFAULT_KEYMAP.get(
-                    "msg_time"
-                ):
+                if existing.get("msg_time") != PARAM_TO_DEFAULT_KEYMAP.get("msg_time"):
                     commands.append("no udld message-time")
             else:
                 commands.append("udld message-time " + value)
@@ -205,9 +199,7 @@ def main():
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 
@@ -231,9 +223,7 @@ def main():
     commands = []
     if state == "present":
         if delta:
-            command = get_commands_config_udld_global(
-                dict(delta), reset, existing
-            )
+            command = get_commands_config_udld_global(dict(delta), reset, existing)
             commands.append(command)
 
     elif state == "absent":

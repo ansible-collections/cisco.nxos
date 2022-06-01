@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -54,12 +55,11 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
+    get_config,
+    load_config,
     nxos_argument_spec,
 )
 
@@ -69,9 +69,7 @@ def main():
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     result = {"changed": False}
 
@@ -86,9 +84,7 @@ def main():
     os_platform = info.get("network_os_platform", "")
 
     if "3K" in os_platform:
-        module.fail_json(
-            msg="This module is not supported on Nexus 3000 series"
-        )
+        module.fail_json(msg="This module is not supported on Nexus 3000 series")
 
     if module.params["nv_overlay_evpn"] is True:
         if "nv overlay evpn" not in config:

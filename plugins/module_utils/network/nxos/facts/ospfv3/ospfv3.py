@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -16,14 +17,13 @@ based on the configuration.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
+    Ospfv3Args,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospfv3 import (
     Ospfv3Template,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
-    Ospfv3Args,
 )
 
 

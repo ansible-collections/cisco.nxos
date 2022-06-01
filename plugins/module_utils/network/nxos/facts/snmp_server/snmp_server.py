@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -14,14 +15,13 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 from ansible.module_utils._text import to_text
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.snmp_server.snmp_server import (
+    Snmp_serverArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.snmp_server import (
     Snmp_serverTemplate,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.snmp_server.snmp_server import (
-    Snmp_serverArgs,
 )
 
 
@@ -55,15 +55,11 @@ class Snmp_serverFacts(object):
             data = self.get_config(connection)
 
         # parse native config using the Snmp_server template
-        snmp_server_parser = Snmp_serverTemplate(
-            lines=data.splitlines(), module=self._module
-        )
+        snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
         objs = snmp_server_parser.parse()
 
         if "communities" in objs:
-            objs["communities"] = sorted(
-                objs["communities"], key=lambda k: to_text(k["name"])
-            )
+            objs["communities"] = sorted(objs["communities"], key=lambda k: to_text(k["name"]))
 
         if "users" in objs:
             if "auth" in objs["users"]:
@@ -78,9 +74,7 @@ class Snmp_serverFacts(object):
         ansible_facts["ansible_network_resources"].pop("snmp_server", None)
 
         params = utils.remove_empties(
-            snmp_server_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+            snmp_server_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
         )
 
         facts["snmp_server"] = params.get("config", {})

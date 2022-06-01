@@ -19,18 +19,17 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
+
+from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_neighbor_address_family
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
-from ansible_collections.cisco.nxos.plugins.modules import (
-    nxos_bgp_neighbor_address_family,
-)
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -56,9 +55,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_neighbor_address_family."
@@ -95,9 +92,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(
                                     afi="ipv4",
                                     safi="multicast",
-                                    advertise_map=dict(
-                                        route_map="rmap1", exist_map="rmap2"
-                                    ),
+                                    advertise_map=dict(route_map="rmap1", exist_map="rmap2"),
                                 )
                             ],
                         )
@@ -175,9 +170,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(
                                     afi="ipv4",
                                     safi="multicast",
-                                    advertise_map=dict(
-                                        route_map="rmap1", exist_map="rmap3"
-                                    ),
+                                    advertise_map=dict(route_map="rmap1", exist_map="rmap3"),
                                 )
                             ],
                         )
@@ -593,9 +586,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     neighbors=[
                         dict(
                             neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(afi="ipv4", safi="multicast")
-                            ],
+                            address_family=[dict(afi="ipv4", safi="multicast")],
                         )
                     ],
                     vrfs=[
@@ -661,9 +652,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     capability=dict(
-                                        additional_paths=dict(
-                                            receive="enable", send="enable"
-                                        )
+                                        additional_paths=dict(receive="enable", send="enable")
                                     ),
                                 )
                             ],
@@ -754,9 +743,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(
                                     afi="ipv4",
                                     safi="multicast",
-                                    capability=dict(
-                                        additional_paths=dict(send="enable")
-                                    ),
+                                    capability=dict(additional_paths=dict(send="enable")),
                                 )
                             ],
                         )
@@ -855,9 +842,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         dict(
                                             afi="ipv4",
                                             safi="multicast",
-                                            default_originate=dict(
-                                                route_map="rmap2"
-                                            ),
+                                            default_originate=dict(route_map="rmap2"),
                                         ),
                                     ],
                                 )
@@ -988,12 +973,8 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(
                                     afi="ipv4",
                                     safi="multicast",
-                                    filter_list=dict(
-                                        inbound="rmap3", outbound="rmap4"
-                                    ),
-                                    inherit=dict(
-                                        template="template-2", sequence=200
-                                    ),
+                                    filter_list=dict(inbound="rmap3", outbound="rmap4"),
+                                    inherit=dict(template="template-2", sequence=200),
                                 )
                             ],
                         )
@@ -1086,9 +1067,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     filter_list=dict(inbound="rmap3"),
-                                    inherit=dict(
-                                        template="template-2", sequence=200
-                                    ),
+                                    inherit=dict(template="template-2", sequence=200),
                                 )
                             ],
                         )
@@ -1207,9 +1186,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         dict(
                                             afi="ipv4",
                                             safi="multicast",
-                                            maximum_prefix=dict(
-                                                max_prefix_limit=28
-                                            ),
+                                            maximum_prefix=dict(max_prefix_limit=28),
                                         ),
                                         dict(
                                             afi="ipv4",
@@ -1315,9 +1292,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         dict(
                                             afi="ipv4",
                                             safi="multicast",
-                                            maximum_prefix=dict(
-                                                max_prefix_limit=28
-                                            ),
+                                            maximum_prefix=dict(max_prefix_limit=28),
                                         ),
                                         dict(
                                             afi="ipv4",
@@ -1409,16 +1384,12 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         dict(
                                             afi="ipv4",
                                             safi="multicast",
-                                            next_hop_self=dict(
-                                                all_routes=True
-                                            ),
+                                            next_hop_self=dict(all_routes=True),
                                         ),
                                         dict(
                                             afi="ipv6",
                                             safi="multicast",
-                                            next_hop_self=dict(
-                                                all_routes=True
-                                            ),
+                                            next_hop_self=dict(all_routes=True),
                                         ),
                                     ],
                                 )
@@ -1498,9 +1469,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         dict(
                                             afi="ipv4",
                                             safi="multicast",
-                                            next_hop_self=dict(
-                                                all_routes=True
-                                            ),
+                                            next_hop_self=dict(all_routes=True),
                                         ),
                                     ],
                                 )
@@ -1551,9 +1520,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(
                                     afi="ipv4",
                                     safi="multicast",
-                                    prefix_list=dict(
-                                        inbound="rmap3", outbound="rmap4"
-                                    ),
+                                    prefix_list=dict(inbound="rmap3", outbound="rmap4"),
                                 )
                             ],
                         )
@@ -1704,9 +1671,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(
                                     afi="ipv4",
                                     safi="multicast",
-                                    route_map=dict(
-                                        inbound="rmap3", outbound="rmap4"
-                                    ),
+                                    route_map=dict(inbound="rmap3", outbound="rmap4"),
                                     rewrite_evpn_rt_asn=True,
                                 )
                             ],
@@ -2006,9 +1971,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(
                                     afi="ipv4",
                                     safi="multicast",
-                                    soft_reconfiguration_inbound=dict(
-                                        set=True
-                                    ),
+                                    soft_reconfiguration_inbound=dict(set=True),
                                     soo="73:43",
                                 )
                             ],
@@ -2024,17 +1987,13 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         dict(
                                             afi="ipv4",
                                             safi="unicast",
-                                            soft_reconfiguration_inbound=dict(
-                                                always=True
-                                            ),
+                                            soft_reconfiguration_inbound=dict(always=True),
                                             soo="65:28",
                                         ),
                                         dict(
                                             afi="ipv4",
                                             safi="multicast",
-                                            soft_reconfiguration_inbound=dict(
-                                                always=True
-                                            ),
+                                            soft_reconfiguration_inbound=dict(always=True),
                                         ),
                                     ],
                                 )
@@ -2089,9 +2048,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(
                                     afi="ipv4",
                                     safi="multicast",
-                                    soft_reconfiguration_inbound=dict(
-                                        set=True
-                                    ),
+                                    soft_reconfiguration_inbound=dict(set=True),
                                 )
                             ],
                         )
@@ -2106,9 +2063,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         dict(
                                             afi="ipv4",
                                             safi="unicast",
-                                            soft_reconfiguration_inbound=dict(
-                                                always=True
-                                            ),
+                                            soft_reconfiguration_inbound=dict(always=True),
                                             soo="65:28",
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
@@ -2244,9 +2199,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     neighbors=[
                         dict(
                             neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(afi="ipv4", safi="multicast")
-                            ],
+                            address_family=[dict(afi="ipv4", safi="multicast")],
                         )
                     ],
                     vrfs=[
@@ -2430,9 +2383,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                             neighbors=[
                                 dict(
                                     neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(afi="ipv4", safi="multicast")
-                                    ],
+                                    address_family=[dict(afi="ipv4", safi="multicast")],
                                 )
                             ],
                         )
@@ -2490,9 +2441,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     neighbors=[
                         dict(
                             neighbor_address="192.168.1.1",
-                            address_family=[
-                                dict(afi="ipv4", safi="multicast")
-                            ],
+                            address_family=[dict(afi="ipv4", safi="multicast")],
                         )
                     ],
                 )
@@ -2537,9 +2486,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     neighbors=[
                         dict(
                             neighbor_address="192.168.1.1",
-                            address_family=[
-                                dict(afi="ipv4", safi="multicast")
-                            ],
+                            address_family=[dict(afi="ipv4", safi="multicast")],
                         )
                     ],
                 )
@@ -2657,9 +2604,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     neighbors=[
                         dict(
                             neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(afi="ipv4", safi="multicast")
-                            ],
+                            address_family=[dict(afi="ipv4", safi="multicast")],
                         )
                     ],
                 ),

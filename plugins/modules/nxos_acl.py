@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -250,14 +251,13 @@ commands:
     type: list
     sample: ["ip access-list ANSIBLE", "10 permit tcp 192.0.2.1/24 any"]
 """
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
+    nxos_argument_spec,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def execute_show_command(command, module, check_rc=True):
@@ -316,9 +316,7 @@ def get_acl(module, acl_name, seq_number):
             temp["action"] = "remark"
         else:
             temp["action"] = each.get("permitdeny")
-            temp["proto"] = str(
-                each.get("proto", each.get("proto_str", each.get("ip")))
-            )
+            temp["proto"] = str(each.get("proto", each.get("proto_str", each.get("ip"))))
             temp["src"] = each.get("src_any", each.get("src_ip_prefix"))
             temp["src_port_op"] = each.get("src_port_op")
             temp["src_port1"] = each.get("src_port1_num")
@@ -451,15 +449,11 @@ def main():
         remark=dict(required=False, type="str"),
         proto=dict(required=False, type="str"),
         src=dict(required=False, type="str"),
-        src_port_op=dict(
-            required=False, choices=["any", "eq", "gt", "lt", "neq", "range"]
-        ),
+        src_port_op=dict(required=False, choices=["any", "eq", "gt", "lt", "neq", "range"]),
         src_port1=dict(required=False, type="str"),
         src_port2=dict(required=False, type="str"),
         dest=dict(required=False, type="str"),
-        dest_port_op=dict(
-            required=False, choices=["any", "eq", "gt", "lt", "neq", "range"]
-        ),
+        dest_port_op=dict(required=False, choices=["any", "eq", "gt", "lt", "neq", "range"]),
         dest_port1=dict(required=False, type="str"),
         dest_port2=dict(required=False, type="str"),
         log=dict(required=False, choices=["enable"]),
@@ -511,16 +505,12 @@ def main():
                 "ef",
             ],
         ),
-        state=dict(
-            choices=["absent", "present", "delete_acl"], default="present"
-        ),
+        state=dict(choices=["absent", "present", "delete_acl"], default="present"),
     )
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 
@@ -536,9 +526,7 @@ def main():
     seq = module.params["seq"]
 
     if action == "remark" and not remark:
-        module.fail_json(
-            msg="when state is action, remark param is also required"
-        )
+        module.fail_json(msg="when state is action, remark param is also required")
 
     REQUIRED = ["seq", "name", "action", "proto", "src", "dest"]
     ABSENT = ["name", "seq"]
@@ -555,17 +543,13 @@ def main():
     elif state == "absent":
         for each in ABSENT:
             if module.params[each] is None:
-                module.fail_json(
-                    msg="require params when state is absent", params=ABSENT
-                )
+                module.fail_json(msg="require params when state is absent", params=ABSENT)
     elif state == "delete_acl":
         if module.params["name"] is None:
             module.fail_json(msg="param name req'd when state is delete_acl")
 
     if dscp and precedence:
-        module.fail_json(
-            msg="only one of the params dscp/precedence " "are allowed"
-        )
+        module.fail_json(msg="only one of the params dscp/precedence " "are allowed")
 
     OPTIONS_NAMES = [
         "log",
@@ -626,35 +610,21 @@ def main():
     delta_options = {}
 
     if not existing_core.get("remark"):
-        dcore = dict(
-            set(proposed_core.items()).difference(existing_core.items())
-        )
+        dcore = dict(set(proposed_core.items()).difference(existing_core.items()))
         if not dcore:
             # check the diff in the other way just in case
-            dcore = dict(
-                set(existing_core.items()).difference(proposed_core.items())
-            )
+            dcore = dict(set(existing_core.items()).difference(proposed_core.items()))
         delta_core = dcore
         if delta_core:
             delta_options = proposed_options
         else:
-            doptions = dict(
-                set(proposed_options.items()).difference(
-                    existing_options.items()
-                )
-            )
+            doptions = dict(set(proposed_options.items()).difference(existing_options.items()))
             # check the diff in the other way just in case
             if not doptions:
-                doptions = dict(
-                    set(existing_options.items()).difference(
-                        proposed_options.items()
-                    )
-                )
+                doptions = dict(set(existing_options.items()).difference(proposed_options.items()))
             delta_options = doptions
     else:
-        delta_core = dict(
-            set(proposed_core.items()).difference(existing_core.items())
-        )
+        delta_core = dict(set(proposed_core.items()).difference(existing_core.items()))
 
     if state == "present":
         if delta_core or delta_options:

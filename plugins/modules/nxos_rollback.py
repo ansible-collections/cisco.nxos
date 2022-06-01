@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -74,11 +75,12 @@ status:
 """
 
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
     run_commands,
 )
-from ansible.module_utils.basic import AnsibleModule
 
 
 def checkpoint(filename, module):
@@ -100,9 +102,7 @@ def rollback(filename, module):
 
 
 def main():
-    argument_spec = dict(
-        checkpoint_file=dict(required=False), rollback_to=dict(required=False)
-    )
+    argument_spec = dict(checkpoint_file=dict(required=False), rollback_to=dict(required=False))
 
     argument_spec.update(nxos_argument_spec)
 

@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -152,16 +153,16 @@ commands:
 """
 
 import re
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    nxos_argument_spec,
 )
 
 
@@ -226,25 +227,17 @@ def get_existing(module, args):
             if "passive" in line:
                 existing["passive_interface"] = True
             elif "router-id" in line:
-                existing["router_id"] = re.search(
-                    r"router-id (\S+)", line
-                ).group(1)
+                existing["router_id"] = re.search(r"router-id (\S+)", line).group(1)
             elif "metric" in line:
-                existing["default_metric"] = re.search(
-                    r"default-metric (\S+)", line
-                ).group(1)
+                existing["default_metric"] = re.search(r"default-metric (\S+)", line).group(1)
             elif "adjacency" in line:
-                log = re.search(
-                    r"log-adjacency-changes(?: (\S+))?", line
-                ).group(1)
+                log = re.search(r"log-adjacency-changes(?: (\S+))?", line).group(1)
                 if log:
                     existing["log_adjacency"] = log
                 else:
                     existing["log_adjacency"] = "log"
             elif "auto" in line:
-                cost = re.search(
-                    r"auto-cost reference-bandwidth (\d+) (\S+)", line
-                ).group(1)
+                cost = re.search(r"auto-cost reference-bandwidth (\d+) (\S+)", line).group(1)
                 if "Gbps" in line:
                     cost = int(cost) * 1000
                 existing["auto_cost"] = str(cost)
@@ -360,17 +353,11 @@ def state_absent(module, existing, proposed, candidate):
                 elif key == "timers throttle lsa":
                     if (
                         existing["timer_throttle_lsa_start"]
-                        != PARAM_TO_DEFAULT_KEYMAP.get(
-                            "timer_throttle_lsa_start"
-                        )
+                        != PARAM_TO_DEFAULT_KEYMAP.get("timer_throttle_lsa_start")
                         or existing["timer_throttle_lsa_hold"]
-                        != PARAM_TO_DEFAULT_KEYMAP.get(
-                            "timer_throttle_lsa_hold"
-                        )
+                        != PARAM_TO_DEFAULT_KEYMAP.get("timer_throttle_lsa_hold")
                         or existing["timer_throttle_lsa_max"]
-                        != PARAM_TO_DEFAULT_KEYMAP.get(
-                            "timer_throttle_lsa_max"
-                        )
+                        != PARAM_TO_DEFAULT_KEYMAP.get("timer_throttle_lsa_max")
                     ):
                         command = "no {0} {1} {2} {3}".format(
                             key,
@@ -381,17 +368,11 @@ def state_absent(module, existing, proposed, candidate):
                 elif key == "timers throttle spf":
                     if (
                         existing["timer_throttle_spf_start"]
-                        != PARAM_TO_DEFAULT_KEYMAP.get(
-                            "timer_throttle_spf_start"
-                        )
+                        != PARAM_TO_DEFAULT_KEYMAP.get("timer_throttle_spf_start")
                         or existing["timer_throttle_spf_hold"]
-                        != PARAM_TO_DEFAULT_KEYMAP.get(
-                            "timer_throttle_spf_hold"
-                        )
+                        != PARAM_TO_DEFAULT_KEYMAP.get("timer_throttle_spf_hold")
                         or existing["timer_throttle_spf_max"]
-                        != PARAM_TO_DEFAULT_KEYMAP.get(
-                            "timer_throttle_spf_max"
-                        )
+                        != PARAM_TO_DEFAULT_KEYMAP.get("timer_throttle_spf_max")
                     ):
                         command = "no {0} {1} {2} {3}".format(
                             key,
@@ -430,9 +411,7 @@ def main():
         ospf=dict(required=True, type="str"),
         router_id=dict(required=False, type="str"),
         default_metric=dict(required=False, type="str"),
-        log_adjacency=dict(
-            required=False, type="str", choices=["log", "detail", "default"]
-        ),
+        log_adjacency=dict(required=False, type="str", choices=["log", "detail", "default"]),
         timer_throttle_lsa_start=dict(required=False, type="str"),
         timer_throttle_lsa_hold=dict(required=False, type="str"),
         timer_throttle_lsa_max=dict(required=False, type="str"),
@@ -442,16 +421,12 @@ def main():
         auto_cost=dict(required=False, type="str"),
         bfd=dict(required=False, type="str", choices=["enable", "disable"]),
         passive_interface=dict(required=False, type="bool"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
     )
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     result = dict(changed=False, commands=[], warnings=warnings)
@@ -459,9 +434,7 @@ def main():
     state = module.params["state"]
     args = PARAM_TO_COMMAND_KEYMAP.keys()
     existing = get_existing(module, args)
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
 
     proposed = {}
     for key, value in proposed_args.items():

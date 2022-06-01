@@ -4,6 +4,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -139,9 +140,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.p
     FailedConditionalError,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    transform_commands,
     to_lines,
+    transform_commands,
 )
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     nxos_argument_spec,
     run_commands,
@@ -183,9 +185,7 @@ def main():
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     result = {"changed": False, "warnings": warnings}
@@ -225,9 +225,7 @@ def main():
         msg = "One or more conditional statements have not been satisfied"
         module.fail_json(msg=msg, failed_conditions=failed_conditions)
 
-    result.update(
-        {"stdout": responses, "stdout_lines": list(to_lines(responses))}
-    )
+    result.update({"stdout": responses, "stdout_lines": list(to_lines(responses))})
 
     module.exit_json(**result)
 

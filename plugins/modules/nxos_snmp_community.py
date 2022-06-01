@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -86,14 +87,14 @@ commands:
 """
 
 import re
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
+    nxos_argument_spec,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def execute_show_command(command, module):
@@ -216,9 +217,7 @@ def main():
     configured_groups = get_snmp_groups(module)
 
     if group not in configured_groups:
-        module.fail_json(
-            msg="Group not on switch. Please add before moving forward"
-        )
+        module.fail_json(msg="Group not on switch. Please add before moving forward")
 
     existing = get_snmp_community(module, community)
     args = dict(group=group, acl=acl)

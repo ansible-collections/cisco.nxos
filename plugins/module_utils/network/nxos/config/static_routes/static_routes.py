@@ -12,25 +12,26 @@ created
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
+
+from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-    remove_empties,
     dict_diff,
+    remove_empties,
+    to_list,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
-from copy import deepcopy
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
-    search_obj_in_list,
     get_interface_type,
     normalize_interface,
+    search_obj_in_list,
 )
 
 
@@ -55,9 +56,7 @@ class Static_routes(ConfigBase):
         facts, _warnings = Facts(self._module).get_facts(
             self.gather_subset, self.gather_network_resources, data=data
         )
-        static_routes_facts = facts["ansible_network_resources"].get(
-            "static_routes"
-        )
+        static_routes_facts = facts["ansible_network_resources"].get("static_routes")
         if not static_routes_facts:
             return []
 
@@ -181,14 +180,10 @@ class Static_routes(ConfigBase):
             if len(want_afi_list) > 0:
                 for h in obj_in_have["address_families"]:
                     if h["afi"] in want_afi_list:
-                        want_afi = search_obj_in_list(
-                            h["afi"], want["address_families"], "afi"
-                        )
+                        want_afi = search_obj_in_list(h["afi"], want["address_families"], "afi")
                         want_dest_list = []
                         if "routes" in want_afi.keys():
-                            want_dest_list = [
-                                w["dest"] for w in want_afi["routes"]
-                            ]
+                            want_dest_list = [w["dest"] for w in want_afi["routes"]]
                         if len(want_dest_list) > 0:
                             for ro in h["routes"]:
                                 if ro["dest"] in want_dest_list:
@@ -197,9 +192,7 @@ class Static_routes(ConfigBase):
                                     )
                                     want_next_hops = []
                                     if "next_hops" in want_dest.keys():
-                                        want_next_hops = list(
-                                            want_dest["next_hops"]
-                                        )
+                                        want_next_hops = list(want_dest["next_hops"])
                                     if len(want_next_hops) > 0:
                                         for next_hop in ro["next_hops"]:
                                             if next_hop not in want_next_hops:
@@ -211,21 +204,15 @@ class Static_routes(ConfigBase):
                                                             "afi": h["afi"],
                                                             "routes": [
                                                                 {
-                                                                    "dest": ro[
-                                                                        "dest"
-                                                                    ],
-                                                                    "next_hops": [
-                                                                        next_hop
-                                                                    ],
+                                                                    "dest": ro["dest"],
+                                                                    "next_hops": [next_hop],
                                                                 }
                                                             ],
                                                         }
                                                     ],
                                                 }
                                                 delete_commands.extend(
-                                                    self.del_commands(
-                                                        [delete_dict]
-                                                    )
+                                                    self.del_commands([delete_dict])
                                                 )
                                     else:
                                         # want has no next_hops, so delete all next_hops under that dest
@@ -237,22 +224,14 @@ class Static_routes(ConfigBase):
                                                         "afi": h["afi"],
                                                         "routes": [
                                                             {
-                                                                "dest": ro[
-                                                                    "dest"
-                                                                ],
-                                                                "next_hops": ro[
-                                                                    "next_hops"
-                                                                ],
+                                                                "dest": ro["dest"],
+                                                                "next_hops": ro["next_hops"],
                                                             }
                                                         ],
                                                     }
                                                 ],
                                             }
-                                            delete_commands.extend(
-                                                self.del_commands(
-                                                    [delete_dict]
-                                                )
-                                            )
+                                            delete_commands.extend(self.del_commands([delete_dict]))
                                 else:
                                     if state == "overridden":
                                         delete_dict = {
@@ -263,17 +242,13 @@ class Static_routes(ConfigBase):
                                                     "routes": [
                                                         {
                                                             "dest": ro["dest"],
-                                                            "next_hops": ro[
-                                                                "next_hops"
-                                                            ],
+                                                            "next_hops": ro["next_hops"],
                                                         }
                                                     ],
                                                 }
                                             ],
                                         }
-                                        delete_commands.extend(
-                                            self.del_commands([delete_dict])
-                                        )
+                                        delete_commands.extend(self.del_commands([delete_dict]))
 
                         else:
                             if (
@@ -289,9 +264,7 @@ class Static_routes(ConfigBase):
                                             }
                                         ],
                                     }
-                                    delete_commands.extend(
-                                        self.del_commands([delete_dict])
-                                    )
+                                    delete_commands.extend(self.del_commands([delete_dict]))
             else:
                 if (
                     state == "overridden"
@@ -300,9 +273,7 @@ class Static_routes(ConfigBase):
                         self.del_commands(
                             [
                                 {
-                                    "address_families": list(
-                                        obj_in_have["address_families"]
-                                    ),
+                                    "address_families": list(obj_in_have["address_families"]),
                                     "vrf": obj_in_have["vrf"],
                                 }
                             ]
@@ -315,9 +286,7 @@ class Static_routes(ConfigBase):
         # if there are two afis, 'vrf context..' is added twice fom del_commands. The above code removes the redundant 'vrf context ..'
         merged_commands = self.set_commands(want, have)
         if merged_commands:
-            cmds = set(final_delete_commands).intersection(
-                set(merged_commands)
-            )
+            cmds = set(final_delete_commands).intersection(set(merged_commands))
             for c in cmds:
                 merged_commands.remove(c)
 
@@ -396,20 +365,14 @@ class Static_routes(ConfigBase):
                                                         "afi": w1["afi"],
                                                         "routes": [
                                                             {
-                                                                "dest": w2[
-                                                                    "dest"
-                                                                ],
+                                                                "dest": w2["dest"],
                                                                 "next_hops": hops,
                                                             }
                                                         ],
                                                     }
                                                 ],
                                             }
-                                            commands.extend(
-                                                self.del_commands(
-                                                    [delete_dict]
-                                                )
-                                            )
+                                            commands.extend(self.del_commands([delete_dict]))
                                     else:
                                         # case when only afi given for delete
                                         delete_dict = {
@@ -421,9 +384,7 @@ class Static_routes(ConfigBase):
                                                 }
                                             ],
                                         }
-                                        commands.extend(
-                                            self.del_commands([delete_dict])
-                                        )
+                                        commands.extend(self.del_commands([delete_dict]))
                                 else:
                                     commands.extend(
                                         self.del_commands(
@@ -476,19 +437,9 @@ class Static_routes(ConfigBase):
     def del_next_hop(self, af, route, next_hop):
         command = ""
         if af["afi"] == "ipv4":
-            command = (
-                "no ip route "
-                + route["dest"]
-                + " "
-                + self.add_commands(next_hop)
-            )
+            command = "no ip route " + route["dest"] + " " + self.add_commands(next_hop)
         else:
-            command = (
-                "no ipv6 route "
-                + route["dest"]
-                + " "
-                + self.add_commands(next_hop)
-            )
+            command = "no ipv6 route " + route["dest"] + " " + self.add_commands(next_hop)
         return command
 
     def add_commands(self, want):
@@ -547,25 +498,19 @@ class Static_routes(ConfigBase):
                                         if "next_hops" in ro.keys():
                                             for nh in ro["next_hops"]:
                                                 if "interface" in nh.keys():
-                                                    nh[
-                                                        "interface"
-                                                    ] = normalize_interface(
+                                                    nh["interface"] = normalize_interface(
                                                         nh["interface"]
                                                     )
                                                 if nh not in next_hop_list:
                                                     # no match for next hop in have
-                                                    commands = (
-                                                        self.set_next_hop(
-                                                            want,
-                                                            h2,
-                                                            nh,
-                                                            ro,
-                                                            commands,
-                                                        )
+                                                    commands = self.set_next_hop(
+                                                        want,
+                                                        h2,
+                                                        nh,
+                                                        ro,
+                                                        commands,
                                                     )
-                                                    vrf_list.append(
-                                                        want["vrf"]
-                                                    )
+                                                    vrf_list.append(want["vrf"])
                                     else:
                                         # no match for dest
                                         if "next_hops" in ro.keys():
@@ -578,18 +523,14 @@ class Static_routes(ConfigBase):
                             if "routes" in af.keys():
                                 for ro in af["routes"]:
                                     for nh in ro["next_hops"]:
-                                        commands = self.set_next_hop(
-                                            want, af, nh, ro, commands
-                                        )
+                                        commands = self.set_next_hop(want, af, nh, ro, commands)
         else:
             # no match for vrf
             vrf_list.append(want["vrf"])
             for af in want["address_families"]:
                 for ro in af["routes"]:
                     for nh in ro["next_hops"]:
-                        commands = self.set_next_hop(
-                            want, af, nh, ro, commands
-                        )
+                        commands = self.set_next_hop(want, af, nh, ro, commands)
         return commands
 
     def set_next_hop(self, want, h2, nh, ro, commands):

@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -92,14 +93,13 @@ commands:
 """
 import re
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
+    nxos_argument_spec,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def check_for_acl_int_present(module, name, intf, direction):
@@ -107,9 +107,7 @@ def check_for_acl_int_present(module, name, intf, direction):
     # output has capitalization
     command = [
         {
-            "command": "show running-config aclmgr | section {0}".format(
-                intf.title()
-            ),
+            "command": "show running-config aclmgr | section {0}".format(intf.title()),
             "output": "text",
         }
     ]
@@ -120,9 +118,7 @@ def check_for_acl_int_present(module, name, intf, direction):
     elif direction == "egress":
         mdir = "out"
 
-    match = re.search(
-        "ip access-group {0} {1}".format(name, mdir), str(body[0])
-    )
+    match = re.search("ip access-group {0} {1}".format(name, mdir), str(body[0]))
     return bool(match)
 
 
@@ -174,9 +170,7 @@ def main():
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 

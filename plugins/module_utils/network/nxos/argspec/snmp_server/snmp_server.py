@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -131,16 +132,12 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {
                                 "enable": {"type": "bool"},
-                                "cefcMIBEnableStatusNotification": {
-                                    "type": "bool"
-                                },
+                                "cefcMIBEnableStatusNotification": {"type": "bool"},
                                 "entity_fan_status_change": {"type": "bool"},
                                 "entity_mib_change": {"type": "bool"},
                                 "entity_module_inserted": {"type": "bool"},
                                 "entity_module_removed": {"type": "bool"},
-                                "entity_module_status_change": {
-                                    "type": "bool"
-                                },
+                                "entity_module_status_change": {"type": "bool"},
                                 "entity_power_out_change": {"type": "bool"},
                                 "entity_power_status_change": {"type": "bool"},
                                 "entity_sensor": {"type": "bool"},
@@ -168,22 +165,16 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "enable": {"type": "bool"},
                                 "notify_license_expiry": {"type": "bool"},
-                                "notify_license_expiry_warning": {
-                                    "type": "bool"
-                                },
+                                "notify_license_expiry_warning": {"type": "bool"},
                                 "notify_licensefile_missing": {"type": "bool"},
-                                "notify_no_license_for_feature": {
-                                    "type": "bool"
-                                },
+                                "notify_no_license_for_feature": {"type": "bool"},
                             },
                         },
                         "link": {
                             "type": "dict",
                             "options": {
                                 "enable": {"type": "bool"},
-                                "cErrDisableInterfaceEventRev1": {
-                                    "type": "bool"
-                                },
+                                "cErrDisableInterfaceEventRev1": {"type": "bool"},
                                 "cieLinkDown": {"type": "bool"},
                                 "cieLinkUp": {"type": "bool"},
                                 "cisco_xcvr_mon_status_chg": {"type": "bool"},
@@ -263,9 +254,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {
                                 "enable": {"type": "bool"},
-                                "cseFailSwCoreNotifyExtended": {
-                                    "type": "bool"
-                                },
+                                "cseFailSwCoreNotifyExtended": {"type": "bool"},
                             },
                         },
                         "system": {
@@ -280,9 +269,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "enable": {"type": "bool"},
                                 "upgradeJobStatusNotify": {"type": "bool"},
-                                "upgradeOpNotifyOnCompletion": {
-                                    "type": "bool"
-                                },
+                                "upgradeOpNotifyOnCompletion": {"type": "bool"},
                             },
                         },
                         "vtp": {

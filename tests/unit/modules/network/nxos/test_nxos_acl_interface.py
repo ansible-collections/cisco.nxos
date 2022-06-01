@@ -19,12 +19,14 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 __metacl_interfaceass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_acl_interface
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -60,9 +62,7 @@ class TestNxosAclInterfaceModule(TestNxosModule):
                     command = item["command"]
                 except ValueError:
                     command = item
-                filename = "%s.txt" % str(command).split(" | ", 1)[0].replace(
-                    " ", "_"
-                )
+                filename = "%s.txt" % str(command).split(" | ", 1)[0].replace(" ", "_")
                 output.append(load_fixture("nxos_acl_interface", filename))
             return output
 
@@ -70,9 +70,7 @@ class TestNxosAclInterfaceModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_acl_interface(self):
-        set_module_args(
-            dict(name="ANSIBLE", interface="ethernet1/41", direction="egress")
-        )
+        set_module_args(dict(name="ANSIBLE", interface="ethernet1/41", direction="egress"))
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],

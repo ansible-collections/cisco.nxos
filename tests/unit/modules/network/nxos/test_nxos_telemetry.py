@@ -19,28 +19,28 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
-from ansible_collections.cisco.nxos.plugins.modules import nxos_telemetry
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    NxosCmdRef,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.telemetry.telemetry import (
-    Telemetry,
-)
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 # TBD: These imports / import checks are only needed as a workaround for
 # shippable, which fails this test due to import yaml & import ordereddict.
 import pytest
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.telemetry.telemetry import (
+    Telemetry,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    NxosCmdRef,
     nxosCmdRef_import_check,
 )
+from ansible_collections.cisco.nxos.plugins.modules import nxos_telemetry
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
+
+from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 msg = nxosCmdRef_import_check()
 ignore_provider_arg = True
@@ -62,16 +62,12 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.telemetry.telemetry.Telemetry.edit_config"
@@ -192,9 +188,7 @@ class TestNxosTelemetryModule(TestNxosModule):
     def test_tms_global_idempotent_n9k(self):
         # Assumes feature telemetry is enabled
         # TMS global config is present.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -216,9 +210,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # Assumes feature telemetry is enabled
         # TMS global config is present
         # Change certificate
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -246,9 +238,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # Assumes feature telemetry is enabled
         # TMS global config is present
         # Change interface
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -277,9 +267,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # Assumes feature telemetry is enabled
         # TMS global config is present
         # Change source_interface, vrf and cert
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -331,25 +319,20 @@ class TestNxosTelemetryModule(TestNxosModule):
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
         testdata = errinfo.value.args[0]
-        assert "Parameter <id> under <destination_groups> is required" in str(
-            testdata["msg"]
-        )
+        assert "Parameter <id> under <destination_groups> is required" in str(testdata["msg"])
         assert testdata["failed"]
 
     def test_tms_destgroup_input_validation_2(self):
         # Parameter 'destination' is not a dict.
         self.execute_show_command.return_value = None
         self.get_platform_shortname.return_value = "N9K"
-        args = build_args(
-            [{"id": "88", "destination": "192.168.1.1"}], "destination_groups"
-        )
+        args = build_args([{"id": "88", "destination": "192.168.1.1"}], "destination_groups")
         set_module_args(args, ignore_provider_arg)
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
         testdata = errinfo.value.args[0]
-        assert (
-            "Parameter <destination> under <destination_groups> must be a dict"
-            in str(testdata["msg"])
+        assert "Parameter <destination> under <destination_groups> must be a dict" in str(
+            testdata["msg"]
         )
         assert testdata["failed"]
 
@@ -365,9 +348,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
         testdata = errinfo.value.args[0]
-        assert "Playbook entry contains unrecongnized parameters" in str(
-            testdata["msg"]
-        )
+        assert "Playbook entry contains unrecongnized parameters" in str(testdata["msg"])
         assert testdata["failed"]
 
     def test_tms_destgroup_merged_n9k(self):
@@ -484,9 +465,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # Assumes feature telemetry is enabled
         # TMS destgroup config is not present.
         # Configure only identifier
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -509,9 +488,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # Assumes feature telemetry is enabled
         # TMS destgroup config is not present.
         # Configure only identifier
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args([{"id": "2"}], "destination_groups")
         set_module_args(args, ignore_provider_arg)
@@ -520,9 +497,7 @@ class TestNxosTelemetryModule(TestNxosModule):
     def test_tms_destgroup_merged_aggregate_idempotent_n9k(self):
         # Assumes feature telemetry is enabled
         # TMS destgroup config is present.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -553,9 +528,7 @@ class TestNxosTelemetryModule(TestNxosModule):
     def test_tms_destgroup_change_n9k(self):
         # TMS destgroup config is not present.
         # Change protocol and encoding for dest group 2
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -594,9 +567,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # TMS destgroup config is not present.
         # Add destinations to destgroup 10
         # Add new destgroup 55 and 56
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -653,12 +624,8 @@ class TestNxosTelemetryModule(TestNxosModule):
         # TMS sensorgroup config is not present.
         self.execute_show_command.return_value = None
         self.get_platform_shortname.return_value = "N9K"
-        td55_name = (
-            "sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]"
-        )
-        td55_fc = (
-            'or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))'
-        )
+        td55_name = "sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]"
+        td55_fc = 'or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))'
         args = build_args(
             [
                 {
@@ -743,9 +710,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
         testdata = errinfo.value.args[0]
-        assert "Parameter <id> under <sensor_groups> is required" in str(
-            testdata["msg"]
-        )
+        assert "Parameter <id> under <sensor_groups> is required" in str(testdata["msg"])
         assert testdata["failed"]
 
     def test_tms_sensorgroup_input_validation_2(self):
@@ -770,10 +735,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
         testdata = errinfo.value.args[0]
-        assert (
-            "Parameter <path> under <sensor_groups> requires <name> key"
-            in str(testdata["msg"])
-        )
+        assert "Parameter <path> under <sensor_groups> requires <name> key" in str(testdata["msg"])
         assert testdata["failed"]
 
     def test_tms_sensorgroup_resource_key_n9k(self):
@@ -900,9 +862,7 @@ class TestNxosTelemetryModule(TestNxosModule):
     def test_tms_sensorgroup_merged_idempotent_n9k(self):
         # Assumes feature telemetry is enabled
         # TMS sensorgroup config is not present.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -925,9 +885,7 @@ class TestNxosTelemetryModule(TestNxosModule):
     def test_tms_sensorgroup_quotes_merged_idempotent_n9k(self):
         # Assumes feature telemetry is enabled
         # TMS sensorgroup config is present with quotes in NX-API path.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K_SGs.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K_SGs.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -953,9 +911,7 @@ class TestNxosTelemetryModule(TestNxosModule):
 
     def test_tms_sensorgroup_vxlan_idempotent_n9k(self):
         # TMS sensorgroup config present.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [{"id": "56", "data_source": "DME", "path": {"name": "vxlan"}}],
@@ -966,9 +922,7 @@ class TestNxosTelemetryModule(TestNxosModule):
 
     def test_tms_sensorgroup_idempotent_variable1_n9k(self):
         # TMS sensorgroup config is present with path key name.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -987,9 +941,7 @@ class TestNxosTelemetryModule(TestNxosModule):
 
     def test_tms_sensorgroup_idempotent_variable2_n9k(self):
         # TMS sensorgroup config is present with path key name and depth.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -1006,9 +958,7 @@ class TestNxosTelemetryModule(TestNxosModule):
 
     def test_tms_sensorgroup_idempotent_resource_key_n9k(self):
         # TMS sensorgroup config is present resource key only.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args([{"id": "55"}], "sensor_groups")
         set_module_args(args, ignore_provider_arg)
@@ -1135,9 +1085,7 @@ class TestNxosTelemetryModule(TestNxosModule):
 
     def test_tms_subscription_merged_idempotent_n9k(self):
         # TMS subscription config is not present.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -1161,9 +1109,7 @@ class TestNxosTelemetryModule(TestNxosModule):
     def test_tms_subscription_merged_change1_n9k(self):
         # TMS subscription config present.
         # Change sample interval for sensor group 2
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -1194,9 +1140,7 @@ class TestNxosTelemetryModule(TestNxosModule):
     def test_tms_subscription_add_n9k(self):
         # TMS subscription config present.
         # Add new destination_group and sensor_group to subscription 5
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         args = build_args(
             [
@@ -1383,9 +1327,7 @@ class TestNxosTelemetryModule(TestNxosModule):
 
     def test_telemetry_deleted_input_validation_n9k(self):
         # State is 'deleted' and 'config' key present.
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -1405,19 +1347,14 @@ class TestNxosTelemetryModule(TestNxosModule):
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
         testdata = errinfo.value.args[0]
-        assert (
-            "Remove config key from playbook when state is <deleted>"
-            in str(testdata["msg"])
-        )
+        assert "Remove config key from playbook when state is <deleted>" in str(testdata["msg"])
         assert testdata["failed"]
 
     def test_telemetry_deleted_n9k(self):
         # Assumes feature telemetry is enabled
         # TMS global config is present.
         # Make absent with all playbook keys provided
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         self.execute_module(changed=True, commands=["no telemetry"])
@@ -1434,9 +1371,7 @@ class TestNxosTelemetryModule(TestNxosModule):
     def test_tms_replaced1_n9k(self):
         # Assumes feature telemetry is enabled
         # Modify global config and remove everything else
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -1479,9 +1414,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # Modify destination-group 10, add 11 and 99, remove 2
         # Modify sensor-group 55, 56
         # remove all subscriptions
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             {
@@ -1597,9 +1530,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # remove all other destination-groups
         # Modify sensor-group 55 and delete all others
         # Modify subscription 7, add 10 and delete all others
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             {
@@ -1690,9 +1621,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # remove all other destination-groups
         # Modify sensor-group 55 and delete all others
         # Modify subscription 7, add 10 and delete all others
-        self.execute_show_command.return_value = load_fixture(
-            "nxos_telemetry", "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             {

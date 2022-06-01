@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -340,21 +341,18 @@ import time
 
 from copy import deepcopy
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-    run_commands,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-    normalize_interface,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_interface_type,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     conditional,
     remove_default_spec,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_interface_type,
+    load_config,
+    normalize_interface,
+    nxos_argument_spec,
+    run_commands,
 )
 
 
@@ -487,9 +485,7 @@ def map_obj_to_commands(updates, module):
         name = w["name"]
         mode = w["mode"]
         ip_forward = w["ip_forward"]
-        fabric_forwarding_anycast_gateway = w[
-            "fabric_forwarding_anycast_gateway"
-        ]
+        fabric_forwarding_anycast_gateway = w["fabric_forwarding_anycast_gateway"]
         admin_state = w["admin_state"]
         state = w["state"]
         interface_type = w["interface_type"]
@@ -500,9 +496,7 @@ def map_obj_to_commands(updates, module):
         if interface_type:
             obj_in_have = {}
             if state in ("present", "default"):
-                module.fail_json(
-                    msg="The interface_type param can be used only with state absent."
-                )
+                module.fail_json(msg="The interface_type param can be used only with state absent.")
         else:
             obj_in_have = search_obj_in_list(name, have)
             is_default = is_default_interface(name, module)
@@ -523,40 +517,23 @@ def map_obj_to_commands(updates, module):
                 # Don't run switchport command for loopback and svi interfaces
                 if get_interface_type(name) in ("ethernet", "portchannel"):
                     if mode == "layer2" and mode != obj_in_have.get("mode"):
-                        add_command_to_interface(
-                            interface, "switchport", commands
-                        )
+                        add_command_to_interface(interface, "switchport", commands)
                     elif mode == "layer3" and mode != obj_in_have.get("mode"):
-                        add_command_to_interface(
-                            interface, "no switchport", commands
-                        )
+                        add_command_to_interface(interface, "no switchport", commands)
 
-                if admin_state == "up" and admin_state != obj_in_have.get(
-                    "admin_state"
-                ):
-                    add_command_to_interface(
-                        interface, "no shutdown", commands
-                    )
-                elif admin_state == "down" and admin_state != obj_in_have.get(
-                    "admin_state"
-                ):
+                if admin_state == "up" and admin_state != obj_in_have.get("admin_state"):
+                    add_command_to_interface(interface, "no shutdown", commands)
+                elif admin_state == "down" and admin_state != obj_in_have.get("admin_state"):
                     add_command_to_interface(interface, "shutdown", commands)
 
-                if ip_forward == "enable" and ip_forward != obj_in_have.get(
-                    "ip_forward"
-                ):
+                if ip_forward == "enable" and ip_forward != obj_in_have.get("ip_forward"):
                     add_command_to_interface(interface, "ip forward", commands)
-                elif ip_forward == "disable" and ip_forward != obj_in_have.get(
-                    "ip forward"
-                ):
-                    add_command_to_interface(
-                        interface, "no ip forward", commands
-                    )
+                elif ip_forward == "disable" and ip_forward != obj_in_have.get("ip forward"):
+                    add_command_to_interface(interface, "no ip forward", commands)
 
                 if (
                     fabric_forwarding_anycast_gateway is True
-                    and obj_in_have.get("fabric_forwarding_anycast_gateway")
-                    is False
+                    and obj_in_have.get("fabric_forwarding_anycast_gateway") is False
                 ):
                     add_command_to_interface(
                         interface,
@@ -566,8 +543,7 @@ def map_obj_to_commands(updates, module):
 
                 elif (
                     fabric_forwarding_anycast_gateway is False
-                    and obj_in_have.get("fabric_forwarding_anycast_gateway")
-                    is True
+                    and obj_in_have.get("fabric_forwarding_anycast_gateway") is True
                 ):
                     add_command_to_interface(
                         interface,
@@ -583,13 +559,9 @@ def map_obj_to_commands(updates, module):
 
                 if name and get_interface_type(name) == "ethernet":
                     if mode != obj_in_have.get("mode"):
-                        admin_state = w.get("admin_state") or obj_in_have.get(
-                            "admin_state"
-                        )
+                        admin_state = w.get("admin_state") or obj_in_have.get("admin_state")
                         if admin_state:
-                            c1 = "interface {0}".format(
-                                normalize_interface(w["name"])
-                            )
+                            c1 = "interface {0}".format(normalize_interface(w["name"]))
                             c2 = get_admin_state(admin_state)
                             commands2.append(c1)
                             commands2.append(c2)
@@ -617,9 +589,7 @@ def map_obj_to_commands(updates, module):
                     commands.append("fabric forwarding mode anycast-gateway")
 
                 elif fabric_forwarding_anycast_gateway is False:
-                    commands.append(
-                        "no fabric forwarding mode anycast-gateway"
-                    )
+                    commands.append("no fabric forwarding mode anycast-gateway")
 
                 for item in args:
                     candidate = w.get(item)
@@ -630,9 +600,7 @@ def map_obj_to_commands(updates, module):
             if is_default is False:
                 commands.append("default interface {0}".format(name))
             elif is_default == "DNE":
-                module.exit_json(
-                    msg="interface you are trying to default does not exist"
-                )
+                module.exit_json(msg="interface you are trying to default does not exist")
 
     return commands, commands2
 
@@ -725,9 +693,7 @@ def map_config_to_obj(want, module):
                         obj["mode"] = "layer3"
 
                 if intf_type == "ethernet":
-                    obj["name"] = normalize_interface(
-                        interface_table.get("interface")
-                    )
+                    obj["name"] = normalize_interface(interface_table.get("interface"))
                     obj["admin_state"] = interface_table.get("admin_state")
                     obj["description"] = interface_table.get("desc")
                     obj["mtu"] = interface_table.get("eth_mtu")
@@ -754,18 +720,10 @@ def map_config_to_obj(want, module):
                         obj["ip_forward"] = "disable"
 
                 elif intf_type == "svi":
-                    obj["name"] = normalize_interface(
-                        interface_table.get("interface")
-                    )
-                    attributes = get_vlan_interface_attributes(
-                        obj["name"], intf_type, module
-                    )
-                    obj["admin_state"] = str(
-                        attributes.get("admin_state", "nxapibug")
-                    )
-                    obj["description"] = str(
-                        attributes.get("description", "nxapi_bug")
-                    )
+                    obj["name"] = normalize_interface(interface_table.get("interface"))
+                    attributes = get_vlan_interface_attributes(obj["name"], intf_type, module)
+                    obj["admin_state"] = str(attributes.get("admin_state", "nxapibug"))
+                    obj["description"] = str(attributes.get("description", "nxapi_bug"))
                     obj["mtu"] = interface_table.get("svi_mtu")
 
                     command = "show run interface {0}".format(obj["name"])
@@ -780,9 +738,7 @@ def map_config_to_obj(want, module):
                         obj["fabric_forwarding_anycast_gateway"] = False
 
                 elif intf_type in ("loopback", "management", "nve"):
-                    obj["name"] = normalize_interface(
-                        interface_table.get("interface")
-                    )
+                    obj["name"] = normalize_interface(interface_table.get("interface"))
                     obj["admin_state"] = interface_table.get("admin_state")
                     if obj["admin_state"] is None and intf_type == "loopback":
                         # Some platforms don't have the 'admin_state' key.
@@ -792,9 +748,7 @@ def map_config_to_obj(want, module):
                     obj["description"] = interface_table.get("desc")
 
                 elif intf_type == "portchannel":
-                    obj["name"] = normalize_interface(
-                        interface_table.get("interface")
-                    )
+                    obj["name"] = normalize_interface(interface_table.get("interface"))
                     obj["admin_state"] = interface_table.get("admin_state")
                     obj["description"] = interface_table.get("desc")
                     obj["mtu"] = interface_table.get("eth_mtu")
@@ -870,9 +824,7 @@ def check_declarative_intent_params(module, want):
             if have_neighbors is None:
                 cmd = [
                     {
-                        "command": "show lldp neighbors interface {0} detail".format(
-                            w["name"]
-                        ),
+                        "command": "show lldp neighbors interface {0} detail".format(w["name"]),
                         "output": "text",
                     }
                 ]
@@ -881,10 +833,7 @@ def check_declarative_intent_params(module, want):
                     have_neighbors = output[0]
                 else:
                     have_neighbors = ""
-                if (
-                    have_neighbors
-                    and "Total entries displayed: 0" not in have_neighbors
-                ):
+                if have_neighbors and "Total entries displayed: 0" not in have_neighbors:
                     for line in have_neighbors.strip().split("\n"):
                         if line.startswith("Port Description"):
                             have_port.append(line.split(": ")[1])
@@ -921,9 +870,7 @@ def main():
         rx_rate=dict(),
         neighbors=dict(type="list", elements="dict", options=neighbors_spec),
         delay=dict(default=10, type="int"),
-        state=dict(
-            choices=["absent", "present", "default"], default="present"
-        ),
+        state=dict(choices=["absent", "present", "default"], default="present"),
     )
 
     aggregate_spec = deepcopy(element_spec)

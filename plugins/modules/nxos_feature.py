@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -79,14 +80,13 @@ import re
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import ConnectionError
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-    run_commands,
-    get_config,
-)
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
+    get_config,
+    load_config,
     nxos_argument_spec,
+    run_commands,
 )
 
 
@@ -118,10 +118,7 @@ def get_available_features(feature, module):
             if feature not in available_features:
                 available_features[feature] = state
             else:
-                if (
-                    available_features[feature] == "disabled"
-                    and state == "enabled"
-                ):
+                if available_features[feature] == "disabled" and state == "enabled":
                     available_features[feature] = state
 
     # certain configurable features do not
@@ -274,9 +271,7 @@ def main():
 
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     results = dict(changed=False, warnings=warnings)

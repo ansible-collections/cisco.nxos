@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -188,19 +189,16 @@ changed:
     sample: true
 """
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-    run_commands,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_interface_type,
-)
+import re
+
 from ansible.module_utils.basic import AnsibleModule
 
-import re
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_interface_type,
+    load_config,
+    nxos_argument_spec,
+    run_commands,
+)
 
 
 def execute_show_command(command, module, command_type="cli_show"):
@@ -281,9 +279,7 @@ def get_igmp_interface(module, interface):
         elif report_llg == "false":
             igmp["report_llg"] = False
 
-        immediate_leave = str(
-            resource["ImmediateLeave"]
-        ).lower()  # returns en or dis
+        immediate_leave = str(resource["ImmediateLeave"]).lower()  # returns en or dis
         if re.search(r"^en|^true|^enabled", immediate_leave):
             igmp["immediate_leave"] = True
         elif re.search(r"^dis|^false|^disabled", immediate_leave):
@@ -294,16 +290,12 @@ def get_igmp_interface(module, interface):
     # or PREFIX source <ip>, etc.
     command = "show run interface {0} | inc oif".format(interface)
 
-    body = execute_show_command(
-        command, module, command_type="cli_show_ascii"
-    )[0]
+    body = execute_show_command(command, module, command_type="cli_show_ascii")[0]
 
     staticoif = []
     if body:
         split_body = body.split("\n")
-        route_map_regex = (
-            r".*ip igmp static-oif route-map\s+(?P<route_map>\S+).*"
-        )
+        route_map_regex = r".*ip igmp static-oif route-map\s+(?P<route_map>\S+).*"
         prefix_source_regex = (
             r".*ip igmp static-oif\s+(?P<prefix>"
             r"((\d+.){3}\d+))(\ssource\s"
@@ -319,9 +311,7 @@ def get_igmp_interface(module, interface):
                 route_map = ""
 
             try:
-                match_prefix_source = re.match(
-                    prefix_source_regex, line, re.DOTALL
-                )
+                match_prefix_source = re.match(prefix_source_regex, line, re.DOTALL)
                 prefix_source_group = match_prefix_source.groupdict()
                 prefix = prefix_source_group["prefix"]
                 source = prefix_source_group["source"]
@@ -385,9 +375,7 @@ def config_igmp_interface(delta, existing, existing_oif_prefix_source):
                     if "source" in each.keys():
                         src = each["source"]
                     if src:
-                        commands.append(
-                            CMDS.get("oif_prefix_source").format(pf, src)
-                        )
+                        commands.append(CMDS.get("oif_prefix_source").format(pf, src))
                     else:
                         commands.append(CMDS.get("oif_prefix").format(pf))
             if existing_oif_prefix_source:
@@ -398,14 +386,9 @@ def config_igmp_interface(delta, existing, existing_oif_prefix_source):
                     if "source" in each.keys():
                         src = each["source"]
                     if src:
-                        commands.append(
-                            "no "
-                            + CMDS.get("oif_prefix_source").format(pf, src)
-                        )
+                        commands.append("no " + CMDS.get("oif_prefix_source").format(pf, src))
                     else:
-                        commands.append(
-                            "no " + CMDS.get("oif_prefix").format(pf)
-                        )
+                        commands.append("no " + CMDS.get("oif_prefix").format(pf))
         elif key == "oif_routemap":
             if value == "default":
                 if existing.get(key):
@@ -458,9 +441,7 @@ def get_igmp_interface_defaults():
         immediate_leave=immediate_leave,
     )
 
-    default = dict(
-        (param, value) for (param, value) in args.items() if value is not None
-    )
+    default = dict((param, value) for (param, value) in args.items() if value is not None)
 
     return default
 
@@ -470,9 +451,7 @@ def config_default_igmp_interface(existing, delta):
     proposed = get_igmp_interface_defaults()
     delta = dict(set(proposed.items()).difference(existing.items()))
     if delta:
-        command = config_igmp_interface(
-            delta, existing, existing_oif_prefix_source=None
-        )
+        command = config_igmp_interface(delta, existing, existing_oif_prefix_source=None)
 
         if command:
             for each in command:
@@ -485,11 +464,7 @@ def config_remove_oif(existing, existing_oif_prefix_source):
     commands = []
     command = None
     if existing.get("oif_routemap"):
-        commands.append(
-            "no ip igmp static-oif route-map {0}".format(
-                existing.get("oif_routemap")
-            )
-        )
+        commands.append("no ip igmp static-oif route-map {0}".format(existing.get("oif_routemap")))
     elif existing_oif_prefix_source:
         for each in existing_oif_prefix_source:
             if each.get("prefix") and each.get("source"):
@@ -497,9 +472,7 @@ def config_remove_oif(existing, existing_oif_prefix_source):
                     each.get("prefix"), each.get("source")
                 )
             elif each.get("prefix"):
-                command = "no ip igmp static-oif {0}".format(
-                    each.get("prefix")
-                )
+                command = "no ip igmp static-oif {0}".format(each.get("prefix"))
             if command:
                 commands.append(command)
             command = None
@@ -510,9 +483,7 @@ def config_remove_oif(existing, existing_oif_prefix_source):
 def main():
     argument_spec = dict(
         interface=dict(required=True, type="str"),
-        version=dict(
-            required=False, type="str", choices=["2", "3", "default"]
-        ),
+        version=dict(required=False, type="str", choices=["2", "3", "default"]),
         startup_query_interval=dict(required=False, type="str"),
         startup_query_count=dict(required=False, type="str"),
         robustness=dict(required=False, type="str"),
@@ -527,9 +498,7 @@ def main():
         oif_routemap=dict(required=False, type="str"),
         oif_ps=dict(required=False, type="raw"),
         restart=dict(type="bool", default=False),
-        state=dict(
-            choices=["present", "absent", "default"], default="present"
-        ),
+        state=dict(choices=["present", "absent", "default"], default="present"),
     )
 
     argument_spec.update(nxos_argument_spec)
@@ -594,9 +563,7 @@ def main():
 
     changed = False
     commands = []
-    proposed = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
 
     CANNOT_ABSENT = [
         "version",
@@ -617,9 +584,7 @@ def main():
         for each in CANNOT_ABSENT:
             if each in proposed:
                 module.fail_json(
-                    msg="only params: "
-                    "oif_ps, oif_routemap can be used when "
-                    "state=absent"
+                    msg="only params: " "oif_ps, oif_routemap can be used when " "state=absent"
                 )
 
     # delta check for all params except oif_ps
@@ -633,9 +598,7 @@ def main():
 
     if state == "present":
         if delta:
-            command = config_igmp_interface(
-                delta, existing, existing_oif_prefix_source
-            )
+            command = config_igmp_interface(delta, existing, existing_oif_prefix_source)
             if command:
                 commands.append(command)
 

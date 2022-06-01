@@ -12,13 +12,15 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acl_interfaces.acl_interfaces import (
     Acl_interfacesArgs,
 )
@@ -63,9 +65,7 @@ class Acl_interfacesFacts(object):
         for i in range(len(data)):
             intf = data[i].split("\n")
             for l in range(1, len(intf)):
-                if not re.search(
-                    "ip(v6)?( port)? (access-group|traffic-filter)", intf[l]
-                ):
+                if not re.search("ip(v6)?( port)? (access-group|traffic-filter)", intf[l]):
                     intf[l] = ""
             intf = list(filter(None, intf))
             resources.append(intf)
@@ -80,9 +80,7 @@ class Acl_interfacesFacts(object):
         ansible_facts["ansible_network_resources"].pop("acl_interfaces", None)
         facts = {}
         if objs:
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             params = utils.remove_empties(params)
             facts["acl_interfaces"] = params["config"]
 

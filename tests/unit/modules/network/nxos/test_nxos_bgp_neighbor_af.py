@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_neighbor_af
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -74,9 +76,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_neighbor_af_exists(self):
-        set_module_args(
-            dict(asn=65535, neighbor="3.3.3.5", afi="ipv4", safi="unicast")
-        )
+        set_module_args(dict(asn=65535, neighbor="3.3.3.5", afi="ipv4", safi="unicast"))
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_bgp_neighbor_af_absent(self):

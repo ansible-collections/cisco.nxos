@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -123,13 +124,12 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
 )
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
     normalize_interface,
+    nxos_argument_spec,
 )
 
 
@@ -251,9 +251,7 @@ def main():
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
 
-    argument_spec = dict(
-        aggregate=dict(type="list", elements="dict", options=aggregate_spec)
-    )
+    argument_spec = dict(aggregate=dict(type="list", elements="dict", options=aggregate_spec))
 
     argument_spec.update(element_spec)
     argument_spec.update(nxos_argument_spec)

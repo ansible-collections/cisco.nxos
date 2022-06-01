@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -123,18 +124,15 @@ commands:
             "authentication text testing", "no shutdown"]
 """
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-    run_commands,
-)
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
-    nxos_argument_spec,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_interface_type,
+    load_config,
+    nxos_argument_spec,
+    run_commands,
 )
-from ansible.module_utils.basic import AnsibleModule
 
 
 PARAM_TO_DEFAULT_KEYMAP = {
@@ -330,8 +328,7 @@ def validate_params(param, module):
                 raise ValueError
         except ValueError:
             module.fail_json(
-                msg="Warning! 'priority' must be an integer "
-                "between 1 and 254",
+                msg="Warning! 'priority' must be an integer " "between 1 and 254",
                 priority=value,
             )
 
@@ -351,15 +348,11 @@ def main():
             default="shutdown",
         ),
         authentication=dict(required=False, type="str", no_log=True),
-        state=dict(
-            choices=["absent", "present"], required=False, default="present"
-        ),
+        state=dict(choices=["absent", "present"], required=False, default="present"),
     )
     argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     results = {"changed": False, "commands": [], "warnings": warnings}
@@ -396,8 +389,7 @@ def main():
     mode, name = get_interface_mode(interface, intf_type, module)
     if mode == "layer2":
         module.fail_json(
-            msg="That interface is a layer2 port.\nMake it "
-            "a layer 3 port first.",
+            msg="That interface is a layer2 port.\nMake it " "a layer 3 port first.",
             interface=interface,
         )
 

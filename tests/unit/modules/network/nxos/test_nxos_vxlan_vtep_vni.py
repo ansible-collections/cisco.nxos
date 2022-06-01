@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vxlan_vtep_vni
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -49,9 +51,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
         self.mock_load_config.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.get_config.return_value = load_fixture(
-            "nxos_vxlan_vtep_vni", "config.cfg"
-        )
+        self.get_config.return_value = load_fixture("nxos_vxlan_vtep_vni", "config.cfg")
         self.load_config.return_value = None
 
     def test_nxos_vxlan_vtep_vni_present_no_change(self):
@@ -60,15 +60,11 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
 
     def test_nxos_vxlan_vtep_vni(self):
         set_module_args(dict(interface="nve1", vni=5000))
-        self.execute_module(
-            changed=True, commands=["interface nve1", "member vni 5000"]
-        )
+        self.execute_module(changed=True, commands=["interface nve1", "member vni 5000"])
 
     def test_nxos_vxlan_vtep_vni_absent(self):
         set_module_args(dict(interface="nve1", vni=6000, state="absent"))
-        self.execute_module(
-            changed=True, commands=["interface nve1", "no member vni 6000"]
-        )
+        self.execute_module(changed=True, commands=["interface nve1", "no member vni 6000"])
 
     def test_nxos_vxlan_vtep_vni_absent_no_change(self):
         set_module_args(dict(interface="nve2", vni=6000, state="absent"))

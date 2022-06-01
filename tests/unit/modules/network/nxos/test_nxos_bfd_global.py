@@ -19,21 +19,22 @@
 
 from __future__ import absolute_import, division, print_function
 
-__metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.plugins.modules import nxos_bfd_global
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    NxosCmdRef,
-)
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+__metaclass__ = type
 
 # TBD: These imports / import checks are only needed as a workaround for
 # shippable, which fails this test due to import yaml & import ordereddict.
 import pytest
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    NxosCmdRef,
     nxosCmdRef_import_check,
 )
+from ansible_collections.cisco.nxos.plugins.modules import nxos_bfd_global
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
+from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 msg = nxosCmdRef_import_check()
 
@@ -209,9 +210,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
 
     def test_bfd_existing_n9k(self):
         module_name = self.module.__name__.rsplit(".", 1)[1]
-        self.execute_show_command.return_value = load_fixture(
-            module_name, "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture(module_name, "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -247,9 +246,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
 
     def test_bfd_idempotence_n9k(self):
         module_name = self.module.__name__.rsplit(".", 1)[1]
-        self.execute_show_command.return_value = load_fixture(
-            module_name, "N9K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture(module_name, "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -270,9 +267,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
 
     def test_bfd_existing_n7k(self):
         module_name = self.module.__name__.rsplit(".", 1)[1]
-        self.execute_show_command.return_value = load_fixture(
-            module_name, "N7K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture(module_name, "N7K.cfg")
         self.get_platform_shortname.return_value = "N7K"
         set_module_args(
             dict(
@@ -312,9 +307,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
 
     def test_bfd_idempotence_n7k(self):
         module_name = self.module.__name__.rsplit(".", 1)[1]
-        self.execute_show_command.return_value = load_fixture(
-            module_name, "N7K.cfg"
-        )
+        self.execute_show_command.return_value = load_fixture(module_name, "N7K.cfg")
         self.get_platform_shortname.return_value = "N7K"
         set_module_args(
             dict(

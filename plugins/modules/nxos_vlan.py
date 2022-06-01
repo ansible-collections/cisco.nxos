@@ -18,6 +18,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -250,24 +251,21 @@ import time
 
 from copy import deepcopy
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_capabilities,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-    run_commands,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    normalize_interface,
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_capabilities,
+    get_config,
+    load_config,
+    normalize_interface,
+    nxos_argument_spec,
+    run_commands,
 )
 
 
@@ -320,9 +318,7 @@ def map_obj_to_commands(updates, module):
         del w["state"]
 
         obj_in_have = search_obj_in_list(vlan_id, have) or {}
-        if not re.match("N[567]", os_platform) or (
-            not obj_in_have.get("mode") and mode == "ce"
-        ):
+        if not re.match("N[567]", os_platform) or (not obj_in_have.get("mode") and mode == "ce"):
             mode = w["mode"] = None
 
         if state == "absent":
@@ -352,9 +348,7 @@ def map_obj_to_commands(updates, module):
                         commands.append("interface {0}".format(i))
                         commands.append("switchport")
                         commands.append("switchport mode access")
-                        commands.append(
-                            "switchport access vlan {0}".format(vlan_id)
-                        )
+                        commands.append("switchport access vlan {0}".format(vlan_id))
 
             else:
                 diff = get_diff(w, obj_in_have)
@@ -396,23 +390,17 @@ def map_obj_to_commands(updates, module):
                             commands.append("interface {0}".format(i))
                             commands.append("switchport")
                             commands.append("switchport mode access")
-                            commands.append(
-                                "switchport access vlan {0}".format(vlan_id)
-                            )
+                            commands.append("switchport access vlan {0}".format(vlan_id))
 
                     elif set(interfaces) != set(obj_in_have["interfaces"]):
-                        missing_interfaces = list(
-                            set(interfaces) - set(obj_in_have["interfaces"])
-                        )
+                        missing_interfaces = list(set(interfaces) - set(obj_in_have["interfaces"]))
                         for i in missing_interfaces:
                             commands.append("vlan {0}".format(vlan_id))
                             commands.append("exit")
                             commands.append("interface {0}".format(i))
                             commands.append("switchport")
                             commands.append("switchport mode access")
-                            commands.append(
-                                "switchport access vlan {0}".format(vlan_id)
-                            )
+                            commands.append("switchport access vlan {0}".format(vlan_id))
 
                         superfluous_interfaces = list(
                             set(obj_in_have["interfaces"]) - set(interfaces)
@@ -423,9 +411,7 @@ def map_obj_to_commands(updates, module):
                             commands.append("interface {0}".format(i))
                             commands.append("switchport")
                             commands.append("switchport mode access")
-                            commands.append(
-                                "no switchport access vlan {0}".format(vlan_id)
-                            )
+                            commands.append("no switchport access vlan {0}".format(vlan_id))
 
                 elif interfaces and interfaces[0] == "default":
                     if obj_in_have["interfaces"]:
@@ -435,16 +421,12 @@ def map_obj_to_commands(updates, module):
                             commands.append("interface {0}".format(i))
                             commands.append("switchport")
                             commands.append("switchport mode access")
-                            commands.append(
-                                "no switchport access vlan {0}".format(vlan_id)
-                            )
+                            commands.append("no switchport access vlan {0}".format(vlan_id))
 
     if purge:
         for h in have:
             if h["vlan_id"] == "1":
-                module.warn(
-                    "Deletion of vlan 1 is not allowed; purge will ignore vlan 1"
-                )
+                module.warn("Deletion of vlan 1 is not allowed; purge will ignore vlan 1")
                 continue
             obj_in_want = search_obj_in_list(h["vlan_id"], want)
             if not obj_in_want:
@@ -522,9 +504,7 @@ def map_params_to_obj(module):
             obj.append(d)
     else:
         interfaces = normalize(module.params["interfaces"])
-        associated_interfaces = normalize(
-            module.params["associated_interfaces"]
-        )
+        associated_interfaces = normalize(module.params["associated_interfaces"])
 
         obj.append(
             {
@@ -694,9 +674,7 @@ def map_config_to_obj(module):
     command = ["show vlan brief | json"]
     output = run_commands(module, command, check_rc="retry_json")[0]
     if output:
-        netcfg = CustomNetworkConfig(
-            indent=2, contents=get_config(module, flags=["all"])
-        )
+        netcfg = CustomNetworkConfig(indent=2, contents=get_config(module, flags=["all"]))
 
         if isinstance(output, dict):
             vlans = None
@@ -759,15 +737,8 @@ def check_declarative_intent_params(want, module, result):
 
         for i in w["associated_interfaces"]:
             obj_in_have = search_obj_in_list(w["vlan_id"], have)
-            if (
-                obj_in_have
-                and "interfaces" in obj_in_have
-                and i not in obj_in_have["interfaces"]
-            ):
-                module.fail_json(
-                    msg="Interface %s not configured on vlan %s"
-                    % (i, w["vlan_id"])
-                )
+            if obj_in_have and "interfaces" in obj_in_have and i not in obj_in_have["interfaces"]:
+                module.fail_json(msg="Interface %s not configured on vlan %s" % (i, w["vlan_id"]))
 
 
 def main():
@@ -778,14 +749,10 @@ def main():
         name=dict(required=False),
         interfaces=dict(type="list", elements="str"),
         associated_interfaces=dict(type="list", elements="str"),
-        vlan_state=dict(
-            choices=["active", "suspend"], required=False, default="active"
-        ),
+        vlan_state=dict(choices=["active", "suspend"], required=False, default="active"),
         mapped_vni=dict(required=False),
         delay=dict(default=10, type="int"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
         admin_state=dict(choices=["up", "down"], required=False, default="up"),
         mode=dict(default="ce", choices=["ce", "fabricpath"]),
     )

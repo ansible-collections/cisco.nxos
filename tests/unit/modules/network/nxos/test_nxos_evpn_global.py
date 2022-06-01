@@ -20,10 +20,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_evpn_global
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -59,15 +61,11 @@ class TestNxosEvpnGlobalModule(TestNxosModule):
         self.load_config.return_value = None
 
     def start_configured(self, *args, **kwargs):
-        self.get_config.return_value = load_fixture(
-            "nxos_evpn_global", "configured.cfg"
-        )
+        self.get_config.return_value = load_fixture("nxos_evpn_global", "configured.cfg")
         return self.execute_module(*args, **kwargs)
 
     def start_unconfigured(self, *args, **kwargs):
-        self.get_config.return_value = load_fixture(
-            "nxos_evpn_global", "unconfigured.cfg"
-        )
+        self.get_config.return_value = load_fixture("nxos_evpn_global", "unconfigured.cfg")
         return self.execute_module(*args, **kwargs)
 
     def test_nxos_evpn_global_enable(self):

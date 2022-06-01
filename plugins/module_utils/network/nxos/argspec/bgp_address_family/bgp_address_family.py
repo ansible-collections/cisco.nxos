@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -134,27 +135,19 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "parallel_paths": {"type": "int"},
                                 "ibgp": {
                                     "type": "dict",
-                                    "options": {
-                                        "parallel_paths": {"type": "int"}
-                                    },
+                                    "options": {"parallel_paths": {"type": "int"}},
                                 },
                                 "eibgp": {
                                     "type": "dict",
-                                    "options": {
-                                        "parallel_paths": {"type": "int"}
-                                    },
+                                    "options": {"parallel_paths": {"type": "int"}},
                                 },
                                 "local": {
                                     "type": "dict",
-                                    "options": {
-                                        "parallel_paths": {"type": "int"}
-                                    },
+                                    "options": {"parallel_paths": {"type": "int"}},
                                 },
                                 "mixed": {
                                     "type": "dict",
-                                    "options": {
-                                        "parallel_paths": {"type": "int"}
-                                    },
+                                    "options": {"parallel_paths": {"type": "int"}},
                                 },
                             },
                         },

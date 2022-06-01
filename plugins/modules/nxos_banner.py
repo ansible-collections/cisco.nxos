@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 # (c) 2017, Ansible by Red Hat, inc
@@ -94,16 +95,16 @@ commands:
     - string
 """
 
-from ansible.module_utils.basic import AnsibleModule
+import re
+
 from ansible.module_utils._text import to_text
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
+    nxos_argument_spec,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-import re
 
 
 def execute_show_command(module, command):
@@ -214,10 +215,7 @@ def main():
                             err_str = item["clierror"]
                         else:
                             err_str = item
-                        if (
-                            "more than 40 lines" in err_str
-                            or "buffer overflowed" in err_str
-                        ):
+                        if "more than 40 lines" in err_str or "buffer overflowed" in err_str:
                             load_config(module, commands)
 
         result["changed"] = True

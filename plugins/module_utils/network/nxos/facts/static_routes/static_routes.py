@@ -12,13 +12,15 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.static_routes.static_routes import (
     Static_routesArgs,
 )
@@ -45,12 +47,8 @@ class Static_routesFacts(object):
         vrf_data = []
         non_vrf_data = []
         if not data:
-            non_vrf_data = connection.get(
-                "show running-config | include '^ip(v6)* route'"
-            )
-            vrf_data = connection.get(
-                "show running-config | section '^vrf context'"
-            )
+            non_vrf_data = connection.get("show running-config | include '^ip(v6)* route'")
+            vrf_data = connection.get("show running-config | section '^vrf context'")
             if non_vrf_data:
                 non_vrf_data = non_vrf_data.split("\n")
             else:
@@ -100,9 +98,7 @@ class Static_routesFacts(object):
         ansible_facts["ansible_network_resources"].pop("static_routes", None)
         facts = {}
         if objs:
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             params = utils.remove_empties(params)
             for c in params["config"]:
                 if c == {"vrf": "default"}:
@@ -120,9 +116,7 @@ class Static_routesFacts(object):
         inner_dict["dest"] = re.match(r"^\s*(\S+\/\d+) .*", conf).group(1)
 
         # ethernet1/2/23
-        iface = re.match(
-            r".* (Ethernet|loopback|mgmt|port\-channel)(\S*) .*", conf
-        )
+        iface = re.match(r".* (Ethernet|loopback|mgmt|port\-channel)(\S*) .*", conf)
         i = ["Ethernet", "loopback", "mgmt", "port-channel"]
         if iface and iface.group(1) in i:
             inner_dict["interface"] = (iface.group(1)) + (iface.group(2))
@@ -131,9 +125,7 @@ class Static_routesFacts(object):
         if "." in inner_dict["dest"]:
             conf = re.sub(inner_dict["dest"], "", conf)
             inner_dict["afi"] = "ipv4"
-            ipv4 = re.match(
-                r".* (\d+\.\d+\.\d+\.\d+\/?\d*).*", conf
-            )  # gets next hop ip
+            ipv4 = re.match(r".* (\d+\.\d+\.\d+\.\d+\/?\d*).*", conf)  # gets next hop ip
             if ipv4:
                 inner_dict["forward_router_address"] = ipv4.group(1)
                 conf = re.sub(inner_dict["forward_router_address"], "", conf)
@@ -191,9 +183,7 @@ class Static_routesFacts(object):
 
         if inner_dict["dest"] not in dest_list:
             dest_list.append(inner_dict["dest"])
-            af[-1]["routes"].append(
-                {"dest": inner_dict["dest"], "next_hops": []}
-            )
+            af[-1]["routes"].append({"dest": inner_dict["dest"], "next_hops": []})
             # if 'dest' is new, create new list under 'routes'
             af[-1]["routes"][-1]["next_hops"].append(next_hop)
         else:
@@ -228,21 +218,13 @@ class Static_routesFacts(object):
                     # considering from the second line as first line is 'vrf context..'
                     conf = conf[1:]
                     for c in conf:
-                        if (
-                            "ip route" in c or "ipv6 route" in c
-                        ) and "bfd" not in c:
+                        if ("ip route" in c or "ipv6 route" in c) and "bfd" not in c:
                             self.get_command(c, afi_list, dest_list, af)
                             config_dict["address_families"] = af
                     config.append(config_dict)
                 else:
-                    if (
-                        "ip route" in conf or "ipv6 route" in conf
-                    ) and "bfd" not in conf:
-                        self.get_command(
-                            conf, global_afi_list, global_dest_list, global_af
-                        )
+                    if ("ip route" in conf or "ipv6 route" in conf) and "bfd" not in conf:
+                        self.get_command(conf, global_afi_list, global_dest_list, global_af)
             if global_af:
-                config.append(
-                    utils.remove_empties({"address_families": global_af})
-                )
+                config.append(utils.remove_empties({"address_families": global_af}))
         return config
