@@ -10,7 +10,7 @@
     vdcid: "{{ vdcout.stdout_lines[0].name }}"
 
 - name: Configure VDC setting limit-resource module-type f3
-  ignore_errors: true
+  ignore_errors: true # noqa ignore-errors
   cisco.nxos.nxos_config:
     commands:
       - terminal dont-ask ; vdc {{ vdcid }} ;  limit-resource module-type f3
@@ -21,7 +21,7 @@
     seconds: 45
 
 - name: Configure VDC setting allocate interface unallocated-interfaces
-  ignore_errors: true
+  ignore_errors: true # noqa ignore-errors
   cisco.nxos.nxos_config:
     commands:
       - terminal dont-ask ; vdc {{ vdcid }} ; allocate interface unallocated-interfaces
