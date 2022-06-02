@@ -82,7 +82,9 @@ class Logging_globalFacts(object):
 
         params = utils.remove_empties(
             logging_global_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 

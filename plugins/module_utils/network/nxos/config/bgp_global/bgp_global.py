@@ -248,7 +248,7 @@ class Bgp_global(ResourceModule):
                 self._module.fail_json(
                     msg="Neighbor {0} has address-family configurations. "
                     "Please use the nxos_bgp_neighbor_af module to remove those first.".format(
-                        name
+                        name,
                     ),
                 )
             else:

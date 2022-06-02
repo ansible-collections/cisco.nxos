@@ -478,7 +478,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
     def test_zoneset_add_rem_3(self):
         a = dict(
             zone_zoneset_details=[
-                dict(vsan=922, zoneset=[dict(name="zsetname21New", remove=True)])
+                dict(vsan=922, zoneset=[dict(name="zsetname21New", remove=True)]),
             ],
         )
         set_module_args(a, True)
@@ -501,7 +501,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
 
         a = dict(
             zone_zoneset_details=[
-                dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])])
+                dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])]),
             ],
         )
         set_module_args(a, True)
@@ -530,7 +530,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
 
         a = dict(
             zone_zoneset_details=[
-                dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])])
+                dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])]),
             ],
         )
         set_module_args(a, True)
@@ -559,7 +559,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
 
         a = dict(
             zone_zoneset_details=[
-                dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])])
+                dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])]),
             ],
         )
         set_module_args(a, True)
