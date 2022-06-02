@@ -1,0 +1,3 @@
+---
+trivial:
+  - Require ansible-lint in all_green
