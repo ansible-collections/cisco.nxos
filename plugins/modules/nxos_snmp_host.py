@@ -293,8 +293,10 @@ def remove_vrf(host, udp, proposed, existing):
         commands.append(
             "no snmp-server host {0} use-vrf \
                     {1} udp-port {2}".format(
-                host, proposed.get("vrf"), udp
-            )
+                host,
+                proposed.get("vrf"),
+                udp,
+            ),
         )
     return commands
 
@@ -306,8 +308,10 @@ def remove_filter(host, udp, proposed, existing):
             commands.append(
                 "no snmp-server host {0} filter-vrf \
                     {1} udp-port {2}".format(
-                    host, proposed.get("vrf_filter"), udp
-                )
+                    host,
+                    proposed.get("vrf_filter"),
+                    udp,
+                ),
             )
     return commands
 
@@ -318,8 +322,10 @@ def remove_src(host, udp, proposed, existing):
         commands.append(
             "no snmp-server host {0} source-interface \
                     {1} udp-port {2}".format(
-                host, proposed.get("src_intf"), udp
-            )
+                host,
+                proposed.get("src_intf"),
+                udp,
+            ),
         )
     return commands
 
@@ -444,13 +450,13 @@ def main():
                 msg="when not configuring options like "
                 "vrf_filter, vrf, and src_intf,"
                 "the following params are required: "
-                "type, version, community"
+                "type, version, community",
             )
 
     if version == "v3" and v3 is None:
         module.fail_json(
             msg="when using version=v3, the param v3 "
-            "(options: auth, noauth, priv) is also required"
+            "(options: auth, noauth, priv) is also required",
         )
 
     # existing returns the list of vrfs configured for a given host

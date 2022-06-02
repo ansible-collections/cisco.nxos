@@ -53,13 +53,13 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         super(TestNxosBGPNeighborAddressFamilyModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
         self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_neighbor_address_family."
-            "bgp_neighbor_address_family.Bgp_neighbor_address_familyFacts.get_config"
+            "bgp_neighbor_address_family.Bgp_neighbor_address_familyFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -79,7 +79,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     advertise-map rmap2 exist-map rmap3
                   address-family ipv4 multicast
                     advertise-map rmap1 non-exist-map rmap5
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -93,9 +93,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     advertise_map=dict(route_map="rmap1", exist_map="rmap2"),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -121,9 +121,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             ),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -157,7 +157,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     advertise-map rmap2 exist-map rmap3
                   address-family ipv4 multicast
                     advertise-map rmap1 non-exist-map rmap5
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -171,9 +171,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     advertise_map=dict(route_map="rmap1", exist_map="rmap3"),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -192,9 +192,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -223,7 +223,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                 neighbor 192.168.1.1
                   address-family ipv4 unicast
                     advertisement-interval 300
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -237,9 +237,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     advertisement_interval=350,
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -259,9 +259,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             advertisement_interval=400,
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -297,7 +297,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     advertisement-interval 300
                   address-family ipv4 multicast
                     advertisement-interval 400
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -314,7 +314,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     advertisement_interval=350,
                                 ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -330,9 +330,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -363,7 +363,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     allowas-in 3
                   address-family ipv4 multicast
                     allowas-in 3
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -377,9 +377,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     allowas_in=dict(max_occurences=8),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -399,9 +399,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             allowas_in=dict(max_occurences=3),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -435,7 +435,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     allowas-in 5
                   address-family ipv4 multicast
                     allowas-in 3
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -449,9 +449,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     allowas_in=dict(max_occurences=9),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -467,9 +467,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -503,7 +503,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     as-override
                   address-family ipv4 multicast
                     as-override
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -517,9 +517,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     as_override=True,
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -539,9 +539,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             as_override=False,
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -577,7 +577,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     as-override
                   address-family ipv4 multicast
                     as-override
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -587,7 +587,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                         dict(
                             neighbor_address="10.0.0.2",
                             address_family=[dict(afi="ipv4", safi="multicast")],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -603,9 +603,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -638,7 +638,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 multicast
                     capability additional-paths receive disable
                     capability additional-paths send
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -652,11 +652,11 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     capability=dict(
-                                        additional_paths=dict(receive="enable", send="enable")
+                                        additional_paths=dict(receive="enable", send="enable"),
                                     ),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -672,7 +672,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                                 additional_paths=dict(
                                                     receive="disable",
                                                     send="enable",
-                                                )
+                                                ),
                                             ),
                                         ),
                                         dict(
@@ -682,13 +682,13 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                                 additional_paths=dict(
                                                     receive="enable",
                                                     send="disable",
-                                                )
+                                                ),
                                             ),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -730,7 +730,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 multicast
                     capability additional-paths receive
                     capability additional-paths send disable
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -744,9 +744,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     capability=dict(additional_paths=dict(send="enable")),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -762,14 +762,14 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                                 additional_paths=dict(
                                                     receive="disable",
                                                     send="enable",
-                                                )
+                                                ),
                                             ),
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -802,7 +802,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     disable-peer-as-check
                   address-family ipv4 multicast
                     default-originate route-map rmap1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -824,7 +824,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     default_originate=dict(route_map="rmap1"),
                                 ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -845,9 +845,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             default_originate=dict(route_map="rmap2"),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -888,7 +888,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     disable-peer-as-check
                   address-family ipv4 multicast
                     default-originate route-map rmap1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -905,7 +905,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     default_originate=dict(route_map="rmap1"),
                                 ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -922,9 +922,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -960,7 +960,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 multicast
                     filter-list rmap1 out
                     inherit peer-policy template-1 300
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -975,9 +975,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     safi="multicast",
                                     filter_list=dict(inbound="rmap3", outbound="rmap4"),
                                     inherit=dict(template="template-2", sequence=200),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1008,9 +1008,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             ),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -1053,7 +1053,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     filter-list rmap1 out
                     filter-list rmap2 in
                     inherit peer-policy template-1 300
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1068,9 +1068,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     safi="multicast",
                                     filter_list=dict(inbound="rmap3"),
                                     inherit=dict(template="template-2", sequence=200),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1093,9 +1093,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -1132,7 +1132,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     maximum-prefix 12 85 warning-only
                   address-family ipv6 unicast
                     maximum-prefix 12 85 restart 1200
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1174,7 +1174,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     ),
                                 ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1215,9 +1215,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             ),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -1263,7 +1263,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     maximum-prefix 12 85 warning-only
                   address-family ipv6 unicast
                     maximum-prefix 12 85 restart 1200
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1280,7 +1280,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     maximum_prefix=dict(max_prefix_limit=28),
                                 ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1305,9 +1305,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         dict(afi="ipv6", safi="multicast"),
                                         dict(afi="ipv6", safi="unicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -1345,7 +1345,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     no next-hop-third-party
                   address-family ipv4 multicast
                     next-hop-self all
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1366,7 +1366,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     next_hop_self=dict(all_routes=True),
                                 ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1392,9 +1392,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             next_hop_self=dict(all_routes=True),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -1435,7 +1435,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     no next-hop-third-party
                   address-family ipv4 multicast
                     next-hop-self all
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1452,7 +1452,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     next_hop_self=dict(all_routes=True),
                                 ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1472,9 +1472,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             next_hop_self=dict(all_routes=True),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -1507,7 +1507,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     prefix-list rmap2 out
                   address-family ipv4 multicast
                     prefix-list rmap1 out
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1521,9 +1521,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     prefix_list=dict(inbound="rmap3", outbound="rmap4"),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1546,9 +1546,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             prefix_list=dict(inbound="rmap2"),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -1586,7 +1586,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 multicast
                     prefix-list rmap1 out
                     prefix-list rmap2 in
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1600,9 +1600,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     prefix_list=dict(inbound="rmap3"),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1621,9 +1621,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -1658,7 +1658,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 multicast
                     route-map rmap1 out
                     rewrite-evpn-rt-asn
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1673,9 +1673,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     safi="multicast",
                                     route_map=dict(inbound="rmap3", outbound="rmap4"),
                                     rewrite_evpn_rt_asn=True,
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1700,9 +1700,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             rewrite_evpn_rt_asn=True,
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -1745,7 +1745,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     route-map rmap1 out
                     route-map rmap2 in
                     rewrite-evpn-rt-asn
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1760,9 +1760,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     safi="multicast",
                                     route_map=dict(inbound="rmap3"),
                                     rewrite_evpn_rt_asn=True,
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1782,9 +1782,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -1816,7 +1816,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 unicast
                     route-reflector-client
                     send-community
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1831,9 +1831,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     safi="multicast",
                                     route_reflector_client=True,
                                     send_community=dict(extended=True),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1854,9 +1854,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             send_community=dict(set=True),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -1893,7 +1893,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     send-community
                   address-family ipv4 multicast
                     send-community
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1907,9 +1907,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     send_community=dict(extended=True),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1926,9 +1926,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -1958,7 +1958,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 unicast
                     soft-reconfiguration inbound always
                     soo 65:28
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1973,9 +1973,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     safi="multicast",
                                     soft_reconfiguration_inbound=dict(set=True),
                                     soo="73:43",
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -1996,9 +1996,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             soft_reconfiguration_inbound=dict(always=True),
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -2035,7 +2035,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     soo 65:28
                   address-family ipv4 multicast
                     soft-reconfiguration inbound always
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2049,9 +2049,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="ipv4",
                                     safi="multicast",
                                     soft_reconfiguration_inbound=dict(set=True),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -2068,9 +2068,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -2102,7 +2102,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     unsuppress-map rmap1
                   address-family ipv4 multicast
                     weight 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2118,9 +2118,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     suppress_inactive=True,
                                     unsuppress_map="rmap2",
                                     weight=20,
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -2143,9 +2143,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             unsuppress_map="rmap4",
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -2190,7 +2190,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                     suppress-inactive
                     unsuppress-map rmap4
                     weight 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2200,7 +2200,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                         dict(
                             neighbor_address="10.0.0.2",
                             address_family=[dict(afi="ipv4", safi="multicast")],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -2218,9 +2218,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         ),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -2260,7 +2260,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 unicast
                   address-family ipv4 multicast
                   address-family ipv6 unicast
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2273,7 +2273,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(afi="ipv4", safi="multicast"),
                                 dict(afi="link-state"),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -2285,9 +2285,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                         dict(afi="ipv4", safi="unicast"),
                                         dict(afi="ipv4", safi="multicast"),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="deleted",
@@ -2323,7 +2323,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 unicast
                   address-family ipv4 multicast
                   address-family ipv6 unicast
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = [
@@ -2359,7 +2359,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 unicast
                   address-family ipv4 multicast
                   address-family ipv6 unicast
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2375,7 +2375,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     route_reflector_client=True,
                                 ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -2384,9 +2384,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                 dict(
                                     neighbor_address="192.168.1.1",
                                     address_family=[dict(afi="ipv4", safi="multicast")],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="overridden",
@@ -2421,7 +2421,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
               vrf site-1
                 neighbor 192.168.1.1
                   address-family ipv4 multicast
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = dict(
@@ -2433,7 +2433,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                         dict(afi="ipv4", safi="unicast"),
                         dict(afi="link-state"),
                     ],
-                )
+                ),
             ],
             vrfs=[
                 dict(
@@ -2442,9 +2442,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                         dict(
                             neighbor_address="192.168.1.1",
                             address_family=[dict(afi="ipv4", safi="multicast")],
-                        )
+                        ),
                     ],
-                )
+                ),
             ],
         )
         result = self.execute_module(changed=False)
@@ -2463,7 +2463,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                       vrf site-1
                         neighbor 192.168.1.1
                           address-family ipv4 multicast
-                    """
+                    """,
                 ),
                 state="parsed",
             ),
@@ -2478,7 +2478,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                         dict(afi="ipv4", safi="unicast"),
                         dict(afi="link-state"),
                     ],
-                )
+                ),
             ],
             vrfs=[
                 dict(
@@ -2487,9 +2487,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                         dict(
                             neighbor_address="192.168.1.1",
                             address_family=[dict(afi="ipv4", safi="multicast")],
-                        )
+                        ),
                     ],
-                )
+                ),
             ],
         )
         result = self.execute_module(changed=False)
@@ -2511,9 +2511,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     suppress_inactive=True,
                                     unsuppress_map="rmap2",
                                     weight=20,
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -2536,9 +2536,9 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                             unsuppress_map="rmap4",
                                         ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="rendered",
@@ -2569,7 +2569,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         # test gathered
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = dict()
@@ -2581,7 +2581,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             router bgp 65563
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = dict(as_number="65563")
@@ -2595,7 +2595,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             router bgp 65536
               neighbor 10.0.0.2
                 address-family ipv4 multicast
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2605,7 +2605,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                         dict(
                             neighbor_address="10.0.0.2",
                             address_family=[dict(afi="ipv4", safi="multicast")],
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -2626,7 +2626,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                 address-family l2vpn evpn
                   send-community
                   send-community extended
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2640,7 +2640,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="l2vpn",
                                     safi="evpn",
                                     send_community=dict(both=True),
-                                )
+                                ),
                             ],
                         ),
                         dict(
@@ -2650,7 +2650,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="l2vpn",
                                     safi="evpn",
                                     send_community=dict(both=True),
-                                )
+                                ),
                             ],
                         ),
                         dict(
@@ -2660,7 +2660,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                                     afi="l2vpn",
                                     safi="evpn",
                                     send_community=dict(set=True),
-                                )
+                                ),
                             ],
                         ),
                     ],

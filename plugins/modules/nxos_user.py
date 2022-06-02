@@ -321,7 +321,7 @@ def map_config_to_obj(module):
                 "sshkey": item.get("sshkey_info"),
                 "roles": parse_roles(item),
                 "state": "present",
-            }
+            },
         )
     return objects
 
@@ -370,7 +370,7 @@ def map_params_to_obj(module):
                 "sshkey": get_value("sshkey"),
                 "roles": get_value("roles"),
                 "state": get_value("state"),
-            }
+            },
         )
 
         for key, value in iteritems(item):
@@ -465,7 +465,7 @@ def main():
                     module.fail_json(msg=resp)
                 else:
                     result["warnings"].extend(
-                        [x[9:] for x in resp.splitlines() if x.startswith("WARNING: ")]
+                        [x[9:] for x in resp.splitlines() if x.startswith("WARNING: ")],
                     )
 
         result["changed"] = True

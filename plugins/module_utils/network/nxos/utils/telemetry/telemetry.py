@@ -244,7 +244,7 @@ def massage_data(have_or_want):
                         item["sensor_group"]["id"] = str(item["sensor_group"]["id"])
                     if item.get("sensor_group").get("sample_interval"):
                         item["sensor_group"]["sample_interval"] = str(
-                            item["sensor_group"]["sample_interval"]
+                            item["sensor_group"]["sample_interval"],
                         )
                 if item.get("destination_group") and item.get("sensor_group"):
                     item_copy = deepcopy(item)

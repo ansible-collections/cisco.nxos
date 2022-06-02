@@ -143,7 +143,7 @@ def map_config_to_obj(module):
     if "Invalid command" in output:
         module.fail_json(
             msg="banner: %s may not be supported on this platform.  Possible values are : exec | motd"
-            % module.params["banner"]
+            % module.params["banner"],
         )
 
     if isinstance(output, dict):

@@ -38,22 +38,22 @@ class TestNxosVlanModule(TestNxosModule):
         super(TestNxosVlanModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.get_capabilities"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vlan.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {
@@ -102,8 +102,8 @@ class TestNxosVlanModule(TestNxosModule):
                 aggregate=[
                     {"name": "_5_", "vlan_id": 5},
                     {"name": "_6_", "vlan_id": 6},
-                ]
-            )
+                ],
+            ),
         )
         self.execute_module(
             changed=True,
@@ -123,8 +123,8 @@ class TestNxosVlanModule(TestNxosModule):
                 aggregate=[
                     {"name": "_5_", "vlan_id": 5},
                     {"name": "_4_", "vlan_id": 4},
-                ]
-            )
+                ],
+            ),
         )
         self.execute_module(changed=False)
 
@@ -137,7 +137,7 @@ class TestNxosVlanModule(TestNxosModule):
                     {"name": "_6_", "vlan_id": 6},
                 ],
                 purge=True,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -158,8 +158,8 @@ class TestNxosVlanModule(TestNxosModule):
                 aggregate=[
                     {"name": "_5_", "vlan_id": 5},
                     {"name": "_4_", "vlan_id": 4},
-                ]
-            )
+                ],
+            ),
         )
         self.execute_module(changed=False)
 
@@ -229,7 +229,7 @@ class TestNxosVlanModule(TestNxosModule):
                 name="default",
                 vlan_state="active",
                 admin_state="up",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])

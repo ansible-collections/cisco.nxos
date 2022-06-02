@@ -34,12 +34,12 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_execute_show_cmd_zoneset_active = patch(
-            module_path + "ShowZonesetActive.execute_show_zoneset_active_cmd"
+            module_path + "ShowZonesetActive.execute_show_zoneset_active_cmd",
         )
         self.execute_show_cmd_zoneset_active = self.mock_execute_show_cmd_zoneset_active.start()
 
         self.mock_execute_show_cmd_zoneset = patch(
-            module_path + "ShowZoneset.execute_show_zoneset_cmd"
+            module_path + "ShowZoneset.execute_show_zoneset_cmd",
         )
         self.execute_show_cmd_zoneset = self.mock_execute_show_cmd_zoneset.start()
 
@@ -47,7 +47,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         self.execute_show_cmd_zone = self.mock_execute_show_cmd_zone.start()
 
         self.mock_execute_show_cmd_zone_status = patch(
-            module_path + "ShowZoneStatus.execute_show_zone_status_cmd"
+            module_path + "ShowZoneStatus.execute_show_zone_status_cmd",
         )
         self.execute_show_cmd_zone_status = self.mock_execute_show_cmd_zone_status.start()
 
@@ -74,7 +74,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=922, default_zone="permit")])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -91,7 +92,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=922, default_zone="permit")])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -109,7 +111,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=923, default_zone="deny")])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_2.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_2.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -127,7 +130,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=923, default_zone="deny")])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_3.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_3.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -145,7 +149,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=922, mode="enhanced")])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -164,7 +169,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=922, mode="basic")])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -182,7 +188,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=922, smart_zoning=False)])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -199,7 +206,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=923, smart_zoning=True)])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -217,7 +225,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneB", remove=True)])])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_0.cfg")
         result = self.execute_module(changed=True)
@@ -235,7 +244,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneC", remove=True)])])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_0.cfg")
         result = self.execute_module(changed=False, failed=False)
@@ -247,7 +257,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneBNew")])])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_0.cfg")
         result = self.execute_module(changed=True)
@@ -265,7 +276,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneB")])])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_0.cfg")
         result = self.execute_module(changed=False, failed=False)
@@ -282,12 +294,13 @@ class TestNxosZoneZonesetModule(TestNxosModule):
                 dict(
                     vsan=923,
                     zone=[dict(name="zoneBNew", members=[mem1, mem2])],
-                )
-            ]
+                ),
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_0.cfg")
         result = self.execute_module(changed=True)
@@ -308,11 +321,12 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         mem1 = {"pwwn": "11:11:11:11:11:11:11:11", "remove": True}
         mem2 = {"device_alias": "test123", "remove": True}
         a = dict(
-            zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneA", members=[mem1, mem2])])]
+            zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneA", members=[mem1, mem2])])],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_0.cfg")
         result = self.execute_module(changed=True)
@@ -333,11 +347,12 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         mem1 = {"pwwn": "11:11:11:11:11:11:11:11", "remove": True}
         mem2 = {"device_alias": "test123", "remove": True}
         a = dict(
-            zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneA1", members=[mem1, mem2])])]
+            zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneA1", members=[mem1, mem2])])],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_1.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_1.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_0.cfg")
         result = self.execute_module(changed=False, failed=False)
@@ -355,12 +370,13 @@ class TestNxosZoneZonesetModule(TestNxosModule):
                 dict(
                     vsan=922,
                     zone=[dict(name="zoneBNew", members=[mem1, mem2, mem3])],
-                )
-            ]
+                ),
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_1.cfg")
         result = self.execute_module(changed=True)
@@ -383,7 +399,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=922, zone=[dict(name="zoneA", members=[mem2])])])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_1.cfg")
         result = self.execute_module(changed=True)
@@ -400,14 +417,16 @@ class TestNxosZoneZonesetModule(TestNxosModule):
     # Test zoneset add/removal
     def test_zoneset_add_rem(self):
         a = dict(
-            zone_zoneset_details=[dict(vsan=922, zoneset=[dict(name="zsetname21", remove=True)])]
+            zone_zoneset_details=[dict(vsan=922, zoneset=[dict(name="zsetname21", remove=True)])],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_0.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_0.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -423,10 +442,12 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=922, zoneset=[dict(name="zsetname21New")])])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_0.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_0.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -442,10 +463,12 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(zone_zoneset_details=[dict(vsan=922, zoneset=[dict(name="zsetname21")])])
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_0.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_0.cfg",
         )
         result = self.execute_module(changed=False, failed=False)
         m = "zoneset 'zsetname21' is already present in vsan 922"
@@ -454,14 +477,18 @@ class TestNxosZoneZonesetModule(TestNxosModule):
 
     def test_zoneset_add_rem_3(self):
         a = dict(
-            zone_zoneset_details=[dict(vsan=922, zoneset=[dict(name="zsetname21New", remove=True)])]
+            zone_zoneset_details=[
+                dict(vsan=922, zoneset=[dict(name="zsetname21New", remove=True)])
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_0.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_0.cfg",
         )
         result = self.execute_module(changed=False, failed=False)
         m = "zoneset 'zsetname21New' is not present in vsan 922 ,hence there is nothing to remove"
@@ -473,14 +500,18 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         mem1 = {"name": "newZoneV100"}
 
         a = dict(
-            zone_zoneset_details=[dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])])]
+            zone_zoneset_details=[
+                dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])])
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_0.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_0.cfg",
         )
         result = self.execute_module(changed=True, failed=False)
         self.assertEqual(
@@ -498,14 +529,18 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         mem1 = {"name": "zone21A", "remove": True}
 
         a = dict(
-            zone_zoneset_details=[dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])])]
+            zone_zoneset_details=[
+                dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])])
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_0.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_0.cfg",
         )
         result = self.execute_module(changed=True, failed=False)
         self.assertEqual(
@@ -523,14 +558,18 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         mem1 = {"name": "zone21", "remove": True}
 
         a = dict(
-            zone_zoneset_details=[dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])])]
+            zone_zoneset_details=[
+                dict(vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])])
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_0.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_0.cfg",
         )
         result = self.execute_module(changed=False, failed=False)
         m = "zoneset member 'zone21' is not present in zoneset 'zsetname21' in vsan 922 ,hence there is nothing to remove"
@@ -540,17 +579,20 @@ class TestNxosZoneZonesetModule(TestNxosModule):
     # Test zoneset activate/deactivate
     def test_zoneset_activate_deactivate(self):
         a = dict(
-            zone_zoneset_details=[dict(vsan=221, zoneset=[dict(name="zsv221", action="activate")])]
+            zone_zoneset_details=[dict(vsan=221, zoneset=[dict(name="zsv221", action="activate")])],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_4.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_4.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_2.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_2.cfg",
         )
         self.execute_show_cmd_zoneset_active.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonesetactive_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonesetactive_0.cfg",
         )
         result = self.execute_module(changed=False, failed=False)
         self.assertEqual(result["commands"], [])
@@ -561,18 +603,21 @@ class TestNxosZoneZonesetModule(TestNxosModule):
                 dict(
                     vsan=221,
                     zoneset=[dict(name="zsv221", action="deactivate")],
-                )
-            ]
+                ),
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_4.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_4.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_2.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_2.cfg",
         )
         self.execute_show_cmd_zoneset_active.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonesetactive_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonesetactive_0.cfg",
         )
         result = self.execute_module(changed=True, failed=False)
         self.assertEqual(
@@ -591,18 +636,21 @@ class TestNxosZoneZonesetModule(TestNxosModule):
                 dict(
                     vsan=221,
                     zoneset=[dict(name="zsv221New", action="activate")],
-                )
-            ]
+                ),
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_4.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_4.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_2.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_2.cfg",
         )
         self.execute_show_cmd_zoneset_active.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonesetactive_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonesetactive_0.cfg",
         )
         result = self.execute_module(changed=True, failed=False)
         self.assertEqual(
@@ -620,15 +668,17 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         mem1 = {"pwwn": "21:01:00:1b:32:a1:c0:a8", "remove": True}
         mem2 = {"pwwn": "50:06:01:6a:47:e4:6e:59", "remove": True}
         a = dict(
-            zone_zoneset_details=[dict(vsan=221, zone=[dict(name="zv221", members=[mem1, mem2])])]
+            zone_zoneset_details=[dict(vsan=221, zone=[dict(name="zv221", members=[mem1, mem2])])],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_4.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_4.cfg",
         )
         self.execute_show_cmd_zone.return_value = load_fixture("nxos_zone_zoneset", "shzone_2.cfg")
         self.execute_show_cmd_zoneset_active.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonesetactive_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonesetactive_0.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -649,18 +699,21 @@ class TestNxosZoneZonesetModule(TestNxosModule):
                 dict(
                     vsan=221,
                     zoneset=[dict(name="zsv221New", action="activate")],
-                )
-            ]
+                ),
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_4.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_4.cfg",
         )
         self.execute_show_cmd_zoneset.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzoneset_2.cfg"
+            "nxos_zone_zoneset",
+            "shzoneset_2.cfg",
         )
         self.execute_show_cmd_zoneset_active.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonesetactive_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonesetactive_0.cfg",
         )
         result = self.execute_module(changed=True, failed=False)
         self.assertEqual(
@@ -683,15 +736,17 @@ class TestNxosZoneZonesetModule(TestNxosModule):
                     vsan=100,
                     smart_zoning=True,
                     zone=[dict(name="SZ-WLD-IAAS1-HUABVA07", members=[mem1])],
-                )
-            ]
+                ),
+            ],
         )
 
         self.execute_show_cmd_zone.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzone_bug339.cfg"
+            "nxos_zone_zoneset",
+            "shzone_bug339.cfg",
         )
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "shzonestatus_0.cfg"
+            "nxos_zone_zoneset",
+            "shzonestatus_0.cfg",
         )
         set_module_args(a, True)
         result = self.execute_module(changed=False, failed=False)
@@ -709,20 +764,23 @@ class TestNxosZoneZonesetModule(TestNxosModule):
                         dict(
                             name="z50_azusant_f0_unity8174_spa1",
                             members=[mem1],
-                        )
+                        ),
                     ],
-                )
-            ]
+                ),
+            ],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
-            "nxos_zone_zoneset", "show_zone_status_vsan.out"
+            "nxos_zone_zoneset",
+            "show_zone_status_vsan.out",
         )
         self.execute_show_cmd_zone.return_value = load_fixture(
-            "nxos_zone_zoneset", "show_zone_vsan.out"
+            "nxos_zone_zoneset",
+            "show_zone_vsan.out",
         )
         self.execute_show_cmd_zoneset_active.return_value = load_fixture(
-            "nxos_zone_zoneset", "show_zoneset_active_vsan.out"
+            "nxos_zone_zoneset",
+            "show_zoneset_active_vsan.out",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(

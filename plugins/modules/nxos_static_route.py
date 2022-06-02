@@ -317,7 +317,7 @@ def map_params_to_obj(module):
                 "pref": module.params["pref"],
                 "state": module.params["state"],
                 "track": module.params["track"],
-            }
+            },
         )
 
     return obj

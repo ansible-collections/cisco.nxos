@@ -53,12 +53,12 @@ class TestNxosOspfv3Module(TestNxosModule):
         super(TestNxosOspfv3Module, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
         self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv3.ospfv3.Ospfv3Facts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv3.ospfv3.Ospfv3Facts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -75,7 +75,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               address-family ipv6 unicast
                 area 1.1.1.1 default-cost 100
                 area 1.1.1.1 filter-list route-map test-11 in
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -115,8 +115,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     ),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -141,7 +141,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               address-family ipv6 unicast
                 area 1.1.1.4 filter-list route-map test-11 out
                 area 1.1.1.4 filter-list route-map test-12 in
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -181,8 +181,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     ),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -209,7 +209,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               address-family ipv6 unicast
                 area 1.1.1.1 range 2001:db2::/32
                 area 1.1.1.1 range 2001:db3::/32 cost 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -227,7 +227,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                             dict(
                                                 prefix="2001:db3::/32",
                                                 cost="20",
-                                            )
+                                            ),
                                         ],
                                     ),
                                     dict(
@@ -247,8 +247,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     ),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -273,7 +273,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               address-family ipv6 unicast
                 area 1.1.1.1 range 2001:db2::/32
                 area 1.1.1.1 range 2001:db3::/32 cost 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -299,11 +299,11 @@ class TestNxosOspfv3Module(TestNxosModule):
                                                 cost=18,
                                             ),
                                         ],
-                                    )
+                                    ),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -328,7 +328,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 area 1.1.1.1 default-cost 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -344,8 +344,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     dict(area_id="1.1.1.2", default_cost=200),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -367,7 +367,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 area 1.1.1.1 default-cost 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -380,8 +380,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 safi="unicast",
                                 areas=[dict(area_id="1.1.1.2", default_cost=200)],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -403,7 +403,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 default-information originate
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -415,11 +415,11 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 afi="ipv6",
                                 safi="unicast",
                                 default_information=dict(
-                                    originate=dict(always=True, route_map="test-2")
+                                    originate=dict(always=True, route_map="test-2"),
                                 ),
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -440,7 +440,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 default-information originate always route-map test-2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -453,8 +453,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 safi="unicast",
                                 default_information=dict(originate=dict(set=False)),
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -475,7 +475,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 default-information originate always test-2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -488,8 +488,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 safi="unicast",
                                 default_information=dict(originate=dict(set=True)),
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -510,7 +510,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 distance 20
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -519,8 +519,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="100",
                             address_family=dict(afi="ipv6", safi="unicast", distance=35),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -543,7 +543,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 distance 20
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -552,8 +552,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="100",
                             address_family=dict(afi="ipv6", safi="unicast"),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -574,7 +574,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 maximum-paths 18
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -583,8 +583,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="100",
                             address_family=dict(afi="ipv6", safi="unicast", maximum_paths=27),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -607,7 +607,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 maximum-paths 18
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -616,8 +616,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="100",
                             address_family=dict(afi="ipv6", safi="unicast"),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -638,7 +638,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 redistribute eigrp 100 route-map test-17
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -668,8 +668,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     dict(protocol="static", route_map="test-4"),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -693,7 +693,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 redistribute eigrp 100 route-map test-1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -718,8 +718,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     dict(protocol="static", route_map="test-4"),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -743,7 +743,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 summary-address 2001:db2::/32
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -763,8 +763,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     dict(prefix="2001:db4::/32"),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -787,7 +787,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 summary-address 2001:db2::/32 tag 19
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -802,11 +802,11 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     dict(
                                         prefix="2001:db3::/32",
                                         not_advertise=True,
-                                    )
+                                    ),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -828,7 +828,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 summary-address 2001:db2::/32 tag 19
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -841,8 +841,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 safi="unicast",
                                 table_map=dict(name="test-1", filter=True),
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -863,7 +863,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 table-map test-1 filter
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -876,8 +876,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 safi="unicast",
                                 table_map=dict(name="test-2"),
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -898,7 +898,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 timers throttle spf 1000 20 2800
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -914,12 +914,12 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         spf=dict(
                                             initial_spf_delay=1100,
                                             max_wait_time=2805,
-                                        )
-                                    )
+                                        ),
+                                    ),
                                 ),
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -940,7 +940,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 timers throttle spf 1000 20 2800
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -949,8 +949,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="100",
                             address_family=dict(afi="ipv6", safi="unicast"),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -970,7 +970,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               area 1.1.1.1 nssa no-redistribution default-information-originate
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -995,8 +995,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     ),
                                 ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -1018,7 +1018,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               area 1.1.1.1 nssa no-summary
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1027,8 +1027,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="100",
                             areas=[dict(area_id="1.1.1.1", nssa=dict(set=False))],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -1045,7 +1045,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               area 1.1.1.1 nssa no-summary no-redistribution default-information-originate
               area 1.1.1.3 nssa translate type7 always supress-fa
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1062,10 +1062,10 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         no_redistribution=True,
                                         route_map="test-1",
                                     ),
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -1086,7 +1086,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               area 1.1.1.3 stub
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1098,10 +1098,10 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 dict(
                                     area_id="1.1.1.3",
                                     stub=dict(no_summary=True),
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -1117,7 +1117,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               area 1.1.1.3 stub
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1132,8 +1132,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     stub=dict(no_summary=True),
                                 ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -1153,7 +1153,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               area 1.1.1.3 stub no-summary
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1172,7 +1172,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               auto-cost reference-bandwidth 300 Mbps
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1183,8 +1183,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                             auto_cost=dict(reference_bandwidth=100, unit="Gbps"),
                             flush_routes=True,
                             isolate=True,
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -1206,7 +1206,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               auto-cost reference-bandwidth 300 Mbps
               flush-routes
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1232,7 +1232,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               log-adjacency-changes
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1248,7 +1248,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                             process_id="102",
                             log_adjacency_changes=dict(log=True),
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -1274,7 +1274,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               log-adjacency-changes detail
               name-lookup
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1283,8 +1283,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="100",
                             passive_interface=dict(default=True),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -1308,7 +1308,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               max-lsa 4200 85 ignore-count 10 reset-time 120
             router ospfv3 102
               max-lsa 4200 85 ignore-time 120 ignore-count 12 reset-time 300
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1342,7 +1342,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 warning_only=True,
                             ),
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -1369,7 +1369,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               max-lsa 4200 85 ignore-count 10 reset-time 120
             router ospfv3 102
               max-lsa 4200 85 ignore-time 120 ignore-count 12 reset-time 300
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1382,8 +1382,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 threshold=85,
                                 warning_only=True,
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -1405,7 +1405,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               no graceful-restart
             router ospfv3 102
               no graceful-restart planned-only
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1419,7 +1419,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                             process_id="102",
                             graceful_restart=dict(planned_only=True),
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -1443,7 +1443,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               graceful-restart grace-period 50
               graceful-restart helper-disable
             router ospfv3 102
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1457,7 +1457,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                             process_id="102",
                             graceful_restart=dict(helper_disable=True),
                         ),
-                    ]
+                    ],
                 ),
                 state="replaced",
             ),
@@ -1479,7 +1479,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             """\
             router ospfv3 100
               max-metric router-lsa external-lsa 1900
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1492,13 +1492,13 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     external_lsa=dict(max_metric_value=2000),
                                     stub_prefix_lsa=True,
                                     on_startup=dict(set=True),
-                                )
+                                ),
                             ),
                         ),
                         dict(
                             process_id="102",
                             max_metric=dict(
-                                router_lsa=dict(inter_area_prefix_lsa=dict(max_metric_value=1800))
+                                router_lsa=dict(inter_area_prefix_lsa=dict(max_metric_value=1800)),
                             ),
                         ),
                         dict(
@@ -1510,10 +1510,10 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         wait_for_bgp_asn=65563,
                                     ),
                                     inter_area_prefix_lsa=dict(set=True),
-                                )
+                                ),
                             ),
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -1538,7 +1538,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               max-metric router-lsa inter-area-prefix-lsa 1800
             router ospfv3 103
               max-metric router-lsa on-startup 1200 wait-for bgp 65563 inter-area-prefix-lsa
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1547,8 +1547,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(
                             process_id="100",
                             max_metric=dict(router_lsa=dict(set=False)),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -1567,7 +1567,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               max-metric router-lsa inter-area-prefix-lsa 1800
             router ospfv3 103
               max-metric router-lsa on-startup 1200 wait-for bgp 65563 inter-area-prefix-lsa
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1580,12 +1580,12 @@ class TestNxosOspfv3Module(TestNxosModule):
                                     external_lsa=dict(max_metric_value=2000),
                                     stub_prefix_lsa=True,
                                     on_startup=dict(set=True),
-                                )
+                                ),
                             ),
                         ),
                         dict(process_id="102"),
                         dict(process_id="103"),
-                    ]
+                    ],
                 ),
                 state="replaced",
             ),
@@ -1609,7 +1609,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               timers lsa-group-pacing 190
               shutdown
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1625,12 +1625,12 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         start_interval=100,
                                         hold_interval=70,
                                         max_interval=1500,
-                                    )
+                                    ),
                                 ),
                             ),
                             shutdown=False,
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -1654,7 +1654,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               timers lsa-arrival 800
               timers lsa-group-pacing 210
               timers throttle lsa 100 70 1500
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1664,8 +1664,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                             process_id="100",
                             timers=dict(lsa_arrival=1200),
                             shutdown=True,
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -1688,7 +1688,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               vrf blue
                 area 1.1.1.1 nssa
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1724,10 +1724,10 @@ class TestNxosOspfv3Module(TestNxosModule):
                                                     type7=dict(
                                                         always=True,
                                                         supress_fa=True,
-                                                    )
+                                                    ),
                                                 ),
                                             ),
-                                        )
+                                        ),
                                     ],
                                 ),
                             ],
@@ -1744,9 +1744,9 @@ class TestNxosOspfv3Module(TestNxosModule):
                                                 wait_for_bgp_asn=65563,
                                             ),
                                             inter_area_prefix_lsa=dict(set=True),
-                                        )
+                                        ),
                                     ),
-                                )
+                                ),
                             ],
                         ),
                         dict(
@@ -1762,14 +1762,14 @@ class TestNxosOspfv3Module(TestNxosModule):
                                                 start_interval=100,
                                                 hold_interval=70,
                                                 max_interval=1500,
-                                            )
+                                            ),
                                         ),
                                     ),
                                     shutdown=True,
-                                )
+                                ),
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -1816,7 +1816,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                 timers lsa-group-pacing 210
                 timers throttle lsa 100 70 1500
                 shutdown
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1836,15 +1836,15 @@ class TestNxosOspfv3Module(TestNxosModule):
                                                     type7=dict(
                                                         always=True,
                                                         supress_fa=True,
-                                                    )
+                                                    ),
                                                 ),
                                             ),
-                                        )
+                                        ),
                                     ],
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -1868,7 +1868,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 100
               address-family ipv6 unicast
                 table-map map1 filter
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1884,7 +1884,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         protocol="eigrp",
                                         id="100",
                                         route_map="rmap1",
-                                    )
+                                    ),
                                 ],
                             ),
                             vrfs=[
@@ -1895,7 +1895,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         dict(
                                             area_id="1.1.1.1",
                                             nssa=dict(set=True),
-                                        )
+                                        ),
                                     ],
                                 ),
                             ],
@@ -1904,7 +1904,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                             process_id="103",
                             vrfs=[dict(vrf="red", shutdown=True)],
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -1940,7 +1940,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 103
               vrf red
               shutdown
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1956,11 +1956,11 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         protocol="eigrp",
                                         id="100",
                                         route_map="rmap1",
-                                    )
+                                    ),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -1991,7 +1991,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 103
               vrf red
               shutdown
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2007,11 +2007,11 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         protocol="eigrp",
                                         id="100",
                                         route_map="rmap2",
-                                    )
+                                    ),
                                 ],
                             ),
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="overridden",
             ),
@@ -2044,7 +2044,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 103
               vrf red
               shutdown
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2072,7 +2072,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 103
               vrf red
               shutdown
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = ["no router ospfv3 100", "no router ospfv3 103"]
@@ -2096,7 +2096,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                     router ospfv3 103
                       vrf red
                         shutdown
-                    """
+                    """,
                 ),
                 state="parsed",
             ),
@@ -2113,7 +2113,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 "protocol": "eigrp",
                                 "id": "100",
                                 "route_map": "rmap1",
-                            }
+                            },
                         ],
                         "afi": "ipv6",
                         "safi": "unicast",
@@ -2130,7 +2130,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                     "process_id": "103",
                     "vrfs": [{"vrf": "red", "shutdown": True}],
                 },
-            ]
+            ],
         }
         result = self.execute_module(changed=False)
         self.assertEqual(set(result["parsed"]), set(parsed))
@@ -2150,7 +2150,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             router ospfv3 103
               vrf red
               shutdown
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = {
@@ -2164,7 +2164,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                                 "protocol": "eigrp",
                                 "id": "100",
                                 "route_map": "rmap1",
-                            }
+                            },
                         ],
                         "afi": "ipv6",
                         "safi": "unicast",
@@ -2181,7 +2181,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                     "process_id": "103",
                     "vrfs": [{"vrf": "red", "shutdown": True}],
                 },
-            ]
+            ],
         }
         result = self.execute_module(changed=False)
         self.assertEqual(set(result["gathered"]), set(gathered))
@@ -2193,7 +2193,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               router-id 203.0.113.20
             router ospfv3 TEST-1
               router-id 198.51.100.1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2202,7 +2202,7 @@ class TestNxosOspfv3Module(TestNxosModule):
                         dict(process_id="100", router_id="203.0.113.20"),
                         dict(process_id="TEST-1", router_id="198.51.100.1"),
                         dict(process_id="TEST-2", router_id="198.52.200.1"),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),

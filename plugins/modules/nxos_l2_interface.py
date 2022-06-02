@@ -352,7 +352,7 @@ def get_switchport_config_commands(name, existing, proposed, module):
         if not tv_check:
             if proposed.get("allowed"):
                 command = "switchport trunk allowed vlan {0}".format(
-                    proposed.get("trunk_allowed_vlans")
+                    proposed.get("trunk_allowed_vlans"),
                 )
                 commands.append(command)
 
@@ -362,7 +362,7 @@ def get_switchport_config_commands(name, existing, proposed, module):
                 vlans_to_add = set(proposed_vlans).difference(existing_vlans)
                 if vlans_to_add:
                     command = "switchport trunk allowed vlan add {0}".format(
-                        proposed.get("trunk_vlans")
+                        proposed.get("trunk_vlans"),
                     )
                     commands.append(command)
 
@@ -501,7 +501,7 @@ def map_params_to_obj(module):
                 "trunk_vlans": module.params["trunk_vlans"],
                 "trunk_allowed_vlans": module.params["trunk_allowed_vlans"],
                 "state": module.params["state"],
-            }
+            },
         )
 
     return obj
@@ -581,14 +581,14 @@ def main():
             module.fail_json(
                 msg="Ensure interface is configured to be a L2"
                 "\nport first before using this module. You can use"
-                "\nthe nxos_interface module for this."
+                "\nthe nxos_interface module for this.",
             )
 
         if interface_is_portchannel(name, module):
             module.fail_json(
                 msg="Cannot change L2 config on physical "
                 "\nport because it is in a portchannel. "
-                "\nYou should update the portchannel config."
+                "\nYou should update the portchannel config.",
             )
 
         # existing will never be null for Eth intfs as there is always a default

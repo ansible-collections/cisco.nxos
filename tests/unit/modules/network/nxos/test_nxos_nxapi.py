@@ -36,17 +36,17 @@ class TestNxosNxapiModule(TestNxosModule):
         super(TestNxosNxapiModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.get_capabilities"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {
@@ -85,7 +85,7 @@ class TestNxosNxapiModule(TestNxosModule):
                 http_port=80,
                 https_port=443,
                 sandbox=False,
-            )
+            ),
         )
         self.execute_module_devices(changed=False, commands=[])
 
@@ -96,5 +96,6 @@ class TestNxosNxapiModule(TestNxosModule):
     def test_nxos_nxapi_no_http(self):
         set_module_args(dict(https=True, http=False, https_port=8443))
         self.execute_module_devices(
-            changed=True, commands=["no nxapi http", "nxapi https port 8443"]
+            changed=True,
+            commands=["no nxapi http", "nxapi https port 8443"],
         )

@@ -289,7 +289,7 @@ def main():
                     module.fail_json(
                         msg="This device alias name "
                         + str(name)
-                        + " which needs to be added, does not have pwwn specified. Please specify a valid pwwn"
+                        + " which needs to be added, does not have pwwn specified. Please specify a valid pwwn",
                     )
                 if not isNameValid(name):
                     module.fail_json(
@@ -297,13 +297,13 @@ def main():
                         + str(name)
                         + ". Note that name cannot be more than 64 alphanumeric chars, "
                         + "it must start with a letter, and can only contain these characters: "
-                        + ", ".join(["'{0}'".format(c) for c in VALID_DA_CHARS])
+                        + ", ".join(["'{0}'".format(c) for c in VALID_DA_CHARS]),
                     )
                 if not isPwwnValid(pwwn):
                     module.fail_json(
                         msg="This pwwn is invalid : "
                         + str(pwwn)
-                        + ". Please check that its a valid pwwn"
+                        + ". Please check that its a valid pwwn",
                     )
     if rename is not None:
         for eachdict in rename:
@@ -315,7 +315,7 @@ def main():
                     + str(oldname)
                     + ". Note that name cannot be more than 64 alphanumeric chars, "
                     + "it must start with a letter, and can only contain these characters: "
-                    + ", ".join(["'{0}'".format(c) for c in VALID_DA_CHARS])
+                    + ", ".join(["'{0}'".format(c) for c in VALID_DA_CHARS]),
                 )
             if not isNameValid(newname):
                 module.fail_json(
@@ -323,7 +323,7 @@ def main():
                     + str(newname)
                     + ". Note that name cannot be more than 64 alphanumeric chars, "
                     + "it must start with a letter, and can only contain these characters: "
-                    + ", ".join(["'{0}'".format(c) for c in VALID_DA_CHARS])
+                    + ", ".join(["'{0}'".format(c) for c in VALID_DA_CHARS]),
                 )
 
     # Step 0.1: Check DA status
@@ -345,7 +345,7 @@ def main():
                 messages.append("device-alias distribute changed from disabled to enabled")
             else:
                 messages.append(
-                    "device-alias distribute remains unchanged. current distribution mode is enabled"
+                    "device-alias distribute remains unchanged. current distribution mode is enabled",
                 )
         else:
             # playbook has distribute as False(disabled)
@@ -356,7 +356,7 @@ def main():
                 messages.append("device-alias distribute changed from enabled to disabled")
             else:
                 messages.append(
-                    "device-alias distribute remains unchanged. current distribution mode is disabled"
+                    "device-alias distribute remains unchanged. current distribution mode is disabled",
                 )
 
     cmds = flatten_list(commands)
@@ -429,7 +429,7 @@ def main():
                 else:
                     messages.append(
                         name
-                        + " - This device alias name is not in switch device-alias database, hence cannot be removed."
+                        + " - This device alias name is not in switch device-alias database, hence cannot be removed.",
                     )
             else:
                 if shDADatabaseObj.isNamePwwnPresentInDatabase(name, pwwn):
@@ -437,7 +437,7 @@ def main():
                         name
                         + " : "
                         + pwwn
-                        + " - This device alias name,pwwn is already in switch device-alias database, hence nothing to configure"
+                        + " - This device alias name,pwwn is already in switch device-alias database, hence nothing to configure",
                     )
                 else:
                     if shDADatabaseObj.isNameInDaDatabase(name):
@@ -445,7 +445,7 @@ def main():
                             msg=name
                             + " - This device alias name is already present in switch device-alias database but assigned to another pwwn ("
                             + shDADatabaseObj.getPwwnByName(name)
-                            + ") hence cannot be added"
+                            + ") hence cannot be added",
                         )
 
                     elif shDADatabaseObj.isPwwnInDaDatabase(pwwn):
@@ -453,7 +453,7 @@ def main():
                             msg=pwwn
                             + " - This device alias pwwn is already present in switch device-alias database but assigned to another name ("
                             + shDADatabaseObj.getNameByPwwn(pwwn)
-                            + ") hence cannot be added"
+                            + ") hence cannot be added",
                         )
 
                     else:
@@ -481,11 +481,11 @@ def main():
                 load_config(module, cmds)
                 if len(da_remove_list) != 0:
                     messages.append(
-                        "the required device-alias were removed. " + ",".join(da_remove_list)
+                        "the required device-alias were removed. " + ",".join(da_remove_list),
                     )
                 if len(da_add_list) != 0:
                     messages.append(
-                        "the required device-alias were added. " + ",".join(da_add_list)
+                        "the required device-alias were added. " + ",".join(da_add_list),
                     )
 
     # Step 5: Process rename

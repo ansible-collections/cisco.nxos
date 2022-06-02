@@ -403,7 +403,7 @@ def map_obj_to_commands(updates, module):
                             commands.append("switchport access vlan {0}".format(vlan_id))
 
                         superfluous_interfaces = list(
-                            set(obj_in_have["interfaces"]) - set(interfaces)
+                            set(obj_in_have["interfaces"]) - set(interfaces),
                         )
                         for i in superfluous_interfaces:
                             commands.append("vlan {0}".format(vlan_id))
@@ -517,7 +517,7 @@ def map_params_to_obj(module):
                 "admin_state": module.params["admin_state"],
                 "mode": module.params["mode"],
                 "associated_interfaces": associated_interfaces,
-            }
+            },
         )
 
     return obj
@@ -641,7 +641,9 @@ def parse_vlan_non_structured(module, netcfg, vlans):
                     interfaces = list()
                     intfs_match = re.search(
                         r"{0}\s*{1}\s*{2}\s*(.*)".format(
-                            vlan_id, re.escape(name), vlan_state_match
+                            vlan_id,
+                            re.escape(name),
+                            vlan_state_match,
                         ),
                         vlan,
                         re.M,

@@ -117,10 +117,14 @@ class YamlTestUtils(object):
             yaml_string_obj_from_string = yaml.dump(obj_from_string, Dumper=AnsibleDumper)
         else:
             yaml_string_obj_from_stream = yaml.dump(
-                obj_from_stream, Dumper=AnsibleDumper, encoding=None
+                obj_from_stream,
+                Dumper=AnsibleDumper,
+                encoding=None,
             )
             yaml_string_obj_from_string = yaml.dump(
-                obj_from_string, Dumper=AnsibleDumper, encoding=None
+                obj_from_string,
+                Dumper=AnsibleDumper,
+                encoding=None,
             )
 
         assert yaml_string == yaml_string_obj_from_stream

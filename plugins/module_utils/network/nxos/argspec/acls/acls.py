@@ -66,7 +66,7 @@ class AclsArgs(object):  # pylint: disable=R0903
                                                     "neq",
                                                     "gt",
                                                     "range",
-                                                ]
+                                                ],
                                             ],
                                             "options": {
                                                 "eq": {"type": "str"},
@@ -160,7 +160,7 @@ class AclsArgs(object):  # pylint: disable=R0903
                                                     "dvmrp",
                                                     "host_query",
                                                     "host_report",
-                                                ]
+                                                ],
                                             ],
                                             "options": {
                                                 "dvmrp": {"type": "bool"},

@@ -52,7 +52,7 @@ class LacpArgs(object):
                         "priority": {"type": "int"},
                     },
                     "type": "dict",
-                }
+                },
             },
             "type": "dict",
         },

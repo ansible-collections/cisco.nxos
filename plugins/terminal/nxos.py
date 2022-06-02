@@ -33,7 +33,7 @@ class TerminalModule(TerminalBase):
 
     terminal_stdout_re = [
         re.compile(
-            rb"[\r\n](?!\s*<)?(\x1b\S+)*[a-zA-Z_0-9]{1}[a-zA-Z0-9-_.]*[>|#](?:\s*)(\x1b\S+)*$"
+            rb"[\r\n](?!\s*<)?(\x1b\S+)*[a-zA-Z_0-9]{1}[a-zA-Z0-9-_.]*[>|#](?:\s*)(\x1b\S+)*$",
         ),
         re.compile(rb"[\r\n]?[a-zA-Z0-9]{1}[a-zA-Z0-9-_.]*\(.+\)#(?:\s*)$"),
     ]
@@ -96,13 +96,13 @@ class TerminalModule(TerminalBase):
             prompt = self._get_prompt()
             if prompt is None or not prompt.strip().endswith(b"enable#"):
                 raise AnsibleConnectionFailure(
-                    "failed to elevate privilege to enable mode still at prompt [%s]" % prompt
+                    "failed to elevate privilege to enable mode still at prompt [%s]" % prompt,
                 )
         except AnsibleConnectionFailure as e:
             prompt = self._get_prompt()
             raise AnsibleConnectionFailure(
                 "unable to elevate privilege to enable mode, at prompt [%s] with error: %s"
-                % (prompt, e.message)
+                % (prompt, e.message),
             )
 
     def on_unbecome(self):

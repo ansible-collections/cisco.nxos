@@ -377,7 +377,9 @@ def get_value(arg, config, module):
 
     elif command.split()[0] in ["filter-list", "prefix-list", "route-map"]:
         has_cmd_direction_val = re.search(
-            r"{0}\s(?P<value>.*)\s{1}$".format(*command.split()), config, re.M
+            r"{0}\s(?P<value>.*)\s{1}$".format(*command.split()),
+            config,
+            re.M,
         )
         if has_cmd_direction_val:
             value = has_cmd_direction_val.group("value")
@@ -497,11 +499,13 @@ def get_default_command(key, value, existing_commands):
         else:
             if key == "advertise-map exist-map":
                 command = "no advertise-map {0} exist-map {1}".format(
-                    existing_value[0], existing_value[1]
+                    existing_value[0],
+                    existing_value[1],
                 )
             elif key == "advertise-map non-exist-map":
                 command = "no advertise-map {0} non-exist-map {1}".format(
-                    existing_value[0], existing_value[1]
+                    existing_value[0],
+                    existing_value[1],
                 )
             elif key == "filter-list in":
                 command = "no filter-list {0} in".format(existing_value)
@@ -577,7 +581,7 @@ def state_present(module, existing, proposed, candidate):
             commands.append("no {0}".format(key))
         elif key == "address-family":
             commands.append(
-                "address-family {0} {1}".format(module.params["afi"], module.params["safi"])
+                "address-family {0} {1}".format(module.params["afi"], module.params["safi"]),
             )
         elif key.startswith("capability additional-paths"):
             command = key
@@ -679,7 +683,9 @@ def main():
             choices=["none", "both", "extended", "standard", "default"],
         ),
         soft_reconfiguration_in=dict(
-            required=False, type="str", choices=["enable", "always", "inherit"]
+            required=False,
+            type="str",
+            choices=["enable", "always", "inherit"],
         ),
         soo=dict(required=False, type="str"),
         suppress_inactive=dict(required=False, type="bool"),

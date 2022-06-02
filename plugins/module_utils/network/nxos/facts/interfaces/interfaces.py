@@ -103,7 +103,9 @@ class InterfacesFacts(object):
         config["enabled"] = utils.parse_conf_cmd_arg(conf, "shutdown", False, True)
 
         config["fabric_forwarding_anycast_gateway"] = utils.parse_conf_cmd_arg(
-            conf, "fabric forwarding mode anycast-gateway", True
+            conf,
+            "fabric forwarding mode anycast-gateway",
+            True,
         )
         config["ip_forward"] = utils.parse_conf_cmd_arg(conf, "ip forward", True)
 

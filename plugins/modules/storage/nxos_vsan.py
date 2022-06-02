@@ -221,7 +221,7 @@ def main():
 
         if int(vsanid) < 1 or int(vsanid) >= 4095:
             module.fail_json(
-                msg=vsanid + " - This is an invalid vsan. Supported vsan range is 1-4094"
+                msg=vsanid + " - This is an invalid vsan. Supported vsan range is 1-4094",
             )
 
         if vsanid in dictSwVsanObjs.keys():
@@ -247,21 +247,21 @@ def main():
                 messages.append(
                     "There is no vsan "
                     + str(vsanid)
-                    + " present in the switch. Hence there is nothing to delete"
+                    + " present in the switch. Hence there is nothing to delete",
                 )
             continue
         else:
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
-                    str(vsanid) + " is a reserved vsan, and always present on the switch"
+                    str(vsanid) + " is a reserved vsan, and always present on the switch",
                 )
             else:
                 if vsanid == sw_vsanid:
                     messages.append(
                         "There is already a vsan "
                         + str(vsanid)
-                        + " present in the switch. Hence there is nothing to configure"
+                        + " present in the switch. Hence there is nothing to configure",
                     )
                 else:
                     commands.append("vsan " + str(vsanid))
@@ -278,7 +278,7 @@ def main():
                         + str(vsanid)
                         + " present in the switch, which has the name "
                         + vsanname
-                        + " Hence there is nothing to configure"
+                        + " Hence there is nothing to configure",
                     )
                 else:
                     commands.append("vsan " + str(vsanid) + " name " + vsanname)
@@ -293,7 +293,7 @@ def main():
                     messages.append(
                         "There is already a vsan "
                         + str(vsanid)
-                        + " present in the switch, which is in suspended state "
+                        + " present in the switch, which is in suspended state ",
                     )
                 else:
                     commands.append("vsan " + str(vsanid) + " suspend")
@@ -303,7 +303,7 @@ def main():
                 messages.append(
                     "There is already a vsan "
                     + str(vsanid)
-                    + " present in the switch, which is in active state "
+                    + " present in the switch, which is in active state ",
                 )
             else:
                 commands.append("no vsan " + str(vsanid) + " suspend")
@@ -319,12 +319,12 @@ def main():
                         each_interface_name
                         + " is already present in the vsan "
                         + str(vsanid)
-                        + " interface list"
+                        + " interface list",
                     )
                 else:
                     commands.append("vsan " + str(vsanid) + " interface " + each_interface_name)
                     messages.append(
-                        "adding interface " + each_interface_name + " to vsan " + str(vsanid)
+                        "adding interface " + each_interface_name + " to vsan " + str(vsanid),
                     )
 
     if len(commands) != 0:

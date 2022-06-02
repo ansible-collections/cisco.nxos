@@ -37,22 +37,22 @@ class TestNxosFeatureModule(TestNxosModule):
     def setUp(self):
         super(TestNxosFeatureModule, self).setUp()
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_capabilities"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {"network_api": "cliconf"}
@@ -101,22 +101,22 @@ class TestNxosFeatureModuleMDS(TestNxosModule):
     def setUp(self):
         super(TestNxosFeatureModuleMDS, self).setUp()
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_capabilities"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {

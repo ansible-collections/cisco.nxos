@@ -33,7 +33,8 @@ class HostnameTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^hostname\s(?P<hostname>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "hostname {{ hostname }}",
             "result": {
                 "hostname": "{{ hostname }}",

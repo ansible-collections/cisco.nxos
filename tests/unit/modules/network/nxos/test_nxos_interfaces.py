@@ -48,32 +48,32 @@ class TestNxosInterfacesModule(TestNxosModule):
         super(TestNxosInterfacesModule, self).setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
         )
         self.FACT_LEGACY_SUBSETS = self.mock_FACT_LEGACY_SUBSETS.start()
 
         self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.edit_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_get_system_defaults = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.get_system_defaults"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.get_system_defaults",
         )
         self.get_system_defaults = self.mock_get_system_defaults.start()
 
         self.mock_get_platform = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.get_platform"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.get_platform",
         )
         self.get_platform = self.mock_get_platform.start()
 
@@ -107,7 +107,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           !
           no system default switchport
           no system default switchport shutdown
-        """
+        """,
         )
         intf = dedent(
             """\
@@ -129,7 +129,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             no shutdown
           interface loopback0
             description test-loopback
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
@@ -154,7 +154,7 @@ class TestNxosInterfacesModule(TestNxosModule):
                 dict(name="Ethernet1/4", mode="layer2"),
                 dict(name="Ethernet1/5"),
                 dict(name="loopback1", description="test-loopback"),
-            ]
+            ],
         )
         merged = [
             # Update existing device states with any differences in the playbook.
@@ -266,7 +266,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           !
           no system default switchport
           no system default switchport shutdown
-        """
+        """,
         )
         intf = dedent(
             """\
@@ -287,7 +287,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           interface port-channel2
           interface port-channel3
             shutdown
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
@@ -307,7 +307,7 @@ class TestNxosInterfacesModule(TestNxosModule):
                 dict(name="loopback4", enabled=True),
                 dict(name="port-channel4", enabled=True),
                 dict(name="Ethernet1/4.101"),
-            ]
+            ],
         )
         # Testing with newer code version
         merged = [
@@ -408,7 +408,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           !
           system default switchport
           system default switchport shutdown
-        """
+        """,
         )
         intf = dedent(
             """\
@@ -429,7 +429,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           interface port-channel2
           interface port-channel3
             shutdown
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
@@ -450,7 +450,7 @@ class TestNxosInterfacesModule(TestNxosModule):
                 dict(name="loopback4", enabled=True),
                 dict(name="port-channel4", enabled=True),
                 dict(name="Ethernet1/4.101"),
-            ]
+            ],
         )
         merged = [
             "interface Ethernet1/1",
@@ -553,7 +553,7 @@ class TestNxosInterfacesModule(TestNxosModule):
                 dict(name="port-channel4", enabled=True),
                 dict(name="Ethernet1/4.101", enabled=False),
                 dict(name="Ethernet1/4.102", enabled=True),
-            ]
+            ],
         )
 
         overridden = [
@@ -594,7 +594,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           !
           no system default switchport
           no system default switchport shutdown
-        """
+        """,
         )
         intf = dedent(
             """\
@@ -603,7 +603,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             switchport
             speed 1000
             shutdown
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
@@ -612,7 +612,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             config=[
                 dict(name="Ethernet1/1", mode="layer3"),
                 dict(name="Ethernet1/2", mode="layer2", enabled=False),
-            ]
+            ],
         )
         merged = []
         playbook["state"] = "merged"
@@ -628,7 +628,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           !
           no system default switchport
           no system default switchport shutdown
-        """
+        """,
         )
         intf = dedent(
             """\
@@ -637,7 +637,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           interface Ethernet1/2
             speed 1000
             no shutdown
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
@@ -663,7 +663,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           !
           no system default switchport
           no system default switchport shutdown
-        """
+        """,
         )
         intf = dedent(
             """\
@@ -677,7 +677,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             speed 1000
             no shutdown
           interface loopback1
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
@@ -705,7 +705,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             """\
           no system default switchport
           no system default switchport shutdown
-        """
+        """,
         )
         intf = dedent(
             """\
@@ -718,7 +718,7 @@ class TestNxosInterfacesModule(TestNxosModule):
           interface Ethernet1/2
           interface Ethernet1/2.100
             description sub-intf
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
@@ -728,7 +728,7 @@ class TestNxosInterfacesModule(TestNxosModule):
                 dict(name="Vlan42"),
                 dict(name="port-channel10"),
                 dict(name="Ethernet1/2.100"),
-            ]
+            ],
         )
         playbook["state"] = "purged"
 

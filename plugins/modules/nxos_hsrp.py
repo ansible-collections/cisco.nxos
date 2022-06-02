@@ -328,7 +328,7 @@ def get_commands_config_hsrp(delta, interface, args, existing):
                 commands.append(command)
         else:
             if existing and existing.get("auth_string") != PARAM_TO_DEFAULT_KEYMAP.get(
-                "auth_string"
+                "auth_string",
             ):
                 commands.append("no authentication")
 
@@ -443,7 +443,7 @@ def main():
     if auth_type or auth_string:
         if not (auth_type and auth_string):
             module.fail_json(
-                msg="When using auth parameters, you need BOTH " "auth_type AND auth_string."
+                msg="When using auth parameters, you need BOTH " "auth_type AND auth_string.",
             )
 
     args = dict(
@@ -469,7 +469,7 @@ def main():
     elif not proposed.get("auth_type", None) and existing:
         if (proposed["version"] == "1" and existing["auth_type"] == "md5") and state == "present":
             module.fail_json(
-                msg="Existing auth_type is md5. It's recommended " "to use HSRP v2 when using md5"
+                msg="Existing auth_type is md5. It's recommended " "to use HSRP v2 when using md5",
             )
 
     commands = []

@@ -82,7 +82,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                         "route_types": {
                                             "type": "list",
                                             "elements": "str",
-                                        }
+                                        },
                                     },
                                 },
                                 "extcommunity": {
@@ -148,7 +148,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "prefix_lists": {
                                                     "type": "list",
                                                     "elements": "str",
-                                                }
+                                                },
                                             },
                                         },
                                         "route_source": {
@@ -157,7 +157,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "prefix_lists": {
                                                     "type": "list",
                                                     "elements": "str",
-                                                }
+                                                },
                                             },
                                         },
                                     },
@@ -211,7 +211,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "prefix_lists": {
                                                     "type": "list",
                                                     "elements": "str",
-                                                }
+                                                },
                                             },
                                         },
                                         "route_source": {
@@ -220,7 +220,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "prefix_lists": {
                                                     "type": "list",
                                                     "elements": "str",
-                                                }
+                                                },
                                             },
                                         },
                                     },
@@ -319,7 +319,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "ip": {"type": "str"},
                                                 "use_nexthop": {"type": "bool"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "extcomm_list": {"type": "str"},

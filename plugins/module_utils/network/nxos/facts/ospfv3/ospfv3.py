@@ -76,7 +76,7 @@ class Ospfv3Facts(object):
                 if "address_family" in entry:
                     if "areas" in entry["address_family"]:
                         entry["address_family"]["areas"] = list(
-                            entry["address_family"]["areas"].values()
+                            entry["address_family"]["areas"].values(),
                         )
 
                 ipv6["processes"].append(entry)

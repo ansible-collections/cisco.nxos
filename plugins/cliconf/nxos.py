@@ -113,7 +113,9 @@ class Cliconf(CliconfBase):
                 device_info["network_os_image"] = match_isan_file_name.group(1)
             else:
                 match_kick_file_name = re.search(
-                    r"\s+kickstart image file is:\s*(\S+)", reply, re.M
+                    r"\s+kickstart image file is:\s*(\S+)",
+                    reply,
+                    re.M,
                 )
                 if match_kick_file_name:
                     device_info["network_os_image"] = match_kick_file_name.group(1)
@@ -154,13 +156,13 @@ class Cliconf(CliconfBase):
         if diff_match not in option_values["diff_match"]:
             raise ValueError(
                 "'match' value %s in invalid, valid values are %s"
-                % (diff_match, ", ".join(option_values["diff_match"]))
+                % (diff_match, ", ".join(option_values["diff_match"])),
             )
 
         if diff_replace not in option_values["diff_replace"]:
             raise ValueError(
                 "'replace' value %s in invalid, valid values are %s"
-                % (diff_replace, ", ".join(option_values["diff_replace"]))
+                % (diff_replace, ", ".join(option_values["diff_replace"])),
             )
 
         # prepare candidate configuration
@@ -171,7 +173,10 @@ class Cliconf(CliconfBase):
             # running configuration
             running_obj = NetworkConfig(indent=2, contents=running, ignore_lines=diff_ignore_lines)
             configdiffobjs = candidate_obj.difference(
-                running_obj, path=path, match=diff_match, replace=diff_replace
+                running_obj,
+                path=path,
+                match=diff_match,
+                replace=diff_replace,
             )
 
         else:
@@ -185,7 +190,7 @@ class Cliconf(CliconfBase):
         if format not in options_values["format"]:
             raise ValueError(
                 "'format' value %s is invalid. Valid values are %s"
-                % (format, ",".join(options_values["format"]))
+                % (format, ",".join(options_values["format"])),
             )
 
         lookup = {"running": "running-config", "startup": "startup-config"}
@@ -281,7 +286,7 @@ class Cliconf(CliconfBase):
                     out = to_text(out, errors="surrogate_or_strict").strip()
                 except UnicodeError:
                     raise ConnectionError(
-                        message="Failed to decode output from %s: %s" % (cmd, to_text(out))
+                        message="Failed to decode output from %s: %s" % (cmd, to_text(out)),
                     )
 
                 try:
@@ -389,7 +394,7 @@ class Cliconf(CliconfBase):
             if out is None:
                 raise AnsibleConnectionFailure(
                     message="cli prompt is not identified from the last received"
-                    " response window: %s" % self._connection._last_recv_window
+                    " response window: %s" % self._connection._last_recv_window,
                 )
             # Match prompts ending in )# except those with (maint-mode)#
             config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
@@ -404,7 +409,7 @@ class Cliconf(CliconfBase):
         if output not in options_values["output"]:
             raise ValueError(
                 "'output' value %s is invalid. Valid values are %s"
-                % (output, ",".join(options_values["output"]))
+                % (output, ",".join(options_values["output"])),
             )
 
         if output == "json" and not command.endswith("| json"):

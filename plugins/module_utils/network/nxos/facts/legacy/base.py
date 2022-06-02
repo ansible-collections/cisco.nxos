@@ -44,7 +44,7 @@ class FactsBase(object):
             return resp[0]
         except IndexError:
             self.warnings.append(
-                "command %s failed, facts for this command will not be populated" % command_string
+                "command %s failed, facts for this command will not be populated" % command_string,
             )
             return None
 
@@ -175,7 +175,7 @@ class Interfaces(FactsBase):
             ("eth_hw_addr", "macaddress"),
             ("eth_mtu", "mtu"),
             ("eth_hw_desc", "type"),
-        ]
+        ],
     )
 
     INTERFACE_SVI_MAP = frozenset(
@@ -185,7 +185,7 @@ class Interfaces(FactsBase):
             ("svi_mac", "macaddress"),
             ("svi_mtu", "mtu"),
             ("type", "type"),
-        ]
+        ],
     )
 
     INTERFACE_IPV4_MAP = frozenset([("eth_ip_addr", "address"), ("eth_ip_mask", "masklen")])
@@ -531,7 +531,7 @@ class Legacy(FactsBase):
             ("host_name", "_hostname"),
             ("kickstart_ver_str", "_os"),
             ("chassis_id", "_platform"),
-        ]
+        ],
     )
 
     MODULE_MAP = frozenset(
@@ -540,7 +540,7 @@ class Legacy(FactsBase):
             ("modtype", "type"),
             ("ports", "ports"),
             ("status", "status"),
-        ]
+        ],
     )
 
     FAN_MAP = frozenset(
@@ -550,7 +550,7 @@ class Legacy(FactsBase):
             ("fanhwver", "hw_ver"),
             ("fandir", "direction"),
             ("fanstatus", "status"),
-        ]
+        ],
     )
 
     POWERSUP_MAP = frozenset(
@@ -565,7 +565,7 @@ class Legacy(FactsBase):
             ("input_type", "input_type"),
             ("watts", "watts"),
             ("amps", "amps"),
-        ]
+        ],
     )
 
     def populate(self):

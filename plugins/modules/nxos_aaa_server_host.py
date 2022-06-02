@@ -344,7 +344,8 @@ def main():
         intersect = dict(set(proposed.items()).intersection(existing.items()))
         if intersect.get("address") and intersect.get("server_type"):
             command = "no {0}-server host {1}".format(
-                intersect.get("server_type"), intersect.get("address")
+                intersect.get("server_type"),
+                intersect.get("address"),
             )
             commands.append(command)
 

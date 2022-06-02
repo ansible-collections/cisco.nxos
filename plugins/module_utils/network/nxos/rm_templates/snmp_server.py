@@ -105,12 +105,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\saaa-user
                 \scache-timeout\s(?P<cache_timeout>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server aaa-user cache-timeout {{ aaa_user.cache_timeout }}",
             "result": {
                 "aaa_user": {
                     "cache_timeout": "{{ cache_timeout }}",
-                }
+                },
             },
         },
         {
@@ -122,7 +123,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sgroup\s(?P<group>\S+))?
                 (\suse-ipv4acl\s(?P<use_ipv4acl>\S+))?
                 (\suse-ipv6acl\s(?P<use_ipv6acl>\S+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _template_communities,
             "result": {
                 "communities": [
@@ -131,8 +133,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "group": "{{ group }}",
                         "use_ipv4acl": "{{ use_ipv4acl }}",
                         "use_ipv6acl": "{{ use_ipv6acl }}",
-                    }
-                ]
+                    },
+                ],
             },
         },
         {
@@ -141,7 +143,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server
                 \scontact\s(?P<contact>.+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server contact {{ contact }}",
             "result": {
                 "contact": "{{ contact }}",
@@ -156,7 +159,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sinstance\s(?P<instance>\S+))?
                 (\svrf\s(?P<vrf>\S+))?
                 (\stopology\s(?P<topology>\S+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server context {{ context.name }}"
                       "{{ ' instance ' + context.instance if context.instance is defined else '' }}"
                       "{{ ' topology ' + context.topology if context.topology is defined else '' }}"
@@ -167,7 +171,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                     "instance": "{{ instance }}",
                     "vrf": "{{ vrf }}",
                     "topology": "{{ topology }}",
-                }
+                },
 
             },
         },
@@ -178,14 +182,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server
                 \scounter
                 \scache\s(?P<enable>enable)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server counter cache enable",
             "result": {
                 "counter": {
                     "cache": {
                         "enable": "{{ True if enable is defined else None }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -195,14 +200,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server
                 \scounter
                 \scache\stimeout\s(?P<timeout>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server counter cache timeout {{ counter.cache.timeout }}",
             "result": {
                 "counter": {
                     "cache": {
                         "timeout": "{{ timeout }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -211,12 +217,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\sdrop
                 \s(?P<unknown_engine_id>unknown-engine-id)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server drop unknown-engine-id",
             "result": {
                 "drop": {
                     "unknown_engine_id": "{{ not not unknown_engine_id }}",
-                }
+                },
             },
         },
         {
@@ -225,12 +232,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\sdrop
                 \s(?P<unknown_user>unknown-user)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server drop unknown-user",
             "result": {
                 "drop": {
                     "unknown_user": "{{ not not unknown_user }}",
-                }
+                },
             },
         },
         {
@@ -239,15 +247,16 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps\saaa\s(?P<server_state_change>server-state-change)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps aaa"
                       "{{ ' server-state-change' if traps.aaa.server_state_change|d(False) else ''}}",
             "result": {
                 "traps": {
                     "aaa": {
                         "server_state_change": "{{ not not server_state_change }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -256,14 +265,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps\s(?P<enable>bgp)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps bgp",
             "result": {
                 "traps": {
                     "bgp": {
                         "enable": "{{ not not enable }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -273,14 +283,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sbridge\s(?P<newroot>newroot)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps bridge newroot",
             "result": {
                 "traps": {
                     "bridge": {
                         "newroot": "{{ not not newroot }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -290,14 +301,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sbridge\s(?P<topologychange>topologychange)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps bridge topologychange",
             "result": {
                 "traps": {
                     "bridge": {
                         "topologychange": "{{ not not topologychange }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -307,14 +319,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \scallhome\s(?P<event_notify>event-notify)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps callhome event-notify",
             "result": {
                 "traps": {
                     "callhome": {
                         "event_notify": "{{ not not event_notify }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -324,14 +337,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \scallhome\s(?P<smtp_send_fail>smtp-send-fail)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps callhome smtp-send-fail",
             "result": {
                 "traps": {
                     "callhome": {
                         "smtp_send_fail": "{{ not not smtp_send_fail }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -341,14 +355,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \scfs\s(?P<merge_failure>merge-failure)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps cfs merge-failure",
             "result": {
                 "traps": {
                     "cfs": {
                         "merge_failure": "{{ not not merge_failure }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -358,14 +373,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \scfs\s(?P<state_change_notif>state-change-notif)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps cfs state-change-notif",
             "result": {
                 "traps": {
                     "cfs": {
                         "state_change_notif": "{{ not not state_change_notif }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -375,14 +391,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sconfig\s(?P<ccmCLIRunningConfigChanged>ccmCLIRunningConfigChanged)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps config ccmCLIRunningConfigChanged",
             "result": {
                 "traps": {
                     "config": {
                         "ccmCLIRunningConfigChanged": "{{ not not ccmCLIRunningConfigChanged }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -392,14 +409,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sentity\s(?P<cefcMIBEnableStatusNotification>cefcMIBEnableStatusNotification)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity cefcMIBEnableStatusNotification",
             "result": {
                 "traps": {
                     "entity": {
                         "cefcMIBEnableStatusNotification": "{{ not not cefcMIBEnableStatusNotification }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -409,14 +427,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sentity\s(?P<entity_fan_status_change>entity-fan-status-change)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity entity-fan-status-change",
             "result": {
                 "traps": {
                     "entity": {
                         "entity_fan_status_change": "{{ not not entity_fan_status_change }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -426,14 +445,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sentity\s(?P<entity_mib_change>entity-mib-change)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity entity-mib-change",
             "result": {
                 "traps": {
                     "entity": {
                         "entity_mib_change": "{{ not not entity_mib_change }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -443,14 +463,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sentity\s(?P<entity_module_inserted>entity-module-inserted)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity entity-module-inserted",
             "result": {
                 "traps": {
                     "entity": {
                         "entity_module_inserted": "{{ not not entity_module_inserted }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -460,14 +481,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sentity\s(?P<entity_module_status_change>entity-module-status-change)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity entity-module-status-change",
             "result": {
                 "traps": {
                     "entity": {
                         "entity_module_status_change": "{{ not not entity_module_status_change }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -477,14 +499,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sentity\s(?P<entity_power_out_change>entity-power-out-change)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity entity-power-out-change",
             "result": {
                 "traps": {
                     "entity": {
                         "entity_power_out_change": "{{ not not entity_power_out_change }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -494,14 +517,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sentity\s(?P<entity_power_status_change>entity_power_status_change)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity entity-power-status-change",
             "result": {
                 "traps": {
                     "entity": {
                         "entity_power_status_change": "{{ not not entity_power_status_change }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -511,14 +535,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sentity\s(?P<entity_sensor>entity-sensor)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity entity-sensor",
             "result": {
                 "traps": {
                     "entity": {
                         "entity_sensor": "{{ not not entity_sensor }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -528,14 +553,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sentity\s(?P<entity_unrecognised_module>entity-unrecognised-module)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps entity entity-unrecognised-module",
             "result": {
                 "traps": {
                     "entity": {
                         "entity_unrecognised_module": "{{ not not entity_unrecognised_module }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -545,14 +571,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sfeature-control\s(?P<featureOpStatusChange>featureOpStatusChange)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps feature-control featureOpStatusChange",
             "result": {
                 "traps": {
                     "feature_control": {
                         "featureOpStatusChange": "{{ not not featureOpStatusChange }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -562,14 +589,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sfeature-control\s(?P<ciscoFeatOpStatusChange>ciscoFeatOpStatusChange)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps feature-control ciscoFeatOpStatusChange",
             "result": {
                 "traps": {
                     "feature_control": {
                         "ciscoFeatOpStatusChange": "{{ not not ciscoFeatOpStatusChange }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -579,14 +607,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sgeneric\s(?P<coldStart>coldStart)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps generic coldStart",
             "result": {
                 "traps": {
                     "generic": {
                         "coldStart": "{{ not not coldStart }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -596,14 +625,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sgeneric\s(?P<warmStart>warmStart)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps generic warmStart",
             "result": {
                 "traps": {
                     "generic": {
                         "warmStart": "{{ not not warmStart }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -613,14 +643,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slicense\s(?P<notify_license_expiry>notify_license_expiry)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps license notify-license-expiry",
             "result": {
                 "traps": {
                     "license": {
                         "notify_license_expiry": "{{ not not notify_license_expiry }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -630,14 +661,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slicense\s(?P<notify_license_expiry_warning>notify-license-expiry-warning)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps license notify-license-expiry-warning",
             "result": {
                 "traps": {
                     "license": {
                         "notify_license_expiry_warning": "{{ not not notify_license_expiry_warning }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -647,14 +679,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slicense\s(?P<notify_licensefile_missing>notify-licensefile-missing)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps license notify-licensefile-missing",
             "result": {
                 "traps": {
                     "license": {
                         "notify_licensefile_missing": "{{ not not notify_licensefile_missing }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -664,14 +697,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slicense\s(?P<notify_no_license_for_feature>notify-no-license-for-feature)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps license notify-no-license-for-feature",
             "result": {
                 "traps": {
                     "license": {
                         "notify_no_license_for_feature": "{{ not not notify_no_license_for_feature }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -681,14 +715,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<cErrDisableInterfaceEventRev1>cErrDisableInterfaceEventRev1)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link cErrDisableInterfaceEventRev1",
             "result": {
                 "traps": {
                     "link": {
                         "cErrDisableInterfaceEventRev1": "{{ not not cErrDisableInterfaceEventRev1 }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -698,14 +733,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<cieLinkDown>cieLinkDown)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link cieLinkDown",
             "result": {
                 "traps": {
                     "link": {
                         "cieLinkDown": "{{ not not cieLinkDown }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -715,14 +751,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<cieLinkUp>cieLinkUp)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link cieLinkUp",
             "result": {
                 "traps": {
                     "link": {
                         "cieLinkUp": "{{ not not cieLinkUp }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -732,14 +769,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<cisco_xcvr_mon_status_chg>cisco-xcvr-mon-status-chg)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link cisco_xcvr_mon_status_chg",
             "result": {
                 "traps": {
                     "link": {
                         "cisco_xcvr_mon_status_chg": "{{ not not cisco_xcvr_mon_status_chg }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -749,14 +787,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<cmn_mac_move_notification>cmn-mac-move-notification)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link cmn-mac-move-notification",
             "result": {
                 "traps": {
                     "link": {
                         "cmn_mac_move_notification": "{{ not not cmn_mac_move_notification }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -766,14 +805,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<delayed_link_state_change>delayed-link-state-change)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link delayed-link-state-change",
             "result": {
                 "traps": {
                     "link": {
                         "delayed_link_state_change": "{{ not not delayed_link_state_change }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -783,14 +823,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<extended_linkDown>extended-linkDown)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link extended-linkDown",
             "result": {
                 "traps": {
                     "link": {
                         "extended_linkDown": "{{ not not extended_linkDown }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -800,14 +841,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<extended_linkUp>extended-linkUp)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link extended-linkUp",
             "result": {
                 "traps": {
                     "link": {
                         "extended_linkUp": "{{ not not extended_linkUp }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -817,14 +859,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<linkDown>linkDown)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link linkDown",
             "result": {
                 "traps": {
                     "link": {
                         "linkDown": "{{ not not linkDown }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -834,14 +877,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \slink\s(?P<linkUp>linkUp)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps link linkUp",
             "result": {
                 "traps": {
                     "link": {
                         "linkUp": "{{ not not linkUp }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -851,14 +895,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \smmode\s(?P<cseMaintModeChangeNotify>cseMaintModeChangeNotify)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps mmode cseMaintModeChangeNotify",
             "result": {
                 "traps": {
                     "mmode": {
                         "cseMaintModeChangeNotify": "{{ not not cseMaintModeChangeNotify }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -868,14 +913,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \smmode\s(?P<cseNormalModeChangeNotify>cseNormalModeChangeNotify)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps mmode cseNormalModeChangeNotify",
             "result": {
                 "traps": {
                     "mmode": {
                         "cseNormalModeChangeNotify": "{{ not not cseNormalModeChangeNotify }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -884,14 +930,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps\s(?P<enable>ospf)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospf",
             "result": {
                 "traps": {
                     "ospf": {
                         "enable": "{{ not not enable }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -900,14 +947,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\senable
                 \straps\s(?P<enable>ospfv3)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps ospfv3",
             "result": {
                 "traps": {
                     "ospfv3": {
                         "enable": "{{ not not enable }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -917,14 +965,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \srf\s(?P<redundancy_framework>redundancy-framework)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps rf redundancy-framework",
             "result": {
                 "traps": {
                     "rf": {
                         "redundancy_framework": "{{ not not redundancy_framework }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -934,14 +983,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \srmon\s(?P<fallingAlarm>fallingAlarm)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps rmon fallingAlarm",
             "result": {
                 "traps": {
                     "rmon": {
                         "fallingAlarm": "{{ not not fallingAlarm }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -951,14 +1001,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \srmon\s(?P<hcFallingAlarm>hcFallingAlarm)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps rmon hcFallingAlarm",
             "result": {
                 "traps": {
                     "rmon": {
                         "hcFallingAlarm": "{{ not not hcFallingAlarm }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -968,14 +1019,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \srmon\s(?P<hcRisingAlarm>hcRisingAlarm)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps rmon hcRisingAlarm",
             "result": {
                 "traps": {
                     "rmon": {
                         "hcRisingAlarm": "{{ not not hcRisingAlarm }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -985,14 +1037,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \srmon\s(?P<risingAlarm>risingAlarm)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps rmon risingAlarm",
             "result": {
                 "traps": {
                     "rmon": {
                         "risingAlarm": "{{ not not risingAlarm }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1002,14 +1055,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \ssnmp\s(?P<authentication>authentication)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps snmp authentication",
             "result": {
                 "traps": {
                     "snmp": {
                         "authentication": "{{ not not authentication }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1019,14 +1073,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sstorm-control\s(?P<cpscEventRev1>cpscEventRev1)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps storm-control cpscEventRev1",
             "result": {
                 "traps": {
                     "storm_control": {
                         "cpscEventRev1n": "{{ not not cpscEventRev1 }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1036,14 +1091,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sstorm-control\s(?P<trap_rate>trap-rate)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps storm-control trap-rate",
             "result": {
                 "traps": {
                     "storm_control": {
                         "trap_rate": "{{ not not trap_rate }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1053,14 +1109,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sstpx\s(?P<inconsistency>inconsistency)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps stpx inconsistency",
             "result": {
                 "traps": {
                     "stpx": {
                         "inconsistency": "{{ not not inconsistency }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1070,14 +1127,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sstpx\s(?P<root_inconsistency>root-inconsistency)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps stpx root-inconsistency",
             "result": {
                 "traps": {
                     "stpx": {
                         "root_inconsistency": "{{ not not root_inconsistency }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1087,14 +1145,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \sstpx\s(?P<loop_inconsistency>loop-inconsistency)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps stpx loop-inconsistency",
             "result": {
                 "traps": {
                     "stpx": {
                         "loop_inconsistency": "{{ not not loop_inconsistency }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1104,14 +1163,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \ssyslog\s(?P<message_generated>message-generated)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps syslog message-generated",
             "result": {
                 "traps": {
                     "syslog": {
                         "message_generated": "{{ not not message_generated }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1121,14 +1181,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \ssysmgr\s(?P<cseFailSwCoreNotifyExtended>cseFailSwCoreNotifyExtended)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps sysmgr cseFailSwCoreNotifyExtended",
             "result": {
                 "traps": {
                     "sysmgr": {
                         "cseFailSwCoreNotifyExtended": "{{ not not cseFailSwCoreNotifyExtended }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1138,14 +1199,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \ssystem\s(?P<clock_change_notification>Clock-change-notification)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps system Clock-change-notification",
             "result": {
                 "traps": {
                     "system": {
                         "clock_change_notification": "{{ not not clock_change_notification }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1155,14 +1217,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \supgrade\s(?P<upgradeJobStatusNotify>upgradeJobStatusNotify)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps upgrade upgradeJobStatusNotify",
             "result": {
                 "traps": {
                     "upgrade": {
                         "upgradeJobStatusNotify": "{{ not not upgradeJobStatusNotify }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1172,14 +1235,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \supgrade\s(?P<upgradeOpNotifyOnCompletion>upgradeOpNotifyOnCompletion)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps upgrade upgradeOpNotifyOnCompletion",
             "result": {
                 "traps": {
                     "upgrade": {
                         "upgradeOpNotifyOnCompletion": "{{ not not upgradeOpNotifyOnCompletion }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1189,14 +1253,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \svtp\s(?P<notifs>notifs)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps vtp notifs",
             "result": {
                 "traps": {
                     "vtp": {
                         "notifs": "{{ not not notifs }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1206,14 +1271,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \svtp\s(?P<vlancreate>vlancreate)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps vtp vlancreate",
             "result": {
                 "traps": {
                     "vtp": {
                         "vlancreate": "{{ not not vlancreate }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -1223,14 +1289,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\senable
                 \straps
                 \svtp\s(?P<vlandelete>vlandelete)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server enable traps vtp vlandelete",
             "result": {
                 "traps": {
                     "vtp": {
                         "vlandelete": "{{ not not vlandelete }}",
-                    }
-                }
+                    },
+                },
             },
         },
 
@@ -1240,12 +1307,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server\sengineID
                 \slocal\s(?P<local>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server engineID local {{ engine_id.local }}",
             "result": {
                 "engine_id": {
                     "local": "{{ local }}",
-                }
+                },
             },
         },
         {
@@ -1254,7 +1322,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server
                 \s(?P<global_enforce_priv>globalEnforcePriv)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server globalEnforcePriv",
             "result": {
                 "global_enforce_priv": "{{ not not global_enforce_priv }}",
@@ -1270,7 +1339,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sversion\s(?P<version>\S+))?
                 (\s((auth\s(?P<auth>\S+))|(priv\s(?P<priv>\S+))|((?P<community>\S+))))?
                 (\sudp-port\s(?P<udp_port>\S+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _template_hosts,
             "result": {
                 "hosts": [
@@ -1286,8 +1356,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "udp_port": "{{ udp_port }}",
                         "auth": "{{ auth }}",
                         "priv": "{{ priv }}",
-                    }
-                ]
+                    },
+                ],
             },
         },
         {
@@ -1296,11 +1366,12 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server
                 \slocation\s(?P<location>.+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server location {{ location }}",
             "result": {
                 "location": "{{ location }}",
-            }
+            },
         },
         {
             "name": "mib.community_map",
@@ -1310,7 +1381,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 \smib
                 \scommunity-map\s(?P<community>\S+)
                 \scontext\s(?P<context>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server mib community-map {{ mib.community_map.community }} context {{ mib.community_map.context }}",
             "result": {
                 "mib": {
@@ -1318,9 +1390,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                         "community": "{{ community }}",
                         "context": "{{ context }}",
 
-                    }
-                }
-            }
+                    },
+                },
+            },
         },
         {
             "name": "packetsize",
@@ -1328,11 +1400,12 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server
                 \spacketsize\s(?P<packetsize>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server packetsize {{ packetsize }}",
             "result": {
                 "packetsize": "{{ packetsize }}",
-            }
+            },
         },
         {
             "name": "protocol.enable",
@@ -1340,13 +1413,14 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server
                 \sprotocol\s(?P<enable>enable)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server protocol enable",
             "result": {
                 "protocol": {
                     "enable": "{{ not not enable }}",
-                }
-            }
+                },
+            },
         },
         {
             "name": "source_interface.informs",
@@ -1354,13 +1428,14 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server
                 \ssource-interface\sinforms\s(?P<informs>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server source-interface informs {{ source_interface.informs }}",
             "result": {
                 "source_interface": {
                     "informs": "{{ informs }}",
-                }
-            }
+                },
+            },
         },
         {
             "name": "source_interface.traps",
@@ -1368,13 +1443,14 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server
                 \ssource-interface\straps\s(?P<traps>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server source-interface traps {{ source_interface.traps }}",
             "result": {
                 "source_interface": {
                     "traps": "{{ traps }}",
-                }
-            }
+                },
+            },
         },
         {
             "name": "system_shutdown",
@@ -1382,11 +1458,12 @@ class Snmp_serverTemplate(NetworkTemplate):
                 r"""
                 ^snmp-server
                 \s(?P<system_shutdown>system-shutdown)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server system-shutdown",
             "result": {
                 "system_shutdown": "{{ not not system_shutdown }}",
-            }
+            },
         },
         {
             "name": "tcp_session",
@@ -1395,15 +1472,16 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server
                 \s(?P<tcp_session>tcp-session)
                 (\s(?P<auth>auth))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server tcp-session"
                       "{{ ' auth' if tcp_session.auth|d(False) else '' }}",
             "result": {
                 "tcp_session": {
                     "enable": "{{ True if tcp_session is defined and auth is not defined else None }}",
                     "auth": "{{ not not auth }}",
-                }
-            }
+                },
+            },
         },
         {
             "name": "users.auth",
@@ -1417,7 +1495,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<localized_key>localizedkey))?
                 (\s(?P<localizedv2_key>localizedV2key))?
                 (\sengineID\s(?P<engine_id>\S+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _tmplt_users_auth,
             "result": {
                 "users": {
@@ -1434,13 +1513,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                                 "priv": {
                                     "privacy_password": "'{{ privacy_password }}'",
                                     "aes_128": "{{ not not aes_128 }}",
-                                }
-                            }
+                                },
+                            },
 
-                        }
-                    ]
-                }
-            }
+                        },
+                    ],
+                },
+            },
         },
         {
             "name": "users.use_acls",
@@ -1450,7 +1529,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 \suser\s(?P<user>\S+)
                 (\suse-ipv4acl\s(?P<ipv4>\S+))?
                 (\suse-ipv6acl\s(?P<ipv6>\S+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "snmp-server user {{ user }}"
                       "{{ (' use-ipv4acl ' + ipv4) if ipv4 is defined else '' }}"
                       "{{ (' use-ipv6acl ' + ipv6) if ipv6 is defined else '' }}",
@@ -1461,10 +1541,10 @@ class Snmp_serverTemplate(NetworkTemplate):
                             "user": "{{ user }}",
                             "ipv4": "{{ ipv4 }}",
                             "ipv6": "{{ ipv6 }}",
-                        }
-                    ]
-                }
-            }
+                        },
+                    ],
+                },
+            },
         },
     ]
     # fmt: on

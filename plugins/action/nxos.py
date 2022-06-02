@@ -101,10 +101,10 @@ class ActionModule(ActionNetworkModule):
                 msg = "PERSISTENT_COMMAND_TIMEOUT and PERSISTENT_CONNECT_TIMEOUT"
                 msg += " must be set to 600 seconds or higher when using nxos_install_os module."
                 msg += " Current persistent_command_timeout setting:" + str(
-                    persistent_command_timeout
+                    persistent_command_timeout,
                 )
                 msg += " Current persistent_connect_timeout setting:" + str(
-                    persistent_connect_timeout
+                    persistent_connect_timeout,
                 )
                 return {"failed": True, "msg": msg}
 
@@ -113,7 +113,7 @@ class ActionModule(ActionNetworkModule):
             if any(provider.values()):
                 display.warning(
                     "provider is unnecessary when using %s and will be ignored"
-                    % self._play_context.connection
+                    % self._play_context.connection,
                 )
                 del self._task.args["provider"]
 
@@ -161,7 +161,10 @@ class ActionModule(ActionNetworkModule):
                     pc.connection = "network_cli"
                     pc.network_os = "nxos"
                     connection = self._shared_loader_obj.connection_loader.get(
-                        "persistent", pc, sys.stdin, task_uuid=self._task._uuid
+                        "persistent",
+                        pc,
+                        sys.stdin,
+                        task_uuid=self._task._uuid,
                     )
 
                 display.vvv(
@@ -189,13 +192,14 @@ class ActionModule(ActionNetworkModule):
 
             else:
                 self._task.args["provider"] = ActionModule.nxapi_implementation(
-                    provider, self._play_context
+                    provider,
+                    self._play_context,
                 )
                 warnings.append(
                     [
                         "connection local support for this module is deprecated and will be removed in version 2.14,"
-                        " use connection either httpapi or ansible.netcommon.httpapi (whichever is applicable)"
-                    ]
+                        " use connection either httpapi or ansible.netcommon.httpapi (whichever is applicable)",
+                    ],
                 )
         else:
             return {

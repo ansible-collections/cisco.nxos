@@ -38,7 +38,7 @@ class TestNxosCommandModule(TestNxosModule):
         super(TestNxosCommandModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_command.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_command.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 

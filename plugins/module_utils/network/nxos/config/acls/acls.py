@@ -57,7 +57,9 @@ class Acls(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         acls_facts = facts["ansible_network_resources"].get("acls")
         if not acls_facts:
@@ -419,7 +421,9 @@ class Acls(ConfigBase):
                         for acl in w["acls"]:
                             if "aces" in acl.keys() and self.state != "deleted":
                                 have_name = search_obj_in_list(
-                                    acl["name"], have_afi["acls"], "name"
+                                    acl["name"],
+                                    have_afi["acls"],
+                                    "name",
                                 )
                                 if have_name:
                                     ace_commands = []
@@ -431,7 +435,7 @@ class Acls(ConfigBase):
                                                 for h_ace in have_name["aces"]:
                                                     if h_ace["sequence"] == ace["sequence"]:
                                                         ace_commands.append(
-                                                            "no " + str(ace["sequence"])
+                                                            "no " + str(ace["sequence"]),
                                                         )
                                                         flag = 1
                                         else:
@@ -442,7 +446,7 @@ class Acls(ConfigBase):
                                                         del h_ace["sequence"]
                                                     if ace == h_ace:
                                                         ace_commands.append(
-                                                            "no " + self.process_ace(ace)
+                                                            "no " + self.process_ace(ace),
                                                         )
                                                         flag = 1
                                     if flag:
@@ -554,10 +558,10 @@ class Acls(ConfigBase):
                                                         {
                                                             "name": name,
                                                             "aces": ace_list,
-                                                        }
+                                                        },
                                                     ],
-                                                }
-                                            ]
+                                                },
+                                            ],
                                         },
                                     )
                                     if "sequence" in w.keys() and w["sequence"] in common_seq:
@@ -573,8 +577,9 @@ class Acls(ConfigBase):
                                                 self._module.fail_json(
                                                     msg="Cannot update existing ACE {0} of ACL {1} with state merged."
                                                     " Please use state replaced or overridden.".format(
-                                                        name, w["sequence"]
-                                                    )
+                                                        name,
+                                                        w["sequence"],
+                                                    ),
                                                 )
                             elif w_acl.get("aces"):
                                 # 'have' has ACL defined without any ACE

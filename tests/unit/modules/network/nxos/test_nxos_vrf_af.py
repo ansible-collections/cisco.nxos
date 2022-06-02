@@ -36,17 +36,17 @@ class TestNxosVrfafModule(TestNxosModule):
         super(TestNxosVrfafModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf_af.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf_af.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf_af.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf_af.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf_af.get_capabilities"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf_af.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {"device_info": {"network_os_platform": "N7K-C7018"}}
@@ -137,9 +137,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "import",
                         "state": "present",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -159,7 +159,7 @@ class TestNxosVrfafModule(TestNxosModule):
                 vrf="vrf1",
                 afi="ipv4",
                 route_targets=[{"rt": "65000:1000", "state": "present"}],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -182,9 +182,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "import",
                         "state": "present",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -197,7 +197,7 @@ class TestNxosVrfafModule(TestNxosModule):
                 vrf="vrf21",
                 afi="ipv4",
                 route_targets=[{"rt": "65000:1000", "state": "present"}],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -226,7 +226,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "present",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -264,7 +264,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "present",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -279,9 +279,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "import",
                         "state": "absent",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -296,9 +296,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "import",
                         "state": "absent",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -334,7 +334,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -363,7 +363,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -409,7 +409,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -434,9 +434,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "export",
                         "state": "present",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -458,9 +458,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "export",
                         "state": "present",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -489,7 +489,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "present",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -527,7 +527,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "present",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -542,9 +542,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "export",
                         "state": "absent",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -559,9 +559,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "export",
                         "state": "absent",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -597,7 +597,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -626,7 +626,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -672,7 +672,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -695,9 +695,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "both",
                         "state": "present",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -720,9 +720,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "both",
                         "state": "present",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -751,7 +751,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "present",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -792,7 +792,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "present",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -807,9 +807,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "both",
                         "state": "absent",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -824,9 +824,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "both",
                         "state": "absent",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -863,7 +863,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -890,7 +890,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -939,7 +939,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -983,7 +983,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -1023,7 +1023,7 @@ class TestNxosVrfafModule(TestNxosModule):
                         "state": "absent",
                     },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -1048,9 +1048,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "both",
                         "state": "present",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -1078,9 +1078,9 @@ class TestNxosVrfafModule(TestNxosModule):
                         "rt": "65000:1000",
                         "direction": "both",
                         "state": "present",
-                    }
+                    },
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -1095,7 +1095,7 @@ class TestNxosVrfafModule(TestNxosModule):
                 vrf="v2000",
                 afi="ipv4",
                 route_targets=[{"rt": "auto", "direction": "both", "state": "present"}],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(

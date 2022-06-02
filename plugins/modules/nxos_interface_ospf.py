@@ -257,7 +257,7 @@ def get_existing(module, args):
     existing = {}
     netcfg = CustomNetworkConfig(indent=2, contents=get_config(module))
     if module.params["interface"].startswith("loopback") or module.params["interface"].startswith(
-        "port-channel"
+        "port-channel",
     ):
         parents = ["interface {0}".format(module.params["interface"])]
     else:
@@ -359,7 +359,7 @@ def state_present(module, existing, proposed, candidate):
                 continue
 
         if key == "ip ospf passive-interface" and module.params.get("interface").upper().startswith(
-            "LO"
+            "LO",
         ):
             module.fail_json(msg="loopback interface does not support passive_interface")
         if (
@@ -385,7 +385,7 @@ def state_present(module, existing, proposed, candidate):
         elif value == "default":
             if existing_commands.get(key):
                 commands.extend(
-                    get_default_commands(existing, proposed, existing_commands, key, module)
+                    get_default_commands(existing, proposed, existing_commands, key, module),
                 )
         else:
             if key == "ip router ospf" or key.startswith("ip ospf message-digest-key"):
@@ -495,7 +495,7 @@ def main():
                 "message_digest_algorithm_type",
                 "message_digest_encryption_type",
                 "message_digest_password",
-            ]
+            ],
         ],
         supports_check_mode=True,
     )
@@ -524,7 +524,7 @@ def main():
             and module.params["message_digest_key_id"] != "default"
         ):
             module.exit_json(
-                msg="Use message_digest_key_id=default to remove an existing authentication configuration"
+                msg="Use message_digest_key_id=default to remove an existing authentication configuration",
             )
 
     state = module.params["state"]

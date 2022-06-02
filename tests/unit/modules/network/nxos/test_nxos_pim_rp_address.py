@@ -36,12 +36,12 @@ class TestNxosPimRpAddressModule(TestNxosModule):
         super(TestNxosPimRpAddressModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_rp_address.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_rp_address.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_rp_address.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_rp_address.get_config",
         )
         self.get_config = self.mock_get_config.start()
 

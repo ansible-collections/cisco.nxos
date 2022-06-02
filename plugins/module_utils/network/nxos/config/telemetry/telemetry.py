@@ -60,7 +60,9 @@ class Telemetry(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         telemetry_facts = facts["ansible_network_resources"].get("telemetry")
         if not telemetry_facts:
@@ -187,7 +189,9 @@ class Telemetry(ConfigBase):
                     resource_key = td["cmd"].format(playvals["id"])
                     # Only build the NxosCmdRef object for the td['name'] module parameters.
                     self._module.params["config"] = get_module_params_subsection(
-                        ALL_MP, td["type"], playvals["id"]
+                        ALL_MP,
+                        td["type"],
+                        playvals["id"],
                     )
                     cmd_ref[td["type"]]["ref"].append(NxosCmdRef(self._module, td["obj"]))
                     ref = cmd_ref[td["type"]]["ref"][-1]
@@ -391,7 +395,7 @@ class Telemetry(ConfigBase):
                                 cmd = {}
                                 if item.get("data_source"):
                                     cmd["data_source"] = [
-                                        setval["data_source"].format(item["data_source"])
+                                        setval["data_source"].format(item["data_source"]),
                                     ]
                                 if item.get("path"):
                                     setval["path"] = get_setval_path(item.get("path"))
@@ -408,12 +412,12 @@ class Telemetry(ConfigBase):
                                 if item.get("destination_group"):
                                     cmd["destination_group"] = [
                                         setval["destination_group"].format(
-                                            item["destination_group"]
-                                        )
+                                            item["destination_group"],
+                                        ),
                                     ]
                                 if item.get("sensor_group"):
                                     cmd["sensor_group"] = [
-                                        setval["sensor_group"].format(**item["sensor_group"])
+                                        setval["sensor_group"].format(**item["sensor_group"]),
                                     ]
                                 add[resource].extend(global_ctx)
                                 if property_ctx[0] not in add[resource]:
@@ -443,7 +447,7 @@ class Telemetry(ConfigBase):
                                     cmd = {}
                                     if item.get("data_source"):
                                         cmd["data_source"] = [
-                                            setval["data_source"].format(item["data_source"])
+                                            setval["data_source"].format(item["data_source"]),
                                         ]
                                     if item.get("path"):
                                         setval["path"] = get_setval_path(item.get("path"))
@@ -460,12 +464,12 @@ class Telemetry(ConfigBase):
                                     if item.get("destination_group"):
                                         cmd["destination_group"] = [
                                             setval["destination_group"].format(
-                                                item["destination_group"]
-                                            )
+                                                item["destination_group"],
+                                            ),
                                         ]
                                     if item.get("sensor_group"):
                                         cmd["sensor_group"] = [
-                                            setval["sensor_group"].format(**item["sensor_group"])
+                                            setval["sensor_group"].format(**item["sensor_group"]),
                                         ]
                                     add[resource].extend(global_ctx)
                                     if property_ctx[0] not in add[resource]:
@@ -503,12 +507,12 @@ class Telemetry(ConfigBase):
                                     if item.get("data_source"):
                                         cmd["data_source"] = [
                                             "no "
-                                            + setval["data_source"].format(item["data_source"])
+                                            + setval["data_source"].format(item["data_source"]),
                                         ]
                                     if item.get("path"):
                                         setval["path"] = get_setval_path(item.get("path"))
                                         cmd["path"] = [
-                                            "no " + setval["path"].format(**item["path"])
+                                            "no " + setval["path"].format(**item["path"]),
                                         ]
                                     delete[resource].extend(global_ctx)
                                     if property_ctx[0] not in delete[resource]:
@@ -523,13 +527,13 @@ class Telemetry(ConfigBase):
                                         cmd["destination_group"] = [
                                             "no "
                                             + setval["destination_group"].format(
-                                                item["destination_group"]
-                                            )
+                                                item["destination_group"],
+                                            ),
                                         ]
                                     if item.get("sensor_group"):
                                         cmd["sensor_group"] = [
                                             "no "
-                                            + setval["sensor_group"].format(**item["sensor_group"])
+                                            + setval["sensor_group"].format(**item["sensor_group"]),
                                         ]
                                     delete[resource].extend(global_ctx)
                                     if property_ctx[0] not in delete[resource]:

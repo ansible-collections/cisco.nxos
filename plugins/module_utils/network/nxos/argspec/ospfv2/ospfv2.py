@@ -51,7 +51,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                     "nssa",
                                     "ranges",
                                     "stub",
-                                ]
+                                ],
                             ],
                             "elements": "dict",
                             "options": {
@@ -95,7 +95,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                                         "supress_fa": {"type": "bool"},
                                                     },
                                                     "type": "dict",
-                                                }
+                                                },
                                             },
                                             "type": "dict",
                                         },
@@ -148,7 +148,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                         "set": {"type": "bool"},
                                     },
                                     "type": "dict",
-                                }
+                                },
                             },
                             "type": "dict",
                         },
@@ -215,7 +215,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                         },
                                     },
                                     "type": "dict",
-                                }
+                                },
                             },
                             "type": "dict",
                         },
@@ -233,7 +233,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                         "router_id": {"type": "str"},
                                     },
                                     "type": "dict",
-                                }
+                                },
                             },
                             "type": "dict",
                         },
@@ -325,7 +325,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                             "nssa",
                                             "ranges",
                                             "stub",
-                                        ]
+                                        ],
                                     ],
                                     "elements": "dict",
                                     "options": {
@@ -369,7 +369,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                                                 [
                                                                     "always",
                                                                     "never",
-                                                                ]
+                                                                ],
                                                             ],
                                                             "options": {
                                                                 "always": {"type": "bool"},
@@ -377,7 +377,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                                                 "supress_fa": {"type": "bool"},
                                                             },
                                                             "type": "dict",
-                                                        }
+                                                        },
                                                     },
                                                     "type": "dict",
                                                 },
@@ -430,7 +430,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                                 "set": {"type": "bool"},
                                                 "evpn": {"type": "bool"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "default_information": {
@@ -442,7 +442,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                                 "set": {"type": "bool"},
                                             },
                                             "type": "dict",
-                                        }
+                                        },
                                     },
                                     "type": "dict",
                                 },
@@ -508,7 +508,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                                                 },
                                             },
                                             "type": "dict",
-                                        }
+                                        },
                                     },
                                     "type": "dict",
                                 },
@@ -602,7 +602,7 @@ class Ospfv2Args(object):  # pylint: disable=R0903
                         },
                     },
                     "type": "list",
-                }
+                },
             },
             "type": "dict",
         },
