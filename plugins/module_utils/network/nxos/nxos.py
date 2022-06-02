@@ -110,7 +110,7 @@ nxos_argument_spec = {
         options=nxos_provider_spec,
         removed_at_date="2022-06-01",
         removed_from_collection="cisco.nxos",
-    )
+    ),
 }
 
 
@@ -453,7 +453,7 @@ class LocalNxapi:
                 item["output"] = "json"
 
             if all((output == "json", item["output"] == "text")) or all(
-                (output == "text", item["output"] == "json")
+                (output == "text", item["output"] == "json"),
             ):
                 responses.extend(_send(queue, output))
                 queue = list()
@@ -530,7 +530,10 @@ class LocalNxapi:
             # running configuration
             running_obj = NetworkConfig(indent=2, contents=running, ignore_lines=diff_ignore_lines)
             configdiffobjs = candidate_obj.difference(
-                running_obj, path=path, match=diff_match, replace=diff_replace
+                running_obj,
+                path=path,
+                match=diff_match,
+                replace=diff_replace,
             )
 
         else:
@@ -652,7 +655,10 @@ class HttpApi:
             # running configuration
             running_obj = NetworkConfig(indent=2, contents=running, ignore_lines=diff_ignore_lines)
             configdiffobjs = candidate_obj.difference(
-                running_obj, path=path, match=diff_match, replace=diff_replace
+                running_obj,
+                path=path,
+                match=diff_match,
+                replace=diff_replace,
             )
 
         else:
@@ -832,7 +838,7 @@ class NxosCmdRef:
             output = self.execute_show_command(show_cmd, "text")
             if not output or "CLI command error" in output:
                 msg = "** 'feature {0}' is not enabled. Module will auto-enable feature {0} ** ".format(
-                    feature
+                    feature,
                 )
                 self._module.warn(msg)
                 ref["_proposed"].append("feature {0}".format(feature))
@@ -1046,7 +1052,7 @@ class NxosCmdRef:
                     ref[k]["existing"][index] = item[0]
                 else:
                     raise ValueError(
-                        "get_existing: unknown 'kind' value specified for key '{0}'".format(k)
+                        "get_existing: unknown 'kind' value specified for key '{0}'".format(k),
                     )
 
     def get_playvals(self):

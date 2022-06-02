@@ -61,7 +61,7 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
                     value = kwargs.get("command")
 
                 fixture_path = path.abspath(
-                    b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" ")))
+                    b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" "))),
                 )
                 with open(fixture_path, "rb") as file_desc:
                     return to_text(file_desc.read())

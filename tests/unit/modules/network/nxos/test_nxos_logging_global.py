@@ -44,12 +44,12 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         super(TestNxosLoggingGlobalModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
         self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.logging_global.logging_global.Logging_globalFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.logging_global.logging_global.Logging_globalFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -62,7 +62,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         # test merged for linear attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -104,7 +104,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging rate-limit
             logging rfc-strict 5424
             logging origin-id string nodeA
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -134,7 +134,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging history 6
             logging history size 4096
             no logging rate-limit
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -170,7 +170,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging rate-limit
             logging rfc-strict 5424
             logging origin-id string nodeA
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -205,7 +205,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging history size 4096
             no logging rate-limit
             logging rfc-strict 5424
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -232,7 +232,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         # test merged for linear attributes - 3
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -243,7 +243,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                             cache=dict(entries=16384, interval=200, threshold=80),
                             detailed=True,
                             include=dict(sgt=True),
-                        )
+                        ),
                     ),
                     source_interface="Ethernet1/100",
                     timestamp="milliseconds",
@@ -277,7 +277,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging ip access-list include sgt
             logging source-interface Ethernet1/100
             logging timestamp milliseconds
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -288,7 +288,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                             cache=dict(entries=16384, interval=200, threshold=80),
                             detailed=True,
                             include=dict(sgt=True),
-                        )
+                        ),
                     ),
                     source_interface="Ethernet1/100",
                     timestamp="milliseconds",
@@ -312,7 +312,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging ip access-list include sgt
             logging source-interface Ethernet1/100
             logging timestamp milliseconds
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -342,7 +342,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         # test merged for complex attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -383,7 +383,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging level ospfv3 2
             logging level auth 1
             logging level vlan_mgr 5
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -416,7 +416,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging level cron 5
             logging level ospfv3 2
             logging level auth 1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -425,7 +425,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                         dict(facility="auth", severity="alert"),
                         dict(facility="ospfv3", severity="critical"),
                         dict(facility="ospf", severity="notification"),
-                    ]
+                    ],
                 ),
                 state="replaced",
             ),
@@ -445,7 +445,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         # test merged for `event`
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -453,7 +453,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                     event=dict(
                         link_status=dict(enable=False, default=False),
                         trunk_status=dict(enable=False, default=True),
-                    )
+                    ),
                 ),
                 state="merged",
             ),
@@ -476,7 +476,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging event link-status default
             no logging event trunk-status enable
             logging event trunk-status default
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -484,7 +484,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                     event=dict(
                         link_status=dict(enable=False, default=False),
                         trunk_status=dict(enable=False, default=True),
-                    )
+                    ),
                 ),
                 state="merged",
             ),
@@ -501,7 +501,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging event link-status default
             no logging event trunk-status enable
             logging event trunk-status default
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -509,7 +509,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                     event=dict(
                         link_status=dict(default=False),
                         trunk_status=dict(enable=False),
-                    )
+                    ),
                 ),
                 state="replaced",
             ),
@@ -541,7 +541,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging rate-limit
             logging rfc-strict 5424
             logging origin-id string nodeA
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = {
@@ -569,7 +569,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging rate-limit
             logging rfc-strict 5424
             logging origin-id string nodeA
-            """
+            """,
         )
         set_module_args(dict(running_config=cfg, state="parsed"), ignore_provider_arg)
         parsed = {
@@ -588,7 +588,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         # test merged for `hosts`
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -604,7 +604,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                         ),
                         dict(host="192.168.1.2"),
                         dict(host="192.168.1.3", severity="critical"),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -625,7 +625,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging server 192.168.1.1 1 port 5891 secure trustpoint client-identity test facility auth use-vrf default
             logging server 192.168.1.2
             logging server 192.168.1.3 2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -644,7 +644,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                             severity="debugging",
                             use_vrf="management",
                         ),
-                    ]
+                    ],
                 ),
                 state="replaced",
             ),
@@ -666,7 +666,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging console
             no logging module
             no logging monitor
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -695,7 +695,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging rate-limit
             logging rfc-strict 5424
             logging origin-id string nodeA
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = [
@@ -719,7 +719,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging event link-status default
             no logging event trunk-status enable
             logging event trunk-status default
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -743,7 +743,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             no logging event link-status default
             no logging event trunk-status enable
             logging event trunk-status default
-            """
+            """,
         )
         set_module_args(
             dict(

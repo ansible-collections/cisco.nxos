@@ -37,12 +37,12 @@ class TestNxosSystemModule(TestNxosModule):
         super(TestNxosSystemModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_system.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_system.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_system.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_system.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -87,8 +87,8 @@ class TestNxosSystemModule(TestNxosModule):
                 domain_name=[
                     {"name": "abc.com", "vrf": "test"},
                     {"name": "xyz.com", "vrf": "test2"},
-                ]
-            )
+                ],
+            ),
         )
         commands = []
         self.execute_module(changed=False, commands=commands, device="vrf_only")

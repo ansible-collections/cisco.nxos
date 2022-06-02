@@ -513,7 +513,8 @@ def state_present(module, existing, proposed, candidate):
             commands.append("{0} {1}".format(key, value))
         elif key.startswith("timers bgp"):
             command = "timers bgp {0} {1}".format(
-                proposed["timer_bgp_keepalive"], proposed["timer_bgp_hold"]
+                proposed["timer_bgp_keepalive"],
+                proposed["timer_bgp_hold"],
             )
             if command not in commands:
                 commands.append(command)

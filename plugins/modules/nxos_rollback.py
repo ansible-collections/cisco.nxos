@@ -96,7 +96,7 @@ def rollback(filename, module):
         {
             "command": "rollback running-config file %s" % filename,
             "output": "text",
-        }
+        },
     ]
     run_commands(module, commands)
 

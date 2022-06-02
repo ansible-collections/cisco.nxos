@@ -410,7 +410,7 @@ def state_present(module, existing, proposed, candidate):
                     commands.append(command)
             elif key == "timers":
                 if proposed["timers_keepalive"] != PARAM_TO_DEFAULT_KEYMAP.get(
-                    "timers_keepalive"
+                    "timers_keepalive",
                 ) or proposed["timers_holdtime"] != PARAM_TO_DEFAULT_KEYMAP.get("timers_holdtime"):
                     command = "timers {0} {1}".format(
                         proposed["timers_keepalive"],

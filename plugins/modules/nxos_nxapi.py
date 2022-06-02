@@ -177,7 +177,7 @@ def check_args(module, warnings, capabilities):
     os_platform = capabilities["device_info"]["network_os_platform"]
     if "7K" not in os_platform and module.params["sandbox"]:
         module.fail_json(
-            msg="sandbox or enable_sandbox is supported on NX-OS 7K series of switches"
+            msg="sandbox or enable_sandbox is supported on NX-OS 7K series of switches",
         )
 
     state = module.params["state"]
@@ -186,13 +186,13 @@ def check_args(module, warnings, capabilities):
         module.params["state"] = "present"
         warnings.append(
             "state=started is deprecated and will be removed in a "
-            "a future release.  Please use state=present instead"
+            "a future release.  Please use state=present instead",
         )
     elif state == "stopped":
         module.params["state"] = "absent"
         warnings.append(
             "state=stopped is deprecated and will be removed in a "
-            "a future release.  Please use state=absent instead"
+            "a future release.  Please use state=absent instead",
         )
 
     for key in ["http_port", "https_port"]:
@@ -278,7 +278,7 @@ def map_obj_to_commands(want, have, module, warnings, capabilities):
         warnings.append(
             "os_version and/or os_platform keys from "
             "platform capabilities are not available.  "
-            "Any NXAPI SSL optional arguments will be ignored"
+            "Any NXAPI SSL optional arguments will be ignored",
         )
 
     send_commands.extend(commands.values())

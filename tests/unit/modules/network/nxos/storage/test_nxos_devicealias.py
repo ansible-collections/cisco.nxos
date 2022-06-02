@@ -34,7 +34,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         self.execute_show_cmd = self.mock_execute_show_cmd.start()
 
         self.mock_execute_show_cmd_1 = patch(
-            module_path + "showDeviceAliasDatabase.execute_show_cmd"
+            module_path + "showDeviceAliasDatabase.execute_show_cmd",
         )
         self.execute_show_cmd_1 = self.mock_execute_show_cmd_1.start()
 
@@ -189,7 +189,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                         name="tieHost-2",
                         pwwn="10:00:00:00:89:a1:01:02",
                         remove=True,
-                    )
+                    ),
                 ],
             ),
             True,
@@ -220,7 +220,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                         name="somename",
                         pwwn="10:00:00:00:89:a1:01:02",
                         remove=True,
-                    )
+                    ),
                 ],
             ),
             True,
@@ -241,7 +241,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                         name="somename",
                         pwwn="10:00:00:00:89:a1:01:02",
                         remove=True,
-                    )
+                    ),
                 ],
             ),
             True,
@@ -261,7 +261,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                         name="somename",
                         pwwn="10:00:00:00:89:a1:01:02",
                         remove=True,
-                    )
+                    ),
                 ],
             ),
             True,
@@ -299,7 +299,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                 rename=[
                     dict(old_name="test1_add", new_name="test234"),
                     dict(old_name="tieHost-1", new_name="tieTarget-1"),
-                ]
+                ],
             ),
             True,
         )
@@ -325,7 +325,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                 rename=[
                     dict(old_name="test1", new_name="test234"),
                     dict(old_name="tie", new_name="tieTarget-1"),
-                ]
+                ],
             ),
             True,
         )
@@ -337,7 +337,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
     def test_da_mansi(self):
         set_module_args({"distribute": True, "mode": "enhanced"}, True)
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus_mansi.cfg"
+            "nxos_devicealias",
+            "shdastatus_mansi.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=True)

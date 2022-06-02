@@ -71,7 +71,7 @@ class Prefix_listsFacts(object):
 
         ansible_facts["ansible_network_resources"].pop("prefix_lists", None)
         params = utils.remove_empties(
-            prefix_lists_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            prefix_lists_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
         facts["prefix_lists"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)

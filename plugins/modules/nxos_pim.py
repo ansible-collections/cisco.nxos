@@ -177,7 +177,7 @@ def main():
             if len(item.split(".")) != 4:
                 module.fail_json(
                     msg="Valid ssm_range values are multicast addresses "
-                    "or the keyword 'none' or the keyword 'default'."
+                    "or the keyword 'none' or the keyword 'default'.",
                 )
 
     existing = get_existing(module, args)

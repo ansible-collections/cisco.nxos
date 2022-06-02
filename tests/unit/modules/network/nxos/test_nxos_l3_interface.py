@@ -22,12 +22,12 @@ class TestNxosL3InterfaceModule(TestNxosModule):
         super(TestNxosL3InterfaceModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_l3_interface.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_l3_interface.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_l3_interface.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_l3_interface.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -80,7 +80,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                 name="Ethernet1/1",
                 ipv4="192.168.0.1/24",
                 ipv6="2001:db8::1/124",
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -116,7 +116,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                 name="Ethernet1/1",
                 ipv4="192.168.0.1/24",
                 ipv6="2001:db8::1/124",
-            )
+            ),
         )
         result = self.execute_module()
 
@@ -127,7 +127,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                 name="Ethernet1/1",
                 ipv4="192.168.0.2/24",
                 ipv6="2001:db8::2/124",
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -169,8 +169,8 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     ),
                     dict(name="Ethernet1/1", ipv6="2001:db8:1::2/124"),
                     dict(name="Ethernet1/1", ipv6="2001:db8:2::2/124"),
-                ]
-            )
+                ],
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -213,7 +213,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                 ipv4="192.168.0.1/24",
                 ipv6="2001:db8::1/124",
                 state="absent",
-            )
+            ),
         )
         result = self.execute_module()
 
@@ -257,7 +257,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                 ipv4="192.168.0.1/24",
                 ipv6="2001:db8::1/124",
                 state="absent",
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -317,7 +317,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     dict(name="Ethernet1/1", ipv6="2001:db8:1::2/124"),
                     dict(name="Ethernet1/1", ipv6="2001:db8:2::2/124"),
                 ],
-            )
+            ),
         )
         result = self.execute_module()
 
@@ -336,7 +336,7 @@ class TestNxosL3InterfaceModule(TestNxosModule):
                     dict(name="Ethernet1/1", ipv6="2001:db8:1::1/124"),
                     dict(name="Ethernet1/1", ipv6="2001:db8:2::1/124"),
                 ],
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(

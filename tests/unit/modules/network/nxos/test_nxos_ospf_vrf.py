@@ -36,12 +36,12 @@ class TestNxosOspfVrfModule(TestNxosModule):
         super(TestNxosOspfVrfModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_ospf_vrf.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_ospf_vrf.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_ospf_vrf.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_ospf_vrf.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -66,7 +66,7 @@ class TestNxosOspfVrfModule(TestNxosModule):
                 timer_throttle_lsa_max=3000,
                 bfd="enable",
                 state="present",
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -78,7 +78,7 @@ class TestNxosOspfVrfModule(TestNxosModule):
                     "timers throttle lsa 60 1100 3000",
                     "timers throttle spf 50 1000 2000",
                     "bfd",
-                ]
+                ],
             ),
         )
 

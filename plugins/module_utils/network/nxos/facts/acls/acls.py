@@ -124,8 +124,8 @@ class AclsFacts(object):
                                 "range": {
                                     "start": limit.group(2),
                                     "end": limit.group(3),
-                                }
-                            }
+                                },
+                            },
                         )
                         ace = re.sub(limit.group(2), "", ace, 1)
                         ace = re.sub(limit.group(3), "", ace, 1)

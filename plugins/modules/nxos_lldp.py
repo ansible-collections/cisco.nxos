@@ -86,7 +86,7 @@ def main():
         state=dict(
             default="present",
             choices=["present", "absent", "enabled", "disabled"],
-        )
+        ),
     )
 
     argument_spec.update(nxos_argument_spec)

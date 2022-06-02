@@ -55,12 +55,12 @@ class TestNxosPrefixListsModule(TestNxosModule):
         super(TestNxosPrefixListsModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
         self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.prefix_lists.prefix_lists.Prefix_listsFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.prefix_lists.prefix_lists.Prefix_listsFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -73,7 +73,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
         # test merged for linear attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -188,7 +188,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
               ipv6 prefix-list plist3 seq 20 permit 2001:db8:2000::/36
               ipv6 prefix-list plist4 seq 20 permit 2001:db8:3000::/36
               ipv6 prefix-list plist4 seq 50 deny 2001:db8:4000::/36
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -291,7 +291,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
               ipv6 prefix-list plist3 seq 20 permit 2001:db8:2000::/36
               ipv6 prefix-list plist4 seq 20 permit 2001:db8:3000::/36
               ipv6 prefix-list plist4 seq 50 deny 2001:db8:4000::/36
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -307,11 +307,11 @@ class TestNxosPrefixListsModule(TestNxosModule):
                                         sequence=10,
                                         action="permit",
                                         prefix="192.168.8.0/24",
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="merged",
             ),
@@ -338,7 +338,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
               ipv6 prefix-list plist3 seq 20 permit 2001:db8:2000::/36
               ipv6 prefix-list plist4 seq 20 permit 2001:db8:3000::/36
               ipv6 prefix-list plist4 seq 50 deny 2001:db8:4000::/36
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -362,9 +362,9 @@ class TestNxosPrefixListsModule(TestNxosModule):
                                         mask="255.255.255.0",
                                     ),
                                 ],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="replaced",
             ),
@@ -391,7 +391,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
               ipv6 prefix-list plist3 seq 20 permit 2001:db8:2000::/36
               ipv6 prefix-list plist4 seq 20 permit 2001:db8:3000::/36
               ipv6 prefix-list plist4 seq 50 deny 2001:db8:4000::/36
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -406,11 +406,11 @@ class TestNxosPrefixListsModule(TestNxosModule):
                                         sequence=10,
                                         action="permit",
                                         prefix="192.168.8.0/24",
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="replaced",
             ),
@@ -439,7 +439,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
               ipv6 prefix-list plist3 seq 20 permit 2001:db8:2000::/36
               ipv6 prefix-list plist4 seq 20 permit 2001:db8:3000::/36
               ipv6 prefix-list plist4 seq 50 deny 2001:db8:4000::/36
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -454,11 +454,11 @@ class TestNxosPrefixListsModule(TestNxosModule):
                                         sequence=10,
                                         action="permit",
                                         prefix="192.168.8.0/24",
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="overridden",
             ),
@@ -490,7 +490,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
               ipv6 prefix-list plist3 seq 20 permit 2001:db8:2000::/36
               ipv6 prefix-list plist4 seq 20 permit 2001:db8:3000::/36
               ipv6 prefix-list plist4 seq 50 deny 2001:db8:4000::/36
-            """
+            """,
         )
         set_module_args(
             dict(config=[dict(afi="ipv4")], state="deleted"),
@@ -514,7 +514,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
               ipv6 prefix-list plist3 seq 20 permit 2001:db8:2000::/36
               ipv6 prefix-list plist4 seq 20 permit 2001:db8:3000::/36
               ipv6 prefix-list plist4 seq 50 deny 2001:db8:4000::/36
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -541,7 +541,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
               ipv6 prefix-list plist3 seq 20 permit 2001:db8:2000::/36
               ipv6 prefix-list plist4 seq 20 permit 2001:db8:3000::/36
               ipv6 prefix-list plist4 seq 50 deny 2001:db8:4000::/36
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = [
@@ -559,7 +559,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
             """\
               ip prefix-list plist1 description Test plist1
               ipv6 prefix-list plist3 description Test plist3
-            """
+            """,
         )
         set_module_args(dict(running_config=cfg, state="parsed"), ignore_provider_arg)
         parsed = [
@@ -583,7 +583,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
               ip prefix-list plist1 seq 20 deny 192.168.2.0/24 mask 255.255.255.0
               ipv6 prefix-list plist3 description Test plist3
               ipv6 prefix-list plist3 seq 50 deny 2001:db8:4000::/36
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = [
@@ -599,9 +599,9 @@ class TestNxosPrefixListsModule(TestNxosModule):
                                 "action": "deny",
                                 "prefix": "192.168.2.0/24",
                                 "mask": "255.255.255.0",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -615,9 +615,9 @@ class TestNxosPrefixListsModule(TestNxosModule):
                                 "sequence": 50,
                                 "action": "deny",
                                 "prefix": "2001:db8:4000::/36",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
         ]

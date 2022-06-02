@@ -120,7 +120,8 @@ class Lldp_interfacesFacts(object):
             config["transmit"] = False
         if "management-address" in conf:
             config["tlv_set"]["management_address"] = re.search(
-                r"management-address (\S*)", conf
+                r"management-address (\S*)",
+                conf,
             ).group(1)
         if "vlan" in conf:
             config["tlv_set"]["vlan"] = re.search(r"vlan (\S*)", conf).group(1)

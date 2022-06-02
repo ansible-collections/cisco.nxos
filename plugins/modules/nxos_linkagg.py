@@ -260,7 +260,7 @@ def map_obj_to_commands(updates, module):
                             commands.append("interface {0}".format(m))
                             if force:
                                 commands.append(
-                                    "channel-group {0} force mode {1}".format(group, mode)
+                                    "channel-group {0} force mode {1}".format(group, mode),
                                 )
                             else:
                                 commands.append("channel-group {0} mode {1}".format(group, mode))
@@ -273,7 +273,7 @@ def map_obj_to_commands(updates, module):
                             commands.append("interface {0}".format(m))
                             if force:
                                 commands.append(
-                                    "channel-group {0} force mode {1}".format(group, mode)
+                                    "channel-group {0} force mode {1}".format(group, mode),
                                 )
                             else:
                                 commands.append("channel-group {0} mode {1}".format(group, mode))
@@ -293,11 +293,11 @@ def map_obj_to_commands(updates, module):
                                 commands.append("interface {0}".format(i))
                                 if force:
                                     commands.append(
-                                        "channel-group {0} force mode {1}".format(group, mode)
+                                        "channel-group {0} force mode {1}".format(group, mode),
                                     )
                                 else:
                                     commands.append(
-                                        "channel-group {0} mode {1}".format(group, mode)
+                                        "channel-group {0} mode {1}".format(group, mode),
                                     )
 
     if purge:
@@ -337,7 +337,7 @@ def map_params_to_obj(module):
                 "min_links": str(module.params["min_links"]),
                 "members": members,
                 "state": module.params["state"],
-            }
+            },
         )
 
     return obj

@@ -81,7 +81,11 @@ class Logging_globalFacts(object):
         ansible_facts["ansible_network_resources"].pop("logging_global", None)
 
         params = utils.remove_empties(
-            logging_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            logging_global_parser.validate_config(
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["logging_global"] = params.get("config", {})

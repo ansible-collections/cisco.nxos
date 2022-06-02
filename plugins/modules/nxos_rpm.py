@@ -376,7 +376,7 @@ def main():
                 "pkg": module.params["pkg"],
                 "file_system": module.params["file_system"],
                 "state": module.params["state"],
-            }
+            },
         )
 
     for obj in objects:

@@ -417,18 +417,18 @@ def main():
         elif pkl_vrf:
             if pkl_vrf != "management":
                 module.fail_json(
-                    msg="dest and src IP for peer-keepalive are required" " when vrf is present"
+                    msg="dest and src IP for peer-keepalive are required" " when vrf is present",
                 )
             else:
                 module.fail_json(
-                    msg="dest IP for peer-keepalive is required" " when vrf is present"
+                    msg="dest IP for peer-keepalive is required" " when vrf is present",
                 )
     if pkl_vrf:
         if pkl_vrf.lower() not in get_vrf_list(module):
             module.fail_json(
                 msg="The VRF you are trying to use for the peer "
                 "keepalive link is not on device yet. Add it"
-                " first, please."
+                " first, please.",
             )
     proposed = dict((k, v) for k, v in args.items() if v is not None)
     existing = get_vpc(module)
@@ -451,7 +451,7 @@ def main():
         if existing:
             if domain != existing["domain"]:
                 module.fail_json(
-                    msg="You are trying to remove a domain that " "does not exist on the device"
+                    msg="You are trying to remove a domain that " "does not exist on the device",
                 )
             else:
                 commands.append("terminal dont-ask")

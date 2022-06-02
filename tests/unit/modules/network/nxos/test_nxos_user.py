@@ -39,22 +39,22 @@ class TestNxosUserModule(TestNxosModule):
         super(TestNxosUserModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_get_device_info = patch(
-            "ansible_collections.cisco.nxos.plugins.cliconf.nxos.Cliconf.get_device_info"
+            "ansible_collections.cisco.nxos.plugins.cliconf.nxos.Cliconf.get_device_info",
         )
         self.get_device_info = self.mock_get_device_info.start()
 
@@ -81,9 +81,9 @@ class TestNxosUserModule(TestNxosModule):
                             "expire_date": "this user account has no expiry date",
                             "TABLE_role": {"ROW_role": [{"role": "priv-10"}]},
                         },
-                    ]
-                }
-            }
+                    ],
+                },
+            },
         ]
         self.get_device_info.return_value = {
             "network_os": "nxos",

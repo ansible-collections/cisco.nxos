@@ -38,12 +38,12 @@ class TestNxosAclInterfaceModule(TestNxosModule):
         super(TestNxosAclInterfaceModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_acl_interface.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_acl_interface.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_acl_interface.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_acl_interface.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -84,7 +84,7 @@ class TestNxosAclInterfaceModule(TestNxosModule):
                 interface="ethernet1/41",
                 direction="egress",
                 state="absent",
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(

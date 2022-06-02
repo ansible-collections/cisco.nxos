@@ -237,7 +237,7 @@ def main():
                     "current vtp password. It cannot be "
                     "removed when state=absent. If you are "
                     "trying to change the vtp password, use "
-                    "state=present."
+                    "state=present.",
                 )
         else:
             if not existing.get("domain"):

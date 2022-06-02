@@ -36,12 +36,12 @@ class TestNxosBgpAfModule(TestNxosModule):
         super(TestNxosBgpAfModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_af.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_af.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_af.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_af.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -85,7 +85,7 @@ class TestNxosBgpAfModule(TestNxosModule):
                 afi="ipv4",
                 safi="unicast",
                 dampening_routemap="route-map-a",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -106,7 +106,7 @@ class TestNxosBgpAfModule(TestNxosModule):
                 dampening_suppress_time=2000,
                 dampening_reuse_time=1900,
                 dampening_max_suppress_time=10,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -128,7 +128,7 @@ class TestNxosBgpAfModule(TestNxosModule):
                 dampening_suppress_time=2000,
                 dampening_reuse_time=1900,
                 dampening_max_suppress_time=10,
-            )
+            ),
         )
         result = self.execute_module(failed=True)
         self.assertEqual(

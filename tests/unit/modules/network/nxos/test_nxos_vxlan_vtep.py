@@ -36,12 +36,12 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
         super(TestNxosVxlanVtepVniModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -82,7 +82,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
             dict(
                 interface="nve1",
                 multisite_border_gateway_interface="Loopback10",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -98,6 +98,6 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
             dict(
                 interface="nve1",
                 multisite_border_gateway_interface="Loopback1",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])

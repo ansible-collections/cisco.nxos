@@ -389,7 +389,7 @@ def map_obj_to_commands(updates, module):
                             commands.append("vrf member {0}".format(name))
 
                         superfluous_interfaces = list(
-                            set(obj_in_have["interfaces"]) - set(interfaces)
+                            set(obj_in_have["interfaces"]) - set(interfaces),
                         )
                         for i in superfluous_interfaces:
                             commands.append("vrf context {0}".format(name))
@@ -462,7 +462,7 @@ def map_params_to_obj(module):
                 "state": module.params["state"],
                 "interfaces": module.params["interfaces"],
                 "associated_interfaces": module.params["associated_interfaces"],
-            }
+            },
         )
     return obj
 

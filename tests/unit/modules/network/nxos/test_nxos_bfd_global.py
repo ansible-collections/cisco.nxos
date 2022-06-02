@@ -48,17 +48,17 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         super(TestNxosBfdGlobalModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bfd_global.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bfd_global.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos.NxosCmdRef.execute_show_command"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos.NxosCmdRef.execute_show_command",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
         self.mock_get_platform_shortname = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos.NxosCmdRef.get_platform_shortname"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos.NxosCmdRef.get_platform_shortname",
         )
         self.get_platform_shortname = self.mock_get_platform_shortname.start()
 
@@ -88,7 +88,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 ipv6_echo_rx_interval=50,
                 ipv6_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
                 ipv6_slow_timer=2000,
-            )
+            ),
         )
         self.execute_module(changed=False)
 
@@ -111,7 +111,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 ipv6_echo_rx_interval=51,
                 ipv6_interval={"tx": 51, "min_rx": 51, "multiplier": 4},
                 ipv6_slow_timer=2001,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -147,7 +147,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 ipv6_echo_rx_interval=250,
                 ipv6_interval={"tx": 250, "min_rx": 250, "multiplier": 3},
                 ipv6_slow_timer=2000,
-            )
+            ),
         )
         self.execute_module(changed=False)
 
@@ -165,7 +165,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 ipv4_echo_rx_interval=50,
                 ipv4_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
                 ipv4_slow_timer=2000,
-            )
+            ),
         )
         self.execute_module(changed=False)
 
@@ -181,7 +181,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 fabricpath_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
                 fabricpath_slow_timer=2000,
                 fabricpath_vlan=1,
-            )
+            ),
         )
         self.execute_module(changed=False)
 
@@ -204,7 +204,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 fabricpath_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
                 fabricpath_slow_timer=2000,
                 fabricpath_vlan=1,
-            )
+            ),
         )
         self.execute_module(changed=False)
 
@@ -225,7 +225,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 ipv6_echo_rx_interval=50,
                 ipv6_interval={"tx": 51, "min_rx": 51, "multiplier": 3},
                 ipv6_slow_timer=2000,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -261,7 +261,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 ipv6_echo_rx_interval=56,
                 ipv6_interval={"tx": 56, "min_rx": 56, "multiplier": 6},
                 ipv6_slow_timer=2006,
-            )
+            ),
         )
         self.execute_module(changed=False)
 
@@ -284,7 +284,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 fabricpath_interval={"tx": 51, "min_rx": 51, "multiplier": 3},
                 fabricpath_slow_timer=2003,
                 fabricpath_vlan=3,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -324,6 +324,6 @@ class TestNxosBfdGlobalModule(TestNxosModule):
                 fabricpath_interval={"tx": 58, "min_rx": 58, "multiplier": 8},
                 fabricpath_slow_timer=2008,
                 fabricpath_vlan=2,
-            )
+            ),
         )
         self.execute_module(changed=False)

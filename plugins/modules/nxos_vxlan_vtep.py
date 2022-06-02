@@ -330,7 +330,7 @@ def gsa_tcam_check(module):
                 i
                 for i in tcam_region
                 if i["type"].startswith("Ingress ARP-Ether ACL") and i["tcam_size"] == "0"
-            ]
+            ],
         ):
             msg = (
                 "'show hardware access-list tcam region' indicates 'ARP-Ether' tcam size is 0 (no allocated resources). "
@@ -442,7 +442,7 @@ def main():
             warnings.append(
                 "The proposed NVE interface did not exist. "
                 "It's recommended to use nxos_interface to create "
-                "all logical interfaces."
+                "all logical interfaces.",
             )
         state_present(module, existing, proposed, candidate)
     elif state == "absent" and existing:

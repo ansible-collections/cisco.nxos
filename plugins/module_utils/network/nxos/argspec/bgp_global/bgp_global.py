@@ -176,7 +176,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                         "set": {"type": "bool"},
                                         "route_map": {"type": "str"},
                                     },
-                                }
+                                },
                             },
                         },
                         "inherit": {
@@ -257,7 +257,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "connection_mode": {
                                     "type": "dict",
                                     "options": {"passive": {"type": "bool"}},
-                                }
+                                },
                             },
                         },
                         "ttl_security": {
@@ -411,7 +411,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                                 "set": {"type": "bool"},
                                                 "route_map": {"type": "str"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "inherit": {
@@ -492,7 +492,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                         "connection_mode": {
                                             "type": "dict",
                                             "options": {"passive": {"type": "bool"}},
-                                        }
+                                        },
                                     },
                                 },
                                 "ttl_security": {

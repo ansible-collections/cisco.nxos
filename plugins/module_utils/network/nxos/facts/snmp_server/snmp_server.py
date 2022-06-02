@@ -64,17 +64,19 @@ class Snmp_serverFacts(object):
         if "users" in objs:
             if "auth" in objs["users"]:
                 objs["users"]["auth"] = sorted(
-                    objs["users"]["auth"], key=lambda k: to_text(k["user"])
+                    objs["users"]["auth"],
+                    key=lambda k: to_text(k["user"]),
                 )
             if "use_acls" in objs["users"]:
                 objs["users"]["use_acls"] = sorted(
-                    objs["users"]["use_acls"], key=lambda k: to_text(k["user"])
+                    objs["users"]["use_acls"],
+                    key=lambda k: to_text(k["user"]),
                 )
 
         ansible_facts["ansible_network_resources"].pop("snmp_server", None)
 
         params = utils.remove_empties(
-            snmp_server_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            snmp_server_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["snmp_server"] = params.get("config", {})

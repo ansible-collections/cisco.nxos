@@ -36,12 +36,12 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
         super(TestNxosInterfaceOspfModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_interface_ospf.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_interface_ospf.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_interface_ospf.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_interface_ospf.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -129,7 +129,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
                 area=1,
                 bfd="enable",
                 state="absent",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -148,7 +148,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
                 area=1,
                 bfd="disable",
                 state="absent",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -188,7 +188,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
                 ospf=1,
                 area=1,
                 passive_interface=True,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -205,7 +205,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
                 ospf=1,
                 area=1,
                 passive_interface=False,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -222,7 +222,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
                 ospf=1,
                 area=1,
                 passive_interface=False,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -248,7 +248,7 @@ class TestNxosInterfaceOspfModule(TestNxosModule):
                 ospf=1,
                 area=1,
                 passive_interface=True,
-            )
+            ),
         )
         self.execute_module(
             changed=True,

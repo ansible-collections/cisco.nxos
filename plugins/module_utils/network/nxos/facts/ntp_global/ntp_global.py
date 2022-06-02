@@ -65,7 +65,8 @@ class Ntp_globalFacts(object):
             for x in ["peer", "query_only", "serve", "serve_only"]:
                 if x in objs["access_group"]:
                     objs["access_group"][x] = sorted(
-                        objs["access_group"][x], key=lambda k: k["access_list"]
+                        objs["access_group"][x],
+                        key=lambda k: k["access_list"],
                     )
 
         pkey = {
@@ -82,7 +83,7 @@ class Ntp_globalFacts(object):
         ansible_facts["ansible_network_resources"].pop("ntp_global", None)
 
         params = utils.remove_empties(
-            ntp_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            ntp_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["ntp_global"] = params.get("config", {})

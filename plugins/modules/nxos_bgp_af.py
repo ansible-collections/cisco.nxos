@@ -458,8 +458,8 @@ def get_existing(module, args, warnings):
     else:
         warnings.append(
             "The BGP process {0} didn't exist but the task just created it.".format(
-                module.params["asn"]
-            )
+                module.params["asn"],
+            ),
         )
 
     return existing
@@ -529,7 +529,7 @@ def default_existing(existing_value, key, value):
                 commands.append("no inject-map {0} exist-map {1}".format(maps[0], maps[1]))
             elif len(maps) == 3:
                 commands.append(
-                    "no inject-map {0} exist-map {1} " "copy-attributes".format(maps[0], maps[1])
+                    "no inject-map {0} exist-map {1} " "copy-attributes".format(maps[0], maps[1]),
                 )
 
     elif key == "redistribute":
@@ -590,7 +590,8 @@ def get_inject_map_command(existing, key, value):
                 command = "no inject-map {0} exist-map {1}".format(emaps[0], emaps[1])
             elif len(emaps) == 3:
                 command = "no inject-map {0} exist-map {1} " "copy-attributes".format(
-                    emaps[0], emaps[1]
+                    emaps[0],
+                    emaps[1],
                 )
             if command:
                 commands.append(command)
@@ -667,7 +668,8 @@ def state_present(module, existing, proposed, candidate):
     for key, value in proposed_commands.items():
         if key == "address-family":
             addr_family_command = "address-family {0} {1}".format(
-                module.params["afi"], module.params["safi"]
+                module.params["afi"],
+                module.params["safi"],
             )
             if addr_family_command not in commands:
                 commands.append(addr_family_command)
@@ -729,7 +731,8 @@ def state_present(module, existing, proposed, candidate):
             parents.append("vrf {0}".format(module.params["vrf"]))
 
         addr_family_command = "address-family {0} {1}".format(
-            module.params["afi"], module.params["safi"]
+            module.params["afi"],
+            module.params["safi"],
         )
         parents.append(addr_family_command)
         if addr_family_command in commands:

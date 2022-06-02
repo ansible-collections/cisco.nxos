@@ -247,7 +247,7 @@ class Bgp_address_family(ResourceModule):
                     (remove and k in want_af),
                     (not remove and k not in want_af),
                     purge,
-                )
+                ),
             ):
                 self.addcmd(v, "address_family", True)
         if cur_ptr < len(self.commands) and vrf:

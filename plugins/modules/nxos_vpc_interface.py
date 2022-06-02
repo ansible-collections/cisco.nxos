@@ -273,7 +273,7 @@ def main():
             module.fail_json(
                 msg="The portchannel you are trying to make a"
                 " VPC or PL is not created yet. "
-                "Create it first!"
+                "Create it first!",
             )
     if vpc:
         mapping = get_existing_portchannel_to_vpc_mappings(module)
@@ -301,7 +301,7 @@ def main():
                 module.fail_json(
                     msg="That port channel is the current "
                     "PEER LINK. Remove it if you want it"
-                    " to be a VPC"
+                    " to be a VPC",
                 )
         config_value = vpc
 

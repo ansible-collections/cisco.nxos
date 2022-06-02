@@ -35,12 +35,12 @@ class TestNxosOverlayGlobalModule(TestNxosModule):
     def setUp(self):
         super(TestNxosOverlayGlobalModule, self).setUp()
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_overlay_global.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_overlay_global.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_overlay_global.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_overlay_global.get_config",
         )
         self.get_config = self.mock_get_config.start()
 

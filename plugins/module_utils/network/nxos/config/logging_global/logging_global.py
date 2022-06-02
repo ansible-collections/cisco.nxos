@@ -115,7 +115,7 @@ class Logging_global(ResourceModule):
                     self.state in self._state_set,
                     have_k is False,
                     want_k is None,
-                )
+                ),
             ):
                 # if want is missing and have is negated
                 # set want to True in order to revert to default state

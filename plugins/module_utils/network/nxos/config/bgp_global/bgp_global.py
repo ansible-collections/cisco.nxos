@@ -123,7 +123,7 @@ class Bgp_global(ResourceModule):
                 self._module.fail_json(
                     msg="BGP is already configured with ASN {0}. "
                     "Please remove it with state purged before "
-                    "configuring new ASN".format(h_asn)
+                    "configuring new ASN".format(h_asn),
                 )
 
         if self.state in ["deleted", "replaced"]:
@@ -247,7 +247,9 @@ class Bgp_global(ResourceModule):
             if self._has_af(vrf=vrf, neighbor=name):
                 self._module.fail_json(
                     msg="Neighbor {0} has address-family configurations. "
-                    "Please use the nxos_bgp_neighbor_af module to remove those first.".format(name)
+                    "Please use the nxos_bgp_neighbor_af module to remove those first.".format(
+                        name,
+                    ),
                 )
             else:
                 self.addcmd(entry, "neighbor_address", True)
@@ -288,7 +290,7 @@ class Bgp_global(ResourceModule):
             if self._has_af(vrf=name):
                 self._module.fail_json(
                     msg="VRF {0} has address-family configurations. "
-                    "Please use the nxos_bgp_af module to remove those first.".format(name)
+                    "Please use the nxos_bgp_af module to remove those first.".format(name),
                 )
             else:
                 self.addcmd(entry, "vrf", True)

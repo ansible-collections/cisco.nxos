@@ -36,12 +36,12 @@ class TestNxosPimModule(TestNxosModule):
         super(TestNxosPimModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim.load_config",
         )
         self.load_config = self.mock_load_config.start()
 

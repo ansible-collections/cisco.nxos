@@ -111,7 +111,7 @@ class Prefix_lists(ResourceModule):
             # remove remaining prefix lists
             for h in hplists.values():
                 self.commands.append(
-                    "no {0} prefix-list {1}".format(h["afi"].replace("ipv4", "ip"), h["name"])
+                    "no {0} prefix-list {1}".format(h["afi"].replace("ipv4", "ip"), h["name"]),
                 )
 
     def _compare_seqs(self, want, have):
@@ -123,8 +123,9 @@ class Prefix_lists(ResourceModule):
                         self._module.fail_json(
                             msg="Cannot update existing sequence {0} of prefix list {1} with state merged."
                             " Please use state replaced or overridden.".format(
-                                hentry["sequence"], hentry["name"]
-                            )
+                                hentry["sequence"],
+                                hentry["name"],
+                            ),
                         )
                     else:
                         self.addcmd(hentry, "entry", negate=True)

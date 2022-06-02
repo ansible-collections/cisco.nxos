@@ -217,7 +217,7 @@ def set_ntp_auth_key(key_id, md5string, auth_type, trusted_key, authentication):
     if key_id and md5string:
         auth_type_num = auth_type_to_num(auth_type)
         ntp_auth_cmds.append(
-            "ntp authentication-key {0} md5 {1} {2}".format(key_id, md5string, auth_type_num)
+            "ntp authentication-key {0} md5 {1} {2}".format(key_id, md5string, auth_type_num),
         )
 
     if trusted_key == "true":
@@ -238,7 +238,7 @@ def remove_ntp_auth_key(key_id, md5string, auth_type, trusted_key, authenticatio
     if key_id:
         auth_type_num = auth_type_to_num(auth_type)
         auth_remove_cmds.append(
-            "no ntp authentication-key {0} md5 {1} {2}".format(key_id, md5string, auth_type_num)
+            "no ntp authentication-key {0} md5 {1} {2}".format(key_id, md5string, auth_type_num),
         )
 
     if authentication:

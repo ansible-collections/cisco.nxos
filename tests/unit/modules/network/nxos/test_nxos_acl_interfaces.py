@@ -23,32 +23,32 @@ class TestNxosAclInterfacesModule(TestNxosModule):
         super(TestNxosAclInterfacesModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acl_interfaces.acl_interfaces.Acl_interfaces.edit_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acl_interfaces.acl_interfaces.Acl_interfaces.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acl_interfaces.acl_interfaces.Acl_interfacesFacts.get_device_data"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acl_interfaces.acl_interfaces.Acl_interfacesFacts.get_device_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -78,12 +78,12 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                             dict(
                                 afi="ipv4",
                                 acls=[dict(name="ACL1-v4", direction="in")],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = ["interface Ethernet1/3", "ip access-group ACL1-v4 in"]
         self.execute_module(changed=True, commands=commands)
@@ -98,7 +98,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                             dict(
                                 afi="ipv4",
                                 acls=[dict(name="ACL1v4", direction="out")],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -111,14 +111,14 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                                         name="ACL2v6",
                                         direction="in",
                                         port=True,
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -136,9 +136,9 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                                         name="ACL1v6",
                                         direction="in",
                                         port=True,
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -151,14 +151,14 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                                         name="ACL2v4",
                                         direction="in",
                                         port=True,
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "interface Ethernet1/2",
@@ -179,12 +179,12 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                             dict(
                                 afi="ipv4",
                                 acls=[dict(name="ACL1v4", direction="out")],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -205,12 +205,12 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                                         port=True,
                                     ),
                                 ],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="overridden",
-            )
+            ),
         )
         commands = [
             "interface Ethernet1/2",
@@ -233,7 +233,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                             dict(
                                 afi="ipv4",
                                 acls=[dict(name="ACL1v4", direction="out")],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -246,14 +246,14 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                                         name="ACL2v6",
                                         direction="in",
                                         port=True,
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="overridden",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -267,7 +267,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
             dict(
                 config=[dict(name="Ethernet1/2", access_groups=[dict(afi="ipv4")])],
                 state="deleted",
-            )
+            ),
         )
         commands = ["interface Ethernet1/2", "no ip access-group ACL1v4 out"]
         self.execute_module(changed=True, commands=commands)
@@ -282,12 +282,12 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                             dict(
                                 afi="ipv4",
                                 acls=[dict(name="ACL1v4", direction="out")],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="deleted",
-            )
+            ),
         )
         commands = ["interface Ethernet1/2", "no ip access-group ACL1v4 out"]
         self.execute_module(changed=True, commands=commands)
@@ -302,7 +302,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                             dict(
                                 afi="ipv4",
                                 acls=[dict(name="ACL1v4", direction="out")],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -315,14 +315,14 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                                         name="ACL2v6",
                                         direction="in",
                                         port=True,
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "interface Ethernet1/2",
@@ -339,7 +339,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                 running_config="""interface Ethernet1/2\n ip access-group ACL1v4 out\n interface Ethernet1/4\n \
           ipv6 port traffic-filter ACL2v6 in""",
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         compare_list = [
@@ -348,7 +348,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                     {
                         "acls": [{"direction": "out", "name": "ACL1v4"}],
                         "afi": "ipv4",
-                    }
+                    },
                 ],
                 "name": "Ethernet1/2",
             },
@@ -357,7 +357,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                     {
                         "acls": [{"direction": "in", "name": "ACL2v6", "port": True}],
                         "afi": "ipv6",
-                    }
+                    },
                 ],
                 "name": "Ethernet1/4",
             },
@@ -373,7 +373,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                     {
                         "acls": [{"direction": "out", "name": "ACL1v4"}],
                         "afi": "ipv4",
-                    }
+                    },
                 ],
                 "name": "Ethernet1/2",
             },
@@ -382,7 +382,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                     {
                         "acls": [{"direction": "in", "name": "ACL2v6", "port": True}],
                         "afi": "ipv6",
-                    }
+                    },
                 ],
                 "name": "Ethernet1/4",
             },

@@ -199,8 +199,9 @@ def action_create(module, existing_snapshots):
     if exist is False:
         commands.append(
             "snapshot create {0} {1}".format(
-                module.params["snapshot_name"], module.params["description"]
-            )
+                module.params["snapshot_name"],
+                module.params["description"],
+            ),
         )
 
     return commands
@@ -253,7 +254,7 @@ def action_add(module, existing_snapshots):
                     module.params["row_id"],
                     module.params["element_key1"],
                     module.params["element_key2"],
-                )
+                ),
             )
         else:
             commands.append(
@@ -262,7 +263,7 @@ def action_add(module, existing_snapshots):
                     module.params["show_command"],
                     module.params["row_id"],
                     module.params["element_key1"],
-                )
+                ),
             )
 
     return commands
@@ -270,7 +271,8 @@ def action_add(module, existing_snapshots):
 
 def action_compare(module, existing_snapshots):
     command = "show snapshot compare {0} {1}".format(
-        module.params["snapshot1"], module.params["snapshot2"]
+        module.params["snapshot1"],
+        module.params["snapshot2"],
     )
 
     if module.params["compare_option"]:
