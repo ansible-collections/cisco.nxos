@@ -52,7 +52,9 @@ class Lldp_interfaces(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         lldp_interfaces_facts = facts["ansible_network_resources"].get("lldp_interfaces")
         if not lldp_interfaces_facts:
@@ -119,7 +121,7 @@ class Lldp_interfaces(ConfigBase):
                     "ethernet",
                 ):
                     self._module.fail_json(
-                        msg="This module works with either management or ethernet"
+                        msg="This module works with either management or ethernet",
                     )
                 w.update({"name": normalize_interface(w["name"])})
                 want.append(remove_empties(w))

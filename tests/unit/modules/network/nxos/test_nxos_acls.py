@@ -25,32 +25,32 @@ class TestNxosAclsModule(TestNxosModule):
         super(TestNxosAclsModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acls.acls.Acls.edit_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acls.acls.Acls.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acls.acls.AclsFacts.get_device_data"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acls.acls.AclsFacts.get_device_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -109,13 +109,13 @@ class TestNxosAclsModule(TestNxosModule):
                                         protocol_options=dict(icmp=dict(echo_request=True)),
                                     ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(afi="ipv6", acls=[dict(name="ACL2v6")]),
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = [
             "ip access-list ACL2v4",
@@ -151,7 +151,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         protocol="udp",
                                     ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -166,14 +166,14 @@ class TestNxosAclsModule(TestNxosModule):
                                         source=dict(any=True),
                                         sequence=10,
                                         protocol="sctp",
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -195,16 +195,16 @@ class TestNxosAclsModule(TestNxosModule):
                                         sequence=50,
                                         protocol="icmp",
                                         protocol_options=dict(
-                                            icmp=dict(administratively_prohibited=True)
+                                            icmp=dict(administratively_prohibited=True),
                                         ),
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "ip access-list ACL1v4",
@@ -239,7 +239,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         protocol="udp",
                                     ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -254,14 +254,14 @@ class TestNxosAclsModule(TestNxosModule):
                                         source=dict(any=True),
                                         sequence=10,
                                         protocol="sctp",
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -283,17 +283,17 @@ class TestNxosAclsModule(TestNxosModule):
                                         sequence=50,
                                         protocol="icmp",
                                         protocol_options=dict(
-                                            icmp=dict(administratively_prohibited=True)
+                                            icmp=dict(administratively_prohibited=True),
                                         ),
                                     ),
                                     dict(remark="Overridden ACL"),
                                 ],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="overridden",
-            )
+            ),
         )
         commands = [
             "no ip access-list ACL1v4",
@@ -329,7 +329,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         protocol="udp",
                                     ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -344,14 +344,14 @@ class TestNxosAclsModule(TestNxosModule):
                                         source=dict(any=True),
                                         sequence=10,
                                         protocol="sctp",
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="overridden",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -390,7 +390,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         protocol="udp",
                                     ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -405,14 +405,14 @@ class TestNxosAclsModule(TestNxosModule):
                                         source=dict(any=True),
                                         sequence=10,
                                         protocol="sctp",
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "ip access-list ACL1v4",
@@ -433,10 +433,10 @@ class TestNxosAclsModule(TestNxosModule):
                       statistics per-entry
                       10 permit ip any any
                       20 deny udp any any dscp AF23 precedence critical
-                    """
+                    """,
                 ),
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         compare_list = [
@@ -463,9 +463,9 @@ class TestNxosAclsModule(TestNxosModule):
                                 "precedence": "critical",
                             },
                         ],
-                    }
+                    },
                 ],
-            }
+            },
         ]
         self.assertEqual(result["parsed"], compare_list, result["parsed"])
 
@@ -483,10 +483,10 @@ class TestNxosAclsModule(TestNxosModule):
                                 "protocol": "sctp",
                                 "source": {"any": True},
                                 "grant": "permit",
-                            }
+                            },
                         ],
                         "name": "ACL1v6",
-                    }
+                    },
                 ],
                 "afi": "ipv6",
             },
@@ -510,7 +510,7 @@ class TestNxosAclsModule(TestNxosModule):
                             },
                         ],
                         "name": "ACL1v4",
-                    }
+                    },
                 ],
                 "afi": "ipv4",
             },
@@ -527,7 +527,7 @@ class TestNxosAclsModule(TestNxosModule):
                 40 remark TEST-COMMENT-2
                 50 permit ip 198.51.100.6/32 any
                 60 permit ip 198.51.100.7/32 any
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -567,12 +567,12 @@ class TestNxosAclsModule(TestNxosModule):
                                         protocol="ip",
                                     ),
                                 ],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="replaced",
-            )
+            ),
         )
 
         commands = [
@@ -596,7 +596,7 @@ class TestNxosAclsModule(TestNxosModule):
             """\
               ip access-list 99
                 10 remark TEST-COMMENT-1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -613,14 +613,14 @@ class TestNxosAclsModule(TestNxosModule):
                                         source=dict(host="192.0.2.1"),
                                         sequence=10,
                                         protocol="ip",
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="merged",
-            )
+            ),
         )
 
         result = self.execute_module(failed=True)
@@ -638,7 +638,7 @@ class TestNxosAclsModule(TestNxosModule):
                 10 permit udp any any
                 20 deny tcp any any
                 30 remark for resetting to default run resequence ip access-list TEST_RESEQUENCE_ipv6 2 3
-            """
+            """,
         )
         set_module_args(dict(state="gathered"))
 
@@ -667,7 +667,7 @@ class TestNxosAclsModule(TestNxosModule):
                                 "remark": "for resetting to default run resequence ip access-list TEST_RESEQUENCE_ipv6 2 3",
                             },
                         ],
-                    }
+                    },
                 ],
                 "afi": "ipv6",
             },
@@ -698,7 +698,7 @@ class TestNxosAclsModule(TestNxosModule):
                                 "remark": "for resetting to default run resequence ip access-list TEST_RESEQUENCE 2 3",
                             },
                         ],
-                    }
+                    },
                 ],
                 "afi": "ipv4",
             },

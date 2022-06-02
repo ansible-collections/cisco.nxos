@@ -99,7 +99,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                 "always": {"type": "bool"},
                                                 "route_map": {"type": "str"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "distance": {"type": "int"},
@@ -164,9 +164,9 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                         "min_hold_time": {"type": "int"},
                                                         "max_wait_time": {"type": "int"},
                                                     },
-                                                }
+                                                },
                                             },
-                                        }
+                                        },
                                     },
                                 },
                             },
@@ -194,7 +194,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                         "never": {"type": "bool"},
                                                         "supress_fa": {"type": "bool"},
                                                     },
-                                                }
+                                                },
                                             },
                                         },
                                     },
@@ -285,7 +285,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                             },
                                         },
                                     },
-                                }
+                                },
                             },
                         },
                         "name_lookup": {"type": "bool"},
@@ -311,7 +311,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                 "hold_interval": {"type": "int"},
                                                 "max_interval": {"type": "int"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                             },
@@ -346,7 +346,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                                 "never": {"type": "bool"},
                                                                 "supress_fa": {"type": "bool"},
                                                             },
-                                                        }
+                                                        },
                                                     },
                                                 },
                                             },
@@ -435,7 +435,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                     },
                                                 },
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "name_lookup": {"type": "bool"},
@@ -460,7 +460,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                                                         "hold_interval": {"type": "int"},
                                                         "max_interval": {"type": "int"},
                                                     },
-                                                }
+                                                },
                                             },
                                         },
                                     },
@@ -469,7 +469,7 @@ class Ospfv3Args(object):  # pylint: disable=R0903
                             },
                         },
                     },
-                }
+                },
             },
         },
         "state": {

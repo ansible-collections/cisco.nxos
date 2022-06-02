@@ -36,12 +36,12 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
         super(TestNxosVxlanVtepVniModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep_vni.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep_vni.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep_vni.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep_vni.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -76,7 +76,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
                 interface="nve1",
                 vni=5000,
                 multisite_ingress_replication="enable",
-            )
+            ),
         )
         commands = [
             "interface nve1",
@@ -92,7 +92,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
                 interface="nve1",
                 vni=5000,
                 multisite_ingress_replication="optimized",
-            )
+            ),
         )
         commands = [
             "interface nve1",
@@ -108,6 +108,6 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
                 interface="nve1",
                 vni=6000,
                 multisite_ingress_replication="optimized",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])

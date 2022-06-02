@@ -117,7 +117,7 @@ class TelemetryFacts(object):
             if re.search(r"subscription", line):
                 resource_key = line.strip()
                 cmd_ref["TMS_SUBSCRIPTION"]["ref"].append(
-                    NxosCmdRef(self._module, TMS_SUBSCRIPTION)
+                    NxosCmdRef(self._module, TMS_SUBSCRIPTION),
                 )
                 ref = cmd_ref["TMS_SUBSCRIPTION"]["ref"][-1]
                 ref.set_context([resource_key])

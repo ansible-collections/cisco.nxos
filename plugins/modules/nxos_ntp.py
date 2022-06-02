@@ -302,7 +302,7 @@ def config_ntp(delta, existing):
     if peer_type:
         if existing.get("peer_type") and existing.get("address"):
             ntp_cmds.append(
-                "no ntp {0} {1}".format(existing.get("peer_type"), existing.get("address"))
+                "no ntp {0} {1}".format(existing.get("peer_type"), existing.get("address")),
             )
         ntp_cmds.append(set_ntp_server_peer(peer_type, address, prefer, key_id, vrf_name))
     if source:

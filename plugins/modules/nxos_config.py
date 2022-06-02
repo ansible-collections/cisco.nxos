@@ -387,7 +387,7 @@ def save_config(module, result):
         module.warn(
             "Skipping command `copy running-config startup-config` "
             "due to check_mode.  Configuration not copied to "
-            "non-volatile storage"
+            "non-volatile storage",
         )
 
 
@@ -557,7 +557,7 @@ def main():
                     {
                         "changed": True,
                         "diff": {"before": str(before), "after": str(after)},
-                    }
+                    },
                 )
 
     if result.get("changed") and any((module.params["src"], module.params["lines"])):

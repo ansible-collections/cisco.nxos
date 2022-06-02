@@ -270,7 +270,7 @@ def map_obj_to_commands(module, updates):
                     and w["facility"] not in DEFAULT_LOGGING_LEVEL[int(w["facility_level"])]
                 ):
                     commands.append(
-                        "no logging level {0} {1}".format(w["facility"], w["facility_level"])
+                        "no logging level {0} {1}".format(w["facility"], w["facility_level"]),
                     )
 
                 if w["facility_link_status"] and w["facility"] in ("ethpm"):
@@ -278,7 +278,7 @@ def map_obj_to_commands(module, updates):
                         "no logging level {0} {1}".format(
                             w["facility"],
                             STATIC_CLI[w["facility_link_status"]],
-                        )
+                        ),
                     )
 
             if w["name"] is not None:
@@ -312,12 +312,14 @@ def map_obj_to_commands(module, updates):
                         if w["file_size"]:
                             commands.append(
                                 "logging logfile {0} {1} size {2}".format(
-                                    w["name"], w["dest_level"], w["file_size"]
-                                )
+                                    w["name"],
+                                    w["dest_level"],
+                                    w["file_size"],
+                                ),
                             )
                         else:
                             commands.append(
-                                "logging logfile {0} {1}".format(w["name"], w["dest_level"])
+                                "logging logfile {0} {1}".format(w["name"], w["dest_level"]),
                             )
 
                     elif w["dest"] == "server":
@@ -328,21 +330,23 @@ def map_obj_to_commands(module, updates):
                                         w["remote_server"],
                                         w["facility_level"],
                                         w["use_vrf"],
-                                    )
+                                    ),
                                 )
                             else:
                                 commands.append(
                                     "logging server {0} {1}".format(
-                                        w["remote_server"], w["facility_level"]
-                                    )
+                                        w["remote_server"],
+                                        w["facility_level"],
+                                    ),
                                 )
 
                         else:
                             if w["use_vrf"]:
                                 commands.append(
                                     "logging server {0} use-vrf {1}".format(
-                                        w["remote_server"], w["use_vrf"]
-                                    )
+                                        w["remote_server"],
+                                        w["use_vrf"],
+                                    ),
                                 )
                             else:
                                 commands.append("logging server {0}".format(w["remote_server"]))
@@ -357,7 +361,7 @@ def map_obj_to_commands(module, updates):
                                     w["facility_level"],
                                     w["facility"],
                                     w["use_vrf"],
-                                )
+                                ),
                             )
                         else:
                             commands.append(
@@ -365,7 +369,7 @@ def map_obj_to_commands(module, updates):
                                     w["remote_server"],
                                     w["facility_level"],
                                     w["facility"],
-                                )
+                                ),
                             )
                     else:
                         if w["use_vrf"]:
@@ -374,13 +378,14 @@ def map_obj_to_commands(module, updates):
                                     w["remote_server"],
                                     w["facility"],
                                     w["use_vrf"],
-                                )
+                                ),
                             )
                         else:
                             commands.append(
                                 "logging server {0} facility {1}".format(
-                                    w["remote_server"], w["facility"]
-                                )
+                                    w["remote_server"],
+                                    w["facility"],
+                                ),
                             )
                 else:
                     if w["facility_link_status"]:
@@ -388,17 +393,17 @@ def map_obj_to_commands(module, updates):
                             "logging level {0} {1}".format(
                                 w["facility"],
                                 STATIC_CLI[w["facility_link_status"]],
-                            )
+                            ),
                         )
                     else:
                         if not match_facility_default(module, w["facility"], w["facility_level"]):
                             commands.append(
-                                "logging level {0} {1}".format(w["facility"], w["facility_level"])
+                                "logging level {0} {1}".format(w["facility"], w["facility_level"]),
                             )
 
             if w["interface"]:
                 commands.append(
-                    "logging source-interface {0} {1}".format(*split_interface(w["interface"]))
+                    "logging source-interface {0} {1}".format(*split_interface(w["interface"])),
                 )
 
             if w["event"] and w["event"] in STATIC_CLI:
@@ -696,7 +701,7 @@ def map_config_to_obj(module):
                     "file_size": file_size,
                     "message": parse_message(line),
                     "timestamp": parse_timestamp(line),
-                }
+                },
             )
 
     cmd = [
@@ -742,7 +747,7 @@ def map_config_to_obj(module):
                     "file_size": None,
                     "message": None,
                     "timestamp": None,
-                }
+                },
             )
 
     return obj
@@ -822,7 +827,7 @@ def map_params_to_obj(module):
                 "message": module.params["interface_message"],
                 "file_size": file_size,
                 "timestamp": module.params["timestamp"],
-            }
+            },
         )
     return obj
 
@@ -872,7 +877,7 @@ def main():
                 "link-down-error",
                 "link-up-notif",
                 "link-up-error",
-            ]
+            ],
         ),
         event=dict(
             choices=[
@@ -880,7 +885,7 @@ def main():
                 "link-default",
                 "trunk-enable",
                 "trunk-default",
-            ]
+            ],
         ),
         interface_message=dict(choices=["add-interface-description"]),
         file_size=dict(type="int"),

@@ -42,12 +42,12 @@ class TestNxosOspfv2Module(TestNxosModule):
         super(TestNxosOspfv2Module, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
         self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv2.ospfv2.Ospfv2Facts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv2.ospfv2.Ospfv2Facts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -98,7 +98,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 ),
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -135,7 +135,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -177,7 +177,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 ),
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -200,7 +200,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -214,16 +214,16 @@ class TestNxosOspfv2Module(TestNxosModule):
                                     protocol="eigrp",
                                     id="100",
                                     route_map="rmap_2",
-                                )
+                                ),
                             ],
                             areas=[
                                 dict(
                                     area_id="0.0.0.101",
                                     stub=dict(no_summary=True),
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -253,7 +253,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -266,10 +266,10 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.101",
                                     stub=dict(no_summary=True),
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -298,7 +298,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -340,7 +340,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 ),
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 state="replaced",
             ),
@@ -363,7 +363,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -395,7 +395,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -437,7 +437,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 ),
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 state="overridden",
             ),
@@ -462,7 +462,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.101 authentication message-digest
             router ospf 300
               router-id 192.0.168.102
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -492,7 +492,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.101 authentication message-digest
             router ospf 300
               router-id 192.0.168.102
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -521,7 +521,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.101 authentication message-digest
             router ospf 300
               router-id 192.0.168.102
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
 
@@ -541,7 +541,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               router-id 203.0.113.20
             router ospf TEST-1
               router-id 198.51.100.1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -550,7 +550,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                         dict(process_id="100", router_id="203.0.113.20"),
                         dict(process_id="TEST-1", router_id="198.51.100.1"),
                         dict(process_id="TEST-2", router_id="198.52.200.1"),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),

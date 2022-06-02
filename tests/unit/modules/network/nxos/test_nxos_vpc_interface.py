@@ -36,17 +36,17 @@ class TestNxosVpcModule(TestNxosModule):
         super(TestNxosVpcModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc_interface.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc_interface.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc_interface.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc_interface.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc_interface.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc_interface.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 

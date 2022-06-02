@@ -205,7 +205,7 @@ def map_params_to_obj(module):
                 "ipv4": module.params["ipv4"],
                 "ipv6": module.params["ipv6"],
                 "state": module.params["state"],
-            }
+            },
         )
 
     return obj

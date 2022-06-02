@@ -36,12 +36,12 @@ class TestNxosBgpModule(TestNxosModule):
         super(TestNxosBgpModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -120,12 +120,12 @@ class TestNxosBgp32BitsAS(TestNxosModule):
         super(TestNxosBgp32BitsAS, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.get_config",
         )
         self.get_config = self.mock_get_config.start()
 

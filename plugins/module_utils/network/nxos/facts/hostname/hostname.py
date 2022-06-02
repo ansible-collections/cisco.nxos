@@ -64,7 +64,7 @@ class HostnameFacts(object):
         ansible_facts["ansible_network_resources"].pop("hostname", None)
 
         params = utils.remove_empties(
-            hostname_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            hostname_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["hostname"] = params.get("config", {})

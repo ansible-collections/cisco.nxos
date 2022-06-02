@@ -28,12 +28,12 @@ class TestNxosVsanModule(TestNxosModule):
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_execute_show_vsan_cmd = patch(
-            module_path + "GetVsanInfoFromSwitch.execute_show_vsan_cmd"
+            module_path + "GetVsanInfoFromSwitch.execute_show_vsan_cmd",
         )
         self.execute_show_vsan_cmd = self.mock_execute_show_vsan_cmd.start()
 
         self.mock_execute_show_vsanmemcmd = patch(
-            module_path + "GetVsanInfoFromSwitch.execute_show_vsan_mem_cmd"
+            module_path + "GetVsanInfoFromSwitch.execute_show_vsan_mem_cmd",
         )
         self.execute_show_vsanmem_cmd = self.mock_execute_show_vsanmemcmd.start()
 
@@ -68,7 +68,7 @@ class TestNxosVsanModule(TestNxosModule):
                     "name": "vsan-SAN-B",
                 },
                 {"id": 1923, "remove": True, "name": "vsan-SAN-Old"},
-            ]
+            ],
         }
         set_module_args(margs, True)
         self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
@@ -103,7 +103,7 @@ class TestNxosVsanModule(TestNxosModule):
                     "id": 925,
                     "name": "vsan-SAN-925",
                 },
-            ]
+            ],
         }
         set_module_args(margs, True)
         self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
@@ -140,7 +140,7 @@ class TestNxosVsanModule(TestNxosModule):
                     "name": "vsan-SAN-924",
                 },
                 {"id": 925, "name": "vsan-SAN-925", "suspend": True},
-            ]
+            ],
         }
         set_module_args(margs, True)
         self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
@@ -187,8 +187,8 @@ class TestNxosVsanModule(TestNxosModule):
                 {
                     "interface": ["fc1/1", "fc1/40", "port-channel 155"],
                     "id": 922,
-                }
-            ]
+                },
+            ],
         }
         set_module_args(margs, True)
         self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")

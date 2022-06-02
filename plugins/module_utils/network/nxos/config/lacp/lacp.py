@@ -48,7 +48,9 @@ class Lacp(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         lacp_facts = facts["ansible_network_resources"].get("lacp", {})
 
@@ -90,7 +92,7 @@ class Lacp(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
             result["parsed"] = self.get_lacp_facts(data=running_config)
 
@@ -130,7 +132,7 @@ class Lacp(ConfigBase):
         state = self._module.params["state"]
         if state in ("merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state)
+                msg="value of config parameter must not be empty for state {0}".format(state),
             )
 
         commands = list()

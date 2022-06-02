@@ -36,17 +36,17 @@ class TestNxosEvpnGlobalModule(TestNxosModule):
     def setUp(self):
         super(TestNxosEvpnGlobalModule, self).setUp()
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_global.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_global.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_global.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_global.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_global.get_capabilities"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_global.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {"network_api": "cliconf"}

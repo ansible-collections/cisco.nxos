@@ -36,17 +36,17 @@ class TestNxosVpcModule(TestNxosModule):
         super(TestNxosVpcModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
@@ -91,7 +91,7 @@ class TestNxosVpcModule(TestNxosModule):
                 pkl_src="10.1.100.20",
                 peer_gw=True,
                 auto_recovery=True,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -114,7 +114,7 @@ class TestNxosVpcModule(TestNxosModule):
                 pkl_dest="192.168.1.1",
                 pkl_src="10.1.1.1",
                 pkl_vrf="default",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -134,7 +134,7 @@ class TestNxosVpcModule(TestNxosModule):
                 pkl_dest="192.168.1.1",
                 pkl_src="10.1.1.1",
                 pkl_vrf="test-vrf",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -154,7 +154,7 @@ class TestNxosVpcModule(TestNxosModule):
                 domain=100,
                 pkl_dest="192.168.1.1",
                 pkl_vrf="obviously-different-vrf",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -188,7 +188,7 @@ class TestNxosVpcModule(TestNxosModule):
                 pkl_dest="192.168.1.1",
                 pkl_src="10.1.1.1",
                 pkl_vrf="my_vrf",
-            )
+            ),
         )
         self.execute_module(changed=False, device="_vrf_test")
 

@@ -55,7 +55,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^(?P<negated>no\s)?
                 logging\sconsole
                 (\s(?P<severity>\d))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "{{ 'no ' if console.state|d('') == 'disabled' else '' }}"
                       "logging console"
                       "{{ (' ' + console.severity|string) if console.severity is defined else '' }}",
@@ -72,14 +73,15 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^(?P<negated>no\s)?
                 logging\sevent\slink-status\senable
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging event link-status enable",
             "result": {
                 "event": {
                     "link_status": {
                         "enable": "{{ False if negated is defined else True }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -88,14 +90,15 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^(?P<negated>no\s)?
                 logging\sevent\slink-status\sdefault
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging event link-status default",
             "result": {
                 "event": {
                     "link_status": {
                         "default": "{{ False if negated is defined else True }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -104,14 +107,15 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^(?P<negated>no\s)?
                 logging\sevent\strunk-status\senable
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging event trunk-status enable",
             "result": {
                 "event": {
                     "trunk_status": {
                         "enable": "{{ False if negated is defined else True }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -120,14 +124,15 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^(?P<negated>no\s)?
                 logging\sevent\strunk-status\sdefault
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging event trunk-status default",
             "result": {
                 "event": {
                     "trunk_status": {
                         "default": "{{ False if negated is defined else True }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -136,7 +141,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\shistory
                 \s(?P<severity>\d)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging history {{ history.severity }}",
             "result": {
                 "history": {
@@ -150,7 +156,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\shistory\ssize
                 \s(?P<size>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging history size {{ history.size }}",
             "result": {
                 "history": {
@@ -164,7 +171,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sip\saccess-list\scache
                 \sentries\s(?P<entries>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging ip access-list cache entries {{ ip.access_list.cache.entries }}",
             "result": {
                 "ip": {
@@ -172,7 +180,7 @@ class Logging_globalTemplate(NetworkTemplate):
                         "cache": {
                             "entries": "{{ entries }}",
                         },
-                    }
+                    },
                 },
             },
         },
@@ -182,7 +190,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sip\saccess-list\scache
                 \sinterval\s(?P<interval>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging ip access-list cache interval {{ ip.access_list.cache.interval }}",
             "result": {
                 "ip": {
@@ -190,7 +199,7 @@ class Logging_globalTemplate(NetworkTemplate):
                         "cache": {
                             "interval": "{{ interval }}",
                         },
-                    }
+                    },
                 },
             },
         },
@@ -200,7 +209,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sip\saccess-list\scache
                 \sthreshold\s(?P<threshold>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging ip access-list cache threshold {{ ip.access_list.cache.threshold }}",
             "result": {
                 "ip": {
@@ -208,7 +218,7 @@ class Logging_globalTemplate(NetworkTemplate):
                         "cache": {
                             "threshold": "{{ threshold }}",
                         },
-                    }
+                    },
                 },
             },
         },
@@ -218,13 +228,14 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sip\saccess-list
                 \s(?P<detailed>detailed)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging ip access-list detailed",
             "result": {
                 "ip": {
                     "access_list": {
                         "detailed": "{{ not not detailed }}",
-                    }
+                    },
                 },
             },
         },
@@ -234,15 +245,16 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sip\saccess-list\sinclude
                 \s(?P<sgt>sgt)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging ip access-list include sgt",
             "result": {
                 "ip": {
                     "access_list": {
                         "include": {
                             "sgt": "{{ not not sgt }}",
-                        }
-                    }
+                        },
+                    },
                 },
             },
         },
@@ -256,7 +268,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 \s(?P<facility>\S+)
                 \s(?P<severity>\d+)
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging level {{ facility }} {{ severity }}",
             "result": {
                 "facilities": [
@@ -264,7 +277,7 @@ class Logging_globalTemplate(NetworkTemplate):
                         "facility": "{{ facility }}",
                         "severity": "{{ severity }}",
                     },
-                ]
+                ],
             },
         },
         {
@@ -277,7 +290,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\s(?P<severity>\d+))?
                 (\ssize\s(?P<size>\d+))?
                 (\spersistent\sthreshold\s(?P<persistent_threshold>\d+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "{{ 'no ' if logfile.state|d('') == 'disabled' else '' }}"
                       "logging logfile"
                       "{{ ' ' + logfile.name if logfile.name|d('') else '' }}"
@@ -301,7 +315,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^(?P<negated>no\s)?
                 logging\smodule
                 (\s(?P<severity>\d))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "{{ 'no ' if module.state|d('') == 'disabled' else '' }}"
                       "logging module"
                       "{{ (' ' + module.severity|string) if module.severity is defined else '' }}",
@@ -319,7 +334,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^(?P<negated>no\s)?
                 logging\smonitor
                 (\s(?P<severity>\d))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "{{ 'no ' if monitor.state|d('') == 'disabled' else '' }}"
                       "logging monitor"
                       "{{ (' ' + monitor.severity|string) if monitor.severity is defined else '' }}",
@@ -336,12 +352,13 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sorigin-id
                 \s(?P<hostname>hostname)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging origin-id hostname",
             "result": {
                 "origin_id": {
                     "hostname": "{{ not not hostname }}",
-                }
+                },
             },
         },
         {
@@ -350,12 +367,13 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sorigin-id
                 \sip\s(?P<ip>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging origin-id ip {{ origin_id.ip }}",
             "result": {
                 "origin_id": {
                     "ip": "{{ ip }}",
-                }
+                },
             },
         },
         {
@@ -364,12 +382,13 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\sorigin-id
                 \sstring\s(?P<string>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging origin-id string {{ origin_id.string }}",
             "result": {
                 "origin_id": {
                     "string": "{{ string }}",
-                }
+                },
             },
         },
         {
@@ -379,7 +398,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 ^(?P<negated>no\s)?
                 logging
                 \s(?P<rate_limit>rate-limit)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "{{ 'no ' if rate_limit|d('') == 'disabled' else '' }}"
                       "logging rate-limit",
             "result": {
@@ -392,7 +412,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 logging\srfc-strict
                 \s(?P<rfc_strict>5424)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging rfc-strict 5424",
             "result": {
                 "rfc_strict": "{{ not not rfc_strict }}",
@@ -409,7 +430,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 (\ssecure\strustpoint\sclient-identity\s(?P<client_identity>\S+))?
                 (\suse-vrf\s(?P<use_vrf>\S+))?
                 (\sfacility\s(?P<facility>\S+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": _tmplt_hosts,
             "result": {
                 "hosts": [
@@ -419,13 +441,13 @@ class Logging_globalTemplate(NetworkTemplate):
                         "secure": {
                             "trustpoint": {
                                 "client_identity": "{{ client_identity }}",
-                            }
+                            },
                         },
                         "port": "{{ port }}",
                         "facility": "{{ facility }}",
                         "use_vrf": "{{ use_vrf }}",
-                    }
-                ]
+                    },
+                ],
             },
         },
         {
@@ -434,7 +456,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\ssource-interface
                 \s(?P<source_interface>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging source-interface {{ source_interface }}",
             "result": {
                 "source_interface": "{{ source_interface }}",
@@ -446,7 +469,8 @@ class Logging_globalTemplate(NetworkTemplate):
                 r"""
                 ^logging\stimestamp
                 \s(?P<timestamp>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "logging timestamp {{ timestamp }}",
             "result": {
                 "timestamp": "{{ timestamp }}",

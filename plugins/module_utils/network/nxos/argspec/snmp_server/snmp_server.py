@@ -71,7 +71,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "enable": {"type": "bool"},
                                 "timeout": {"type": "int"},
                             },
-                        }
+                        },
                     },
                 },
                 "drop": {
@@ -318,7 +318,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "community": {"type": "str"},
                                 "context": {"type": "str"},
                             },
-                        }
+                        },
                     },
                 },
                 "packetsize": {"type": "int"},

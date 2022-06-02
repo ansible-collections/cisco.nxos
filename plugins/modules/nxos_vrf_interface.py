@@ -209,7 +209,7 @@ def main():
             module.fail_json(
                 msg="interface does not exist on switch. Verify "
                 "switch platform or create it first with "
-                "nxos_interface if it's a logical interface"
+                "nxos_interface if it's a logical interface",
             )
 
     mode = get_interface_mode(interface, intf_type, module)
@@ -217,7 +217,7 @@ def main():
         module.fail_json(
             msg="Ensure interface is a Layer 3 port before "
             "configuring a VRF on an interface. You can "
-            "use nxos_interface"
+            "use nxos_interface",
         )
 
     current_vrf = get_interface_info(interface, module)

@@ -109,7 +109,7 @@ def check_for_acl_int_present(module, name, intf, direction):
         {
             "command": "show running-config aclmgr | section {0}".format(intf.title()),
             "output": "text",
-        }
+        },
     ]
     body = run_commands(module, command)
 

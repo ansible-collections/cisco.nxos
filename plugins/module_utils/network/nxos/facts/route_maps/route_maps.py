@@ -68,7 +68,7 @@ class Route_mapsFacts(object):
         ansible_facts["ansible_network_resources"].pop("route_maps", None)
 
         params = utils.remove_empties(
-            route_maps_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            route_maps_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["route_maps"] = params.get("config", [])

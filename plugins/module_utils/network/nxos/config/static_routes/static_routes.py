@@ -54,7 +54,9 @@ class Static_routes(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         static_routes_facts = facts["ansible_network_resources"].get("static_routes")
         if not static_routes_facts:
@@ -188,7 +190,9 @@ class Static_routes(ConfigBase):
                             for ro in h["routes"]:
                                 if ro["dest"] in want_dest_list:
                                     want_dest = search_obj_in_list(
-                                        ro["dest"], want_afi["routes"], "dest"
+                                        ro["dest"],
+                                        want_afi["routes"],
+                                        "dest",
                                     )
                                     want_next_hops = []
                                     if "next_hops" in want_dest.keys():
@@ -206,13 +210,13 @@ class Static_routes(ConfigBase):
                                                                 {
                                                                     "dest": ro["dest"],
                                                                     "next_hops": [next_hop],
-                                                                }
+                                                                },
                                                             ],
-                                                        }
+                                                        },
                                                     ],
                                                 }
                                                 delete_commands.extend(
-                                                    self.del_commands([delete_dict])
+                                                    self.del_commands([delete_dict]),
                                                 )
                                     else:
                                         # want has no next_hops, so delete all next_hops under that dest
@@ -226,9 +230,9 @@ class Static_routes(ConfigBase):
                                                             {
                                                                 "dest": ro["dest"],
                                                                 "next_hops": ro["next_hops"],
-                                                            }
+                                                            },
                                                         ],
-                                                    }
+                                                    },
                                                 ],
                                             }
                                             delete_commands.extend(self.del_commands([delete_dict]))
@@ -243,9 +247,9 @@ class Static_routes(ConfigBase):
                                                         {
                                                             "dest": ro["dest"],
                                                             "next_hops": ro["next_hops"],
-                                                        }
+                                                        },
                                                     ],
-                                                }
+                                                },
                                             ],
                                         }
                                         delete_commands.extend(self.del_commands([delete_dict]))
@@ -261,7 +265,7 @@ class Static_routes(ConfigBase):
                                             {
                                                 "afi": h["afi"],
                                                 "routes": h["routes"],
-                                            }
+                                            },
                                         ],
                                     }
                                     delete_commands.extend(self.del_commands([delete_dict]))
@@ -275,9 +279,9 @@ class Static_routes(ConfigBase):
                                 {
                                     "address_families": list(obj_in_have["address_families"]),
                                     "vrf": obj_in_have["vrf"],
-                                }
-                            ]
-                        )
+                                },
+                            ],
+                        ),
                     )
         final_delete_commands = []
         for d in delete_commands:
@@ -367,9 +371,9 @@ class Static_routes(ConfigBase):
                                                             {
                                                                 "dest": w2["dest"],
                                                                 "next_hops": hops,
-                                                            }
+                                                            },
                                                         ],
-                                                    }
+                                                    },
                                                 ],
                                             }
                                             commands.extend(self.del_commands([delete_dict]))
@@ -381,7 +385,7 @@ class Static_routes(ConfigBase):
                                                 {
                                                     "afi": o2["afi"],
                                                     "routes": o2["routes"],
-                                                }
+                                                },
                                             ],
                                         }
                                         commands.extend(self.del_commands([delete_dict]))
@@ -392,9 +396,9 @@ class Static_routes(ConfigBase):
                                                 {
                                                     "vrf": obj_in_have["vrf"],
                                                     "address_families": [o2],
-                                                }
-                                            ]
-                                        )
+                                                },
+                                            ],
+                                        ),
                                     )
                     else:
                         # only vrf given to delete
@@ -499,7 +503,7 @@ class Static_routes(ConfigBase):
                                             for nh in ro["next_hops"]:
                                                 if "interface" in nh.keys():
                                                     nh["interface"] = normalize_interface(
-                                                        nh["interface"]
+                                                        nh["interface"],
                                                     )
                                                 if nh not in next_hop_list:
                                                     # no match for next hop in have
@@ -516,7 +520,11 @@ class Static_routes(ConfigBase):
                                         if "next_hops" in ro.keys():
                                             for nh in ro["next_hops"]:
                                                 commands = self.set_next_hop(
-                                                    want, h2, nh, ro, commands
+                                                    want,
+                                                    h2,
+                                                    nh,
+                                                    ro,
+                                                    commands,
                                                 )
                         else:
                             # no match for afi

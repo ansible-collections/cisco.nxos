@@ -45,22 +45,22 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
         super(TestNxosBfdInterfacesModule, self).setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
         )
         self.FACT_LEGACY_SUBSETS = self.mock_FACT_LEGACY_SUBSETS.start()
 
         self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bfd_interfaces.bfd_interfaces.Bfd_interfaces.edit_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bfd_interfaces.bfd_interfaces.Bfd_interfaces.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
@@ -102,14 +102,14 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
           interface Ethernet1/1
           interface Ethernet1/2
           interface Ethernet1/3
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", bfd="disable", echo="disable"),
                 dict(name="Ethernet1/2", bfd="disable"),
-            ]
+            ],
         )
         # Expected result commands for each 'state'
         merged = [
@@ -151,7 +151,7 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
           interface Ethernet1/3
             no bfd
             no bfd echo
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
@@ -160,7 +160,7 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
                 dict(name="Ethernet1/2"),
                 # Eth1/3 not present! Thus overridden should set Eth1/3 to defaults;
                 # replaced should ignore Eth1/3.
-            ]
+            ],
         )
         # Expected result commands for each 'state'
         merged = ["interface Ethernet1/1", "bfd", "no bfd echo"]
@@ -216,7 +216,7 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
           interface Ethernet1/3
             no bfd
             no bfd echo
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(config=[dict(name="Ethernet1/1")])
@@ -257,7 +257,7 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
           feature bfd
           interface Ethernet1/1
             no bfd
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(config=[dict(name="Ethernet1/1.42", bfd="enable", echo="disable")])
@@ -298,14 +298,14 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
             no bfd
             no bfd echo
           interface Ethernet1/2
-        """
+        """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", bfd="disable", echo="disable"),
                 dict(name="Ethernet1/2", bfd="enable", echo="enable"),
-            ]
+            ],
         )
         # Expected result commands for each 'state'
         merged = []

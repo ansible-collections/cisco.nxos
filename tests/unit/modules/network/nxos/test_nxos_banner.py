@@ -33,12 +33,12 @@ class TestNxosBannerModule(TestNxosModule):
     def setUp(self):
         super(TestNxosBannerModule, self).setUp()
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_banner.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_banner.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_banner.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_banner.load_config",
         )
         self.load_config = self.mock_load_config.start()
 

@@ -108,7 +108,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                                     ],
                                                 },
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "default_originate": {
@@ -275,7 +275,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                                             ],
                                                         },
                                                     },
-                                                }
+                                                },
                                             },
                                         },
                                         "default_originate": {

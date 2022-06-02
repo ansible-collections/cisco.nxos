@@ -638,7 +638,7 @@ def map_params_to_obj(module):
                 "tx_rate": module.params["tx_rate"],
                 "rx_rate": module.params["rx_rate"],
                 "neighbors": module.params["neighbors"],
-            }
+            },
         )
 
     return obj
@@ -678,7 +678,7 @@ def map_config_to_obj(want, module):
             if interface_table:
                 if interface_table.get("eth_mode") == "fex-fabric":
                     module.fail_json(
-                        msg='nxos_interface does not support interfaces with mode "fex-fabric"'
+                        msg='nxos_interface does not support interfaces with mode "fex-fabric"',
                     )
 
                 intf_type = get_interface_type(w["name"])
@@ -786,7 +786,7 @@ def check_declarative_intent_params(module, want):
             {
                 "command": "show interface {0}".format(w["name"]),
                 "output": "text",
-            }
+            },
         ]
 
         try:
@@ -802,7 +802,9 @@ def check_declarative_intent_params(module, want):
                 have_tx_rate = match.group(1)
 
             if have_tx_rate is None or not conditional(
-                want_tx_rate, have_tx_rate.strip(), cast=int
+                want_tx_rate,
+                have_tx_rate.strip(),
+                cast=int,
             ):
                 failed_conditions.append("tx_rate " + want_tx_rate)
 
@@ -814,7 +816,9 @@ def check_declarative_intent_params(module, want):
                 have_rx_rate = match.group(1)
 
             if have_rx_rate is None or not conditional(
-                want_rx_rate, have_rx_rate.strip(), cast=int
+                want_rx_rate,
+                have_rx_rate.strip(),
+                cast=int,
             ):
                 failed_conditions.append("rx_rate " + want_rx_rate)
 
@@ -826,7 +830,7 @@ def check_declarative_intent_params(module, want):
                     {
                         "command": "show lldp neighbors interface {0} detail".format(w["name"]),
                         "output": "text",
-                    }
+                    },
                 ]
                 output = run_commands(module, cmd, check_rc=False)
                 if output:
@@ -885,7 +889,7 @@ def main():
             elements="dict",
             options=aggregate_spec,
             mutually_exclusive=[["name", "interface_type"]],
-        )
+        ),
     )
 
     argument_spec.update(element_spec)

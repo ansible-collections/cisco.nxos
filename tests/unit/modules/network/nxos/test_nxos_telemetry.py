@@ -55,32 +55,32 @@ class TestNxosTelemetryModule(TestNxosModule):
         super(TestNxosTelemetryModule, self).setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
         )
         self.FACT_LEGACY_SUBSETS = self.mock_FACT_LEGACY_SUBSETS.start()
 
         self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
         self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.telemetry.telemetry.Telemetry.edit_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.telemetry.telemetry.Telemetry.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos.NxosCmdRef.execute_show_command"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos.NxosCmdRef.execute_show_command",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
         self.mock_get_platform_shortname = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos.NxosCmdRef.get_platform_shortname"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos.NxosCmdRef.get_platform_shortname",
         )
         self.get_platform_shortname = self.mock_get_platform_shortname.start()
 
@@ -118,7 +118,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     compression="gzip",
                     source_interface="Ethernet2/1",
                     vrf="blue",
-                )
+                ),
             ),
             ignore_provider_arg,
         )
@@ -200,7 +200,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     compression="gzip",
                     source_interface="loopback55",
                     vrf="management",
-                )
+                ),
             ),
             ignore_provider_arg,
         )
@@ -222,7 +222,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     compression="gzip",
                     source_interface="loopback55",
                     vrf="management",
-                )
+                ),
             ),
             ignore_provider_arg,
         )
@@ -250,7 +250,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     compression="gzip",
                     source_interface="Ethernet8/1",
                     vrf="management",
-                )
+                ),
             ),
             ignore_provider_arg,
         )
@@ -279,7 +279,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     compression="gzip",
                     source_interface="Ethernet8/1",
                     vrf="blue",
-                )
+                ),
             ),
             ignore_provider_arg,
         )
@@ -310,8 +310,8 @@ class TestNxosTelemetryModule(TestNxosModule):
                         "port": "5001",
                         "protocol": "GRPC",
                         "encoding": "GPB",
-                    }
-                }
+                    },
+                },
             ],
             "destination_groups",
         )
@@ -332,7 +332,7 @@ class TestNxosTelemetryModule(TestNxosModule):
             self.execute_module()
         testdata = errinfo.value.args[0]
         assert "Parameter <destination> under <destination_groups> must be a dict" in str(
-            testdata["msg"]
+            testdata["msg"],
         )
         assert testdata["failed"]
 
@@ -427,7 +427,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                         "protocol": "GRPC",
                         "encoding": "GPB",
                     },
-                }
+                },
             ],
             "destination_groups",
             state="merged",
@@ -477,7 +477,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                         "protocol": "grpc",
                         "encoding": "gpb",
                     },
-                }
+                },
             ],
             "destination_groups",
         )
@@ -702,7 +702,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                         "query_condition": "query_condition_xyz",
                         "filter_condition": "filter_condition_xyz",
                     },
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -727,7 +727,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                         "query_condition": "query_condition_xyz",
                         "filter_condition": "filter_condition_xyz",
                     },
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -781,7 +781,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     "id": "77",
                     "data_source": "DME",
                     "path": {"name": "sys/bgp", "depth": 0},
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -812,7 +812,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                         "depth": 0,
                         "query_condition": "query_condition_xyz",
                     },
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -843,7 +843,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                         "depth": 0,
                         "filter_condition": "filter_condition_xyz",
                     },
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -875,7 +875,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                         "query_condition": "qc",
                         "filter_condition": "fc",
                     },
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -930,9 +930,9 @@ class TestNxosTelemetryModule(TestNxosModule):
                     "id": "2",
                     "data_source": "DME",
                     "path": {
-                        "name": "sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]"
+                        "name": "sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]",
                     },
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -949,7 +949,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     "id": "2",
                     "data_source": "DME",
                     "path": {"name": "boo", "depth": 0},
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -975,7 +975,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     "id": "77",
                     "data_source": "YANG",
                     "path": {"name": "environment"},
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -1002,7 +1002,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     "id": "77",
                     "data_source": "NATIVE",
                     "path": {"name": "interface"},
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -1029,7 +1029,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                     "id": "77",
                     "data_source": "NX-API",
                     "path": {"name": "resources"},
-                }
+                },
             ],
             "sensor_groups",
         )
@@ -1546,7 +1546,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                                 "protocol": "GRPC",
                                 "encoding": "GPB",
                             },
-                        }
+                        },
                     ],
                     "sensor_groups": [
                         {
@@ -1558,7 +1558,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                                 "query_condition": "query_condition_xyz",
                                 "filter_condition": "filter_condition_xyz",
                             },
-                        }
+                        },
                     ],
                     "subscriptions": [
                         {
@@ -1701,13 +1701,13 @@ class TestNxosTelemetryModule(TestNxosModule):
                         {
                             "id": 2,
                             "path": {
-                                "name": "sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]"
+                                "name": "sys/bgp/inst/dom-default/peer-[10.10.10.11]/ent-[10.10.10.11]",
                             },
                         },
                         {
                             "id": 2,
                             "path": {
-                                "name": "sys/bgp/inst/dom-default/peer-[20.20.20.11]/ent-[20.20.20.11]"
+                                "name": "sys/bgp/inst/dom-default/peer-[20.20.20.11]/ent-[20.20.20.11]",
                             },
                         },
                         {
@@ -1762,7 +1762,7 @@ class TestNxosTelemetryModule(TestNxosModule):
           destination-group 2
             ip address 192.168.0.1 port 50001 protocol gRPC encoding GPB
             ip address 192.168.0.2 port 60001 protocol gRPC encoding GPB
-        """
+        """,
         )
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(dict(state="gathered"), ignore_provider_arg)

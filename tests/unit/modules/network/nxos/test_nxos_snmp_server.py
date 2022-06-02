@@ -41,12 +41,12 @@ class TestNxosSnmpServerModule(TestNxosModule):
         super(TestNxosSnmpServerModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
         self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.snmp_server.snmp_server.Snmp_serverFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.snmp_server.snmp_server.Snmp_serverFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -59,7 +59,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         # test merged for linear attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -130,7 +130,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server location lab
             snmp-server mib community-map public context public1
             snmp-server source-interface traps Ethernet1/2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -177,7 +177,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server location lab
             snmp-server mib community-map public context public1
             snmp-server source-interface traps Ethernet1/2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -230,7 +230,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server location lab
             snmp-server mib community-map public context public1
             snmp-server source-interface traps Ethernet1/2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -269,7 +269,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """\
             snmp-server contact testswitch@localhost
             snmp-server location lab
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -292,7 +292,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         # test merged for traps
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -335,7 +335,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server enable traps bgp
             snmp-server enable traps ospf
             snmp-server enable traps ospfv3
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -347,7 +347,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                         bgp=dict(enable=True),
                         ospf=dict(enable=True),
                         ospfv3=dict(enable=True),
-                    )
+                    ),
                 ),
                 state="merged",
             ),
@@ -366,7 +366,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server enable traps bridge topologychange
             snmp-server enable traps callhome event-notify
             snmp-server enable traps callhome smtp-send-fail
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -375,7 +375,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                         aaa=dict(server_state_change=True),
                         bridge=dict(enable=True),
                         cfs=dict(merge_failure=True),
-                    )
+                    ),
                 ),
                 state="replaced",
             ),
@@ -398,7 +398,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server enable traps bridge topologychange
             snmp-server enable traps callhome event-notify
             snmp-server enable traps callhome smtp-send-fail
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -407,7 +407,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                         aaa=dict(server_state_change=True),
                         bridge=dict(enable=True),
                         cfs=dict(merge_failure=True),
-                    )
+                    ),
                 ),
                 state="replaced",
             ),
@@ -425,7 +425,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         # test merged for hosts
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -463,7 +463,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                             priv="private",
                             informs=True,
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -490,7 +490,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server host 192.168.1.1 source-interface Ethernet1/1
             snmp-server host 192.168.2.1 traps version 1 private
             snmp-server host 192.168.3.1 informs version 3 auth private udp-port 65550
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -528,7 +528,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                             priv="private",
                             informs=True,
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -547,7 +547,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server host 192.168.1.1 source-interface Ethernet1/1
             snmp-server host 192.168.2.1 traps version 1 private
             snmp-server host 192.168.3.1 informs version 3 auth private udp-port 65550
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -574,7 +574,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                         ),
                         dict(host="192.168.2.1", filter_vrf="siteA"),
                         dict(host="192.168.4.1", use_vrf="siteB"),
-                    ]
+                    ],
                 ),
                 state="replaced",
             ),
@@ -593,7 +593,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         # test merged for users
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -618,7 +618,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     password="0x5632724fb8ac3699296af26281e1d0f1",
                                     engine_id="2:2:2:2:2",
                                     priv=dict(
-                                        privacy_password="0x5632724fb8ac3699296af26281e1d0f1"
+                                        privacy_password="0x5632724fb8ac3699296af26281e1d0f1",
                                     ),
                                     localizedv2_key=True,
                                 ),
@@ -651,8 +651,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     localized_key=True,
                                 ),
                             ),
-                        ]
-                    )
+                        ],
+                    ),
                 ),
                 state="merged",
             ),
@@ -679,7 +679,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server user user3 network-admin auth md5 0x5632724fb8ac3699296af262 priv aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3
             snmp-server user user1 network-admin auth md5 0x5632724fb8ac3699296af262 localizedkey engineID 1:1:1:1:1
             snmp-server user user4 network-admin auth sha-256 0x5632724fb8ac3699296af262 priv aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 4:4:4:4:4
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -735,8 +735,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     localized_key=True,
                                 ),
                             ),
-                        ]
-                    )
+                        ],
+                    ),
                 ),
                 state="merged",
             ),
@@ -752,7 +752,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server user user2 network-admin auth md5 0x5632724fb8ac3699296af262 priv 0x5632724fb8ac3699296af262 localizedkey engineID 2:2:2:2:2
             snmp-server user user3 network-admin auth md5 0x5632724fb8ac3699296af262 priv aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3
             snmp-server user user1 network-admin auth md5 0x5632724fb8ac3699296af262 localizedkey engineID 1:1:1:1:1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -783,8 +783,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     localized_key=True,
                                 ),
                             ),
-                        ]
-                    )
+                        ],
+                    ),
                 ),
                 state="replaced",
             ),
@@ -821,7 +821,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server location lab
             snmp-server mib community-map public context public1
             snmp-server source-interface traps Ethernet1/2
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = [
@@ -871,7 +871,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     snmp-server source-interface traps Ethernet1/2
                     snmp-server user 1234 network-admin auth md5 0x7d425fbf09417c44bca69e1d9e9ce889 priv 0x7d425fbf09417c44bca69e1d9e9ce889 localizedkey
                     snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
-                    """
+                    """,
                 ),
                 state="parsed",
             ),
@@ -918,7 +918,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                             localized_key=True,
                         ),
                     ),
-                ]
+                ],
             ),
         )
         result = self.execute_module(changed=False)
@@ -989,7 +989,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server location lab
             snmp-server mib community-map public context public1
             snmp-server source-interface traps Ethernet1/2
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
 
@@ -1015,7 +1015,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
     def test_nxos_snmp_server_gathered_empty(self):
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
 

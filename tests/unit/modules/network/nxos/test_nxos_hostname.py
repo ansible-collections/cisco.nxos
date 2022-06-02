@@ -43,12 +43,12 @@ class TestNxosHostnameModule(TestNxosModule):
         super(TestNxosHostnameModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
         self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname.HostnameFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname.HostnameFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -61,7 +61,7 @@ class TestNxosHostnameModule(TestNxosModule):
         # test merged for linear attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv-9k"), state="merged"),
@@ -76,7 +76,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv-9k"), state="merged"),
@@ -90,7 +90,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv"), state="merged"),
@@ -105,7 +105,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv"), state="replaced"),
@@ -120,7 +120,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv"), state="overridden"),
@@ -134,7 +134,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = ["no hostname NXOSv-9k"]
@@ -155,7 +155,7 @@ class TestNxosHostnameModule(TestNxosModule):
         cfg = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(dict(running_config=cfg, state="parsed"), ignore_provider_arg)
         parsed = {"hostname": "NXOSv-9k"}
@@ -167,7 +167,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = {"hostname": "NXOSv-9k"}

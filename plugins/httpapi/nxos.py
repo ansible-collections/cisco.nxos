@@ -95,14 +95,17 @@ class HttpApi(HttpApiBase):
         headers = {"Content-Type": "application/json"}
 
         response, response_data = self.connection.send(
-            "/ins", request, headers=headers, method="POST"
+            "/ins",
+            request,
+            headers=headers,
+            method="POST",
         )
 
         try:
             response_data = json.loads(to_text(response_data.getvalue()))
         except ValueError:
             raise ConnectionError(
-                "Response was not valid JSON, got {0}".format(to_text(response_data.getvalue()))
+                "Response was not valid JSON, got {0}".format(to_text(response_data.getvalue())),
             )
 
         results = handle_response(response_data)

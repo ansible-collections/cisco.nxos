@@ -383,7 +383,7 @@ def main():
             and module.params["ingress_replication"] != "static"
         ):
             module.fail_json(
-                msg="ingress_replication=static is required " "when using peer_list param"
+                msg="ingress_replication=static is required " "when using peer_list param",
             )
         else:
             peer_list = module.params["peer_list"]
@@ -400,7 +400,7 @@ def main():
         if module.params["ingress_replication"] == "static":
             module.fail_json(
                 msg="ingress_replication=static is not allowed "
-                "when using multisite_ingress_replication"
+                "when using multisite_ingress_replication",
             )
 
     state = module.params["state"]
@@ -410,7 +410,7 @@ def main():
     if state == "present":
         if not interface_exist:
             module.fail_json(
-                msg="The proposed NVE interface does not exist. Use nxos_interface to create it first."
+                msg="The proposed NVE interface does not exist. Use nxos_interface to create it first.",
             )
         elif interface_exist != module.params["interface"]:
             module.fail_json(msg="Only 1 NVE interface is allowed on the switch.")
@@ -420,7 +420,7 @@ def main():
         elif existing and existing["vni"] != module.params["vni"]:
             module.fail_json(
                 msg="ERROR: VNI delete failed: Could not find vni node for {0}".format(
-                    module.params["vni"]
+                    module.params["vni"],
                 ),
                 existing_vni=existing["vni"],
             )

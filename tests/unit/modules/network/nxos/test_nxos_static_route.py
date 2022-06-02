@@ -36,12 +36,12 @@ class TestNxosStaticRouteModule(TestNxosModule):
         super(TestNxosStaticRouteModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_static_route.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_static_route.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_static_route.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_static_route.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -65,7 +65,7 @@ class TestNxosStaticRouteModule(TestNxosModule):
                 next_hop="192.0.2.3",
                 route_name="testing",
                 pref=100,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -102,7 +102,7 @@ class TestNxosStaticRouteModule(TestNxosModule):
                 next_hop="15.16.17.18",
                 vrf="test",
                 state="absent",
-            )
+            ),
         )
         self.execute_module(
             changed=True,

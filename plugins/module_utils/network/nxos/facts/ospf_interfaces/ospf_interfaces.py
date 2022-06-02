@@ -59,7 +59,8 @@ class Ospf_interfacesFacts(object):
 
         # parse native config using the Ospf_interfaces template
         ospf_interfaces_parser = Ospf_interfacesTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = list(ospf_interfaces_parser.parse().values())
         if objs:
@@ -82,8 +83,10 @@ class Ospf_interfacesFacts(object):
 
         params = utils.remove_empties(
             ospf_interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["ospf_interfaces"] = params.get("config", [])

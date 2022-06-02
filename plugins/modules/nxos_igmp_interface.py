@@ -469,7 +469,8 @@ def config_remove_oif(existing, existing_oif_prefix_source):
         for each in existing_oif_prefix_source:
             if each.get("prefix") and each.get("source"):
                 command = "no ip igmp static-oif {0} source {1} ".format(
-                    each.get("prefix"), each.get("source")
+                    each.get("prefix"),
+                    each.get("source"),
                 )
             elif each.get("prefix"):
                 command = "no ip igmp static-oif {0}".format(each.get("prefix"))
@@ -535,14 +536,14 @@ def main():
     if oif_routemap and existing_oif_prefix_source:
         module.fail_json(
             msg="Delete static-oif configurations on this "
-            "interface if you want to use a routemap"
+            "interface if you want to use a routemap",
         )
 
     if oif_ps and existing.get("oif_routemap"):
         module.fail_json(
             msg="Delete static-oif route-map configuration "
             "on this interface if you want to config "
-            "static entries"
+            "static entries",
         )
 
     args = [
@@ -584,7 +585,7 @@ def main():
         for each in CANNOT_ABSENT:
             if each in proposed:
                 module.fail_json(
-                    msg="only params: " "oif_ps, oif_routemap can be used when " "state=absent"
+                    msg="only params: " "oif_ps, oif_routemap can be used when " "state=absent",
                 )
 
     # delta check for all params except oif_ps

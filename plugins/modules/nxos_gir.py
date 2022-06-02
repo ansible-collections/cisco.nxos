@@ -222,14 +222,14 @@ def get_commands(module, state, mode):
         if state == "present" and timeout != module.params["system_mode_maintenance_timeout"]:
             commands.append(
                 "system mode maintenance timeout {0}".format(
-                    module.params["system_mode_maintenance_timeout"]
-                )
+                    module.params["system_mode_maintenance_timeout"],
+                ),
             )
         elif state == "absent" and timeout == module.params["system_mode_maintenance_timeout"]:
             commands.append(
                 "no system mode maintenance timeout {0}".format(
-                    module.params["system_mode_maintenance_timeout"]
-                )
+                    module.params["system_mode_maintenance_timeout"],
+                ),
             )
 
     elif module.params["system_mode_maintenance_shutdown"] and mode == "normal":
@@ -247,8 +247,8 @@ def get_commands(module, state, mode):
             commands.append(
                 "system mode maintenance on-reload "
                 "reset-reason {0}".format(
-                    module.params["system_mode_maintenance_on_reload_reset_reason"]
-                )
+                    module.params["system_mode_maintenance_on_reload_reset_reason"],
+                ),
             )
         elif (
             state == "absent"
@@ -258,8 +258,8 @@ def get_commands(module, state, mode):
             commands.append(
                 "no system mode maintenance on-reload "
                 "reset-reason {0}".format(
-                    module.params["system_mode_maintenance_on_reload_reset_reason"]
-                )
+                    module.params["system_mode_maintenance_on_reload_reset_reason"],
+                ),
             )
 
     if commands:
@@ -302,7 +302,7 @@ def main():
                 "system_mode_maintenance_timeout",
                 "system_mode_maintenance_shutdown",
                 "system_mode_maintenance_on_reload_reset_reason",
-            ]
+            ],
         ],
         required_one_of=[
             [
@@ -311,7 +311,7 @@ def main():
                 "system_mode_maintenance_timeout",
                 "system_mode_maintenance_shutdown",
                 "system_mode_maintenance_on_reload_reset_reason",
-            ]
+            ],
         ],
         supports_check_mode=True,
     )

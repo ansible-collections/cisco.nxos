@@ -62,7 +62,9 @@ class Interfaces(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         self.facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         interfaces_facts = self.facts["ansible_network_resources"].get("interfaces")
 
@@ -103,7 +105,8 @@ class Interfaces(ConfigBase):
 
         if self.state in self.ACTION_STATES:
             self.intf_defs = self.render_interface_defaults(
-                self.get_system_defaults(), existing_interfaces_facts
+                self.get_system_defaults(),
+                existing_interfaces_facts,
             )
             commands.extend(self.set_config(existing_interfaces_facts))
 
@@ -115,7 +118,7 @@ class Interfaces(ConfigBase):
                     "L2_enabled": False,
                     "L3_enabled": False,
                     "mode": "layer3",
-                }
+                },
             }
             commands.extend(self.set_config(existing_interfaces_facts))
 
@@ -137,7 +140,7 @@ class Interfaces(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
             result["parsed"] = self.get_interfaces_facts(data=running_config)
 
@@ -182,7 +185,7 @@ class Interfaces(ConfigBase):
         state = self._module.params["state"]
         if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state)
+                msg="value of config parameter must not be empty for state {0}".format(state),
             )
 
         commands = list()
@@ -468,7 +471,7 @@ class Interfaces(ConfigBase):
                 "mode": None,
                 "L2_enabled": None,
                 "L3_enabled": L3_enabled,
-            }
+            },
         }
         pat = "(no )*system default switchport$"
         m = re.search(pat, config, re.MULTILINE)

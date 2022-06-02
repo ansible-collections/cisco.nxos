@@ -36,12 +36,12 @@ class TestNxosVrfModule(TestNxosModule):
         super(TestNxosVrfModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
