@@ -21,7 +21,7 @@
         nv_overlay_evpn: true
 
     - name: Apply N7K specific setup configuration
-      ansible.builtin.include: tasks/platform/n7k/setup.yaml
+      ansible.builtin.include_tasks: tasks/platform/n7k/setup.yaml
       when: platform is match('N7K')
 
     - name: Configure additional N7K requiste features
@@ -84,7 +84,7 @@
   when: overlay_global_supported
   always:
     - name: Apply N7K specific cleanup configuration
-      ansible.builtin.include: tasks/platform/n7k/cleanup.yaml
+      ansible.builtin.include_tasks: tasks/platform/n7k/cleanup.yaml
       when: platform is match('N7K')
 
     - name: Disable NV overlay EVPN

@@ -42,4 +42,4 @@
     ki: n3000-uk9-kickstart.6.0.2.U6.3a.bin
 
 - name: Upgrade n3500 device to u63a release image
-  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+  ansible.builtin.include_tasks: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
