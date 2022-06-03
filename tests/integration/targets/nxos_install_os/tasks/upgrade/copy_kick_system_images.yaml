@@ -8,7 +8,7 @@
     ignore_errors_httpapi: true
   when: ansible_connection == 'ansible.netcommon.httpapi'
 
-- ansible.builtin.include: enable_scp_server.yaml
+- ansible.builtin.include_tasks: enable_scp_server.yaml
 
 - name: Remove SSH known_hosts file before scp of image file
   ignore_errors: true # noqa ignore-errors

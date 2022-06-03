@@ -38,4 +38,4 @@
     si: nxos.7.0.3.I7.4.bin
 
 - name: Upgrade n3172 device to greensboro release image
-  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+  ansible.builtin.include_tasks: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
