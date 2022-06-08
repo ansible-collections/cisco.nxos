@@ -366,6 +366,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server enable traps bridge topologychange
             snmp-server enable traps callhome event-notify
             snmp-server enable traps callhome smtp-send-fail
+            snmp-server enable traps link cisco-xcvr-mon-status-chg
             """,
         )
         set_module_args(
@@ -375,6 +376,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                         aaa=dict(server_state_change=True),
                         bridge=dict(enable=True),
                         cfs=dict(merge_failure=True),
+                        link=dict(cisco_xcvr_mon_status_chg=False),
                     ),
                 ),
                 state="replaced",
@@ -385,6 +387,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "no snmp-server enable traps callhome event-notify",
             "no snmp-server enable traps callhome smtp-send-fail",
             "snmp-server enable traps cfs merge-failure",
+            "no snmp-server enable traps link cisco-xcvr-mon-status-chg",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
