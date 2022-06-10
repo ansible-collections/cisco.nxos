@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_snmp_server` - Fix typo for traps link cisco-xcvr-mon-status-chg."

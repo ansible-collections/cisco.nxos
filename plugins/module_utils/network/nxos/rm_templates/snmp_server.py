@@ -771,7 +771,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 \slink\s(?P<cisco_xcvr_mon_status_chg>cisco-xcvr-mon-status-chg)
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps link cisco_xcvr_mon_status_chg",
+            "setval": "snmp-server enable traps link cisco-xcvr-mon-status-chg",
             "result": {
                 "traps": {
                     "link": {
