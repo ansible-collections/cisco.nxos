@@ -236,10 +236,18 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import nxos_argument_spec
 
 
-class FilePush:
+class FileCopy:
     def __init__(self, module):
         self._module = module
         self._connection = get_resource_connection(self._module)
+        device_info = self._connection.get_device_info()
+        self._model = device_info.get("network_os_model", "")
+        self._platform = device_info.get("network_os_platform", "")
+
+
+class FilePush(FileCopy):
+    def __init__(self, module):
+        super(FilePush, self).__init__(module)
         self.result = {}
 
     def md5sum_check(self, dst, file_system):
@@ -348,10 +356,9 @@ class FilePush:
         return self.result
 
 
-class FilePull:
+class FilePull(FileCopy):
     def __init__(self, module):
-        self._module = module
-        self._connection = get_resource_connection(self._module)
+        super(FilePull, self).__init__(module)
         self.result = {}
 
     def mkdir(self, directory):
@@ -373,7 +380,11 @@ class FilePull:
         rfile = self._module.params["remote_file"] + " "
         if not rfile.startswith("/"):
             rfile = "/" + rfile
-        vrf = " vrf " + self._module.params["vrf"]
+
+        if not self._platform.startswith("DS-") and "MDS" not in self._model:
+            vrf = " vrf " + self._module.params["vrf"]
+        else:
+            vrf = ""
         if self._module.params["file_pull_compact"]:
             compact = " compact "
         else:
