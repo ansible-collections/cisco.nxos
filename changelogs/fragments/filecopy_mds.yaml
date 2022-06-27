@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_file_copy` - Skip `vrf` when running against MDS switches (https://github.com/ansible-collections/cisco.nxos/issues/508)."
