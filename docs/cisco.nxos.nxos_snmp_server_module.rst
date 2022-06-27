@@ -191,6 +191,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify IPv4 ACL, the ACL name specified must be IPv4 ACL.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -208,6 +209,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify IPv6 ACL, the ACL name specified after must be IPv6 ACL.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -309,6 +311,7 @@ Parameters
                 </td>
                 <td>
                         <div>VRF associated with the SNMP context.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -326,6 +329,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configure port counter configuration.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -401,6 +405,7 @@ Parameters
                 </td>
                 <td>
                         <div>Silently drop unknown v3 user packets.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -460,6 +465,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configure a local SNMPv3 engineID.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -567,6 +573,7 @@ Parameters
                 </td>
                 <td>
                         <div>Filters notifications to the notification host receiver based on the configured VRF.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -694,6 +701,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configures SNMP to use the selected VRF to communicate with the host receiver.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -874,6 +882,7 @@ Parameters
                 </td>
                 <td>
                         <div>Source interface to be used for sending out SNMP notifications.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -987,6 +996,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable tcp-session.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -1123,6 +1133,7 @@ Parameters
                 </td>
                 <td>
                         <div>Bridge traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -2015,6 +2026,7 @@ Parameters
                 </td>
                 <td>
                         <div>Err-disable state notification.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2103,6 +2115,7 @@ Parameters
                 </td>
                 <td>
                         <div>Mac addr move trap.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2253,6 +2266,7 @@ Parameters
                 </td>
                 <td>
                         <div>MMode traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -2691,6 +2705,7 @@ Parameters
                 </td>
                 <td>
                         <div>Port-Storm-Control-Event.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2753,6 +2768,7 @@ Parameters
                 </td>
                 <td>
                         <div>Stpx traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -3129,6 +3145,7 @@ Parameters
                 </td>
                 <td>
                         <div>VTP traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>

@@ -85,7 +85,9 @@ options:
             description: Set history table size.
             type: int
       ip:
-        description: IP configuration.
+        description:
+          - IP configuration.
+          - This option is unsupported on MDS switches.
         type: dict
         suboptions:
           access_list:
@@ -137,7 +139,9 @@ options:
             type: str
           severity: *sev
           persistent_threshold:
-            description: Set persistent logging utilization alert threshold in percentage.
+            description:
+              - Set persistent logging utilization alert threshold in percentage.
+              - This option is unsupported on MDS switches.
             type: int
           size:
             description: Enter the logfile size in bytes.
@@ -187,6 +191,7 @@ options:
         description:
           - Set RFC to which messages should compliant.
           - Syslogs will be compliant to RFC 5424.
+          - This option is unsupported on MDS switches.
         type: bool
       hosts:
         description: Enable forwarding to Remote Syslog Servers.
@@ -217,10 +222,14 @@ options:
                       - Trustpoint to use for client certificate authentication.
                     type: str
           use_vrf:
-            description: Display per-VRF information.
+            description:
+              - Display per-VRF information.
+              - This option is unsupported on MDS switches.
             type: str
       source_interface:
-        description: Enable Source-Interface for Remote Syslog Server.
+        description:
+          - Enable Source-Interface for Remote Syslog Server.
+          - This option is unsupported on MDS switches.
         type: str
       timestamp:
         description: Set logging timestamp granularity.

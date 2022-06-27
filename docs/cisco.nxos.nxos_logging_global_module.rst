@@ -544,6 +544,7 @@ Parameters
                 </td>
                 <td>
                         <div>Display per-VRF information.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -561,6 +562,7 @@ Parameters
                 </td>
                 <td>
                         <div>IP configuration.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -770,6 +772,7 @@ Parameters
                 </td>
                 <td>
                         <div>Set persistent logging utilization alert threshold in percentage.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1082,6 +1085,7 @@ Parameters
                 <td>
                         <div>Set RFC to which messages should compliant.</div>
                         <div>Syslogs will be compliant to RFC 5424.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1098,6 +1102,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable Source-Interface for Remote Syslog Server.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>

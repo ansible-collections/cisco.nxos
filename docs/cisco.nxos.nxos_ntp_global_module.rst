@@ -62,6 +62,7 @@ Parameters
                 </td>
                 <td>
                         <div>NTP access-group.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -432,6 +433,7 @@ Parameters
                 </td>
                 <td>
                         <div>Act as NTP master clock.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -470,6 +472,7 @@ Parameters
                 </td>
                 <td>
                         <div>NTP passive command.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -595,6 +598,7 @@ Parameters
                 </td>
                 <td>
                         <div>Display per-VRF information.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                         <div style="font-size: small; color: darkgreen"><br/>aliases: use_vrf</div>
                 </td>
             </tr>
@@ -722,6 +726,7 @@ Parameters
                 </td>
                 <td>
                         <div>Display per-VRF information.</div>
+                        <div>This option is not applicable for MDS switches.</div>
                         <div style="font-size: small; color: darkgreen"><br/>aliases: use_vrf</div>
                 </td>
             </tr>
@@ -740,6 +745,7 @@ Parameters
                 </td>
                 <td>
                         <div>Source of NTP packets.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
