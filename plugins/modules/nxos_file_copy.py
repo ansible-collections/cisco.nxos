@@ -157,7 +157,8 @@ options:
     type: str
   vrf:
     description:
-    - The VRF used to pull the file. Useful when no vrf management is defined
+    - The VRF used to pull the file. Useful when no vrf management is defined.
+    - This option is not applicable for MDS switches.
     default: management
     type: str
 """

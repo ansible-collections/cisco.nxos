@@ -526,7 +526,8 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">"management"</div>
                 </td>
                 <td>
-                        <div>The VRF used to pull the file. Useful when no vrf management is defined</div>
+                        <div>The VRF used to pull the file. Useful when no vrf management is defined.</div>
+                        <div>This option is not applicable for MDS switches.</div>
                 </td>
             </tr>
     </table>
