@@ -1240,6 +1240,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable callhome traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1324,6 +1325,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable cfs traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1430,6 +1432,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable config traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -1752,6 +1755,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable feature-control traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1836,6 +1840,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable generic traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1898,6 +1903,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable license traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2160,6 +2166,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable link traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2453,6 +2460,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable rf traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2515,6 +2523,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable rmon traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2665,6 +2674,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable snmp traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -2728,6 +2738,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable storm-control traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2897,6 +2908,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable syslog traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2981,6 +2993,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable sysmgr traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -3043,6 +3056,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable system traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -3083,6 +3097,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable upgrade traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>

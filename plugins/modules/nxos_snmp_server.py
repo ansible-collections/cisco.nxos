@@ -162,7 +162,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable callhome traps.
+                description:
+                  - Enable callhome traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               event_notify:
                 description: Callhome External Event Notification.
@@ -175,7 +177,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable cfs traps.
+                description:
+                  - Enable cfs traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               merge_failure:
                 description: Merge failure notification.
@@ -188,7 +192,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable config traps.
+                description:
+                  - Enable config traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               ccmCLIRunningConfigChanged:
                 description: Running config change trap.
@@ -235,7 +241,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable feature-control traps.
+                description:
+                  - Enable feature-control traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               featureOpStatusChange:
                 description: Feature operation status change notification.
@@ -248,7 +256,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable generic traps.
+                description:
+                  - Enable generic traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               coldStart:
                 description: Generic coldStart trap.
@@ -261,7 +271,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable license traps.
+                description:
+                  - Enable license traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               notify_license_expiry:
                 description: License Expiry Notification.
@@ -280,7 +292,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable link traps.
+                description:
+                  - Enable link traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               cErrDisableInterfaceEventRev1:
                 description:
@@ -350,7 +364,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable rf traps.
+                description:
+                  - Enable rf traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               redundancy_framework:
                 description: Redundancy_Framework (RF) Sup switchover MIB.
@@ -360,7 +376,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable rmon traps.
+                description:
+                  - Enable rmon traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               fallingAlarm:
                 description: Rmon falling alarm.
@@ -379,7 +397,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable snmp traps.
+                description:
+                  - Enable snmp traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               authentication:
                 description: SNMP authentication trap.
@@ -389,7 +409,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable storm-control traps.
+                description:
+                  - Enable storm-control traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               cpscEventRev1:
                 description:
@@ -422,7 +444,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable syslog traps.
+                description:
+                  - Enable syslog traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               message_generated:
                 description: Message Generated Notification.
@@ -432,7 +456,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable sysmgr traps.
+                description:
+                  - Enable sysmgr traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               cseFailSwCoreNotifyExtended:
                 description: Software Core Notification.
@@ -442,7 +468,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable system traps.
+                description:
+                  - Enable system traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               clock_change_notification:
                 description: Clock-change-notification traps.
@@ -452,7 +480,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable upgrade traps.
+                description:
+                  - Enable upgrade traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               upgradeJobStatusNotify:
                 description: Upgrade Job Status Notification.
