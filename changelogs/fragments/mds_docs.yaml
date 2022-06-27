@@ -1,0 +1,3 @@
+---
+doc_changes:
+  - Updated documentation in nxos_snmp_server, nxos_ntp_global and nxos_logging_global modules to reflect which options are unsupported on MDS switches.
