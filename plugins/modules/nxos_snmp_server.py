@@ -20,8 +20,9 @@ description:
 - This module manages SNMP server configuration on devices running Cisco NX-OS.
 version_added: 2.8.0
 notes:
-- Tested against NX-OS 9.3.6.
+- Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
 - This module works with connection C(network_cli) and C(httpapi).
+- Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:
@@ -63,10 +64,14 @@ options:
             description: Read-write access with this community string.
             type: bool
           use_ipv4acl:
-            description: Specify IPv4 ACL, the ACL name specified must be IPv4 ACL.
+            description:
+              - Specify IPv4 ACL, the ACL name specified must be IPv4 ACL.
+              - This option is unsupported on MDS switches.
             type: str
           use_ipv6acl:
-            description: Specify IPv6 ACL, the ACL name specified after must be IPv6 ACL.
+            description:
+              - Specify IPv6 ACL, the ACL name specified after must be IPv6 ACL.
+              - This option is unsupported on MDS switches.
             type: str
       contact:
         description: Modify sysContact.
@@ -85,10 +90,14 @@ options:
             description: Topology associated with the SNMP context.
             type: str
           vrf:
-            description: VRF associated with the SNMP context.
+            description:
+              - VRF associated with the SNMP context.
+              - This option is unsupported on MDS switches.
             type: str
       counter:
-        description: Configure port counter configuration.
+        description:
+          - Configure port counter configuration.
+          - This option is unsupported on MDS switches.
         type: dict
         suboptions:
           cache:
@@ -102,7 +111,9 @@ options:
                 description: Timeout for which cached port stats exists(in secs).
                 type: int
       drop:
-        description: Silently drop unknown v3 user packets.
+        description:
+          - Silently drop unknown v3 user packets.
+          - This option is unsupported on MDS switches.
         type: dict
         suboptions:
           unknown_engine_id:
@@ -133,7 +144,9 @@ options:
                 description: Enable SNMP BGP traps.
                 type: bool
           bridge:
-            description: Bridge traps.
+            description:
+              - Bridge traps.
+              - This option is unsupported on MDS switches.
             type: dict
             suboptions:
               enable:
@@ -150,7 +163,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable callhome traps.
+                description:
+                  - Enable callhome traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               event_notify:
                 description: Callhome External Event Notification.
@@ -163,7 +178,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable cfs traps.
+                description:
+                  - Enable cfs traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               merge_failure:
                 description: Merge failure notification.
@@ -176,7 +193,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable config traps.
+                description:
+                  - Enable config traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               ccmCLIRunningConfigChanged:
                 description: Running config change trap.
@@ -223,7 +242,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable feature-control traps.
+                description:
+                  - Enable feature-control traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               featureOpStatusChange:
                 description: Feature operation status change notification.
@@ -236,7 +257,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable generic traps.
+                description:
+                  - Enable generic traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               coldStart:
                 description: Generic coldStart trap.
@@ -249,7 +272,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable license traps.
+                description:
+                  - Enable license traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               notify_license_expiry:
                 description: License Expiry Notification.
@@ -268,10 +293,14 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable link traps.
+                description:
+                  - Enable link traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               cErrDisableInterfaceEventRev1:
-                description: Err-disable state notification.
+                description:
+                  - Err-disable state notification.
+                  - This option is unsupported on MDS switches.
                 type: bool
               cieLinkDown:
                 description: Cisco extended link state down notification.
@@ -283,7 +312,9 @@ options:
                 description: Cisco interface transceiver monitor status change notification.
                 type: bool
               cmn_mac_move_notification:
-                description: Mac addr move trap.
+                description:
+                  - Mac addr move trap.
+                  - This option is unsupported on MDS switches.
                 type: bool
               delayed_link_state_change:
                 description: Delayed link state change.
@@ -301,7 +332,9 @@ options:
                 description: IETF Link state up notification.
                 type: bool
           mmode:
-            description: MMode traps.
+            description:
+              - MMode traps.
+              - This option is unsupported on MDS switches.
             type: dict
             suboptions:
               enable:
@@ -332,7 +365,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable rf traps.
+                description:
+                  - Enable rf traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               redundancy_framework:
                 description: Redundancy_Framework (RF) Sup switchover MIB.
@@ -342,7 +377,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable rmon traps.
+                description:
+                  - Enable rmon traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               fallingAlarm:
                 description: Rmon falling alarm.
@@ -361,7 +398,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable snmp traps.
+                description:
+                  - Enable snmp traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               authentication:
                 description: SNMP authentication trap.
@@ -371,16 +410,22 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable storm-control traps.
+                description:
+                  - Enable storm-control traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               cpscEventRev1:
-                description: Port-Storm-Control-Event.
+                description:
+                  - Port-Storm-Control-Event.
+                  - This option is unsupported on MDS switches.
                 type: bool
               trap_rate:
                 description: Number of traps per minute.
                 type: bool
           stpx:
-            description: Stpx traps.
+            description:
+              - Stpx traps.
+              - This option is unsupported on MDS switches.
             type: dict
             suboptions:
               enable:
@@ -400,7 +445,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable syslog traps.
+                description:
+                  - Enable syslog traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               message_generated:
                 description: Message Generated Notification.
@@ -410,7 +457,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable sysmgr traps.
+                description:
+                  - Enable sysmgr traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               cseFailSwCoreNotifyExtended:
                 description: Software Core Notification.
@@ -420,7 +469,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable system traps.
+                description:
+                  - Enable system traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               clock_change_notification:
                 description: Clock-change-notification traps.
@@ -430,7 +481,9 @@ options:
             type: dict
             suboptions:
               enable:
-                description: Enable upgrade traps.
+                description:
+                  - Enable upgrade traps.
+                  - This option is unsupported on MDS switches.
                 type: bool
               upgradeJobStatusNotify:
                 description: Upgrade Job Status Notification.
@@ -439,7 +492,9 @@ options:
                 description: Upgrade Global Status Notification.
                 type: bool
           vtp:
-            description: VTP traps.
+            description:
+              - VTP traps.
+              - This option is unsupported on MDS switches.
             type: dict
             suboptions:
               enable:
@@ -458,7 +513,9 @@ options:
                 description: Enable vtpVlanDeleted notification.
                 type: bool
       engine_id:
-        description: Configure a local SNMPv3 engineID.
+        description:
+          - Configure a local SNMPv3 engineID.
+          - This option is unsupported on MDS switches.
         type: dict
         suboptions:
           local:
@@ -481,7 +538,9 @@ options:
             description: SNMP community string or SNMPv3 user name (Max Size 32).
             type: str
           filter_vrf:
-            description: Filters notifications to the notification host receiver based on the configured VRF.
+            description:
+              - Filters notifications to the notification host receiver based on the configured VRF.
+              - This option is unsupported on MDS switches.
             type: str
           informs:
             description: Send Inform messages to this host.
@@ -493,7 +552,9 @@ options:
             description: Send Traps messages to this host.
             type: bool
           use_vrf:
-            description: Configures SNMP to use the selected VRF to communicate with the host receiver.
+            description:
+              - Configures SNMP to use the selected VRF to communicate with the host receiver.
+              - This option is unsupported on MDS switches.
             type: str
           version:
             description: SNMP version to use for notification messages.
@@ -536,7 +597,9 @@ options:
             description: Enable/Disable snmp protocol operations.
             type: bool
       source_interface:
-        description: Source interface to be used for sending out SNMP notifications.
+        description:
+          - Source interface to be used for sending out SNMP notifications.
+          - This option is unsupported on MDS switches.
         type: dict
         suboptions:
           informs:
@@ -553,7 +616,9 @@ options:
         type: dict
         suboptions:
           enable:
-            description: Enable tcp-session.
+            description:
+              - Enable tcp-session.
+              - This option is unsupported on MDS switches.
             type: bool
           auth:
             description: Enable one time authentication for snmp over tcp session.
