@@ -1178,9 +1178,10 @@ Notes
 -----
 
 .. note::
-   - Tested against NX-OS 9.3.6.
+   - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
    - Limited Support for Cisco MDS
    - This module works with connection ``network_cli`` and ``httpapi``.
+   - Tested against Cisco MDS NX-OS 9.2(2) with connection ``network_cli``.
 
 
 
