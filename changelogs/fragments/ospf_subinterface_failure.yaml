@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Modules related to OSPF interfaces fail when the target NXOS device has subinterfaces
