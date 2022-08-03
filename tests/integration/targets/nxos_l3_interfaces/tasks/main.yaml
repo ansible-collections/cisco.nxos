@@ -1,7 +1,7 @@
 ---
 - name: Set a fact for 'rsvd_intf'
   ansible.builtin.set_fact:
-    rsvd_intf: "{{ rsvd_intf|default('mgmt0') }}"
+    rsvd_intf: "{{ rsvd_intf | default('mgmt0') }}"
 
 - name: Run the CLI and NX-API tests
   block:
