@@ -615,13 +615,13 @@ Examples
             destination:
               ip: 192.168.0.2
               port: 50001
-              protocol: gPRC
+              protocol: gRPC
               encoding: GPB
           - id: 55
             destination:
               ip: 192.168.0.55
               port: 60001
-              protocol: gPRC
+              protocol: gRPC
               encoding: GPB
           sensor_groups:
           - id: 1
@@ -667,7 +667,7 @@ Examples
             destination:
               ip: 192.168.0.2
               port: 50001
-              protocol: gPRC
+              protocol: gRPC
               encoding: GPB
           subscriptions:
           - id: 5
