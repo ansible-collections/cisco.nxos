@@ -1,0 +1,4 @@
+
+---
+trivial:
+  - Remove pinned paramiko version
