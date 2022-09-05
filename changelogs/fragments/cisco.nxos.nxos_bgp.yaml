@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Change modules related to BGP to properly honor hidden default configuration values
