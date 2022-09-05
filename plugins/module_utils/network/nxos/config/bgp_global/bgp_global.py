@@ -330,7 +330,7 @@ class Bgp_global(ResourceModule):
                 self._bgp_list_to_dict(vrf)
 
     def _get_config(self):
-        return self._connection.get("show running-config | section '^router bgp'")
+        return self._connection.get("show running-config all | section '^router bgp'")
 
     def _build_af_data(self):
         """Build a dictionary with AF related information
