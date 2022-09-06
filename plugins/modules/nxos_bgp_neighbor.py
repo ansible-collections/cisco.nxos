@@ -348,7 +348,7 @@ def get_existing(module, args, warnings):
             existing["neighbor"] = module.params["neighbor"]
             existing["vrf"] = module.params["vrf"]
     else:
-        warnings.append("The BGP process didn't exist but the task" " just created it.")
+        warnings.append("The BGP process didn't exist but the task just created it.")
     return existing
 
 
