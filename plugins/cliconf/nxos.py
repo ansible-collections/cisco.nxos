@@ -126,7 +126,7 @@ class Cliconf(CliconfBase):
                     device_info["network_os_image"] = match_isan_file_name.group(1)
 
             match_os_platform = re.search(
-                r'NAME: "Chassis",\s*DESCR:.*\n' r"PID:\s*(\S+)",
+                r'NAME: "Chassis",\s*DESCR:.*\n PID:\s*(\S+)',
                 platform_reply,
                 re.M,
             )
