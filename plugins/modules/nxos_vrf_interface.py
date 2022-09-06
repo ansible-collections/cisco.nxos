@@ -201,7 +201,7 @@ def main():
 
     current_vrfs = get_vrf_list(module)
     if vrf not in current_vrfs:
-        warnings.append("The VRF is not present/active on the device. " "Use nxos_vrf to fix this.")
+        warnings.append("The VRF is not present/active on the device. Use nxos_vrf to fix this.")
 
     intf_type = get_interface_type(interface)
     if intf_type != "ethernet" and network_api == "cliconf":
