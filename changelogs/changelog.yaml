@@ -470,8 +470,7 @@ releases:
         - Deprecated nxos_bgp_neighbor_af in favour of nxos_bgp_neighbor_address_family
           resource module.
       major_changes:
-        - Please refer to ansible.netcommon `changelog
-          <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
+        - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
           for more details.
         - Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode`
           and `ansible_network_import_modules`.
@@ -716,9 +715,6 @@ releases:
     release_date: "2021-12-10"
   2.8.2:
     changes:
-      release_summary:
-        - The v2.8.1 of the cisco.nxos collection is not available on Ansible Automation Hub. Please download and use v2.8.2 which
-          also contains an additional bug fix.
       bugfixes:
         - "`nxos_ntp_global` - In some cases, there is an extra whitespace in the source-interface
           line. This patch accounts for this behaviour in config (https://github.com/ansible-collections/cisco.nxos/issues/399)."
@@ -847,3 +843,12 @@ releases:
       - snmp_server_localized.yaml
       - unstyle_equal_debug.yaml
     release_date: "2022-06-28"
+  3.1.1:
+    changes:
+      bugfixes:
+        - Modules related to OSPF interfaces fail when the target NXOS device has subinterfaces
+    fragments:
+      - ospf_subinterface_failure.yaml
+      - paramiko.yaml
+      - sanity_fix.yaml
+    release_date: "2022-09-07"
