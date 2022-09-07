@@ -849,7 +849,7 @@ releases:
   3.1.1:
     changes:
       bugfixes:
-        - Modules related to OSPF interfaces fail when the target NXOS device has subinterfaces
+        - Fix issue with modules related to OSPF interfaces failing when the target NXOS device has subinterfaces.
     fragments:
       - ospf_subinterface_failure.yaml
       - paramiko.yaml
