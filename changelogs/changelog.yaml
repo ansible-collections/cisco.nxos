@@ -470,8 +470,8 @@ releases:
         - Deprecated nxos_bgp_neighbor_af in favour of nxos_bgp_neighbor_address_family
           resource module.
       major_changes:
-        - Please refer to ansible.netcommon `changelog
-          <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
+        - Please refer to ansible.netcommon
+          `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
           for more details.
         - Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode`
           and `ansible_network_import_modules`.
@@ -847,3 +847,12 @@ releases:
       - snmp_server_localized.yaml
       - unstyle_equal_debug.yaml
     release_date: "2022-06-28"
+  3.1.1:
+    changes:
+      bugfixes:
+        - Fix issue with modules related to OSPF interfaces failing when the target NXOS device has subinterfaces.
+    fragments:
+      - ospf_subinterface_failure.yaml
+      - paramiko.yaml
+      - sanity_fix.yaml
+    release_date: "2022-09-07"

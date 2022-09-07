@@ -5,6 +5,14 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v3.1.1
+======
+
+Bugfixes
+--------
+
+- Fix issue with modules related to OSPF interfaces failing when the target NXOS device has subinterfaces.
+
 v3.1.0
 ======
 

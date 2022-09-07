@@ -75,12 +75,12 @@
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N3K-F
-  when: ( platform is match("N3K")) and ( fretta is search("true"))
+  when: (platform is match("N3K")) and (fretta is search("true"))
 
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N9K-F
-  when: ( platform is match("N9K")) and ( fretta is search("true"))
+  when: (platform is match("N9K")) and (fretta is search("true"))
 
 - name: Set a fact for 'titanium'
   ansible.builtin.set_fact:
@@ -94,17 +94,17 @@
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N35
-  when: ( chassis_type is search("C35"))
+  when: (chassis_type is search("C35"))
 
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N35NG
-  when: ( chassis_type is search("C35")) and image_version is search("7.0\(3\)I7")
+  when: (chassis_type is search("C35")) and image_version is search("7.0\(3\)I7")
 
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N3L
-  when: ( chassis_type is search("C3048"))
+  when: (chassis_type is search("C3048"))
 
 - name: Set a fact for 'imagetag'
   ansible.builtin.set_fact:
