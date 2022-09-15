@@ -636,10 +636,17 @@ class Legacy(FactsBase):
         return objects
 
     def parse_structured_module(self, data):
-        data = data["TABLE_modinfo"]["ROW_modinfo"]
-        if isinstance(data, dict):
-            data = [data]
-        objects = list(self.transform_iterable(data, self.MODULE_MAP))
+        modinfo = data["TABLE_modinfo"]
+        if isinstance(modinfo, dict):
+            modinfo = [modinfo]
+
+        objects = []
+        for entry in modinfo:
+            entry = entry["ROW_modinfo"]
+            if isinstance(entry, dict):
+                entry = [entry]
+            entry_objects = list(self.transform_iterable(entry, self.MODULE_MAP))
+            objects.extend(entry_objects)
         return objects
 
     def parse_structured_fan_info(self, data):
