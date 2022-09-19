@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_facts` - Fixes parsing of module info json data when TABLE_modinfo entry is a list (https://github.com/ansible-collections/cisco.nxos/issues/559)."
