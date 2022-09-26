@@ -15,7 +15,7 @@
   cisco.nxos.nxos_command:
     commands: run bash rm /var/home/admin/.ssh/known_hosts
 
-- name: Copy {{ si }} to bootflash # noqa var-spacing
+- name: Copy file to bootflash {{ si }}
   register: result
   cisco.nxos.nxos_file_copy:
     file_pull: true
@@ -30,13 +30,13 @@
     msg: "{{ item.key }} {{ item.value }}"
   with_dict: "{{ result }}"
 
-- name: Copy {{ ki }} to bootflash # noqa var-spacing
+- name: Copy file to bootflash {{ ki }}
   when: ki is defined
   register: result
   cisco.nxos.nxos_file_copy:
     file_pull: true
     file_pull_timeout: 1200
-    remote_file: "{{image_dir}}{{ ki }}"
+    remote_file: "{{ image_dir }}{{ ki }}"
     remote_scp_server: "{{ remote_scp_server }}"
     remote_scp_server_user: "{{ remote_scp_user }}"
     remote_scp_server_password: "{{ remote_scp_password }}"
