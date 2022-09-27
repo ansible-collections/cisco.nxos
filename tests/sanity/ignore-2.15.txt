@@ -1,0 +1,3 @@
+plugins/action/nxos.py action-plugin-docs # base class for deprecated network platform modules using `connection: local`
+plugins/cliconf/nxos.py pylint:arguments-renamed
+tests/unit/mock/loader.py pylint:arguments-renamed
