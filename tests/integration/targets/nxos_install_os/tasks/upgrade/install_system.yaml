@@ -17,7 +17,7 @@
       - no boot system
     match: line
 
-- name: Set OS image {{ si }} boot pointers
+- name: "Set OS image boot pointers: {{ si }}"
   when: force
   cisco.nxos.nxos_config:
     lines:
@@ -25,7 +25,7 @@
       - copy run start
     match: line
 
-- name: Boot image {{ si }} using reload
+- name: "Boot image using reload: {{ si }}"
   ignore_errors: true # noqa ignore-errors
   when: force
   cisco.nxos.nxos_config:
