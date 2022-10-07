@@ -19,7 +19,7 @@
       - copy run start
     match: line
 
-- name: Boot image using reload ({{ si }})
+- name: "Boot image using reload {{ si }}"
   ignore_errors: true # noqa ignore-errors
   when: force
   cisco.nxos.nxos_command:

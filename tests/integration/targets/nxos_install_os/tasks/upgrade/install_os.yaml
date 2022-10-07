@@ -1,16 +1,20 @@
 ---
-- ansible.builtin.include_tasks: delete_files.yaml
+- name: Run delete files tasks
+  ansible.builtin.include_tasks: delete_files.yaml
   when: delete_files
 
-- ansible.builtin.include_tasks: copy_kick_system_images.yaml
+- name: Copy Kick System images
+  ansible.builtin.include_tasks: copy_kick_system_images.yaml
   vars:
     ansible_connection: ansible.netcommon.network_cli connection={{ cli }}
   when: copy_images
 
-- ansible.builtin.include_tasks: install_with_kick.yaml
+- name: Run install with kick tests
+  ansible.builtin.include_tasks: install_with_kick.yaml
   when: ki is defined
 
-- ansible.builtin.include_tasks: install_system.yaml
+- name: Run install system
+  ansible.builtin.include_tasks: install_system.yaml
   when: ki is undefined
 
 - name: Reset the connection
