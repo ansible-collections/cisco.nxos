@@ -182,7 +182,7 @@ class TestNxosL3InterfacesModule(TestNxosModule):
 
         playbook["state"] = "overridden"
         set_module_args(playbook, ignore_provider_arg)
-        result = self.execute_module(changed=True, commands=overridden)
+        self.execute_module(changed=True, commands=overridden)
 
     def test_3(self):
         # encap testing
