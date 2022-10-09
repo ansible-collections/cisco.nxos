@@ -1,0 +1,17 @@
+---
+major_changes:
+  - "This release removes all deprecated plugins that have reached their end-of-life."
+  - "This includes the following modules:"
+  - "nxos_acl"
+  - "nxos_acl_interface"
+  - "nxos_interface"
+  - "nxos_interface_ospf"
+  - "nxos_l2_interface"
+  - "nxos_l3_interface"
+  - "nxos_linkagg"
+  - "nxos_lldp"
+  - "nxos_ospf"
+  - "nxos_ospf_vrf"
+  - "nxos_smu"
+  - "nxos_static_route"
+  - "nxos_vlan"
