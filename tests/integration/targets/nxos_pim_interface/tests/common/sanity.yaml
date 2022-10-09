@@ -35,7 +35,7 @@
       - name: "{{ testint }}"
         mode: layer3
         description: Configured by Ansible - Layer3
-        enabled: True
+        enabled: true
     state: present
 
 - block:
