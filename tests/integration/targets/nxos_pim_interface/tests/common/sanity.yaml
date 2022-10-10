@@ -36,7 +36,7 @@
         mode: layer3
         description: Configured by Ansible - Layer3
         enabled: true
-    state: present
+    state: merged
 
 - block:
     - name: Configure nxos_pim_interface state absent
