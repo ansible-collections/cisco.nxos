@@ -1120,7 +1120,7 @@ class NxosCmdRef:
             else:
                 cmd = ref[k]["setval"].format(**playval)
         elif "str" == kind:
-            if "deleted" in playval:
+            if "deleted" in str(playval):
                 if existing:
                     cmd = "no " + ref[k]["setval"].format(existing)
             else:
@@ -1156,7 +1156,7 @@ class NxosCmdRef:
             if ref["_state"] in self.present_states:
                 if existing is None:
                     return False
-                elif playval == existing:
+                elif str(playval) == str(existing):
                     return True
                 elif isinstance(existing, dict) and playval in existing.values():
                     return True
