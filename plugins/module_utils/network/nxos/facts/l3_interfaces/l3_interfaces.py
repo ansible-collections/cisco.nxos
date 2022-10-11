@@ -92,6 +92,7 @@ class L3_interfacesFacts(object):
         config["name"] = intf
         config["dot1q"] = utils.parse_conf_arg(conf, "encapsulation dot1[qQ]")
         config["redirects"] = utils.parse_conf_cmd_arg(conf, "no ip redirects", False, True)
+        config["ipv6_redirects"] = utils.parse_conf_cmd_arg(conf, "no ipv6 redirects", False, True)
         config["unreachables"] = utils.parse_conf_cmd_arg(conf, "ip unreachables", True, False)
         config["evpn_multisite_tracking"] = utils.parse_conf_arg(conf, "evpn multisite")
         ipv4_match = re.compile(r"\n  ip address (.*)")
