@@ -99,7 +99,11 @@ options:
             type: int
       redirects:
         description:
-        - Enables/disables ip redirects
+        - Enables/disables ipv4 redirects.
+        type: bool
+      ipv6_redirects:
+        description:
+        - Enables/disables ipv6 redirects.
         type: bool
       unreachables:
         description:
