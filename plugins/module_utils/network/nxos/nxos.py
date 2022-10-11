@@ -1108,7 +1108,17 @@ class NxosCmdRef:
             # match up with the getval regex named group keys; e.g.
             #   getval: my-cmd (?P<foo>\d+) bar (?P<baz>\d+)
             #   setval: my-cmd {foo} bar {baz}
-            cmd = ref[k]["setval"].format(**playval)
+            if ref[k]["setval"].startswith("path"):
+                tmplt = "path {name}"
+                if "depth" in playval:
+                    tmplt += " depth {depth}"
+                if "query_condition" in playval:
+                    tmplt += " query-condition {query_condition}"
+                if "filter_condition" in playval:
+                    tmplt += " filter-condition {filter_condition}"
+                cmd = tmplt.format(**playval)
+            else:
+                cmd = ref[k]["setval"].format(**playval)
         elif "str" == kind:
             if "deleted" in playval:
                 if existing:
