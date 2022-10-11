@@ -15,7 +15,7 @@
 
   always:
     - name: "Change hostname back to {{ inventory_hostname_short }}"
-      nxos_config:
+      cisco.nxos.nxos_config:
         lines:
           - "hostname {{ inventory_hostname_short }}"
         match: none
