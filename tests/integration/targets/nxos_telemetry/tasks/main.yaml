@@ -24,7 +24,7 @@
 
 - name: Generate and store random password for temp user
   ansible.builtin.set_fact:
-    temp_passwd: "{{ lookup('password', 'length=15 chars=ascii_letters') }}"
+    temp_passwd: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
   delegate_to: localhost
   no_log: true
 

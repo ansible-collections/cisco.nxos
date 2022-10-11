@@ -1,0 +1,3 @@
+---
+trivial:
+  - Fix incorrect use of password lookup in tests.
