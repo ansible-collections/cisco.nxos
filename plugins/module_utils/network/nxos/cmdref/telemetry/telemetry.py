@@ -131,7 +131,7 @@ _template: # _template holds common settings for all commands
 destination_group:
   _exclude: ['N3K', 'N5K', 'N6k', 'N7k']
   multiple: true
-  kind: int
+  kind: str
   getval: dst-grp (\\S+)$
   setval: 'dst-grp {0}'
   default: ~
