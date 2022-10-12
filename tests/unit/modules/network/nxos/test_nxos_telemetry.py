@@ -1815,8 +1815,8 @@ class TestNxosTelemetryModule(TestNxosModule):
                                 port=50051,
                                 protocol="gRPC",
                                 encoding="GPB",
-                            )
-                        )
+                            ),
+                        ),
                     ],
                     sensor_groups=[
                         dict(
@@ -1826,7 +1826,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                                 name="sys/bd",
                                 depth="unbounded",
                             ),
-                        )
+                        ),
                     ],
                     subscriptions=[
                         dict(
@@ -1835,28 +1835,28 @@ class TestNxosTelemetryModule(TestNxosModule):
                             sensor_group=dict(
                                 id="dme_bgp",
                                 sample_interval=1000,
-                            )
-                        )
-                    ]
+                            ),
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
-            ignore_provider_arg
+            ignore_provider_arg,
         )
         self.execute_module(
             changed=True,
             commands=[
-                'feature telemetry',
-                'telemetry',
-                'destination-group collector',
-                'ip address 192.168.1.100 port 50051 protocol grpc encoding gpb',
-                'sensor-group dme_bgp',
-                'data-source DME',
-                'path sys/bd depth unbounded',
-                'subscription collector_sub',
-                'dst-grp collector',
-                'snsr-grp dme_bgp sample-interval 1000',
-            ]
+                "feature telemetry",
+                "telemetry",
+                "destination-group collector",
+                "ip address 192.168.1.100 port 50051 protocol grpc encoding gpb",
+                "sensor-group dme_bgp",
+                "data-source DME",
+                "path sys/bd depth unbounded",
+                "subscription collector_sub",
+                "dst-grp collector",
+                "snsr-grp dme_bgp sample-interval 1000",
+            ],
         )
 
     def test_tms_names_idempotent(self):
@@ -1873,7 +1873,8 @@ class TestNxosTelemetryModule(TestNxosModule):
               subscription collector_sub
                 dst-grp collector
                 snsr-grp dme_bgp sample-interval 1000
-            """)
+            """,
+        )
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -1886,8 +1887,8 @@ class TestNxosTelemetryModule(TestNxosModule):
                                 port=50051,
                                 protocol="gRPC",
                                 encoding="GPB",
-                            )
-                        )
+                            ),
+                        ),
                     ],
                     sensor_groups=[
                         dict(
@@ -1897,7 +1898,7 @@ class TestNxosTelemetryModule(TestNxosModule):
                                 name="sys/bd",
                                 depth="unbounded",
                             ),
-                        )
+                        ),
                     ],
                     subscriptions=[
                         dict(
@@ -1906,13 +1907,13 @@ class TestNxosTelemetryModule(TestNxosModule):
                             sensor_group=dict(
                                 id="dme_bgp",
                                 sample_interval=1000,
-                            )
-                        )
-                    ]
+                            ),
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
-            ignore_provider_arg
+            ignore_provider_arg,
         )
         self.execute_module(changed=False, commands=[])
 
