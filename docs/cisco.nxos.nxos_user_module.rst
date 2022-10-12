@@ -63,7 +63,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The password to be configured on the network device. The password needs to be provided in cleartext and it will be encrypted on the device. Please note that this option is not same as <code>provider password</code>.</div>
+                        <div>The password to be configured on the network device. The password needs to be provided in cleartext and it will be encrypted on the device.</div>
                 </td>
             </tr>
             <tr>
@@ -169,7 +169,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The password to be configured on the network device. The password needs to be provided in cleartext and it will be encrypted on the device. Please note that this option is not same as <code>provider password</code>.</div>
+                        <div>The password to be configured on the network device. The password needs to be provided in cleartext and it will be encrypted on the device.</div>
                 </td>
             </tr>
             <tr>

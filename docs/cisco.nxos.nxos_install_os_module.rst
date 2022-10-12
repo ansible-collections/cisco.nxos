@@ -128,7 +128,6 @@ Examples
     - name: Check installed OS for newly installed version
       nxos_command:
         commands: [show version | json]
-        provider: '{{ connection }}'
       register: output
     - assert:
         that:

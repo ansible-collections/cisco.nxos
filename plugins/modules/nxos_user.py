@@ -53,8 +53,7 @@ options:
       configured_password:
         description:
         - The password to be configured on the network device. The password needs to be
-          provided in cleartext and it will be encrypted on the device. Please note that
-          this option is not same as C(provider password).
+          provided in cleartext and it will be encrypted on the device.
         type: str
       update_password:
         description:
@@ -98,8 +97,7 @@ options:
   configured_password:
     description:
     - The password to be configured on the network device. The password needs to be
-      provided in cleartext and it will be encrypted on the device. Please note that
-      this option is not same as C(provider password).
+      provided in cleartext and it will be encrypted on the device.
     type: str
   update_password:
     description:

@@ -42,13 +42,13 @@ class ActionModule(ActionNetworkModule):
 
         warnings = []
 
-        if (
-            self._play_context.connection in ("httpapi", "local")
-            or self._task.args.get("provider", {}).get("transport") == "nxapi"
-        ) and module_name in ("nxos_file_copy", "nxos_nxapi"):
+        if (self._play_context.connection == "httpapi") and module_name in (
+            "nxos_file_copy",
+            "nxos_nxapi",
+        ):
             return {
                 "failed": True,
-                "msg": "Transport type 'nxapi' is not valid for '%s' module." % (module_name),
+                "msg": "Connection httpapi is not valid for '%s' module." % (module_name),
             }
 
         if module_name == "nxos_file_copy":
@@ -100,14 +100,6 @@ class ActionModule(ActionNetworkModule):
                 return {"failed": True, "msg": msg}
 
         if persistent_connection in ("network_cli", "httpapi"):
-            provider = self._task.args.get("provider", {})
-            if any(provider.values()):
-                display.warning(
-                    "provider is unnecessary when using %s and will be ignored"
-                    % self._play_context.connection,
-                )
-                del self._task.args["provider"]
-
             if module_name == "nxos_gir":
                 conn = Connection(self._connection.socket_path)
                 persistent_command_timeout = conn.get_option("persistent_command_timeout")
