@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_snmp_user
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: (deprecated, removed after 2024-01-01) Manages SNMP users for monitoring.
 description:
 - Manages SNMP user configuration.

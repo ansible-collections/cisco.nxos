@@ -120,8 +120,6 @@ options:
       the same ansible_connection type.
     type: bool
     default: false
-extends_documentation_fragment:
-- cisco.nxos.nxos
 """
 
 EXAMPLES = """

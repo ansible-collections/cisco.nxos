@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_snmp_contact
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: (deprecated, removed after 2024-01-01) Manages SNMP contact info.
 description:
 - Manages SNMP contact information.

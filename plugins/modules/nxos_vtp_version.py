@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vtp_version
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages VTP version configuration.
 description:
 - Manages VTP version configuration.

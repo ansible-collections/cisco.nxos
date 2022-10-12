@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vxlan_vtep_vni
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Creates a Virtual Network Identifier member (VNI)
 description:
 - Creates a Virtual Network Identifier member (VNI) for an NVE overlay interface.

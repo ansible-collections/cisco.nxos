@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_facts
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Gets facts about NX-OS switches
 description:
 - Collects facts from Cisco Nexus devices running the NX-OS operating system.  Fact

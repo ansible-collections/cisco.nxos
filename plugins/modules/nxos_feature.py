@@ -22,8 +22,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_feature
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manage features in NX-OS switches.
 notes:
 - Tested against Cisco MDS NX-OS 9.2(2)

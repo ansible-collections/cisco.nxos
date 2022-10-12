@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vrf
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages global VRF configuration.
 description:
 - This module provides declarative management of VRFs on CISCO NXOS network devices.

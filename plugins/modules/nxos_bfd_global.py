@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_bfd_global
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Bidirectional Forwarding Detection (BFD) global-level configuration
 description:
 - Manages Bidirectional Forwarding Detection (BFD) global-level configuration.

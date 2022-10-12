@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_install_os
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Set boot options like boot, kickstart image and issu.
 description:
 - Install an operating system by setting the boot options like boot image and kickstart

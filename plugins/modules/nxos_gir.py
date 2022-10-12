@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_gir
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Trigger a graceful removal or insertion (GIR) of the switch.
 description:
 - Trigger a graceful removal or insertion (GIR) of the switch.

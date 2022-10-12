@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_file_copy
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Copy a file to a remote NXOS device.
 description:
 - This module supports two different workflows for copying a file to flash (or bootflash)

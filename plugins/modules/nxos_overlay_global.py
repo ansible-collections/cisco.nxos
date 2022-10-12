@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_overlay_global
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Configures anycast gateway MAC of the switch.
 description:
 - Configures anycast gateway MAC of the switch.

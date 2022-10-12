@@ -9,8 +9,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_hsrp
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages HSRP configuration on NX-OS switches.
 description:
 - Manages HSRP configuration on NX-OS switches.

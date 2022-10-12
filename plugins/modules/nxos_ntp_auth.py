@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ntp_auth
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages NTP authentication.
 description:
 - Manages NTP authentication.

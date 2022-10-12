@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vxlan_vtep
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages VXLAN Network Virtualization Endpoint (NVE).
 description:
 - Manages VXLAN Network Virtualization Endpoint (NVE) overlay interface that terminates

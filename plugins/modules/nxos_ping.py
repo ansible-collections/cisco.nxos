@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ping
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Tests reachability using ping from Nexus switch.
 description:
 - Tests reachability using ping from switch to a remote destination.

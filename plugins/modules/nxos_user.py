@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_user
-extends_documentation_fragment:
-- cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
 notes:
 - Limited Support for Cisco MDS

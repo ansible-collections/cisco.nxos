@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vtp_domain
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages VTP domain configuration.
 description:
 - Manages VTP domain configuration.

@@ -10,8 +10,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_ntp
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages core NTP configuration.
 notes:
 - Limited Support for Cisco MDS

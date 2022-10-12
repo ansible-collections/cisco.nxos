@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_reboot
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Reboot a network device.
 description:
 - Reboot a network device.

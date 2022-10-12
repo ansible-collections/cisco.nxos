@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_igmp
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages IGMP global configuration.
 description:
 - Manages IGMP global configuration configuration settings.

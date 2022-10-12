@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_aaa_server
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages AAA server global configuration.
 description:
 - Manages AAA server global configuration

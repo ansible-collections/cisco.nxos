@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vpc_interface
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages interface VPC configuration
 description:
 - Manages interface VPC configuration

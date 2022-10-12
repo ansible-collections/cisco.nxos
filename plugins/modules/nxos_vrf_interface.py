@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vrf_interface
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages interface specific VRF configuration.
 description:
 - Manages interface specific VRF configuration.

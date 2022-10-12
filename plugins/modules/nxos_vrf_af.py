@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vrf_af
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages VRF AF.
 description:
 - Manages VRF AF

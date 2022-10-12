@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_rollback
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Set a checkpoint or rollback to a checkpoint.
 description:
 - This module offers the ability to set a configuration checkpoint file or rollback

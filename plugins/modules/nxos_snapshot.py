@@ -10,8 +10,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_snapshot
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manage snapshots of the running states of selected features.
 description:
 - Create snapshots of the running states of selected features, add new show commands

@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_config
-extends_documentation_fragment:
-- cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
 short_description: Manage Cisco NXOS configuration sections
 description:

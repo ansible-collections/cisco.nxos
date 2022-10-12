@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_udld_interface
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages UDLD interface configuration params.
 description:
 - Manages UDLD interface configuration params.

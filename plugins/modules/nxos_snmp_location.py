@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_snmp_location
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: (deprecated, removed after 2024-01-01) Manages SNMP location information.
 description:
 - Manages SNMP location configuration.

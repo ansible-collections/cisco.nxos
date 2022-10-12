@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_gir_profile_management
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Create a maintenance-mode or normal-mode profile for GIR.
 description:
 - Manage a maintenance-mode or normal-mode profile with configuration commands that

@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_pim
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages configuration of a PIM instance.
 description:
 - Manages configuration of a Protocol Independent Multicast (PIM) instance.

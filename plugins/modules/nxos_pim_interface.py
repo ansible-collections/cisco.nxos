@@ -10,8 +10,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_pim_interface
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages PIM interface configuration.
 description:
 - Manages PIM interface configuration settings.

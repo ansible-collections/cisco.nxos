@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_vrrp
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages VRRP configuration on NX-OS switches.
 description:
 - Manages VRRP configuration on NX-OS switches.

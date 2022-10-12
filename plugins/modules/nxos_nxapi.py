@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_nxapi
-extends_documentation_fragment:
-- cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
 short_description: Manage NXAPI configuration on an NXOS device.
 notes:

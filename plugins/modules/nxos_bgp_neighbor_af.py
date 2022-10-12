@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_bgp_neighbor_af
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: (deprecated, removed after 2023-02-24) Manages BGP address-family's neighbors configuration.
 description:
 - Manages BGP address-family's neighbors configurations on NX-OS switches.

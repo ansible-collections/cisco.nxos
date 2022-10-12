@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_pim_rp_address
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Manages configuration of an PIM static RP address instance.
 description:
 - Manages configuration of an Protocol Independent Multicast (PIM) static rendezvous

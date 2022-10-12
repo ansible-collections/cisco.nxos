@@ -59,8 +59,6 @@ options:
     - present
     - absent
     type: str
-extends_documentation_fragment:
-- cisco.nxos.nxos
 """
 
 EXAMPLES = """

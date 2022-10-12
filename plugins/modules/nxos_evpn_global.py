@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_evpn_global
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Handles the EVPN control plane for VXLAN.
 description:
 - Handles the EVPN control plane for VXLAN.

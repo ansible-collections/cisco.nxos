@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_system
-extends_documentation_fragment:
-- cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
 short_description: Manage the system attributes on Cisco NXOS devices
 notes:

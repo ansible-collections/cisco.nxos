@@ -23,8 +23,6 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_rpm
-extends_documentation_fragment:
-- cisco.nxos.nxos
 short_description: Install patch or feature rpms on Cisco NX-OS devices.
 description:
 - Install software maintenance upgrade (smu) RPMS and 3rd party RPMS on Cisco NX-OS
