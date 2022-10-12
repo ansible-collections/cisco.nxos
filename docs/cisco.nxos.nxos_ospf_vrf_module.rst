@@ -1,11 +1,11 @@
-.. _cisco.nxos.nxos_bfd_global_module:
+.. _cisco.nxos.nxos_ospf_vrf_module:
 
 
-**************************
-cisco.nxos.nxos_bfd_global
-**************************
+************************
+cisco.nxos.nxos_ospf_vrf
+************************
 
-**Bidirectional Forwarding Detection (BFD) global-level configuration**
+**(deprecated, removed after 2022-10-01)Manages a VRF for an OSPF router.**
 
 
 Version added: 1.0.0
@@ -14,10 +14,17 @@ Version added: 1.0.0
    :local:
    :depth: 1
 
+DEPRECATED
+----------
+:Removed in collection release after 2022-10-01
+:Why: Updated modules released with more functionality.
+:Alternative: nxos_ospfv2 and nxos_ospfv3
+
+
 
 Synopsis
 --------
-- Manages Bidirectional Forwarding Detection (BFD) global-level configuration.
+- Manages a VRF for an OSPF router.
 
 
 
@@ -36,7 +43,7 @@ Parameters
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>echo_interface</b>
+                    <b>auto_cost</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -45,209 +52,237 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Loopback interface used for echo frames.</div>
-                        <div>Valid values are loopback interface name or &#x27;deleted&#x27;.</div>
-                        <div>Not supported on N5K/N6K</div>
+                        <div>Specifies the reference bandwidth used to assign OSPF cost. Valid values are an integer, in Mbps, or the keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>echo_rx_interval</b>
+                    <b>bfd</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>enable</li>
+                                    <li>disable</li>
+                        </ul>
                 </td>
                 <td>
-                        <div>BFD Echo receive interval in milliseconds.</div>
+                        <div>Enables BFD on all OSPF interfaces.</div>
+                        <div>Dependency: &#x27;&#x27;feature bfd&#x27;&#x27;</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>fabricpath_interval</b>
+                    <b>default_metric</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>BFD fabricpath interval timer values.</div>
-                        <div>Value must be a dict defining values for keys (tx, min_rx, and multiplier).</div>
+                        <div>Specify the default Metric value. Valid values are an integer or the keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>fabricpath_slow_timer</b>
+                    <b>log_adjacency</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>log</li>
+                                    <li>detail</li>
+                                    <li>default</li>
+                        </ul>
                 </td>
                 <td>
-                        <div>BFD fabricpath slow rate timer in milliseconds.</div>
+                        <div>Controls the level of log messages generated whenever a neighbor changes state. Valid values are &#x27;log&#x27;, &#x27;detail&#x27;, and &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>fabricpath_vlan</b>
+                    <b>ospf</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>BFD fabricpath control vlan.</div>
+                        <div>Name of the OSPF instance.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interval</b>
+                    <b>passive_interface</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">boolean</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
                 </td>
                 <td>
-                        <div>BFD interval timer values.</div>
-                        <div>Value must be a dict defining values for keys (tx, min_rx, and multiplier)</div>
+                        <div>Setting to <code>yes</code> will suppress routing update on interface.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv4_echo_rx_interval</b>
+                    <b>router_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>BFD IPv4 session echo receive interval in milliseconds.</div>
+                        <div>Router Identifier (ID) of the OSPF router VRF instance.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv4_interval</b>
+                    <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>present</b>&nbsp;&larr;</div></li>
+                                    <li>absent</li>
+                        </ul>
                 </td>
                 <td>
-                        <div>BFD IPv4 interval timer values.</div>
-                        <div>Value must be a dict defining values for keys (tx, min_rx, and multiplier).</div>
+                        <div>State of ospf vrf configuration.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv4_slow_timer</b>
+                    <b>timer_throttle_lsa_hold</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>BFD IPv4 slow rate timer in milliseconds.</div>
+                        <div>Specify the hold interval for rate-limiting Link-State Advertisement (LSA) generation. Valid values are an integer, in milliseconds, or the keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv6_echo_rx_interval</b>
+                    <b>timer_throttle_lsa_max</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>BFD IPv6 session echo receive interval in milliseconds.</div>
+                        <div>Specify the max interval for rate-limiting Link-State Advertisement (LSA) generation. Valid values are an integer, in milliseconds, or the keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv6_interval</b>
+                    <b>timer_throttle_lsa_start</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>BFD IPv6 interval timer values.</div>
-                        <div>Value must be a dict defining values for keys (tx, min_rx, and multiplier).</div>
+                        <div>Specify the start interval for rate-limiting Link-State Advertisement (LSA) generation. Valid values are an integer, in milliseconds, or the keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv6_slow_timer</b>
+                    <b>timer_throttle_spf_hold</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>BFD IPv6 slow rate timer in milliseconds.</div>
+                        <div>Specify minimum hold time between Shortest Path First (SPF) calculations. Valid values are an integer, in milliseconds, or the keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>slow_timer</b>
+                    <b>timer_throttle_spf_max</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>BFD slow rate timer in milliseconds.</div>
+                        <div>Specify the maximum wait time between Shortest Path First (SPF) calculations. Valid values are an integer, in milliseconds, or the keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>startup_timer</b>
+                    <b>timer_throttle_spf_start</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>BFD delayed startup timer in seconds.</div>
-                        <div>Not supported on N5K/N6K/N7K</div>
+                        <div>Specify initial Shortest Path First (SPF) schedule delay. Valid values are an integer, in milliseconds, or the keyword &#x27;default&#x27;.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vrf</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">"default"</div>
+                </td>
+                <td>
+                        <div>Name of the resource instance. Valid value is a string. The name &#x27;default&#x27; is a valid VRF representing the global OSPF.</div>
                 </td>
             </tr>
     </table>
@@ -258,10 +293,9 @@ Notes
 -----
 
 .. note::
-   - Tested against NXOSv 9.2(2)
+   - Tested against NXOSv 7.3.(0)D1(1) on VIRL
    - Unsupported for Cisco MDS
-   - BFD global will automatically enable 'feature bfd' if it is disabled.
-   - BFD global does not have a 'state' parameter. All of the BFD commands are unique and are defined if 'feature bfd' is enabled.
+   - Value *default* restores params default value, if any. Otherwise it removes the existing param configuration.
 
 
 
@@ -270,13 +304,17 @@ Examples
 
 .. code-block:: yaml
 
-    - cisco.nxos.nxos_bfd_global:
-        echo_interface: Ethernet1/2
-        echo_rx_interval: 50
-        interval:
-          tx: 50
-          min_rx: 50
-          multiplier: 4
+    - cisco.nxos.nxos_ospf_vrf:
+        ospf: 1
+        timer_throttle_spf_start: 50
+        timer_throttle_spf_hold: 1000
+        timer_throttle_spf_max: 2000
+        timer_throttle_lsa_start: 60
+        timer_throttle_lsa_hold: 1100
+        timer_throttle_lsa_max: 3000
+        vrf: test
+        bfd: enable
+        state: present
 
 
 
@@ -295,7 +333,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="return-"></div>
-                    <b>cmds</b>
+                    <b>commands</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
                       <span style="color: purple">list</span>
@@ -306,7 +344,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>commands sent to the device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;bfd echo-interface loopback1&#x27;, &#x27;bfd slow-timer 2000&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospf 1&#x27;, &#x27;vrf test&#x27;, &#x27;bfd&#x27;, &#x27;timers throttle lsa 60 1100 3000&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -317,7 +355,11 @@ Status
 ------
 
 
+- This module will be removed in a release after 2022-10-01. *[deprecated]*
+- For more information see `DEPRECATED`_.
+
+
 Authors
 ~~~~~~~
 
-- Chris Van Heuveln (@chrisvanheuveln)
+- Gabriele Gerbino (@GGabriele)

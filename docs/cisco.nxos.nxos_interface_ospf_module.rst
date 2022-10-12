@@ -1,11 +1,11 @@
-.. _cisco.nxos.nxos_logging_module:
+.. _cisco.nxos.nxos_interface_ospf_module:
 
 
-***********************
-cisco.nxos.nxos_logging
-***********************
+******************************
+cisco.nxos.nxos_interface_ospf
+******************************
 
-**Manage logging on network devices**
+**(deprecated, removed after 2022-10-26) Manages configuration of an OSPF interface instance.**
 
 
 Version added: 1.0.0
@@ -16,15 +16,15 @@ Version added: 1.0.0
 
 DEPRECATED
 ----------
-:Removed in collection release after 2023-08-01
-:Why: Updated module released with more functionality.
-:Alternative: nxos_logging_global
+:Removed in collection release after 2022-10-26
+:Why: Updated modules released with more functionality
+:Alternative: nxos_ospf_interfaces
 
 
 
 Synopsis
 --------
-- This module provides declarative management of logging on Cisco NX-OS devices.
+- Manages configuration of an OSPF interface instance.
 
 
 
@@ -43,23 +43,23 @@ Parameters
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>aggregate</b>
+                    <b>area</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>List of logging definitions.</div>
+                        <div>Ospf area associated with this cisco_interface_ospf instance. Valid values are a string, formatted as an IP address (i.e. &quot;0.0.0.0&quot;) or as an integer.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>dest</b>
+                    <b>bfd</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -67,58 +67,21 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>console</li>
-                                    <li>logfile</li>
-                                    <li>module</li>
-                                    <li>monitor</li>
-                                    <li>server</li>
+                                    <li>enable</li>
+                                    <li>disable</li>
+                                    <li>default</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Destination of the logs.</div>
+                        <div>Enables bfd at interface level. This overrides the bfd variable set at the ospf router level.</div>
+                        <div>Valid values are &#x27;enable&#x27;, &#x27;disable&#x27; or &#x27;default&#x27;.</div>
+                        <div>Dependency: &#x27;&#x27;feature bfd&#x27;&#x27;</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>dest_level</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set logging severity levels.</div>
-                        <div style="font-size: small; color: darkgreen"><br/>aliases: level</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>event</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>link-enable</li>
-                                    <li>link-default</li>
-                                    <li>trunk-enable</li>
-                                    <li>trunk-default</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Link/trunk enable/default interface configuration logging</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility</b>
+                    <b>cost</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -127,58 +90,37 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Facility name for logging.</div>
+                        <div>The cost associated with this cisco_interface_ospf instance.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility_level</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set logging severity levels for facility based log messages.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility_link_status</b>
+                    <b>dead_interval</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>link-down-notif</li>
-                                    <li>link-down-error</li>
-                                    <li>link-up-notif</li>
-                                    <li>link-up-error</li>
-                        </ul>
                 </td>
                 <td>
-                        <div>Set logging facility ethpm link status. Not idempotent with version 6.0 images.</div>
+                        <div>Time interval an ospf neighbor waits for a hello packet before tearing down adjacencies. Valid values are an integer or the keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>file_size</b>
+                    <b>hello_interval</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>Set logfile size</div>
+                        <div>Time between sending successive hello packets. Valid values are an integer or the keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
@@ -188,51 +130,19 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>Interface to be used while configuring source-interface for logging (e.g., &#x27;Ethernet1/2&#x27;, &#x27;mgmt0&#x27;)</div>
+                        <div>Name of this cisco_interface resource. Valid value is a string.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interface_message</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>add-interface-description</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Add interface description to interface syslogs. Does not work with version 6.0 images using nxapi as a transport.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>name</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>If value of <code>dest</code> is <em>logfile</em> it indicates file-name.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>purge</b>
+                    <b>message_digest</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">boolean</span>
@@ -240,18 +150,57 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>no</li>
                                     <li>yes</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Remove any switch logging configuration that does not match what has been configured Not supported for ansible_connection local. All nxos_logging tasks must use the same ansible_connection type.</div>
+                        <div>Enables or disables the usage of message digest authentication.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>remote_server</b>
+                    <b>message_digest_algorithm_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>md5</li>
+                                    <li>default</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Algorithm used for authentication among neighboring routers within an area. Valid values are &#x27;md5&#x27; and &#x27;default&#x27;.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>message_digest_encryption_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>cisco_type_7</li>
+                                    <li>3des</li>
+                                    <li>default</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Specifies the scheme used for encrypting message_digest_password. Valid values are &#x27;3des&#x27; or &#x27;cisco_type_7&#x27; encryption or &#x27;default&#x27;.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>message_digest_key_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -260,7 +209,76 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Hostname or IP Address for remote logging (when dest is &#x27;server&#x27;).</div>
+                        <div>Md5 authentication key-id associated with the ospf instance. If this is present, message_digest_encryption_type, message_digest_algorithm_type and message_digest_password are mandatory. Valid value is an integer and &#x27;default&#x27;.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>message_digest_password</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Specifies the message_digest password. Valid value is a string.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>network</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>point-to-point</li>
+                                    <li>broadcast</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Specifies interface ospf network type. Valid values are &#x27;point-to-point&#x27; or &#x27;broadcast&#x27;.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ospf</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Name of the ospf instance.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>passive_interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable or disable passive-interface state on this interface. true - (enable) Prevent OSPF from establishing an adjacency or sending routing updates on this interface. false - (disable) Override global &#x27;passive-interface default&#x27; for this interface.</div>
                 </td>
             </tr>
             <tr>
@@ -279,42 +297,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>State of the logging configuration.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>timestamp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>microseconds</li>
-                                    <li>milliseconds</li>
-                                    <li>seconds</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set logging timestamp format</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>use_vrf</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>VRF to be used while configuring remote logging (when dest is &#x27;server&#x27;).</div>
+                        <div>Determines whether the config should be present or not on the device.</div>
                 </td>
             </tr>
     </table>
@@ -325,7 +308,12 @@ Notes
 -----
 
 .. note::
-   - Limited Support for Cisco MDS
+   - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
+   - Default, where supported, restores params default value.
+   - To remove an existing authentication configuration you should use ``message_digest_key_id=default`` plus all other options matching their existing values.
+   - Loopback interfaces only support ospf network type 'point-to-point'.
+   - ``state=absent`` removes the whole OSPF interface configuration.
 
 
 
@@ -334,76 +322,19 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure console logging with level
-      cisco.nxos.nxos_logging:
-        dest: console
-        level: 2
-        state: present
-    - name: remove console logging configuration
-      cisco.nxos.nxos_logging:
-        dest: console
-        level: 2
-        state: absent
-    - name: configure file logging with level
-      cisco.nxos.nxos_logging:
-        dest: logfile
-        name: testfile
-        dest_level: 3
-        state: present
-    - name: Configure logging logfile with size
-      cisco.nxos.nxos_logging:
-        dest: logfile
-        name: testfile
-        dest_level: 3
-        file_size: 16384
-    - name: configure facility level logging
-      cisco.nxos.nxos_logging:
-        facility: daemon
-        facility_level: 0
-        state: present
-    - name: remove facility level logging
-      cisco.nxos.nxos_logging:
-        facility: daemon
-        facility_level: 0
-        state: absent
-    - name: Configure Remote Logging
-      cisco.nxos.nxos_logging:
-        dest: server
-        remote_server: test-syslogserver.com
-        facility: auth
-        facility_level: 1
-        use_vrf: management
-        state: present
-    - name: Configure Source Interface for Logging
-      cisco.nxos.nxos_logging:
-        interface: mgmt0
-        state: present
-    - name: Purge nxos_logging configuration not managed by this playbook
-      cisco.nxos.nxos_logging:
-        purge: true
-    - name: Configure logging timestamp
-      cisco.nxos.nxos_logging:
-        timestamp: milliseconds
-        state: present
-    - name: Configure logging facility ethpm link status
-      cisco.nxos.nxos_logging:
-        facility: ethpm
-        facility_link_status: link-up-notif
-        state: present
-    - name: Configure logging message ethernet description
-      cisco.nxos.nxos_logging:
-        interface_message: add-interface-description
-        state: present
-    - name: Configure logging event link enable
-      cisco.nxos.nxos_logging:
-        event: link-enable
-        state: present
-    - name: Configure logging using aggregate
-      cisco.nxos.nxos_logging:
-        aggregate:
-        - {dest: console, dest_level: 2}
-        - {dest: logfile, dest_level: 2, name: testfile}
-        - {facility: daemon, facility_level: 0}
+    - cisco.nxos.nxos_interface_ospf:
+        interface: ethernet1/32
+        ospf: 1
+        area: 1
+        bfd: disable
+        cost: default
+
+    - cisco.nxos.nxos_interface_ospf:
+        interface: loopback0
+        ospf: prod
+        area: 0.0.0.0
+        bfd: enable
+        network: point-to-point
         state: present
 
 
@@ -431,10 +362,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 </td>
                 <td>always</td>
                 <td>
-                            <div>The list of configuration mode commands to send to the device</div>
+                            <div>commands sent to the device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;logging console 2&#x27;, &#x27;logging logfile testfile 3&#x27;, &#x27;logging level daemon 0&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface Ethernet1/32&#x27;, &#x27;ip router ospf 1 area 0.0.0.1&#x27;, &#x27;ip ospf bfd disable&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -445,11 +376,11 @@ Status
 ------
 
 
-- This module will be removed in a release after 2023-08-01. *[deprecated]*
+- This module will be removed in a release after 2022-10-26. *[deprecated]*
 - For more information see `DEPRECATED`_.
 
 
 Authors
 ~~~~~~~
 
-- Trishna Guha (@trishnaguha)
+- Gabriele Gerbino (@GGabriele)

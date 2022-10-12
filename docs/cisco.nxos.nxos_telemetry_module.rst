@@ -260,6 +260,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+<<<<<<< HEAD:docs/cisco.nxos.nxos_telemetry_module.rst
                     <b>sensor_groups</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -482,6 +483,9 @@ Parameters
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>sensor_group</b>
+=======
+                    <b>route_name</b>
+>>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_static_route_module.rst
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
@@ -581,6 +585,11 @@ Notes
 .. note::
    - Supported on N9k Version 7.0(3)I7(5) and later.
    - Unsupported for Cisco MDS
+<<<<<<< HEAD:docs/cisco.nxos.nxos_telemetry_module.rst
+=======
+   - If no vrf is supplied, vrf is set to default.
+   - If ``state=absent``, the route will be removed, regardless of the non-required parameters.
+>>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_static_route_module.rst
 
 
 

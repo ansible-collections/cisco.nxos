@@ -1,11 +1,11 @@
-.. _cisco.nxos.nxos_logging_module:
+.. _cisco.nxos.nxos_l2_interface_module:
 
 
-***********************
-cisco.nxos.nxos_logging
-***********************
+****************************
+cisco.nxos.nxos_l2_interface
+****************************
 
-**Manage logging on network devices**
+**(deprecated, removed after 2022-06-01) Manage Layer-2 interface on Cisco NXOS devices.**
 
 
 Version added: 1.0.0
@@ -16,15 +16,15 @@ Version added: 1.0.0
 
 DEPRECATED
 ----------
-:Removed in collection release after 2023-08-01
-:Why: Updated module released with more functionality.
-:Alternative: nxos_logging_global
+:Removed in collection release after 2022-06-01
+:Why: Updated modules released with more functionality
+:Alternative: nxos_l2_interfaces
 
 
 
 Synopsis
 --------
-- This module provides declarative management of logging on Cisco NX-OS devices.
+- This module provides declarative management of Layer-2 interface on Cisco NXOS devices.
 
 
 
@@ -36,12 +36,27 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="1">Parameter</th>
+            <th colspan="2">Parameter</th>
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>access_vlan</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure given VLAN in access port. If <code>mode=access</code>, used as the access VLAN ID.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>aggregate</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -53,13 +68,30 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>List of logging definitions.</div>
+                        <div>List of Layer-2 interface definitions.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>access_vlan</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure given VLAN in access port. If <code>mode=access</code>, used as the access VLAN ID.</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>dest</b>
+                    <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -67,154 +99,16 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>console</li>
-                                    <li>logfile</li>
-                                    <li>module</li>
-                                    <li>monitor</li>
-                                    <li>server</li>
+                                    <li>access</li>
+                                    <li>trunk</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Destination of the logs.</div>
+                        <div>Mode in which interface needs to be configured.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>dest_level</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set logging severity levels.</div>
-                        <div style="font-size: small; color: darkgreen"><br/>aliases: level</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>event</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>link-enable</li>
-                                    <li>link-default</li>
-                                    <li>trunk-enable</li>
-                                    <li>trunk-default</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Link/trunk enable/default interface configuration logging</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Facility name for logging.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility_level</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set logging severity levels for facility based log messages.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility_link_status</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>link-down-notif</li>
-                                    <li>link-down-error</li>
-                                    <li>link-up-notif</li>
-                                    <li>link-up-error</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set logging facility ethpm link status. Not idempotent with version 6.0 images.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>file_size</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set logfile size</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interface</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Interface to be used while configuring source-interface for logging (e.g., &#x27;Ethernet1/2&#x27;, &#x27;mgmt0&#x27;)</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interface_message</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>add-interface-description</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Add interface description to interface syslogs. Does not work with version 6.0 images using nxapi as a transport.</div>
-                </td>
-            </tr>
-            <tr>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
@@ -226,32 +120,15 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>If value of <code>dest</code> is <em>logfile</em> it indicates file-name.</div>
+                        <div>Full name of the interface excluding any logical unit number, i.e. Ethernet1/1.</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: interface</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>purge</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Remove any switch logging configuration that does not match what has been configured Not supported for ansible_connection local. All nxos_logging tasks must use the same ansible_connection type.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>remote_server</b>
+                    <b>native_vlan</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -260,11 +137,116 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Hostname or IP Address for remote logging (when dest is &#x27;server&#x27;).</div>
+                        <div>Native VLAN to be configured in trunk port. If <code>mode=trunk</code>, used as the trunk native VLAN ID.</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>present</li>
+                                    <li>absent</li>
+                                    <li>unconfigured</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Manage the state of the Layer-2 Interface configuration.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>trunk_allowed_vlans</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>List of allowed VLANs in a given trunk port. If <code>mode=trunk</code>, these are the only VLANs that will be configured on the trunk, i.e. &quot;2-10,15&quot;.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>trunk_vlans</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>List of VLANs to be configured in trunk port. If <code>mode=trunk</code>, used as the VLAN range to ADD or REMOVE from the trunk.</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: trunk_add_vlans</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>access</li>
+                                    <li>trunk</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Mode in which interface needs to be configured.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Full name of the interface excluding any logical unit number, i.e. Ethernet1/1.</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: interface</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>native_vlan</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Native VLAN to be configured in trunk port. If <code>mode=trunk</code>, used as the trunk native VLAN ID.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -276,36 +258,17 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>present</b>&nbsp;&larr;</div></li>
                                     <li>absent</li>
+                                    <li>unconfigured</li>
                         </ul>
                 </td>
                 <td>
-                        <div>State of the logging configuration.</div>
+                        <div>Manage the state of the Layer-2 Interface configuration.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>timestamp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>microseconds</li>
-                                    <li>milliseconds</li>
-                                    <li>seconds</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set logging timestamp format</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>use_vrf</b>
+                    <b>trunk_allowed_vlans</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -314,7 +277,23 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>VRF to be used while configuring remote logging (when dest is &#x27;server&#x27;).</div>
+                        <div>List of allowed VLANs in a given trunk port. If <code>mode=trunk</code>, these are the only VLANs that will be configured on the trunk, i.e. &quot;2-10,15&quot;.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>trunk_vlans</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>List of VLANs to be configured in trunk port. If <code>mode=trunk</code>, used as the VLAN range to ADD or REMOVE from the trunk.</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: trunk_add_vlans</div>
                 </td>
             </tr>
     </table>
@@ -325,7 +304,8 @@ Notes
 -----
 
 .. note::
-   - Limited Support for Cisco MDS
+   - Tested against NXOSv 7.0(3)I5(1).
+   - Unsupported for Cisco MDS
 
 
 
@@ -334,77 +314,45 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure console logging with level
-      cisco.nxos.nxos_logging:
-        dest: console
-        level: 2
-        state: present
-    - name: remove console logging configuration
-      cisco.nxos.nxos_logging:
-        dest: console
-        level: 2
+    - name: Ensure Eth1/5 is in its default l2 interface state
+      cisco.nxos.nxos_l2_interface:
+        name: Ethernet1/5
+        state: unconfigured
+
+    - name: Ensure Eth1/5 is configured for access vlan 20
+      cisco.nxos.nxos_l2_interface:
+        name: Ethernet1/5
+        mode: access
+        access_vlan: 20
+
+    - name: Ensure Eth1/5 only has vlans 5-10 as trunk vlans
+      cisco.nxos.nxos_l2_interface:
+        name: Ethernet1/5
+        mode: trunk
+        native_vlan: 10
+        trunk_vlans: 5-10
+
+    - name: Ensure eth1/5 is a trunk port and ensure 2-50 are being tagged (doesn't mean
+        others aren't also being tagged)
+      cisco.nxos.nxos_l2_interface:
+        name: Ethernet1/5
+        mode: trunk
+        native_vlan: 10
+        trunk_vlans: 2-50
+
+    - name: Ensure these VLANs are not being tagged on the trunk
+      cisco.nxos.nxos_l2_interface:
+        name: Ethernet1/5
+        mode: trunk
+        trunk_vlans: 51-4094
         state: absent
-    - name: configure file logging with level
-      cisco.nxos.nxos_logging:
-        dest: logfile
-        name: testfile
-        dest_level: 3
-        state: present
-    - name: Configure logging logfile with size
-      cisco.nxos.nxos_logging:
-        dest: logfile
-        name: testfile
-        dest_level: 3
-        file_size: 16384
-    - name: configure facility level logging
-      cisco.nxos.nxos_logging:
-        facility: daemon
-        facility_level: 0
-        state: present
-    - name: remove facility level logging
-      cisco.nxos.nxos_logging:
-        facility: daemon
-        facility_level: 0
-        state: absent
-    - name: Configure Remote Logging
-      cisco.nxos.nxos_logging:
-        dest: server
-        remote_server: test-syslogserver.com
-        facility: auth
-        facility_level: 1
-        use_vrf: management
-        state: present
-    - name: Configure Source Interface for Logging
-      cisco.nxos.nxos_logging:
-        interface: mgmt0
-        state: present
-    - name: Purge nxos_logging configuration not managed by this playbook
-      cisco.nxos.nxos_logging:
-        purge: true
-    - name: Configure logging timestamp
-      cisco.nxos.nxos_logging:
-        timestamp: milliseconds
-        state: present
-    - name: Configure logging facility ethpm link status
-      cisco.nxos.nxos_logging:
-        facility: ethpm
-        facility_link_status: link-up-notif
-        state: present
-    - name: Configure logging message ethernet description
-      cisco.nxos.nxos_logging:
-        interface_message: add-interface-description
-        state: present
-    - name: Configure logging event link enable
-      cisco.nxos.nxos_logging:
-        event: link-enable
-        state: present
-    - name: Configure logging using aggregate
-      cisco.nxos.nxos_logging:
+
+    - name: Aggregate Configure interfaces for access_vlan with aggregate
+      cisco.nxos.nxos_l2_interface:
         aggregate:
-        - {dest: console, dest_level: 2}
-        - {dest: logfile, dest_level: 2, name: testfile}
-        - {facility: daemon, facility_level: 0}
-        state: present
+        - {name: Ethernet1/2, access_vlan: 6}
+        - {name: Ethernet1/7, access_vlan: 15}
+        mode: access
 
 
 
@@ -429,12 +377,12 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>always, except for the platforms that use Netconf transport to manage the device.</td>
                 <td>
                             <div>The list of configuration mode commands to send to the device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;logging console 2&#x27;, &#x27;logging logfile testfile 3&#x27;, &#x27;logging level daemon 0&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface eth1/5&#x27;, &#x27;switchport access vlan 20&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -445,7 +393,7 @@ Status
 ------
 
 
-- This module will be removed in a release after 2023-08-01. *[deprecated]*
+- This module will be removed in a release after 2022-06-01. *[deprecated]*
 - For more information see `DEPRECATED`_.
 
 

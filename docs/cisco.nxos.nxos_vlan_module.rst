@@ -1,11 +1,11 @@
-.. _cisco.nxos.nxos_vrf_module:
+.. _cisco.nxos.nxos_vlan_module:
 
 
-*******************
-cisco.nxos.nxos_vrf
-*******************
+********************
+cisco.nxos.nxos_vlan
+********************
 
-**Manages global VRF configuration.**
+**(deprecated, removed after 2022-06-01) Manages VLAN resources and attributes.**
 
 
 Version added: 1.0.0
@@ -14,10 +14,17 @@ Version added: 1.0.0
    :local:
    :depth: 1
 
+DEPRECATED
+----------
+:Removed in collection release after 2022-06-01
+:Why: Updated modules released with more functionality
+:Alternative: nxos_vlans
+
+
 
 Synopsis
 --------
-- This module provides declarative management of VRFs on CISCO NXOS network devices.
+- Manages VLAN configurations on NX-OS switches.
 
 
 
@@ -49,7 +56,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Administrative state of the VRF.</div>
+                        <div>Manage the VLAN administrative state of the VLAN equivalent to shut/no shut in VLAN config mode.</div>
                 </td>
             </tr>
             <tr>
@@ -65,7 +72,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>List of VRFs definitions.</div>
+                        <div>List of VLANs definitions.</div>
                 </td>
             </tr>
                                 <tr>
@@ -85,7 +92,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Administrative state of the VRF.</div>
+                        <div>Manage the VLAN administrative state of the VLAN equivalent to shut/no shut in VLAN config mode.</div>
                 </td>
             </tr>
             <tr>
@@ -102,7 +109,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>This is a intent option and checks the operational state of the for given vrf <code>name</code> for associated interfaces. If the value in the <code>associated_interfaces</code> does not match with the operational state of vrf interfaces on device it will result in failure.</div>
+                        <div>This is a intent option and checks the operational state of the for given vlan <code>name</code> for associated interfaces. If the value in the <code>associated_interfaces</code> does not match with the operational state of vlan interfaces on device it will result in failure.</div>
                 </td>
             </tr>
             <tr>
@@ -125,22 +132,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>description</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Description of the VRF or keyword &#x27;default&#x27;.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>interfaces</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -151,7 +142,43 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>List of interfaces to check the VRF has been configured correctly or keyword &#x27;default&#x27;.</div>
+                        <div>List of interfaces that should be associated to the VLAN or keyword &#x27;default&#x27;.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mapped_vni</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The Virtual Network Identifier (VNI) ID that is mapped to the VLAN. Valid values are integer and keyword &#x27;default&#x27;. Range 4096-16773119.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>ce</li>
+                                    <li>fabricpath</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set VLAN mode to classical ethernet or fabricpath. This is a valid option for Nexus 5000 and 7000 series.</div>
                 </td>
             </tr>
             <tr>
@@ -167,24 +194,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Name of VRF to be managed.</div>
-                        <div style="font-size: small; color: darkgreen"><br/>aliases: vrf</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>rd</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>VPN Route Distinguisher (RD). Valid values are a string in one of the route-distinguisher formats (ASN2:NN, ASN4:NN, or IPV4:NN); the keyword &#x27;auto&#x27;, or the keyword &#x27;default&#x27;.</div>
+                        <div>Name of VLAN or keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
@@ -204,14 +214,31 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Manages desired state of the resource.</div>
+                        <div>Manage the state of the resource.</div>
                 </td>
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vni</b>
+                    <b>vlan_id</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Single VLAN ID.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vlan_range</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -220,7 +247,27 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specify virtual network identifier. Valid values are Integer or keyword &#x27;default&#x27;.</div>
+                        <div>Range of VLANs such as 2-10 or 2,5,10-15, etc.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vlan_state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>active</li>
+                                    <li>suspend</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Manage the vlan operational state of the VLAN</div>
                 </td>
             </tr>
 
@@ -237,7 +284,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>This is a intent option and checks the operational state of the for given vrf <code>name</code> for associated interfaces. If the value in the <code>associated_interfaces</code> does not match with the operational state of vrf interfaces on device it will result in failure.</div>
+                        <div>This is a intent option and checks the operational state of the for given vlan <code>name</code> for associated interfaces. If the value in the <code>associated_interfaces</code> does not match with the operational state of vlan interfaces on device it will result in failure.</div>
                 </td>
             </tr>
             <tr>
@@ -259,21 +306,6 @@ Parameters
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>description</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Description of the VRF or keyword &#x27;default&#x27;.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>interfaces</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -284,7 +316,41 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>List of interfaces to check the VRF has been configured correctly or keyword &#x27;default&#x27;.</div>
+                        <div>List of interfaces that should be associated to the VLAN or keyword &#x27;default&#x27;.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mapped_vni</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The Virtual Network Identifier (VNI) ID that is mapped to the VLAN. Valid values are integer and keyword &#x27;default&#x27;. Range 4096-16773119.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>ce</b>&nbsp;&larr;</div></li>
+                                    <li>fabricpath</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set VLAN mode to classical ethernet or fabricpath. This is a valid option for Nexus 5000 and 7000 series.</div>
                 </td>
             </tr>
             <tr>
@@ -299,8 +365,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Name of VRF to be managed.</div>
-                        <div style="font-size: small; color: darkgreen"><br/>aliases: vrf</div>
+                        <div>Name of VLAN or keyword &#x27;default&#x27;.</div>
                 </td>
             </tr>
             <tr>
@@ -319,22 +384,8 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Purge VRFs not defined in the <em>aggregate</em> parameter.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>rd</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>VPN Route Distinguisher (RD). Valid values are a string in one of the route-distinguisher formats (ASN2:NN, ASN4:NN, or IPV4:NN); the keyword &#x27;auto&#x27;, or the keyword &#x27;default&#x27;.</div>
+                        <div>Purge VLANs not defined in the <em>aggregate</em> parameter. This parameter can be used without aggregate as well.</div>
+                        <div>Removal of Vlan 1 is not allowed and will be ignored by purge.</div>
                 </td>
             </tr>
             <tr>
@@ -353,13 +404,28 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Manages desired state of the resource.</div>
+                        <div>Manage the state of the resource.</div>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vni</b>
+                    <b>vlan_id</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Single VLAN ID.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vlan_range</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -368,22 +434,31 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specify virtual network identifier. Valid values are Integer or keyword &#x27;default&#x27;.</div>
+                        <div>Range of VLANs such as 2-10 or 2,5,10-15, etc.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vlan_state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>active</b>&nbsp;&larr;</div></li>
+                                    <li>suspend</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Manage the vlan operational state of the VLAN</div>
                 </td>
             </tr>
     </table>
     <br/>
 
-
-Notes
------
-
-.. note::
-   - Tested against NXOSv 7.3.(0)D1(1) on VIRL
-   - Unsupported for Cisco MDS
-   - Cisco NX-OS creates the default VRF by itself. Therefore, you're not allowed to use default as *vrf* name in this module.
-   - ``vrf`` name must be shorter than 32 chars.
-   - VRF names are not case sensible in NX-OS. Anyway, the name is stored just like it's inserted by the user and it'll not be changed again unless the VRF is removed and re-created. i.e. ``vrf=NTC`` will create a VRF named NTC, but running it again with ``vrf=ntc`` will not cause a configuration change.
 
 
 
@@ -392,57 +467,51 @@ Examples
 
 .. code-block:: yaml
 
-    - name: Ensure ntc VRF exists on switch
-      cisco.nxos.nxos_vrf:
-        name: ntc
-        description: testing
-        state: present
-
-    - name: Aggregate definition of VRFs
-      cisco.nxos.nxos_vrf:
-        aggregate:
-        - {name: test1, description: Testing, admin_state: down}
-        - {name: test2, interfaces: Ethernet1/2}
-
-    - name: Aggregate definitions of VRFs with Purge
-      cisco.nxos.nxos_vrf:
-        aggregate:
-        - {name: ntc1, description: purge test1}
-        - {name: ntc2, description: purge test2}
-        state: present
-        purge: yes
-
-    - name: Delete VRFs exist on switch
-      cisco.nxos.nxos_vrf:
-        aggregate:
-        - {name: ntc1}
-        - {name: ntc2}
+    - name: Ensure a range of VLANs are not present on the switch
+      cisco.nxos.nxos_vlan:
+        vlan_range: 2-10,20,50,55-60,100-150
         state: absent
 
-    - name: Assign interfaces to VRF declaratively
-      cisco.nxos.nxos_vrf:
-        name: test1
-        interfaces:
-        - Ethernet2/3
-        - Ethernet2/5
+    - name: Ensure VLAN 50 exists with the name WEB and is in the shutdown state
+      cisco.nxos.nxos_vlan:
+        vlan_id: 50
+        admin_state: down
+        name: WEB
 
-    - name: Check interfaces assigned to VRF
-      cisco.nxos.nxos_vrf:
-        name: test1
+    - name: Ensure VLAN is NOT on the device
+      cisco.nxos.nxos_vlan:
+        vlan_id: 50
+        state: absent
+
+    - name: Add interfaces to VLAN and check intent (config + intent)
+      cisco.nxos.nxos_vlan:
+        vlan_id: 100
+        interfaces:
+        - Ethernet2/1
+        - Ethernet2/5
         associated_interfaces:
-        - Ethernet2/3
+        - Ethernet2/1
         - Ethernet2/5
 
-    - name: Ensure VRF is tagged with interface Ethernet2/5 only (Removes from Ethernet2/3)
-      cisco.nxos.nxos_vrf:
-        name: test1
-        interfaces:
+    - name: Check interfaces assigned to VLAN
+      cisco.nxos.nxos_vlan:
+        vlan_id: 100
+        associated_interfaces:
+        - Ethernet2/1
         - Ethernet2/5
 
-    - name: Delete VRF
-      cisco.nxos.nxos_vrf:
-        name: ntc
-        state: absent
+    - name: Create aggregate of vlans
+      cisco.nxos.nxos_vlan:
+        aggregate:
+        - {vlan_id: 4000, mode: ce}
+        - {vlan_id: 4001, name: vlan-4001}
+
+    - name: purge vlans - removes all other vlans except the ones mentioned in aggregate)
+      cisco.nxos.nxos_vlan:
+        aggregate:
+        - vlan_id: 1
+        - vlan_id: 4001
+        purge: yes
 
 
 
@@ -469,10 +538,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 </td>
                 <td>always</td>
                 <td>
-                            <div>commands sent to the device</div>
+                            <div>Set of command strings to send to the remote device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vrf context ntc&#x27;, &#x27;no shutdown&#x27;, &#x27;interface Ethernet1/2&#x27;, &#x27;no switchport&#x27;, &#x27;vrf member test2&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vlan 20&#x27;, &#x27;vlan 55&#x27;, &#x27;vn-segment 5000&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -483,9 +552,11 @@ Status
 ------
 
 
+- This module will be removed in a release after 2022-06-01. *[deprecated]*
+- For more information see `DEPRECATED`_.
+
+
 Authors
 ~~~~~~~
 
 - Jason Edelman (@jedelman8)
-- Gabriele Gerbino (@GGabriele)
-- Trishna Guha (@trishnaguha)

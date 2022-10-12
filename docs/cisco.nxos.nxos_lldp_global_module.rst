@@ -158,6 +158,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+<<<<<<< HEAD:docs/cisco.nxos.nxos_lldp_global_module.rst
                     <b>management_address</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -404,6 +405,8 @@ Parameters
             <tr>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+=======
+>>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_l3_interface_module.rst
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -434,7 +437,10 @@ Notes
 .. note::
    - Tested against NxOS 7.3.(0)D1(1) on VIRL
    - Unsupported for Cisco MDS
+<<<<<<< HEAD:docs/cisco.nxos.nxos_lldp_global_module.rst
    - The LLDP feature needs to be enabled before using this module
+=======
+>>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_l3_interface_module.rst
 
 
 

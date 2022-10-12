@@ -1,11 +1,11 @@
-.. _cisco.nxos.nxos_feature_module:
+.. _cisco.nxos.nxos_ospf_module:
 
 
-***********************
-cisco.nxos.nxos_feature
-***********************
+********************
+cisco.nxos.nxos_ospf
+********************
 
-**Manage features in NX-OS switches.**
+**(deprecated, removed after 2022-06-01) Manages configuration of an ospf instance.**
 
 
 Version added: 1.0.0
@@ -14,10 +14,17 @@ Version added: 1.0.0
    :local:
    :depth: 1
 
+DEPRECATED
+----------
+:Removed in collection release after 2022-06-01
+:Why: Updated modules released with more functionality.
+:Alternative: nxos_ospfv2 and nxos_ospfv3
+
+
 
 Synopsis
 --------
-- Offers ability to enable and disable features in NX-OS.
+- Manages configuration of an ospf instance.
 
 
 
@@ -36,7 +43,7 @@ Parameters
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>feature</b>
+                    <b>ospf</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -46,7 +53,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Name of feature.</div>
+                        <div>Name of the ospf instance.</div>
                 </td>
             </tr>
             <tr>
@@ -60,12 +67,12 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>enabled</b>&nbsp;&larr;</div></li>
-                                    <li>disabled</li>
+                                    <li><div style="color: blue"><b>present</b>&nbsp;&larr;</div></li>
+                                    <li>absent</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Desired state of the feature.</div>
+                        <div>Determines whether the config should be present or not on the device.</div>
                 </td>
             </tr>
     </table>
@@ -76,7 +83,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco MDS NX-OS 9.2(2)
+   - Unsupported for Cisco MDS
 
 
 
@@ -85,20 +92,9 @@ Examples
 
 .. code-block:: yaml
 
-    - name: Ensure lacp is enabled
-      cisco.nxos.nxos_feature:
-        feature: lacp
-        state: enabled
-
-    - name: Ensure ospf is disabled
-      cisco.nxos.nxos_feature:
-        feature: ospf
-        state: disabled
-
-    - name: Ensure vpc is enabled
-      cisco.nxos.nxos_feature:
-        feature: vpc
-        state: enabled
+    - cisco.nxos.nxos_ospf:
+        ospf: 1
+        state: present
 
 
 
@@ -125,10 +121,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 </td>
                 <td>always</td>
                 <td>
-                            <div>The set of commands to be sent to the remote device</div>
+                            <div>commands sent to the device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;nv overlay evpn&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospf 1&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -139,9 +135,11 @@ Status
 ------
 
 
+- This module will be removed in a release after 2022-06-01. *[deprecated]*
+- For more information see `DEPRECATED`_.
+
+
 Authors
 ~~~~~~~
 
-- Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
-- Suhas Bharadwaj (@srbharadwaj)

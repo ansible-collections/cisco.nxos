@@ -1,11 +1,11 @@
-.. _cisco.nxos.nxos_logging_module:
+.. _cisco.nxos.nxos_linkagg_module:
 
 
 ***********************
-cisco.nxos.nxos_logging
+cisco.nxos.nxos_linkagg
 ***********************
 
-**Manage logging on network devices**
+**(deprecated, removed after 2022-06-01) Manage link aggregation groups on Cisco NXOS devices.**
 
 
 Version added: 1.0.0
@@ -16,15 +16,15 @@ Version added: 1.0.0
 
 DEPRECATED
 ----------
-:Removed in collection release after 2023-08-01
-:Why: Updated module released with more functionality.
-:Alternative: nxos_logging_global
+:Removed in collection release after 2022-06-01
+:Why: Updated modules released with more functionality.
+:Alternative: nxos_lag_interfaces
 
 
 
 Synopsis
 --------
-- This module provides declarative management of logging on Cisco NX-OS devices.
+- This module provides declarative management of link aggregation groups on Cisco NXOS devices.
 
 
 
@@ -36,12 +36,12 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="1">Parameter</th>
+            <th colspan="2">Parameter</th>
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>aggregate</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -53,35 +53,68 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>List of logging definitions.</div>
+                        <div>List of link aggregation definitions.</div>
                 </td>
             </tr>
-            <tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>dest</b>
+                    <b>force</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">boolean</span>
                     </div>
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>console</li>
-                                    <li>logfile</li>
-                                    <li>module</li>
-                                    <li>monitor</li>
-                                    <li>server</li>
+                                    <li>no</li>
+                                    <li>yes</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Destination of the logs.</div>
+                        <div>When true it forces link aggregation group members to match what is declared in the members param. This can be used to remove members.</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>dest_level</b>
+                    <b>group</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Channel-group number for the port-channel Link aggregation group.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>members</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>List of interfaces that will be managed in the link aggregation group.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>min_links</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -90,14 +123,14 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Set logging severity levels.</div>
-                        <div style="font-size: small; color: darkgreen"><br/>aliases: level</div>
+                        <div>Minimum number of ports required up before bringing up the link aggregation group.</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>event</b>
+                    <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -105,20 +138,59 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>link-enable</li>
-                                    <li>link-default</li>
-                                    <li>trunk-enable</li>
-                                    <li>trunk-default</li>
+                                    <li>active</li>
+                                    <li>on</li>
+                                    <li>passive</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Link/trunk enable/default interface configuration logging</div>
+                        <div>Mode for the link aggregation group.</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility</b>
+                    <b>state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>present</li>
+                                    <li>absent</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>State of the link aggregation group.</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>force</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>When true it forces link aggregation group members to match what is declared in the members param. This can be used to remove members.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>group</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -127,13 +199,29 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Facility name for logging.</div>
+                        <div>Channel-group number for the port-channel Link aggregation group.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility_level</b>
+                    <b>members</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>List of interfaces that will be managed in the link aggregation group.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>min_links</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
@@ -142,13 +230,13 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Set logging severity levels for facility based log messages.</div>
+                        <div>Minimum number of ports required up before bringing up the link aggregation group.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>facility_link_status</b>
+                    <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -156,81 +244,17 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>link-down-notif</li>
-                                    <li>link-down-error</li>
-                                    <li>link-up-notif</li>
-                                    <li>link-up-error</li>
+                                    <li>active</li>
+                                    <li><div style="color: blue"><b>on</b>&nbsp;&larr;</div></li>
+                                    <li>passive</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Set logging facility ethpm link status. Not idempotent with version 6.0 images.</div>
+                        <div>Mode for the link aggregation group.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>file_size</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Set logfile size</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interface</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Interface to be used while configuring source-interface for logging (e.g., &#x27;Ethernet1/2&#x27;, &#x27;mgmt0&#x27;)</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interface_message</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>add-interface-description</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Add interface description to interface syslogs. Does not work with version 6.0 images using nxapi as a transport.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>name</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>If value of <code>dest</code> is <em>logfile</em> it indicates file-name.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>purge</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -245,26 +269,11 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Remove any switch logging configuration that does not match what has been configured Not supported for ansible_connection local. All nxos_logging tasks must use the same ansible_connection type.</div>
+                        <div>Purge links not defined in the <em>aggregate</em> parameter.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>remote_server</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Hostname or IP Address for remote logging (when dest is &#x27;server&#x27;).</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -279,42 +288,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>State of the logging configuration.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>timestamp</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>microseconds</li>
-                                    <li>milliseconds</li>
-                                    <li>seconds</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set logging timestamp format</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>use_vrf</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>VRF to be used while configuring remote logging (when dest is &#x27;server&#x27;).</div>
+                        <div>State of the link aggregation group.</div>
                 </td>
             </tr>
     </table>
@@ -325,7 +299,11 @@ Notes
 -----
 
 .. note::
-   - Limited Support for Cisco MDS
+   - Tested against NXOSv 7.0(3)I5(1).
+   - Unsupported for Cisco MDS
+   - ``state=absent`` removes the portchannel config and interface if it already exists. If members to be removed are not explicitly passed, all existing members (if any), are removed.
+   - Members must be a list.
+   - LACP needs to be enabled first if active/passive modes are used.
 
 
 
@@ -334,77 +312,45 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure console logging with level
-      cisco.nxos.nxos_logging:
-        dest: console
-        level: 2
+    - name: create link aggregation group
+      cisco.nxos.nxos_linkagg:
+        group: 99
         state: present
-    - name: remove console logging configuration
-      cisco.nxos.nxos_logging:
-        dest: console
-        level: 2
+
+    - name: delete link aggregation group
+      cisco.nxos.nxos_linkagg:
+        group: 99
         state: absent
-    - name: configure file logging with level
-      cisco.nxos.nxos_logging:
-        dest: logfile
-        name: testfile
-        dest_level: 3
-        state: present
-    - name: Configure logging logfile with size
-      cisco.nxos.nxos_logging:
-        dest: logfile
-        name: testfile
-        dest_level: 3
-        file_size: 16384
-    - name: configure facility level logging
-      cisco.nxos.nxos_logging:
-        facility: daemon
-        facility_level: 0
-        state: present
-    - name: remove facility level logging
-      cisco.nxos.nxos_logging:
-        facility: daemon
-        facility_level: 0
-        state: absent
-    - name: Configure Remote Logging
-      cisco.nxos.nxos_logging:
-        dest: server
-        remote_server: test-syslogserver.com
-        facility: auth
-        facility_level: 1
-        use_vrf: management
-        state: present
-    - name: Configure Source Interface for Logging
-      cisco.nxos.nxos_logging:
-        interface: mgmt0
-        state: present
-    - name: Purge nxos_logging configuration not managed by this playbook
-      cisco.nxos.nxos_logging:
-        purge: true
-    - name: Configure logging timestamp
-      cisco.nxos.nxos_logging:
-        timestamp: milliseconds
-        state: present
-    - name: Configure logging facility ethpm link status
-      cisco.nxos.nxos_logging:
-        facility: ethpm
-        facility_link_status: link-up-notif
-        state: present
-    - name: Configure logging message ethernet description
-      cisco.nxos.nxos_logging:
-        interface_message: add-interface-description
-        state: present
-    - name: Configure logging event link enable
-      cisco.nxos.nxos_logging:
-        event: link-enable
-        state: present
-    - name: Configure logging using aggregate
-      cisco.nxos.nxos_logging:
+
+    - name: set link aggregation group to members
+      cisco.nxos.nxos_linkagg:
+        group: 10
+        min_links: 3
+        mode: active
+        members:
+        - Ethernet1/2
+        - Ethernet1/4
+
+    - name: remove link aggregation group from Ethernet1/2
+      cisco.nxos.nxos_linkagg:
+        group: 10
+        min_links: 3
+        mode: active
+        members:
+        - Ethernet1/4
+
+    - name: Create aggregate of linkagg definitions
+      cisco.nxos.nxos_linkagg:
         aggregate:
-        - {dest: console, dest_level: 2}
-        - {dest: logfile, dest_level: 2, name: testfile}
-        - {facility: daemon, facility_level: 0}
-        state: present
+        - {group: 3}
+        - {group: 100, min_links: 3}
+
+    - name: Remove aggregate of linkagg definitions
+      cisco.nxos.nxos_linkagg:
+        aggregate:
+        - {group: 3}
+        - {group: 100, min_links: 3}
+        state: absent
 
 
 
@@ -429,12 +375,12 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>always, except for the platforms that use Netconf transport to manage the device.</td>
                 <td>
                             <div>The list of configuration mode commands to send to the device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;logging console 2&#x27;, &#x27;logging logfile testfile 3&#x27;, &#x27;logging level daemon 0&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface port-channel 30&#x27;, &#x27;lacp min-links 5&#x27;, &#x27;interface Ethernet2/1&#x27;, &#x27;channel-group 30 mode active&#x27;, &#x27;no interface port-channel 30&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -445,7 +391,7 @@ Status
 ------
 
 
-- This module will be removed in a release after 2023-08-01. *[deprecated]*
+- This module will be removed in a release after 2022-06-01. *[deprecated]*
 - For more information see `DEPRECATED`_.
 
 

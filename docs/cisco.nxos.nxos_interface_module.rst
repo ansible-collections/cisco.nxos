@@ -1,11 +1,11 @@
-.. _cisco.nxos.nxos_bgp_neighbor_af_module:
+.. _cisco.nxos.nxos_interface_module:
 
 
-*******************************
-cisco.nxos.nxos_bgp_neighbor_af
-*******************************
+*************************
+cisco.nxos.nxos_interface
+*************************
 
-**(deprecated, removed after 2023-02-24) Manages BGP address-family's neighbors configuration.**
+**(deprecated, removed after 2022-06-01) Manages physical attributes of interfaces.**
 
 
 Version added: 1.0.0
@@ -16,15 +16,15 @@ Version added: 1.0.0
 
 DEPRECATED
 ----------
-:Removed in collection release after 2023-02-24
-:Why: Updated module released with more functionality.
-:Alternative: nxos_bgp_neighbor_address_family
+:Removed in collection release after 2022-06-01
+:Why: Updated modules released with more functionality
+:Alternative: nxos_interfaces
 
 
 
 Synopsis
 --------
-- Manages BGP address-family's neighbors configurations on NX-OS switches.
+- Manages physical attributes of interfaces of NX-OS switches.
 
 
 
@@ -36,14 +36,165 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="1">Parameter</th>
+            <th colspan="3">Parameter</th>
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>additional_paths_receive</b>
+                    <b>admin_state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>up</b>&nbsp;&larr;</div></li>
+                                    <li>down</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Administrative state of the interface.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>aggregate</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>List of Interfaces definitions.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>admin_state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>up</li>
+                                    <li>down</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Administrative state of the interface.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>delay</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Time in seconds to wait before checking for the operational state on remote device. This wait is applicable for operational state arguments.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>description</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Interface description.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>duplex</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>full</li>
+                                    <li>half</li>
+                                    <li>auto</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Interface link status. Applicable for ethernet interface only.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>fabric_forwarding_anycast_gateway</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Associate SVI with anycast gateway under VLAN configuration mode. Applicable for SVI interface only.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>interface_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>loopback</li>
+                                    <li>portchannel</li>
+                                    <li>svi</li>
+                                    <li>nve</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Interface type to be unconfigured from the device.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ip_forward</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -53,17 +204,17 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>enable</li>
                                     <li>disable</li>
-                                    <li>inherit</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Valid values are enable for basic command enablement; disable for disabling the command at the neighbor af level (it adds the disable keyword to the basic command); and inherit to remove the command at this level (the command value is inherited from a higher BGP layer).</div>
+                        <div>Enable/Disable ip forward feature on SVIs.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>additional_paths_send</b>
+                    <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -71,93 +222,71 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>enable</li>
-                                    <li>disable</li>
-                                    <li>inherit</li>
+                                    <li>layer2</li>
+                                    <li>layer3</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Valid values are enable for basic command enablement; disable for disabling the command at the neighbor af level (it adds the disable keyword to the basic command); and inherit to remove the command at this level (the command value is inherited from a higher BGP layer).</div>
+                        <div>Manage Layer 2 or Layer 3 state of the interface. This option is supported for ethernet and portchannel interface. Applicable for ethernet and portchannel interface only.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>advertise_map_exist</b>
+                    <b>mtu</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>MTU for a specific interface. Must be an even number between 576 and 9216. Applicable for ethernet interface only.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Full name of interface, i.e. Ethernet1/1, port-channel10.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>neighbors</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=string</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>Conditional route advertisement. This property requires two route maps, an advertise-map and an exist-map. Valid values are an array specifying both the advertise-map name and the exist-map name, or simply &#x27;default&#x27; e.g. [&#x27;my_advertise_map&#x27;, &#x27;my_exist_map&#x27;]. This command is mutually exclusive with the advertise_map_non_exist property.</div>
+                        <div>Check the operational state of given interface <code>name</code> for LLDP neighbor.</div>
+                        <div>The following suboptions are available. This is state check parameter only.</div>
                 </td>
             </tr>
-            <tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>advertise_map_non_exist</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Conditional route advertisement. This property requires two route maps, an advertise-map and an exist-map. Valid values are an array specifying both the advertise-map name and the non-exist-map name, or simply &#x27;default&#x27; e.g. [&#x27;my_advertise_map&#x27;, &#x27;my_non_exist_map&#x27;]. This command is mutually exclusive with the advertise_map_exist property.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>afi</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>ipv4</li>
-                                    <li>ipv6</li>
-                                    <li>vpnv4</li>
-                                    <li>vpnv6</li>
-                                    <li>l2vpn</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Address Family Identifier.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>allowas_in</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Activate allowas-in property</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>allowas_in_max</b>
+                    <b>host</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -166,67 +295,15 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Max-occurrences value for allowas_in. Valid values are an integer value or &#x27;default&#x27;. This is mutually exclusive with allowas_in.</div>
+                        <div>LLDP neighbor host for given interface <code>name</code>.</div>
                 </td>
             </tr>
             <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>as_override</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Activate the as-override feature.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>asn</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BGP autonomous system number. Valid values are String, Integer in ASPLAIN or ASDOT notation.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>default_originate</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Activate the default-originate feature.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>default_originate_route_map</b>
+                    <b>port</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -235,32 +312,15 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Route-map for the default_originate property. Valid values are a string defining a route-map name, or &#x27;default&#x27;. This is mutually exclusive with default_originate.</div>
+                        <div>LLDP neighbor port to which given interface <code>name</code> is connected.</div>
                 </td>
             </tr>
+
             <tr>
-                <td colspan="1">
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>disable_peer_as_check</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Disable checking of peer AS-number while advertising</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>filter_list_in</b>
+                    <b>rx_rate</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -269,13 +329,16 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Valid values are a string defining a filter-list name, or &#x27;default&#x27;.</div>
+                        <div>Receiver rate in bits per second (bps).</div>
+                        <div>This is state check parameter only.</div>
+                        <div>Supports conditionals, see <a href='https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules'>https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules</a></div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>filter_list_out</b>
+                    <b>speed</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -284,251 +347,14 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Valid values are a string defining a filter-list name, or &#x27;default&#x27;.</div>
+                        <div>Interface link speed. Applicable for ethernet interface only.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>max_prefix_interval</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Optional restart interval. Valid values are an integer. Requires max_prefix_limit. May not be combined with max_prefix_warning.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>max_prefix_limit</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>maximum-prefix limit value. Valid values are an integer value or &#x27;default&#x27;.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>max_prefix_threshold</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Optional threshold percentage at which to generate a warning. Valid values are an integer value. Requires max_prefix_limit.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>max_prefix_warning</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Optional warning-only keyword. Requires max_prefix_limit. May not be combined with max_prefix_interval.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>neighbor</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Neighbor Identifier. Valid values are string. Neighbors may use IPv4 or IPv6 notation, with or without prefix length.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>next_hop_self</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Activate the next-hop-self feature.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>next_hop_third_party</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Activate the next-hop-third-party feature.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>prefix_list_in</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Valid values are a string defining a prefix-list name, or &#x27;default&#x27;.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>prefix_list_out</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Valid values are a string defining a prefix-list name, or &#x27;default&#x27;.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>rewrite_evpn_rt_asn</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                    <div style="font-style: italic; font-size: small; color: darkgreen">added in 1.1.0</div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Auto generate route targets for EBGP neighbor.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_map_in</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Valid values are a string defining a route-map name, or &#x27;default&#x27;.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_map_out</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Valid values are a string defining a route-map name, or &#x27;default&#x27;.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_reflector_client</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Router reflector client.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>safi</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>unicast</li>
-                                    <li>multicast</li>
-                                    <li>evpn</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Sub Address Family Identifier.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>send_community</b>
+                    <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -536,21 +362,129 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>none</li>
-                                    <li>both</li>
-                                    <li>extended</li>
-                                    <li>standard</li>
+                                    <li>present</li>
+                                    <li>absent</li>
                                     <li>default</li>
                         </ul>
                 </td>
                 <td>
-                        <div>send-community attribute.</div>
+                        <div>Specify desired state of the resource.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>soft_reconfiguration_in</b>
+                    <b>tx_rate</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Transmit rate in bits per second (bps).</div>
+                        <div>This is state check parameter only.</div>
+                        <div>Supports conditionals, see <a href='https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules'>https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules</a></div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>delay</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                        <b>Default:</b><br/><div style="color: blue">10</div>
+                </td>
+                <td>
+                        <div>Time in seconds to wait before checking for the operational state on remote device. This wait is applicable for operational state arguments.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>description</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Interface description.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>duplex</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>full</li>
+                                    <li>half</li>
+                                    <li>auto</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Interface link status. Applicable for ethernet interface only.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>fabric_forwarding_anycast_gateway</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Associate SVI with anycast gateway under VLAN configuration mode. Applicable for SVI interface only.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>interface_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>loopback</li>
+                                    <li>portchannel</li>
+                                    <li>svi</li>
+                                    <li>nve</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Interface type to be unconfigured from the device.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ip_forward</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -559,18 +493,36 @@ Parameters
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>enable</li>
-                                    <li>always</li>
-                                    <li>inherit</li>
+                                    <li>disable</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Valid values are &#x27;enable&#x27; for basic command enablement; &#x27;always&#x27; to add the always keyword to the basic command; and &#x27;inherit&#x27; to remove the command at this level (the command value is inherited from a higher BGP layer).</div>
+                        <div>Enable/Disable ip forward feature on SVIs.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>soo</b>
+                    <b>mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>layer2</li>
+                                    <li>layer3</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Manage Layer 2 or Layer 3 state of the interface. This option is supported for ethernet and portchannel interface. Applicable for ethernet and portchannel interface only.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mtu</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -579,11 +531,109 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Site-of-origin. Valid values are a string defining a VPN extcommunity or &#x27;default&#x27;.</div>
+                        <div>MTU for a specific interface. Must be an even number between 576 and 9216. Applicable for ethernet interface only.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Full name of interface, i.e. Ethernet1/1, port-channel10.</div>
+                        <div style="font-size: small; color: darkgreen"><br/>aliases: interface</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>neighbors</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Check the operational state of given interface <code>name</code> for LLDP neighbor.</div>
+                        <div>The following suboptions are available. This is state check parameter only.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>host</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>LLDP neighbor host for given interface <code>name</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>LLDP neighbor port to which given interface <code>name</code> is connected.</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>rx_rate</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Receiver rate in bits per second (bps).</div>
+                        <div>This is state check parameter only.</div>
+                        <div>Supports conditionals, see <a href='https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules'>https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules</a></div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>speed</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Interface link speed. Applicable for ethernet interface only.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -595,35 +645,17 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>present</b>&nbsp;&larr;</div></li>
                                     <li>absent</li>
+                                    <li>default</li>
                         </ul>
                 </td>
                 <td>
-                        <div>Determines whether the config should be present or not on the device.</div>
+                        <div>Specify desired state of the resource.</div>
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>suppress_inactive</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>suppress-inactive feature.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>unsuppress_map</b>
+                    <b>tx_rate</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -632,38 +664,9 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>unsuppress-map. Valid values are a string defining a route-map name or &#x27;default&#x27;.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vrf</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <b>Default:</b><br/><div style="color: blue">"default"</div>
-                </td>
-                <td>
-                        <div>Name of the VRF. The name &#x27;default&#x27; is a valid VRF representing the global bgp.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>weight</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Weight value. Valid values are an integer value or &#x27;default&#x27;.</div>
+                        <div>Transmit rate in bits per second (bps).</div>
+                        <div>This is state check parameter only.</div>
+                        <div>Supports conditionals, see <a href='https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules'>https://docs.ansible.com/ansible/latest/network/user_guide/network_working_with_command_output.html#conditionals-in-networking-modules</a></div>
                 </td>
             </tr>
     </table>
@@ -676,9 +679,9 @@ Notes
 .. note::
    - Tested against NXOSv 7.3.(0)D1(1) on VIRL
    - Unsupported for Cisco MDS
-   - ``state=absent`` removes the whole BGP address-family's neighbor configuration.
-   - Default, when supported, removes properties
-   - In order to default maximum-prefix configuration, only ``max_prefix_limit=default`` is needed.
+   - This module is also used to create logical interfaces such as svis and loopbacks.
+   - Be cautious of platform specific idiosyncrasies. For example, when you default a loopback interface, the admin state toggles on certain versions of NX-OS.
+   - The :ref:`cisco.nxos.nxos_overlay_global <cisco.nxos.nxos_overlay_global_module>` ``anycast_gateway_mac`` attribute must be set before setting the ``fabric_forwarding_anycast_gateway`` property.
 
 
 
@@ -687,15 +690,71 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure RR client
-      cisco.nxos.nxos_bgp_neighbor_af:
-        asn: 65535
-        neighbor: 192.0.2.3
-        afi: ipv4
-        safi: unicast
-        route_reflector_client: true
+    - name: Ensure an interface is a Layer 3 port and that it has the proper description
+      cisco.nxos.nxos_interface:
+        name: Ethernet1/1
+        description: Configured by Ansible
+        mode: layer3
+
+    - name: Admin down an interface
+      cisco.nxos.nxos_interface:
+        name: Ethernet2/1
+        admin_state: down
+
+    - name: Remove all loopback interfaces
+      cisco.nxos.nxos_interface:
+        name: loopback
+        state: absent
+
+    - name: Remove all logical interfaces
+      cisco.nxos.nxos_interface:
+        interface_type: '{{ item }} '
+        state: absent
+      loop:
+      - loopback
+      - portchannel
+      - svi
+      - nve
+
+    - name: Admin up all loopback interfaces
+      cisco.nxos.nxos_interface:
+        name: loopback 0-1023
+        admin_state: up
+
+    - name: Admin down all loopback interfaces
+      cisco.nxos.nxos_interface:
+        name: loopback 0-1023
+        admin_state: down
+
+    - name: Check neighbors intent arguments
+      cisco.nxos.nxos_interface:
+        name: Ethernet2/3
+        neighbors:
+        - port: Ethernet2/3
+          host: abc.mycompany.com
+
+    - name: Add interface using aggregate
+      cisco.nxos.nxos_interface:
+        aggregate:
+        - {name: Ethernet0/1, mtu: 256, description: test-interface-1}
+        - {name: Ethernet0/2, mtu: 516, description: test-interface-2}
+        duplex: full
+        speed: 100
         state: present
-        rewrite_evpn_rt_asn: true
+
+    - name: Delete interface using aggregate
+      cisco.nxos.nxos_interface:
+        aggregate:
+        - name: Loopback9
+        - name: Loopback10
+        state: absent
+
+    - name: Check intent arguments
+      cisco.nxos.nxos_interface:
+        name: Ethernet0/2
+        state: up
+        tx_rate: ge(0)
+        rx_rate: le(0)
 
 
 
@@ -722,10 +781,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 </td>
                 <td>always</td>
                 <td>
-                            <div>commands sent to the device</div>
+                            <div>command list sent to the device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65535&#x27;, &#x27;neighbor 192.0.2.3&#x27;, &#x27;address-family ipv4 unicast&#x27;, &#x27;route-reflector-client&#x27;, &#x27;rewrite-evpn-rt-asn&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface Ethernet2/3&#x27;, &#x27;mtu 1500&#x27;, &#x27;speed 10&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -736,11 +795,12 @@ Status
 ------
 
 
-- This module will be removed in a release after 2023-02-24. *[deprecated]*
+- This module will be removed in a release after 2022-06-01. *[deprecated]*
 - For more information see `DEPRECATED`_.
 
 
 Authors
 ~~~~~~~
 
-- Gabriele Gerbino (@GGabriele)
+- Jason Edelman (@jedelman8)
+- Trishna Guha (@trishnaguha)
