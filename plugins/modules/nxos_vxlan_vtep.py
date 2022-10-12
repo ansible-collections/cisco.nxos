@@ -34,7 +34,7 @@ author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - Unsupported for Cisco MDS
-- The module is used to manage NVE properties, not to create NVE interfaces. Use M(cisco.nxos.nxos_interface)
+- The module is used to manage NVE properties, not to create NVE interfaces. Use M(cisco.nxos.nxos_interfaces)
   if you wish to do so.
 - C(state=absent) removes the interface.
 - Default, where supported, restores params default value.
@@ -441,7 +441,7 @@ def main():
         if not existing:
             warnings.append(
                 "The proposed NVE interface did not exist. "
-                "It's recommended to use nxos_interface to create "
+                "It's recommended to use nxos_interfaces to create "
                 "all logical interfaces.",
             )
         state_present(module, existing, proposed, candidate)
