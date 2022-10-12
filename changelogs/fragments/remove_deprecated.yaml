@@ -1,5 +1,5 @@
 ---
-major_changes:
+removed_features:
   - "This release removes all deprecated plugins that have reached their end-of-life."
   - "This includes the following modules:"
   - "nxos_acl"
