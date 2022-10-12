@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - "`nxos_telemetry` - Allow destination-group & sensor-group id to be strings."
+  - "`nxos_telemetry` - Allow sensor-group paths to be generated without additional properties."
