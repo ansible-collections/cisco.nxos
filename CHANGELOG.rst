@@ -17,8 +17,7 @@ Major Changes
 Removed Features (previously deprecated)
 ----------------------------------------
 
-- This includes the following modules:
-- This release removes all deprecated plugins that have reached their end-of-life.
+- This release removes the following deprecated plugins that have reached their end-of-life.
 - nxos_acl
 - nxos_acl_interface
 - nxos_interface
