@@ -29,16 +29,11 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-<<<<<<< HEAD:docs/cisco.nxos.nxos_zone_zoneset_module.rst
             <th colspan="4">Parameter</th>
-=======
-            <th colspan="1">Parameter</th>
->>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_acl_interface_module.rst
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
-<<<<<<< HEAD:docs/cisco.nxos.nxos_zone_zoneset_module.rst
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>zone_zoneset_details</b>
@@ -57,9 +52,6 @@ Parameters
                                 <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
-=======
-                <td colspan="1">
->>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_acl_interface_module.rst
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>default_zone</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -78,12 +70,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-<<<<<<< HEAD:docs/cisco.nxos.nxos_zone_zoneset_module.rst
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
-=======
-                <td colspan="1">
->>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_acl_interface_module.rst
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -102,12 +90,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-<<<<<<< HEAD:docs/cisco.nxos.nxos_zone_zoneset_module.rst
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
-=======
-                <td colspan="1">
->>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_acl_interface_module.rst
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>smart_zoning</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -126,7 +110,6 @@ Parameters
                 </td>
             </tr>
             <tr>
-<<<<<<< HEAD:docs/cisco.nxos.nxos_zone_zoneset_module.rst
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -388,11 +371,6 @@ Parameters
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
-=======
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>state</b>
->>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_acl_interface_module.rst
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -432,15 +410,12 @@ Parameters
     <br/>
 
 
-<<<<<<< HEAD:docs/cisco.nxos.nxos_zone_zoneset_module.rst
 Notes
 -----
 
 .. note::
    - Tested against Cisco MDS NX-OS 8.4(1)
 
-=======
->>>>>>> dfasdfZZ:docs/cisco.nxos.nxos_acl_interface_module.rst
 
 
 Examples
