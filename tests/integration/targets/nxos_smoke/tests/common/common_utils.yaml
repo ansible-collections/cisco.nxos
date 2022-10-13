@@ -4,28 +4,22 @@
 
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} common/common_utils.yaml
-- ansible.builtin.debug:
-    msg: Using provider={{ connection.transport }}
-  when: ansible_connection == "local"
 
 # hit ComplexList
 - name: Test contains operator
   cisco.nxos.nxos_command:
     commands:
       - show version
-    provider: "{{ connection }}"
 
 # hit to_list()
 - name: Setup
   cisco.nxos.nxos_config:
     lines: hostname switch
-    provider: "{{ connection }}"
     match: none
 
 - name: Configure top level command
   cisco.nxos.nxos_config:
     lines: hostname foo
-    provider: "{{ connection }}"
   register: result
 
 - ansible.builtin.assert:
@@ -36,7 +30,6 @@
 - name: Setup
   cisco.nxos.nxos_config:
     lines: hostname switch
-    provider: "{{ connection }}"
     match: none
 
 # hit conditional()
@@ -52,7 +45,6 @@
     lines:
       - "default interface {{ testint1 }}"
       - "default interface {{ testint2 }}"
-    provider: "{{ connection }}"
   ignore_errors: true
 
   register: result
@@ -62,5 +54,4 @@
     lines:
       - "default interface {{ testint1 }}"
       - "default interface {{ testint2 }}"
-    provider: "{{ connection }}"
   ignore_errors: true

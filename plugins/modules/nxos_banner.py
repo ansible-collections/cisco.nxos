@@ -102,7 +102,6 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -184,8 +183,6 @@ def main():
         text=dict(),
         state=dict(default="present", choices=["present", "absent"]),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     required_if = [("state", "present", ("text",))]
 

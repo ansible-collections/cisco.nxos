@@ -287,7 +287,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
-    nxos_argument_spec,
 )
 
 
@@ -689,7 +688,6 @@ def main():
         timer_bgp_keepalive=dict(required=False, type="str"),
         state=dict(choices=["present", "absent"], default="present", required=False),
     )
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(
         argument_spec=argument_spec,

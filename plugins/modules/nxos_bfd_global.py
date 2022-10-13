@@ -142,7 +142,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     NxosCmdRef,
     load_config,
-    nxos_argument_spec,
 )
 
 
@@ -308,7 +307,6 @@ def main():
         fabricpath_slow_timer=dict(required=False, type="int"),
         fabricpath_vlan=dict(required=False, type="int"),
     )
-    argument_spec.update(nxos_argument_spec)
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()
 

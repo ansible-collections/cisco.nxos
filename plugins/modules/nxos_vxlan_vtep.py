@@ -137,7 +137,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -400,8 +399,6 @@ def main():
         state=dict(choices=["present", "absent"], default="present", required=False),
         multisite_border_gateway_interface=dict(required=False, type="str"),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     mutually_exclusive = [("global_ingress_replication_bgp", "global_mcast_group_L2")]
 
