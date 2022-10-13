@@ -196,7 +196,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_interface_type,
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -502,7 +501,6 @@ def main():
         state=dict(choices=["present", "absent", "default"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
     mutually_exclusive = [("oif_ps", "oif_routemap")]
 
     module = AnsibleModule(

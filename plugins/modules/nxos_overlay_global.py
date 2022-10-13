@@ -67,7 +67,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
-    nxos_argument_spec,
 )
 
 
@@ -166,8 +165,6 @@ def normalize_mac(proposed_mac, module):
 
 def main():
     argument_spec = dict(anycast_gateway_mac=dict(required=True, type="str"))
-
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 

@@ -55,8 +55,7 @@ options:
       configured_password:
         description:
         - The password to be configured on the network device. The password needs to be
-          provided in cleartext and it will be encrypted on the device. Please note that
-          this option is not same as C(provider password).
+          provided in cleartext and it will be encrypted on the device.
         type: str
       update_password:
         description:
@@ -100,8 +99,7 @@ options:
   configured_password:
     description:
     - The password to be configured on the network device. The password needs to be
-      provided in cleartext and it will be encrypted on the device. Please note that
-      this option is not same as C(provider password).
+      provided in cleartext and it will be encrypted on the device.
     type: str
   update_password:
     description:
@@ -192,7 +190,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -425,7 +422,6 @@ def main():
     )
 
     argument_spec.update(element_spec)
-    argument_spec.update(nxos_argument_spec)
 
     mutually_exclusive = [("name", "aggregate")]
 

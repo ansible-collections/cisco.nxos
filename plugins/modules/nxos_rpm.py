@@ -112,7 +112,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -345,8 +344,6 @@ def main():
     argument_spec = dict(aggregate=dict(type="list", elements="dict", options=aggregate_spec))
 
     argument_spec.update(element_spec)
-    argument_spec.update(nxos_argument_spec)
-
     required_one_of = [["pkg", "aggregate"]]
     mutually_exclusive = [["pkg", "aggregate"]]
 

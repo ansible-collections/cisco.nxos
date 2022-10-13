@@ -152,7 +152,6 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -344,8 +343,6 @@ def main():
         save_snapshot_locally=dict(type="bool", default=False),
         path=dict(type="str", default="./"),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     required_if = [
         (

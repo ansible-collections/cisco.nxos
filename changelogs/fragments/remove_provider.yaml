@@ -1,0 +1,4 @@
+---
+major_changes:
+  - "This release drops support for `connection: local` and provider dictionary."
+  - "Please use either of the following connection types - network_cli, httpapi or netconf."

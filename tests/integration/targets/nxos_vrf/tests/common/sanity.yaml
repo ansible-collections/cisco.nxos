@@ -42,7 +42,6 @@
   cisco.nxos.nxos_config:
     commands:
       - nv overlay evpn
-    provider: "{{ connection }}"
 
 - block:
     - name: Ensure NTC VRF exists on switch
@@ -112,7 +111,6 @@
       cisco.nxos.nxos_config:
         commands:
           - no nv overlay evpn
-        provider: "{{ connection }}"
 
     - name: Disable 'feature bgp'
       ignore_errors: true

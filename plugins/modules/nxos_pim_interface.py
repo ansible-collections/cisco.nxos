@@ -174,7 +174,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     get_config,
     get_interface_type,
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -532,7 +531,6 @@ def main():
             choices=["absent", "default", "present"],
         ),
     )
-    argument_spec.update(nxos_argument_spec)
 
     required_by = {"hello_interval_ms": "hello_interval"}
     module = AnsibleModule(

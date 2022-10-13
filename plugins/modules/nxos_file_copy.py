@@ -234,8 +234,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
     get_resource_connection,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import nxos_argument_spec
-
 
 class FileCopy:
     def __init__(self, module):
@@ -470,8 +468,6 @@ def main():
         remote_scp_server_user=dict(type="str"),
         remote_scp_server_password=dict(no_log=True),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(
         argument_spec=argument_spec,
