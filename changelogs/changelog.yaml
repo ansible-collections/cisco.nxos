@@ -474,7 +474,7 @@ releases:
           and `ansible_network_import_modules`.
         - "Please refer to
           ansible.netcommon
-          `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`
+          `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
           for more details."
       minor_changes:
         - Add bfd option for neighbors (https://github.com/ansible-collections/cisco.nxos/issues/241).
@@ -723,9 +723,7 @@ releases:
       release_summary:
         "The v2.8.1 of the cisco.nxos collection is not available on
         Ansible Automation Hub. Please download and use v2.8.2 which also contains
-        an additional bug fix.
-
-        "
+        an additional bug fix."
     fragments:
       - ignore.yaml
       - nxos_ntp.yaml
@@ -883,3 +881,29 @@ releases:
       - passwd_lookup.yaml
       - telemetry.yaml
     release_date: "2022-10-12"
+  4.0.0:
+    changes:
+      major_changes:
+        - Please use either of the following connection types - network_cli, httpapi
+          or netconf.
+        - "This release drops support for `connection: local` and provider dictionary."
+      removed_features:
+        - This release removes the following deprecated plugins that have reached their end-of-life.
+        - nxos_acl
+        - nxos_acl_interface
+        - nxos_interface
+        - nxos_interface_ospf
+        - nxos_l2_interface
+        - nxos_l3_interface
+        - nxos_linkagg
+        - nxos_lldp
+        - nxos_ospf
+        - nxos_ospf_vrf
+        - nxos_smu
+        - nxos_static_route
+        - nxos_vlan
+    fragments:
+      - remove_deprecated.yaml
+      - remove_net_changes.yaml
+      - remove_provider.yaml
+    release_date: "2022-10-13"

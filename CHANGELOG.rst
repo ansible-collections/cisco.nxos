@@ -5,6 +5,33 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v4.0.0
+======
+
+Major Changes
+-------------
+
+- Please use either of the following connection types - network_cli, httpapi or netconf.
+- This release drops support for `connection: local` and provider dictionary.
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- This release removes the following deprecated plugins that have reached their end-of-life.
+- nxos_acl
+- nxos_acl_interface
+- nxos_interface
+- nxos_interface_ospf
+- nxos_l2_interface
+- nxos_l3_interface
+- nxos_linkagg
+- nxos_lldp
+- nxos_ospf
+- nxos_ospf_vrf
+- nxos_smu
+- nxos_static_route
+- nxos_vlan
+
 v3.2.0
 ======
 
