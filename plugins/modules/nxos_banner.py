@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 # (c) 2017, Ansible by Red Hat, inc
@@ -33,6 +34,7 @@ description:
 notes:
 - Since responses from the device are always read with surrounding whitespaces stripped,
   tasks that configure banners with preceeding or trailing whitespaces will not be idempotent.
+- Limited Support for Cisco MDS
 version_added: 1.0.0
 options:
   banner:
@@ -93,16 +95,15 @@ commands:
     - string
 """
 
-from ansible.module_utils.basic import AnsibleModule
+import re
+
 from ansible.module_utils._text import to_text
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-import re
 
 
 def execute_show_command(module, command):
@@ -141,7 +142,7 @@ def map_config_to_obj(module):
     if "Invalid command" in output:
         module.fail_json(
             msg="banner: %s may not be supported on this platform.  Possible values are : exec | motd"
-            % module.params["banner"]
+            % module.params["banner"],
         )
 
     if isinstance(output, dict):
@@ -176,15 +177,12 @@ def map_params_to_obj(module):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     argument_spec = dict(
         banner=dict(required=True, choices=["exec", "motd"]),
         text=dict(),
         state=dict(default="present", choices=["present", "absent"]),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     required_if = [("state", "present", ("text",))]
 
@@ -214,10 +212,7 @@ def main():
                             err_str = item["clierror"]
                         else:
                             err_str = item
-                        if (
-                            "more than 40 lines" in err_str
-                            or "buffer overflowed" in err_str
-                        ):
+                        if "more than 40 lines" in err_str or "buffer overflowed" in err_str:
                             load_config(module, commands)
 
         result["changed"] = True

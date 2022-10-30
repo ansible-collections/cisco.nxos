@@ -1,13 +1,19 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_telemetry deleted sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_telemetry deleted sanity test
 
-- set_fact: source_interface="Loopback55"
+- name: Set a fact for 'source_interface'
+  ansible.builtin.set_fact:
+    source_interface: Loopback55
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- set_fact: before_keys_length=6
+- name: Set a fact for 'before_keys_length'
+  ansible.builtin.set_fact:
+    before_keys_length: 6
 
-- set_fact: before_keys_length=7
+- name: Set a fact for 'before_keys_length'
+  ansible.builtin.set_fact:
+    before_keys_length: 7
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
 - name: Setup
@@ -16,7 +22,7 @@
     feature: telemetry
     state: disabled
 
-- name: Setup - Configure Telemetry
+- name: Setup - configure telemetry
   cisco.nxos.nxos_telemetry:
     state: merged
     config:
@@ -24,10 +30,9 @@
         key: /bootflash/server.crt
         hostname: localhost
       compression: gzip
-      source_interface: '{{source_interface|default(omit)}}'
+      source_interface: "{{source_interface|default(omit)}}"
       vrf: RED
       destination_groups:
-
         - id: 2
           destination:
             ip: 192.168.0.1
@@ -56,7 +61,6 @@
             protocol: gRPC
             encoding: gpb
       sensor_groups:
-
         - id: 8
           data_source: NX-API
           path:
@@ -89,7 +93,6 @@
             query_condition: foo
             filter_condition: or(eq(ethpmPhysIf.operSt,"down"),eq(ethpmPhysIf.operSt,"up"))
       subscriptions:
-
         - id: 44
           destination_group: 10
           sensor_group:
@@ -109,12 +112,11 @@
             sample_interval: 2000
 
 - block:
-
-    - name: Gather Telemetry Facts Before Changes
+    - name: Gather telemetry facts before changes
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - telemetry
 
@@ -123,38 +125,35 @@
       cisco.nxos.nxos_telemetry: &id002
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'no telemetry' in result.commands"
           - result.before|dict2items|length == {{ before_keys_length }}
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length
-            == 0
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0
 
-    - name: Gather Telemetry Facts After Changes
+    - name: Gather telemetry facts after changes
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length
-            == 0
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length == 0
 
     - name: Telemetry - deleted - idempotence
       register: result
       cisco.nxos.nxos_telemetry: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: Teardown
       ignore_errors: true
       cisco.nxos.nxos_feature: *id003
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_telemetry deleted
-        sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_telemetry deleted sanity test

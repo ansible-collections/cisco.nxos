@@ -1,37 +1,37 @@
 ---
-- debug: msg="START common/nonidempotent.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: START common/nonidempotent.yaml on connection={{ ansible_connection }}
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines: hostname switch
     match: none
 
-- name: configure top level command
+- name: Configure top level command
   register: result
   cisco.nxos.nxos_config:
     lines: hostname foo
     match: strict
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'hostname foo' in result.updates"
 
-- name: configure top level command idempotent check
+- name: Configure top level command idempotent check
   register: result
   cisco.nxos.nxos_config:
     lines: hostname foo
     match: strict
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config:
     lines: hostname switch
     match: none
 
-- debug: msg="END common/nonidempotent.yaml on connection={{ ansible_connection
-    }}"
+- ansible.builtin.debug:
+    msg: END common/nonidempotent.yaml on connection={{ ansible_connection }}

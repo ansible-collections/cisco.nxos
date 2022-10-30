@@ -11,22 +11,22 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acls.acls import (
     AclsArgs,
 )
 
 
 class AclsFacts(object):
-    """ The nxos acls fact class
-    """
+    """The nxos acls fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -42,15 +42,13 @@ class AclsFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_device_data(self, connection):
-        data = connection.get(
-            "show running-config | section 'ip(v6)* access-list'"
-        )
+        data = connection.get("show running-config | section 'ip(v6)* access-list'")
         if data == "{}":
             return ""
         return data
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for acls
+        """Populate the facts for acls
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
@@ -83,9 +81,7 @@ class AclsFacts(object):
         ansible_facts["ansible_network_resources"].pop("acls", None)
         facts = {}
         if objs:
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             params = utils.remove_empties(params)
             facts["acls"] = params["config"]
 
@@ -117,9 +113,7 @@ class AclsFacts(object):
                 port_protocol = {}
                 port_pro = re.search(r"(eq|lt|gt|neq) (\w*)", ace)
                 if port_pro:
-                    port_protocol.update(
-                        {port_pro.group(1): port_pro.group(2)}
-                    )
+                    port_protocol.update({port_pro.group(1): port_pro.group(2)})
                     ace = re.sub(port_pro.group(1), "", ace, 1)
                     ace = re.sub(port_pro.group(2), "", ace, 1)
                 else:
@@ -130,8 +124,8 @@ class AclsFacts(object):
                                 "range": {
                                     "start": limit.group(2),
                                     "end": limit.group(3),
-                                }
-                            }
+                                },
+                            },
                         )
                         ace = re.sub(limit.group(2), "", ace, 1)
                         ace = re.sub(limit.group(3), "", ace, 1)
@@ -215,12 +209,10 @@ class AclsFacts(object):
                 acl = acl.split("\n")
                 acl = [a.strip() for a in acl]
                 acl = list(filter(None, acl))
-                acls["name"] = re.match(
-                    r"(ip)?(v6)?\s?access-list (.*)", acl[0]
-                ).group(3)
+                acls["name"] = re.match(r"(ip)?(v6)?\s?access-list (.*)", acl[0]).group(3)
                 acls["aces"] = []
                 for ace in list(filter(None, acl[1:])):
-                    if re.search(r"ip(.*)access-list.*", ace):
+                    if re.search(r"^ip(.*)access-list.*", ace):
                         break
                     ace = ace.strip()
                     seq = re.match(r"(\d+)", ace)
@@ -269,10 +261,7 @@ class AclsFacts(object):
                             for option in protocol_options[pro]:
                                 option = re.sub("_", "-", option)
                                 if option in ace:
-                                    if (
-                                        option == "echo"
-                                        and "echo_request" in options
-                                    ):
+                                    if option == "echo" and "echo_request" in options:
                                         continue
                                     option = re.sub("-", "_", option)
                                     options.update({option: True})

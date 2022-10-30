@@ -1,4 +1,5 @@
-- name: Populate Config - 1
+---
+- name: Populate configuration - 1
   cisco.nxos.nxos_config:
     lines:
       - "feature hsrp"
@@ -7,7 +8,7 @@
       - "  no switchport"
       - "  hsrp bfd"
 
-- name: Populate Config - 2
+- name: Populate configuration - 2
   cisco.nxos.nxos_config:
     lines:
       - "interface {{ nxos_int2 }}"

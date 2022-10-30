@@ -3,11 +3,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
-author: Ansible Networking Team
-httpapi: nxos
+author: Ansible Networking Team (@ansible-network)
+name: nxos
 short_description: Use NX-API to run commands on Cisco NX-OS platform
 description:
 - This plugin provides low level abstraction APIs for sending and receiving
@@ -15,16 +16,14 @@ description:
 version_added: 1.0.0
 """
 
+import collections
 import json
 import re
-import collections
 
 from ansible.module_utils._text import to_text
 from ansible.module_utils.connection import ConnectionError
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
-from ansible.plugins.httpapi import HttpApiBase
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.httpapi_base import HttpApiBase
 
 
 OPTIONS = {
@@ -96,16 +95,17 @@ class HttpApi(HttpApiBase):
         headers = {"Content-Type": "application/json"}
 
         response, response_data = self.connection.send(
-            "/ins", request, headers=headers, method="POST"
+            "/ins",
+            request,
+            headers=headers,
+            method="POST",
         )
 
         try:
             response_data = json.loads(to_text(response_data.getvalue()))
         except ValueError:
             raise ConnectionError(
-                "Response was not valid JSON, got {0}".format(
-                    to_text(response_data.getvalue())
-                )
+                "Response was not valid JSON, got {0}".format(to_text(response_data.getvalue())),
             )
 
         results = handle_response(response_data)
@@ -118,9 +118,7 @@ class HttpApi(HttpApiBase):
         device_info = {}
 
         device_info["network_os"] = "nxos"
-        reply, platform_reply = self.send_request(
-            ["show version", "show inventory"]
-        )
+        reply, platform_reply = self.send_request(["show version", "show inventory"])
 
         find_os_version = [
             r"\s+system:\s+version\s*(\S+)",
@@ -133,9 +131,7 @@ class HttpApi(HttpApiBase):
                 device_info["network_os_version"] = match_ver.group(1)
                 break
 
-        match_chassis_id = re.search(
-            r"Hardware\n\s+cisco\s*(\S+\s+\S+)", reply, re.M
-        )
+        match_chassis_id = re.search(r"Hardware\n\s+cisco\s*(\S+\s+\S+)", reply, re.M)
         if match_chassis_id:
             device_info["network_os_model"] = match_chassis_id.group(1)
 
@@ -231,8 +227,7 @@ def handle_response(response):
 
 
 def request_builder(commands, output, version="1.0", chunk="0", sid=None):
-    """Encodes a NXAPI JSON request message
-    """
+    """Encodes a NXAPI JSON request message"""
     output_to_command_type = {
         "text": "cli_show_ascii",
         "json": "cli_show",

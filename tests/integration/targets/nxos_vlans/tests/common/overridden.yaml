@@ -1,16 +1,14 @@
 ---
-- debug:
-    msg: Start nxos_vlans overridden integration tests connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: Start nxos_vlans overridden integration tests connection={{ ansible_connection }}
 
-- name: setup1
+- name: Setup1
   cisco.nxos.nxos_config: &id003
     lines:
       - "no vlan 2-100"
 
 - block:
-
-    - name: setup
+    - name: Setup
       cisco.nxos.nxos_config:
         lines:
           - "vlan 5"
@@ -21,12 +19,12 @@
     - name: Gather vlans facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: vlans
-    
-    - name: Set default vlan (vlan1) config and config to revert
-      set_fact:
+
+    - name: Set default VLAN (vlan1) configuration and configuration to revert
+      ansible.builtin.set_fact:
         default_vlan: "{{ ansible_facts.network_resources.vlans|selectattr('vlan_id', 'equalto', 1)|list }}"
         config_to_override:
           - vlan_id: 9
@@ -39,7 +37,7 @@
         config: "{{ default_vlan + config_to_override }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == ansible_facts.network_resources.vlans|length
           - result.changed == true
@@ -53,19 +51,18 @@
     - name: Gather vlans post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|length == ansible_facts.network_resources.vlans|length
 
-    - name: Idempotence - Overridden
+    - name: Idempotence - overridden
       register: result
       cisco.nxos.nxos_vlans: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_config: *id003

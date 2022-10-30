@@ -1,0 +1,6 @@
+---
+- name: Remove existing logging configuration
+  cisco.nxos.nxos_logging_global:
+    state: deleted
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

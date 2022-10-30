@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -27,6 +28,8 @@ extends_documentation_fragment:
 short_description: Manages configuration of a PIM instance.
 description:
 - Manages configuration of a Protocol Independent Multicast (PIM) instance.
+notes:
+- Unsupported for Cisco MDS
 version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 options:
@@ -76,16 +79,14 @@ commands:
 
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
 )
 
 
@@ -155,16 +156,10 @@ def get_commands(module, existing, proposed, candidate):
 def main():
     argument_spec = dict(
         bfd=dict(required=False, type="str", choices=["enable", "disable"]),
-        ssm_range=dict(
-            required=False, type="list", default=[], elements="str"
-        ),
+        ssm_range=dict(required=False, type="list", default=[], elements="str"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()
     result = {"changed": False, "commands": [], "warnings": warnings}
 
@@ -179,7 +174,7 @@ def main():
             if len(item.split(".")) != 4:
                 module.fail_json(
                     msg="Valid ssm_range values are multicast addresses "
-                    "or the keyword 'none' or the keyword 'default'."
+                    "or the keyword 'none' or the keyword 'default'.",
                 )
 
     existing = get_existing(module, args)

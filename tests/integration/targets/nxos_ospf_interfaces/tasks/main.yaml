@@ -7,13 +7,15 @@
   vars:
     ansible_connection: ansible.netcommon.network_cli
 
-- block:
-
-    - include: cli.yaml
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli.yaml
 
-    - include: nxapi.yaml
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
 

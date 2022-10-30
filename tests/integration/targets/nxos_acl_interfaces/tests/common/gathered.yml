@@ -1,16 +1,15 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_acl_interfaces gathered integration tests connection={{ansible_connection}}"
 
-- include_tasks: populate_config.yaml
+- ansible.builtin.include_tasks: populate_config.yaml
 
 - block:
-
-    - name: Gather acl interfaces facts
+    - name: Gather ACL interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: acl_interfaces
 
     - name: Gathered
@@ -18,18 +17,17 @@
       cisco.nxos.nxos_acl_interfaces: &id001
         state: gathered
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - ansible_facts.network_resources.acl_interfaces == result.gathered
 
-    - name: Idempotence - Gathered
+    - name: Idempotence - gathered
       register: result
       cisco.nxos.nxos_acl_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
-
-    - include_tasks: remove_config.yaml
+    - ansible.builtin.include_tasks: remove_config.yaml

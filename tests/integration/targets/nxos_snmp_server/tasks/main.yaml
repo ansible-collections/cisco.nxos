@@ -1,0 +1,41 @@
+---
+- name: Get admin user SNMP data
+  cisco.nxos.nxos_command:
+    commands: show running | section '^snmp-server user'
+  register: result
+
+- name: Grep admin user SNMP localized key
+  ansible.builtin.set_fact:
+    # noqa var-spacing
+    admin_snmp_passwd: "{{ result['stdout'][0] | regex_search('snmp-server user admin network-admin auth (md5|sha|sha-256) (\\S+)', '\\2') }}"
+
+- name: Find admin user SNMP localized key
+  ansible.builtin.set_fact:
+    admin_snmp_passwd: "{{ admin_snmp_passwd[0] }}"
+
+- name: Grep admin user SNMP localized key (second)
+  ansible.builtin.set_fact:
+    admin_snmp_passwd_2: "{{ result['stdout'][0] | regex_search('snmp-server user admin auth (md5|sha|sha-256) (\\S+)', '\\2') }}" # noqa var-spacing
+
+- name: Find admin user SNMP localized key (second)
+  ansible.builtin.set_fact:
+    admin_snmp_passwd_2: "{{ admin_snmp_passwd_2[0] }}"
+
+- name: Grep admin user SNMP engineid (second)
+  ansible.builtin.set_fact:
+    # noqa var-spacing
+    admin_snmp_engineid_2: "{{ result['stdout'][0] | regex_search('admin auth (md5|sha|sha-256) (\\S+) priv (\\S+) localizedkey engineID (\\S+)', '\\4') }}"
+
+- name: Find admin user SNMP engineid (second)
+  ansible.builtin.set_fact:
+    admin_snmp_engineid_2: "{{ admin_snmp_engineid_2[0] }}"
+
+- name: Include the CLI tasks
+  ansible.builtin.include_tasks: cli.yaml
+  tags:
+    - cli.yaml
+
+- name: Include the NX-API tasks
+  ansible.builtin.include_tasks: nxapi.yaml
+  tags:
+    - nxapi

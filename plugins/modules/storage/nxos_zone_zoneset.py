@@ -15,7 +15,7 @@ version_added: 1.0.0
 author:
 - Suhas Bharadwaj (@srbharadwaj) (subharad@cisco.com)
 notes:
-- Tested against NX-OS 8.4(1)
+- Tested against Cisco MDS NX-OS 8.4(1)
 options:
   zone_zoneset_details:
     description:
@@ -213,9 +213,11 @@ messages:
 """
 
 
-import re
 import json
+import re
+
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -235,9 +237,7 @@ class ShowZonesetActive(object):
         self.parseCmdOutput()
 
     def execute_show_zoneset_active_cmd(self):
-        command = (
-            "show zoneset active vsan " + str(self.vsan) + " | grep zoneset"
-        )
+        command = "show zoneset active vsan " + str(self.vsan) + " | grep zoneset"
         output = execute_show_command(command, self.module)[0]
         return output
 
@@ -319,6 +319,7 @@ class ShowZone(object):
         patZone = r"zone name (\S+) vsan " + str(self.vsan)
         output = self.execute_show_zone_vsan_cmd().split("\n")
         for line in output:
+            line = re.sub(r"[\[].*?[\]]", "", line)
             line = " ".join(line.strip().split())
             if "init" in line:
                 line = line.replace("init", "initiator")
@@ -459,9 +460,7 @@ def main():
 
     zoneset_spec = dict(
         name=dict(type="str", required=True),
-        members=dict(
-            type="list", elements="dict", options=zoneset_member_spec
-        ),
+        members=dict(type="list", elements="dict", options=zoneset_member_spec),
         remove=dict(type="bool", default=False),
         action=dict(type="str", choices=["activate", "deactivate"]),
     )
@@ -476,14 +475,10 @@ def main():
     )
 
     argument_spec = dict(
-        zone_zoneset_details=dict(
-            type="list", elements="dict", options=zonedetails_spec
-        )
+        zone_zoneset_details=dict(type="list", elements="dict", options=zonedetails_spec),
     )
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     messages = list()
@@ -513,95 +508,77 @@ def main():
 
         if shZoneStatusObj.isVsanAbsent():
             module.fail_json(
-                msg="Vsan "
-                + str(vsan)
-                + " is not present in the switch. Hence cannot procced."
+                msg="Vsan " + str(vsan) + " is not present in the switch. Hence cannot procced.",
             )
 
         if shZoneStatusObj.isLocked():
             module.fail_json(
                 msg="zone has acquired lock on the switch for vsan "
                 + str(vsan)
-                + ". Hence cannot procced."
+                + ". Hence cannot procced.",
             )
 
         # Process zone default zone options
         if op_default_zone is not None:
             if op_default_zone != sw_default_zone:
                 if op_default_zone == "permit":
-                    commands_executed.append(
-                        "zone default-zone permit vsan " + str(vsan)
-                    )
+                    commands_executed.append("zone default-zone permit vsan " + str(vsan))
                     messages.append(
                         "default zone configuration changed from deny to permit for vsan "
-                        + str(vsan)
+                        + str(vsan),
                     )
                 else:
-                    commands_executed.append(
-                        "no zone default-zone permit vsan " + str(vsan)
-                    )
+                    commands_executed.append("no zone default-zone permit vsan " + str(vsan))
                     messages.append(
                         "default zone configuration changed from permit to deny for vsan "
-                        + str(vsan)
+                        + str(vsan),
                     )
             else:
                 messages.append(
                     "default zone is already "
                     + op_default_zone
                     + " ,no change in default zone configuration for vsan "
-                    + str(vsan)
+                    + str(vsan),
                 )
 
         # Process zone mode options
         if op_mode is not None:
             if op_mode != sw_mode:
                 if op_mode == "enhanced":
-                    commands_executed.append(
-                        "zone mode enhanced vsan " + str(vsan)
-                    )
+                    commands_executed.append("zone mode enhanced vsan " + str(vsan))
                     messages.append(
                         "zone mode configuration changed from basic to enhanced for vsan "
-                        + str(vsan)
+                        + str(vsan),
                     )
                 else:
-                    commands_executed.append(
-                        "no zone mode enhanced vsan " + str(vsan)
-                    )
+                    commands_executed.append("no zone mode enhanced vsan " + str(vsan))
                     messages.append(
                         "zone mode configuration changed from enhanced to basic for vsan "
-                        + str(vsan)
+                        + str(vsan),
                     )
             else:
                 messages.append(
                     "zone mode is already "
                     + op_mode
                     + " ,no change in zone mode configuration for vsan "
-                    + str(vsan)
+                    + str(vsan),
                 )
 
         # Process zone smart-zone options
         if op_smart_zoning is not None:
             if op_smart_zoning != sw_smart_zoning_bool:
                 if op_smart_zoning:
-                    commands_executed.append(
-                        "zone smart-zoning enable vsan " + str(vsan)
-                    )
-                    messages.append(
-                        "smart-zoning enabled for vsan " + str(vsan)
-                    )
+                    commands_executed.append("zone smart-zoning enable vsan " + str(vsan))
+                    messages.append("smart-zoning enabled for vsan " + str(vsan))
                 else:
-                    commands_executed.append(
-                        "no zone smart-zoning enable vsan " + str(vsan)
-                    )
-                    messages.append(
-                        "smart-zoning disabled for vsan " + str(vsan)
-                    )
+                    commands_executed.append("no zone smart-zoning enable vsan " + str(vsan))
+                    messages.append("smart-zoning disabled for vsan " + str(vsan))
             else:
                 messages.append(
                     "smart-zoning is already set to "
                     + sw_smart_zoning
                     + " , no change in smart-zoning configuration for vsan "
-                    + str(vsan)
+                    + str(vsan),
                 )
 
         # Process zone member options
@@ -615,67 +592,39 @@ def main():
                 removeflag = eachzone["remove"]
                 if removeflag:
                     if shZoneObj.isZonePresent(zname):
-                        messages.append(
-                            "zone '"
-                            + zname
-                            + "' is removed from vsan "
-                            + str(vsan)
-                        )
-                        commands_executed.append(
-                            "no zone name " + zname + " vsan " + str(vsan)
-                        )
+                        messages.append("zone '" + zname + "' is removed from vsan " + str(vsan))
+                        commands_executed.append("no zone name " + zname + " vsan " + str(vsan))
                     else:
                         messages.append(
                             "zone '"
                             + zname
                             + "' is not present in vsan "
                             + str(vsan)
-                            + " , so nothing to remove"
+                            + " , so nothing to remove",
                         )
                 else:
                     if zmembers is None:
                         if shZoneObj.isZonePresent(zname):
                             messages.append(
-                                "zone '"
-                                + zname
-                                + "' is already present in vsan "
-                                + str(vsan)
+                                "zone '" + zname + "' is already present in vsan " + str(vsan),
                             )
                         else:
-                            commands_executed.append(
-                                "zone name " + zname + " vsan " + str(vsan)
-                            )
-                            messages.append(
-                                "zone '"
-                                + zname
-                                + "' is created in vsan "
-                                + str(vsan)
-                            )
+                            commands_executed.append("zone name " + zname + " vsan " + str(vsan))
+                            messages.append("zone '" + zname + "' is created in vsan " + str(vsan))
                     else:
                         cmdmemlist = []
                         for eachmem in zmembers:
-                            memtype = getMemType(
-                                supported_choices, eachmem.keys()
-                            )
-                            cmd = (
-                                memtype.replace("_", "-")
-                                + " "
-                                + eachmem[memtype]
-                            )
+                            memtype = getMemType(supported_choices, eachmem.keys())
+                            cmd = memtype.replace("_", "-") + " " + eachmem[memtype]
                             if op_smart_zoning or sw_smart_zoning_bool:
                                 if eachmem["devtype"] is not None:
                                     cmd = cmd + " " + eachmem["devtype"]
                             if eachmem["remove"]:
                                 if shZoneObj.isZonePresent(zname):
-                                    if shZoneObj.isZoneMemberPresent(
-                                        zname, cmd
-                                    ):
+                                    if shZoneObj.isZoneMemberPresent(zname, cmd):
                                         cmd = "no member " + cmd
                                         cmdmemlist.append(cmd)
-                                        if (
-                                            op_smart_zoning
-                                            and eachmem["devtype"] is not None
-                                        ):
+                                        if op_smart_zoning and eachmem["devtype"] is not None:
                                             messages.append(
                                                 "removing zone member '"
                                                 + eachmem[memtype]
@@ -684,7 +633,7 @@ def main():
                                                 + "' from zone '"
                                                 + zname
                                                 + "' in vsan "
-                                                + str(vsan)
+                                                + str(vsan),
                                             )
                                         else:
                                             messages.append(
@@ -693,13 +642,10 @@ def main():
                                                 + "' from zone '"
                                                 + zname
                                                 + "' in vsan "
-                                                + str(vsan)
+                                                + str(vsan),
                                             )
                                     else:
-                                        if (
-                                            op_smart_zoning
-                                            and eachmem["devtype"] is not None
-                                        ):
+                                        if op_smart_zoning and eachmem["devtype"] is not None:
                                             messages.append(
                                                 "zone member '"
                                                 + eachmem[memtype]
@@ -709,7 +655,7 @@ def main():
                                                 + zname
                                                 + "' in vsan "
                                                 + str(vsan)
-                                                + " hence nothing to remove"
+                                                + " hence nothing to remove",
                                             )
                                         else:
                                             messages.append(
@@ -719,7 +665,7 @@ def main():
                                                 + zname
                                                 + "' in vsan "
                                                 + str(vsan)
-                                                + " hence nothing to remove"
+                                                + " hence nothing to remove",
                                             )
                                 else:
                                     messages.append(
@@ -727,15 +673,12 @@ def main():
                                         + zname
                                         + "' is not present in vsan "
                                         + str(vsan)
-                                        + " , hence cannot remove the members"
+                                        + " , hence cannot remove the members",
                                     )
 
                             else:
                                 if shZoneObj.isZoneMemberPresent(zname, cmd):
-                                    if (
-                                        op_smart_zoning
-                                        and eachmem["devtype"] is not None
-                                    ):
+                                    if op_smart_zoning and eachmem["devtype"] is not None:
                                         messages.append(
                                             "zone member '"
                                             + eachmem[memtype]
@@ -745,7 +688,7 @@ def main():
                                             + zname
                                             + "' in vsan "
                                             + str(vsan)
-                                            + " hence nothing to add"
+                                            + " hence nothing to add",
                                         )
                                     else:
                                         messages.append(
@@ -755,15 +698,12 @@ def main():
                                             + zname
                                             + "' in vsan "
                                             + str(vsan)
-                                            + " hence nothing to add"
+                                            + " hence nothing to add",
                                         )
                                 else:
                                     cmd = "member " + cmd
                                     cmdmemlist.append(cmd)
-                                    if (
-                                        op_smart_zoning
-                                        and eachmem["devtype"] is not None
-                                    ):
+                                    if op_smart_zoning and eachmem["devtype"] is not None:
                                         messages.append(
                                             "adding zone member '"
                                             + eachmem[memtype]
@@ -772,7 +712,7 @@ def main():
                                             + "' to zone '"
                                             + zname
                                             + "' in vsan "
-                                            + str(vsan)
+                                            + str(vsan),
                                         )
                                     else:
                                         messages.append(
@@ -781,12 +721,10 @@ def main():
                                             + "' to zone '"
                                             + zname
                                             + "' in vsan "
-                                            + str(vsan)
+                                            + str(vsan),
                                         )
                         if len(cmdmemlist) != 0:
-                            commands_executed.append(
-                                "zone name " + zname + " vsan " + str(vsan)
-                            )
+                            commands_executed.append("zone name " + zname + " vsan " + str(vsan))
                             commands_executed = commands_executed + cmdmemlist
 
         # Process zoneset member options
@@ -803,16 +741,10 @@ def main():
                 if removeflag:
                     if shZonesetObj.isZonesetPresent(zsetname):
                         messages.append(
-                            "zoneset '"
-                            + zsetname
-                            + "' is removed from vsan "
-                            + str(vsan)
+                            "zoneset '" + zsetname + "' is removed from vsan " + str(vsan),
                         )
                         commands_executed.append(
-                            "no zoneset name "
-                            + zsetname
-                            + " vsan "
-                            + str(vsan)
+                            "no zoneset name " + zsetname + " vsan " + str(vsan),
                         )
                     else:
                         messages.append(
@@ -820,7 +752,7 @@ def main():
                             + zsetname
                             + "' is not present in vsan "
                             + str(vsan)
-                            + " ,hence there is nothing to remove"
+                            + " ,hence there is nothing to remove",
                         )
                 else:
                     if zsetmembers is not None:
@@ -829,9 +761,7 @@ def main():
                             zsetmem_name = eachzsmem["name"]
                             zsetmem_removeflag = eachzsmem["remove"]
                             if zsetmem_removeflag:
-                                if shZonesetObj.isZonePresentInZoneset(
-                                    zsetname, zsetmem_name
-                                ):
+                                if shZonesetObj.isZonePresentInZoneset(zsetname, zsetmem_name):
                                     cmd = "no member " + zsetmem_name
                                     cmdmemlist.append(cmd)
                                     messages.append(
@@ -840,7 +770,7 @@ def main():
                                         + "' from zoneset '"
                                         + zsetname
                                         + "' in vsan "
-                                        + str(vsan)
+                                        + str(vsan),
                                     )
                                 else:
                                     messages.append(
@@ -850,12 +780,10 @@ def main():
                                         + zsetname
                                         + "' in vsan "
                                         + str(vsan)
-                                        + " ,hence there is nothing to remove"
+                                        + " ,hence there is nothing to remove",
                                     )
                             else:
-                                if shZonesetObj.isZonePresentInZoneset(
-                                    zsetname, zsetmem_name
-                                ):
+                                if shZonesetObj.isZonePresentInZoneset(zsetname, zsetmem_name):
                                     messages.append(
                                         "zoneset member '"
                                         + zsetmem_name
@@ -863,7 +791,7 @@ def main():
                                         + zsetname
                                         + "' in vsan "
                                         + str(vsan)
-                                        + " ,hence there is nothing to add"
+                                        + " ,hence there is nothing to add",
                                     )
                                 else:
                                     cmd = "member " + zsetmem_name
@@ -874,14 +802,11 @@ def main():
                                         + "' to zoneset '"
                                         + zsetname
                                         + "' in vsan "
-                                        + str(vsan)
+                                        + str(vsan),
                                     )
                         if len(cmdmemlist) != 0:
                             commands_executed.append(
-                                "zoneset name "
-                                + zsetname
-                                + " vsan "
-                                + str(vsan)
+                                "zoneset name " + zsetname + " vsan " + str(vsan),
                             )
                             commands_executed = commands_executed + cmdmemlist
                     else:
@@ -890,36 +815,24 @@ def main():
                                 "zoneset '"
                                 + zsetname
                                 + "' is already present in vsan "
-                                + str(vsan)
+                                + str(vsan),
                             )
                         else:
                             commands_executed.append(
-                                "zoneset name "
-                                + zsetname
-                                + " vsan "
-                                + str(vsan)
+                                "zoneset name " + zsetname + " vsan " + str(vsan),
                             )
                             messages.append(
-                                "zoneset '"
-                                + zsetname
-                                + "' is created in vsan "
-                                + str(vsan)
+                                "zoneset '" + zsetname + "' is created in vsan " + str(vsan),
                             )
 
                 # Process zoneset activate options
                 if actionflag == "deactivate":
                     if shZonesetActiveObj.isZonesetActive(zsetname):
                         messages.append(
-                            "deactivating zoneset '"
-                            + zsetname
-                            + "' in vsan "
-                            + str(vsan)
+                            "deactivating zoneset '" + zsetname + "' in vsan " + str(vsan),
                         )
                         dactcmd.append(
-                            "no zoneset activate name "
-                            + zsetname
-                            + " vsan "
-                            + str(vsan)
+                            "no zoneset activate name " + zsetname + " vsan " + str(vsan),
                         )
                     else:
                         messages.append(
@@ -927,29 +840,21 @@ def main():
                             + zsetname
                             + "' in vsan "
                             + str(vsan)
-                            + " is not activated, hence cannot deactivate"
+                            + " is not activated, hence cannot deactivate",
                         )
                 elif actionflag == "activate":
                     if commands_executed:
                         messages.append(
-                            "activating zoneset '"
-                            + zsetname
-                            + "' in vsan "
-                            + str(vsan)
+                            "activating zoneset '" + zsetname + "' in vsan " + str(vsan),
                         )
-                        actcmd.append(
-                            "zoneset activate name "
-                            + zsetname
-                            + " vsan "
-                            + str(vsan)
-                        )
+                        actcmd.append("zoneset activate name " + zsetname + " vsan " + str(vsan))
                     else:
                         messages.append(
                             "no changes to existing zoneset '"
                             + zsetname
                             + "' in vsan "
                             + str(vsan)
-                            + " hence activate action is ignored"
+                            + " hence activate action is ignored",
                         )
             commands_executed = commands_executed + dactcmd + actcmd
 
@@ -961,11 +866,7 @@ def main():
                     commands_executed.append("zone commit vsan " + str(vsan))
 
     if commands_executed:
-        commands_executed = (
-            ["terminal dont-ask"]
-            + commands_executed
-            + ["no terminal dont-ask"]
-        )
+        commands_executed = ["terminal dont-ask"] + commands_executed + ["no terminal dont-ask"]
 
     cmds = flatten_list(commands_executed)
     if cmds:

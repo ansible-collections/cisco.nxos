@@ -23,6 +23,7 @@
 #############################################
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -31,8 +32,7 @@ The arg spec for the nxos_bfd_interfaces module
 
 
 class Bfd_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_bfd_interfaces module
-    """
+    """The arg spec for the nxos_bfd_interfaces module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

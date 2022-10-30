@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -33,6 +34,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - VRF needs to be added globally with M(cisco.nxos.nxos_vrf) before adding a VRF to an interface.
 - Remove a VRF from an interface will still remove all L3 attributes just as it does
   from CLI.
@@ -82,19 +84,15 @@ commands:
 """
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-    run_commands,
-)
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
-    nxos_argument_spec,
-    normalize_interface,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_interface_type,
+    load_config,
+    normalize_interface,
+    run_commands,
 )
-from ansible.module_utils.basic import AnsibleModule
 
 
 def execute_show_command(command, module):
@@ -183,16 +181,10 @@ def main():
     argument_spec = dict(
         vrf=dict(required=True),
         interface=dict(type="str", required=True),
-        state=dict(
-            default="present", choices=["present", "absent"], required=False
-        ),
+        state=dict(default="present", choices=["present", "absent"], required=False),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     results = {"changed": False, "commands": [], "warnings": warnings}
@@ -206,10 +198,7 @@ def main():
 
     current_vrfs = get_vrf_list(module)
     if vrf not in current_vrfs:
-        warnings.append(
-            "The VRF is not present/active on the device. "
-            "Use nxos_vrf to fix this."
-        )
+        warnings.append("The VRF is not present/active on the device. Use nxos_vrf to fix this.")
 
     intf_type = get_interface_type(interface)
     if intf_type != "ethernet" and network_api == "cliconf":
@@ -217,7 +206,7 @@ def main():
             module.fail_json(
                 msg="interface does not exist on switch. Verify "
                 "switch platform or create it first with "
-                "nxos_interface if it's a logical interface"
+                "nxos_interfaces if it's a logical interface",
             )
 
     mode = get_interface_mode(interface, intf_type, module)
@@ -225,7 +214,7 @@ def main():
         module.fail_json(
             msg="Ensure interface is a Layer 3 port before "
             "configuring a VRF on an interface. You can "
-            "use nxos_interface"
+            "use nxos_interfaces",
         )
 
     current_vrf = get_interface_info(interface, module)

@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -28,10 +29,15 @@ short_description: Manages NTP options.
 description:
 - Manages NTP options, e.g. authoritative server and logging.
 version_added: 1.0.0
+deprecated:
+  alternative: nxos_ntp_global
+  why: Updated module released with more functionality.
+  removed_at_date: '2024-01-01'
 author:
 - Jason Edelman (@jedelman8)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Limited Support for Cisco MDS
 - When C(state=absent), master and logging will be set to False and stratum will be
   removed as well
 options:
@@ -77,14 +83,12 @@ updates:
 """
 import re
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def get_current(module):
@@ -114,11 +118,7 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 

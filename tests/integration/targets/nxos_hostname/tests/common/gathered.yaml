@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_hostname gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gather logging global facts using gathered
+      register: result
+      cisco.nxos.nxos_hostname:
+        state: gathered
+
+    - name: Assert that facts were correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ result['gathered'] == merged['before'] }}"
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

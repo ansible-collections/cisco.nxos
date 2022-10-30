@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -37,15 +38,16 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 options:
   gather_subset:
     description:
     - When supplied, this argument will restrict the facts collected to a given subset.  Possible
-      values for this argument include all, hardware, config, legacy, and interfaces.  Can
+      values for this argument include C(all), C(hardware), C(config), C(legacy), C(interfaces), and C(min).  Can
       specify a list of values to include a larger subset.  Values can also be used
       with an initial C(!) to specify that a specific subset should not be collected.
     required: false
-    default: '!config'
+    default: 'min'
     type: list
     elements: str
   gather_network_resources:
@@ -54,9 +56,10 @@ options:
       Possible values for this argument include all and the resources like interfaces,
       vlans etc. Can specify a list of values to include a larger subset. Values can
       also be used with an initial C(!) to specify that a specific subset should
-      not be collected. Valid subsets are 'all', 'bfd_interfaces', 'lag_interfaces',
-      'telemetry', 'vlans', 'lacp', 'lacp_interfaces', 'interfaces', 'l3_interfaces',
-      'l2_interfaces', 'lldp_global', 'acls', 'acl_interfaces', 'ospfv2'.
+      not be collected. Valid subsets are C(all), C(bfd_interfaces), C(lag_interfaces),
+      C(telemetry), C(vlans), C(lacp), C(lacp_interfaces), C(interfaces), C(l3_interfaces),
+      C(l2_interfaces), C(lldp_global), C(acls), C(acl_interfaces), C(ospfv2), C(ospfv3), C(ospf_interfaces),
+      C(bgp_global), C(bgp_address_family), C(route_maps), C(prefix_lists), C(logging_global), C(ntp_global), C(snmp_server).
     required: false
     type: list
     elements: str
@@ -210,15 +213,13 @@ vlan_list:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.facts.facts import (
     FactsArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
     FACT_RESOURCE_SUBSETS,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
+    Facts,
 )
 
 
@@ -229,23 +230,14 @@ def main():
     :returns: ansible_facts
     """
     argument_spec = FactsArgs.argument_spec
-    argument_spec.update(nxos_argument_spec)
 
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = []
-    if module.params["gather_subset"] == "!config":
-        warnings.append(
-            "default value for `gather_subset` will be changed to `min` from `!config` v2.11 onwards"
-        )
 
     ansible_facts = {}
     if module.params.get("available_network_resources"):
-        ansible_facts["available_network_resources"] = sorted(
-            FACT_RESOURCE_SUBSETS.keys()
-        )
+        ansible_facts["available_network_resources"] = sorted(FACT_RESOURCE_SUBSETS.keys())
     result = Facts(module).get_facts()
     additional_facts, additional_warnings = result
     ansible_facts.update(additional_facts)

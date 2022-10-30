@@ -18,11 +18,12 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
-author: Ansible Networking Team
-netconf: nxos
+author: Ansible Networking Team (@ansible-network)
+name: nxos
 short_description: Use nxos netconf plugin to run netconf commands on Cisco NX-OS platform.
 description:
 - This nxos plugin provides low level abstraction apis for sending and receiving
@@ -38,6 +39,7 @@ options:
 """
 
 from ansible.plugins.netconf import NetconfBase
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.netconf_base import NetconfBase
 
 
 class Netconf(NetconfBase):

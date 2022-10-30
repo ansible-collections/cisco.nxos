@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_nxapi
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -34,17 +36,17 @@ class TestNxosNxapiModule(TestNxosModule):
         super(TestNxosNxapiModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.get_capabilities"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {
@@ -68,7 +70,7 @@ class TestNxosNxapiModule(TestNxosModule):
 
             output = list()
             for command in commands:
-                filename = str(command).split(" | ")[0].replace(" ", "_")
+                filename = str(command).split(" | ", 1)[0].replace(" ", "_")
                 output.append(load_fixture(module_name, filename, device))
             return output
 
@@ -83,18 +85,17 @@ class TestNxosNxapiModule(TestNxosModule):
                 http_port=80,
                 https_port=443,
                 sandbox=False,
-            )
+            ),
         )
         self.execute_module_devices(changed=False, commands=[])
 
     def test_nxos_nxapi_disable(self):
         set_module_args(dict(state="absent"))
-        self.execute_module_devices(
-            changed=True, commands=["no feature nxapi"]
-        )
+        self.execute_module_devices(changed=True, commands=["no feature nxapi"])
 
     def test_nxos_nxapi_no_http(self):
         set_module_args(dict(https=True, http=False, https_port=8443))
         self.execute_module_devices(
-            changed=True, commands=["no nxapi http", "nxapi https port 8443"]
+            changed=True,
+            commands=["no nxapi http", "nxapi https port 8443"],
         )

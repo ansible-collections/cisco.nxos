@@ -1,8 +1,8 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vrrp sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vrrp sanity test
 
 - block:
-
     - name: Enable interface-vlan
       cisco.nxos.nxos_feature:
         feature: interface-vlan
@@ -13,7 +13,7 @@
         feature: vrrp
         state: enabled
 
-    - name: create int vlan 10
+    - name: Create int VLAN 10
       cisco.nxos.nxos_config:
         commands: int vlan 10
 
@@ -25,15 +25,15 @@
         vip: 10.1.100.1
         admin_state: no shutdown
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -45,33 +45,33 @@
         vip: default
         admin_state: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Ensure removal of the vrrp group config
+    - name: Ensure removal of the vrrp group configuration
       register: result
       cisco.nxos.nxos_vrrp: &id005
         interface: vlan10
         group: 100
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 30
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 30
 
     - name: Re-config with more params
@@ -85,13 +85,13 @@
         priority: 130
         authentication: AUTHKEY
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Reconfig Idempotence
+    - name: Reconfig idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Re-config with defaults
       register: result
@@ -104,16 +104,15 @@
         priority: default
         authentication: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Reconfig Idempotence
+    - name: Reconfig idempotence
       register: result
       cisco.nxos.nxos_vrrp: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-
-    - name: remove vrrp
+    - name: Remove vrrp
       ignore_errors: true
       cisco.nxos.nxos_vrrp: *id005
 
@@ -130,4 +129,5 @@
         feature: vrrp
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vrrp sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vrrp sanity test

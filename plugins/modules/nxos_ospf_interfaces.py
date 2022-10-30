@@ -10,6 +10,7 @@ The module file for nxos_ospf_interfaces
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -18,6 +19,8 @@ version_added: 1.3.0
 short_description: OSPF Interfaces Resource Module.
 description:
 - This module manages OSPF(v2/v3) configuration of interfaces on devices running Cisco NX-OS.
+notes:
+- Unsupported for Cisco MDS
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:
@@ -69,7 +72,7 @@ options:
                 suboptions:
                   area_id:
                     description:
-                    - Area ID as a decimal or IP address format.
+                    - Area ID in IP address format.
                     type: str
                     required: True
                   secondaries:
@@ -1416,6 +1419,7 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospf_interfaces.ospf_interfaces import (
     Ospf_interfacesArgs,
 )

@@ -1,20 +1,22 @@
 ---
-- debug: msg="START cli/configure.yaml"
+- ansible.builtin.debug:
+    msg: START cli/configure.yaml
 
-- set_fact: nxapi_sandbox_option="yes"
+- name: Set a fact for 'nxapi_sandbox_option'
+  ansible.builtin.set_fact:
+    nxapi_sandbox_option: true
   when: platform is search('N7K')
 
-- name: Setup - put NXAPI in stopped state
+- name: Setup - put NX-API in stopped state
   cisco.nxos.nxos_nxapi:
     state: absent
 
 - block:
-
-    - name: Configure NXAPI HTTPS
+    - name: Configure NX-API https
       register: result
       cisco.nxos.nxos_nxapi: &id001
         enable_http: false
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         enable_https: true
         https_port: 9443
 
@@ -23,29 +25,29 @@
         commands:
           - show nxapi | json
 
-    - include: tasks/platform/n7k/assert_changes_https.yaml
+    - ansible.builtin.include_tasks: tasks/platform/n7k/assert_changes_https.yaml
       when: platform is match('N7K')
 
-    - include: tasks/platform/n5k/assert_changes_https.yaml
+    - ansible.builtin.include_tasks: tasks/platform/n5k/assert_changes_https.yaml
       when: platform is search('N5K|N6K')
 
-    - include: tasks/platform/default/assert_changes_https.yaml
+    - ansible.builtin.include_tasks: tasks/platform/default/assert_changes_https.yaml
       when: platform is not search('N35|N5K|N6K|N7K')
 
-    - name: Configure NXAPI HTTPS again
+    - name: Configure NX-API https again
       register: result
       cisco.nxos.nxos_nxapi: *id001
 
     - name: Assert configuration is idempotent
-      assert: &id003
+      ansible.builtin.assert: &id003
         that:
           - result.changed == false
 
-    - name: Configure NXAPI HTTPS & HTTP
+    - name: Configure NX-API https & http
       register: result
       cisco.nxos.nxos_nxapi: &id002
         enable_http: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         enable_https: true
         https_port: 9443
 
@@ -54,27 +56,27 @@
         commands:
           - show nxapi | json
 
-    - include: tasks/platform/n7k/assert_changes_https_http.yaml
+    - ansible.builtin.include_tasks: tasks/platform/n7k/assert_changes_https_http.yaml
       when: platform is match('N7K')
 
-    - include: tasks/platform/n5k/assert_changes_https_http.yaml
+    - ansible.builtin.include_tasks: tasks/platform/n5k/assert_changes_https_http.yaml
       when: platform is match('N5K')
 
-    - include: tasks/platform/default/assert_changes_https_http.yaml
+    - ansible.builtin.include_tasks: tasks/platform/default/assert_changes_https_http.yaml
       when: platform is not search('N35|N5K|N6K|N7K')
 
-    - name: Configure NXAPI HTTPS & HTTP again
+    - name: Configure NX-API https & http again
       register: result
       cisco.nxos.nxos_nxapi: *id002
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
 
-    - name: Configure different NXAPI HTTPS & HTTP ports
+    - name: Configure different NX-API https & http ports
       register: result
       cisco.nxos.nxos_nxapi: &id004
         enable_http: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         enable_https: true
         http_port: 99
         https_port: 500
@@ -84,27 +86,27 @@
         commands:
           - show nxapi | json
 
-    - include: tasks/platform/n7k/assert_changes_https_http_ports.yaml
+    - ansible.builtin.include_tasks: tasks/platform/n7k/assert_changes_https_http_ports.yaml
       when: platform is match('N7K')
 
-    - include: tasks/platform/n5k/assert_changes_https_http_ports.yaml
+    - ansible.builtin.include_tasks: tasks/platform/n5k/assert_changes_https_http_ports.yaml
       when: platform is match('N5K')
 
-    - include: tasks/platform/default/assert_changes_https_http_ports.yaml
+    - ansible.builtin.include_tasks: tasks/platform/default/assert_changes_https_http_ports.yaml
       when: platform is not search('N35|N5K|N6K|N7K')
 
-    - name: Configure different NXAPI HTTPS & HTTP ports again
+    - name: Configure different NX-API https & http ports again
       register: result
       cisco.nxos.nxos_nxapi: *id004
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
 
-    - name: Configure NXAPI HTTP
+    - name: Configure NX-API http
       register: result
       cisco.nxos.nxos_nxapi: &id005
         enable_http: true
-        enable_sandbox: '{{nxapi_sandbox_option|default(omit)}}'
+        enable_sandbox: "{{nxapi_sandbox_option|default(omit)}}"
         enable_https: false
 
     - register: result
@@ -112,31 +114,31 @@
         commands:
           - show nxapi | json
 
-    - include: tasks/platform/n7k/assert_changes_http.yaml
+    - ansible.builtin.include_tasks: tasks/platform/n7k/assert_changes_http.yaml
       when: platform is match('N7K')
 
-    - include: tasks/platform/n5k/assert_changes_http.yaml
+    - ansible.builtin.include_tasks: tasks/platform/n5k/assert_changes_http.yaml
       when: platform is match('N5K')
 
-    - include: tasks/platform/default/assert_changes_http.yaml
+    - ansible.builtin.include_tasks: tasks/platform/default/assert_changes_http.yaml
       when: platform is not search('N35|N5K|N6K|N7K')
 
-    - name: Configure NXAPI HTTP again
+    - name: Configure NX-API http again
       register: result
       cisco.nxos.nxos_nxapi: *id005
 
     - name: Assert configuration is idempotent
-      assert: *id003
+      ansible.builtin.assert: *id003
   always:
-
-    - name: Cleanup - Disable NXAPI
+    - name: Cleanup - disable NX-API
       register: result
       cisco.nxos.nxos_nxapi:
         state: absent
 
-    - name: Cleanup - Re-enable NXAPI
+    - name: Cleanup - re-enable NX-API
       register: result
       cisco.nxos.nxos_nxapi:
         state: present
 
-    - debug: msg="END cli/configure.yaml"
+    - ansible.builtin.debug:
+        msg: END cli/configure.yaml

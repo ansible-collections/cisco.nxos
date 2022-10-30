@@ -1,57 +1,52 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_ospfv2 overridden integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Override all OSPF configuration with provided configuration
-      cisco.nxos.nxos_ospfv2: &id003
+      cisco.nxos.nxos_ospfv2: &id001
         config:
           processes:
             - process_id: 104
               router_id: 203.0.113.20
             - process_id: 102
               router_id: 198.51.100.1
-              shutdown: True
+              shutdown: true
         state: overridden
       register: result
 
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length == 0 }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
-            \ |length == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ overridden['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
-            \ == 0 }}"
+          - "{{ overridden['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
 
-    - name: Override all OSPF configuration with provided configuration
-        (IDEMPOTENT)
+    - name: Override all OSPF configuration with provided configuration (idempotent)
       register: result
-      cisco.nxos.nxos_ospfv2: *id003
+      cisco.nxos.nxos_ospfv2: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
     - name: Assert that before dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ overridden['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
-            \ == 0 }}"
+          - "{{ overridden['after']['processes'] | symmetric_difference(result['before']['processes']) |length == 0 }}"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

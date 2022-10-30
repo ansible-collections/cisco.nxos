@@ -11,14 +11,15 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_interfacesArgs,
 )
@@ -28,8 +29,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Lacp_interfacesFacts(object):
-    """ The nxos lacp_interfaces fact class
-    """
+    """The nxos lacp_interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -46,7 +46,7 @@ class Lacp_interfacesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for lacp_interfaces
+        """Populate the facts for lacp_interfaces
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
@@ -69,9 +69,7 @@ class Lacp_interfacesFacts(object):
         facts = {}
         if objs:
             facts["lacp_interfaces"] = []
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["lacp_interfaces"].append(utils.remove_empties(cfg))
 
@@ -95,9 +93,7 @@ class Lacp_interfacesFacts(object):
         if get_interface_type(intf) == "unknown":
             return {}
         config["name"] = intf
-        config["port_priority"] = utils.parse_conf_arg(
-            conf, "lacp port-priority"
-        )
+        config["port_priority"] = utils.parse_conf_arg(conf, "lacp port-priority")
         config["rate"] = utils.parse_conf_arg(conf, "lacp rate")
         config["mode"] = utils.parse_conf_arg(conf, "lacp mode")
         suspend_individual = re.search(r"no lacp suspend-individual", conf)

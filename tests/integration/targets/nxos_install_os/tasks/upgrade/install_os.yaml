@@ -1,18 +1,24 @@
 ---
-- include: targets/nxos_install_os/tasks/upgrade/delete_files.yaml
+- name: Run delete files tasks
+  ansible.builtin.include_tasks: delete_files.yaml
   when: delete_files
 
-- include: targets/nxos_install_os/tasks/upgrade/copy_kick_system_images.yaml ansible_connection=ansible.netcommon.network_cli
-    connection={{ cli }}
+- name: Copy Kick System images
+  ansible.builtin.include_tasks: copy_kick_system_images.yaml
+  vars:
+    ansible_connection: ansible.netcommon.network_cli connection={{ cli }}
   when: copy_images
 
-- include: targets/nxos_install_os/tasks/upgrade/install_with_kick.yaml
+- name: Run install with kick tests
+  ansible.builtin.include_tasks: install_with_kick.yaml
   when: ki is defined
 
-- include: targets/nxos_install_os/tasks/upgrade/install_system.yaml
+- name: Run install system
+  ansible.builtin.include_tasks: install_system.yaml
   when: ki is undefined
 
-- meta: reset_connection
+- name: Reset the connection
+  ansible.builtin.meta: reset_connection
 
 - name: Check installed OS for newly installed version {{ tv }}
   register: output
@@ -20,5 +26,6 @@
     commands:
       - show version | json
 
-- debug: msg="Version detected {{ output['stdout_lines'][0]['kickstart_ver_str']
-    }}"
+- name: Debug output the version detected
+  ansible.builtin.debug:
+    msg: Version detected {{ output['stdout_lines'][0]['kickstart_ver_str'] }}

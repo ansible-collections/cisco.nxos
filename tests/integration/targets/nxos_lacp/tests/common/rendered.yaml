@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_lacp rendered integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Use rendered state to convert task input to device specific commands
@@ -15,23 +15,20 @@
               address: 00c1.4c00.bd15
               role: secondary
         state: rendered
-        
-    - assert:
-        that: "{{ rendered | symmetric_difference(result['rendered'])\
-          \ |length==0 }}"
+
+    - ansible.builtin.assert:
+        that: "{{ rendered | symmetric_difference(result['rendered']) |length==0 }}"
 
     - name: Gather lacp facts from the device and assert that its empty
       register: result
       cisco.nxos.nxos_lacp:
         state: gathered
 
-    - name: Make sure that rendered task actually did not make any changes to the
-        device
-      assert:
+    - name: Make sure that rendered task actually did not make any changes to the device
+      ansible.builtin.assert:
         that: "{{ result['gathered'] == {} }}"
   always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - include_tasks: _remove_config.yaml
-
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_lacp rendered integration tests on connection={{ ansible_connection }}

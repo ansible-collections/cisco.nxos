@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_snmp_server parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided snmp-server configuration
+  register: result
+  cisco.nxos.nxos_snmp_server:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+- name: Assert that configuration was correctly parsed
+  ansible.builtin.assert:
+    that:
+      - "{{ parsed == result['parsed'] }}"

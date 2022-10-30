@@ -1,74 +1,70 @@
 ---
-- debug: msg="START nxos_file_copy input_validation test"
+- ansible.builtin.debug:
+    msg: START nxos_file_copy input_validation test
 
-- name: Input Validation - param should be type <path>
+- name: Input validation - param should be type <path>
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
     remote_file: 500
     file_pull: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - not result is search('argument remote_file is of type')
 
-- name: Input Validation - param should be type <int>
+- name: Input validation - param should be type <int>
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
     file_pull_timeout: foobar
 
-- assert:
+- ansible.builtin.assert:
     that:
-      - result is search("argument file_pull_timeout is of type <class 'ansible.parsing.yaml.objects.AnsibleUnicode'>
-        and we were unable to convert to int")
+      - result is search("argument 'file_pull_timeout' is of type .* and we were unable to convert to int")
 
-- name: Input Validation - param should be type <bool>
+- name: Input validation - param should be type <bool>
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
     file_pull: foobar
 
-- assert:
+- ansible.builtin.assert:
     that:
-      - result is search("argument file_pull is of type <class 'ansible.parsing.yaml.objects.AnsibleUnicode'>
-        and we were unable to convert to bool")
+      - result is search("argument 'file_pull' is of type .* and we were unable to convert to bool")
 
-- name: Input Validation - param <file_pull> <remote_file> dependency
+- name: Input validation - param <file_pull> <remote_file> dependency
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
     file_pull: true
 
-- assert:
+- ansible.builtin.assert:
     that:
-      - result is search("Playbook parameter <remote_file> required when <file_pull>
-        is True")
+      - result is search("file_pull is True but all of the following are missing: remote_file, remote_scp_server")
 
-- name: Input Validation - param <file_pull> <remote_scp_server> dependency
+- name: Input validation - param <file_pull> <remote_scp_server> dependency
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
     file_pull: true
     remote_file: /network-integration.cfg
 
-- assert:
+- ansible.builtin.assert:
     that:
-      - result is search('Playbook parameter <remote_scp_server> required when <file_pull>
-        is True')
+      - result is search("file_pull is True but all of the following are missing: remote_file, remote_scp_server")
 
-- name: Input Validation - remote_scp_server params together
+- name: Input validation - remote_scp_server params together
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
-    remote_scp_server: '{{ inventory_hostname_short }}'
+    remote_scp_server: "{{ inventory_hostname_short }}"
 
-- assert:
+- ansible.builtin.assert:
     that:
-      - result is search('Playbook parameters <remote_scp_server>, <remote_scp_server_user>
-        must be set together')
+      - result is search('parameters are required together: remote_scp_server, remote_scp_server_user')
 
-- name: Input Validation - param <file_pull_protocol> should only accept strings, which are included in choices
+- name: Input validation - param <file_pull_protocol> should only accept strings, which are included in choices
   register: result
   ignore_errors: true
   cisco.nxos.nxos_file_copy:
@@ -78,9 +74,9 @@
     remote_scp_server: foobar
     remote_scp_server_user: foobar
 
-- assert:
+- ansible.builtin.assert:
     that:
-      - result is search("argument file_pull_protocol with value foobar is not valid.
-        Allowed values are scp, sftp, http, https, tftp, ftp")
+      - result is search("'value of file_pull_protocol must be one of:' scp, sftp, http, https, tftp, ftp, got: foobar")
 
-- debug: msg="END nxos_file_copy input_validation test"
+- ansible.builtin.debug:
+    msg: END nxos_file_copy input_validation test

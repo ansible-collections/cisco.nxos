@@ -1,7 +1,8 @@
-black==19.3b0 ; python_version > '3.5'
+black==22.3.0 ; python_version > '3.5'
 flake8
+git+https://github.com/ansible-community/pytest-ansible-units.git
+mock ; python_version < '3.5'
 pexpect
-yamllint
 pytest-xdist
+yamllint
 coverage==4.5.4
-mock

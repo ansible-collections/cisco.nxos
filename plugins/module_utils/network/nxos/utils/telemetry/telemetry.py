@@ -8,9 +8,11 @@ The nxos telemetry utility library
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
 
@@ -59,16 +61,16 @@ def valiate_input(playvals, type, module):
             msg = "Invalid playbook value: {0}.".format(playvals)
             msg += " Parameter <id> under <destination_groups> is required"
             module.fail_json(msg=msg)
-        if playvals.get("destination") and not isinstance(
-            playvals["destination"], dict
-        ):
+        if playvals.get("destination") and not isinstance(playvals["destination"], dict):
             msg = "Invalid playbook value: {0}.".format(playvals)
             msg += " Parameter <destination> under <destination_groups> must be a dict"
             module.fail_json(msg=msg)
         if not playvals.get("destination") and len(playvals) > 1:
             msg = "Invalid playbook value: {0}.".format(playvals)
             msg += " Playbook entry contains unrecongnized parameters."
-            msg += " Make sure <destination> keys under <destination_groups> are specified as follows:"
+            msg += (
+                " Make sure <destination> keys under <destination_groups> are specified as follows:"
+            )
             msg += " destination: {ip: <ip>, port: <port>, protocol: <prot>, encoding: <enc>}}"
             module.fail_json(msg=msg)
 
@@ -79,9 +81,7 @@ def valiate_input(playvals, type, module):
             module.fail_json(msg=msg)
         if playvals.get("path") and "name" not in playvals["path"].keys():
             msg = "Invalid playbook value: {0}.".format(playvals)
-            msg += (
-                " Parameter <path> under <sensor_groups> requires <name> key"
-            )
+            msg += " Parameter <path> under <sensor_groups> requires <name> key"
             module.fail_json(msg=msg)
 
 
@@ -97,9 +97,9 @@ def get_instance_data(key, cr_key, cr, existing_key):
         instance = cr._ref[cr_key]["existing"][existing_key]
 
     patterns = {
-        "destination_groups": r"destination-group (\d+)",
-        "sensor_groups": r"sensor-group (\d+)",
-        "subscriptions": r"subscription (\d+)",
+        "destination_groups": r"destination-group (\S+)",
+        "sensor_groups": r"sensor-group (\S+)",
+        "subscriptions": r"subscription (\S+)",
     }
     if key in patterns.keys():
         m = re.search(patterns[key], cr._ref["_resource_key"])
@@ -127,7 +127,7 @@ def cr_key_lookup(key, mo):
 
 
 def normalize_data(cmd_ref):
-    """ Normalize playbook values and get_existing data """
+    """Normalize playbook values and get_existing data"""
 
     playval = cmd_ref._ref.get("destination").get("playval")
     existing = cmd_ref._ref.get("destination").get("existing")
@@ -144,12 +144,10 @@ def normalize_data(cmd_ref):
 
 
 def remove_duplicate_context(cmds):
-    """ Helper method to remove duplicate telemetry context commands """
+    """Helper method to remove duplicate telemetry context commands"""
     if not cmds:
         return cmds
-    feature_indices = [
-        i for i, x in enumerate(cmds) if x == "feature telemetry"
-    ]
+    feature_indices = [i for i, x in enumerate(cmds) if x == "feature telemetry"]
     telemetry_indices = [i for i, x in enumerate(cmds) if x == "telemetry"]
     if len(feature_indices) == 1 and len(telemetry_indices) == 1:
         return cmds
@@ -166,22 +164,20 @@ def remove_duplicate_context(cmds):
 
 
 def get_setval_path(module_or_path_data):
-    """ Build setval for path parameter based on playbook inputs
-        Full Command:
-          - path {name} depth {depth} query-condition {query_condition} filter-condition {filter_condition}
-        Required:
-          - path {name}
-        Optional:
-          - depth {depth}
-          - query-condition {query_condition},
-          - filter-condition {filter_condition}
+    """Build setval for path parameter based on playbook inputs
+    Full Command:
+      - path {name} depth {depth} query-condition {query_condition} filter-condition {filter_condition}
+    Required:
+      - path {name}
+    Optional:
+      - depth {depth}
+      - query-condition {query_condition},
+      - filter-condition {filter_condition}
     """
     if isinstance(module_or_path_data, dict):
         path = module_or_path_data
     else:
-        path = module_or_path_data.params["config"]["sensor_groups"][0].get(
-            "path"
-        )
+        path = module_or_path_data.params["config"]["sensor_groups"][0].get("path")
     if path is None:
         return path
 
@@ -226,17 +222,11 @@ def massage_data(have_or_want):
             else:
                 if item.get("destination"):
                     if item.get("destination").get("port"):
-                        item["destination"]["port"] = str(
-                            item["destination"]["port"]
-                        )
+                        item["destination"]["port"] = str(item["destination"]["port"])
                     if item.get("destination").get("protocol"):
-                        item["destination"]["protocol"] = item["destination"][
-                            "protocol"
-                        ].lower()
+                        item["destination"]["protocol"] = item["destination"]["protocol"].lower()
                     if item.get("destination").get("encoding"):
-                        item["destination"]["encoding"] = item["destination"][
-                            "encoding"
-                        ].lower()
+                        item["destination"]["encoding"] = item["destination"]["encoding"].lower()
                 if item.get("path"):
                     for key in [
                         "filter_condition",
@@ -251,12 +241,10 @@ def massage_data(have_or_want):
                     item["destination_group"] = str(item["destination_group"])
                 if item.get("sensor_group"):
                     if item.get("sensor_group").get("id"):
-                        item["sensor_group"]["id"] = str(
-                            item["sensor_group"]["id"]
-                        )
+                        item["sensor_group"]["id"] = str(item["sensor_group"]["id"])
                     if item.get("sensor_group").get("sample_interval"):
                         item["sensor_group"]["sample_interval"] = str(
-                            item["sensor_group"]["sample_interval"]
+                            item["sensor_group"]["sample_interval"],
                         )
                 if item.get("destination_group") and item.get("sensor_group"):
                     item_copy = deepcopy(item)

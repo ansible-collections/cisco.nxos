@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_bgp_global gathered integration tests on connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Gather BGP facts using gathered
@@ -13,8 +13,8 @@
         state: gathered
 
     - name: Assert that facts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that: merged['after'] == result['gathered']
-  
+
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

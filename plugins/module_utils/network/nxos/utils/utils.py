@@ -1,9 +1,25 @@
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 import socket
 
+from functools import total_ordering
+from itertools import count, groupby
+
 from ansible.module_utils.six import iteritems
+
+
+LOGGING_SEVMAP = {
+    0: "emergency",
+    1: "alert",
+    2: "critical",
+    3: "error",
+    4: "warning",
+    5: "notification",
+    6: "informational",
+    7: "debugging",
+}
 
 
 def search_obj_in_list(name, lst, identifier):
@@ -46,8 +62,7 @@ def validate_ipv6_addr(address):
 
 
 def normalize_interface(name):
-    """Return the normalized interface name
-    """
+    """Return the normalized interface name"""
     if not name:
         return
 
@@ -86,8 +101,7 @@ def normalize_interface(name):
 
 
 def get_interface_type(interface):
-    """Gets the type of interface
-    """
+    """Gets the type of interface"""
     if interface.upper().startswith("ET"):
         return "ethernet"
     elif interface.upper().startswith("VL"):
@@ -107,13 +121,10 @@ def get_interface_type(interface):
 
 
 def remove_rsvd_interfaces(interfaces):
-    """Exclude reserved interfaces from user management
-    """
+    """Exclude reserved interfaces from user management"""
     if not interfaces:
         return []
-    return [
-        i for i in interfaces if get_interface_type(i["name"]) != "management"
-    ]
+    return [i for i in interfaces if get_interface_type(i["name"]) != "management"]
 
 
 def vlan_range_to_list(vlans):
@@ -134,8 +145,7 @@ def vlan_range_to_list(vlans):
 
 
 def numerical_sort(string_int_list):
-    """Sorts list of integers that are digits in numerical order.
-    """
+    """Sorts list of integers that are digits in numerical order."""
 
     as_int_list = []
 
@@ -143,3 +153,62 @@ def numerical_sort(string_int_list):
         as_int_list.append(int(vlan))
     as_int_list.sort()
     return as_int_list
+
+
+def get_logging_sevmap(invert=False):
+    x = LOGGING_SEVMAP
+    if invert:
+        # cannot use dict comprehension yet
+        # since we still test with Python 2.6
+        x = dict(map(reversed, iteritems(x)))
+    return x
+
+
+def get_ranges(data):
+    """
+    Returns a generator object that yields lists of
+    consequtive integers from a list of integers.
+    """
+    for _k, group in groupby(data, lambda t, c=count(): int(t) - next(c)):
+        yield list(group)
+
+
+def vlan_list_to_range(cmd):
+    """
+    Converts a comma separated list of vlan IDs
+    into ranges.
+    """
+    ranges = []
+    for v in get_ranges(cmd):
+        ranges.append("-".join(map(str, (v[0], v[-1])[: len(v)])))
+    return ",".join(ranges)
+
+
+@total_ordering
+class Version:
+    """Simple class to compare arbitrary versions"""
+
+    def __init__(self, version_string):
+        self.components = version_string.split(".")
+
+    def __eq__(self, other):
+        other = _coerce(other)
+        if not isinstance(other, Version):
+            return NotImplemented
+
+        return self.components == other.components
+
+    def __lt__(self, other):
+        other = _coerce(other)
+        if not isinstance(other, Version):
+            return NotImplemented
+
+        return self.components < other.components
+
+
+def _coerce(other):
+    if isinstance(other, str):
+        other = Version(other)
+    if isinstance(other, (int, float)):
+        other = Version(str(other))
+    return other

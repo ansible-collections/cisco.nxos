@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -31,6 +32,7 @@ version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Default, where supported, restores params default value.
 - In case of C(state=absent) the address-family configuration will be absent. Therefore
   the options C(route_target_both_auto_evpn) and C(route_targets) are ignored.
@@ -159,19 +161,18 @@ commands:
     type: list
     sample: ["vrf context ntc", "address-family ipv4 unicast"]
 """
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
+import re
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
 )
 
-import re
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_capabilities,
+    get_config,
+    load_config,
+)
 
 
 def match_current_rt(rt, direction, current, rt_commands):
@@ -196,19 +197,13 @@ def main():
             elements="dict",
             options=dict(
                 rt=dict(type="str", required=True),
-                direction=dict(
-                    choices=["import", "export", "both"], default="both"
-                ),
+                direction=dict(choices=["import", "export", "both"], default="both"),
                 state=dict(choices=["present", "absent"], default="present"),
             ),
         ),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 
@@ -249,24 +244,20 @@ def main():
         if module.params["route_targets"] is not None:
             for rt in module.params["route_targets"]:
                 if rt.get("direction") == "both" or not rt.get("direction"):
-                    rt_commands = match_current_rt(
-                        rt, "import", current, rt_commands
-                    )
-                    rt_commands = match_current_rt(
-                        rt, "export", current, rt_commands
-                    )
+                    platform = get_capabilities(module)["device_info"]["network_os_platform"]
+                    if platform.startswith("N9K") and rt.get("rt") == "auto":
+                        rt_commands = match_current_rt(rt, "both", current, rt_commands)
+                    else:
+                        rt_commands = match_current_rt(rt, "import", current, rt_commands)
+                        rt_commands = match_current_rt(rt, "export", current, rt_commands)
                 else:
-                    rt_commands = match_current_rt(
-                        rt, rt.get("direction"), current, rt_commands
-                    )
+                    rt_commands = match_current_rt(rt, rt.get("direction"), current, rt_commands)
 
         if rt_commands:
             commands.extend(rt_commands)
 
         if commands and current:
-            commands.insert(
-                0, "address-family %s unicast" % module.params["afi"]
-            )
+            commands.insert(0, "address-family %s unicast" % module.params["afi"])
 
     if commands:
         commands.insert(0, "vrf context %s" % module.params["vrf"])

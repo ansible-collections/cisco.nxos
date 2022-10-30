@@ -26,12 +26,12 @@ The arg spec for the nxos_l3_interfaces module
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 class L3_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_l3_interfaces module
-    """
+    """The arg spec for the nxos_l3_interfaces module"""
 
     argument_spec = {
         "running_config": {"type": "str"},
@@ -58,6 +58,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                 },
                 "name": {"required": True, "type": "str"},
                 "redirects": {"type": "bool"},
+                "ipv6_redirects": {"type": "bool"},
                 "unreachables": {"type": "bool"},
                 "evpn_multisite_tracking": {
                     "type": "str",

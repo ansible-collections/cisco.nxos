@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lldp_interfaces merged integration tests connection={{ansible_connection}}
 
 - name: Enable lldp
@@ -7,12 +7,10 @@
     feature: lldp
 
 - block:
-
     - name: Merged
       register: result
       cisco.nxos.nxos_lldp_interfaces: &id001
         config:
-
           - name: Ethernet 1/1
             receive: false
             tlv_set:
@@ -24,7 +22,7 @@
               management_address: 10.0.0.1
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface Ethernet1/1' in result.commands"
@@ -38,25 +36,24 @@
     - name: Gather lldp_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lldp_interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lldp_interfaces == result.after
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_lldp_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands | length == 0
   always:
-
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lldp
         state: disabled

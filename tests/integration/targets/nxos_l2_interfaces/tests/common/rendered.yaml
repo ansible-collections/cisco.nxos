@@ -1,12 +1,14 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_l2_interfaces rendered integration tests on connection={{ ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - name: Gather pre-facts
   cisco.nxos.nxos_facts:
-    gather_subset: ['!all', '!min']
+    gather_subset:
+      - "!all"
+      - "!min"
     gather_network_resources: l2_interfaces
 
 - block:
@@ -30,23 +32,20 @@
           - name: Ethernet1/5
             mode: fabricpath
         state: rendered
-        
-    - assert:
-        that: "{{ rendered | symmetric_difference(result['rendered'])\
-          \ |length==0 }}"
+
+    - ansible.builtin.assert:
+        that: "{{ rendered | symmetric_difference(result['rendered']) |length==0 }}"
 
     - name: Gather l2_interfaces facts from the device and assert that its empty
       register: result
       cisco.nxos.nxos_l2_interfaces:
         state: gathered
 
-    - name: Make sure that rendered task actually did not make any changes to the
-        device
-      assert:
+    - name: Make sure that rendered task actually did not make any changes to the device
+      ansible.builtin.assert:
         that: "{{ result['gathered']|symmetric_difference(ansible_facts.network_resources.l2_interfaces) == [] }}"
   always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - include_tasks: _remove_config.yaml
-
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_l2_interfaces rendered integration tests on connection={{ ansible_connection }}

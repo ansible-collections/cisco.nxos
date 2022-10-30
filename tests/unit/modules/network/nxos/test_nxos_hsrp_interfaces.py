@@ -19,18 +19,20 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
-from ansible_collections.cisco.nxos.plugins.modules import nxos_hsrp_interfaces
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfaces,
 )
+from ansible_collections.cisco.nxos.plugins.modules import nxos_hsrp_interfaces
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -43,26 +45,22 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
         super(TestNxosHsrpInterfacesModule, self).setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
         )
         self.FACT_LEGACY_SUBSETS = self.mock_FACT_LEGACY_SUBSETS.start()
 
         self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.hsrp_interfaces.hsrp_interfaces.Hsrp_interfaces.edit_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.hsrp_interfaces.hsrp_interfaces.Hsrp_interfaces.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
@@ -102,16 +100,14 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
           interface Ethernet1/1
           interface Ethernet1/2
           interface Ethernet1/3
-        """
+        """,
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", bfd="enable"),
                 dict(name="Ethernet1/2", bfd="disable"),
-            ]
+            ],
         )
         # Expected result commands for each 'state'
         merged = ["interface Ethernet1/1", "hsrp bfd"]
@@ -145,18 +141,16 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
             hsrp bfd
           interface Ethernet1/3
             hsrp bfd
-        """
+        """,
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", bfd="disable"),
                 dict(name="Ethernet1/2"),
                 # Eth1/3 not present! Thus overridden should set Eth1/3 to defaults;
                 # replaced should ignore Eth1/3.
-            ]
+            ],
         )
         # Expected result commands for each 'state'
         merged = ["interface Ethernet1/1", "no hsrp bfd"]
@@ -207,14 +201,10 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
             hsrp bfd
           interface Ethernet1/3
             hsrp bfd
-        """
+        """,
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
-        playbook = dict(
-            config=[dict(name="Ethernet1/1"), dict(name="Ethernet1/2")]
-        )
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
+        playbook = dict(config=[dict(name="Ethernet1/1"), dict(name="Ethernet1/2")])
         # Expected result commands for each 'state'
         merged = []
         deleted = [
@@ -262,11 +252,9 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
             hsrp bfd
           interface Ethernet1/2
             hsrp bfd
-        """
+        """,
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(config=[dict(name="Ethernet1/1.42", bfd="enable")])
         # Expected result commands for each 'state'
         merged = ["interface Ethernet1/1.42", "hsrp bfd"]
@@ -304,16 +292,14 @@ class TestNxosHsrpInterfacesModule(TestNxosModule):
           interface Ethernet1/1
             hsrp bfd
           interface Ethernet1/2
-        """
+        """,
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", bfd="enable"),
                 dict(name="Ethernet1/2", bfd="disable"),
-            ]
+            ],
         )
         # Expected result commands for each 'state'
         merged = []

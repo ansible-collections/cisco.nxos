@@ -1,16 +1,16 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lldp_global merged integration tests connection={{ansible_connection}}
 
 - block:
-
-    - set_fact:
+    - name: Set a fact for 'port_id' and 'tlv_power_mgmt'
+      ansible.builtin.set_fact:
         port_id: 1
         tlv_power_mgmt:
           power_management: false
       when: platform is not search('N5K|N6K|N7K') and imagetag is not search("I[2345]")
 
-    - name: feature off to cleanup lldp
+    - name: Feature off to cleanup lldp
       cisco.nxos.nxos_feature: &id002
         feature: lldp
         state: disabled
@@ -25,23 +25,23 @@
         config:
           reinit: 5
           timer: 40
-          port_id: '{{port_id|default(omit)}}'
-          tlv_select: '{{tlv_power_mgmt|default(omit)}}'
+          port_id: "{{port_id|default(omit)}}"
+          tlv_select: "{{tlv_power_mgmt|default(omit)}}"
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == 0
           - result.changed == true
           - "'lldp reinit 5' in result.commands"
           - "'lldp timer 40' in result.commands"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'lldp portid-subtype 1' in result.commands"
       when: port_id is defined
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'no lldp tlv-select power-management' in result.commands"
       when: tlv_power_mgmt is defined
@@ -49,24 +49,23 @@
     - name: Gather lldp_global facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lldp_global
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lldp_global == result.after
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_lldp_global: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands | length == 0
   always:
-
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature: *id002
   when: platform is not search('N35')

@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_ospfv2 rendered integration tests on connection={{ ansible_connection }}
 
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
@@ -19,12 +19,12 @@
                   direction: out
               ranges:
                 - prefix: 192.0.2.0/24
-                  not_advertise: True
+                  not_advertise: true
                 - prefix: 203.0.113.0/24
                   cost: 120
             - area_id: 0.0.0.101
               authentication:
-                message_digest: True
+                message_digest: true
           redistribute:
             - protocol: eigrp
               id: 120
@@ -44,14 +44,14 @@
               areas:
                 - area_id: 0.0.0.102
                   nssa:
-                    default_information_originate: True
-                    no_summary: True
+                    default_information_originate: true
+                    no_summary: true
                 - area_id: 0.0.0.103
                   nssa:
-                    no_summary: True
+                    no_summary: true
                     translate:
                       type7:
-                        always: True
+                        always: true
             - vrf: zone2
               auto_cost:
                 reference_bandwidth: 45
@@ -60,7 +60,6 @@
   register: result
 
 - name: Assert that correct set of commands were rendered
-  assert:
+  ansible.builtin.assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
-        \ == 0 }}"
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"

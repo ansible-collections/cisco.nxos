@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -31,6 +32,7 @@ version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Default restores params default value
 - Supported MAC address format are "E.E.E", "EE-EE-EE-EE-EE-EE", "EE:EE:EE:EE:EE:EE"
   and "EEEE.EEEE.EEEE"
@@ -56,21 +58,19 @@ commands:
 """
 
 import re
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
 
-PARAM_TO_COMMAND_KEYMAP = {
-    "anycast_gateway_mac": "fabric forwarding anycast-gateway-mac"
-}
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+)
+
+
+PARAM_TO_COMMAND_KEYMAP = {"anycast_gateway_mac": "fabric forwarding anycast-gateway-mac"}
 
 
 def get_existing(module, args):
@@ -79,9 +79,7 @@ def get_existing(module, args):
 
     for arg in args:
         command = PARAM_TO_COMMAND_KEYMAP[arg]
-        has_command = re.findall(
-            r"(?:{0}\s)(?P<value>.*)$".format(command), config, re.M
-        )
+        has_command = re.findall(r"(?:{0}\s)(?P<value>.*)$".format(command), config, re.M)
         value = ""
         if has_command:
             value = has_command[0]
@@ -156,9 +154,7 @@ def normalize_mac(proposed_mac, module):
         else:
             raise ValueError
     except ValueError:
-        module.fail_json(
-            msg="Invalid MAC address format", proposed_mac=proposed_mac
-        )
+        module.fail_json(msg="Invalid MAC address format", proposed_mac=proposed_mac)
 
     joined_mac = "".join(splitted_mac)
     # fmt: off
@@ -170,11 +166,7 @@ def normalize_mac(proposed_mac, module):
 def main():
     argument_spec = dict(anycast_gateway_mac=dict(required=True, type="str"))
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     result = {"changed": False, "commands": [], "warnings": warnings}
@@ -182,9 +174,7 @@ def main():
     args = PARAM_TO_COMMAND_KEYMAP.keys()
 
     existing = get_existing(module, args)
-    proposed = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
 
     candidate = CustomNetworkConfig(indent=3)
     get_commands(module, existing, proposed, candidate)

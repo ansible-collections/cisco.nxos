@@ -1,93 +1,89 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_ospfv2 deleted integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Delete a single OSPF process
-      cisco.nxos.nxos_ospfv2: &id005
+      cisco.nxos.nxos_ospfv2: &id001
         config:
           processes:
             - process_id: 102
         state: deleted
       register: result
-    
+
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length == 0 }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - '"no router ospf 102" in result.commands'
           - result.commands|length == 1
-  
+
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['after']['processes'] | symmetric_difference(result['after']['processes']) |length\
-            \ == 0 }}"
-    
-    - name: Delete a single OSPF process (IDEMPOTENT)
+          - "{{ deleted['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
+
+    - name: Delete a single OSPF process (idempotent)
       register: result
-      cisco.nxos.nxos_ospfv2: *id005
+      cisco.nxos.nxos_ospfv2: *id001
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
     - name: Assert that before dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ deleted['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
-            \ == 0 }}"
-    
-    - include_tasks: _populate_config.yaml
+          - "{{ deleted['after']['processes'] | symmetric_difference(result['before']['processes']) |length == 0 }}"
+
+    - ansible.builtin.include_tasks: _populate_config.yaml
 
     - name: Delete all OSPF processes from the device
-      cisco.nxos.nxos_ospfv2: &id007
+      cisco.nxos.nxos_ospfv2: &id002
         state: deleted
       register: result
-    
+
     - name: Assert that before dicts are correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['processes'] | symmetric_difference(result['before']['processes']) |length == 0 }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
           - '"no router ospf 100" in result.commands'
           - '"no router ospf 102" in result.commands'
           - result.commands|length == 2
 
     - name: Assert that after dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['after'] == {} }}"
-    
-    - name: Delete all OSPF processes from the device (IDEMPOTENT)
+
+    - name: Delete all OSPF processes from the device (idempotent)
       register: result
-      cisco.nxos.nxos_ospfv2: *id007
+      cisco.nxos.nxos_ospfv2: *id002
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
     - name: Assert that before dict is correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
           - "{{ result['before'] == {} }}"
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

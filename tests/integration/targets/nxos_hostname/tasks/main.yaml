@@ -1,0 +1,37 @@
+---
+- name: Fetch current hostname
+  cisco.nxos.nxos_command:
+    commands: show running-config | section ^hostname
+  register: hname_result
+
+- name: Set current hostname (default)
+  ansible.builtin.set_fact:
+    current_hostname: "switch"
+
+- name: Set current hostname
+  ansible.builtin.set_fact:
+    current_hostname: "{{ hname_result['stdout'][0].split(' ')[1] }}"
+  when: hname_result.stdout[0] != ""
+
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
+      tags:
+        - cli.yaml
+
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
+      tags:
+        - nxapi
+  always:
+    - name: Reset hostname
+      cisco.nxos.nxos_config:
+        lines: "hostname {{ current_hostname }}"
+        match: none
+      when: hname_result.stdout[0] != ""
+
+    - name: Reset hostname (default)
+      cisco.nxos.nxos_config:
+        lines: "no hostname"
+      when: hname_result.stdout[0] == ""

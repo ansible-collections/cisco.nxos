@@ -1,0 +1,25 @@
+---
+gathered:
+  destination_groups:
+    - destination:
+        encoding: gpb
+        ip: 192.168.0.1
+        port: "50001"
+        protocol: grpc
+      id: "2"
+    - destination:
+        encoding: gpb
+        ip: 192.168.0.2
+        port: "60001"
+        protocol: grpc
+      id: "2"
+    - id: "10"
+  sensor_groups:
+    - id: "2"
+    - id: "8"
+  subscriptions:
+    - id: "100"
+    - id: "100"
+      sensor_group:
+        id: "8"
+        sample_interval: "15000"

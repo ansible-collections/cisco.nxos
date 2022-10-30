@@ -7,6 +7,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,16 +21,15 @@ created.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+    ResourceModule,
+)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
     get_from_dict,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
-    ResourceModule,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.route_maps import (
     Route_mapsTemplate,
 )
@@ -104,7 +104,7 @@ class Route_maps(ResourceModule):
         ]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -115,8 +115,8 @@ class Route_maps(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         wantd = self._route_maps_list_to_dict(self.want)
         haved = self._route_maps_list_to_dict(self.have)
@@ -127,9 +127,7 @@ class Route_maps(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -137,18 +135,16 @@ class Route_maps(ResourceModule):
             for k, have in iteritems(haved):
                 if k not in wantd:
                     for _hk, hentry in iteritems(have.get("entries", {})):
-                        self.commands.append(
-                            self._tmplt.render(hentry, "route_map", True)
-                        )
+                        self.commands.append(self._tmplt.render(hentry, "route_map", True))
 
         for wk, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(wk, {}))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Route_maps network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Route_maps network resource.
         """
         w_entries = want.get("entries", {})
         h_entries = have.get("entries", {})
@@ -163,9 +159,7 @@ class Route_maps(ResourceModule):
             self.compare(parsers=self.linear_parsers, want=wentry, have=hentry)
 
             if len(self.commands) != begin:
-                self.commands.insert(
-                    begin, self._tmplt.render(wentry, "route_map", False)
-                )
+                self.commands.insert(begin, self._tmplt.render(wentry, "route_map", False))
         # remove superfluos entries from have
         for _hk, hentry in iteritems(have):
             self.commands.append(self._tmplt.render(hentry, "route_map", True))

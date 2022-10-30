@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -28,8 +29,7 @@ The arg spec for the nxos_bgp_address_family module
 
 
 class Bgp_address_familyArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_bgp_address_family module
-    """
+    """The arg spec for the nxos_bgp_address_family module"""
 
     argument_spec = {
         "running_config": {"type": "str"},
@@ -135,27 +135,19 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "parallel_paths": {"type": "int"},
                                 "ibgp": {
                                     "type": "dict",
-                                    "options": {
-                                        "parallel_paths": {"type": "int"}
-                                    },
+                                    "options": {"parallel_paths": {"type": "int"}},
                                 },
                                 "eibgp": {
                                     "type": "dict",
-                                    "options": {
-                                        "parallel_paths": {"type": "int"}
-                                    },
+                                    "options": {"parallel_paths": {"type": "int"}},
                                 },
                                 "local": {
                                     "type": "dict",
-                                    "options": {
-                                        "parallel_paths": {"type": "int"}
-                                    },
+                                    "options": {"parallel_paths": {"type": "int"}},
                                 },
                                 "mixed": {
                                     "type": "dict",
-                                    "options": {
-                                        "parallel_paths": {"type": "int"}
-                                    },
+                                    "options": {"parallel_paths": {"type": "int"}},
                                 },
                             },
                         },
@@ -196,6 +188,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "ospfv3",
                                         "rip",
                                         "static",
+                                        "hmm",
                                     ],
                                     "required": True,
                                 },
@@ -212,7 +205,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "retain_all": {"type": "bool"},
                                         "route_map": {"type": "str"},
                                     },
-                                }
+                                },
                             },
                         },
                         "suppress_inactive": {"type": "bool"},
@@ -232,7 +225,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "defer_time": {"type": "int"},
                                         "maximum_defer_time": {"type": "int"},
                                     },
-                                }
+                                },
                             },
                         },
                         "wait_igp_convergence": {"type": "bool"},

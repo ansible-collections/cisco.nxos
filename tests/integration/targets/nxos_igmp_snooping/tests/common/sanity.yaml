@@ -1,19 +1,26 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_igmp_snooping sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_igmp_snooping sanity test
 
-- meta: end_host
+- ansible.builtin.meta: end_host
   when: platform is search('N6K')
 
-- set_fact: gt_run="false"
+- name: Set a fact for 'gt_run'
+  ansible.builtin.set_fact:
+    gt_run: false
 
 - block:
+    - name: Set a fact for 'gt_run'
+      ansible.builtin.set_fact:
+        gt_run: true
 
-    - set_fact: gt_run="true"
+    - name: Set a fact for 'group_timeout'
+      ansible.builtin.set_fact:
+        group_timeout: never
 
-    - set_fact: group_timeout="never"
-
-    - set_fact: def_group_timeout="default"
+    - name: Set a fact for 'def_group_timeout'
+      ansible.builtin.set_fact:
+        def_group_timeout: default
   when: platform is not search('N35|N5K|N6K')
 
 - name: Setup
@@ -21,8 +28,7 @@
     state: default
 
 - block:
-
-    - name: Configure igmp snooping with non-default values
+    - name: Configure IGMP snooping with non-default values
       register: result
       cisco.nxos.nxos_igmp_snooping: &id001
         snooping: false
@@ -31,12 +37,11 @@
         v3_report_supp: true
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
     - block:
-
         - name: Check Idempotence - Configure igmp snooping with non-default values
           register: result
           cisco.nxos.nxos_igmp_snooping: *id001
@@ -47,26 +52,24 @@
       when: (imagetag and imagetag is not search("D1"))
 
     - block:
-
         - name: Negative Test config group-timeout when igmp snooping disabled
           ignore_errors: true
           register: result
           cisco.nxos.nxos_igmp_snooping:
             snooping: false
-            group_timeout: '{{group_timeout|default(omit)}}'
+            group_timeout: "{{group_timeout|default(omit)}}"
             state: present
 
         - assert:
             that:
               - result.failed == true
-              - result.msg == 'group-timeout cannot be enabled or changed when ip
-                igmp snooping is disabled'
+              - result.msg == 'group-timeout cannot be enabled or changed when ip igmp snooping is disabled'
 
         - name: Configure group-timeout non-default
           register: result
           cisco.nxos.nxos_igmp_snooping: &id003
             snooping: true
-            group_timeout: '{{group_timeout|default(omit)}}'
+            group_timeout: "{{group_timeout|default(omit)}}"
             state: present
 
         - assert: *id002
@@ -78,17 +81,16 @@
         - assert: *id004
       when: gt_run
 
-    - name: Configure igmp snooping with default group timeout
+    - name: Configure IGMP snooping with default group timeout
       register: result
       cisco.nxos.nxos_igmp_snooping: &id005
-        group_timeout: '{{def_group_timeout|default(omit)}}'
+        group_timeout: "{{def_group_timeout|default(omit)}}"
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
       when: gt_run
 
     - block:
-
         - name: Check Idempotence
           register: result
           cisco.nxos.nxos_igmp_snooping: *id005
@@ -96,14 +98,13 @@
         - assert: *id004
       when: (imagetag and imagetag is not search("D1"))
 
-    - name: Configure igmp snooping with default values
+    - name: Configure IGMP snooping with default values
       register: result
       cisco.nxos.nxos_igmp_snooping: *id006
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - block:
-
         - name: Check Idempotence - Configure igmp snooping with default values
           register: result
           cisco.nxos.nxos_igmp_snooping: *id006
@@ -111,10 +112,9 @@
         - assert: *id004
       when: (imagetag and imagetag is not search("D1"))
   always:
-
-    - name: Configure igmp snooping with default values
+    - name: Configure IGMP snooping with default values
       register: result
       cisco.nxos.nxos_igmp_snooping: *id006
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_igmp_snooping sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_igmp_snooping sanity test

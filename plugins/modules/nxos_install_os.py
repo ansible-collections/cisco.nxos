@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -33,6 +34,7 @@ notes:
 - Tested against the following platforms and images - N9k 7.0(3)I4(6), 7.0(3)I5(3),
   7.0(3)I6(1), 7.0(3)I7(1), 7.0(3)F2(2), 7.0(3)F3(2) - N3k 6.0(2)A8(6), 6.0(2)A8(8),
   7.0(3)I6(1), 7.0(3)I7(1) - N7k 7.3(0)D1(1), 8.0(1), 8.1(1), 8.2(1)
+- Tested against Cisco MDS NX-OS 9.2(1)
 - This module requires both the ANSIBLE_PERSISTENT_CONNECT_TIMEOUT and ANSIBLE_PERSISTENT_COMMAND_TIMEOUT
   timers to be set to 600 seconds or higher. The module will exit if the timers are
   not set properly.
@@ -92,7 +94,6 @@ EXAMPLES = """
 - name: Check installed OS for newly installed version
   nxos_command:
     commands: [show version | json]
-    provider: '{{ connection }}'
   register: output
 - assert:
     that:
@@ -121,15 +122,15 @@ install_state:
 
 
 import re
+
 from time import sleep
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 # Output options are 'text' or 'json'
@@ -389,9 +390,7 @@ def build_install_cmd_set(issu, image, kick, type, force=True):
     if kick is None:
         commands.append("%s nxos %s %s" % (rootcmd, image, issu_cmd))
     else:
-        commands.append(
-            "%s %s system %s kickstart %s" % (rootcmd, issu_cmd, image, kick)
-        )
+        commands.append("%s %s system %s kickstart %s" % (rootcmd, issu_cmd, image, kick))
 
     return commands
 
@@ -414,7 +413,7 @@ def parse_show_version(data):
 
 def check_mode_legacy(module, issu, image, kick=None):
     """Some platforms/images/transports don't support the 'install all impact'
-        command so we need to use a different method."""
+    command so we need to use a different method."""
     current = execute_show_command(module, "show version", "json")[0]
     # Call parse_show_data on empty string to create the default upgrade
     # data structure dictionary
@@ -429,10 +428,7 @@ def check_mode_legacy(module, issu, image, kick=None):
     if target_image["error"]:
         data["error"] = True
         data["raw"] = target_image["raw"]
-    if (
-        current["kickstart_ver_str"] != target_image["version"]
-        and not data["error"]
-    ):
+    if current["kickstart_ver_str"] != target_image["version"] and not data["error"]:
         data["upgrade_needed"] = True
         data["disruptive"] = True
         upgrade_msg = "Switch upgraded: system: %s" % tsver
@@ -445,10 +441,7 @@ def check_mode_legacy(module, issu, image, kick=None):
         if target_kick["error"]:
             data["error"] = True
             data["raw"] = target_kick["raw"]
-        if (
-            current["kickstart_ver_str"] != target_kick["version"]
-            and not data["error"]
-        ):
+        if current["kickstart_ver_str"] != target_kick["version"] and not data["error"]:
             data["upgrade_needed"] = True
             data["disruptive"] = True
             upgrade_msg = upgrade_msg + " kickstart: %s" % tkver
@@ -538,9 +531,7 @@ def do_install_all(module, issu, image, kick=None):
         if upgrade["invalid_command"] and "force" in commands[1]:
             # Not all platforms support the 'force' keyword.  Check for this
             # condition and re-try without the 'force' keyword if needed.
-            commands = build_install_cmd_set(
-                issu, image, kick, "install", False
-            )
+            commands = build_install_cmd_set(issu, image, kick, "install", False)
             upgrade = check_install_in_progress(module, commands, opts)
         upgrade["upgrade_cmd"] = commands
 
@@ -572,11 +563,7 @@ def main():
         issu=dict(choices=["required", "desired", "no", "yes"], default="no"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 

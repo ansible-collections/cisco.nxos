@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -33,6 +34,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Either vpc or peer_link param is required, but not both.
 - C(state=absent) removes whatever VPC config is on a port-channel if one exists.
 - Re-assigning a vpc or peerlink from one portchannel to another is not supported.  The
@@ -76,15 +78,13 @@ commands:
     sample: ["interface port-channel100", "vpc 10"]
 """
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def flatten_list(command_lists):
@@ -197,9 +197,7 @@ def get_portchannel_vpc_config(module, portchannel):
     return config
 
 
-def get_commands_to_config_vpc_interface(
-    portchannel, delta, config_value, existing
-):
+def get_commands_to_config_vpc_interface(portchannel, delta, config_value, existing):
     commands = []
 
     if not delta.get("peer-link") and existing.get("peer-link"):
@@ -221,9 +219,7 @@ def get_commands_to_config_vpc_interface(
 def state_present(portchannel, delta, config_value, existing):
     commands = []
 
-    command = get_commands_to_config_vpc_interface(
-        portchannel, delta, config_value, existing
-    )
+    command = get_commands_to_config_vpc_interface(portchannel, delta, config_value, existing)
     commands.append(command)
 
     return commands
@@ -251,8 +247,6 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
     module = AnsibleModule(
         argument_spec=argument_spec,
         mutually_exclusive=[["vpc", "peer_link"]],
@@ -272,13 +266,11 @@ def main():
     active_peer_link = None
 
     if portchannel not in get_portchannel_list(module):
-        if not portchannel.isdigit() or int(
-            portchannel
-        ) not in get_portchannel_list(module):
+        if not portchannel.isdigit() or int(portchannel) not in get_portchannel_list(module):
             module.fail_json(
                 msg="The portchannel you are trying to make a"
                 " VPC or PL is not created yet. "
-                "Create it first!"
+                "Create it first!",
             )
     if vpc:
         mapping = get_existing_portchannel_to_vpc_mappings(module)
@@ -306,7 +298,7 @@ def main():
                 module.fail_json(
                     msg="That port channel is the current "
                     "PEER LINK. Remove it if you want it"
-                    " to be a VPC"
+                    " to be a VPC",
                 )
         config_value = vpc
 
@@ -316,8 +308,7 @@ def main():
             if active_peer_link != portchannel:
                 if peer_link:
                     module.fail_json(
-                        msg="A peer link already exists on"
-                        " the device. Remove it first",
+                        msg="A peer link already exists on" " the device. Remove it first",
                         current_peer_link="Po{0}".format(active_peer_link),
                     )
         config_value = "peer-link"
@@ -328,9 +319,7 @@ def main():
     if state == "present":
         delta = dict(set(proposed.items()).difference(existing.items()))
         if delta:
-            commands = state_present(
-                portchannel, delta, config_value, existing
-            )
+            commands = state_present(portchannel, delta, config_value, existing)
 
     elif state == "absent" and existing:
         commands = state_absent(portchannel, existing)

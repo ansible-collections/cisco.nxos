@@ -1,7 +1,8 @@
 ---
-- debug: msg="START nxapi/sublevel_exact.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/sublevel_exact.yaml
 
-- name: setup
+- name: Setup
   ignore_errors: true
   cisco.nxos.nxos_config:
     lines:
@@ -13,7 +14,7 @@
     parents: ip access-list test
     match: none
 
-- name: configure sub level command using exact match
+- name: Configure sub level command using exact match
   register: result
   cisco.nxos.nxos_config:
     lines:
@@ -26,7 +27,7 @@
     match: exact
     replace: block
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip access-list test' in result.updates"
@@ -36,7 +37,7 @@
       - "'40 permit ip 192.0.2.4/32 any log' in result.updates"
       - "'50 permit ip 192.0.2.5/32 any log' not in result.updates"
 
-- name: check sub level command using exact match
+- name: Check sub level command using exact match
   register: result
   cisco.nxos.nxos_config:
     lines:
@@ -47,13 +48,14 @@
     parents: ip access-list test
     match: exact
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
 
-- debug: msg="END nxapi/sublevel_exact.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/sublevel_exact.yaml

@@ -1,60 +1,66 @@
 ---
-- set_fact: snmp_type="trap"
+- name: Set a fact for 'snmp_type'
+  ansible.builtin.set_fact:
+    snmp_type: trap
 
-- set_fact: snmp_version="v3"
+- name: Set a fact for 'snmp_version'
+  ansible.builtin.set_fact:
+    snmp_version: v3
 
-- set_fact: snmp_auth="priv"
+- name: Set a fact for 'snmp_auth'
+  ansible.builtin.set_fact:
+    snmp_auth: priv
 
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
-    }} {{ snmp_version }} sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type }} {{ snmp_version }} sanity test
 
-- set_fact: intname="{{ nxos_int1 }}"
+- name: Set a fact for 'intname'
+  ansible.builtin.set_fact:
+    intname: "{{ nxos_int1 }}"
   when: platform is not search('N5K|N6K')
 
-- name: Setup - Remove snmp_host if configured
+- name: Setup - remove snmp_host if configured
   ignore_errors: true
   cisco.nxos.nxos_snmp_host: &id007
     snmp_host: 192.0.2.3
     community: TESTING
     udp: 222
-    v3: '{{ snmp_auth|default(omit) }}'
-    version: '{{ snmp_version }}'
-    snmp_type: '{{ snmp_type }}'
+    v3: "{{ snmp_auth|default(omit) }}"
+    version: "{{ snmp_version }}"
+    snmp_type: "{{ snmp_type }}"
     vrf: management
     vrf_filter: management
-    src_intf: '{{ intname|default(omit) }}'
+    src_intf: "{{ intname|default(omit) }}"
     state: absent
 
 - block:
-
-    - name: Configure snmp host
+    - name: Configure SNMP host
       register: result
       cisco.nxos.nxos_snmp_host: &id001
         snmp_host: 192.0.2.3
         community: TESTING
         udp: 222
-        v3: '{{ snmp_auth|default(omit) }}'
-        version: '{{ snmp_version }}'
-        snmp_type: '{{ snmp_type }}'
+        v3: "{{ snmp_auth|default(omit) }}"
+        version: "{{ snmp_version }}"
+        snmp_type: "{{ snmp_type }}"
         vrf: management
         vrf_filter: management
-        src_intf: '{{ intname|default(omit) }}'
+        src_intf: "{{ intname|default(omit) }}"
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_host: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
     - block:
-
         - name: Add another vrf to filter
           register: result
           cisco.nxos.nxos_snmp_host: &id003
@@ -72,26 +78,25 @@
         - assert: *id004
       when: platform is not search('N35|N5K|N6K')
 
-    - name: remove some configuration
+    - name: Remove some configuration
       register: result
       cisco.nxos.nxos_snmp_host: &id005
         snmp_host: 192.0.2.3
         udp: 222
-        src_intf: '{{ intname|default(omit) }}'
+        src_intf: "{{ intname|default(omit) }}"
         vrf: management
         vrf_filter: management
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_host: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - block:
-
         - name: remove some more configuration
           register: result
           cisco.nxos.nxos_snmp_host: &id006
@@ -113,18 +118,17 @@
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Cleanup Idempotence
+    - name: Cleanup idempotence
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-
     - name: Cleanup
       register: result
       cisco.nxos.nxos_snmp_host: *id007
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type
-        }} {{ snmp_version }} sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_snmp_host {{ snmp_type }} {{ snmp_version }} sanity test

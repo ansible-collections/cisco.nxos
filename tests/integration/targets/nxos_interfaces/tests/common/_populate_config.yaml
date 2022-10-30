@@ -1,4 +1,5 @@
-- name: "Populate config - {{ nxos_int1 }}"
+---
+- name: "Populate configuration - {{ nxos_int1 }}"
   cisco.nxos.nxos_config:
     lines:
       - "description outbound-intf"
@@ -6,7 +7,7 @@
       - "no shutdown"
     parents: "interface {{ nxos_int1 }}"
 
-- name: "Populate config - {{ nxos_int2 }}"
+- name: "Populate configuration - {{ nxos_int2 }}"
   cisco.nxos.nxos_config:
     lines:
       - "description intf-l3"

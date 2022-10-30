@@ -27,12 +27,12 @@ The arg spec for the nxos_vlans module
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 class VlansArgs(object):
-    """The arg spec for the nxos_vlans module
-    """
+    """The arg spec for the nxos_vlans module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

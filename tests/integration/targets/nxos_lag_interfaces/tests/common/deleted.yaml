@@ -1,20 +1,22 @@
 ---
-- debug:
-    msg: Start nxos_lag_interfaces deleted integration tests connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: Start nxos_lag_interfaces deleted integration tests connection={{ ansible_connection }}
 
-- set_fact: test_int1="{{ nxos_int1 }}"
+- name: Set a fact for 'test_int1'
+  ansible.builtin.set_fact:
+    test_int1: "{{ nxos_int1 }}"
 
-- set_fact: test_int2="{{ nxos_int2 }}"
+- name: Set a fact for 'test_int2'
+  ansible.builtin.set_fact:
+    test_int2: "{{ nxos_int2 }}"
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- name: enable feature lacp
+- name: Enable 'feature lacp'
   cisco.nxos.nxos_feature:
     feature: lacp
 
 - block:
-
     - name: Setup2
       loop:
         - interface {{ test_int1 }}
@@ -22,29 +24,28 @@
       cisco.nxos.nxos_config:
         lines:
           - channel-group 10
-        parents: '{{ item }}'
+        parents: "{{ item }}"
 
-    - name: Gather LAG interfaces facts
+    - name: Gather lag interfaces facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lag_interfaces
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_lag_interfaces: &id002
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length
-            == 0
+          - ansible_facts.network_resources.lag_interfaces|symmetric_difference(result.before)|length == 0
 
-    - name: Gather LAG interfaces post facts
+    - name: Gather lag interfaces post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           # the module should not remove the implicitly created port-channel
           - result.after|length == 1
@@ -54,14 +55,13 @@
       register: result
       cisco.nxos.nxos_lag_interfaces: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
   always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - include_tasks: _remove_config.yaml
-
-    - name: disable feature lacp
+    - name: Disable 'feature lacp'
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled

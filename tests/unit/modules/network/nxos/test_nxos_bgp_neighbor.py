@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_neighbor
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -34,12 +36,12 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         super(TestNxosBgpNeighborModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -77,9 +79,7 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         self.execute_module(changed=False)
 
     def test_nxos_bgp_neighbor(self):
-        set_module_args(
-            dict(asn=65535, neighbor="192.0.2.3", description="some words")
-        )
+        set_module_args(dict(asn=65535, neighbor="192.0.2.3", description="some words"))
         self.execute_module(
             changed=True,
             commands=[
@@ -91,20 +91,14 @@ class TestNxosBgpNeighborModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_absent(self):
         set_module_args(dict(asn=65535, neighbor="1.1.1.1", state="absent"))
-        self.execute_module(
-            changed=True, commands=["router bgp 65535", "no neighbor 1.1.1.1"]
-        )
+        self.execute_module(changed=True, commands=["router bgp 65535", "no neighbor 1.1.1.1"])
 
     def test_nxos_bgp_neighbor_remove_private_as(self):
-        set_module_args(
-            dict(asn=65535, neighbor="3.3.3.4", remove_private_as="all")
-        )
+        set_module_args(dict(asn=65535, neighbor="3.3.3.4", remove_private_as="all"))
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_bgp_neighbor_remove_private_as_changed(self):
-        set_module_args(
-            dict(asn=65535, neighbor="3.3.3.4", remove_private_as="replace-as")
-        )
+        set_module_args(dict(asn=65535, neighbor="3.3.3.4", remove_private_as="replace-as"))
         self.execute_module(
             changed=True,
             commands=[
@@ -115,11 +109,7 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         )
 
     def test_nxos_bgp_neighbor_peertype_border_leaf(self):
-        set_module_args(
-            dict(
-                asn=65535, neighbor="192.0.2.3", peer_type="fabric_border_leaf"
-            )
-        )
+        set_module_args(dict(asn=65535, neighbor="192.0.2.3", peer_type="fabric_border_leaf"))
         self.execute_module(
             changed=True,
             commands=[
@@ -130,9 +120,7 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         )
 
     def test_nxos_bgp_neighbor_peertype_external(self):
-        set_module_args(
-            dict(asn=65535, neighbor="192.0.2.3", peer_type="fabric_external")
-        )
+        set_module_args(dict(asn=65535, neighbor="192.0.2.3", peer_type="fabric_external"))
         self.execute_module(
             changed=True,
             commands=[
@@ -143,13 +131,9 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         )
 
     def test_nxos_bgp_neighbor_peertype_border_leaf_exists(self):
-        set_module_args(
-            dict(asn=65535, neighbor="5.5.5.5", peer_type="fabric_border_leaf")
-        )
+        set_module_args(dict(asn=65535, neighbor="5.5.5.5", peer_type="fabric_border_leaf"))
         self.execute_module(changed=False)
 
     def test_nxos_bgp_neighbor_peertype_external_exists(self):
-        set_module_args(
-            dict(asn=65535, neighbor="6.6.6.6", peer_type="fabric_external")
-        )
+        set_module_args(dict(asn=65535, neighbor="6.6.6.6", peer_type="fabric_external"))
         self.execute_module(changed=False)

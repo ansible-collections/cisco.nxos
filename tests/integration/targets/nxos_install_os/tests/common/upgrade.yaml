@@ -1,48 +1,77 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_os_install upgrade"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_os_install upgrade
   when: connection is defined
 
-- set_fact: image_dir='/Users/mwiebe/Projects/nxos_ansible/images/'
+- name: Set a fact for 'image_dir'
+  ansible.builtin.set_fact:
+    image_dir: /Users/mwiebe/Projects/nxos_ansible/images/
 
-- set_fact: checkmode='no'
+- name: Set a fact for 'checkmode'
+  ansible.builtin.set_fact:
+    checkmode: false
 
-- set_fact: issu='desired'
+- name: Set a fact for 'issu'
+  ansible.builtin.set_fact:
+    issu: desired
 
-- set_fact: copy_images=True
+- name: Set a fact for 'copy_images'
+  ansible.builtin.set_fact:
+    copy_images: true
 
-- set_fact: force=False
+- name: Set a fact for 'force'
+  ansible.builtin.set_fact:
+    force: false
 
-- set_fact: delete_files=True
+- name: Set a fact for 'delete_files'
+  ansible.builtin.set_fact:
+    delete_files: true
 
-- set_fact:
+- name: Set a fact for 'delete_image_list'
+  ansible.builtin.set_fact:
     delete_image_list:
       - nxos.7.0.3.I7.2.bin
       - nxos.7.0.3.I7.3.bin
 
-- set_fact: si='n3000-uk9.6.0.2.U6.1a.bin'
+- name: Set a fact for 'si'
+  ansible.builtin.set_fact:
+    si: n3000-uk9.6.0.2.U6.1a.bin
 
-- set_fact: ki='n3000-uk9-kickstart.6.0.2.U6.1a.bin'
+- name: Set a fact for 'ki'
+  ansible.builtin.set_fact:
+    ki: n3000-uk9-kickstart.6.0.2.U6.1a.bin
 
-- name: Upgrade to U6.1a
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+- name: Upgrade to u6.1a
+  ansible.builtin.include_tasks: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
-- set_fact: si='n3000-uk9.6.0.2.U6.2a.bin'
+- name: Set a fact for 'si'
+  ansible.builtin.set_fact:
+    si: n3000-uk9.6.0.2.U6.2a.bin
 
-- set_fact: ki='n3000-uk9-kickstart.6.0.2.U6.2a.bin'
+- name: Set a fact for 'ki'
+  ansible.builtin.set_fact:
+    ki: n3000-uk9-kickstart.6.0.2.U6.2a.bin
 
-- name: Upgrade to U6.2a
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+- name: Upgrade to u6.2a
+  ansible.builtin.include_tasks: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
-- set_fact: si='n3000-s2-dk9.8.0.1.bin'
+- name: Set a fact for 'si'
+  ansible.builtin.set_fact:
+    si: n3000-s2-dk9.8.0.1.bin
 
-- set_fact: ki='n3000-s2-kickstart.8.0.1.bin'
+- name: Set a fact for 'ki'
+  ansible.builtin.set_fact:
+    ki: n3000-s2-kickstart.8.0.1.bin
 
-- name: Upgrade to U6.3a
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+- name: Upgrade to u6.3a
+  ansible.builtin.include_tasks: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
-- set_fact: si='nxos.7.0.3.I7.2.bin'
+- name: Set a fact for 'si'
+  ansible.builtin.set_fact:
+    si: nxos.7.0.3.I7.2.bin
 
-- name: Upgrade to 7.0.3.I7.2
-  include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+- name: Upgrade to 7.0.3.i7.2
+  ansible.builtin.include_tasks: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
 
-- debug: msg="END connection={{ ansible_connection }} nxos_os_install upgrade"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_os_install upgrade

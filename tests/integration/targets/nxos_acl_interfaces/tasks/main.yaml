@@ -1,8 +1,15 @@
 ---
-- include: cli.yaml
+- name: Set system defaults for switchports
+  cisco.nxos.nxos_config:
+    lines: "no system default switchport"
+  connection: ansible.netcommon.network_cli
+
+- name: Include the CLI tasks
+  ansible.builtin.include_tasks: cli.yaml
   tags:
     - cli
 
-- include: nxapi.yaml
+- name: Include the NX-API tasks
+  ansible.builtin.include_tasks: nxapi.yaml
   tags:
     - nxapi

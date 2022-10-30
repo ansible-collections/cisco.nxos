@@ -245,14 +245,14 @@ Parameters
                     <b>id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
                         <div>Destination group identifier.</div>
-                        <div>Value must be a int representing the destination group identifier.</div>
+                        <div>Value must be an integer or string representing the destination group identifier.</div>
                 </td>
             </tr>
 
@@ -303,14 +303,14 @@ Parameters
                     <b>id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
                         <div>Sensor group identifier.</div>
-                        <div>Value must be a int representing the sensor group identifier.</div>
+                        <div>Value must be a integer or a string representing the sensor group identifier.</div>
                 </td>
             </tr>
             <tr>
@@ -449,7 +449,7 @@ Parameters
                     <b>destination_group</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
@@ -466,14 +466,14 @@ Parameters
                     <b>id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
                         <div>Subscription identifier.</div>
-                        <div>Value must be a int representing the subscription identifier.</div>
+                        <div>Value must be an integer or string representing the subscription identifier.</div>
                 </td>
             </tr>
             <tr>
@@ -503,7 +503,7 @@ Parameters
                     <b>id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
@@ -564,6 +564,7 @@ Parameters
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
                                     <li>deleted</li>
+                                    <li>gathered</li>
                         </ul>
                 </td>
                 <td>
@@ -579,6 +580,7 @@ Notes
 
 .. note::
    - Supported on N9k Version 7.0(3)I7(5) and later.
+   - Unsupported for Cisco MDS
 
 
 
@@ -613,13 +615,13 @@ Examples
             destination:
               ip: 192.168.0.2
               port: 50001
-              protocol: gPRC
+              protocol: gRPC
               encoding: GPB
           - id: 55
             destination:
               ip: 192.168.0.55
               port: 60001
-              protocol: gPRC
+              protocol: gRPC
               encoding: GPB
           sensor_groups:
           - id: 1
@@ -665,7 +667,7 @@ Examples
             destination:
               ip: 192.168.0.2
               port: 50001
-              protocol: gPRC
+              protocol: gRPC
               encoding: GPB
           subscriptions:
           - id: 5

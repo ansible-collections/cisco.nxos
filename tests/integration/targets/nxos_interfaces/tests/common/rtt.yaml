@@ -1,11 +1,11 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_interfaces round trip integration tests on connection={{ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.nxos.nxos_interfaces:
         config:
@@ -26,8 +26,8 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - interfaces
 
@@ -44,34 +44,34 @@
 
           - name: "{{ nxos_int3 }}"
             description: WRONG-TEST-INTF-3
-            enabled: False
+            enabled: false
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-        - '"interface Ethernet1/1" in result.commands'
-        - '"description WRONG-TEST-INTF-1" in result.commands'
-        - '"speed 10000" in result.commands'
-        - '"interface Ethernet1/2" in result.commands'
-        - '"no switchport" in result.commands'
-        - '"description WRONG-TEST-INTF-2" in result.commands'
-        - '"interface Ethernet1/3" in result.commands'
-        - '"no mtu" in result.commands'
-        - '"description WRONG-TEST-INTF-3" in result.commands'
-        - result.commands|length == 9
-        - result.changed == true
+          - '"interface Ethernet1/1" in result.commands'
+          - '"description WRONG-TEST-INTF-1" in result.commands'
+          - '"speed 10000" in result.commands'
+          - '"interface Ethernet1/2" in result.commands'
+          - '"no switchport" in result.commands'
+          - '"description WRONG-TEST-INTF-2" in result.commands'
+          - '"interface Ethernet1/3" in result.commands'
+          - '"no mtu" in result.commands'
+          - '"description WRONG-TEST-INTF-3" in result.commands'
+          - result.commands|length == 9
+          - result.changed == true
 
-    - name: Revert back to base config using facts round trip
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.nxos.nxos_interfaces:
         config: "{{ ansible_facts['network_resources']['interfaces'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "{{ base_config['after'] == revert['after'] }}"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_interfaces round trip integration tests on connection={{ansible_connection }}

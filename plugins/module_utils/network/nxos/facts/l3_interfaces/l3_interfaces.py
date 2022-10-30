@@ -11,14 +11,15 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.l3_interfaces.l3_interfaces import (
     L3_interfacesArgs,
 )
@@ -28,8 +29,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class L3_interfacesFacts(object):
-    """ The nxos l3_interfaces fact class
-    """
+    """The nxos l3_interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -46,7 +46,7 @@ class L3_interfacesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for l3_interfaces
+        """Populate the facts for l3_interfaces
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
@@ -68,9 +68,7 @@ class L3_interfacesFacts(object):
         facts = {}
         if objs:
             facts["l3_interfaces"] = []
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["l3_interfaces"].append(utils.remove_empties(cfg))
 
@@ -93,15 +91,10 @@ class L3_interfacesFacts(object):
             return {}
         config["name"] = intf
         config["dot1q"] = utils.parse_conf_arg(conf, "encapsulation dot1[qQ]")
-        config["redirects"] = utils.parse_conf_cmd_arg(
-            conf, "no ip redirects", False, True
-        )
-        config["unreachables"] = utils.parse_conf_cmd_arg(
-            conf, "ip unreachables", True, False
-        )
-        config["evpn_multisite_tracking"] = utils.parse_conf_arg(
-            conf, "evpn multisite"
-        )
+        config["redirects"] = utils.parse_conf_cmd_arg(conf, "no ip redirects", False, True)
+        config["ipv6_redirects"] = utils.parse_conf_cmd_arg(conf, "no ipv6 redirects", False, True)
+        config["unreachables"] = utils.parse_conf_cmd_arg(conf, "ip unreachables", True, False)
+        config["evpn_multisite_tracking"] = utils.parse_conf_arg(conf, "evpn multisite")
         ipv4_match = re.compile(r"\n  ip address (.*)")
         matches = ipv4_match.findall(conf)
         if matches:
@@ -118,9 +111,7 @@ class L3_interfacesFacts(object):
                                 config_dict.update({"secondary": True})
                                 if len(ipv4_conf) == 4:
                                     if ipv4_conf[2] == "tag":
-                                        config_dict.update(
-                                            {"tag": int(ipv4_conf[-1])}
-                                        )
+                                        config_dict.update({"tag": int(ipv4_conf[-1])})
                             elif d == "tag":
                                 config_dict.update({"tag": int(ipv4_conf[-1])})
                         config["ipv4"].append(config_dict)

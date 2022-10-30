@@ -28,6 +28,7 @@ The module file for nxos_ospfv2
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -39,6 +40,7 @@ description:
 version_added: 1.0.0
 notes:
 - Tested against NX-OS 7.0(3)I5(1).
+- Unsupported for Cisco MDS
 - This module works with connection C(network_cli) and C(httpapi).
 author: Nilashish Chakraborty (@NilashishC)
 options:
@@ -69,7 +71,7 @@ options:
             suboptions:
               area_id:
                 description:
-                - The Area ID as an integer or IP Address.
+                - The Area ID in IP Address format.
                 type: str
                 required: true
               authentication:
@@ -382,7 +384,7 @@ options:
                     suboptions:
                       area_id:
                         description:
-                        - Area Id as an integer or ip address.
+                        - Area Id in ip address format.
                         type: str
                   multicast_intact:
                     description:
@@ -542,7 +544,7 @@ options:
                 suboptions:
                   area_id:
                     description:
-                    - The Area ID as an integer or IP Address.
+                    - The Area ID in IP Address format.
                     type: str
                     required: true
                   authentication:
@@ -1946,6 +1948,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv2.ospfv2 import (
     Ospfv2Args,
 )

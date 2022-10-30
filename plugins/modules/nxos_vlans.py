@@ -28,6 +28,7 @@ The module file for nxos_vlans
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -39,6 +40,7 @@ version_added: 1.0.0
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 options:
   running_config:
     description:
@@ -412,6 +414,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vlans.vlans import (
     VlansArgs,
 )
@@ -426,9 +429,7 @@ def main():
 
     :returns: the result form module invocation
     """
-    module = AnsibleModule(
-        argument_spec=VlansArgs.argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=VlansArgs.argument_spec, supports_check_mode=True)
 
     result = Vlans(module).execute_module()
     module.exit_json(**result)

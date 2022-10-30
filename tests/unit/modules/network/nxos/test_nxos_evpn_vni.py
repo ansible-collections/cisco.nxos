@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_evpn_vni
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -34,12 +36,12 @@ class TestNxosEvpnVniModule(TestNxosModule):
         super(TestNxosEvpnVniModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_vni.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_vni.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_vni.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_vni.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -49,15 +51,11 @@ class TestNxosEvpnVniModule(TestNxosModule):
         self.mock_get_config.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.get_config.return_value = load_fixture(
-            "", "nxos_evpn_vni_config.cfg"
-        )
+        self.get_config.return_value = load_fixture("", "nxos_evpn_vni_config.cfg")
         self.load_config.return_value = None
 
     def test_nxos_evpn_vni_present(self):
-        set_module_args(
-            dict(vni="6000", route_target_import="5000:10", state="present")
-        )
+        set_module_args(dict(vni="6000", route_target_import="5000:10", state="present"))
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],

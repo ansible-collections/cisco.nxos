@@ -31,9 +31,9 @@ merged:
           match:
             as_number:
               asn:
-              - '65564'
+                - "65564"
             as_path:
-            - Allow40
+              - Allow40
             ip:
               address:
                 access_list: acl_1
@@ -44,13 +44,13 @@ merged:
           match:
             community:
               community_list:
-              - BGPCommunity1
-              - BGPCommunity2
+                - BGPCommunity1
+                - BGPCommunity2
             ip:
               address:
                 prefix_lists:
-                - AllowPrefix1
-                - AllowPrefix2
+                  - AllowPrefix1
+                  - AllowPrefix2
           sequence: 20
           set:
             dampening:
@@ -67,19 +67,19 @@ merged:
           description: rmap2-20-permit
           match:
             interfaces:
-            - Ethernet1/1
+              - Ethernet1/1
             ipv6:
               address:
                 prefix_lists:
-                - AllowIPv6Prefix
+                  - AllowIPv6Prefix
           sequence: 20
           set:
             as_path:
               prepend:
                 as_number:
-                - '65563'
-                - '65568'
-                - '65569'
+                  - "65563"
+                  - "65568"
+                  - "65569"
             comm_list: BGPCommunity
 
         - action: deny
@@ -95,10 +95,10 @@ merged:
                   rp_type: ASM
                 source: 203.0.113.0/24
             route_types:
-            - level-1
-            - level-2
+              - level-1
+              - level-2
             tags:
-            - 2
+              - 2
           sequence: 40
 
 replaced:
@@ -129,7 +129,7 @@ replaced:
                   - AllowPrefix1
           set:
             community:
-              local_as: True
+              local_as: true
 
     - route_map: rmap2
       entries:
@@ -138,19 +138,19 @@ replaced:
           description: rmap2-20-permit
           match:
             interfaces:
-            - Ethernet1/1
+              - Ethernet1/1
             ipv6:
               address:
                 prefix_lists:
-                - AllowIPv6Prefix
+                  - AllowIPv6Prefix
           sequence: 20
           set:
             as_path:
               prepend:
                 as_number:
-                - '65563'
-                - '65568'
-                - '65569'
+                  - "65563"
+                  - "65568"
+                  - "65569"
             comm_list: BGPCommunity
 
         - action: deny
@@ -166,10 +166,10 @@ replaced:
                   rp_type: ASM
                 source: 203.0.113.0/24
             route_types:
-            - level-1
-            - level-2
+              - level-1
+              - level-2
             tags:
-            - 2
+              - 2
           sequence: 40
 
 overridden:
@@ -202,11 +202,11 @@ overridden:
                   - AllowPrefix1
           set:
             community:
-              local_as: True
+              local_as: true
 
 deleted:
   commands:
-   - no route-map rmap1 permit 10
-   - no route-map rmap1 deny 20
-   - no route-map rmap2 permit 20
-   - no route-map rmap2 deny 40
+    - no route-map rmap1 permit 10
+    - no route-map rmap1 deny 20
+    - no route-map rmap2 permit 20
+    - no route-map rmap2 deny 40

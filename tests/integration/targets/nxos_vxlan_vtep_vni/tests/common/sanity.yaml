@@ -1,101 +1,99 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity test
 
 - block:
-
-    - name: Apply N7K specific setup config
-      include: targets/nxos_vxlan_vtep/tasks/platform/n7k/setup.yaml
+    - name: Apply N7K specific setup configuration
+      ansible.builtin.include_tasks: targets/nxos_vxlan_vtep/tasks/platform/n7k/setup.yaml
       when: platform is match('N7K')
 
-    - name: Enable feature nv overlay
+    - name: Enable 'feature nv overlay'
       cisco.nxos.nxos_config:
         commands:
           - feature nv overlay
         match: none
 
-    - name: configure vxlan_vtep
+    - name: Configure vxlan_vtep
       cisco.nxos.nxos_vxlan_vtep:
         interface: nve1
         host_reachability: true
 
-    - name: configure vxlan_vtep_vni assoc-vrf
+    - name: Configure vxlan_vtep_vni assoc-vrf
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: &id001
         interface: nve1
         vni: 6000
         assoc_vrf: true
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Conf 1 Idempotence
+    - name: Configure 1 idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: remove vxlan_vtep_vni
+    - name: Remove vxlan_vtep_vni
       cisco.nxos.nxos_vxlan_vtep_vni:
         interface: nve1
         vni: 6000
         assoc_vrf: true
         state: absent
 
-    - name: configure vxlan_vtep_vni
+    - name: Configure vxlan_vtep_vni
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni:
         interface: nve1
         vni: 8000
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: configure vxlan_vtep_vni mcast
+    - name: Configure vxlan_vtep_vni mcast
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: &id003
         interface: nve1
         vni: 8000
         multicast_group: 224.1.1.1
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf 3 Idempotence
+    - name: Configure 3 idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure vxlan_vtep_vni default mcast
+    - name: Configure vxlan_vtep_vni default mcast
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: &id005
         interface: nve1
         vni: 8000
         multicast_group: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf 4 Idempotence
+    - name: Configure 4 idempotence
       register: result
       cisco.nxos.nxos_vxlan_vtep_vni: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: remove config
+    - name: Remove configuration
       cisco.nxos.nxos_vxlan_vtep_vni: &id013
         interface: nve1
         vni: 8000
         state: absent
 
-    - name: configure vxlan_vtep
+    - name: Configure vxlan_vtep
       cisco.nxos.nxos_vxlan_vtep:
         interface: nve1
         host_reachability: false
 
     - block:
-
         - name: configure vxlan_vtep_vni
           register: result
           cisco.nxos.nxos_vxlan_vtep_vni:
@@ -231,23 +229,22 @@
       when: (platform is search('N9K'))
   when: (platform is search("N7K|N9K"))
   always:
-
-    - name: Apply N7K specific cleanup config
-      include: targets/nxos_vxlan_vtep/tasks/platform/n7k/cleanup.yaml
+    - name: Apply N7K specific cleanup configuration
+      ansible.builtin.include_tasks: targets/nxos_vxlan_vtep/tasks/platform/n7k/cleanup.yaml
       when: platform is match('N7K')
 
-    - name: remove vxlan_vtep
+    - name: Remove vxlan_vtep
       ignore_errors: true
       cisco.nxos.nxos_vxlan_vtep:
         interface: nve1
         shutdown: true
         state: absent
 
-    - name: Disable feature nv overlay
+    - name: Disable 'feature nv overlay'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: nve
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity
-    test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vxlan_vtep_vni sanity test

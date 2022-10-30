@@ -1,11 +1,11 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_l2_interfaces round trip integration tests on connection={{ansible_connection }}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Prepare interfaces (switch to L2)
+    - name: Prepare interfaces (switch to l2)
       cisco.nxos.nxos_interfaces:
         config:
           - name: "{{ nxos_int1 }}"
@@ -16,7 +16,7 @@
             mode: layer2
         state: merged
 
-    - name: Apply the provided configuration (Base config)
+    - name: Apply the provided configuration (base config)
       register: base_config
       cisco.nxos.nxos_l2_interfaces:
         config:
@@ -33,8 +33,8 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - l2_interfaces
 
@@ -54,21 +54,21 @@
               allowed_vlans: 5-10, 15
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-        - result.changed == true
+          - result.changed == true
 
-    - name: Revert back to base config using facts round trip
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.nxos.nxos_l2_interfaces:
         config: "{{ ansible_facts['network_resources']['l2_interfaces'] }}"
         state: overridden
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "{{ base_config['after'] == revert['after'] }}"
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-- debug:
+- ansible.builtin.debug:
     msg: END nxos_l2_interfaces round trip integration tests on connection={{ansible_connection }}

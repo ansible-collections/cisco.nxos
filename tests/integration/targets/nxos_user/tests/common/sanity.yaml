@@ -1,13 +1,17 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_user parameter test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_user parameter test
 
-- set_fact: idem="true"
+- name: Set a fact for 'idem'
+  ansible.builtin.set_fact:
+    idem: true
 
-- set_fact: idem="false"
+- name: Set a fact for 'idem'
+  ansible.builtin.set_fact:
+    idem: false
   when: ((platform is search('N7K')) and (imagetag and imagetag is search("D1")))
 
 - block:
-
     - name: Create user
       register: result
       cisco.nxos.nxos_user: &id001
@@ -17,12 +21,11 @@
         roles: network-operator
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
     - block:
-
         - name: conf idempotency
           register: result
           cisco.nxos.nxos_user: *id001
@@ -38,22 +41,21 @@
         name: netend
         state: absent
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: remove idempotency
+    - name: Remove idempotency
       register: result
       cisco.nxos.nxos_user: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - debug: msg="skipping sshkey test as the key needs to be created on the server
-        first"
+    - ansible.builtin.debug:
+        msg: skipping sshkey test as the key needs to be created on the server first
 
     - name: Collection of users
       register: result
       cisco.nxos.nxos_user: &id005
         users:
-
           - name: test1
 
           - name: test2
@@ -64,10 +66,9 @@
           - network-admin
           - network-operator
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - block:
-
         - name: users idempotency
           register: result
           cisco.nxos.nxos_user: *id005
@@ -75,24 +76,24 @@
         - assert: *id004
       when: idem
 
-    - name: tearDown
+    - name: Teardown
       register: result
       cisco.nxos.nxos_user: &id006
-        name: '{{ ansible_user }}'
+        name: "{{ ansible_user }}"
         purge: true
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: teardown idempotency
+    - name: Teardown idempotency
       register: result
       cisco.nxos.nxos_user: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-
-    - name: tearDown
+    - name: Teardown
       register: result
       ignore_errors: true
       cisco.nxos.nxos_user: *id006
 
-- debug: msg="END connection={{ ansible_connection }} nxos_user parameter test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_user parameter test

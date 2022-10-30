@@ -27,6 +27,7 @@ The module file for nxos_acls
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -38,6 +39,7 @@ version_added: 1.0.0
 author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
 notes:
 - Tested against NX-OS 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - As NX-OS allows configuring a rule again with different sequence numbers, the user
   is expected to provide sequence numbers for the access control entries to preserve
   idempotency. If no sequence number is given, the rule will be added as a new rule
@@ -793,12 +795,11 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acls.acls import (
     AclsArgs,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acls.acls import (
-    Acls,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acls.acls import Acls
 
 
 def main():
@@ -807,9 +808,7 @@ def main():
 
     :returns: the result form module invocation
     """
-    module = AnsibleModule(
-        argument_spec=AclsArgs.argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=AclsArgs.argument_spec, supports_check_mode=True)
 
     result = Acls(module).execute_module()
     module.exit_json(**result)

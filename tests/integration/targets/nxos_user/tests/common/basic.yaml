@@ -1,10 +1,10 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_user basic test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_user basic test
 
 - name: Remove old entries of user
   cisco.nxos.nxos_user: &rem
     aggregate:
-
       - name: ansibletest1
 
       - name: ansibletest2
@@ -25,9 +25,10 @@
     roles: network-operator
     state: present
 
-- debug: msg="{{result}}"
+- ansible.builtin.debug:
+    msg: "{{result}}"
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"username" in result.commands[0]'
@@ -37,14 +38,13 @@
   register: result
   cisco.nxos.nxos_user:
     aggregate:
-
       - name: ansibletest2
 
       - name: ansibletest3
     state: present
     roles: network-admin
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
 
@@ -52,7 +52,8 @@
     commands: show password strength-check
   register: pwd
 
-- set_fact:
+- name: Set a fact for 'pwdchck'
+  ansible.builtin.set_fact:
     pwdchck: "{{ True if pwd is search('enabled') else False }}"
 
 - name: Enable password check (if disabled by default) for failure test
@@ -60,15 +61,15 @@
     lines: password strength-check
   when: not pwdchck
 
-- name: Attempt to create user with weak password with pwd check enabled (SHOULD FAIL)
+- name: Attempt to create user with weak password with pwd check enabled (should fail)
   cisco.nxos.nxos_user:
     name: ansibletest_failed
     configured_password: abc
   register: result
-  ignore_errors: True
+  ignore_errors: true
 
-- assert:
-    that: 
+- ansible.builtin.assert:
+    that:
       - result.failed == True
       - result.msg is search('Wrong Password')
 
@@ -76,14 +77,14 @@
   cisco.nxos.nxos_config:
     lines: no password strength-check
 
-- name: Attempt to create user with weak password without pwd check enabled (SHOULD WARN)
+- name: Attempt to create user with weak password without pwd check enabled (should warn)
   cisco.nxos.nxos_user:
     name: ansibletest_warn
     configured_password: abc
   register: result
 
-- assert:
-    that: 
+- ansible.builtin.assert:
+    that:
       - result.changed == True
       - result.failed == False
       - '"Minimum recommended length of 8 characters" in result.warnings[1]'
@@ -107,7 +108,7 @@
     state: present
   register: result
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == True
       - result.failed == False
@@ -119,18 +120,18 @@
     role: invalid_role
     state: present
   register: result
-  ignore_errors: True
+  ignore_errors: true
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.failed == True
       - '"invalid role specified" in result.msg'
 
-- name: tearDown
+- name: Teardown
   register: result
   cisco.nxos.nxos_user: *rem
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no username" in result.commands[0]'
@@ -140,4 +141,5 @@
     lines:
       - no role name customrole
 
-- debug: msg="END connection={{ ansible_connection }} nxos_user basic test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_user basic test

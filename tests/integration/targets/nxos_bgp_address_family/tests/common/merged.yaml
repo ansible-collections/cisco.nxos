@@ -1,8 +1,8 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_bgp_address_family merged integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
     - name: Merge the provided configuration with the existing running configuration
@@ -25,11 +25,11 @@
               safi: unicast
               vrf: site-1
               default_information:
-                originate: True
+                originate: true
               aggregate_address:
                 - prefix: 203.0.113.0/24
-                  as_set: True
-                  summary_only: True
+                  as_set: true
+                  summary_only: true
             - afi: ipv6
               safi: multicast
               vrf: site-1
@@ -43,32 +43,28 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that: "{{ result['before'] == {} }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length\
-            \ == 0 }}"
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length == 0 }}"
           - merged['after']['as_number'] == result['after']['as_number']
 
-    - name:
-        Merge the provided configuration with the existing running configuration
-        (IDEMPOTENT)
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
       cisco.nxos.nxos_bgp_address_family: *id001
       register: result
 
     - name: Assert that the previous task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -19,16 +19,17 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_route_maps
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -52,14 +53,12 @@ class TestNxosRouteMapsModule(TestNxosModule):
         super(TestNxosRouteMapsModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.route_maps.route_maps.Route_mapsFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.route_maps.route_maps.Route_mapsFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -72,7 +71,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
         # test merged for linear attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -91,9 +90,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 sequence=40,
                                 description="rmap1-deny-40",
                                 set=dict(
-                                    as_path=dict(
-                                        prepend=dict(last_as=10), tag=True
-                                    ),
+                                    as_path=dict(prepend=dict(last_as=10), tag=True),
                                     comm_list="comm1",
                                     dampening=dict(
                                         half_life=10,
@@ -116,15 +113,11 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 set=dict(
                                     null_interface="null0",
                                     ip=dict(
-                                        address=dict(
-                                            prefix_list="prefixlist1"
-                                        ),
+                                        address=dict(prefix_list="prefixlist1"),
                                         precedence="critical",
                                     ),
                                     ipv6=dict(
-                                        address=dict(
-                                            prefix_list="prefixlist2"
-                                        ),
+                                        address=dict(prefix_list="prefixlist2"),
                                         precedence="immediate",
                                     ),
                                     label_index=20,
@@ -144,7 +137,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                     tag=10,
                                     weight=40,
                                 ),
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -216,7 +209,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
               set path-selection all advertise
               set tag 10
               set weight 40
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -235,9 +228,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 sequence=40,
                                 description="rmap1-deny-40",
                                 set=dict(
-                                    as_path=dict(
-                                        prepend=dict(last_as=10), tag=True
-                                    ),
+                                    as_path=dict(prepend=dict(last_as=10), tag=True),
                                     comm_list="comm1",
                                     dampening=dict(
                                         half_life=10,
@@ -260,15 +251,11 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 set=dict(
                                     null_interface="null0",
                                     ip=dict(
-                                        address=dict(
-                                            prefix_list="prefixlist1"
-                                        ),
+                                        address=dict(prefix_list="prefixlist1"),
                                         precedence="critical",
                                     ),
                                     ipv6=dict(
-                                        address=dict(
-                                            prefix_list="prefixlist2"
-                                        ),
+                                        address=dict(prefix_list="prefixlist2"),
                                         precedence="immediate",
                                     ),
                                     label_index=20,
@@ -288,7 +275,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                     tag=10,
                                     weight=40,
                                 ),
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -332,7 +319,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
               set path-selection all advertise
               set tag 10
               set weight 40
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -366,13 +353,11 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 action="deny",
                                 set=dict(
                                     ip=dict(
-                                        address=dict(
-                                            prefix_list="prefixlist1"
-                                        ),
+                                        address=dict(prefix_list="prefixlist1"),
                                         precedence="critical",
-                                    )
+                                    ),
                                 ),
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -418,7 +403,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                       set ip precedence critical
                       set ipv6 address prefix-list prefixlist2
                       set ipv6 precedence immediate
-                    """
+                    """,
                 ),
                 state="parsed",
             ),
@@ -439,9 +424,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                         action="deny",
                         sequence=40,
                         description="rmap1-deny-40",
-                        set=dict(
-                            as_path=dict(prepend=dict(last_as=10), tag=True)
-                        ),
+                        set=dict(as_path=dict(prepend=dict(last_as=10), tag=True)),
                     ),
                 ],
             ),
@@ -462,7 +445,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 precedence="immediate",
                             ),
                         ),
-                    )
+                    ),
                 ],
             ),
         ]
@@ -489,7 +472,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
               set ip precedence critical
               set ipv6 address prefix-list prefixlist2
               set ipv6 precedence immediate
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
 
@@ -507,9 +490,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                         action="deny",
                         sequence=40,
                         description="rmap1-deny-40",
-                        set=dict(
-                            as_path=dict(prepend=dict(last_as=10), tag=True)
-                        ),
+                        set=dict(as_path=dict(prepend=dict(last_as=10), tag=True)),
                     ),
                 ],
             ),
@@ -530,7 +511,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 precedence="immediate",
                             ),
                         ),
-                    )
+                    ),
                 ],
             ),
         ]
@@ -572,13 +553,11 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 action="deny",
                                 set=dict(
                                     ip=dict(
-                                        address=dict(
-                                            prefix_list="prefixlist1"
-                                        ),
+                                        address=dict(prefix_list="prefixlist1"),
                                         precedence="critical",
-                                    )
+                                    ),
                                 ),
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -621,7 +600,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
               description rmap3-permit-21
             route-map rmap3 permit 22
               description rmap3-permit-21
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -641,11 +620,9 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 description="rmap1-deny-40",
                                 set=dict(
                                     ipv6=dict(
-                                        address=dict(
-                                            prefix_list="prefixlist2"
-                                        ),
+                                        address=dict(prefix_list="prefixlist2"),
                                         precedence="immediate",
-                                    )
+                                    ),
                                 ),
                             ),
                         ],
@@ -658,7 +635,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 action="permit",
                                 description="rmap2-permit-10",
                                 set=dict(null_interface="null0"),
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -699,7 +676,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
               description rmap3-permit-21
             route-map rmap3 permit 22
               description rmap3-permit-21
-            """
+            """,
         )
         set_module_args(
             dict(config=[dict(route_map="rmap1")], state="deleted"),
@@ -732,7 +709,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
               description rmap3-permit-21
             route-map rmap3 permit 22
               description rmap3-permit-21
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = [
@@ -750,7 +727,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
         # test merged for complex attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -767,15 +744,13 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                         as_path_list=["acl1", "acl2"],
                                     ),
                                     as_path=["65565", "65578", "65590"],
-                                    community=dict(
-                                        community_list=["comm1", "comm2"]
-                                    ),
+                                    community=dict(community_list=["comm1", "comm2"]),
                                     evpn=dict(route_types=["1", "2-mac-ip"]),
                                     extcommunity=dict(
                                         extcommunity_list=[
                                             "extcomm1",
                                             "extcomm2",
-                                        ]
+                                        ],
                                     ),
                                     interfaces=["Ethernet1/1", "Ethernet1/2"],
                                     ip=dict(
@@ -791,12 +766,8 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                             ),
                                             source="192.168.1.0/24",
                                         ),
-                                        next_hop=dict(
-                                            prefix_lists=["pl1", "pl2"]
-                                        ),
-                                        route_source=dict(
-                                            prefix_lists=["pl3", "pl4"]
-                                        ),
+                                        next_hop=dict(prefix_lists=["pl1", "pl2"]),
+                                        route_source=dict(prefix_lists=["pl3", "pl4"]),
                                     ),
                                     mac_list=["mac1", "mac2"],
                                     metric=[100, 200],
@@ -823,41 +794,29 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                             ),
                                             source="192.168.1.0/24",
                                         ),
-                                        next_hop=dict(
-                                            prefix_lists=["pl1", "pl2"]
-                                        ),
-                                        route_source=dict(
-                                            prefix_lists=["pl3", "pl4"]
-                                        ),
-                                    )
+                                        next_hop=dict(prefix_lists=["pl1", "pl2"]),
+                                        route_source=dict(prefix_lists=["pl3", "pl4"]),
+                                    ),
                                 ),
                             ),
                             dict(
                                 sequence=40,
                                 action="permit",
                                 set=dict(
-                                    as_path=dict(
-                                        prepend=dict(
-                                            as_number=["65546", "78878"]
-                                        )
-                                    ),
+                                    as_path=dict(prepend=dict(as_number=["65546", "78878"])),
                                     distance=dict(
                                         igp_ebgp_routes=10,
                                         internal_routes=20,
                                         local_routes=90,
                                     ),
-                                    evpn=dict(
-                                        gateway_ip=dict(ip="192.168.1.1")
-                                    ),
+                                    evpn=dict(gateway_ip=dict(ip="192.168.1.1")),
                                 ),
                             ),
                             dict(
                                 sequence=52,
                                 action="permit",
                                 set=dict(
-                                    evpn=dict(
-                                        gateway_ip=dict(use_nexthop=True)
-                                    ),
+                                    evpn=dict(gateway_ip=dict(use_nexthop=True)),
                                     community=dict(
                                         internet=True,
                                         number=["655:10", "655:20"],
@@ -870,7 +829,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 ),
                             ),
                         ],
-                    )
+                    ),
                 ],
                 state="merged",
             ),
@@ -917,7 +876,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
         # test merged for complex attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -940,7 +899,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                                 rp_type="Bidir",
                                             ),
                                             source="192.168.1.0/24",
-                                        )
+                                        ),
                                     ),
                                     ipv6=dict(
                                         multicast=dict(
@@ -953,7 +912,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                                 rp_type="Bidir",
                                             ),
                                             source="2001:db8:2000::/36",
-                                        )
+                                        ),
                                     ),
                                 ),
                                 set=dict(
@@ -962,11 +921,11 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                         igrp_delay_metric=90,
                                         igrp_reliability_metric=80,
                                         igrp_effective_bandwidth_metric=100,
-                                    )
+                                    ),
                                 ),
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="merged",
             ),
@@ -989,7 +948,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
               match ip address prefix-list pl1 pl2 pl3
               match ip multicast source 192.168.1.0/24 group-range 239.0.0.1 to 239.255.255.255 rp 209.165.201.0/27 rp-type Bidir
               match ipv6 multicast source 2001:db8:2000::/36 group-range fd00:80:: to fd00:ff:ffff:ffff:: rp fd00:280::/25 rp-type Bidir
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1023,12 +982,12 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                                 rp_type="Bidir",
                                             ),
                                             source="2001:db8:2000::/36",
-                                        )
+                                        ),
                                     ),
                                 ),
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="replaced",
             ),
@@ -1048,7 +1007,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
         # test gathered for empty config
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
 

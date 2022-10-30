@@ -1,14 +1,13 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_ntp_options sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_ntp_options sanity test
 
-- name: Apply default ntp config
+- name: Apply default ntp configuration
   ignore_errors: true
   cisco.nxos.nxos_ntp_options: &id007
     state: absent
 
 - block:
-
     - name: Configure ntp with master and default stratum
       register: result
       cisco.nxos.nxos_ntp_options: &id001
@@ -16,15 +15,15 @@
         logging: true
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Check Idempotence - Configure ntp with master and default stratum
+    - name: Check idempotence - configure ntp with master and default stratum
       register: result
       cisco.nxos.nxos_ntp_options: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -35,13 +34,13 @@
         stratum: 10
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure ntp with master and non-default stratum
+    - name: Check idempotence - configure ntp with master and non-default stratum
       register: result
       cisco.nxos.nxos_ntp_options: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure ntp with master and no logging
       register: result
@@ -51,13 +50,13 @@
         logging: false
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure ntp with master and no logging
+    - name: Check idempotence - configure ntp with master and no logging
       register: result
       cisco.nxos.nxos_ntp_options: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure ntp with logging and no master
       register: result
@@ -66,36 +65,35 @@
         logging: true
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Configure ntp with logging and no master
+    - name: Check idempotence - configure ntp with logging and no master
       register: result
       cisco.nxos.nxos_ntp_options: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure ntp with master and non-default stratum again
       register: result
       cisco.nxos.nxos_ntp_options: *id003
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Remove ntp options
       register: result
       cisco.nxos.nxos_ntp_options: *id007
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Check Idempotence - Remove
+    - name: Check idempotence - remove
       register: result
       cisco.nxos.nxos_ntp_options: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-
-    - name: Cleanup ntp config
+    - name: Cleanup ntp configuration
       register: result
       cisco.nxos.nxos_ntp_options: *id007
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_ntp_options sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_ntp_options sanity test

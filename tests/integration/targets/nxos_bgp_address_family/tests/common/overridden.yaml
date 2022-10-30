@@ -1,10 +1,10 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_bgp_address_family overridden integration tests connection={{ ansible_connection}}
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
     - name: Override all BGP AF configuration with provided configuration
@@ -19,8 +19,8 @@
                   route_map: rmap1
               aggregate_address:
                 - prefix: 203.0.113.0/24
-                  as_set: True
-                  summary_only: True
+                  as_set: true
+                  summary_only: true
             - afi: ipv4
               safi: unicast
               vrf: site-1
@@ -28,35 +28,30 @@
       register: result
 
     - name: Assert that before dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ merged['after']['address_family'] | symmetric_difference(result['before']['address_family']) |length\
-            \ == 0 }}"
+          - "{{ merged['after']['address_family'] | symmetric_difference(result['before']['address_family']) |length == 0 }}"
 
     - name: Assert that correct set of commands were generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands'])\
-            \ |length == 0 }}"
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
 
     - name: Assert that after dicts were correctly generated
-      assert:
+      ansible.builtin.assert:
         that:
-          - "{{ overridden['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length\
-            \ == 0 }}"
+          - "{{ overridden['after']['address_family'] | symmetric_difference(result['after']['address_family']) |length == 0 }}"
           - overridden['after']['as_number'] == result['after']['as_number']
 
-    - name:
-        Replace device configurations of listed OSPF processes with provided configurarions
-        (IDEMPOTENT)
+    - name: Replace device configurations of listed OSPF processes with provided configurarions (idempotent)
       register: result
       cisco.nxos.nxos_bgp_address_family: *overridden
 
     - name: Assert that task was idempotent
-      assert:
+      ansible.builtin.assert:
         that:
           - result['changed'] == false
           - result.commands|length == 0
 
   always:
-    - include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

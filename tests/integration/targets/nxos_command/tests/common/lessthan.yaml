@@ -1,7 +1,8 @@
 ---
-- debug: msg="START common/lessthan.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START common/lessthan.yaml on connection={{ ansible_connection }}
 
-- name: test lt operator
+- name: Test 'lt' operator
   register: result
   cisco.nxos.nxos_command:
     commands:
@@ -10,11 +11,11 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.eth_ip_mask lt 33
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: test < operator
+- name: Test < operator
   register: result
   cisco.nxos.nxos_command:
     commands:
@@ -23,8 +24,9 @@
     wait_for:
       - result[1].TABLE_interface.ROW_interface.eth_ip_mask lt 33
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- debug: msg="END common/lessthan.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END common/lessthan.yaml on connection={{ ansible_connection }}

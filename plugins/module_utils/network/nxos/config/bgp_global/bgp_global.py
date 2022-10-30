@@ -7,6 +7,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,15 +21,14 @@ created.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_merge,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
     ResourceModule,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    dict_merge,
 )
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_global import (
     Bgp_globalTemplate,
 )
@@ -99,7 +99,7 @@ class Bgp_global(ResourceModule):
         self._af_data = {}
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -110,8 +110,8 @@ class Bgp_global(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
         # we fail early if state is merged or
         # replaced and want ASN != have ASN
@@ -123,7 +123,7 @@ class Bgp_global(ResourceModule):
                 self._module.fail_json(
                     msg="BGP is already configured with ASN {0}. "
                     "Please remove it with state purged before "
-                    "configuring new ASN".format(h_asn)
+                    "configuring new ASN".format(h_asn),
                 )
 
         if self.state in ["deleted", "replaced"]:
@@ -134,15 +134,11 @@ class Bgp_global(ResourceModule):
 
         # if state is deleted, clean up global params
         if self.state == "deleted":
-            if not self.want or (
-                self.have.get("as_number") == self.want.get("as_number")
-            ):
+            if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
                 self._compare(want={}, have=self.have)
 
         elif self.state == "purged":
-            if not self.want or (
-                self.have.get("as_number") == self.want.get("as_number")
-            ):
+            if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
                 self.addcmd(self.have or {}, "as_number", True)
 
         else:
@@ -155,9 +151,9 @@ class Bgp_global(ResourceModule):
 
     def _compare(self, want, have, vrf=None):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Bgp_global network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Bgp_global network resource.
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
@@ -170,9 +166,7 @@ class Bgp_global(ResourceModule):
                 begin,
                 self._tmplt.render(
                     want or have,
-                    "vrf"
-                    if "vrf" in (want.keys() or have.keys())
-                    else "as_number",
+                    "vrf" if "vrf" in (want.keys() or have.keys()) else "as_number",
                     False,
                 ),
             )
@@ -243,9 +237,7 @@ class Bgp_global(ResourceModule):
             self._compare_path_attribute(entry, have_nbr)
 
             if len(self.commands) != begin:
-                self.commands.insert(
-                    begin, self._tmplt.render(entry, "neighbor_address", False)
-                )
+                self.commands.insert(begin, self._tmplt.render(entry, "neighbor_address", False))
 
         # cleanup remaining neighbors
         # but do not negate it entirely
@@ -256,8 +248,8 @@ class Bgp_global(ResourceModule):
                 self._module.fail_json(
                     msg="Neighbor {0} has address-family configurations. "
                     "Please use the nxos_bgp_neighbor_af module to remove those first.".format(
-                        name
-                    )
+                        name,
+                    ),
                 )
             else:
                 self.addcmd(entry, "neighbor_address", True)
@@ -298,9 +290,7 @@ class Bgp_global(ResourceModule):
             if self._has_af(vrf=name):
                 self._module.fail_json(
                     msg="VRF {0} has address-family configurations. "
-                    "Please use the nxos_bgp_af module to remove those first.".format(
-                        name
-                    )
+                    "Please use the nxos_bgp_af module to remove those first.".format(name),
                 )
             else:
                 self.addcmd(entry, "vrf", True)
@@ -329,13 +319,10 @@ class Bgp_global(ResourceModule):
             for x in entry["neighbors"]:
                 if "path_attribute" in x:
                     x["path_attribute"] = {
-                        _build_key(item): item
-                        for item in x.get("path_attribute", [])
+                        _build_key(item): item for item in x.get("path_attribute", [])
                     }
 
-            entry["neighbors"] = {
-                x["neighbor_address"]: x for x in entry.get("neighbors", [])
-            }
+            entry["neighbors"] = {x["neighbor_address"]: x for x in entry.get("neighbors", [])}
 
         if "vrfs" in entry:
             entry["vrfs"] = {x["vrf"]: x for x in entry.get("vrfs", [])}
@@ -343,26 +330,24 @@ class Bgp_global(ResourceModule):
                 self._bgp_list_to_dict(vrf)
 
     def _get_config(self):
-        return self._connection.get(
-            "show running-config | section '^router bgp'"
-        )
+        return self._connection.get("show running-config | section '^router bgp'")
 
     def _build_af_data(self):
         """Build a dictionary with AF related information
-           from fetched BGP config.
-            _af_data = {
-                gbl_data = {'192.168.1.100', '192.168.1.101'},
-                vrf_data = {
-                    'vrf_1': {
-                        'has_af': True,
-                        'nbrs': {'192.0.1.1', '192.8.1.1'}
-                    },
-                    'vrf_2': {
-                        'has_af': False,
-                        'nbrs': set()
-                    }
-                }
-            }
+        from fetched BGP config.
+         _af_data = {
+             gbl_data = {'192.168.1.100', '192.168.1.101'},
+             vrf_data = {
+                 'vrf_1': {
+                     'has_af': True,
+                     'nbrs': {'192.0.1.1', '192.8.1.1'}
+                 },
+                 'vrf_2': {
+                     'has_af': False,
+                     'nbrs': set()
+                 }
+             }
+         }
         """
         data = self._get_config().split("\n")
         cur_nbr = None

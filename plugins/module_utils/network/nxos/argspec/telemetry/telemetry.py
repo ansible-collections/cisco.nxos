@@ -27,12 +27,12 @@ The arg spec for the nxos_telemetry module
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 class TelemetryArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_telemetry module
-    """
+    """The arg spec for the nxos_telemetry module"""
 
     argument_spec = {
         "config": {
@@ -64,7 +64,7 @@ class TelemetryArgs(object):  # pylint: disable=R0903
                             },
                             "type": "dict",
                         },
-                        "id": {"type": "int"},
+                        "id": {"type": "str"},
                     },
                     "type": "list",
                     "elements": "raw",
@@ -75,7 +75,7 @@ class TelemetryArgs(object):  # pylint: disable=R0903
                             "choices": ["NX-API", "DME", "YANG"],
                             "type": "str",
                         },
-                        "id": {"type": "int"},
+                        "id": {"type": "str"},
                         "path": {
                             "options": {
                                 "depth": {"type": "str"},
@@ -91,11 +91,11 @@ class TelemetryArgs(object):  # pylint: disable=R0903
                 },
                 "subscriptions": {
                     "options": {
-                        "destination_group": {"type": "int"},
-                        "id": {"type": "int"},
+                        "destination_group": {"type": "str"},
+                        "id": {"type": "str"},
                         "sensor_group": {
                             "options": {
-                                "id": {"type": "int"},
+                                "id": {"type": "str"},
                                 "sample_interval": {"type": "int"},
                             },
                             "type": "dict",
@@ -108,7 +108,7 @@ class TelemetryArgs(object):  # pylint: disable=R0903
             "type": "dict",
         },
         "state": {
-            "choices": ["merged", "replaced", "deleted"],
+            "choices": ["merged", "replaced", "deleted", "gathered"],
             "default": "merged",
             "type": "str",
         },

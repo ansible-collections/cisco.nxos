@@ -1,5 +1,5 @@
 ---
-- name: Populate config
+- name: Populate configuration
   cisco.nxos.nxos_config:
     lines:
       - "ipv6 prefix-list AllowIPv6Prefix description allows engineering IPv6 networks"

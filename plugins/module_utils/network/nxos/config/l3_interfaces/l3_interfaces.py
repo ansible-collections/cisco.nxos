@@ -13,28 +13,27 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
 
 from copy import deepcopy
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
     remove_empties,
+    to_list,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    normalize_interface,
-    search_obj_in_list,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    remove_rsvd_interfaces,
     get_interface_type,
+    normalize_interface,
+    remove_rsvd_interfaces,
+    search_obj_in_list,
 )
 
 
@@ -53,7 +52,7 @@ class L3_interfaces(ConfigBase):
         super(L3_interfaces, self).__init__(module)
 
     def get_l3_interfaces_facts(self, data=None):
-        """ Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -62,12 +61,12 @@ class L3_interfaces(ConfigBase):
             self.gather_subset = ["!all", "!min"]
 
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
 
-        l3_interfaces_facts = facts["ansible_network_resources"].get(
-            "l3_interfaces"
-        )
+        l3_interfaces_facts = facts["ansible_network_resources"].get("l3_interfaces")
         self.platform = facts.get("ansible_net_platform", "")
 
         return l3_interfaces_facts
@@ -76,7 +75,7 @@ class L3_interfaces(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -111,11 +110,9 @@ class L3_interfaces(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
-            result["parsed"] = self.get_l3_interfaces_facts(
-                data=running_config
-            )
+            result["parsed"] = self.get_l3_interfaces_facts(data=running_config)
 
         if self.state in self.ACTION_STATES:
             result["before"] = existing_l3_interfaces_facts
@@ -129,7 +126,7 @@ class L3_interfaces(ConfigBase):
         return result
 
     def set_config(self, existing_l3_interfaces_facts):
-        """ Collect the configuration from the args passed to the module,
+        """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
         :rtype: A list
@@ -148,7 +145,7 @@ class L3_interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """ Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -157,14 +154,9 @@ class L3_interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    state
-                )
+                msg="value of config parameter must not be empty for state {0}".format(state),
             )
 
         commands = []
@@ -181,7 +173,7 @@ class L3_interfaces(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """ The command generator when state is replaced
+        """The command generator when state is replaced
         Scope is limited to interface objects defined in the playbook.
 
         :rtype: A list
@@ -196,21 +188,15 @@ class L3_interfaces(ConfigBase):
         have_v6 = obj_in_have.pop("ipv6", []) if obj_in_have else []
 
         # Process lists of dicts separately
-        v4_cmds = self._v4_cmds(
-            want.pop("ipv4", []), have_v4, state="replaced"
-        )
-        v6_cmds = self._v6_cmds(
-            want.pop("ipv6", []), have_v6, state="replaced"
-        )
+        v4_cmds = self._v4_cmds(want.pop("ipv4", []), have_v4, state="replaced")
+        v6_cmds = self._v6_cmds(want.pop("ipv6", []), have_v6, state="replaced")
 
         # Process remaining attrs
         if obj_in_have:
             # Find 'want' changes first
             diff = self.diff_of_dicts(want, obj_in_have)
             rmv = {"name": name}
-            haves_not_in_want = (
-                set(obj_in_have.keys()) - set(want.keys()) - set(diff.keys())
-            )
+            haves_not_in_want = set(obj_in_have.keys()) - set(want.keys()) - set(diff.keys())
             for i in haves_not_in_want:
                 rmv[i] = obj_in_have[i]
             cmds.extend(self.generate_delete_commands(rmv))
@@ -224,7 +210,7 @@ class L3_interfaces(ConfigBase):
         return cmds
 
     def _state_overridden(self, want, have):
-        """ The command generator when state is overridden
+        """The command generator when state is overridden
         Scope includes all interface objects on the device.
 
         :rtype: A list
@@ -259,7 +245,7 @@ class L3_interfaces(ConfigBase):
         return cmds
 
     def _state_merged(self, w, have):
-        """ The command generator when state is merged
+        """The command generator when state is merged
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -310,9 +296,7 @@ class L3_interfaces(ConfigBase):
         sec_to_rmv = []
         sec_diff = self.diff_list_of_dicts(sec_h, sec_w)
         for i in sec_diff:
-            if overridden or [
-                w for w in sec_w if w["address"] == i["address"]
-            ]:
+            if overridden or [w for w in sec_w if w["address"] == i["address"]]:
                 sec_to_rmv.append(i["address"])
 
         # Check if new primary is currently a secondary
@@ -380,7 +364,7 @@ class L3_interfaces(ConfigBase):
         return cmds
 
     def _state_deleted(self, want, have):
-        """ The command generator when state is deleted
+        """The command generator when state is deleted
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -416,11 +400,20 @@ class L3_interfaces(ConfigBase):
             commands.append("no encapsulation dot1q")
         if "redirects" in obj:
             if not self.check_existing(name, "has_secondary") or re.match(
-                "N[35679]", self.platform
+                "N[35679]",
+                self.platform,
             ):
                 # device auto-enables redirects when secondaries are removed;
                 # auto-enable may fail on legacy platforms so always do explicit enable
                 commands.append("ip redirects")
+        if "ipv6_redirects" in obj:
+            if not self.check_existing(name, "has_secondary") or re.match(
+                "N[35679]",
+                self.platform,
+            ):
+                # device auto-enables redirects when secondaries are removed;
+                # auto-enable may fail on legacy platforms so always do explicit enable
+                commands.append("ipv6 redirects")
         if "unreachables" in obj:
             commands.append("no ip unreachables")
         if "ipv4" in obj:
@@ -430,15 +423,12 @@ class L3_interfaces(ConfigBase):
         if "evpn_multisite_tracking" in obj:
             have = self.existing_facts.get(name, {})
             if have.get("evpn_multisite_tracking", False) is not False:
-                cmd = "no evpn multisite %s" % have.get(
-                    "evpn_multisite_tracking"
-                )
+                cmd = "no evpn multisite %s" % have.get("evpn_multisite_tracking")
                 commands.append(cmd)
         return commands
 
     def init_check_existing(self, have):
-        """Creates a class var dict for easier access to existing states
-        """
+        """Creates a class var dict for easier access to existing states"""
         self.existing_facts = dict()
         have_copy = deepcopy(have)
         for intf in have_copy:
@@ -491,16 +481,18 @@ class L3_interfaces(ConfigBase):
                 no_cmd = "no " if diff["redirects"] is False else ""
                 commands.append(no_cmd + "ip redirects")
                 self.cmd_order_fixup(commands, name)
+        if "ipv6_redirects" in diff:
+            # Note: device will auto-disable redirects when secondaries are present
+            if diff["ipv6_redirects"] != self.check_existing(name, "ipv6_redirects"):
+                no_cmd = "no " if diff["ipv6_redirects"] is False else ""
+                commands.append(no_cmd + "ipv6 redirects")
+                self.cmd_order_fixup(commands, name)
         if "unreachables" in diff:
-            if diff["unreachables"] != self.check_existing(
-                name, "unreachables"
-            ):
+            if diff["unreachables"] != self.check_existing(name, "unreachables"):
                 no_cmd = "no " if diff["unreachables"] is False else ""
                 commands.append(no_cmd + "ip unreachables")
         if "evpn_multisite_tracking" in diff:
-            commands.append(
-                "evpn multisite " + str(diff["evpn_multisite_tracking"])
-            )
+            commands.append("evpn multisite " + str(diff["evpn_multisite_tracking"]))
         if "ipv4" in diff:
             commands.extend(self.generate_afi_commands(diff["ipv4"]))
         if "ipv6" in diff:
@@ -512,11 +504,7 @@ class L3_interfaces(ConfigBase):
     def generate_afi_commands(self, diff):
         cmds = []
         for i in diff:
-            cmd = (
-                "ipv6 address "
-                if re.search("::", i["address"])
-                else "ip address "
-            )
+            cmd = "ipv6 address " if re.search("::", i["address"]) else "ip address "
             cmd += i["address"]
             if i.get("secondary"):
                 cmd += " secondary"
@@ -533,12 +521,8 @@ class L3_interfaces(ConfigBase):
             commands = self.add_commands(w, name=name)
         else:
             # lists of dicts must be processed separately from non-list attrs
-            v4_cmds = self._v4_cmds(
-                w.pop("ipv4", []), obj_in_have.pop("ipv4", []), state="merged"
-            )
-            v6_cmds = self._v6_cmds(
-                w.pop("ipv6", []), obj_in_have.pop("ipv6", []), state="merged"
-            )
+            v4_cmds = self._v4_cmds(w.pop("ipv4", []), obj_in_have.pop("ipv4", []), state="merged")
+            v6_cmds = self._v6_cmds(w.pop("ipv6", []), obj_in_have.pop("ipv6", []), state="merged")
 
             # diff remaining attrs
             diff = self.diff_of_dicts(w, obj_in_have)
@@ -550,17 +534,12 @@ class L3_interfaces(ConfigBase):
         return commands
 
     def cmd_order_fixup(self, cmds, name):
-        """Inserts 'interface <name>' config at the beginning of populated command list; reorders dependent commands that must process after others.
-        """
+        """Inserts 'interface <name>' config at the beginning of populated command list; reorders dependent commands that must process after others."""
         if cmds:
-            if name and not [
-                item for item in cmds if item.startswith("interface")
-            ]:
+            if name and not [item for item in cmds if item.startswith("interface")]:
                 cmds.insert(0, "interface " + name)
 
-            redirects = [
-                item for item in cmds if re.match("(no )*ip redirects", item)
-            ]
+            redirects = [item for item in cmds if re.match("(no )*ip(v6)* redirects", item)]
             if redirects:
                 # redirects should occur after ipv4 commands, just move to end of list
                 redirects = redirects.pop()

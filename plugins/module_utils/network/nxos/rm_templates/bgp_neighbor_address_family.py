@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,6 +16,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
     NetworkTemplate,
 )
@@ -34,9 +36,7 @@ def _tmplt_maximum_prefix(data):
 
 class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None):
-        super(Bgp_neighbor_address_familyTemplate, self).__init__(
-            lines=lines, tmplt=self
-        )
+        super(Bgp_neighbor_address_familyTemplate, self).__init__(lines=lines, tmplt=self)
 
     # fmt: off
     PARSERS = [
@@ -45,13 +45,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^router\sbgp\s(?P<as_number>\S+)
-                $""", re.VERBOSE
+                $""", re.VERBOSE,
             ),
             "setval": "router bgp {{ as_number }}",
             "result": {
                 "as_number": "{{ as_number }}",
             },
-            "shared": True
+            "shared": True,
         },
         {
             "name": "address_family",
@@ -77,12 +77,12 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                     '{{ afi + "_" + safi|d() }}': {
                                         "afi": "{{ afi }}",
                                         "safi": "{{ safi }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             },
             "shared": True,
         },
@@ -108,14 +108,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                         "advertise_map": {
                                             "route_map": "{{ route_map }}",
                                             "exist_map": "{{ exist_map }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "advertise_map.non_exist_map",
@@ -139,14 +139,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                         "advertise_map": {
                                             "route_map": "{{ route_map }}",
                                             "non_exist_map": "{{ non_exist_map }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "advertisement_interval",
@@ -167,13 +167,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "advertisement_interval": "{{ advertisement_interval }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "allowas_in",
@@ -196,14 +196,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                         "allowas_in": {
                                             "set": "{{ True if allowas_in is defined and max_occurences is undefined }}",
                                             "max_occurences": "{{ max_occurences }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "as_override",
@@ -223,13 +223,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "as_override": "{{ not not as_override }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "capability.additional_paths.receive",
@@ -253,15 +253,15 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                         "capability": {
                                             "additional_paths": {
                                                 "receive": "{{ 'disable' if disable is defined else 'enable' }}",
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "capability.additional_paths.send",
@@ -286,14 +286,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                             "additional_paths": {
                                                 "send": "{{ 'disable' if disable is defined else 'enable' }}",
                                             },
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "default_originate",
@@ -316,14 +316,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                         "default_originate": {
                                             "set": "{{ True if default_originate is defined and route_map is not defined }}",
                                             "route_map": "{{ route_map }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "disable_peer_as_check",
@@ -343,13 +343,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "disable_peer_as_check": "{{ not not disable_peer_as_check }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "filter_list.inbound",
@@ -371,14 +371,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                     '{{ afi + "_" + safi|d() }}': {
                                         "filter_list": {
                                             "inbound": "{{ in }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "filter_list.outbound",
@@ -400,14 +400,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                     '{{ afi + "_" + safi|d() }}': {
                                         "filter_list": {
                                             "outbound": "{{ out }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "inherit",
@@ -431,14 +431,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                         "inherit": {
                                             "template": "{{ template }}",
                                             "sequence": "{{ sequence }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "maximum_prefix",
@@ -466,14 +466,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                             "generate_warning_threshold": "{{ generate_warning_threshold }}",
                                             "restart_interval": "{{ restart_interval }}",
                                             "warning_only": "{{ not not warning_only }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "next_hop_self",
@@ -496,14 +496,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                         "next_hop_self": {
                                             "set": "{{ True if next_hop_self is defined and all_routes is not defined }}",
                                             "all_routes": "{{ not not all_routes }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "next_hop_third_party",
@@ -523,13 +523,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "next_hop_third_party": "{{ not next_hop_third_party }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "prefix_list.inbound",
@@ -551,14 +551,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                     '{{ afi + "_" + safi|d() }}': {
                                         "prefix_list": {
                                             "inbound": "{{ in }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "prefix_list.outbound",
@@ -580,14 +580,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                     '{{ afi + "_" + safi|d() }}': {
                                         "prefix_list": {
                                             "outbound": "{{ out }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "rewrite_evpn_rt_asn",
@@ -607,13 +607,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "rewrite_evpn_rt_asn": "{{ not not rewrite_evpn_rt_asn }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "route_map.inbound",
@@ -635,14 +635,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                     '{{ afi + "_" + safi|d() }}': {
                                         "route_map": {
                                             "inbound": "{{ in }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "route_map.outbound",
@@ -664,14 +664,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                     '{{ afi + "_" + safi|d() }}': {
                                         "route_map": {
                                             "outbound": "{{ out }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "route_reflector_client",
@@ -691,13 +691,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "route_reflector_client": "{{ not not route_reflector_client }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "send_community.standard",
@@ -718,14 +718,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                     '{{ afi + "_" + safi|d() }}': {
                                         "send_community": {
                                             "standard": "{{ True if send_community is defined }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "send_community.extended",
@@ -747,14 +747,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                     '{{ afi + "_" + safi|d() }}': {
                                         "send_community": {
                                             "extended": "{{ True if extended is defined }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "soft_reconfiguration_inbound",
@@ -777,14 +777,14 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                         "soft_reconfiguration_inbound": {
                                             "set": "{{ True if soft_reconfiguration_inbound is defined and always is undefined }}",
                                             "always": "{{ not not always }}",
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "soo",
@@ -804,13 +804,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "soo": "{{ soo }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "suppress_inactive",
@@ -830,13 +830,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "suppress_inactive": "{{ not not suppress_inactive }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "unsuppress_map",
@@ -856,13 +856,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "unsuppress_map": "{{ unsuppress_map }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "weight",
@@ -882,13 +882,13 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                                 "address_family": {
                                     '{{ afi + "_" + safi|d() }}': {
                                         "weight": "{{ weight }}",
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
     ]
     # fmt: on

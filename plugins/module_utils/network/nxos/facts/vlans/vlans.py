@@ -12,27 +12,27 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-import re
 import ast
+import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     parse_conf_arg,
     parse_conf_cmd_arg,
 )
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vlans.vlans import (
     VlansArgs,
 )
 
 
 class VlansFacts(object):
-    """ The nxos vlans fact class
-    """
+    """The nxos vlans fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -55,7 +55,7 @@ class VlansFacts(object):
         return connection.get(show_cmd)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for vlans
+        """Populate the facts for vlans
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
@@ -72,12 +72,16 @@ class VlansFacts(object):
         if not data:
             # Use structured for most of the vlan parameter states.
             # This data is consistent across the supported nxos platforms.
-            structured = self.get_device_data(connection, "show vlan | json")
+            try:
+                # Not all devices support | json-pretty but is a workaround for
+                # libssh issue https://github.com/ansible/pylibssh/issues/208
+                structured = self.get_device_data(connection, "show vlan | json-pretty")
+            except Exception:
+                # When json-pretty is not supported, we fall back to | json
+                structured = self.get_device_data(connection, "show vlan | json")
 
             # Raw cli config is needed for mapped_vni, which is not included in structured.
-            run_cfg_output = self.get_device_data(
-                connection, "show running-config | section ^vlan"
-            )
+            run_cfg_output = self.get_device_data(connection, "show running-config | section ^vlan")
         else:
             running_config = data.split("\n\n")
             structured, run_cfg_output = running_config[0], running_config[1]
@@ -94,9 +98,7 @@ class VlansFacts(object):
         facts = {}
         if objs:
             facts["vlans"] = []
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["vlans"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
@@ -126,9 +128,7 @@ class VlansFacts(object):
         obj["mode"] = vlan["vlanshowinfo-vlanmode"].replace("-vlan", "")
 
         # enabled: shutdown, noshutdown
-        obj["enabled"] = (
-            True if "noshutdown" in vlan["vlanshowbr-shutstate"] else False
-        )
+        obj["enabled"] = True if "noshutdown" in vlan["vlanshowbr-shutstate"] else False
 
         # state: active, suspend
         obj["state"] = vlan["vlanshowbr-vlanstate"]
@@ -184,9 +184,15 @@ class VlansFacts(object):
             vlan.update(v)
             vlan.update(mtuinfo[index])
 
-            run_cfg = [
-                i for i in run_cfg_list if "%s\n" % v["vlan_id"] in i
-            ] or [""]
-            vlan["run_cfg"] = run_cfg.pop()
+            vlan["run_cfg"] = ""
+            for item in run_cfg_list:
+                # Sample match lines
+                # 202\n  name Production-Segment-100101\n  vn-segment 100101
+                # 5\n  state suspend\n  shutdown\n  name test-changeme\n  vn-segment 942
+                pattern = r"^{0}\s+\S.*vn-segment".format(v["vlan_id"])
+                if re.search(pattern, item, flags=re.DOTALL):
+                    vlan["run_cfg"] = item
+                    break
+
             vlans.append(vlan)
         return vlans

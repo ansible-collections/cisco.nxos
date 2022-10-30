@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -32,6 +33,7 @@ version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - C(state=absent) is currently not supported on all platforms.
 options:
   rp_address:
@@ -82,16 +84,14 @@ commands:
 
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
 )
 
 
@@ -145,9 +145,7 @@ def state_present(module, existing, proposed, candidate):
 def build_command(param_dict, command):
     for param in ["group_list", "prefix_list", "route_map"]:
         if param_dict.get(param):
-            command += " {0} {1}".format(
-                param.replace("_", "-"), param_dict.get(param)
-            )
+            command += " {0} {1}".format(param.replace("_", "-"), param_dict.get(param))
     if param_dict.get("bidir"):
         command += " bidir"
     return [command]
@@ -190,11 +188,8 @@ def main():
         prefix_list=dict(required=False, type="str"),
         route_map=dict(required=False, type="str"),
         bidir=dict(required=False, type="bool"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
     )
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -213,9 +208,7 @@ def main():
 
     args = ["rp_address", "group_list", "prefix_list", "route_map", "bidir"]
 
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
 
     if module.params["group_list"]:
         existing = get_existing(module, args, True)

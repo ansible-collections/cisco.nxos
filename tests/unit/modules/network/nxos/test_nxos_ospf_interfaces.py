@@ -19,16 +19,17 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_ospf_interfaces
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -49,14 +50,12 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
         super(TestNxosOspfInterfacesModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospf_interfaces.ospf_interfaces.Ospf_interfacesFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospf_interfaces.ospf_interfaces.Ospf_interfacesFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -80,7 +79,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -94,7 +93,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     dict(
                                         process_id="102",
                                         area=dict(area_id="1.1.1.2"),
-                                    )
+                                    ),
                                 ],
                             ),
                             dict(
@@ -103,7 +102,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     dict(
                                         process_id="200",
                                         area=dict(area_id="2.2.2.8"),
-                                    )
+                                    ),
                                 ],
                             ),
                         ],
@@ -117,9 +116,9 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     dict(
                                         process_id="101",
                                         area=dict(area_id="2.2.2.3"),
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -134,9 +133,9 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                             area_id="2.2.2.3",
                                             secondaries="False",
                                         ),
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -171,7 +170,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -185,9 +184,9 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     dict(
                                         process_id="200",
                                         area=dict(area_id="2.2.2.8"),
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -199,9 +198,9 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     dict(
                                         process_id="102",
                                         area=dict(area_id="1.1.1.2"),
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -238,7 +237,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -258,7 +257,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                         multi_areas=["3.3.3.3", "4.4.4.4"],
                                     ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -270,9 +269,9 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     dict(
                                         process_id="109",
                                         multi_areas=["5.5.5.5", "5.5.5.6"],
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -312,7 +311,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -336,7 +335,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                         multi_areas=["3.3.3.3", "4.4.4.4"],
                                     ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -348,9 +347,9 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     dict(
                                         process_id="109",
                                         multi_areas=["5.5.5.6"],
-                                    )
+                                    ),
                                 ],
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -392,7 +391,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -400,19 +399,13 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                     dict(
                         name="Ethernet1/1",
                         address_family=[
-                            dict(
-                                afi="ipv4", multi_areas=["1.1.1.1", "1.1.1.3"]
-                            ),
-                            dict(
-                                afi="ipv6", multi_areas=["3.3.3.3", "4.4.4.4"]
-                            ),
+                            dict(afi="ipv4", multi_areas=["1.1.1.1", "1.1.1.3"]),
+                            dict(afi="ipv6", multi_areas=["3.3.3.3", "4.4.4.4"]),
                         ],
                     ),
                     dict(
                         name="Ethernet1/2",
-                        address_family=[
-                            dict(afi="ipv6", multi_areas=["5.5.5.6"])
-                        ],
+                        address_family=[dict(afi="ipv6", multi_areas=["5.5.5.6"])],
                     ),
                 ],
                 state="merged",
@@ -447,7 +440,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -455,12 +448,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                     dict(
                         name="Ethernet1/1",
                         address_family=[
-                            dict(
-                                afi="ipv4", multi_areas=["1.1.1.1", "1.1.1.3"]
-                            ),
-                            dict(
-                                afi="ipv6", multi_areas=["3.3.3.3", "4.4.4.4"]
-                            ),
+                            dict(afi="ipv4", multi_areas=["1.1.1.1", "1.1.1.3"]),
+                            dict(afi="ipv6", multi_areas=["3.3.3.3", "4.4.4.4"]),
                         ],
                     ),
                     dict(name="Ethernet1/2"),
@@ -498,7 +487,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             interface Ethernet1/4
               no switchport
               ip ospf authentication
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -508,31 +497,21 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         address_family=[
                             dict(
                                 afi="ipv4",
-                                authentication=dict(
-                                    key_chain="test-1", message_digest=True
-                                ),
-                            )
+                                authentication=dict(key_chain="test-1", message_digest=True),
+                            ),
                         ],
                     ),
                     dict(
                         name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4", authentication=dict(null_auth=True)
-                            )
-                        ],
+                        address_family=[dict(afi="ipv4", authentication=dict(null_auth=True))],
                     ),
                     dict(
                         name="Ethernet1/3",
-                        address_family=[
-                            dict(afi="ipv4", authentication=dict(enable=True))
-                        ],
+                        address_family=[dict(afi="ipv4", authentication=dict(enable=True))],
                     ),
                     dict(
                         name="Ethernet1/4",
-                        address_family=[
-                            dict(afi="ipv4", authentication=dict(enable=False))
-                        ],
+                        address_family=[dict(afi="ipv4", authentication=dict(enable=False))],
                     ),
                 ],
                 state="merged",
@@ -568,7 +547,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -576,17 +555,11 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                     dict(name="Ethernet1/1"),
                     dict(
                         name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4", authentication=dict(null_auth=True)
-                            )
-                        ],
+                        address_family=[dict(afi="ipv4", authentication=dict(null_auth=True))],
                     ),
                     dict(
                         name="Ethernet1/3",
-                        address_family=[
-                            dict(afi="ipv4", authentication=dict(enable=True))
-                        ],
+                        address_family=[dict(afi="ipv4", authentication=dict(enable=True))],
                     ),
                 ],
                 state="replaced",
@@ -619,7 +592,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -629,10 +602,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         address_family=[
                             dict(
                                 afi="ipv4",
-                                authentication_key=dict(
-                                    encryption=3, key="77840f9d4d882176"
-                                ),
-                            )
+                                authentication_key=dict(encryption=3, key="77840f9d4d882176"),
+                            ),
                         ],
                     ),
                     dict(
@@ -640,10 +611,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         address_family=[
                             dict(
                                 afi="ipv4",
-                                authentication_key=dict(
-                                    encryption=0, key="password"
-                                ),
-                            )
+                                authentication_key=dict(encryption=0, key="password"),
+                            ),
                         ],
                     ),
                     dict(
@@ -651,10 +620,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         address_family=[
                             dict(
                                 afi="ipv4",
-                                authentication_key=dict(
-                                    encryption=7, key="712090404011C031628"
-                                ),
-                            )
+                                authentication_key=dict(encryption=7, key="712090404011C031628"),
+                            ),
                         ],
                     ),
                 ],
@@ -688,7 +655,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               ip ospf authentication-key 7 712090404011C031628
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -699,10 +666,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         address_family=[
                             dict(
                                 afi="ipv4",
-                                authentication_key=dict(
-                                    encryption=0, key="password"
-                                ),
-                            )
+                                authentication_key=dict(encryption=0, key="password"),
+                            ),
                         ],
                     ),
                 ],
@@ -733,7 +698,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -748,7 +713,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     encryption=3,
                                     key="abc01d272be25d29",
                                 ),
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -756,10 +721,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         address_family=[
                             dict(
                                 afi="ipv4",
-                                message_digest_key=dict(
-                                    key_id=1, encryption=0, key="password"
-                                ),
-                            )
+                                message_digest_key=dict(key_id=1, encryption=0, key="password"),
+                            ),
                         ],
                     ),
                     dict(
@@ -772,7 +735,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     encryption=7,
                                     key="712090404011C031628",
                                 ),
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -806,7 +769,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -817,10 +780,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         address_family=[
                             dict(
                                 afi="ipv4",
-                                message_digest_key=dict(
-                                    key_id=1, encryption=0, key="password1"
-                                ),
-                            )
+                                message_digest_key=dict(key_id=1, encryption=0, key="password1"),
+                            ),
                         ],
                     ),
                 ],
@@ -857,7 +818,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -925,22 +886,18 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=[
                     dict(
                         name="Ethernet1/1",
-                        address_family=[
-                            dict(afi="ipv4", cost=200, hello_interval=9000)
-                        ],
+                        address_family=[dict(afi="ipv4", cost=200, hello_interval=9000)],
                     ),
                     dict(
                         name="Ethernet1/2",
-                        address_family=[
-                            dict(afi="ipv6", cost=180, dead_interval=3000)
-                        ],
+                        address_family=[dict(afi="ipv6", cost=180, dead_interval=3000)],
                     ),
                 ],
                 state="replaced",
@@ -980,7 +937,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1038,7 +995,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1090,7 +1047,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1113,7 +1070,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                 afi="ipv4",
                                 passive_interface=True,
                                 retransmit_interval=5000,
-                            )
+                            ),
                         ],
                     ),
                     dict(
@@ -1168,7 +1125,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               ospfv3 retransmit-interval 5100
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1217,7 +1174,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1225,9 +1182,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                     dict(
                         name="Ethernet1/1",
                         address_family=[
-                            dict(
-                                afi="ipv4", shutdown=False, transmit_delay=210
-                            ),
+                            dict(afi="ipv4", shutdown=False, transmit_delay=210),
                             dict(afi="ipv6", shutdown=True),
                         ],
                     ),
@@ -1241,12 +1196,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                     dict(
                         name="Ethernet1/3",
                         address_family=[
-                            dict(
-                                afi="ipv4", shutdown=True, transmit_delay=430
-                            ),
-                            dict(
-                                afi="ipv6", shutdown=True, transmit_delay=120
-                            ),
+                            dict(afi="ipv4", shutdown=True, transmit_delay=430),
+                            dict(afi="ipv6", shutdown=True, transmit_delay=120),
                         ],
                     ),
                 ],
@@ -1289,7 +1240,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               ip ospf transmit-delay 430
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1333,7 +1284,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                       no switchport
                     interface Ethernet1/4
                       no switchport
-                    """
+                    """,
                 ),
                 state="parsed",
             ),
@@ -1352,7 +1303,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     "area_id": "1.1.1.2",
                                     "secondaries": False,
                                 },
-                            }
+                            },
                         ],
                     },
                     {
@@ -1361,7 +1312,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                             {
                                 "process_id": "200",
                                 "area": {"area_id": "2.2.2.8"},
-                            }
+                            },
                         ],
                     },
                 ],
@@ -1371,10 +1322,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                 "address_family": [
                     {
                         "afi": "ipv6",
-                        "processes": [
-                            {"process_id": "210", "multi_areas": ["3.3.3.3"]}
-                        ],
-                    }
+                        "processes": [{"process_id": "210", "multi_areas": ["3.3.3.3"]}],
+                    },
                 ],
             },
             {"name": "Ethernet1/3"},
@@ -1398,7 +1347,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = [
@@ -1414,7 +1363,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                                     "area_id": "1.1.1.2",
                                     "secondaries": False,
                                 },
-                            }
+                            },
                         ],
                     },
                     {
@@ -1423,7 +1372,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                             {
                                 "process_id": "200",
                                 "area": {"area_id": "2.2.2.8"},
-                            }
+                            },
                         ],
                     },
                 ],
@@ -1433,10 +1382,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                 "address_family": [
                     {
                         "afi": "ipv6",
-                        "processes": [
-                            {"process_id": "210", "multi_areas": ["3.3.3.3"]}
-                        ],
-                    }
+                        "processes": [{"process_id": "210", "multi_areas": ["3.3.3.3"]}],
+                    },
                 ],
             },
             {"name": "Ethernet1/3"},
@@ -1449,7 +1396,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
         # test gathered
         self.get_config.return_value = dedent(
             """
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = []
@@ -1473,7 +1420,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1481,12 +1428,10 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                     dict(
                         name="Ethernet1/1",
                         address_family=[
-                            dict(
-                                afi="ipv4", shutdown=False, transmit_delay=300
-                            ),
+                            dict(afi="ipv4", shutdown=False, transmit_delay=300),
                             dict(afi="ipv6", shutdown=True),
                         ],
-                    )
+                    ),
                 ],
                 state="overridden",
             ),
@@ -1524,7 +1469,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(config=[dict(name="Ethernet1/1")], state="deleted"),
@@ -1555,7 +1500,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = [
@@ -1585,7 +1530,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no ospfv3 passive-interface
             interface Ethernet1/4
               no switchport
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1599,21 +1544,15 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                     ),
                     dict(
                         name="Ethernet1/2",
-                        address_family=[
-                            dict(afi="ipv4", default_passive_interface=True)
-                        ],
+                        address_family=[dict(afi="ipv4", default_passive_interface=True)],
                     ),
                     dict(
                         name="Ethernet1/3",
-                        address_family=[
-                            dict(afi="ipv6", default_passive_interface=True)
-                        ],
+                        address_family=[dict(afi="ipv6", default_passive_interface=True)],
                     ),
                     dict(
                         name="Ethernet1/4",
-                        address_family=[
-                            dict(afi="ipv4", default_passive_interface=True)
-                        ],
+                        address_family=[dict(afi="ipv4", default_passive_interface=True)],
                     ),
                 ],
                 state="merged",

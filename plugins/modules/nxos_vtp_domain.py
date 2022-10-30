@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -32,6 +33,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - VTP feature must be active on the device to use this module.
 - This module is used to manage only VTP domain names.
 - VTP domain names are case-sensible.
@@ -69,12 +71,12 @@ existing:
         - k/v pairs of existing vtp domain
     returned: always
     type: dict
-    sample: {"domain": "testing", "version": "2", "vtp_password": "\"}
+    sample: {"domain": "testing", "version": "2", "vtp_password": "password"}
 end_state:
     description: k/v pairs of vtp domain after module execution
     returned: always
     type: dict
-    sample: {"domain": "ntc", "version": "2", "vtp_password": "\"}
+    sample: {"domain": "ntc", "version": "2", "vtp_password": "password"}
 updates:
     description: command sent to the device
     returned: always
@@ -88,18 +90,15 @@ changed:
 """
 
 
+import re
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_capabilities,
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_capabilities,
-)
-from ansible.module_utils.basic import AnsibleModule
-import re
 
 
 def execute_show_command(command, module, output="json"):
@@ -171,11 +170,7 @@ def get_vtp_password(module):
 def main():
     argument_spec = dict(domain=dict(type="str", required=True))
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 

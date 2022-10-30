@@ -1,7 +1,7 @@
 ---
-- name: Delete Files To Make Room On Bootflash
-  ignore_errors: true
-  with_items: '{{ delete_image_list }}'
+- name: Delete files to make room on bootflash
+  ignore_errors: true # noqa ignore-errors
+  with_items: "{{ delete_image_list }}"
   cisco.nxos.nxos_config:
     lines:
       - terminal dont-ask

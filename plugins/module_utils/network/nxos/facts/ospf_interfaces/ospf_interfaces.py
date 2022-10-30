@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -17,20 +18,18 @@ based on the configuration.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospf_interfaces.ospf_interfaces import (
+    Ospf_interfacesArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospf_interfaces import (
     Ospf_interfacesTemplate,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospf_interfaces.ospf_interfaces import (
-    Ospf_interfacesArgs,
-)
 
 
 class Ospf_interfacesFacts(object):
-    """ The nxos ospf_interfaces facts class
-    """
+    """The nxos ospf_interfaces facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -43,7 +42,7 @@ class Ospf_interfacesFacts(object):
         return connection.get("show running-config | section '^interface'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Ospf_interfaces network resource
+        """Populate the facts for Ospf_interfaces network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -60,7 +59,8 @@ class Ospf_interfacesFacts(object):
 
         # parse native config using the Ospf_interfaces template
         ospf_interfaces_parser = Ospf_interfacesTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = list(ospf_interfaces_parser.parse().values())
         if objs:
@@ -72,18 +72,23 @@ class Ospf_interfacesFacts(object):
                             af["processes"] = list(af["processes"].values())
                         if af.get("multi_areas"):
                             af["multi_areas"].sort()
-                    item["address_family"] = sorted(
-                        item["address_family"], key=lambda i: i["afi"]
-                    )
+                    item["address_family"] = sorted(item["address_family"], key=lambda i: i["afi"])
 
-            objs = sorted(objs, key=lambda i: i["name"])
+            objs = sorted(
+                objs,
+                key=lambda i: [
+                    int(k) if k.isdigit() else k for k in i["name"].replace(".", "/").split("/")
+                ],
+            )
 
         ansible_facts["ansible_network_resources"].pop("ospf_interfaces", None)
 
         params = utils.remove_empties(
             ospf_interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["ospf_interfaces"] = params.get("config", [])

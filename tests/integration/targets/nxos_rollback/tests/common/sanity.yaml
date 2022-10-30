@@ -1,7 +1,8 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_rollback sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_rollback sanity test
 
-- name: delete existing checkpoint file
+- name: Delete existing checkpoint file
   ignore_errors: true
   cisco.nxos.nxos_config: &id001
     commands:
@@ -13,12 +14,13 @@
   cisco.nxos.nxos_rollback:
     checkpoint_file: backup.cfg
 
-- name: rollback to the previously created checkpoint file
+- name: Rollback to the previously created checkpoint file
   cisco.nxos.nxos_rollback:
     rollback_to: backup.cfg
 
-- name: cleanup checkpoint file
+- name: Cleanup checkpoint file
   ignore_errors: true
   cisco.nxos.nxos_config: *id001
 
-- debug: msg="END connection={{ ansible_connection }} nxos_rollback sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_rollback sanity test

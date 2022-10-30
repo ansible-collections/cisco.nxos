@@ -1,19 +1,21 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_interfaces merged integration tests connection={{ ansible_connection }}"
 
-- set_fact:
+- name: Set a fact for 'test_int1' and 'test_int2'
+  ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- set_fact: enabled=true
+- name: Set a fact for 'enabled'
+  ansible.builtin.set_fact:
+    enabled: true
   when: platform is not search('N3[5KL]|N[56]K|titanium')
 
 - block:
-
-    - name: setup
+    - name: Setup
       cisco.nxos.nxos_config: &id002
-        lines: 
+        lines:
           - "default interface {{ test_int1 }}"
           - "default interface {{ test_int2 }}"
 
@@ -21,19 +23,18 @@
       register: result
       cisco.nxos.nxos_interfaces: &id001
         config:
-
-          - name: '{{ test_int1 }}'
+          - name: "{{ test_int1 }}"
             description: Configured by Ansible
-            enabled: '{{ enabled|default(omit)}}'
+            enabled: "{{ enabled|default(omit)}}"
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
           - "'description Configured by Ansible' in result.commands"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'no shutdown' in result.commands"
       when: enabled is defined
@@ -41,20 +42,19 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-          - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length
-            == 0
+          - ansible_facts.network_resources.interfaces|symmetric_difference(result.after)|length == 0
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
@@ -71,13 +71,13 @@
       cisco.nxos.nxos_interfaces:
         config:
           - name: "{{ test_int2 }}"
-            enabled: False
+            enabled: false
             mode: layer2
             description: Test
         state: merged
       register: result
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'interface {{ test_int2 }}' in result.commands"
           - "'shutdown' in result.commands"
@@ -85,5 +85,5 @@
           - result.commands|length == 2
 
   always:
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_config: *id002

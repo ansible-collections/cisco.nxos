@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -31,6 +32,7 @@ version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - This module is not supported on Nexus 3000 series of switches.
+- Unsupported for Cisco MDS
 options:
   nv_overlay_evpn:
     description:
@@ -53,24 +55,18 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
-    nxos_argument_spec,
+    get_config,
+    load_config,
 )
 
 
 def main():
     argument_spec = dict(nv_overlay_evpn=dict(required=True, type="bool"))
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     result = {"changed": False}
 
@@ -85,9 +81,7 @@ def main():
     os_platform = info.get("network_os_platform", "")
 
     if "3K" in os_platform:
-        module.fail_json(
-            msg="This module is not supported on Nexus 3000 series"
-        )
+        module.fail_json(msg="This module is not supported on Nexus 3000 series")
 
     if module.params["nv_overlay_evpn"] is True:
         if "nv overlay evpn" not in config:

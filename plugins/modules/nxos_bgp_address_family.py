@@ -10,6 +10,7 @@ The module file for nxos_bgp_address_family
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -20,6 +21,7 @@ description:
 version_added: 2.0.0
 notes:
 - Tested against NX-OS 9.3.6.
+- Unsupported for Cisco MDS
 - For managing BGP neighbor address family configurations please use
   the M(cisco.nxos.nxos_bgp_neighbor_address_family) module.
 - This module works with connection C(network_cli) and C(httpapi).
@@ -258,7 +260,7 @@ options:
                 description:
                 - The name of the protocol.
                 type: str
-                choices: ["am", "direct", "eigrp", "isis", "lisp", "ospf", "ospfv3", "rip", "static"]
+                choices: ["am", "direct", "eigrp", "isis", "lisp", "ospf", "ospfv3", "rip", "static", "hmm"]
                 required: true
               id:
                 description:
@@ -993,6 +995,7 @@ EXAMPLES = """
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
 )

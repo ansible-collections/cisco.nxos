@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_neighbor_af
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -34,12 +36,12 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
         super(TestNxosBgpNeighborAfModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor_af.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor_af.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor_af.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor_af.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -60,7 +62,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 afi="ipv4",
                 safi="unicast",
                 route_reflector_client=True,
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -74,9 +76,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_neighbor_af_exists(self):
-        set_module_args(
-            dict(asn=65535, neighbor="3.3.3.5", afi="ipv4", safi="unicast")
-        )
+        set_module_args(dict(asn=65535, neighbor="3.3.3.5", afi="ipv4", safi="unicast"))
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_bgp_neighbor_af_absent(self):
@@ -87,7 +87,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 afi="ipv4",
                 safi="unicast",
                 state="absent",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -107,7 +107,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 afi="ipv4",
                 safi="unicast",
                 advertise_map_exist=["my_advertise_map", "my_exist_map"],
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -131,7 +131,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                     "my_advertise_map",
                     "my_non_exist_map",
                 ],
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -152,7 +152,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 afi="ipv4",
                 safi="unicast",
                 max_prefix_limit="default",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -174,7 +174,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 safi="unicast",
                 max_prefix_threshold=20,
                 max_prefix_limit=20,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -195,7 +195,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 afi="ipv4",
                 safi="unicast",
                 disable_peer_as_check=True,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -215,7 +215,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 afi="l2vpn",
                 safi="evpn",
                 rewrite_evpn_rt_asn=True,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -235,7 +235,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 afi="l2vpn",
                 safi="evpn",
                 rewrite_evpn_rt_asn=False,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -255,6 +255,6 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
                 afi="l2vpn",
                 safi="evpn",
                 rewrite_evpn_rt_asn=True,
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])

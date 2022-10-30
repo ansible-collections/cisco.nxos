@@ -28,6 +28,7 @@ The module file for nxos_bfd_interfaces
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -40,6 +41,7 @@ version_added: 1.0.0
 author: Chris Van Heuveln (@chrisvanheuveln)
 notes:
 - Tested against NX-OS 7.0(3)I5(1).
+- Unsupported for Cisco MDS
 - Feature bfd should be enabled for this module.
 options:
   running_config:
@@ -261,6 +263,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bfd_interfaces.bfd_interfaces import (
     Bfd_interfacesArgs,
 )

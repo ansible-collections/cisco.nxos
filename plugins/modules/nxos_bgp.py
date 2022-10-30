@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -37,6 +38,7 @@ deprecated:
   removed_at_date: '2023-01-27'
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - C(state=absent) removes the whole BGP ASN configuration when C(vrf=default) or the
   whole VRF instance within the BGP process when using a different VRF.
 - Default when supported restores params default value.
@@ -277,16 +279,14 @@ commands:
 
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
 )
 
 
@@ -396,9 +396,7 @@ def get_value(arg, config):
     command = PARAM_TO_COMMAND_KEYMAP.get(arg)
 
     if command.split()[0] == "event-history":
-        has_size = re.search(
-            r"^\s+{0} size\s(?P<value>.*)$".format(command), config, re.M
-        )
+        has_size = re.search(r"^\s+{0} size\s(?P<value>.*)$".format(command), config, re.M)
 
         if command == "event-history detail":
             value = False
@@ -422,9 +420,7 @@ def get_value(arg, config):
         if has_command:
             value = True
     else:
-        command_val_re = re.compile(
-            r"(?:{0}\s)(?P<value>.*)".format(command), re.M
-        )
+        command_val_re = re.compile(r"(?:{0}\s)(?P<value>.*)".format(command), re.M)
         value = ""
 
         has_command = command_val_re.search(config)
@@ -447,13 +443,9 @@ def get_value(arg, config):
 
 def get_existing(module, args, warnings):
     existing = {}
-    netcfg = CustomNetworkConfig(
-        indent=2, contents=get_config(module, flags=["bgp all"])
-    )
+    netcfg = CustomNetworkConfig(indent=2, contents=get_config(module, flags=["bgp all"]))
 
-    asn_re = re.compile(
-        r".*router\sbgp\s(?P<existing_asn>\d+(\.\d+)?).*", re.S
-    )
+    asn_re = re.compile(r".*router\sbgp\s(?P<existing_asn>\d+(\.\d+)?).*", re.S)
     asn_match = asn_re.match(str(netcfg))
 
     if asn_match:
@@ -468,21 +460,14 @@ def get_existing(module, args, warnings):
         config = netcfg.get_section(parents)
         if config:
             for arg in args:
-                if arg != "asn" and (
-                    module.params["vrf"] == "default"
-                    or arg not in GLOBAL_PARAMS
-                ):
+                if arg != "asn" and (module.params["vrf"] == "default" or arg not in GLOBAL_PARAMS):
                     existing[arg] = get_value(arg, config)
 
             existing["asn"] = existing_asn
             if module.params["vrf"] == "default":
                 existing["vrf"] = "default"
 
-    if (
-        not existing
-        and module.params["vrf"] != "default"
-        and module.params["state"] == "present"
-    ):
+    if not existing and module.params["vrf"] != "default" and module.params["state"] == "present":
         msg = "VRF {0} doesn't exist.".format(module.params["vrf"])
         warnings.append(msg)
 
@@ -527,7 +512,8 @@ def state_present(module, existing, proposed, candidate):
             commands.append("{0} {1}".format(key, value))
         elif key.startswith("timers bgp"):
             command = "timers bgp {0} {1}".format(
-                proposed["timer_bgp_keepalive"], proposed["timer_bgp_hold"]
+                proposed["timer_bgp_keepalive"],
+                proposed["timer_bgp_hold"],
             )
             if command not in commands:
                 commands.append(command)
@@ -631,12 +617,8 @@ def main():
         confederation_id=dict(required=False, type="str"),
         confederation_peers=dict(required=False, type="list", elements="str"),
         disable_policy_batching=dict(required=False, type="bool"),
-        disable_policy_batching_ipv4_prefix_list=dict(
-            required=False, type="str"
-        ),
-        disable_policy_batching_ipv6_prefix_list=dict(
-            required=False, type="str"
-        ),
+        disable_policy_batching_ipv4_prefix_list=dict(required=False, type="str"),
+        disable_policy_batching_ipv6_prefix_list=dict(required=False, type="str"),
         enforce_first_as=dict(required=False, type="bool"),
         event_history_cli=dict(
             required=False,
@@ -691,9 +673,7 @@ def main():
         graceful_restart=dict(required=False, type="bool"),
         graceful_restart_helper=dict(required=False, type="bool"),
         graceful_restart_timers_restart=dict(required=False, type="str"),
-        graceful_restart_timers_stalepath_time=dict(
-            required=False, type="str"
-        ),
+        graceful_restart_timers_stalepath_time=dict(required=False, type="str"),
         isolate=dict(required=False, type="bool"),
         local_as=dict(required=False, type="str"),
         log_neighbor_changes=dict(required=False, type="bool"),
@@ -706,11 +686,8 @@ def main():
         timer_bestpath_limit=dict(required=False, type="str"),
         timer_bgp_hold=dict(required=False, type="str"),
         timer_bgp_keepalive=dict(required=False, type="str"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
     )
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -743,9 +720,7 @@ def main():
                 existing_asn=existing.get("asn"),
             )
 
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
     proposed = {}
     for key, value in proposed_args.items():
         if key not in ["asn", "vrf"]:

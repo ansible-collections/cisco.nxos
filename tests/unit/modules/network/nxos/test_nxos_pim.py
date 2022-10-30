@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_pim
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -34,12 +36,12 @@ class TestNxosPimModule(TestNxosModule):
         super(TestNxosPimModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -55,17 +57,13 @@ class TestNxosPimModule(TestNxosModule):
         # Add/ Modify
         self.get_config.return_value = load_fixture("nxos_pim", "config.cfg")
         set_module_args(dict(ssm_range="233.0.0.0/8"))
-        self.execute_module(
-            changed=True, commands=["ip pim ssm range 233.0.0.0/8"]
-        )
+        self.execute_module(changed=True, commands=["ip pim ssm range 233.0.0.0/8"])
 
     def test_nxos_pim_2(self):
         # Remove existing values
         self.get_config.return_value = load_fixture("nxos_pim", "config.cfg")
         set_module_args(dict(bfd="disable", ssm_range="none"))
-        self.execute_module(
-            changed=True, commands=["no ip pim bfd", "ip pim ssm range none"]
-        )
+        self.execute_module(changed=True, commands=["no ip pim bfd", "ip pim ssm range none"])
 
     def test_nxos_pim_3(self):
         # bfd None (disable)-> enable
@@ -91,9 +89,7 @@ class TestNxosPimModule(TestNxosModule):
         # SSM 'default'
         self.get_config.return_value = load_fixture("nxos_pim", "config.cfg")
         set_module_args(dict(ssm_range="default"))
-        self.execute_module(
-            changed=True, commands=["no ip pim ssm range none"]
-        )
+        self.execute_module(changed=True, commands=["no ip pim ssm range none"])
 
         # SSM 'default' idempotence
         self.get_config.return_value = None

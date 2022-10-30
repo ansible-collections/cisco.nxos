@@ -17,20 +17,23 @@
 #
 from __future__ import absolute_import, division, print_function
 
-__metaclass__ = type
 
+__metaclass__ = type
 
 DOCUMENTATION = """
 module: nxos_feature
 extends_documentation_fragment:
 - cisco.nxos.nxos
 short_description: Manage features in NX-OS switches.
+notes:
+- Tested against Cisco MDS NX-OS 9.2(2)
 description:
 - Offers ability to enable and disable features in NX-OS.
 version_added: 1.0.0
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
+- Suhas Bharadwaj (@srbharadwaj)
 options:
   feature:
     description:
@@ -77,14 +80,12 @@ import re
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import ConnectionError
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-    run_commands,
-    get_config,
-)
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
-    nxos_argument_spec,
+    get_config,
+    load_config,
+    run_commands,
 )
 
 
@@ -116,10 +117,7 @@ def get_available_features(feature, module):
             if feature not in available_features:
                 available_features[feature] = state
             else:
-                if (
-                    available_features[feature] == "disabled"
-                    and state == "enabled"
-                ):
+                if available_features[feature] == "disabled" and state == "enabled":
                     available_features[feature] = state
 
     # certain configurable features do not
@@ -150,6 +148,30 @@ def get_commands(proposed, existing, state, module):
     return commands
 
 
+def get_mds_mapping_features():
+    feature_to_be_mapped = {
+        "show": {
+            "fcrxbbcredit": "extended_credit",
+            "port-track": "port_track",
+            "scp-server": "scpServer",
+            "sftp-server": "sftpServer",
+            "ssh": "sshServer",
+            "tacacs+": "tacacs",
+            "telnet": "telnetServer",
+        },
+        "config": {
+            "extended_credit": "fcrxbbcredit",
+            "port_track": "port-track",
+            "scpServer": "scp-server",
+            "sftpServer": "sftp-server",
+            "sshServer": "ssh",
+            "tacacs": "tacacs+",
+            "telnetServer": "telnet",
+        },
+    }
+    return feature_to_be_mapped
+
+
 def validate_feature(module, mode="show"):
     """Some features may need to be mapped due to inconsistency
     between how they appear from "show feature" output and
@@ -161,8 +183,10 @@ def validate_feature(module, mode="show"):
         info = get_capabilities(module)
         device_info = info.get("device_info", {})
         os_version = device_info.get("network_os_version", "")
+        os_platform = device_info.get("network_os_platform", "")
     except ConnectionError:
         os_version = ""
+        os_platform = ""
 
     if "8.1" in os_version:
         feature_to_be_mapped = {
@@ -229,6 +253,9 @@ def validate_feature(module, mode="show"):
             },
         }
 
+    if os_platform.startswith("DS-"):
+        feature_to_be_mapped = get_mds_mapping_features()
+
     if feature in feature_to_be_mapped[mode]:
         feature = feature_to_be_mapped[mode][feature]
 
@@ -241,11 +268,7 @@ def main():
         state=dict(choices=["enabled", "disabled"], default="enabled"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     results = dict(changed=False, warnings=warnings)

@@ -13,31 +13,30 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from copy import deepcopy
 import re
+
+from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_diff,
-    to_list,
     remove_empties,
+    to_list,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    default_intf_enabled,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
-    search_obj_in_list,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     remove_rsvd_interfaces,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    default_intf_enabled,
+    search_obj_in_list,
 )
 
 
@@ -56,18 +55,18 @@ class Interfaces(ConfigBase):
         super(Interfaces, self).__init__(module)
 
     def get_interfaces_facts(self, data=None):
-        """ Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration)
 
         :data: Mocked running-config data for state `parsed`
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         self.facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
-        interfaces_facts = self.facts["ansible_network_resources"].get(
-            "interfaces"
-        )
+        interfaces_facts = self.facts["ansible_network_resources"].get("interfaces")
 
         return interfaces_facts
 
@@ -81,9 +80,7 @@ class Interfaces(ConfigBase):
         """Wrapper method for `_connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
-        return self._connection.get(
-            "show running-config all | incl 'system default switchport'"
-        )
+        return self._connection.get("show running-config all | incl 'system default switchport'")
 
     def edit_config(self, commands):
         """Wrapper method for `_connection.edit_config()`
@@ -92,7 +89,7 @@ class Interfaces(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -108,7 +105,8 @@ class Interfaces(ConfigBase):
 
         if self.state in self.ACTION_STATES:
             self.intf_defs = self.render_interface_defaults(
-                self.get_system_defaults(), existing_interfaces_facts
+                self.get_system_defaults(),
+                existing_interfaces_facts,
             )
             commands.extend(self.set_config(existing_interfaces_facts))
 
@@ -120,7 +118,7 @@ class Interfaces(ConfigBase):
                     "L2_enabled": False,
                     "L3_enabled": False,
                     "mode": "layer3",
-                }
+                },
             }
             commands.extend(self.set_config(existing_interfaces_facts))
 
@@ -142,7 +140,7 @@ class Interfaces(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
             result["parsed"] = self.get_interfaces_facts(data=running_config)
 
@@ -158,7 +156,7 @@ class Interfaces(ConfigBase):
         return result
 
     def set_config(self, existing_interfaces_facts):
-        """ Collect the configuration from the args passed to the module,
+        """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
         :rtype: A list
@@ -176,7 +174,7 @@ class Interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """ Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -185,14 +183,9 @@ class Interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    state
-                )
+                msg="value of config parameter must not be empty for state {0}".format(state),
             )
 
         commands = list()
@@ -211,7 +204,7 @@ class Interfaces(ConfigBase):
         return commands
 
     def _state_replaced(self, w, have):
-        """ The command generator when state is replaced
+        """The command generator when state is replaced
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -259,7 +252,7 @@ class Interfaces(ConfigBase):
         return commands
 
     def _state_overridden(self, want, have):
-        """ The command generator when state is overridden
+        """The command generator when state is overridden
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -288,7 +281,7 @@ class Interfaces(ConfigBase):
         return cmds
 
     def _state_merged(self, w, have):
-        """ The command generator when state is merged
+        """The command generator when state is merged
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -297,7 +290,7 @@ class Interfaces(ConfigBase):
         return self.set_commands(w, have)
 
     def _state_deleted(self, want, have):
-        """ The command generator when state is deleted
+        """The command generator when state is deleted
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -316,7 +309,7 @@ class Interfaces(ConfigBase):
         return commands
 
     def _state_purged(self, want, have):
-        """ The command generator when state is purged
+        """The command generator when state is purged
 
         :rtype: A list
         :returns: the commands necessary to purge interfaces from running
@@ -363,9 +356,7 @@ class Interfaces(ConfigBase):
             or intf_def_enabled is None
         ):
             # L2-L3 is changing or this is a new virtual intf. Get new default.
-            intf_def_enabled = default_intf_enabled(
-                name=name, sysdefs=sysdefs, mode=want_mode
-            )
+            intf_def_enabled = default_intf_enabled(name=name, sysdefs=sysdefs, mode=want_mode)
         return intf_def_enabled
 
     def del_attribs(self, obj):
@@ -412,8 +403,6 @@ class Interfaces(ConfigBase):
 
     def add_commands(self, d, obj_in_have=None):
         commands = []
-        if not d:
-            return commands
         if obj_in_have is None:
             obj_in_have = {}
         # mode/switchport changes should occur before other changes
@@ -433,9 +422,7 @@ class Interfaces(ConfigBase):
         if "duplex" in d:
             commands.append("duplex " + d["duplex"])
         if "enabled" in d:
-            have_enabled = obj_in_have.get(
-                "enabled", self.default_enabled(d, obj_in_have)
-            )
+            have_enabled = obj_in_have.get("enabled", self.default_enabled(d, obj_in_have)) or False
             if d["enabled"] is False and have_enabled is True:
                 commands.append("shutdown")
             elif d["enabled"] is True and have_enabled is False:
@@ -478,29 +465,23 @@ class Interfaces(ConfigBase):
         Run through the gathered interfaces and tag their default enabled state.
         """
         intf_defs = {}
-        L3_enabled = (
-            True if re.search("N[356]K", self.get_platform()) else False
-        )
+        L3_enabled = True if re.search("N[356]K", self.get_platform()) else False
         intf_defs = {
             "sysdefs": {
                 "mode": None,
                 "L2_enabled": None,
                 "L3_enabled": L3_enabled,
-            }
+            },
         }
         pat = "(no )*system default switchport$"
         m = re.search(pat, config, re.MULTILINE)
         if m:
-            intf_defs["sysdefs"]["mode"] = (
-                "layer3" if "no " in m.groups() else "layer2"
-            )
+            intf_defs["sysdefs"]["mode"] = "layer3" if "no " in m.groups() else "layer2"
 
         pat = "(no )*system default switchport shutdown$"
         m = re.search(pat, config, re.MULTILINE)
         if m:
-            intf_defs["sysdefs"]["L2_enabled"] = (
-                True if "no " in m.groups() else False
-            )
+            intf_defs["sysdefs"]["L2_enabled"] = True if "no " in m.groups() else False
 
         for item in intfs:
             intf_defs[item["name"]] = default_intf_enabled(

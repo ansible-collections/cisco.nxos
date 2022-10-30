@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -32,6 +33,7 @@ version_added: 1.0.0
 author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - default, where supported, restores params default value.
 - RD override is not permitted. You should set it to the default values first and
   then reconfigure it.
@@ -102,16 +104,15 @@ commands:
 """
 
 import re
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
 )
 
 
@@ -214,17 +215,13 @@ def state_present(module, existing, proposed):
                 if target == "default":
                     continue
                 if existing:
-                    if target not in existing.get(
-                        key.replace("-", "_").replace(" ", "_")
-                    ):
+                    if target not in existing.get(key.replace("-", "_").replace(" ", "_")):
                         commands.append("{0} {1}".format(key, target))
                 else:
                     commands.append("{0} {1}".format(key, target))
 
             if existing.get(key.replace("-", "_").replace(" ", "_")):
-                for exi in existing.get(
-                    key.replace("-", "_").replace(" ", "_")
-                ):
+                for exi in existing.get(key.replace("-", "_").replace(" ", "_")):
                     if exi not in value:
                         commands.append("no {0} {1}".format(key, exi))
 
@@ -255,16 +252,10 @@ def main():
         route_target_both=dict(required=False, type="list", elements="str"),
         route_target_import=dict(required=False, type="list", elements="str"),
         route_target_export=dict(required=False, type="list", elements="str"),
-        state=dict(
-            choices=["present", "absent"], default="present", required=False
-        ),
+        state=dict(choices=["present", "absent"], default="present", required=False),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     results = dict(changed=False, warnings=warnings)
@@ -272,9 +263,7 @@ def main():
     state = module.params["state"]
     args = PARAM_TO_COMMAND_KEYMAP.keys()
     existing = get_existing(module, args)
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
     commands = []
     parents = []
 

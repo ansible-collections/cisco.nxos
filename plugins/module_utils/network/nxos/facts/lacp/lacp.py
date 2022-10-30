@@ -11,22 +11,22 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp.lacp import (
     LacpArgs,
 )
 
 
 class LacpFacts(object):
-    """ The nxos lacp fact class
-    """
+    """The nxos lacp fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -43,7 +43,7 @@ class LacpFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for lacp
+        """Populate the facts for lacp
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
@@ -57,9 +57,7 @@ class LacpFacts(object):
         ansible_facts["ansible_network_resources"].pop("lacp", None)
         facts = {}
         if objs:
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             facts["lacp"] = utils.remove_empties(params["config"])
         ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts
@@ -84,9 +82,7 @@ class LacpFacts(object):
         if a_match:
             address = a_match.group(1)
             config["system"]["mac"]["address"] = address
-            r_match = re.search(
-                r"lacp system-mac {0} role (\S+)".format(address), conf, re.M
-            )
+            r_match = re.search(r"lacp system-mac {0} role (\S+)".format(address), conf, re.M)
             if r_match:
                 config["system"]["mac"]["role"] = r_match.group(1)
 

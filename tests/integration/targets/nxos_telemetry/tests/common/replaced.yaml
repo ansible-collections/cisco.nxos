@@ -1,36 +1,46 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_telemetry replaced
-    sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_telemetry replaced sanity test
 
-- set_fact: source_interface="Loopback55"
+- name: Set a fact for 'source_interface'
+  ansible.builtin.set_fact:
+    source_interface: Loopback55
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- set_fact: command_list_length=27
+- name: Set a fact for 'command_list_length'
+  ansible.builtin.set_fact:
+    command_list_length: 27
 
-- set_fact: command_list_length=28
+- name: Set a fact for 'command_list_length'
+  ansible.builtin.set_fact:
+    command_list_length: 28
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- set_fact: dict_facts_length=6
+- name: Set a fact for 'dict_facts_length'
+  ansible.builtin.set_fact:
+    dict_facts_length: 6
 
-- set_fact: dict_facts_length=7
+- name: Set a fact for 'dict_facts_length'
+  ansible.builtin.set_fact:
+    dict_facts_length: 7
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- name: Setup - disable feature telemetry
+- name: Setup - disable 'feature telemetry'
   ignore_errors: true
   cisco.nxos.nxos_feature: &id003
     feature: telemetry
     state: disabled
 
-- name: Setup - enable feature telemetry
+- name: Setup - enable 'feature telemetry'
   cisco.nxos.nxos_feature:
     feature: telemetry
     state: enabled
 
-- name: Setup - add initial telemetry config
+- name: Setup - add initial telemetry configuration
   cisco.nxos.nxos_config:
     src: populate_config.cfg
 
-- name: Setup - add initial source-interface telemetry config
+- name: Setup - add initial source-interface telemetry configuration
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
   cisco.nxos.nxos_config:
     lines:
@@ -39,12 +49,11 @@
       - "    source-interface loopback55"
 
 - block:
-
-    - name: Gather Telemetry Facts Before Changes
+    - name: Gather telemetry facts before changes
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
           - telemetry
 
@@ -59,7 +68,6 @@
           vrf: management
           compression: gzip
           destination_groups:
-
             - id: 2
               destination:
                 ip: 192.168.0.1
@@ -74,7 +82,6 @@
                 protocol: grpc
                 encoding: gpb
           sensor_groups:
-
             - id: 100
               data_source: NX-API
               path:
@@ -83,14 +90,13 @@
                 query_condition: foo
                 filter_condition: foo
           subscriptions:
-
             - id: 99
               destination_group: 2
               sensor_group:
                 id: 100
                 sample_interval: 2000
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - result.before|length == {{ dict_facts_length }}
@@ -112,16 +118,13 @@
           - "'no destination-group 99' in result.commands"
           - "'no destination-group 10' in result.commands"
           - "'destination-group 2' in result.commands"
-          - "'no ip address 192.168.0.1 port 50001 protocol grpc encoding gpb' in\
-            \ result.commands"
-          - "'no ip address 192.168.0.2 port 60001 protocol grpc encoding gpb' in\
-            \ result.commands"
+          - "'no ip address 192.168.0.1 port 50001 protocol grpc encoding gpb' in result.commands"
+          - "'no ip address 192.168.0.2 port 60001 protocol grpc encoding gpb' in result.commands"
           - "'destination-group 2' in result.commands"
           - "'ip address 192.168.0.1 port 65001 protocol grpc encoding gpb' in result.commands"
           - "'ip address 192.168.0.3 port 55001 protocol grpc encoding gpb' in result.commands"
           - "'sensor-group 100' in result.commands"
-          - result.commands is search("path .*show bgp l2vpn evpn summary.* depth
-            unbounded query-condition foo filter-condition foo")
+          - result.commands is search("path .*show bgp l2vpn evpn summary.* depth unbounded query-condition foo filter-condition foo")
           - "'data-source NX-API' in result.commands"
           - "'subscription 99' in result.commands"
           - "'snsr-grp 100 sample-interval 2000' in result.commands"
@@ -130,37 +133,34 @@
           - "'use-vrf management' in result.commands"
           - result.commands|length == {{ command_list_length }}
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'no source-interface loopback55' in result.commands"
       when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length
-            == 0
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.before|dict2items)|length == 0
 
-    - name: Gather Telemetry Facts After Changes
+    - name: Gather telemetry facts after changes
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length
-            == 0
+          - (ansible_facts.network_resources.telemetry|dict2items)|symmetric_difference(result.after|dict2items)|length == 0
 
     - name: Telemetry - replaced - idempotence
       register: result
       cisco.nxos.nxos_telemetry: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-
     - name: Teardown
       ignore_errors: true
       cisco.nxos.nxos_feature: *id003
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_telemetry replaced
-        sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_telemetry replaced sanity test

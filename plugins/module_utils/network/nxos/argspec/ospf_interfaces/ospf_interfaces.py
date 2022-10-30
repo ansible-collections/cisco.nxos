@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -28,8 +29,7 @@ The arg spec for the nxos_ospf_interfaces module
 
 
 class Ospf_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_ospf_interfaces module
-    """
+    """The arg spec for the nxos_ospf_interfaces module"""
 
     argument_spec = {
         "running_config": {"type": "str"},
@@ -41,9 +41,7 @@ class Ospf_interfacesArgs(object):  # pylint: disable=R0903
                 "address_family": {
                     "type": "list",
                     "elements": "dict",
-                    "mutually_exclusive": [
-                        ["passive_interface", "default_passive_interface"]
-                    ],
+                    "mutually_exclusive": [["passive_interface", "default_passive_interface"]],
                     "options": {
                         "afi": {
                             "type": "str",

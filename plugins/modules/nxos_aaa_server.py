@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -32,6 +33,7 @@ author:
 - Jason Edelman (@jedelman8)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Limited Support for Cisco MDS
 - The server_type parameter is always required.
 - If encrypt_type is not supplied, the global AAA server key will be stored as encrypted
   (type 7).
@@ -123,14 +125,12 @@ commands:
 """
 import re
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 PARAM_TO_DEFAULT_KEYMAP = {
@@ -206,9 +206,7 @@ def config_aaa_server(params, server_type):
         cmds.append("{0}-server deadtime {1}".format(server_type, deadtime))
 
     if server_timeout is not None:
-        cmds.append(
-            "{0}-server timeout {1}".format(server_type, server_timeout)
-        )
+        cmds.append("{0}-server timeout {1}".format(server_type, server_timeout))
 
     if directed_request is not None:
         if directed_request == "enabled":
@@ -217,11 +215,7 @@ def config_aaa_server(params, server_type):
             cmds.append("no {0}-server directed-request".format(server_type))
 
     if global_key is not None:
-        cmds.append(
-            "{0}-server key {1} {2}".format(
-                server_type, encrypt_type, global_key
-            )
-        )
+        cmds.append("{0}-server key {1} {2}".format(server_type, encrypt_type, global_key))
 
     return cmds
 
@@ -235,54 +229,39 @@ def default_aaa_server(existing, params, server_type):
     global_key = params.get("global_key")
     existing_key = existing.get("global_key")
 
-    if (
-        deadtime is not None
-        and existing.get("deadtime") != PARAM_TO_DEFAULT_KEYMAP["deadtime"]
-    ):
+    if deadtime is not None and existing.get("deadtime") != PARAM_TO_DEFAULT_KEYMAP["deadtime"]:
         cmds.append("no {0}-server deadtime 1".format(server_type))
 
     if (
         server_timeout is not None
-        and existing.get("server_timeout")
-        != PARAM_TO_DEFAULT_KEYMAP["server_timeout"]
+        and existing.get("server_timeout") != PARAM_TO_DEFAULT_KEYMAP["server_timeout"]
     ):
         cmds.append("no {0}-server timeout 1".format(server_type))
 
     if (
         directed_request is not None
-        and existing.get("directed_request")
-        != PARAM_TO_DEFAULT_KEYMAP["directed_request"]
+        and existing.get("directed_request") != PARAM_TO_DEFAULT_KEYMAP["directed_request"]
     ):
         cmds.append("no {0}-server directed-request".format(server_type))
 
     if global_key is not None and existing_key is not None:
-        cmds.append(
-            "no {0}-server key 7 {1}".format(server_type, existing_key)
-        )
+        cmds.append("no {0}-server key 7 {1}".format(server_type, existing_key))
 
     return cmds
 
 
 def main():
     argument_spec = dict(
-        server_type=dict(
-            type="str", choices=["radius", "tacacs"], required=True
-        ),
+        server_type=dict(type="str", choices=["radius", "tacacs"], required=True),
         global_key=dict(type="str", no_log=True),
         encrypt_type=dict(type="str", choices=["0", "7"]),
         deadtime=dict(type="str"),
         server_timeout=dict(type="str"),
-        directed_request=dict(
-            type="str", choices=["enabled", "disabled", "default"]
-        ),
+        directed_request=dict(type="str", choices=["enabled", "disabled", "default"]),
         state=dict(choices=["default", "present"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     results = {"changed": False, "commands": [], "warnings": warnings}
@@ -318,18 +297,14 @@ def main():
                 if int(deadtime) < 0 or int(deadtime) > 1440:
                     raise ValueError
             except ValueError:
-                module.fail_json(
-                    msg="deadtime must be an integer between 0 and 1440"
-                )
+                module.fail_json(msg="deadtime must be an integer between 0 and 1440")
 
         if server_timeout:
             try:
                 if int(server_timeout) < 1 or int(server_timeout) > 60:
                     raise ValueError
             except ValueError:
-                module.fail_json(
-                    msg="server_timeout must be an integer between 1 and 60"
-                )
+                module.fail_json(msg="server_timeout must be an integer between 1 and 60")
 
         delta = dict(set(proposed.items()).difference(existing.items()))
         if delta:
@@ -340,10 +315,7 @@ def main():
     elif state == "default":
         for key, value in proposed.items():
             if key != "server_type" and value != "default":
-                module.fail_json(
-                    msg='Parameters must be set to "default"'
-                    "when state=default"
-                )
+                module.fail_json(msg='Parameters must be set to "default"' "when state=default")
         command = default_aaa_server(existing, proposed, server_type)
         if command:
             commands.append(command)

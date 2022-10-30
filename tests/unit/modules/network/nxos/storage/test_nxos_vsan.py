@@ -4,18 +4,15 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import pytest
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
 from ansible_collections.cisco.nxos.plugins.modules.storage import nxos_vsan
-from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_vsan import (
-    GetVsanInfoFromSwitch,
-)
+from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_vsan import GetVsanInfoFromSwitch
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from ..nxos_module import TestNxosModule, load_fixture, set_module_args
 
@@ -25,24 +22,20 @@ class TestNxosVsanModule(TestNxosModule):
 
     def setUp(self):
         super(TestNxosVsanModule, self).setUp()
-        module_path = (
-            "ansible_collections.cisco.nxos.plugins.modules.storage.nxos_vsan."
-        )
+        module_path = "ansible_collections.cisco.nxos.plugins.modules.storage.nxos_vsan."
 
         self.mock_run_commands = patch(module_path + "run_commands")
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_execute_show_vsan_cmd = patch(
-            module_path + "GetVsanInfoFromSwitch.execute_show_vsan_cmd"
+            module_path + "GetVsanInfoFromSwitch.execute_show_vsan_cmd",
         )
         self.execute_show_vsan_cmd = self.mock_execute_show_vsan_cmd.start()
 
         self.mock_execute_show_vsanmemcmd = patch(
-            module_path + "GetVsanInfoFromSwitch.execute_show_vsan_mem_cmd"
+            module_path + "GetVsanInfoFromSwitch.execute_show_vsan_mem_cmd",
         )
-        self.execute_show_vsanmem_cmd = (
-            self.mock_execute_show_vsanmemcmd.start()
-        )
+        self.execute_show_vsanmem_cmd = self.mock_execute_show_vsanmemcmd.start()
 
         self.mock_load_config = patch(module_path + "load_config")
         self.load_config = self.mock_load_config.start()
@@ -75,29 +68,19 @@ class TestNxosVsanModule(TestNxosModule):
                     "name": "vsan-SAN-B",
                 },
                 {"id": 1923, "remove": True, "name": "vsan-SAN-Old"},
-            ]
+            ],
         }
         set_module_args(margs, True)
-        self.execute_show_vsan_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsan.cfg"
-        )
-        self.execute_show_vsanmem_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsanmem.cfg"
-        )
+        self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
+        self.execute_show_vsanmem_cmd.return_value = load_fixture("nxos_vsan", "shvsanmem.cfg")
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
     def test_vsan_remove(self):
-        margs = {
-            "vsan": [{"id": 922, "remove": True}, {"id": 923, "remove": True}]
-        }
+        margs = {"vsan": [{"id": 922, "remove": True}, {"id": 923, "remove": True}]}
         set_module_args(margs, True)
-        self.execute_show_vsan_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsan.cfg"
-        )
-        self.execute_show_vsanmem_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsanmem.cfg"
-        )
+        self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
+        self.execute_show_vsanmem_cmd.return_value = load_fixture("nxos_vsan", "shvsanmem.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -120,15 +103,11 @@ class TestNxosVsanModule(TestNxosModule):
                     "id": 925,
                     "name": "vsan-SAN-925",
                 },
-            ]
+            ],
         }
         set_module_args(margs, True)
-        self.execute_show_vsan_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsan.cfg"
-        )
-        self.execute_show_vsanmem_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsanmem.cfg"
-        )
+        self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
+        self.execute_show_vsanmem_cmd.return_value = load_fixture("nxos_vsan", "shvsanmem.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -161,15 +140,11 @@ class TestNxosVsanModule(TestNxosModule):
                     "name": "vsan-SAN-924",
                 },
                 {"id": 925, "name": "vsan-SAN-925", "suspend": True},
-            ]
+            ],
         }
         set_module_args(margs, True)
-        self.execute_show_vsan_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsan.cfg"
-        )
-        self.execute_show_vsanmem_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsanmem.cfg"
-        )
+        self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
+        self.execute_show_vsanmem_cmd.return_value = load_fixture("nxos_vsan", "shvsanmem.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -187,16 +162,10 @@ class TestNxosVsanModule(TestNxosModule):
         )
 
     def test_vsan_invalid_vsan(self):
-        margs = {
-            "vsan": [{"id": 4096, "name": "vsan-SAN-925", "suspend": True}]
-        }
+        margs = {"vsan": [{"id": 4096, "name": "vsan-SAN-925", "suspend": True}]}
         set_module_args(margs, True)
-        self.execute_show_vsan_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsan.cfg"
-        )
-        self.execute_show_vsanmem_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsanmem.cfg"
-        )
+        self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
+        self.execute_show_vsanmem_cmd.return_value = load_fixture("nxos_vsan", "shvsanmem.cfg")
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
             testdata = errinfo.value.args[0]
@@ -204,16 +173,10 @@ class TestNxosVsanModule(TestNxosModule):
             assert testdata["failed"]
 
     def test_vsan_change_reserved_vsan(self):
-        margs = {
-            "vsan": [{"id": 4094, "name": "vsan-SAN-925", "suspend": True}]
-        }
+        margs = {"vsan": [{"id": 4094, "name": "vsan-SAN-925", "suspend": True}]}
         set_module_args(margs, True)
-        self.execute_show_vsan_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsan.cfg"
-        )
-        self.execute_show_vsanmem_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsanmem.cfg"
-        )
+        self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
+        self.execute_show_vsanmem_cmd.return_value = load_fixture("nxos_vsan", "shvsanmem.cfg")
         result = self.execute_module(changed=False)
         assert "reserved vsan" in str(result["messages"])
         self.assertEqual(result["commands"], [])
@@ -224,16 +187,12 @@ class TestNxosVsanModule(TestNxosModule):
                 {
                     "interface": ["fc1/1", "fc1/40", "port-channel 155"],
                     "id": 922,
-                }
-            ]
+                },
+            ],
         }
         set_module_args(margs, True)
-        self.execute_show_vsan_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsan.cfg"
-        )
-        self.execute_show_vsanmem_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsanmem.cfg"
-        )
+        self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
+        self.execute_show_vsanmem_cmd.return_value = load_fixture("nxos_vsan", "shvsanmem.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -249,12 +208,8 @@ class TestNxosVsanModule(TestNxosModule):
     def test_vsan_remove_non_existing_vsan(self):
         margs = {"vsan": [{"id": 1111, "remove": True}]}
         set_module_args(margs, True)
-        self.execute_show_vsan_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsan.cfg"
-        )
-        self.execute_show_vsanmem_cmd.return_value = load_fixture(
-            "nxos_vsan", "shvsanmem.cfg"
-        )
+        self.execute_show_vsan_cmd.return_value = load_fixture("nxos_vsan", "shvsan.cfg")
+        self.execute_show_vsanmem_cmd.return_value = load_fixture("nxos_vsan", "shvsanmem.cfg")
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
         assert "no vsan" in str(result["messages"])

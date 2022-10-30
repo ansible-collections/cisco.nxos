@@ -1,5 +1,5 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_bgp_address_family rendered integration tests on connection={{ ansible_connection }}
 
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
@@ -22,11 +22,11 @@
           safi: unicast
           vrf: site-1
           default_information:
-            originate: True
+            originate: true
           aggregate_address:
             - prefix: 203.0.113.0/24
-              as_set: True
-              summary_only: True
+              as_set: true
+              summary_only: true
         - afi: ipv6
           safi: multicast
           vrf: site-1
@@ -41,10 +41,9 @@
   register: result
 
 - name: Assert that correct set of commands were rendered
-  assert:
+  ansible.builtin.assert:
     that:
-      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length\
-            \ == 0 }}"
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
 
 - name: Gather BGP facts
   cisco.nxos.nxos_bgp_address_family:
@@ -52,6 +51,6 @@
   register: result
 
 - name: Ensure that no configuration changes were made
-  assert:
+  ansible.builtin.assert:
     that:
       - result.gathered == {}

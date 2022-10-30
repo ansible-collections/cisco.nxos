@@ -1,29 +1,29 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lacp merged integration tests connection={{ ansible_connection }}
 
 - name: Enable lacp
   cisco.nxos.nxos_feature:
     feature: lacp
 
-- set_fact:
+- name: Set a fact for 'mac'
+  ansible.builtin.set_fact:
     mac:
       address: 00c1.4c00.bd15
       role: primary
   when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
 - block:
-
     - name: Merged
       register: result
       cisco.nxos.nxos_lacp: &id001
         config:
           system:
             priority: 11
-            mac: '{{ mac|default(omit) }}'
+            mac: "{{ mac|default(omit) }}"
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == 0
           - result.changed == true
@@ -32,7 +32,7 @@
           - result.commands|length == 2
       when: platform is search('N9K') and imagetag is not search('I[2-6]')
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == 0
           - result.changed == true
@@ -43,25 +43,24 @@
     - name: Gather lacp facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lacp
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.lacp == result.after
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_lacp: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled

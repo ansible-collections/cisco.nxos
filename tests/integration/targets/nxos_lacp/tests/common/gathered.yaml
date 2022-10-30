@@ -1,32 +1,30 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: START nxos_lacp gathered integration tests on connection={{ ansible_connection }}
 
 - name: Enable lacp
   cisco.nxos.nxos_feature:
     feature: lacp
 
-- include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
 
-- include_tasks: _populate_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-
     - name: Gather lacp facts from the device using nxos_lacp
       register: result
       cisco.nxos.nxos_lacp:
         state: gathered
 
-    - assert:
+    - ansible.builtin.assert:
         that: "{{ result['gathered'] == gathered }}"
   always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - include_tasks: _remove_config.yaml
-
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_feature:
         feature: lacp
         state: disabled
 
-    - debug:
+    - ansible.builtin.debug:
         msg: END nxos_lacp gathered integration tests on connection={{ ansible_connection }}

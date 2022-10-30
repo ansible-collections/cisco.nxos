@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -25,6 +26,8 @@ module: nxos_user
 extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
+notes:
+- Limited Support for Cisco MDS
 short_description: Manage the collection of local users on Nexus devices
 description:
 - This module provides declarative management of the local usernames configured on
@@ -52,8 +55,7 @@ options:
       configured_password:
         description:
         - The password to be configured on the network device. The password needs to be
-          provided in cleartext and it will be encrypted on the device. Please note that
-          this option is not same as C(provider password).
+          provided in cleartext and it will be encrypted on the device.
         type: str
       update_password:
         description:
@@ -97,8 +99,7 @@ options:
   configured_password:
     description:
     - The password to be configured on the network device. The password needs to be
-      provided in cleartext and it will be encrypted on the device. Please note that
-      this option is not same as C(provider password).
+      provided in cleartext and it will be encrypted on the device.
     type: str
   update_password:
     description:
@@ -179,20 +180,19 @@ import re
 from copy import deepcopy
 from functools import partial
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    run_commands,
-    load_config,
-    get_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
     to_list,
 )
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    run_commands,
+)
+
 
 BUILTIN_ROLES = [
     "network-admin",
@@ -305,9 +305,7 @@ def parse_roles(data):
 
 
 def map_config_to_obj(module):
-    out = run_commands(
-        module, [{"command": "show user-account", "output": "json"}]
-    )
+    out = run_commands(module, [{"command": "show user-account", "output": "json"}])
     data = out[0]
 
     objects = list()
@@ -320,7 +318,7 @@ def map_config_to_obj(module):
                 "sshkey": item.get("sshkey_info"),
                 "roles": parse_roles(item),
                 "state": "present",
-            }
+            },
         )
     return objects
 
@@ -369,7 +367,7 @@ def map_params_to_obj(module):
                 "sshkey": get_value("sshkey"),
                 "roles": get_value("roles"),
                 "state": get_value("state"),
-            }
+            },
         )
 
         for key, value in iteritems(item):
@@ -398,14 +396,11 @@ def update_objects(want, have):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     element_spec = dict(
         name=dict(),
         configured_password=dict(no_log=True),
-        update_password=dict(
-            default="always", choices=["on_create", "always"]
-        ),
+        update_password=dict(default="always", choices=["on_create", "always"]),
         roles=dict(type="list", aliases=["role"], elements="str"),
         sshkey=dict(no_log=False),
         state=dict(default="present", choices=["present", "absent"]),
@@ -427,7 +422,6 @@ def main():
     )
 
     argument_spec.update(element_spec)
-    argument_spec.update(nxos_argument_spec)
 
     mutually_exclusive = [("name", "aggregate")]
 
@@ -467,11 +461,7 @@ def main():
                     module.fail_json(msg=resp)
                 else:
                     result["warnings"].extend(
-                        [
-                            x[9:]
-                            for x in resp.splitlines()
-                            if x.startswith("WARNING: ")
-                        ]
+                        [x[9:] for x in resp.splitlines() if x.startswith("WARNING: ")],
                     )
 
         result["changed"] = True

@@ -1,0 +1,16 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_hostname rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_hostname:
+    config:
+      hostname: NXOSv-9k
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - merged['commands'] == result['rendered']
+      - result.changed == False

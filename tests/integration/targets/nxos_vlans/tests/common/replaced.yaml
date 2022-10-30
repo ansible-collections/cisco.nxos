@@ -1,16 +1,14 @@
 ---
-- debug:
-    msg: Start nxos_vlans replaced integration tests connection={{ ansible_connection
-      }}
+- ansible.builtin.debug:
+    msg: Start nxos_vlans replaced integration tests connection={{ ansible_connection }}
 
-- name: setup1
+- name: Setup1
   cisco.nxos.nxos_config: &id003
     lines:
       - "no vlan 2-100"
 
 - block:
-
-    - name: setup2
+    - name: Setup2
       cisco.nxos.nxos_config:
         lines:
           - "vlan 5"
@@ -21,20 +19,19 @@
     - name: Gather vlans facts
       cisco.nxos.nxos_facts: &id001
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: vlans
 
     - name: Replaced
       register: result
       cisco.nxos.nxos_vlans: &id002
         config:
-
           - vlan_id: 6
             state: suspend
         state: replaced
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.before|length == ansible_facts.network_resources.vlans|length
           - result.changed == true
@@ -46,19 +43,18 @@
     - name: Gather vlans post facts
       cisco.nxos.nxos_facts: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|length == ansible_facts.network_resources.vlans|length
 
-    - name: Idempotence - Replaced
+    - name: Idempotence - replaced
       register: result
       cisco.nxos.nxos_vlans: *id002
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_config: *id003

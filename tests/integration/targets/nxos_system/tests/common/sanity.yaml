@@ -1,27 +1,27 @@
 ---
-- debug: msg="START connection={{ ansible_connection }}/sanity.yaml"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }}/sanity.yaml
 
 - block:
-
-    - name: remove configuration
+    - name: Remove configuration
       register: result
       ignore_errors: true
       cisco.nxos.nxos_system: &id010
         state: absent
 
-    - name: configure domain lookup
+    - name: Configure domain lookup
       register: result
       cisco.nxos.nxos_system: &id007
         domain_lookup: true
         state: present
 
-    - name: configure hostname and domain-name
+    - name: Configure hostname and domain-name
       register: result
       cisco.nxos.nxos_system: &id001
         hostname: switch
         domain_name: test.example.com
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
@@ -29,83 +29,82 @@
       register: result
       cisco.nxos.nxos_system: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: configure name servers
+    - name: Configure name servers
       register: result
       cisco.nxos.nxos_system: &id003
         name_servers:
           - 8.8.8.8
           - 8.8.4.4
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure name servers with VRF support
+    - name: Configure name servers with VRF support
       register: result
       cisco.nxos.nxos_system: &id005
         name_servers:
-
           - server: 8.8.8.8
             vrf: management
 
           - server: 8.8.4.4
             vrf: management
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure domain lookup1
+    - name: Configure domain lookup1
       register: result
       cisco.nxos.nxos_system: &id006
         domain_lookup: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure domain lookup2
+    - name: Configure domain lookup2
       register: result
       cisco.nxos.nxos_system: *id007
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: configure system mtu
+    - name: Configure system mtu
       register: result
       cisco.nxos.nxos_system: &id008
         system_mtu: 3000
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: default configuration
+    - name: Default configuration
       register: result
       cisco.nxos.nxos_system: &id009
         hostname: default
@@ -113,19 +112,19 @@
         name_servers: default
         system_mtu: default
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
     - name: Idempotence check
       register: result
       cisco.nxos.nxos_system: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-
-    - name: remove configuration
+    - name: Remove configuration
       cisco.nxos.nxos_system: *id010
 
     - name: Re-configure hostname
       cisco.nxos.nxos_system: *id001
 
-    - debug: msg="END connection={{ ansible_connection }}/sanity.yaml"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }}/sanity.yaml

@@ -1,26 +1,29 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_vpc sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_vpc sanity test
 
 - block:
+    - name: Set a fact for 'delay_restore_orphan_port'
+      ansible.builtin.set_fact:
+        delay_restore_orphan_port: 25
 
-    - set_fact: delay_restore_orphan_port=25
-
-    - set_fact: def_delay_restore_orphan_port=default
+    - name: Set a fact for 'def_delay_restore_orphan_port'
+      ansible.builtin.set_fact:
+        def_delay_restore_orphan_port: default
   when: platform is not search("N35|N5K|N6K")
 
 - block:
-
-    - name: disable vpc for initial vpc config cleanup
+    - name: Disable vpc for initial vpc configuration cleanup
       cisco.nxos.nxos_feature:
         feature: vpc
         state: disabled
 
-    - name: enable feature vpc
+    - name: Enable 'feature vpc'
       cisco.nxos.nxos_feature:
         feature: vpc
         state: enabled
 
-    - name: Ensure ntc VRF exists on switch
+    - name: Ensure NTC VRF exists on switch
       cisco.nxos.nxos_vrf:
         vrf: ntc
 
@@ -33,15 +36,15 @@
         pkl_src: 10.1.100.20
         pkl_vrf: ntc
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Conf Idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vpc: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -56,18 +59,17 @@
         l3_peer_router: true
         delay_restore: 5
         delay_restore_interface_vlan: 15
-        delay_restore_orphan_port: '{{ delay_restore_orphan_port|default(omit) }}'
+        delay_restore_orphan_port: "{{ delay_restore_orphan_port|default(omit) }}"
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vpc: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - block:
-
         - set_fact: def_auto_recovery=False
 
         - set_fact: def_auto_recovery=True
@@ -77,7 +79,7 @@
           register: result
           cisco.nxos.nxos_vpc: &id005
             domain: 100
-            auto_recovery: '{{ not def_auto_recovery }}'
+            auto_recovery: "{{ not def_auto_recovery }}"
 
         - assert: *id002
 
@@ -91,7 +93,7 @@
           register: result
           cisco.nxos.nxos_vpc: &id006
             domain: 100
-            auto_recovery: '{{ def_auto_recovery }}'
+            auto_recovery: "{{ def_auto_recovery }}"
 
         - assert: *id002
 
@@ -108,13 +110,13 @@
         domain: 100
         auto_recovery_reload_delay: 242
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence auto-recovery reload-delay
+    - name: Configure idempotence auto-recovery reload-delay
       register: result
       cisco.nxos.nxos_vpc: *id007
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure vpc2
       register: result
@@ -127,16 +129,15 @@
         l3_peer_router: true
         delay_restore: default
         delay_restore_interface_vlan: default
-        delay_restore_orphan_port: '{{ def_delay_restore_orphan_port|default(omit)
-          }}'
+        delay_restore_orphan_port: "{{ def_delay_restore_orphan_port|default(omit) }}"
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vpc: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - name: Configure vpc3
       register: result
@@ -146,39 +147,39 @@
         peer_gw: false
         l3_peer_router: false
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Conf Idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vpc: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: remove vpc
+    - name: Remove vpc
       register: result
       cisco.nxos.nxos_vpc: &id010
         state: absent
         domain: 100
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Remove Idempotence
+    - name: Remove idempotence
       register: result
       cisco.nxos.nxos_vpc: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-
-    - name: remove vrf
+    - name: Remove VRF
       ignore_errors: true
       cisco.nxos.nxos_vrf:
         vrf: ntc
         state: absent
 
-    - name: disable feature vpc
+    - name: Disable 'feature vpc'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: vpc
         state: disabled
 
-- debug: msg="END connection={{ ansible_connection }} nxos_vpc sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_vpc sanity test

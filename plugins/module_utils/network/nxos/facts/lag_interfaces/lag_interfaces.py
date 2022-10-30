@@ -11,14 +11,15 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lag_interfaces.lag_interfaces import (
     Lag_interfacesArgs,
 )
@@ -29,8 +30,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Lag_interfacesFacts(object):
-    """ The nxos lag_interfaces fact class
-    """
+    """The nxos lag_interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -47,7 +47,7 @@ class Lag_interfacesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for lag_interfaces
+        """Populate the facts for lag_interfaces
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
@@ -63,9 +63,7 @@ class Lag_interfacesFacts(object):
         facts = {}
         if objs:
             facts["lag_interfaces"] = []
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["lag_interfaces"].append(utils.remove_empties(cfg))
 
@@ -102,9 +100,7 @@ class Lag_interfacesFacts(object):
                 member.update(match_line.groupdict())
 
             if member and member.get("port_channel", None):
-                port_channel = "port-channel{0}".format(
-                    member.pop("port_channel")
-                )
+                port_channel = "port-channel{0}".format(member.pop("port_channel"))
                 for x in result:
                     if x["name"] == port_channel:
                         x["members"].append(utils.remove_empties(member))

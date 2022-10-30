@@ -1,0 +1,41 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_ntp_global rendered integration tests on connection={{ ansible_connection }}
+
+- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+  cisco.nxos.nxos_ntp_global:
+    config:
+      access_group:
+        peer:
+          - access_list: PeerAcl1
+        serve:
+          - access_list: ServeAcl1
+      authenticate: true
+      logging: true
+      master:
+        stratum: 2
+      peers:
+        - peer: 192.0.2.1
+          key_id: 1
+          maxpoll: 15
+          minpoll: 5
+          vrf: default
+        - peer: 192.0.2.2
+          key_id: 2
+          prefer: true
+          vrf: siteA
+      servers:
+        - server: 198.51.100.1
+          key_id: 2
+          vrf: default
+        - server: 203.0.113.1
+          key_id: 1
+          vrf: siteB
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
+      - result.changed == False

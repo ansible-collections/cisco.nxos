@@ -4,6 +4,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -12,6 +13,8 @@ module: nxos_command
 extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
+notes:
+- Limited Support for Cisco MDS
 short_description: Run arbitrary command on Cisco NXOS devices
 description:
 - Sends an arbitrary command to an NXOS node and returns the results read from the
@@ -137,13 +140,11 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.p
     FailedConditionalError,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    transform_commands,
     to_lines,
+    transform_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-    run_commands,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
 
 
 def parse_commands(module, warnings):
@@ -154,7 +155,7 @@ def parse_commands(module, warnings):
             if not item["command"].startswith("show"):
                 warnings.append(
                     "Only show commands are supported when using check mode, not "
-                    "executing %s" % item["command"]
+                    "executing %s" % item["command"],
                 )
                 commands.remove(item)
 
@@ -169,8 +170,7 @@ def to_cli(obj):
 
 
 def main():
-    """entry point for module execution
-    """
+    """entry point for module execution"""
     argument_spec = dict(
         # { command: <str>, output: <str>, prompt: <str>, response: <str> }
         commands=dict(type="list", required=True, elements="raw"),
@@ -180,11 +180,7 @@ def main():
         interval=dict(default=1, type="int"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     result = {"changed": False, "warnings": warnings}
@@ -224,9 +220,7 @@ def main():
         msg = "One or more conditional statements have not been satisfied"
         module.fail_json(msg=msg, failed_conditions=failed_conditions)
 
-    result.update(
-        {"stdout": responses, "stdout_lines": list(to_lines(responses))}
-    )
+    result.update({"stdout": responses, "stdout_lines": list(to_lines(responses))})
 
     module.exit_json(**result)
 

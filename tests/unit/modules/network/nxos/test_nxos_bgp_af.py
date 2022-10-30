@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_af
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -34,12 +36,12 @@ class TestNxosBgpAfModule(TestNxosModule):
         super(TestNxosBgpAfModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_af.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_af.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_af.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_af.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -61,9 +63,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_vrf(self):
-        set_module_args(
-            dict(asn=65535, vrf="test", afi="ipv4", safi="unicast")
-        )
+        set_module_args(dict(asn=65535, vrf="test", afi="ipv4", safi="unicast"))
         self.execute_module(
             changed=True,
             sort=False,
@@ -75,9 +75,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_vrf_exists(self):
-        set_module_args(
-            dict(asn=65535, vrf="test2", afi="ipv4", safi="unicast")
-        )
+        set_module_args(dict(asn=65535, vrf="test2", afi="ipv4", safi="unicast"))
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_bgp_af_dampening_routemap(self):
@@ -87,7 +85,7 @@ class TestNxosBgpAfModule(TestNxosModule):
                 afi="ipv4",
                 safi="unicast",
                 dampening_routemap="route-map-a",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -108,7 +106,7 @@ class TestNxosBgpAfModule(TestNxosModule):
                 dampening_suppress_time=2000,
                 dampening_reuse_time=1900,
                 dampening_max_suppress_time=10,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -130,7 +128,7 @@ class TestNxosBgpAfModule(TestNxosModule):
                 dampening_suppress_time=2000,
                 dampening_reuse_time=1900,
                 dampening_max_suppress_time=10,
-            )
+            ),
         )
         result = self.execute_module(failed=True)
         self.assertEqual(
@@ -141,9 +139,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_client(self):
-        set_module_args(
-            dict(asn=65535, afi="ipv4", safi="unicast", client_to_client=False)
-        )
+        set_module_args(dict(asn=65535, afi="ipv4", safi="unicast", client_to_client=False))
         self.execute_module(
             changed=True,
             commands=[
@@ -154,11 +150,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_retain_route_target(self):
-        set_module_args(
-            dict(
-                asn=65535, afi="l2vpn", safi="evpn", retain_route_target="abc"
-            )
-        )
+        set_module_args(dict(asn=65535, afi="l2vpn", safi="evpn", retain_route_target="abc"))
         self.execute_module(
             changed=True,
             commands=[
@@ -169,11 +161,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_retain_route_target_all(self):
-        set_module_args(
-            dict(
-                asn=65535, afi="l2vpn", safi="evpn", retain_route_target="all"
-            )
-        )
+        set_module_args(dict(asn=65535, afi="l2vpn", safi="evpn", retain_route_target="all"))
         self.execute_module(
             changed=True,
             commands=[
@@ -184,9 +172,5 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_retain_route_target_exists(self):
-        set_module_args(
-            dict(
-                asn=65535, afi="l2vpn", safi="evpn", retain_route_target="xyz"
-            )
-        )
+        set_module_args(dict(asn=65535, afi="l2vpn", safi="evpn", retain_route_target="xyz"))
         self.execute_module(changed=False, commands=[])

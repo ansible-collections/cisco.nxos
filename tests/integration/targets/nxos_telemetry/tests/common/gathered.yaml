@@ -1,0 +1,43 @@
+---
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_telemetry gathered sanity test
+
+- name: Setup 1
+  ignore_errors: true
+  cisco.nxos.nxos_feature: &id001
+    feature: telemetry
+    state: disabled
+
+- block:
+    - name: Setup 2
+      cisco.nxos.nxos_feature:
+        feature: telemetry
+        state: enabled
+
+    - name: Populate telemetry data
+      cisco.nxos.nxos_config:
+        lines:
+          - "telemetry"
+          - "destination-group 2"
+          - "ip address 192.168.0.1 port 50001 protocol grpc encoding gpb"
+          - "ip address 192.168.0.2 port 60001 protocol grpc encoding gpb"
+          - "destination-group 10"
+          - "ip address 192.168.0.1 port 50001 protocol grpc encoding gpb"
+          - "ip address 192.168.0.2 port 60001 protocol grpc encoding gpb"
+          - "sensor-group 8"
+          - "sensor-group 2"
+          - "subscription 100"
+          - "snsr-grp 8 sample-interval 15000"
+
+    - name: Gather telemetry facts using gathered
+      cisco.nxos.nxos_telemetry:
+        state: gathered
+      register: result
+
+    - ansible.builtin.assert:
+        that:
+          - "{{ result['gathered'] == gathered }}"
+  always:
+    - name: Setup 1
+      ignore_errors: true
+      cisco.nxos.nxos_feature: *id001

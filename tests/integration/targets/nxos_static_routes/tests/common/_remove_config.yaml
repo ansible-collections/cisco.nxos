@@ -1,5 +1,5 @@
 ---
-- name: Remove config
+- name: Remove configuration
   cisco.nxos.nxos_config:
     lines:
       - "no ip route 192.0.2.16/28 192.0.2.24 name new_route"
@@ -11,5 +11,5 @@
       - "no ip route 192.0.2.36/30 192.0.2.48 name test_route2 2"
       - "no vrf context trial_vrf"
       - "default interface {{ nxos_int2 }}"
-  ignore_errors: yes
-  #error is thrown if we deleted trial_vrf when it is not present already. ignore_errors circumvents it
+  ignore_errors: true
+  # error is thrown if we deleted trial_vrf when it is not present already. ignore_errors circumvents it

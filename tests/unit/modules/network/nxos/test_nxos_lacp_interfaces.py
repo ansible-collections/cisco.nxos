@@ -19,15 +19,16 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import (
-    patch,
-    PropertyMock,
-)
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_lacp_interfaces
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import PropertyMock, patch
+
 from .nxos_module import TestNxosModule, set_module_args
+
 
 ignore_provider_arg = True
 
@@ -40,26 +41,22 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
         super(TestNxosLacpInterfacesModule, self).setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
         )
         self.FACT_LEGACY_SUBSETS = self.mock_FACT_LEGACY_SUBSETS.start()
 
         self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_interfaces.l3_interfaces.L3_interfaces.edit_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_interfaces.l3_interfaces.L3_interfaces.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
@@ -86,11 +83,9 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
             switchport trunk native vlan 5
             switchport trunk allowed vlan 10
             no lacp graceful-convergence
-        """
+        """,
         )
-        self.get_resource_connection_facts.return_value = {
-            self.SHOW_CMD: existing
-        }
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
         playbook = dict(
             config=[
                 dict(
@@ -98,8 +93,8 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
                     convergence={"graceful": False},
                     suspend_individual=True,
                     mode="delay",
-                )
-            ]
+                ),
+            ],
         )
         # Expected result commands for each 'state'
         merged = [

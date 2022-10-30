@@ -11,14 +11,15 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.l2_interfaces.l2_interfaces import (
     L2_interfacesArgs,
 )
@@ -28,8 +29,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class L2_interfacesFacts(object):
-    """The nxos l2_interfaces fact class
-    """
+    """The nxos l2_interfaces fact class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -46,7 +46,7 @@ class L2_interfacesFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for l2_interfaces
+        """Populate the facts for l2_interfaces
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
@@ -68,9 +68,7 @@ class L2_interfacesFacts(object):
         facts = {}
         if objs:
             facts["l2_interfaces"] = []
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["l2_interfaces"].append(utils.remove_empties(cfg))
 
@@ -96,14 +94,11 @@ class L2_interfacesFacts(object):
         config["name"] = intf
         config["mode"] = utils.parse_conf_arg(conf, "switchport mode")
         config["ip_forward"] = utils.parse_conf_arg(conf, "ip forward")
-        config["access"]["vlan"] = utils.parse_conf_arg(
-            conf, "switchport access vlan"
-        )
+        config["access"]["vlan"] = utils.parse_conf_arg(conf, "switchport access vlan")
         config["trunk"]["allowed_vlans"] = utils.parse_conf_arg(
-            conf, "switchport trunk allowed vlan"
+            conf,
+            "switchport trunk allowed vlan",
         )
-        config["trunk"]["native_vlan"] = utils.parse_conf_arg(
-            conf, "switchport trunk native vlan"
-        )
+        config["trunk"]["native_vlan"] = utils.parse_conf_arg(conf, "switchport trunk native vlan")
 
         return utils.remove_empties(config)

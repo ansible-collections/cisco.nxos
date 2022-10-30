@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -26,6 +27,8 @@ extends_documentation_fragment:
 - cisco.nxos.nxos
 author: Peter Sprygada (@privateip)
 short_description: Manage the system attributes on Cisco NXOS devices
+notes:
+- Unsupported for Cisco MDS
 description:
 - This module provides declarative management of node system attributes on Cisco NXOS
   devices.  It provides an option to configure host system parameters or remove those
@@ -116,13 +119,6 @@ commands:
 """
 import re
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_config,
-    load_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
@@ -131,6 +127,12 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     ComplexList,
 )
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+)
+
 
 _CONFIGURED_VRFS = None
 
@@ -357,8 +359,7 @@ def map_params_to_obj(module):
 
 
 def main():
-    """ main entry point for module execution
-    """
+    """main entry point for module execution"""
     argument_spec = dict(
         hostname=dict(),
         domain_lookup=dict(type="bool"),
@@ -372,11 +373,7 @@ def main():
         state=dict(default="present", choices=["present", "absent"]),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 

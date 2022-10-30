@@ -1,12 +1,13 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_facts sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_facts sanity test
 
-- name: nxos_facts gather hardware facts
+- name: Nxos_facts gather hardware facts
   register: result
   cisco.nxos.nxos_facts:
     gather_subset: hardware
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'hardware' in result.ansible_facts.ansible_net_gather_subset"
@@ -16,12 +17,12 @@
       - result.ansible_facts.ansible_net_memfree_mb > 1
       - result.ansible_facts.ansible_net_memtotal_mb > 1
 
-- name: nxos_facts gather config facts
+- name: Nxos_facts gather configuration facts
   register: result
   cisco.nxos.nxos_facts:
     gather_subset: config
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'config' in result.ansible_facts.ansible_net_gather_subset"
@@ -29,14 +30,14 @@
       - "'interfaces' not in result.ansible_facts.ansible_net_gather_subset"
       - result.ansible_facts.ansible_net_config is defined
 
-- name: nxos_facts gather config and hardware facts
+- name: Nxos_facts gather configuration and hardware facts
   register: result
   cisco.nxos.nxos_facts:
     gather_subset:
       - hardware
       - config
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'hardware' in result.ansible_facts.ansible_net_gather_subset"
@@ -47,15 +48,16 @@
       - result.ansible_facts.ansible_net_memfree_mb > 1
       - result.ansible_facts.ansible_net_memtotal_mb > 1
 
-- name: nxos_facts gather features facts
+- name: Nxos_facts gather features facts
   register: result
   cisco.nxos.nxos_facts:
     gather_subset: features
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
       - "'features' in result.ansible_facts.ansible_net_gather_subset"
       - result.ansible_facts.ansible_net_features_enabled is defined
 
-- debug: msg="END connection={{ ansible_connection }} nxos_facts sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_facts sanity test

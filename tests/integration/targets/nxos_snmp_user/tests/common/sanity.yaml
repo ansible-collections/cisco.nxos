@@ -1,15 +1,22 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_user sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_snmp_user sanity test
 
-- set_fact: delete_last_user_allowed='true'
+- name: Set a fact for 'delete_last_user_allowed'
+  ansible.builtin.set_fact:
+    delete_last_user_allowed: true
 
-- set_fact: delete_last_user_allowed='false'
+- name: Set a fact for 'delete_last_user_allowed'
+  ansible.builtin.set_fact:
+    delete_last_user_allowed: false
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- set_fact: delete_last_user_allowed='false'
+- name: Set a fact for 'delete_last_user_allowed'
+  ansible.builtin.set_fact:
+    delete_last_user_allowed: false
   when: platform is search('N5K|N6K|N9K-F')
 
-- name: Remove snmp user
+- name: Remove SNMP user
   ignore_errors: true
   when: platform is not search('N5K|N6K|N9K-F')
   cisco.nxos.nxos_snmp_user: &id006
@@ -23,12 +30,11 @@
     name: ntc
     state: absent
 
-- pause:
+- ansible.builtin.pause:
     seconds: 5
 
 - block:
-
-    - name: Create snmp user
+    - name: Create SNMP user
       register: result
       cisco.nxos.nxos_snmp_user:
         user: ntc
@@ -38,7 +44,7 @@
         privacy: HelloU$er1
         encrypt: true
 
-    - assert: &id001
+    - ansible.builtin.assert: &id001
         that:
           - result.changed == true
 
@@ -48,13 +54,13 @@
         user: ntc
         group: network-admin
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_snmp_user: *id002
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
@@ -65,19 +71,18 @@
         group: network-admin
         state: absent
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
 
-    - pause:
+    - ansible.builtin.pause:
         seconds: 5
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_snmp_user: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
     - block:
-
         - name: delete snmp user
           register: result
           cisco.nxos.nxos_snmp_user: &id005
@@ -97,13 +102,13 @@
         - assert: *id004
       when: delete_last_user_allowed
   always:
-
-    - name: delete snmp user
+    - name: Delete SNMP user
       when: platform is not search('N5K|N6K|N9K-F')
       cisco.nxos.nxos_snmp_user: *id006
 
-    - name: remove user workaround
+    - name: Remove user workaround
       when: platform is search('N5K|N6K|N9K-F')
       cisco.nxos.nxos_user: *id007
 
-- debug: msg="END connection={{ ansible_connection }} nxos_snmp_user sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_snmp_user sanity test

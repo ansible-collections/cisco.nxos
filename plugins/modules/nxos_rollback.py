@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -34,6 +35,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - Sometimes C(transport=nxapi) may cause a timeout error.
 options:
   checkpoint_file:
@@ -73,11 +75,9 @@ status:
 """
 
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-    run_commands,
-)
 from ansible.module_utils.basic import AnsibleModule
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
 
 
 def checkpoint(filename, module):
@@ -93,17 +93,13 @@ def rollback(filename, module):
         {
             "command": "rollback running-config file %s" % filename,
             "output": "text",
-        }
+        },
     ]
     run_commands(module, commands)
 
 
 def main():
-    argument_spec = dict(
-        checkpoint_file=dict(required=False), rollback_to=dict(required=False)
-    )
-
-    argument_spec.update(nxos_argument_spec)
+    argument_spec = dict(checkpoint_file=dict(required=False), rollback_to=dict(required=False))
 
     module = AnsibleModule(
         argument_spec=argument_spec,

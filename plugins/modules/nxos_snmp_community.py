@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -24,15 +25,20 @@ DOCUMENTATION = """
 module: nxos_snmp_community
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages SNMP community configs.
+short_description: (deprecated, removed after 2024-01-01) Manages SNMP community configs.
 description:
 - Manages SNMP community configuration.
 version_added: 1.0.0
+deprecated:
+  alternative: nxos_snmp_server
+  why: Updated modules released with more functionality
+  removed_at_date: '2024-01-01'
 author:
 - Jason Edelman (@jedelman8)
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Limited Support for Cisco MDS
 options:
   community:
     description:
@@ -81,14 +87,13 @@ commands:
 """
 
 import re
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def execute_show_command(command, module):
@@ -183,8 +188,6 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
     module = AnsibleModule(
         argument_spec=argument_spec,
         required_one_of=[["access", "group"]],
@@ -211,9 +214,7 @@ def main():
     configured_groups = get_snmp_groups(module)
 
     if group not in configured_groups:
-        module.fail_json(
-            msg="Group not on switch. Please add before moving forward"
-        )
+        module.fail_json(msg="Group not on switch. Please add before moving forward")
 
     existing = get_snmp_community(module, community)
     args = dict(group=group, acl=acl)

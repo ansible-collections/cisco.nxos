@@ -1,7 +1,8 @@
 ---
-- debug: msg="START nxapi/sublevel_strict.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/sublevel_strict.yaml
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines:
       - 10 permit ip 192.0.2.1/32 any log
@@ -12,7 +13,7 @@
     parents: ip access-list test
     match: none
 
-- name: configure sub level command using strict match
+- name: Configure sub level command using strict match
   register: result
   cisco.nxos.nxos_config:
     lines:
@@ -25,7 +26,7 @@
     match: strict
     replace: block
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'ip access-list test' in result.updates"
@@ -35,7 +36,7 @@
       - "'40 permit ip 192.0.2.4/32 any log' in result.updates"
       - "'50 permit ip 192.0.2.5/32 any log' not in result.updates"
 
-- name: check sub level command using strict match
+- name: Check sub level command using strict match
   register: result
   cisco.nxos.nxos_config:
     lines:
@@ -46,13 +47,14 @@
     parents: ip access-list test
     match: strict
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config:
     lines: no ip access-list test
     match: none
 
-- debug: msg="END nxapi/sublevel_strict.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/sublevel_strict.yaml

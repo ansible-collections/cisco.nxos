@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -17,20 +18,18 @@ based on the configuration.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
+    Bgp_address_familyArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_address_family import (
     Bgp_address_familyTemplate,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
-    Bgp_address_familyArgs,
-)
 
 
 class Bgp_address_familyFacts(object):
-    """ The nxos bgp_address_family facts class
-    """
+    """The nxos bgp_address_family facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -43,7 +42,7 @@ class Bgp_address_familyFacts(object):
         return connection.get("show running-config | section '^router bgp'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Bgp_address_family network resource
+        """Populate the facts for Bgp_address_family network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -61,9 +60,7 @@ class Bgp_address_familyFacts(object):
         data = self._flatten_config(data)
 
         # parse native config using the Bgp_address_family template
-        bgp_address_family_parser = Bgp_address_familyTemplate(
-            lines=data.splitlines()
-        )
+        bgp_address_family_parser = Bgp_address_familyTemplate(lines=data.splitlines())
         objs = bgp_address_family_parser.parse()
         if objs:
             nbr = []
@@ -84,9 +81,7 @@ class Bgp_address_familyFacts(object):
                             key=lambda k, s="prefix": k[s],
                         )
                     if "networks" in x:
-                        x["networks"] = sorted(
-                            x["networks"], key=lambda k, s="prefix": k[s]
-                        )
+                        x["networks"] = sorted(x["networks"], key=lambda k, s="prefix": k[s])
                     if "redistribute" in x:
                         x["redistribute"] = sorted(
                             x["redistribute"],
@@ -101,13 +96,9 @@ class Bgp_address_familyFacts(object):
                     ),
                 )
 
-        ansible_facts["ansible_network_resources"].pop(
-            "bgp_address_family", None
-        )
+        ansible_facts["ansible_network_resources"].pop("bgp_address_family", None)
 
-        params = utils.remove_empties(
-            utils.validate_config(self.argument_spec, {"config": objs})
-        )
+        params = utils.remove_empties(utils.validate_config(self.argument_spec, {"config": objs}))
 
         facts["bgp_address_family"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
@@ -115,7 +106,7 @@ class Bgp_address_familyFacts(object):
         return ansible_facts
 
     def _flatten_config(self, data):
-        """ Flatten contexts in the BGP
+        """Flatten contexts in the BGP
             running-config for easier parsing.
         :param obj: dict
         :returns: flattened running config

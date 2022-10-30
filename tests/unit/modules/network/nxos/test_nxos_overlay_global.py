@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_overlay_global
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -33,12 +35,12 @@ class TestNxosOverlayGlobalModule(TestNxosModule):
     def setUp(self):
         super(TestNxosOverlayGlobalModule, self).setUp()
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_overlay_global.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_overlay_global.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_overlay_global.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_overlay_global.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -48,9 +50,7 @@ class TestNxosOverlayGlobalModule(TestNxosModule):
         self.mock_get_config.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.get_config.return_value = load_fixture(
-            "", "nxos_overlay_global_config.cfg"
-        )
+        self.get_config.return_value = load_fixture("", "nxos_overlay_global_config.cfg")
         self.load_config.return_value = None
 
     def test_nxos_overlay_global_up(self):

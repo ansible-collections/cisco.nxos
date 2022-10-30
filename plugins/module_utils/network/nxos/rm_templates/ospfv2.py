@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
@@ -20,10 +21,7 @@ def _tmplt_area_range(arange):
 
 def _tmplt_default_information(proc):
     command = "default-information originate"
-    if (
-        "always" in proc["default_information"]
-        and proc["default_information"]["always"]
-    ):
+    if "always" in proc["default_information"] and proc["default_information"]["always"]:
         command += " always"
     if "route_map" in proc["default_information"]:
         command += " route-map"
@@ -110,9 +108,7 @@ def _tmplt_max_metric(proc):
             if on_startup.get("wait_period"):
                 command += " {wait_period}".format(**on_startup)
             if on_startup.get("wait_for_bgp_asn"):
-                command += " wait-for bgp {wait_for_bgp_asn}".format(
-                    **on_startup
-                )
+                command += " wait-for bgp {wait_for_bgp_asn}".format(**on_startup)
         if summary_lsa:
             command += " summary-lsa"
             if summary_lsa.get("max_metric_value"):
@@ -221,9 +217,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
-                        "vrf": "{{ vrf }}"
-                    }
-                }
+                        "vrf": "{{ vrf }}",
+                    },
+                },
             },
             "shared": True,
         },
@@ -238,9 +234,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
-                        "bfd": "{{ not not bfd }}"
-                    }
-                }
+                        "bfd": "{{ not not bfd }}",
+                    },
+                },
             },
         },
         {
@@ -269,8 +265,8 @@ class Ospfv2Template(NetworkTemplate):
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
                         "down_bit_ignore": "{{ not not down_bit_ignore }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -292,10 +288,10 @@ class Ospfv2Template(NetworkTemplate):
                             "vrf_lite": {
                                 "set": "{{ True if vrf_lite is defined and evpn is undefined else None }}",
                                 "evpn": "{{ not not evpn }}",
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -317,9 +313,9 @@ class Ospfv2Template(NetworkTemplate):
                         "auto_cost": {
                             "reference_bandwidth": "{{ acrb }}",
                             "unit": "{{ unit }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -331,7 +327,7 @@ class Ospfv2Template(NetworkTemplate):
             ),
             "setval": "flush-routes",
             "result": {
-                "flush_routes": "{{ not not flush_routes }}"
+                "flush_routes": "{{ not not flush_routes }}",
             },
         },
         {
@@ -348,10 +344,10 @@ class Ospfv2Template(NetworkTemplate):
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
                         "graceful_restart": {
-                            "set": "{{ not graceful_restart }}"
-                        }
-                    }
-                }
+                            "set": "{{ not graceful_restart }}",
+                        },
+                    },
+                },
             },
         },
         {
@@ -369,9 +365,9 @@ class Ospfv2Template(NetworkTemplate):
                     '{{ "vrf_" + vrf|d() }}': {
                         "graceful_restart": {
                             "helper_disable": "{{ not not helper_disable }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -390,9 +386,9 @@ class Ospfv2Template(NetworkTemplate):
                     '{{ "vrf_" + vrf|d() }}': {
                         "graceful_restart": {
                             "grace_period": "{{ grace_period }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -420,9 +416,9 @@ class Ospfv2Template(NetworkTemplate):
                         "log_adjacency_changes": {
                             "log": "{{ True if log is defined and detail is undefined else None }}",
                             "detail": "{{ True if detail is defined else None }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -451,9 +447,9 @@ class Ospfv2Template(NetworkTemplate):
                             "ignore_count": "{{ ig_count }}",
                             "reset_time": "{{ rst_time }}",
                             "warning_only": "{{ not not warning_only }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -471,10 +467,10 @@ class Ospfv2Template(NetworkTemplate):
                         "areas": [
                             {
                                 "area_id": "{{ area_id }}",
-                            }
-                        ]
-                    }
-                }
+                            },
+                        ],
+                    },
+                },
             },
         },
         {
@@ -504,9 +500,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "mpls": {
                     "traffic_eng": {
-                        "multicast_intact": "{{ not not multicast_intact }}"
-                    }
-                }
+                        "multicast_intact": "{{ not not multicast_intact }}",
+                    },
+                },
             },
         },
         {
@@ -521,9 +517,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
-                        "name_lookup": "{{ not not name_lookup }}"
-                    }
-                }
+                        "name_lookup": "{{ not not name_lookup }}",
+                    },
+                },
             },
         },
         {
@@ -539,9 +535,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
-                        "passive_interface": {"default": "{{ not not default }}"}
-                    }
-                }
+                        "passive_interface": {"default": "{{ not not default }}"},
+                    },
+                },
             },
         },
         {
@@ -555,9 +551,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
-                        "rfc1583compatibility": "{{ not not rfc }}"
-                    }
-                }
+                        "rfc1583compatibility": "{{ not not rfc }}",
+                    },
+                },
             },
         },
         {
@@ -572,9 +568,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
-                        "router_id": "{{ router_id }}"
-                    }
-                }
+                        "router_id": "{{ router_id }}",
+                    },
+                },
             },
         },
         {
@@ -588,9 +584,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
-                        "shutdown": "{{ not not shutdown }}"
-                    }
-                }
+                        "shutdown": "{{ not not shutdown }}",
+                    },
+                },
             },
         },
         {
@@ -613,10 +609,10 @@ class Ospfv2Template(NetworkTemplate):
                                 "set": "{{ True if originate is defined and always is undefined and route_map is undefined else None }}",
                                 "always": "{{ not not always }}",
                                 "route_map": "{{ route_map }}",
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -631,9 +627,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
-                        "default_metric": "{{ default_metric }}"
-                    }
-                }
+                        "default_metric": "{{ default_metric }}",
+                    },
+                },
             },
         },
         {
@@ -648,9 +644,9 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
-                        "distance": "{{ distance }}"
-                    }
-                }
+                        "distance": "{{ distance }}",
+                    },
+                },
             },
         },
         {
@@ -670,9 +666,9 @@ class Ospfv2Template(NetworkTemplate):
                         "table_map": {
                             "name": "{{ rmap }}",
                             "filter": "{{ not not filter }}",
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
         },
         {
@@ -690,10 +686,10 @@ class Ospfv2Template(NetworkTemplate):
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
                         "timers": {
-                            "lsa_arrival": "{{ lsa_arrival_val }}"
-                        }
-                    }
-                }
+                            "lsa_arrival": "{{ lsa_arrival_val }}",
+                        },
+                    },
+                },
             },
         },
         {
@@ -711,10 +707,10 @@ class Ospfv2Template(NetworkTemplate):
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
                         "timers": {
-                            "lsa_group_pacing": "{{ lsa_group_pacing }}"
-                        }
-                    }
-                }
+                            "lsa_group_pacing": "{{ lsa_group_pacing }}",
+                        },
+                    },
+                },
             },
         },
         {
@@ -740,11 +736,11 @@ class Ospfv2Template(NetworkTemplate):
                                     "start_interval": "{{ start }}",
                                     "hold_interval": "{{ hold }}",
                                     "max_interval": "{{ max }}",
-                                }
-                            }
-                        }
-                    }
-                }
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -770,11 +766,11 @@ class Ospfv2Template(NetworkTemplate):
                                     "initial_spf_delay": "{{ initial }}",
                                     "min_hold_time": "{{ min }}",
                                     "max_wait_time": "{{ max }}",
-                                }
-                            }
-                        }
-                    }
-                }
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -795,10 +791,10 @@ class Ospfv2Template(NetworkTemplate):
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
                                 "default_cost": "{{ default_cost|int }}",
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -822,12 +818,12 @@ class Ospfv2Template(NetworkTemplate):
                                 "area_id": "{{ area_id }}",
                                 "authentication": {
                                     "set": "{{ True if auth is defined and md is undefined }}",
-                                    "message_digest": "{{ True if md is defined else False }}"
+                                    "message_digest": "{{ True if md is defined else False }}",
                                 },
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -853,10 +849,10 @@ class Ospfv2Template(NetworkTemplate):
                                         "direction": "{{ dir }}",
                                     },
                                 ],
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -880,9 +876,9 @@ class Ospfv2Template(NetworkTemplate):
                                 "id": "{{ id }}",
                                 "route_map": "{{ rmap }}",
                             },
-                        ]
-                    }
-                }
+                        ],
+                    },
+                },
             },
         },
         {
@@ -912,10 +908,10 @@ class Ospfv2Template(NetworkTemplate):
                                     "no_redistribution": "{{ not not no_redis }}",
                                     "default_information_originate": "{{ not not def_info }}",
                                 },
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -944,13 +940,13 @@ class Ospfv2Template(NetworkTemplate):
                                             "always": '{{ True if choice == "always" else None }}',
                                             "never": '{{ True if choice == "never" else None }}',
                                             "supress_fa": "{{ not not supress_fa }}",
-                                        }
-                                    }
+                                        },
+                                    },
                                 },
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -979,10 +975,10 @@ class Ospfv2Template(NetworkTemplate):
                                         "not_advertise": "{{ not not not_adver }}",
                                     },
                                 ],
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -1006,9 +1002,9 @@ class Ospfv2Template(NetworkTemplate):
                                 "not_advertise": "{{ not not not_adver }}",
                                 "tag": "{{ tag }}",
                             },
-                        ]
-                    }
-                }
+                        ],
+                    },
+                },
             },
         },
         {
@@ -1034,10 +1030,10 @@ class Ospfv2Template(NetworkTemplate):
                                     "set": "{{ True if stub is defined and no_summary is undefined else None }}",
                                     "no_summary": "{{ not not no_summary }}",
                                 },
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
         {
@@ -1051,8 +1047,8 @@ class Ospfv2Template(NetworkTemplate):
             "setval": ("maximum-paths {{ maximum_paths }}"),
             "result": {
                 "vrfs": {
-                    '{{ "vrf_" + vrf|d() }}': {"maximum_paths": "{{ maximum_paths }}"}
-                }
+                    '{{ "vrf_" + vrf|d() }}': {"maximum_paths": "{{ maximum_paths }}"},
+                },
             },
         },
         {
@@ -1095,10 +1091,10 @@ class Ospfv2Template(NetworkTemplate):
                                     "set": "{{ True if summary_lsa is defined and sum_lsa_max_metric_value is undefined else None }}",
                                     "max_metric_value": "{{ sum_lsa_max_metric_value }}",
                                 },
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             },
         },
     ]

@@ -28,6 +28,7 @@ The module file for nxos_l3_interfaces
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -39,6 +40,7 @@ version_added: 1.0.0
 author: Trishna Guha (@trishnaguha)
 notes:
 - Tested against NXOS 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 options:
   running_config:
     description:
@@ -97,7 +99,11 @@ options:
             type: int
       redirects:
         description:
-        - Enables/disables ip redirects
+        - Enables/disables ipv4 redirects.
+        type: bool
+      ipv6_redirects:
+        description:
+        - Enables/disables ipv6 redirects.
         type: bool
       unreachables:
         description:
@@ -366,6 +372,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.l3_interfaces.l3_interfaces import (
     L3_interfacesArgs,
 )

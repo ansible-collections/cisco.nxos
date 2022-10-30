@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -16,20 +17,18 @@ based on the configuration.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
+    Ospfv3Args,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospfv3 import (
     Ospfv3Template,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
-    Ospfv3Args,
-)
 
 
 class Ospfv3Facts(object):
-    """ The nxos ospfv3 facts class
-    """
+    """The nxos ospfv3 facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -42,7 +41,7 @@ class Ospfv3Facts(object):
         return connection.get("show running-config | section '^router ospfv3'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Ospfv3 network resource
+        """Populate the facts for Ospfv3 network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -77,7 +76,7 @@ class Ospfv3Facts(object):
                 if "address_family" in entry:
                     if "areas" in entry["address_family"]:
                         entry["address_family"]["areas"] = list(
-                            entry["address_family"]["areas"].values()
+                            entry["address_family"]["areas"].values(),
                         )
 
                 ipv6["processes"].append(entry)

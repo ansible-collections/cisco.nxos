@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
@@ -34,12 +36,12 @@ class TestNxosBgpModule(TestNxosModule):
         super(TestNxosBgpModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -55,9 +57,7 @@ class TestNxosBgpModule(TestNxosModule):
     def test_nxos_bgp(self):
         set_module_args(dict(asn=65535, router_id="192.0.2.1"))
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"], ["router bgp 65535", "router-id 192.0.2.1"]
-        )
+        self.assertEqual(result["commands"], ["router bgp 65535", "router-id 192.0.2.1"])
 
     def test_nxos_bgp_change_nothing(self):
         set_module_args(dict(asn=65535, router_id="192.168.1.1"))
@@ -74,9 +74,7 @@ class TestNxosBgpModule(TestNxosModule):
 
     def test_nxos_bgp_remove_vrf(self):
         set_module_args(dict(asn=65535, vrf="test2", state="absent"))
-        self.execute_module(
-            changed=True, commands=["router bgp 65535", "no vrf test2"]
-        )
+        self.execute_module(changed=True, commands=["router bgp 65535", "no vrf test2"])
 
     def test_nxos_bgp_remove_nonexistant_vrf(self):
         set_module_args(dict(asn=65535, vrf="foo", state="absent"))
@@ -96,9 +94,7 @@ class TestNxosBgpModule(TestNxosModule):
 
     def test_nxos_bgp_global_param(self):
         set_module_args(dict(asn=65535, shutdown=True))
-        self.execute_module(
-            changed=True, commands=["router bgp 65535", "shutdown"]
-        )
+        self.execute_module(changed=True, commands=["router bgp 65535", "shutdown"])
 
     def test_nxos_bgp_global_param_outside_default(self):
         set_module_args(dict(asn=65535, vrf="test", shutdown=True))
@@ -109,9 +105,7 @@ class TestNxosBgpModule(TestNxosModule):
         )
 
     def test_nxos_bgp_default_value(self):
-        set_module_args(
-            dict(asn=65535, graceful_restart_timers_restart="default")
-        )
+        set_module_args(dict(asn=65535, graceful_restart_timers_restart="default"))
         self.execute_module(
             changed=True,
             commands=["router bgp 65535", "graceful-restart restart-time 120"],
@@ -126,12 +120,12 @@ class TestNxosBgp32BitsAS(TestNxosModule):
         super(TestNxosBgp32BitsAS, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -141,9 +135,7 @@ class TestNxosBgp32BitsAS(TestNxosModule):
         self.mock_get_config.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.get_config.return_value = load_fixture(
-            "nxos_bgp", "config_32_bits_as.cfg"
-        )
+        self.get_config.return_value = load_fixture("nxos_bgp", "config_32_bits_as.cfg")
         self.load_config.return_value = []
 
     def test_nxos_bgp_change_nothing(self):
@@ -157,6 +149,4 @@ class TestNxosBgp32BitsAS(TestNxosModule):
 
     def test_nxos_bgp_remove(self):
         set_module_args(dict(asn="65535.65535", state="absent"))
-        self.execute_module(
-            changed=True, commands=["no router bgp 65535.65535"]
-        )
+        self.execute_module(changed=True, commands=["no router bgp 65535.65535"])

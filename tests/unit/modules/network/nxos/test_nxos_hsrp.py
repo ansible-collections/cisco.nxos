@@ -19,10 +19,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_hsrp
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, set_module_args
 
 
@@ -33,17 +35,17 @@ class TestNxosHsrpModule(TestNxosModule):
     def setUp(self):
         super(TestNxosHsrpModule, self).setUp()
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_capabilities = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.get_capabilities"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.get_capabilities",
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {"network_api": "cliconf"}
@@ -65,7 +67,7 @@ class TestNxosHsrpModule(TestNxosModule):
                 priority="150",
                 interface="Ethernet1/2",
                 preempt="enabled",
-            )
+            ),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -79,6 +81,6 @@ class TestNxosHsrpModule(TestNxosModule):
                     "priority 150",
                     "ip 192.0.2.2/8",
                     "preempt",
-                ]
+                ],
             ),
         )

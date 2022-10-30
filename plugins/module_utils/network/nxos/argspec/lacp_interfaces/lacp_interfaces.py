@@ -26,12 +26,12 @@ The arg spec for the nxos_lacp_interfaces module
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
 class Lacp_interfacesArgs(object):
-    """The arg spec for the nxos_lacp_interfaces module
-    """
+    """The arg spec for the nxos_lacp_interfaces module"""
 
     argument_spec = {
         "running_config": {"type": "str"},

@@ -1,13 +1,17 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: Start nxos_lacp_interfaces merged integration tests connection={{ ansible_connection }}
 
-- set_fact:
+- name: Set a fact for 'mode'
+  ansible.builtin.set_fact:
     mode: delay
-  when: platform is not search('N3K|N5K|N6K|N7K') and imagetag is not search('A8|I2')
-    and image_version is not search ('9.2') and chassis_type is not search('C95')
+  when: >-
+    platform is not search('N3K|N5K|N6K|N7K') and
+    imagetag is not search('A8|I2') and
+    image_version is not search ('9.2') and
+    chassis_type is not search('C95')
 
-- name: setup1
+- name: Setup1
   cisco.nxos.nxos_config: &id002
     lines:
       - "no interface port-channel5"
@@ -15,13 +19,12 @@
       - "no feature lacp"
 
 - block:
-
-    - name: setup2
+    - name: Setup2
       cisco.nxos.nxos_config:
         lines:
           - "feature lacp"
 
-    - name: setup3 - L2 for mode command
+    - name: Setup3 - layer 2 for mode command
       when: mode is defined
       cisco.nxos.nxos_config:
         lines:
@@ -32,18 +35,17 @@
       register: result
       cisco.nxos.nxos_lacp_interfaces: &id001
         config:
-
           - name: port-channel10
             links:
               min: 5
 
           - name: port-channel5
-            mode: '{{ mode | default(omit) }}'
+            mode: "{{ mode | default(omit) }}"
             links:
               max: 10
         state: merged
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - result.before|length == 0
@@ -52,7 +54,7 @@
           - "'interface port-channel5' in result.commands"
           - "'lacp max-bundle 10' in result.commands"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - "'lacp mode delay' in result.commands"
           - result.commands|length == 5
@@ -61,24 +63,22 @@
     - name: Gather lacp_interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: lacp_interfaces
 
-    - assert:
+    - ansible.builtin.assert:
         that:
-          - ansible_facts.network_resources.lacp_interfaces|symmetric_difference(result.after)|length
-            == 0
+          - ansible_facts.network_resources.lacp_interfaces|symmetric_difference(result.after)|length == 0
 
-    - name: Idempotence - Merged
+    - name: Idempotence - merged
       register: result
       cisco.nxos.nxos_lacp_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
   always:
-
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_config: *id002

@@ -28,32 +28,30 @@
 # USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
-import collections
 import json
 import re
 import sys
+
 from copy import deepcopy
 
 from ansible.module_utils._text import to_text
-from ansible.module_utils.basic import env_fallback
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-    ComplexList,
-)
-from ansible.module_utils.connection import Connection, ConnectionError
 from ansible.module_utils.common._collections_compat import Mapping
+from ansible.module_utils.connection import Connection, ConnectionError
+from ansible.module_utils.six import PY2, PY3
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
+    CustomNetworkConfig,
     NetworkConfig,
     dumps,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
-    CustomNetworkConfig,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    ComplexList,
+    to_list,
 )
-from ansible.module_utils.six import iteritems, PY2, PY3
-from ansible.module_utils.urls import fetch_url
+
 
 try:
     import yaml
@@ -73,64 +71,16 @@ except ImportError:
 
 _DEVICE_CONNECTION = None
 
-nxos_provider_spec = {
-    "host": dict(type="str"),
-    "port": dict(type="int"),
-    "username": dict(
-        type="str", fallback=(env_fallback, ["ANSIBLE_NET_USERNAME"])
-    ),
-    "password": dict(
-        type="str",
-        no_log=True,
-        fallback=(env_fallback, ["ANSIBLE_NET_PASSWORD"]),
-    ),
-    "ssh_keyfile": dict(
-        type="str",
-        fallback=(env_fallback, ["ANSIBLE_NET_SSH_KEYFILE"]),
-        no_log=False,
-    ),
-    "authorize": dict(
-        type="bool",
-        default=False,
-        fallback=(env_fallback, ["ANSIBLE_NET_AUTHORIZE"]),
-    ),
-    "auth_pass": dict(
-        type="str",
-        no_log=True,
-        fallback=(env_fallback, ["ANSIBLE_NET_AUTH_PASS"]),
-    ),
-    "use_ssl": dict(type="bool", default=False),
-    "use_proxy": dict(type="bool", default=True),
-    "validate_certs": dict(type="bool", default=False),
-    "timeout": dict(type="int"),
-    "transport": dict(type="str", default="cli", choices=["cli", "nxapi"]),
-}
-nxos_argument_spec = {
-    "provider": dict(
-        type="dict",
-        options=nxos_provider_spec,
-        removed_at_date="2022-06-01",
-        removed_from_collection="cisco.nxos",
-    )
-}
-
-
-def get_provider_argspec():
-    return nxos_provider_spec
-
 
 def get_connection(module):
     global _DEVICE_CONNECTION
     if not _DEVICE_CONNECTION:
-        if is_local_nxapi(module):
-            conn = LocalNxapi(module)
-        else:
-            connection_proxy = Connection(module._socket_path)
-            cap = json.loads(connection_proxy.get_capabilities())
-            if cap["network_api"] == "cliconf":
-                conn = Cli(module)
-            elif cap["network_api"] == "nxapi":
-                conn = HttpApi(module)
+        connection_proxy = Connection(module._socket_path)
+        cap = json.loads(connection_proxy.get_capabilities())
+        if cap["network_api"] == "cliconf":
+            conn = Cli(module)
+        elif cap["network_api"] == "nxapi":
+            conn = HttpApi(module)
         _DEVICE_CONNECTION = conn
     return _DEVICE_CONNECTION
 
@@ -149,8 +99,7 @@ class Cli:
         return self._connection
 
     def get_config(self, flags=None):
-        """Retrieves the current config from the device or cache
-        """
+        """Retrieves the current config from the device or cache"""
         flags = [] if flags is None else flags
 
         cmd = "show running-config "
@@ -164,17 +113,14 @@ class Cli:
             try:
                 out = connection.get_config(flags=flags)
             except ConnectionError as exc:
-                self._module.fail_json(
-                    msg=to_text(exc, errors="surrogate_then_replace")
-                )
+                self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
             cfg = to_text(out, errors="surrogate_then_replace").strip() + "\n"
             self._device_configs[cmd] = cfg
             return cfg
 
     def run_commands(self, commands, check_rc=True):
-        """Run list of commands on remote device and return results
-        """
+        """Run list of commands on remote device and return results"""
         connection = self._get_connection()
 
         try:
@@ -186,21 +132,17 @@ class Cli:
                 if network_api == "cliconf" and out:
                     for index, resp in enumerate(out):
                         if (
-                            "Invalid command at" in resp
-                            or "Ambiguous command at" in resp
+                            "Invalid command at" in resp or "Ambiguous command at" in resp
                         ) and "json" in resp:
                             if commands[index]["output"] == "json":
                                 commands[index]["output"] = "text"
-                                out = connection.run_commands(
-                                    commands, check_rc
-                                )
+                                out = connection.run_commands(commands, check_rc)
             return out
         except ConnectionError as exc:
             self._module.fail_json(msg=to_text(exc))
 
     def load_config(self, config, return_error=False, opts=None, replace=None):
-        """Sends configuration commands to the remote device
-        """
+        """Sends configuration commands to the remote device"""
         if opts is None:
             opts = {}
 
@@ -218,10 +160,7 @@ class Cli:
                 responses.append(err)
                 return responses
             elif code and "no graceful-restart" in err:
-                if (
-                    "ISSU/HA will be affected if Graceful Restart is disabled"
-                    in err
-                ):
+                if "ISSU/HA will be affected if Graceful Restart is disabled" in err:
                     msg = [""]
                     responses.extend(msg)
                     return responses
@@ -253,14 +192,11 @@ class Cli:
                 diff_replace=diff_replace,
             )
         except ConnectionError as exc:
-            self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
-            )
+            self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
         return response
 
     def get_capabilities(self):
-        """Returns platform info of the remove device
-        """
+        """Returns platform info of the remove device"""
         if hasattr(self._module, "_capabilities"):
             return self._module._capabilities
 
@@ -268,9 +204,7 @@ class Cli:
         try:
             capabilities = connection.get_capabilities()
         except ConnectionError as exc:
-            self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
-            )
+            self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
         self._module._capabilities = json.loads(capabilities)
         return self._module._capabilities
 
@@ -279,9 +213,7 @@ class Cli:
         try:
             module_context = connection.read_module_context(module_key)
         except ConnectionError as exc:
-            self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
-            )
+            self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
         return module_context
 
@@ -290,340 +222,7 @@ class Cli:
         try:
             connection.save_module_context(module_key, module_context)
         except ConnectionError as exc:
-            self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
-            )
-
-        return None
-
-
-class LocalNxapi:
-
-    OUTPUT_TO_COMMAND_TYPE = {
-        "text": "cli_show_ascii",
-        "json": "cli_show",
-        "bash": "bash",
-        "config": "cli_conf",
-    }
-
-    def __init__(self, module):
-        self._module = module
-        self._nxapi_auth = None
-        self._device_configs = {}
-        self._module_context = {}
-
-        provider = self._module.params.get("provider") or {}
-        self._module.params["url_username"] = provider.get("username")
-        self._module.params["url_password"] = provider.get("password")
-
-        host = provider.get("host")
-        port = provider.get("port")
-
-        if provider.get("use_ssl"):
-            proto = "https"
-            port = port or 443
-        else:
-            proto = "http"
-            port = port or 80
-
-        self._url = "%s://%s:%s/ins" % (proto, host, port)
-
-    def _error(self, msg, **kwargs):
-        self._nxapi_auth = None
-        if "url" not in kwargs:
-            kwargs["url"] = self._url
-        self._module.fail_json(msg=msg, **kwargs)
-
-    def _request_builder(
-        self, commands, output, version="1.0", chunk="0", sid=None
-    ):
-        """Encodes a NXAPI JSON request message
-        """
-        try:
-            command_type = self.OUTPUT_TO_COMMAND_TYPE[output]
-        except KeyError:
-            msg = "invalid format, received %s, expected one of %s" % (
-                output,
-                ",".join(self.OUTPUT_TO_COMMAND_TYPE.keys()),
-            )
-            self._error(msg=msg)
-
-        if isinstance(commands, (list, set, tuple)):
-            commands = " ;".join(commands)
-
-        # Order should not matter but some versions of NX-OS software fail
-        # to process the payload properly if 'input' gets serialized before
-        # 'type' and the payload of 'input' contains the word 'type'.
-        msg = collections.OrderedDict()
-        msg["version"] = version
-        msg["type"] = command_type
-        msg["chunk"] = chunk
-        msg["sid"] = sid
-        msg["input"] = commands
-        msg["output_format"] = "json"
-
-        return dict(ins_api=msg)
-
-    def send_request(
-        self,
-        commands,
-        output="text",
-        check_status=True,
-        return_error=False,
-        opts=None,
-    ):
-        # only 10 show commands can be encoded in each request
-        # messages sent to the remote device
-        if opts is None:
-            opts = {}
-        if output != "config":
-            commands = collections.deque(to_list(commands))
-            stack = list()
-            requests = list()
-
-            while commands:
-                stack.append(commands.popleft())
-                if len(stack) == 10:
-                    body = self._request_builder(stack, output)
-                    data = self._module.jsonify(body)
-                    requests.append(data)
-                    stack = list()
-
-            if stack:
-                body = self._request_builder(stack, output)
-                data = self._module.jsonify(body)
-                requests.append(data)
-
-        else:
-            body = self._request_builder(commands, "config")
-            requests = [self._module.jsonify(body)]
-
-        headers = {"Content-Type": "application/json"}
-        result = list()
-        timeout = self._module.params["provider"]["timeout"]
-        use_proxy = self._module.params["provider"]["use_proxy"]
-
-        for req in requests:
-            if self._nxapi_auth:
-                headers["Cookie"] = self._nxapi_auth
-
-            response, headers = fetch_url(
-                self._module,
-                self._url,
-                data=req,
-                headers=headers,
-                timeout=timeout,
-                method="POST",
-                use_proxy=use_proxy,
-            )
-            self._nxapi_auth = headers.get("set-cookie")
-
-            if opts.get("ignore_timeout") and re.search(
-                r"(-1|5\d\d)", str(headers["status"])
-            ):
-                result.append(headers["status"])
-                return result
-            elif headers["status"] != 200:
-                self._error(**headers)
-
-            try:
-                response = self._module.from_json(response.read())
-            except ValueError:
-                self._module.fail_json(msg="unable to parse response")
-
-            if response["ins_api"].get("outputs"):
-                output = response["ins_api"]["outputs"]["output"]
-                for item in to_list(output):
-                    if check_status is True and item["code"] != "200":
-                        if return_error:
-                            result.append(item)
-                        else:
-                            self._error(output=output, **item)
-                    elif "body" in item:
-                        result.append(item["body"])
-                    # else:
-                    # error in command but since check_status is disabled
-                    # silently drop it.
-                    # result.append(item['msg'])
-
-            return result
-
-    def get_config(self, flags=None):
-        """Retrieves the current config from the device or cache
-        """
-        flags = [] if flags is None else flags
-
-        cmd = "show running-config "
-        cmd += " ".join(flags)
-        cmd = cmd.strip()
-
-        try:
-            return self._device_configs[cmd]
-        except KeyError:
-            out = self.send_request(cmd)
-            cfg = str(out[0]).strip()
-            self._device_configs[cmd] = cfg
-            return cfg
-
-    def run_commands(self, commands, check_rc=True):
-        """Run list of commands on remote device and return results
-        """
-        output = None
-        queue = list()
-        responses = list()
-
-        def _send(commands, output):
-            return self.send_request(commands, output, check_status=check_rc)
-
-        for item in to_list(commands):
-            if is_json(item["command"]):
-                item["command"] = str(item["command"]).rsplit("|", 1)[0]
-                item["output"] = "json"
-
-            if all((output == "json", item["output"] == "text")) or all(
-                (output == "text", item["output"] == "json")
-            ):
-                responses.extend(_send(queue, output))
-                queue = list()
-
-            output = item["output"] or "json"
-            queue.append(item["command"])
-
-        if queue:
-            responses.extend(_send(queue, output))
-
-        return responses
-
-    def load_config(
-        self, commands, return_error=False, opts=None, replace=None
-    ):
-        """Sends the ordered set of commands to the device
-        """
-
-        if opts is None:
-            opts = {}
-
-        responses = []
-
-        if replace:
-            device_info = self.get_device_info()
-            if "9K" not in device_info.get("network_os_platform", ""):
-                self._module.fail_json(
-                    msg="replace is supported only on Nexus 9K devices"
-                )
-            commands = "config replace {0}".format(replace)
-
-        commands = to_list(commands)
-        try:
-            resp = self.send_request(
-                commands,
-                output="config",
-                check_status=True,
-                return_error=return_error,
-                opts=opts,
-            )
-        except ValueError as exc:
-            code = getattr(exc, "code", 1)
-            message = getattr(exc, "err", exc)
-            err = to_text(message, errors="surrogate_then_replace")
-            if opts.get("ignore_timeout") and code:
-                responses.append(code)
-                return responses
-            elif code and "no graceful-restart" in err:
-                if (
-                    "ISSU/HA will be affected if Graceful Restart is disabled"
-                    in err
-                ):
-                    msg = [""]
-                    responses.extend(msg)
-                    return responses
-                else:
-                    self._module.fail_json(msg=err)
-            elif code:
-                self._module.fail_json(msg=err)
-
-        if return_error:
-            return resp
-        else:
-            return responses.extend(resp)
-
-    def get_diff(
-        self,
-        candidate=None,
-        running=None,
-        diff_match="line",
-        diff_ignore_lines=None,
-        path=None,
-        diff_replace="line",
-    ):
-        diff = {}
-
-        # prepare candidate configuration
-        candidate_obj = NetworkConfig(indent=2)
-        candidate_obj.load(candidate)
-
-        if running and diff_match != "none" and diff_replace != "config":
-            # running configuration
-            running_obj = NetworkConfig(
-                indent=2, contents=running, ignore_lines=diff_ignore_lines
-            )
-            configdiffobjs = candidate_obj.difference(
-                running_obj, path=path, match=diff_match, replace=diff_replace
-            )
-
-        else:
-            configdiffobjs = candidate_obj.items
-
-        diff["config_diff"] = (
-            dumps(configdiffobjs, "commands") if configdiffobjs else ""
-        )
-        return diff
-
-    def get_device_info(self):
-        device_info = {}
-
-        device_info["network_os"] = "nxos"
-        reply = self.run_commands(
-            {"command": "show version", "output": "json"}
-        )
-        data = reply[0]
-
-        platform_reply = self.run_commands(
-            {"command": "show inventory", "output": "json"}
-        )
-        platform_info = platform_reply[0]
-
-        device_info["network_os_version"] = data.get(
-            "sys_ver_str"
-        ) or data.get("kickstart_ver_str")
-        device_info["network_os_model"] = data["chassis_id"]
-        device_info["network_os_hostname"] = data["host_name"]
-        device_info["network_os_image"] = data.get(
-            "isan_file_name"
-        ) or data.get("kick_file_name")
-
-        if platform_info:
-            inventory_table = platform_info["TABLE_inv"]["ROW_inv"]
-            for info in inventory_table:
-                if "Chassis" in info["name"]:
-                    device_info["network_os_platform"] = info["productid"]
-
-        return device_info
-
-    def get_capabilities(self):
-        result = {}
-        result["device_info"] = self.get_device_info()
-        result["network_api"] = "nxapi"
-        return result
-
-    def read_module_context(self, module_key):
-        if self._module_context.get(module_key):
-            return self._module_context[module_key]
-
-        return None
-
-    def save_module_context(self, module_key, module_context):
-        self._module_context[module_key] = module_context
+            self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
         return None
 
@@ -643,8 +242,7 @@ class HttpApi:
         return self._connection_obj
 
     def run_commands(self, commands, check_rc=True):
-        """Runs list of commands on remote device and returns results
-        """
+        """Runs list of commands on remote device and returns results"""
         try:
             out = self._connection.send_request(commands)
         except ConnectionError as exc:
@@ -663,8 +261,7 @@ class HttpApi:
         return out
 
     def get_config(self, flags=None):
-        """Retrieves the current config from the device or cache
-        """
+        """Retrieves the current config from the device or cache"""
         flags = [] if flags is None else flags
 
         cmd = "show running-config "
@@ -677,9 +274,7 @@ class HttpApi:
             try:
                 out = self._connection.send_request(cmd)
             except ConnectionError as exc:
-                self._module.fail_json(
-                    msg=to_text(exc, errors="surrogate_then_replace")
-                )
+                self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
             cfg = to_text(out).strip()
             self._device_configs[cmd] = cfg
@@ -702,26 +297,22 @@ class HttpApi:
 
         if running and diff_match != "none" and diff_replace != "config":
             # running configuration
-            running_obj = NetworkConfig(
-                indent=2, contents=running, ignore_lines=diff_ignore_lines
-            )
+            running_obj = NetworkConfig(indent=2, contents=running, ignore_lines=diff_ignore_lines)
             configdiffobjs = candidate_obj.difference(
-                running_obj, path=path, match=diff_match, replace=diff_replace
+                running_obj,
+                path=path,
+                match=diff_match,
+                replace=diff_replace,
             )
 
         else:
             configdiffobjs = candidate_obj.items
 
-        diff["config_diff"] = (
-            dumps(configdiffobjs, "commands") if configdiffobjs else ""
-        )
+        diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
         return diff
 
-    def load_config(
-        self, commands, return_error=False, opts=None, replace=None
-    ):
-        """Sends the ordered set of commands to the device
-        """
+    def load_config(self, commands, return_error=False, opts=None, replace=None):
+        """Sends the ordered set of commands to the device"""
         if opts is None:
             opts = {}
 
@@ -738,10 +329,7 @@ class HttpApi:
             elif opts.get("catch_clierror") and "400" in code:
                 return [code, err]
             elif code and "no graceful-restart" in err:
-                if (
-                    "ISSU/HA will be affected if Graceful Restart is disabled"
-                    in err
-                ):
+                if "ISSU/HA will be affected if Graceful Restart is disabled" in err:
                     msg = [""]
                     responses.extend(msg)
                     return responses
@@ -753,9 +341,7 @@ class HttpApi:
         responses.extend(resp)
         return responses
 
-    def edit_config(
-        self, candidate=None, commit=True, replace=None, comment=None
-    ):
+    def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
         resp = list()
 
         self.check_edit_config_capability(candidate, commit, replace, comment)
@@ -773,26 +359,19 @@ class HttpApi:
         return resp
 
     def get_capabilities(self):
-        """Returns platform info of the remove device
-        """
+        """Returns platform info of the remove device"""
         try:
             capabilities = self._connection.get_capabilities()
         except ConnectionError as exc:
-            self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
-            )
+            self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
         return json.loads(capabilities)
 
-    def check_edit_config_capability(
-        self, candidate=None, commit=True, replace=None, comment=None
-    ):
+    def check_edit_config_capability(self, candidate=None, commit=True, replace=None, comment=None):
         operations = self._connection.get_device_operations()
 
         if not candidate and not replace:
-            raise ValueError(
-                "must provide a candidate or replace to load configuration"
-            )
+            raise ValueError("must provide a candidate or replace to load configuration")
 
         if commit not in (True, False):
             raise ValueError("'commit' must be a bool, got %s" % commit)
@@ -807,9 +386,7 @@ class HttpApi:
         try:
             module_context = self._connection.read_module_context(module_key)
         except ConnectionError as exc:
-            self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
-            )
+            self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
         return module_context
 
@@ -817,9 +394,7 @@ class HttpApi:
         try:
             self._connection.save_module_context(module_key, module_context)
         except ConnectionError as exc:
-            self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
-            )
+            self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
         return None
 
@@ -899,7 +474,7 @@ class NxosCmdRef:
             self._ref = yaml.load(cmd_ref_str, Loader=yaml.FullLoader)
 
     def feature_enable(self):
-        """Add 'feature <foo>' to _proposed if ref includes a 'feature' key. """
+        """Add 'feature <foo>' to _proposed if ref includes a 'feature' key."""
         ref = self._ref
         feature = ref["_template"].get("feature")
         if feature:
@@ -907,7 +482,7 @@ class NxosCmdRef:
             output = self.execute_show_command(show_cmd, "text")
             if not output or "CLI command error" in output:
                 msg = "** 'feature {0}' is not enabled. Module will auto-enable feature {0} ** ".format(
-                    feature
+                    feature,
                 )
                 self._module.warn(msg)
                 ref["_proposed"].append("feature {0}".format(feature))
@@ -931,9 +506,7 @@ class NxosCmdRef:
             return None
 
         # Supported Platforms: N3K,N5K,N6K,N7K,N9K,N3K-F,N9K-F
-        m = re.match(
-            "(?P<short>N[35679][K57])-(?P<N35>C35)*", network_os_platform
-        )
+        m = re.match("(?P<short>N[35679][K57])-(?P<N35>C35)*", network_os_platform)
         if not m:
             return None
         shortname = m.group("short")
@@ -1020,21 +593,13 @@ class NxosCmdRef:
             if not match:
                 return None
             if len(match) > 1 and not multiple:
-                raise ValueError(
-                    "get_existing: multiple matches found for property {0}".format(
-                        k
-                    )
-                )
+                raise ValueError("get_existing: multiple matches found for property {0}".format(k))
         else:
             match = [m.groups() for m in match_lines if m]
             if not match:
                 return None
             if len(match) > 1 and not multiple:
-                raise ValueError(
-                    "get_existing: multiple matches found for property {0}".format(
-                        k
-                    )
-                )
+                raise ValueError("get_existing: multiple matches found for property {0}".format(k))
             for item in match:
                 index = match.index(item)
                 match[index] = list(item)  # tuple to list
@@ -1054,8 +619,7 @@ class NxosCmdRef:
         return match
 
     def set_context(self, context=None):
-        """Update ref with command context.
-        """
+        """Update ref with command context."""
         if context is None:
             context = []
         ref = self._ref
@@ -1099,10 +663,7 @@ class NxosCmdRef:
 
         # We need to remove the last item in context for state absent case.
         if ref["_state"] in self.absent_states and ref["_context"]:
-            if (
-                ref["_resource_key"]
-                and ref["_resource_key"] == ref["_context"][-1]
-            ):
+            if ref["_resource_key"] and ref["_resource_key"] == ref["_context"][-1]:
                 if ref["_context"][-1] in output:
                     ref["_context"][-1] = "no " + ref["_context"][-1]
                 else:
@@ -1135,9 +696,7 @@ class NxosCmdRef:
                     ref[k]["existing"][index] = item[0]
                 else:
                     raise ValueError(
-                        "get_existing: unknown 'kind' value specified for key '{0}'".format(
-                            k
-                        )
+                        "get_existing: unknown 'kind' value specified for key '{0}'".format(k),
                     )
 
     def get_playvals(self):
@@ -1193,23 +752,27 @@ class NxosCmdRef:
             # match up with the getval regex named group keys; e.g.
             #   getval: my-cmd (?P<foo>\d+) bar (?P<baz>\d+)
             #   setval: my-cmd {foo} bar {baz}
-            cmd = ref[k]["setval"].format(**playval)
+            if ref[k]["setval"].startswith("path"):
+                tmplt = "path {name}"
+                if "depth" in playval:
+                    tmplt += " depth {depth}"
+                if "query_condition" in playval:
+                    tmplt += " query-condition {query_condition}"
+                if "filter_condition" in playval:
+                    tmplt += " filter-condition {filter_condition}"
+                cmd = tmplt.format(**playval)
+            else:
+                cmd = ref[k]["setval"].format(**playval)
         elif "str" == kind:
-            if "deleted" in playval:
+            if "deleted" in str(playval):
                 if existing:
                     cmd = "no " + ref[k]["setval"].format(existing)
             else:
                 cmd = ref[k]["setval"].format(playval)
         else:
-            raise ValueError(
-                "get_proposed: unknown 'kind' value specified for key '{0}'".format(
-                    k
-                )
-            )
+            raise ValueError("get_proposed: unknown 'kind' value specified for key '{0}'".format(k))
         if cmd:
-            if ref["_state"] in self.absent_states and not re.search(
-                r"^no", cmd
-            ):
+            if ref["_state"] in self.absent_states and not re.search(r"^no", cmd):
                 cmd = "no " + cmd
             # Commands may require parent commands for proper context.
             # Global _template context is replaced by parameter context
@@ -1237,17 +800,13 @@ class NxosCmdRef:
             if ref["_state"] in self.present_states:
                 if existing is None:
                     return False
-                elif playval == existing:
+                elif str(playval) == str(existing):
                     return True
-                elif (
-                    isinstance(existing, dict) and playval in existing.values()
-                ):
+                elif isinstance(existing, dict) and playval in existing.values():
                     return True
 
             if ref["_state"] in self.absent_states:
-                if isinstance(existing, dict) and all(
-                    x is None for x in existing.values()
-                ):
+                if isinstance(existing, dict) and all(x is None for x in existing.values()):
                     existing = None
                 if existing is None or playval not in existing.values():
                     return True
@@ -1267,9 +826,7 @@ class NxosCmdRef:
                 for ekey, evalue in existing.items():
                     if isinstance(evalue, dict):
                         # Remove values set to string 'None' from dvalue
-                        evalue = dict(
-                            (k, v) for k, v in evalue.items() if v != "None"
-                        )
+                        evalue = dict((k, v) for k, v in evalue.items() if v != "None")
                     for pkey, pvalue in playval.items():
                         if compare(pvalue, evalue):
                             if playval_copy.get(pkey):
@@ -1324,23 +881,11 @@ def is_text(cmd):
     return not is_json(cmd)
 
 
-def is_local_nxapi(module):
-    provider = module.params.get("provider")
-    if provider:
-        return provider.get("transport") == "nxapi"
-    return False
-
-
 def to_command(module, commands):
-    if is_local_nxapi(module):
-        default_output = "json"
-    else:
-        default_output = "text"
-
     transform = ComplexList(
         dict(
             command=dict(key=True),
-            output=dict(default=default_output),
+            output=dict(type="str", default="text"),
             prompt=dict(type="list"),
             answer=dict(type="list"),
             newline=dict(type="bool", default=True),
@@ -1402,8 +947,7 @@ def get_diff(
 
 
 def normalize_interface(name):
-    """Return the normalized interface name
-    """
+    """Return the normalized interface name"""
     if not name:
         return
 
@@ -1442,8 +986,7 @@ def normalize_interface(name):
 
 
 def get_interface_type(interface):
-    """Gets the type of interface
-    """
+    """Gets the type of interface"""
     if interface.upper().startswith("ET"):
         return "ethernet"
     elif interface.upper().startswith("VL"):

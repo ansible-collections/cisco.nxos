@@ -12,24 +12,24 @@ created
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-    remove_empties,
     dict_diff,
+    remove_empties,
+    to_list,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
-    search_obj_in_list,
     get_interface_type,
     normalize_interface,
+    search_obj_in_list,
 )
 
 
@@ -46,17 +46,17 @@ class Lldp_interfaces(ConfigBase):
         super(Lldp_interfaces, self).__init__(module)
 
     def get_lldp_interfaces_facts(self, data=None):
-        """ Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration)
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
-        lldp_interfaces_facts = facts["ansible_network_resources"].get(
-            "lldp_interfaces"
-        )
+        lldp_interfaces_facts = facts["ansible_network_resources"].get("lldp_interfaces")
         if not lldp_interfaces_facts:
             return []
         return lldp_interfaces_facts
@@ -68,7 +68,7 @@ class Lldp_interfaces(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -105,7 +105,7 @@ class Lldp_interfaces(ConfigBase):
         return result
 
     def set_config(self, existing_lldp_interfaces_facts):
-        """ Collect the configuration from the args passed to the module,
+        """Collect the configuration from the args passed to the module,
             collect the current configuration (as a dict from facts)
 
         :rtype: A list
@@ -121,7 +121,7 @@ class Lldp_interfaces(ConfigBase):
                     "ethernet",
                 ):
                     self._module.fail_json(
-                        msg="This module works with either management or ethernet"
+                        msg="This module works with either management or ethernet",
                     )
                 w.update({"name": normalize_interface(w["name"])})
                 want.append(remove_empties(w))
@@ -130,7 +130,7 @@ class Lldp_interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """ Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -154,9 +154,7 @@ class Lldp_interfaces(ConfigBase):
                 if state == "merged":
                     commands.extend(self._state_merged(flatten_dict(w), have))
                 elif state == "replaced":
-                    commands.extend(
-                        self._state_replaced(flatten_dict(w), have)
-                    )
+                    commands.extend(self._state_replaced(flatten_dict(w), have))
         return commands
 
     def _state_parsed(self, want):
@@ -169,7 +167,7 @@ class Lldp_interfaces(ConfigBase):
         return commands
 
     def _state_gathered(self, have):
-        """ The command generator when state is gathered
+        """The command generator when state is gathered
 
         :rtype: A list
         :returns: the commands necessary to reproduce the current configuration
@@ -180,7 +178,7 @@ class Lldp_interfaces(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """ The command generator when state is replaced
+        """The command generator when state is replaced
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -189,9 +187,7 @@ class Lldp_interfaces(ConfigBase):
         commands = []
         del_commands = []
         delete_dict = {}
-        obj_in_have = flatten_dict(
-            search_obj_in_list(want["name"], have, "name")
-        )
+        obj_in_have = flatten_dict(search_obj_in_list(want["name"], have, "name"))
         for k1 in obj_in_have.keys():
             if k1 not in want.keys():
                 delete_dict.update({k1: obj_in_have[k1]})
@@ -211,7 +207,7 @@ class Lldp_interfaces(ConfigBase):
         return commands
 
     def _state_overridden(self, want, have):
-        """ The command generator when state is overridden
+        """The command generator when state is overridden
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -238,7 +234,7 @@ class Lldp_interfaces(ConfigBase):
         return commands
 
     def _state_merged(self, want, have):
-        """ The command generator when state is merged
+        """The command generator when state is merged
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -247,7 +243,7 @@ class Lldp_interfaces(ConfigBase):
         return self.set_commands(want, have)
 
     def _state_deleted(self, want, have):
-        """ The command generator when state is deleted
+        """The command generator when state is deleted
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -256,9 +252,7 @@ class Lldp_interfaces(ConfigBase):
         commands = []
         if want:
             for w in want:
-                obj_in_have = flatten_dict(
-                    search_obj_in_list(w["name"], have, "name")
-                )
+                obj_in_have = flatten_dict(search_obj_in_list(w["name"], have, "name"))
                 commands.extend(self.del_commands(obj_in_have))
         else:
             if not have:
@@ -269,9 +263,7 @@ class Lldp_interfaces(ConfigBase):
 
     def set_commands(self, want, have):
         commands = []
-        obj_in_have = flatten_dict(
-            search_obj_in_list(want["name"], have, "name")
-        )
+        obj_in_have = flatten_dict(search_obj_in_list(want["name"], have, "name"))
         if not obj_in_have:
             commands = self.add_commands(flatten_dict(want))
         else:
@@ -297,9 +289,7 @@ class Lldp_interfaces(ConfigBase):
             else:
                 commands.append("no lldp receive")
         if "management_address" in d:
-            commands.append(
-                "lldp tlv-set management-address " + d["management_address"]
-            )
+            commands.append("lldp tlv-set management-address " + d["management_address"])
         if "vlan" in d:
             commands.append("lldp tlv-set vlan " + str(d["vlan"]))
 
@@ -315,10 +305,7 @@ class Lldp_interfaces(ConfigBase):
         if "receive" in obj:
             commands.append("lldp receive")
         if "management_address" in obj:
-            commands.append(
-                "no lldp tlv-set management-address "
-                + obj["management_address"]
-            )
+            commands.append("no lldp tlv-set management-address " + obj["management_address"])
         if "vlan" in obj:
             commands.append("no lldp tlv-set vlan " + str(obj["vlan"]))
 

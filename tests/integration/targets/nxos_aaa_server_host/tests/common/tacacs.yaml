@@ -1,8 +1,8 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_aaa_server_host tacacs.yaml
-    sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_aaa_server_host tacacs.yaml sanity test
 
-- name: Enable feature tacacs+
+- name: Enable 'feature tacacs+'
   cisco.nxos.nxos_feature:
     feature: tacacs+
     state: enabled
@@ -15,39 +15,38 @@
     state: absent
 
 - block:
-
-    - name: Configure tacacs server defaults
+    - name: Configure TACACS server defaults
       register: result
       cisco.nxos.nxos_aaa_server_host: &id001
         server_type: tacacs
         address: 8.8.8.8
         state: present
 
-    - assert: &id003
+    - ansible.builtin.assert: &id003
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: Remove tacacs server configuration
+    - name: Remove TACACS server configuration
       register: result
       cisco.nxos.nxos_aaa_server_host: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id002
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure tacacs server non defaults
+    - name: Configure TACACS server non defaults
       register: result
       cisco.nxos.nxos_aaa_server_host: &id005
         server_type: tacacs
@@ -56,15 +55,15 @@
         tacacs_port: 89
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure some defaults on tacacs server
+    - name: Configure some defaults on TACACS server
       register: result
       cisco.nxos.nxos_aaa_server_host: &id006
         server_type: tacacs
@@ -73,15 +72,15 @@
         tacacs_port: 100
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id006
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure tacacs server with clear text pwd
+    - name: Configure TACACS server with clear text pwd
       register: result
       cisco.nxos.nxos_aaa_server_host: &id007
         server_type: tacacs
@@ -92,21 +91,21 @@
         key: hello
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check NOT Idempotent
+    - name: Check not idempotent
       register: result
       cisco.nxos.nxos_aaa_server_host: *id007
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Remove tacacs server configuration
+    - name: Remove TACACS server configuration
       register: result
       cisco.nxos.nxos_aaa_server_host: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Configure tacacs server with type 7 encryption
+    - name: Configure TACACS server with type 7 encryption
       register: result
       cisco.nxos.nxos_aaa_server_host: &id008
         server_type: tacacs
@@ -117,15 +116,15 @@
         key: hello
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id008
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure tacacs server with new type 7 encryption key
+    - name: Configure TACACS server with new type 7 encryption key
       register: result
       cisco.nxos.nxos_aaa_server_host: &id009
         server_type: tacacs
@@ -136,18 +135,18 @@
         key: helloback
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
           - "'key 7' in result.updates[0]"
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id009
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure tacacs server with default key
+    - name: Configure TACACS server with default key
       register: result
       cisco.nxos.nxos_aaa_server_host: &id010
         server_type: tacacs
@@ -158,15 +157,15 @@
         key: default
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id010
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Configure tacacs server with all def
+    - name: Configure TACACS server with all def
       register: result
       cisco.nxos.nxos_aaa_server_host: &id011
         server_type: tacacs
@@ -176,27 +175,25 @@
         key: default
         state: present
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server_host: *id011
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   rescue:
-
-    - debug: msg="connection={{ ansible_connection }} nxos_aaa_server_host failure
-        detected"
+    - ansible.builtin.debug:
+        msg: connection={{ ansible_connection }} nxos_aaa_server_host failure detected
   always:
-
-    - name: Remove tacacs server configuration
+    - name: Remove TACACS server configuration
       register: result
       cisco.nxos.nxos_aaa_server_host: *id002
 
-    - name: Disable feature tacacs+
+    - name: Disable 'feature tacacs+'
       cisco.nxos.nxos_feature:
         feature: tacacs+
         state: disabled
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_aaa_server_host tacacs.yaml
-        sanity test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_aaa_server_host tacacs.yaml sanity test

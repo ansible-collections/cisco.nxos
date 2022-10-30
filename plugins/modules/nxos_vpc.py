@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -33,6 +34,7 @@ author:
 - Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+- Unsupported for Cisco MDS
 - The feature vpc must be enabled before this module can be used
 - If not using management vrf, vrf must be globally on the device before using in
   the pkl config
@@ -160,15 +162,14 @@ commands:
 """
 
 import re
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 CONFIG_ARGS = {
@@ -386,8 +387,6 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
     mutually_exclusive = [("auto_recovery", "auto_recovery_reload_delay")]
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -409,9 +408,7 @@ def main():
     auto_recovery = module.params["auto_recovery"]
     auto_recovery_reload_delay = module.params["auto_recovery_reload_delay"]
     delay_restore = module.params["delay_restore"]
-    delay_restore_interface_vlan = module.params[
-        "delay_restore_interface_vlan"
-    ]
+    delay_restore_interface_vlan = module.params["delay_restore_interface_vlan"]
     delay_restore_orphan_port = module.params["delay_restore_orphan_port"]
     state = module.params["state"]
 
@@ -433,27 +430,22 @@ def main():
 
     if not pkl_dest:
         if pkl_src:
-            module.fail_json(
-                msg="dest IP for peer-keepalive is required"
-                " when src IP is present"
-            )
+            module.fail_json(msg="dest IP for peer-keepalive is required" " when src IP is present")
         elif pkl_vrf:
             if pkl_vrf != "management":
                 module.fail_json(
-                    msg="dest and src IP for peer-keepalive are required"
-                    " when vrf is present"
+                    msg="dest and src IP for peer-keepalive are required" " when vrf is present",
                 )
             else:
                 module.fail_json(
-                    msg="dest IP for peer-keepalive is required"
-                    " when vrf is present"
+                    msg="dest IP for peer-keepalive is required" " when vrf is present",
                 )
     if pkl_vrf:
         if pkl_vrf.lower() not in get_vrf_list(module):
             module.fail_json(
                 msg="The VRF you are trying to use for the peer "
                 "keepalive link is not on device yet. Add it"
-                " first, please."
+                " first, please.",
             )
     proposed = dict((k, v) for k, v in args.items() if v is not None)
     existing = get_vpc(module)
@@ -470,16 +462,13 @@ def main():
 
         if delta:
             pkl_dependencies(module, delta, existing)
-            command = get_commands_to_config_vpc(
-                module, delta, domain, existing
-            )
+            command = get_commands_to_config_vpc(module, delta, domain, existing)
             commands.append(command)
     elif state == "absent":
         if existing:
             if domain != existing["domain"]:
                 module.fail_json(
-                    msg="You are trying to remove a domain that "
-                    "does not exist on the device"
+                    msg="You are trying to remove a domain that " "does not exist on the device",
                 )
             else:
                 commands.append("terminal dont-ask")

@@ -1,6 +1,6 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_aaa_server radius.yaml
-    sanity test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_aaa_server radius.yaml sanity test
 
 - name: Setup
   ignore_errors: true
@@ -12,18 +12,17 @@
     state: default
 
 - block:
-
     - name: Configure radius server defaults
       register: result
       cisco.nxos.nxos_aaa_server: &id001
         server_type: radius
         state: present
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id001
 
-    - assert: &id003
+    - ansible.builtin.assert: &id003
         that:
           - result.changed == false
 
@@ -36,21 +35,21 @@
         directed_request: enabled
         state: present
 
-    - assert: &id005
+    - ansible.builtin.assert: &id005
         that:
           - result.changed == true
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id002
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Remove radius server configuration
       register: result
       cisco.nxos.nxos_aaa_server: *id004
 
-    - assert: *id005
+    - ansible.builtin.assert: *id005
 
     - name: Configure radius server with global key
       register: result
@@ -60,13 +59,13 @@
         global_key: test_key
         state: present
 
-    - assert: *id005
+    - ansible.builtin.assert: *id005
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id006
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
 
     - name: Remove radius server configuration
       register: result
@@ -78,21 +77,20 @@
         directed_request: default
         state: default
 
-    - assert: *id005
+    - ansible.builtin.assert: *id005
 
-    - name: Check Idempotence
+    - name: Check idempotence
       register: result
       cisco.nxos.nxos_aaa_server: *id007
 
-    - assert: *id003
+    - ansible.builtin.assert: *id003
   rescue:
-
-    - debug: msg="connection={{ ansible_connection }} nxos_aaa_server failure detected"
+    - ansible.builtin.debug:
+        msg: connection={{ ansible_connection }} nxos_aaa_server failure detected
   always:
-
     - name: Remove radius server configuration
       register: result
       cisco.nxos.nxos_aaa_server: *id004
 
-- debug: msg="END connection={{ ansible_connection }} nxos_aaa_server radius.yaml
-    sanity test"
+- ansible.builtin.debug:
+    msg: END connection={{ ansible_connection }} nxos_aaa_server radius.yaml sanity test

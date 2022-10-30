@@ -1,9 +1,10 @@
+---
 # The CI NX-OS image doesn't support `lacp system-mac`
 gathered:
   system:
     priority: 10
 
-# using mac related configs in parsed and rendered would also 
+# using mac related configs in parsed and rendered would also
 # prove that we're not connecting to the appliance as expected
 
 rendered:

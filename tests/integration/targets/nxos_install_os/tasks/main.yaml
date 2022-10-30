@@ -1,6 +1,8 @@
 ---
-- include: network_cli.yaml
+- name: Run network_cli tests
+  ansible.builtin.include_tasks: network_cli.yaml
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
-- include: httpapi.yaml
+- name: Run httpapi tests
+  ansible.builtin.include_tasks: httpapi.yaml
   when: ansible_connection == 'ansible.netcommon.httpapi'

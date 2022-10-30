@@ -1,61 +1,59 @@
 ---
-- debug: msg="START connection={{ ansible_connection }} nxos_snmp_community sanity
-    test"
+- ansible.builtin.debug:
+    msg: START connection={{ ansible_connection }} nxos_snmp_community sanity test
 
-- name: Setup - Remove snmp_contact if configured
+- name: Setup - remove snmp_contact if configured
   cisco.nxos.nxos_snmp_contact: &id005
     contact: Test
     state: absent
 
 - block:
-
-    - name: Configure snmp contact
+    - name: Configure SNMP contact
       register: result
       cisco.nxos.nxos_snmp_contact: &id001
         contact: Testing
         state: present
 
-    - assert: &id002
+    - ansible.builtin.assert: &id002
         that:
           - result.changed == true
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_contact: *id001
 
-    - assert: &id004
+    - ansible.builtin.assert: &id004
         that:
           - result.changed == false
 
-    - name: Change snmp contact
+    - name: Change SNMP contact
       register: result
       cisco.nxos.nxos_snmp_contact: &id003
         contact: Test
         state: present
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_contact: *id003
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
 
-    - name: Remove snmp contact
+    - name: Remove SNMP contact
       register: result
       cisco.nxos.nxos_snmp_contact: *id005
 
-    - assert: *id002
+    - ansible.builtin.assert: *id002
 
-    - name: Idempotence Check
+    - name: Idempotence check
       register: result
       cisco.nxos.nxos_snmp_contact: *id005
 
-    - assert: *id004
+    - ansible.builtin.assert: *id004
   always:
-
     - name: Cleanup
       cisco.nxos.nxos_snmp_contact: *id005
 
-    - debug: msg="END connection={{ ansible_connection }} nxos_snmp_community sanity
-        test"
+    - ansible.builtin.debug:
+        msg: END connection={{ ansible_connection }} nxos_snmp_community sanity test

@@ -1,25 +1,26 @@
 ---
-- debug:
+- ansible.builtin.debug:
     msg: "Start nxos_interfaces deleted integration tests connection={{ ansible_connection }}"
 
-- set_fact:
+- name: Set a fact for 'test_int1' and 'test_int2'
+  ansible.builtin.set_fact:
     test_int1: "{{ nxos_int1 }}"
     test_int2: "{{ nxos_int2 }}"
 
-- set_fact: test_shutdown
-  when: platform is not search('N3[5KL]|N[56]K|titanium')
+- name: Set a fact for 'test_shutdown'
+  ansible.builtin.set_fact:
+    test_shutdown: "{{ platform is search('N3[5KL]|N[56]K|titanium') }}"
 
-- name: 'setup0: clean up (interfaces) attributes on all interfaces'
+- name: "Setup0: clean up (interfaces) attributes on all interfaces"
   cisco.nxos.nxos_interfaces:
     state: deleted
 
-- name: setup1
+- name: Setup1
   cisco.nxos.nxos_config: &id002
     lines: "default interface {{ test_int1 }}"
 
 - block:
-
-    - name: setup2
+    - name: Setup2
       cisco.nxos.nxos_config:
         lines:
           - "interface {{ test_int1 }}"
@@ -29,38 +30,37 @@
     - name: Gather interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
-          - '!all'
-          - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources: interfaces
 
-    - name: deleted
+    - name: Deleted
       register: result
       cisco.nxos.nxos_interfaces: &id001
         state: deleted
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - ansible_facts.network_resources.interfaces|symmetric_difference(result.before) == []
           - result.changed == true
           - "'interface {{ test_int1 }}' in result.commands"
           - "'no description' in result.commands"
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.after|length == 0
           - "'shutdown' in result.commands"
-      when: test_shutdown is defined
+      when: test_shutdown
 
     - name: Idempotence - deleted
       register: result
       cisco.nxos.nxos_interfaces: *id001
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == false
           - result.commands|length == 0
-      when: test_shutdown is defined
+      when: test_shutdown
   always:
-
-    - name: teardown
+    - name: Teardown
       cisco.nxos.nxos_config: *id002

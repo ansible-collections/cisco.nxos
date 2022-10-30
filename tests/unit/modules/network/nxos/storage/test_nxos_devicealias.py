@@ -4,21 +4,18 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import pytest
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
-from ansible_collections.cisco.nxos.plugins.modules.storage import (
-    nxos_devicealias,
-)
+from ansible_collections.cisco.nxos.plugins.modules.storage import nxos_devicealias
 from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_devicealias import (
-    showDeviceAliasStatus,
     showDeviceAliasDatabase,
+    showDeviceAliasStatus,
 )
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from ..nxos_module import TestNxosModule, load_fixture, set_module_args
 
@@ -33,13 +30,11 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         self.mock_run_commands = patch(module_path + "run_commands")
         self.run_commands = self.mock_run_commands.start()
 
-        self.mock_execute_show_cmd = patch(
-            module_path + "showDeviceAliasStatus.execute_show_cmd"
-        )
+        self.mock_execute_show_cmd = patch(module_path + "showDeviceAliasStatus.execute_show_cmd")
         self.execute_show_cmd = self.mock_execute_show_cmd.start()
 
         self.mock_execute_show_cmd_1 = patch(
-            module_path + "showDeviceAliasDatabase.execute_show_cmd"
+            module_path + "showDeviceAliasDatabase.execute_show_cmd",
         )
         self.execute_show_cmd_1 = self.mock_execute_show_cmd_1.start()
 
@@ -60,9 +55,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Playbook mode is basic
         # Switch has mode as enahnced
         set_module_args(dict(mode="basic"), True)
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -78,9 +71,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Playbook mode is enhanced
         # Switch has mode as enahnced
         set_module_args(dict(mode="enhanced"), True)
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
@@ -88,9 +79,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Playbook mode is enhanced , distrbute = True
         # Switch has mode as enahnced, distrbute = True
         set_module_args(dict(distribute=True, mode="enhanced"), True)
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
@@ -98,9 +87,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Playbook mode is enhanced , distrbute = False
         # Switch has mode as enhanced, distrbute = True
         set_module_args(dict(distribute=False, mode="enhanced"), True)
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["no device-alias distribute"])
 
@@ -108,9 +95,7 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Playbook mode is basic , distrbute = False
         # Switch has mode as enahnced, distrbute = True
         set_module_args(dict(distribute=False, mode="basic"), True)
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -131,12 +116,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -161,12 +142,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
@@ -181,12 +158,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=False, failed=True)
 
     def test_da_add_4(self):
@@ -200,12 +173,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=False, failed=True)
 
     def test_da_remove_1(self):
@@ -220,17 +189,13 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                         name="tieHost-2",
                         pwwn="10:00:00:00:89:a1:01:02",
                         remove=True,
-                    )
+                    ),
                 ],
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -255,17 +220,13 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                         name="somename",
                         pwwn="10:00:00:00:89:a1:01:02",
                         remove=True,
-                    )
+                    ),
                 ],
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
@@ -280,14 +241,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                         name="somename",
                         pwwn="10:00:00:00:89:a1:01:02",
                         remove=True,
-                    )
+                    ),
                 ],
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatuslock.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatuslock.cfg")
         self.execute_module(failed=True)
 
     def test_da_paramete_not_supported(self):
@@ -302,17 +261,13 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                         name="somename",
                         pwwn="10:00:00:00:89:a1:01:02",
                         remove=True,
-                    )
+                    ),
                 ],
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
         testdata = errinfo.value.args[0]
@@ -329,12 +284,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
         testdata = errinfo.value.args[0]
@@ -348,16 +299,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                 rename=[
                     dict(old_name="test1_add", new_name="test234"),
                     dict(old_name="tieHost-1", new_name="tieTarget-1"),
-                ]
+                ],
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -378,27 +325,22 @@ class TestNxosDeviceAliasModule(TestNxosModule):
                 rename=[
                     dict(old_name="test1", new_name="test234"),
                     dict(old_name="tie", new_name="tieTarget-1"),
-                ]
+                ],
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=False, failed=True)
         self.assertEqual(result["commands"], [])
 
     def test_da_mansi(self):
         set_module_args({"distribute": True, "mode": "enhanced"}, True)
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus_mansi.cfg"
+            "nxos_devicealias",
+            "shdastatus_mansi.cfg",
         )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
@@ -422,12 +364,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
 
         result = self.execute_module(changed=False, failed=True)
         assert "it must start with a letter" in str(result["msg"])
@@ -443,12 +381,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             ),
             True,
         )
-        self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
-        )
-        self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
-        )
+        self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
+        self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
 
         result = self.execute_module(changed=False, failed=True)
         assert "and can only contain these characters" in str(result["msg"])

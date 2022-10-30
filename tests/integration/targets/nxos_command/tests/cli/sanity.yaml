@@ -1,25 +1,25 @@
 ---
-- debug: msg="START cli/sanity.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: START cli/sanity.yaml on connection={{ ansible_connection }}
 
-- name: Disable feature BGP
+- name: Disable 'feature bgp'
   cisco.nxos.nxos_feature:
     feature: bgp
     state: disabled
 
 - block:
-
-    - name: Run show running-config bgp - should fail
+    - name: Run show running-config BGP - should fail
       ignore_errors: true
       register: result
       cisco.nxos.nxos_command:
         commands:
           - sh running-config bgp
 
-    - assert: &id001
+    - ansible.builtin.assert: &id001
         that:
           - result.failed == true
 
-    - name: Enable feature BGP
+    - name: Enable 'feature bgp'
       cisco.nxos.nxos_feature:
         feature: bgp
         state: enabled
@@ -31,17 +31,17 @@
         router_id: 192.0.2.1
         state: present
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.changed == true
 
-    - name: Run show running-config bgp - should pass
+    - name: Run show running-config BGP - should pass
       register: result
       cisco.nxos.nxos_command:
         commands:
           - sh running-config bgp
 
-    - assert:
+    - ansible.builtin.assert:
         that:
           - result.failed == false
           - "'65535' in result.stdout[0]"
@@ -53,15 +53,15 @@
         commands:
           - show interface bief
 
-    - assert: *id001
+    - ansible.builtin.assert: *id001
   rescue:
-
-    - debug: msg="nxos_command sanity test failure detected"
+    - ansible.builtin.debug:
+        msg: nxos_command sanity test failure detected
   always:
-
-    - name: Disable feature bgp
+    - name: Disable 'feature bgp'
       cisco.nxos.nxos_feature:
         feature: bgp
         state: disabled
 
-- debug: msg="END cli/sanity.yaml on connection={{ ansible_connection }}"
+- ansible.builtin.debug:
+    msg: END cli/sanity.yaml on connection={{ ansible_connection }}

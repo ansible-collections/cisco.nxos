@@ -1,22 +1,24 @@
 ---
-- name: Enable BGP feature
+- name: Enable 'feature bgp'
   cisco.nxos.nxos_feature:
     feature: bgp
   vars:
     ansible_connection: ansible.netcommon.network_cli
 
-- block:
-
-    - include: cli.yaml
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Include the CLI tasks
+      ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
 
-    - include: nxapi.yaml
+    - name: Include the NX-API tasks
+      ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
 
   always:
-    - name: Disable BGP feature
+    - name: Disable 'feature bgp'
       cisco.nxos.nxos_feature:
         feature: bgp
         state: disabled

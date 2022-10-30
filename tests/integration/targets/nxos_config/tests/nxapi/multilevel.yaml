@@ -1,12 +1,13 @@
 ---
-- debug: msg="START nxapi/mulitlevel.yaml"
+- ansible.builtin.debug:
+    msg: START nxapi/mulitlevel.yaml
 
-- name: setup
+- name: Setup
   cisco.nxos.nxos_config:
     lines: feature bgp
     match: none
 
-- name: configure multi level command
+- name: Configure multi level command
   register: result
   cisco.nxos.nxos_config:
     lines: maximum-paths 14
@@ -14,14 +15,14 @@
       - router bgp 1
       - address-family ipv4 unicast
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == true
       - "'router bgp 1' in result.updates"
       - "'address-family ipv4 unicast' in result.updates"
       - "'maximum-paths 14' in result.updates"
 
-- name: test multi level command
+- name: Test multi level command
   register: result
   cisco.nxos.nxos_config:
     lines: maximum-paths 14
@@ -29,13 +30,14 @@
       - router bgp 1
       - address-family ipv4 unicast
 
-- assert:
+- ansible.builtin.assert:
     that:
       - result.changed == false
 
-- name: teardown
+- name: Teardown
   cisco.nxos.nxos_config:
     lines: no feature bgp
     match: none
 
-- debug: msg="END nxapi/mulitlevel.yaml"
+- ansible.builtin.debug:
+    msg: END nxapi/mulitlevel.yaml
