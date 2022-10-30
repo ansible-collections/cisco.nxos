@@ -136,6 +136,25 @@ Parameters
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>l3_peer_router</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enables/Disables Layer 3 Peer Router</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>peer_gw</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -154,25 +173,6 @@ Parameters
             </tr>
             <tr>
                 <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>l3_peer_router</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enables/Disables layer 3 peer router</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>pkl_dest</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -356,7 +356,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>commands sent to the device</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vpc domain 100&#x27;, &#x27;peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management&#x27;, &#x27;auto-recovery&#x27;, &#x27;peer-gateway&#x27;, &#x27;layer3 peer-router&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vpc domain 100&#x27;, &#x27;peer-keepalive destination 192.168.100.4 source 10.1.100.20 vrf management&#x27;, &#x27;auto-recovery&#x27;, &#x27;peer-gateway&#x27;]</div>
                 </td>
             </tr>
     </table>
