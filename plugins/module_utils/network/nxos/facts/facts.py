@@ -15,6 +15,9 @@ calls the appropriate facts gathering function
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts import (
     FactsBase,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network import (
+    get_resource_connection,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acl_interfaces.acl_interfaces import (
     Acl_interfacesFacts,
@@ -115,7 +118,7 @@ FACT_LEGACY_SUBSETS = dict(
     config=Config,
     features=Features,
 )
-FACT_RESOURCE_SUBSETS = dict(
+NX_FACT_RESOURCE_SUBSETS = dict(
     bfd_interfaces=Bfd_interfacesFacts,
     hsrp_interfaces=Hsrp_interfacesFacts,
     lag_interfaces=Lag_interfacesFacts,
@@ -144,16 +147,38 @@ FACT_RESOURCE_SUBSETS = dict(
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
 )
+MDS_FACT_RESOURCE_SUBSETS = dict(
+    interfaces=InterfacesFacts,
+    logging_global=Logging_globalFacts,
+    ntp_global=Ntp_globalFacts,
+    snmp_server=Snmp_serverFacts,
+)
 
 
 class Facts(FactsBase):
     """The fact class for nxos"""
 
     VALID_LEGACY_GATHER_SUBSETS = frozenset(FACT_LEGACY_SUBSETS.keys())
-    VALID_RESOURCE_SUBSETS = frozenset(FACT_RESOURCE_SUBSETS.keys())
+    VALID_RESOURCE_SUBSETS = frozenset(NX_FACT_RESOURCE_SUBSETS.keys())
 
     def __init__(self, module):
         super(Facts, self).__init__(module)
+        self.connection = get_resource_connection(module)
+        self.facts_resource_subsets = self.get_resource_subsets()
+
+    def get_resource_subsets(self):
+        """Return facts resource subsets based on
+        target device model.
+        """
+        device_info = self.connection.get_device_info()
+        model = device_info.get("network_os_model", "")
+        platform = device_info.get("network_os_platform", "")
+
+        facts_resource_subsets = NX_FACT_RESOURCE_SUBSETS
+        if platform.startswith("DS-") and "MDS" in model:
+            facts_resource_subsets = MDS_FACT_RESOURCE_SUBSETS
+
+        return facts_resource_subsets
 
     def get_facts(self, legacy_facts_type=None, resource_facts_type=None, data=None):
         """Collect the facts for nxos
@@ -164,7 +189,7 @@ class Facts(FactsBase):
         :return: the facts gathered
         """
         if self.VALID_RESOURCE_SUBSETS:
-            self.get_network_resources_facts(FACT_RESOURCE_SUBSETS, resource_facts_type, data)
+            self.get_network_resources_facts(self.facts_resource_subsets, resource_facts_type, data)
 
         if self.VALID_LEGACY_GATHER_SUBSETS:
             self.get_network_legacy_facts(FACT_LEGACY_SUBSETS, legacy_facts_type)
