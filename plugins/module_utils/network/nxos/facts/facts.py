@@ -159,12 +159,12 @@ class Facts(FactsBase):
     """The fact class for nxos"""
 
     VALID_LEGACY_GATHER_SUBSETS = frozenset(FACT_LEGACY_SUBSETS.keys())
-    VALID_RESOURCE_SUBSETS = frozenset(NX_FACT_RESOURCE_SUBSETS.keys())
 
     def __init__(self, module):
         super(Facts, self).__init__(module)
         self.connection = get_resource_connection(module)
         self.facts_resource_subsets = self.get_resource_subsets()
+        self.VALID_RESOURCE_SUBSETS = frozenset(self.facts_resource_subsets.keys())
 
     def get_resource_subsets(self):
         """Return facts resource subsets based on
