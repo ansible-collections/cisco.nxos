@@ -58,7 +58,7 @@ options:
     suboptions:
       name:
         description:
-        - Full name of interface, e.g. Ethernet1/1, port-channel10.
+        - Full name of interface, e.g. Ethernet1/1, port-channel10, fc1/1.
         type: str
         required: true
       description:
@@ -78,18 +78,29 @@ options:
         description:
         - Manage Layer2 or Layer3 state of the interface. Applicable for Ethernet
           and port channel interfaces only.
+        - The options C(layer2) and C(layer3) are applicable only for NX-OS on Nexus Switches.
+        - The options C(E), C(F), C(Fx), C(NP), C(SD), C(auto) are applicable only
+          for NX-OS on MDS Switches.
         choices:
         - layer2
         - layer3
+        - E
+        - F
+        - Fx
+        - NP
+        - SD
+        - auto
         type: str
       mtu:
         description:
         - MTU for a specific interface. Must be an even number between 576 and 9216.
           Applicable for Ethernet interfaces only.
+        - This option is not applicable for NX-OS on MDS Switches.
         type: str
       duplex:
         description:
         - Interface link status. Applicable for Ethernet interfaces only.
+        - This option is not applicable for NX-OS on MDS Switches.
         type: str
         choices:
         - full
@@ -99,12 +110,19 @@ options:
         description:
         - Enable or disable IP forward feature on SVIs. Set the value to C(true) to
           enable  or C(false) to disable.
+        - This option is not applicable for NX-OS on MDS Switches.
         type: bool
       fabric_forwarding_anycast_gateway:
         description:
         - Associate SVI with anycast gateway under VLAN configuration mode. Applicable
           for SVI interfaces only.
+        - This option is not applicable for NX-OS on MDS Switches.
         type: bool
+      analytics:
+        description:
+          - This option is applicable only for NX-OS on MDS Switches.
+        choices: ["fc-scsi", "fc-nvme", "fc-all"]
+        type: str
   state:
     description:
     - The state of the configuration after module completion

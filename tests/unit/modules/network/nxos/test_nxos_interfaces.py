@@ -77,6 +77,11 @@ class TestNxosInterfacesModule(TestNxosModule):
         )
         self.get_platform = self.mock_get_platform.start()
 
+        self.mock_get_model = patch(
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces.Interfaces.get_model",
+        )
+        self.get_model = self.mock_get_model.start()
+
     def tearDown(self):
         super(TestNxosInterfacesModule, self).tearDown()
         self.mock_FACT_LEGACY_SUBSETS.stop()
@@ -85,6 +90,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.mock_edit_config.stop()
         self.mock_get_system_defaults.stop()
         self.mock_get_platform.stop()
+        self.mock_get_model.stop()
 
     def load_fixtures(self, commands=None, device=""):
         self.mock_FACT_LEGACY_SUBSETS.return_value = dict()
@@ -93,6 +99,9 @@ class TestNxosInterfacesModule(TestNxosModule):
         if device == "legacy":
             # call execute_module() with device='legacy' to use this codepath
             self.get_platform.return_value = "N3K-Cxxx"
+        elif device == "MDS":
+            self.get_platform.return_value = "DS-Cxxx"
+            self.get_model.return_value = "MDS 9148S"
         else:
             self.get_platform.return_value = "N9K-Cxxx"
 
@@ -740,4 +749,75 @@ class TestNxosInterfacesModule(TestNxosModule):
 
         set_module_args(playbook, ignore_provider_arg)
         result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_8_mds(self):
+        # check for mds merged
+        sysdefs = dedent(
+            """\
+          no system default switchport
+          no system default switchport shutdown
+        """,
+        )
+        intf = dedent(
+            """\
+          interface fc1/1
+        """,
+        )
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+        self.get_system_defaults.return_value = sysdefs
+
+        playbook = dict(
+            config=[
+                dict(name="fc1/1", mode="E", description="MDS_Interface"),
+                dict(name="fc1/2", mode="Fx", analytics="fc-scsi"),
+            ],
+            state="merged",
+        )
+
+        commands = [
+            "interface fc1/1",
+            "switchport mode E",
+            "switchport description MDS_Interface",
+            "interface fc1/2",
+            "switchport mode Fx",
+            "analytics type fc-scsi",
+        ]
+
+        set_module_args(playbook, ignore_provider_arg)
+        result = self.execute_module(changed=True, device="MDS")
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_8_mds_deleted(self):
+        # check for mds deleted
+        sysdefs = dedent(
+            """\
+          no system default switchport
+          no system default switchport shutdown
+        """,
+        )
+        intf = dedent(
+            """\
+          interface fc1/1
+            switchport description MDS_Interface
+            switchport mode E
+            analytics type fc-scsi
+        """,
+        )
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+        self.get_system_defaults.return_value = sysdefs
+
+        playbook = dict(
+            state="deleted",
+        )
+
+        commands = [
+            "interface fc1/1",
+            "no switchport mode E",
+            "no analytics type fc-scsi",
+            "no switchport description",
+        ]
+
+        set_module_args(playbook, ignore_provider_arg)
+        result = self.execute_module(changed=True, device="MDS")
         self.assertEqual(sorted(result["commands"]), sorted(commands))

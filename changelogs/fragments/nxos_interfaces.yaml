@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - "`nxos_interfaces` - Add new option `analytics` for MDS switches."
+  - "`nxos_interfaces` - Add MDS specific choices for option mode."
+  - "`nxos_interfaces` - Add entry in documentation to indicate which options are not applicable for MDS switches."

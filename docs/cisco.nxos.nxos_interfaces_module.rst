@@ -53,6 +53,27 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>analytics</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>fc-scsi</li>
+                                    <li>fc-nvme</li>
+                                    <li>fc-all</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>This option is applicable only for NX-OS on MDS Switches.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>description</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -84,6 +105,7 @@ Parameters
                 </td>
                 <td>
                         <div>Interface link status. Applicable for Ethernet interfaces only.</div>
+                        <div>This option is not applicable for NX-OS on MDS Switches.</div>
                 </td>
             </tr>
             <tr>
@@ -124,6 +146,7 @@ Parameters
                 </td>
                 <td>
                         <div>Associate SVI with anycast gateway under VLAN configuration mode. Applicable for SVI interfaces only.</div>
+                        <div>This option is not applicable for NX-OS on MDS Switches.</div>
                 </td>
             </tr>
             <tr>
@@ -144,6 +167,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable or disable IP forward feature on SVIs. Set the value to <code>true</code> to enable  or <code>false</code> to disable.</div>
+                        <div>This option is not applicable for NX-OS on MDS Switches.</div>
                 </td>
             </tr>
             <tr>
@@ -160,10 +184,18 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>layer2</li>
                                     <li>layer3</li>
+                                    <li>E</li>
+                                    <li>F</li>
+                                    <li>Fx</li>
+                                    <li>NP</li>
+                                    <li>SD</li>
+                                    <li>auto</li>
                         </ul>
                 </td>
                 <td>
                         <div>Manage Layer2 or Layer3 state of the interface. Applicable for Ethernet and port channel interfaces only.</div>
+                        <div>The options <code>layer2</code> and <code>layer3</code> are applicable only for NX-OS on Nexus Switches.</div>
+                        <div>The options <code>E</code>, <code>F</code>, <code>Fx</code>, <code>NP</code>, <code>SD</code>, <code>auto</code> are applicable only for NX-OS on MDS Switches.</div>
                 </td>
             </tr>
             <tr>
@@ -180,6 +212,7 @@ Parameters
                 </td>
                 <td>
                         <div>MTU for a specific interface. Must be an even number between 576 and 9216. Applicable for Ethernet interfaces only.</div>
+                        <div>This option is not applicable for NX-OS on MDS Switches.</div>
                 </td>
             </tr>
             <tr>
@@ -196,7 +229,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Full name of interface, e.g. Ethernet1/1, port-channel10.</div>
+                        <div>Full name of interface, e.g. Ethernet1/1, port-channel10, fc1/1.</div>
                 </td>
             </tr>
             <tr>

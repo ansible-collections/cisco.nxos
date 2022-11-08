@@ -40,6 +40,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 )
 
 
+MDS_MODES = ["E", "F", "Fx", "NP", "SD", "auto"]
+
+
 class Interfaces(ConfigBase):
     """
     The nxos_interfaces class
@@ -70,11 +73,28 @@ class Interfaces(ConfigBase):
 
         return interfaces_facts
 
+    def _is_mds(self):
+        """Determine if the target is NX-OS on MDS."""
+        is_mds = False
+        if (
+            self.state != "rendered"
+            and self.get_platform().startswith("DS-")
+            and "MDS" in self.get_model()
+        ):
+            is_mds = True
+        return is_mds
+
     def get_platform(self):
         """Wrapper method for getting platform info
         This method exists solely to allow the unit test framework to mock calls.
         """
         return self.facts.get("ansible_net_platform", "")
+
+    def get_model(self):
+        """Wrapper method for getting platform info
+        This method exists solely to allow the unit test framework to mock calls.
+        """
+        return self.facts.get("ansible_net_model", "")
 
     def get_system_defaults(self):
         """Wrapper method for `_connection.get()`
@@ -366,10 +386,19 @@ class Interfaces(ConfigBase):
         # mode/switchport changes should occur before other changes
         sysdef_mode = self.intf_defs["sysdefs"]["mode"]
         if "mode" in obj and obj["mode"] != sysdef_mode:
-            no_cmd = "no " if sysdef_mode == "layer3" else ""
-            commands.append(no_cmd + "switchport")
+            if obj["mode"] in MDS_MODES:
+                commands.append("no switchport mode {0}".format(obj["mode"]))
+            else:
+                no_cmd = "no " if sysdef_mode == "layer3" else ""
+                commands.append(no_cmd + "switchport")
         if "description" in obj:
-            commands.append("no description")
+            cmd = "no description"
+            if self._is_mds():
+                cmd = "no switchport description"
+            commands.append(cmd)
+        if "analytics" in obj:
+            cmd = "no analytics type {0}".format(obj["analytics"])
+            commands.append(cmd)
         if "speed" in obj:
             commands.append("no speed")
         if "duplex" in obj:
@@ -407,16 +436,25 @@ class Interfaces(ConfigBase):
             obj_in_have = {}
         # mode/switchport changes should occur before other changes
         if "mode" in d:
-            sysdef_mode = self.intf_defs["sysdefs"]["mode"]
-            have_mode = obj_in_have.get("mode", sysdef_mode)
-            want_mode = d["mode"]
-            if have_mode == "layer2":
-                if want_mode == "layer3":
-                    commands.append("no switchport")
-            elif want_mode == "layer2":
-                commands.append("switchport")
+            if d["mode"] in MDS_MODES:
+                commands.append("switchport mode {0}".format(d["mode"]))
+            else:
+                sysdef_mode = self.intf_defs["sysdefs"]["mode"]
+                have_mode = obj_in_have.get("mode", sysdef_mode)
+                want_mode = d["mode"]
+                if have_mode == "layer2":
+                    if want_mode == "layer3":
+                        commands.append("no switchport")
+                elif want_mode == "layer2":
+                    commands.append("switchport")
         if "description" in d:
-            commands.append("description " + d["description"])
+            cmd = "description "
+            if self._is_mds():
+                cmd = "switchport description "
+            commands.append(cmd + d["description"])
+        if "analytics" in d:
+            cmd = "analytics type {0}".format(d["analytics"])
+            commands.append(cmd)
         if "speed" in d:
             commands.append("speed " + str(d["speed"]))
         if "duplex" in d:

@@ -94,11 +94,29 @@ class InterfacesFacts(object):
         if get_interface_type(intf) == "unknown":
             return {}
         config["name"] = intf
-        config["description"] = utils.parse_conf_arg(conf, "description")
+
+        # parse description for Nexus and MDS
+        desc_match = re.search(r"(?:switchport\s)?(?:description)\s(.+)", conf)
+        if desc_match:
+            description = desc_match.group(1)
+            config["description"] = description
+
         config["speed"] = utils.parse_conf_arg(conf, "speed")
         config["mtu"] = utils.parse_conf_arg(conf, "mtu")
         config["duplex"] = utils.parse_conf_arg(conf, "duplex")
-        config["mode"] = utils.parse_conf_cmd_arg(conf, "switchport", "layer2", "layer3")
+
+        # parse mode for MDS
+        mds_mode = re.search(r"switchport\smode\s(E|F|Fx|NP|SD|auto)", conf)
+        if mds_mode:
+            config["mode"] = mds_mode.group(1)
+        else:
+            # parse mode for Nexus
+            config["mode"] = utils.parse_conf_cmd_arg(conf, "switchport", "layer2", "layer3")
+
+        # parse analytics for MDS
+        mds_analytics = re.search(r"analytics\stype\s(fc-scsi|fc-nvme|fc-all)", conf)
+        if mds_analytics:
+            config["analytics"] = mds_analytics.group(1)
 
         config["enabled"] = utils.parse_conf_cmd_arg(conf, "shutdown", False, True)
 

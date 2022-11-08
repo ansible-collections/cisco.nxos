@@ -38,12 +38,16 @@ class InterfacesArgs(object):  # pylint: disable=R0903
         "config": {
             "elements": "dict",
             "options": {
+                "analytics": {"choices": ["fc-scsi", "fc-nvme", "fc-all"], "type": "str"},
                 "description": {"type": "str"},
                 "duplex": {"choices": ["full", "half", "auto"], "type": "str"},
                 "enabled": {"type": "bool"},
                 "fabric_forwarding_anycast_gateway": {"type": "bool"},
                 "ip_forward": {"type": "bool"},
-                "mode": {"choices": ["layer2", "layer3"], "type": "str"},
+                "mode": {
+                    "choices": ["layer2", "layer3", "E", "F", "Fx", "NP", "SD", "auto"],
+                    "type": "str",
+                },
                 "mtu": {"type": "str"},
                 "name": {"required": True, "type": "str"},
                 "speed": {"type": "str"},
