@@ -180,6 +180,7 @@ class AclsFacts(object):
                 "port_unreachable",
                 "precedence_unreachable",
                 "protocol_unreachable",
+                "unreachable",
                 "reassembly_timeout",
                 "redirect",
                 "router_advertisement",
@@ -191,7 +192,6 @@ class AclsFacts(object):
                 "timestamp_request",
                 "traceroute",
                 "ttl_exceeded",
-                "unreachable",
             ],
             "igmp": ["dvmrp", "host_query", "host_report"],
         }
@@ -264,6 +264,8 @@ class AclsFacts(object):
                                     if option == "echo" and (
                                         "echo_request" in options or "echo_reply" in options
                                     ):
+                                        continue
+                                    elif option == "unreachable" and "port_unreachable" in options:
                                         continue
                                     option = re.sub("-", "_", option)
                                     options.update({option: True})

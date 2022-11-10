@@ -634,6 +634,7 @@ class TestNxosAclsModule(TestNxosModule):
                 10 permit ip 10.0.0.0/24 any
                 20 deny tcp any eq ftp-data any eq domain
                 25 permit icmp any any echo-reply
+                27 permit icmp any any port-unreachable
                 30 remark for resetting to default run resequence ip access-list TEST_RESEQUENCE 2 3
               ipv6 access-list TEST_RESEQUENCE_ipv6
                 10 permit udp any any
@@ -704,6 +705,22 @@ class TestNxosAclsModule(TestNxosModule):
                                 "protocol_options": {
                                     "icmp": {
                                         "echo_reply": True,
+                                    },
+                                },
+                                "source": {
+                                    "any": True,
+                                },
+                                "destination": {
+                                    "any": True,
+                                },
+                            },
+                            {
+                                "sequence": 27,
+                                "grant": "permit",
+                                "protocol": "icmp",
+                                "protocol_options": {
+                                    "icmp": {
+                                        "port_unreachable": True,
                                     },
                                 },
                                 "source": {
