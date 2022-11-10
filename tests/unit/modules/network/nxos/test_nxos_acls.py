@@ -632,7 +632,8 @@ class TestNxosAclsModule(TestNxosModule):
             """\
               ip access-list TEST_RESEQUENCE
                 10 permit ip 10.0.0.0/24 any
-                20 deny udp any any eq domain
+                20 deny tcp any eq ftp-data any eq domain
+                25 permit icmp any any echo-reply
                 30 remark for resetting to default run resequence ip access-list TEST_RESEQUENCE 2 3
               ipv6 access-list TEST_RESEQUENCE_ipv6
                 10 permit udp any any
@@ -686,11 +687,30 @@ class TestNxosAclsModule(TestNxosModule):
                             {
                                 "sequence": 20,
                                 "grant": "deny",
-                                "protocol": "udp",
-                                "source": {"any": True},
+                                "protocol": "tcp",
+                                "source": {
+                                    "any": True,
+                                    "port_protocol": {"eq": "ftp-data"},
+                                },
                                 "destination": {
                                     "any": True,
                                     "port_protocol": {"eq": "domain"},
+                                },
+                            },
+                            {
+                                "sequence": 25,
+                                "grant": "permit",
+                                "protocol": "icmp",
+                                "protocol_options": {
+                                    "icmp": {
+                                        "echo_reply": True,
+                                    },
+                                },
+                                "source": {
+                                    "any": True,
+                                },
+                                "destination": {
+                                    "any": True,
                                 },
                             },
                             {
