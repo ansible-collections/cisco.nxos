@@ -49,6 +49,7 @@ options:
       address. If you set multicast address, please ensure that it is not the same
       as the C(default), otherwise use the C(default) option.
     type: list
+    default: []
     elements: str
 """
 EXAMPLES = """

@@ -64,6 +64,7 @@ Parameters
                     </div>
                 </td>
                 <td>
+                        <b>Default:</b><br/><div style="color: blue">[]</div>
                 </td>
                 <td>
                         <div>Configure group ranges for Source Specific Multicast (SSM). Valid values are multicast addresses or the keyword <code>none</code> or keyword <code>default</code>. <code>none</code> removes all SSM group ranges. <code>default</code> will set ssm_range to the default multicast address. If you set multicast address, please ensure that it is not the same as the <code>default</code>, otherwise use the <code>default</code> option.</div>
