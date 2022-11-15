@@ -399,6 +399,9 @@ class Interfaces(ConfigBase):
         if "analytics" in obj:
             cmd = "no analytics type {0}".format(obj["analytics"])
             commands.append(cmd)
+        if "trunk_mode" in obj:
+            cmd = "no switchport trunk mode {0}".format(obj["trunk_mode"])
+            commands.append(cmd)
         if "speed" in obj:
             commands.append("no speed")
         if "duplex" in obj:
@@ -454,6 +457,9 @@ class Interfaces(ConfigBase):
             commands.append(cmd + d["description"])
         if "analytics" in d:
             cmd = "analytics type {0}".format(d["analytics"])
+            commands.append(cmd)
+        if "trunk_mode" in d:
+            cmd = "switchport trunk mode {0}".format(d["trunk_mode"])
             commands.append(cmd)
         if "speed" in d:
             commands.append("speed " + str(d["speed"]))

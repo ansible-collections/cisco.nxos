@@ -76,8 +76,8 @@ options:
         type: str
       mode:
         description:
-        - Manage Layer2 or Layer3 state of the interface. Applicable for Ethernet
-          and port channel interfaces only.
+        - Manage Layer2 or Layer3 state for Ethernet and port channel interfaces.
+        - Manage port mode of Fiber Channel interfaces.
         - The options C(layer2) and C(layer3) are applicable only for NX-OS on Nexus Switches.
         - The options C(E), C(F), C(Fx), C(NP), C(SD), C(auto) are applicable only
           for NX-OS on MDS Switches.
@@ -120,8 +120,15 @@ options:
         type: bool
       analytics:
         description:
+          - Enable analytics for Fiber Channel interfaces.
           - This option is applicable only for NX-OS on MDS Switches.
         choices: ["fc-scsi", "fc-nvme", "fc-all"]
+        type: str
+      trunk_mode:
+        description:
+          - Set trunk mode for Fiber Channel interfaces.
+          - This option is applicable only for NX-OS on MDS Switches.
+        choices: ["on", "off", "auto"]
         type: str
   state:
     description:

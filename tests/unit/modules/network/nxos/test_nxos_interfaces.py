@@ -770,7 +770,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         playbook = dict(
             config=[
                 dict(name="fc1/1", mode="E", description="MDS_Interface"),
-                dict(name="fc1/2", mode="Fx", analytics="fc-scsi"),
+                dict(name="fc1/2", mode="Fx", analytics="fc-scsi", trunk_mode="on"),
             ],
             state="merged",
         )
@@ -782,6 +782,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             "interface fc1/2",
             "switchport mode Fx",
             "analytics type fc-scsi",
+            "switchport trunk mode on",
         ]
 
         set_module_args(playbook, ignore_provider_arg)
@@ -802,6 +803,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             switchport description MDS_Interface
             switchport mode E
             analytics type fc-scsi
+            switchport trunk mode on
         """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
@@ -816,6 +818,7 @@ class TestNxosInterfacesModule(TestNxosModule):
             "no switchport mode E",
             "no analytics type fc-scsi",
             "no switchport description",
+            "no switchport trunk mode on",
         ]
 
         set_module_args(playbook, ignore_provider_arg)

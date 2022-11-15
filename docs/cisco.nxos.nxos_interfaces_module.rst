@@ -67,6 +67,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
+                        <div>Enable analytics for Fiber Channel interfaces.</div>
                         <div>This option is applicable only for NX-OS on MDS Switches.</div>
                 </td>
             </tr>
@@ -193,7 +194,8 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Manage Layer2 or Layer3 state of the interface. Applicable for Ethernet and port channel interfaces only.</div>
+                        <div>Manage Layer2 or Layer3 state for Ethernet and port channel interfaces.</div>
+                        <div>Manage port mode of Fiber Channel interfaces.</div>
                         <div>The options <code>layer2</code> and <code>layer3</code> are applicable only for NX-OS on Nexus Switches.</div>
                         <div>The options <code>E</code>, <code>F</code>, <code>Fx</code>, <code>NP</code>, <code>SD</code>, <code>auto</code> are applicable only for NX-OS on MDS Switches.</div>
                 </td>
@@ -246,6 +248,28 @@ Parameters
                 </td>
                 <td>
                         <div>Interface link speed. Applicable for Ethernet interfaces only.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>trunk_mode</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>on</li>
+                                    <li>off</li>
+                                    <li>auto</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set trunk mode for Fiber Channel interfaces.</div>
+                        <div>This option is applicable only for NX-OS on MDS Switches.</div>
                 </td>
             </tr>
 

@@ -51,6 +51,7 @@ class InterfacesArgs(object):  # pylint: disable=R0903
                 "mtu": {"type": "str"},
                 "name": {"required": True, "type": "str"},
                 "speed": {"type": "str"},
+                "trunk_mode": {"type": "str", "choices": ["on", "off", "auto"]},
             },
             "type": "list",
         },

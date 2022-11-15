@@ -118,6 +118,11 @@ class InterfacesFacts(object):
         if mds_analytics:
             config["analytics"] = mds_analytics.group(1)
 
+        # parse trunk_mode for MDS
+        mds_trunk_mode = re.search(r"switchport\strunk\smode\s(on|off|auto)", conf)
+        if mds_trunk_mode:
+            config["trunk_mode"] = mds_trunk_mode.group(1)
+
         config["enabled"] = utils.parse_conf_cmd_arg(conf, "shutdown", False, True)
 
         config["fabric_forwarding_anycast_gateway"] = utils.parse_conf_cmd_arg(
