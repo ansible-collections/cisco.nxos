@@ -5,6 +5,16 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v4.0.1
+======
+
+Bugfixes
+--------
+
+- `nxos_acls` - Parse ICMP echo-reply and echo options correctly (https://github.com/ansible-collections/cisco.nxos/issues/583).
+- `nxos_acls` - Parse ICMP port-unreachable and unreachable options correctly (https://github.com/ansible-collections/cisco.nxos/issues/529).
+- `nxos_acls` - Parse port-protocol options with hypenated names correctly (https://github.com/ansible-collections/cisco.nxos/issues/557).
+
 v4.0.0
 ======
 
@@ -150,7 +160,6 @@ Release Summary
 ---------------
 
 The v2.8.1 of the cisco.nxos collection is not available on Ansible Automation Hub. Please download and use v2.8.2 which also contains an additional bug fix.
-
 
 Bugfixes
 --------
@@ -379,6 +388,7 @@ Major Changes
 
 - Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode` and `ansible_network_import_modules`.
 - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_ for more details.
+
 
 Minor Changes
 -------------

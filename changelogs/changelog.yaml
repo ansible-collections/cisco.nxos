@@ -470,7 +470,7 @@ releases:
         - Deprecated nxos_bgp_neighbor_af in favour of nxos_bgp_neighbor_address_family
           resource module.
       major_changes:
-        - Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode`
+        - Requires ansible.netcommon v2.0.0 to support `ansible_network_single_user_mode`
           and `ansible_network_import_modules`.
         - "Please refer to
           ansible.netcommon
@@ -907,3 +907,15 @@ releases:
       - remove_net_changes.yaml
       - remove_provider.yaml
     release_date: "2022-10-13"
+  4.0.1:
+    changes:
+      bugfixes:
+        - "`nxos_acls` - Parse ICMP echo-reply and echo options correctly (https://github.com/ansible-collections/cisco.nxos/issues/583)."
+        - "`nxos_acls` - Parse ICMP port-unreachable and unreachable options correctly
+          (https://github.com/ansible-collections/cisco.nxos/issues/529)."
+        - "`nxos_acls` - Parse port-protocol options with hypenated names correctly
+          (https://github.com/ansible-collections/cisco.nxos/issues/557)."
+    fragments:
+      - nxos_acls.yaml
+      - nxos_pim.yaml
+    release_date: "2022-11-30"
