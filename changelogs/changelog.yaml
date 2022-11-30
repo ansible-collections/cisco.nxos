@@ -470,7 +470,7 @@ releases:
         - Deprecated nxos_bgp_neighbor_af in favour of nxos_bgp_neighbor_address_family
           resource module.
       major_changes:
-        - Requires ansible.netcommon v2.0.0 to support `ansible_network_single_user_mode`
+        - Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode`
           and `ansible_network_import_modules`.
         - "Please refer to
           ansible.netcommon
