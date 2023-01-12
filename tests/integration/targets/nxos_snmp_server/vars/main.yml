@@ -19,6 +19,14 @@ merged:
             priv:
               privacy_password: "{{ admin_snmp_passwd_2 }}"
           user: admin
+        - authentication:
+            algorithm: md5
+            localized_key: true
+            password: "{{ zuul_snmp_passwd }}"
+            priv:
+              privacy_password: "{{ zuul_snmp_passwd }}"
+          group: network-admin
+          user: zuul
   commands:
     - snmp-server contact nxosswitchadmin@localhost
     - snmp-server location serverroom-1
