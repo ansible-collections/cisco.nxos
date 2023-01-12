@@ -83,10 +83,10 @@ options:
         elements: raw
         suboptions:
           id:
-            type: int
+            type: str
             description:
             - Destination group identifier.
-            - Value must be a int representing the destination group identifier.
+            - Value must be an integer or string representing the destination group identifier.
           destination:
             type: dict
             description:
@@ -124,10 +124,10 @@ options:
         elements: raw
         suboptions:
           id:
-            type: int
+            type: str
             description:
             - Sensor group identifier.
-            - Value must be a int representing the sensor group identifier.
+            - Value must be a integer or a string representing the sensor group identifier.
           data_source:
             type: str
             description:
@@ -168,12 +168,12 @@ options:
         elements: raw
         suboptions:
           id:
-            type: int
+            type: str
             description:
             - Subscription identifier.
-            - Value must be a int representing the subscription identifier.
+            - Value must be an integer or string representing the subscription identifier.
           destination_group:
-            type: int
+            type: str
             description:
             - Associated destination group.
           sensor_group:
@@ -183,7 +183,7 @@ options:
             - Value must be a dict defining values for keys (id, sample_interval).
             suboptions:
               id:
-                type: int
+                type: str
                 description:
                 - Associated sensor group id.
               sample_interval:
@@ -229,13 +229,13 @@ EXAMPLES = """
         destination:
           ip: 192.168.0.2
           port: 50001
-          protocol: gPRC
+          protocol: gRPC
           encoding: GPB
       - id: 55
         destination:
           ip: 192.168.0.55
           port: 60001
-          protocol: gPRC
+          protocol: gRPC
           encoding: GPB
       sensor_groups:
       - id: 1
@@ -281,7 +281,7 @@ EXAMPLES = """
         destination:
           ip: 192.168.0.2
           port: 50001
-          protocol: gPRC
+          protocol: gRPC
           encoding: GPB
       subscriptions:
       - id: 5

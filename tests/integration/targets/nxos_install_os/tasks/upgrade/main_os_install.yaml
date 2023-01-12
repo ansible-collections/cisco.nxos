@@ -6,4 +6,5 @@
 - name: End the play
   ansible.builtin.meta: end_play
 
-- ansible.builtin.include_tasks: install_os.yaml
+- name: Run Install OS
+  ansible.builtin.include_tasks: install_os.yaml

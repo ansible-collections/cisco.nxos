@@ -34,7 +34,7 @@ author: Gabriele Gerbino (@GGabriele)
 notes:
 - Tested against NXOSv 7.3.(0)D1(1) on VIRL
 - Unsupported for Cisco MDS
-- The module is used to manage NVE properties, not to create NVE interfaces. Use M(cisco.nxos.nxos_interface)
+- The module is used to manage NVE properties, not to create NVE interfaces. Use M(cisco.nxos.nxos_interfaces)
   if you wish to do so.
 - C(state=absent) removes the interface.
 - Default, where supported, restores params default value.
@@ -137,7 +137,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -401,8 +400,6 @@ def main():
         multisite_border_gateway_interface=dict(required=False, type="str"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
     mutually_exclusive = [("global_ingress_replication_bgp", "global_mcast_group_L2")]
 
     module = AnsibleModule(
@@ -441,7 +438,7 @@ def main():
         if not existing:
             warnings.append(
                 "The proposed NVE interface did not exist. "
-                "It's recommended to use nxos_interface to create "
+                "It's recommended to use nxos_interfaces to create "
                 "all logical interfaces.",
             )
         state_present(module, existing, proposed, candidate)

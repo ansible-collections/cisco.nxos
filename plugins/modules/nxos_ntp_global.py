@@ -20,8 +20,9 @@ description:
 - This module manages ntp configuration on devices running Cisco NX-OS.
 version_added: 2.6.0
 notes:
-- Tested against NX-OS 9.3.6.
+- Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
 - This module works with connection C(network_cli) and C(httpapi).
+- Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:
@@ -38,7 +39,9 @@ options:
     type: dict
     suboptions:
       access_group:
-        description: NTP access-group.
+        description:
+          - NTP access-group.
+          - This option is unsupported on MDS switches.
         type: dict
         suboptions:
           match_all:
@@ -115,13 +118,16 @@ options:
       master:
         description:
           - Act as NTP master clock.
+          - This option is unsupported on MDS switches.
         type: dict
         suboptions:
           stratum:
             description: Stratum number.
             type: int
       passive:
-        description: NTP passive command.
+        description:
+          - NTP passive command.
+          - This option is unsupported on MDS switches.
         type: bool
       peers:
         description: NTP Peers.
@@ -149,7 +155,9 @@ options:
               - Preferred Server.
             type: bool
           vrf:
-            description: Display per-VRF information.
+            description:
+              - Display per-VRF information.
+              - This option is unsupported on MDS switches.
             type: str
             aliases: ["use_vrf"]
       servers:
@@ -178,11 +186,15 @@ options:
               - Preferred Server.
             type: bool
           vrf:
-            description: Display per-VRF information.
+            description:
+              - Display per-VRF information.
+              - This option is not applicable for MDS switches.
             type: str
             aliases: ["use_vrf"]
       source:
-        description: Source of NTP packets.
+        description:
+          - Source of NTP packets.
+          - This option is unsupported on MDS switches.
         type: str
       source_interface:
         description: Source interface sending NTP packets.

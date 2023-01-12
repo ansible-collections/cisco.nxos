@@ -91,7 +91,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     get_interface_type,
     load_config,
     normalize_interface,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -185,8 +184,6 @@ def main():
         state=dict(default="present", choices=["present", "absent"], required=False),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
@@ -201,7 +198,7 @@ def main():
 
     current_vrfs = get_vrf_list(module)
     if vrf not in current_vrfs:
-        warnings.append("The VRF is not present/active on the device. " "Use nxos_vrf to fix this.")
+        warnings.append("The VRF is not present/active on the device. Use nxos_vrf to fix this.")
 
     intf_type = get_interface_type(interface)
     if intf_type != "ethernet" and network_api == "cliconf":
@@ -209,7 +206,7 @@ def main():
             module.fail_json(
                 msg="interface does not exist on switch. Verify "
                 "switch platform or create it first with "
-                "nxos_interface if it's a logical interface",
+                "nxos_interfaces if it's a logical interface",
             )
 
     mode = get_interface_mode(interface, intf_type, module)
@@ -217,7 +214,7 @@ def main():
         module.fail_json(
             msg="Ensure interface is a Layer 3 port before "
             "configuring a VRF on an interface. You can "
-            "use nxos_interface",
+            "use nxos_interfaces",
         )
 
     current_vrf = get_interface_info(interface, module)

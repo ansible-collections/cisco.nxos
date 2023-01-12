@@ -24,7 +24,7 @@
 
 - name: Generate and store random password for temp user
   ansible.builtin.set_fact:
-    temp_passwd: "{{ lookup('password', 'length=15 chars=ascii_letters') }}"
+    temp_passwd: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
   delegate_to: localhost
   no_log: true
 
@@ -58,7 +58,7 @@
   cisco.nxos.nxos_file_copy:
     local_file: "{{ role_path }}/tests/common/fixtures/{{ item }}"
     file_system: "bootflash:"
-    connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
+    connect_ssh_port: "{{ ansible_ssh_port | d(22) }}"
   loop:
     - server.crt
     - new_server.crt

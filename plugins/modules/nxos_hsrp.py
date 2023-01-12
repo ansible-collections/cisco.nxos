@@ -149,7 +149,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     get_capabilities,
     get_interface_type,
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -386,8 +385,6 @@ def main():
         auth_string=dict(type="str", required=False),
         state=dict(choices=["absent", "present"], required=False, default="present"),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 

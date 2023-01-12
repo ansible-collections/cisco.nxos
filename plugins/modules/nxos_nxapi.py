@@ -163,7 +163,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import Version
@@ -393,8 +392,6 @@ def main():
         tlsv1_1=dict(type="bool", default=False),
         tlsv1_2=dict(type="bool", default=False),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 

@@ -111,7 +111,7 @@ class AclsFacts(object):
             keywords = ["eq", "lt", "gt", "neq", "range"]
             if len(ace.split()) and ace.split()[0] in keywords:
                 port_protocol = {}
-                port_pro = re.search(r"(eq|lt|gt|neq) (\w*)", ace)
+                port_pro = re.search(r"(eq|lt|gt|neq) (\S+)", ace)
                 if port_pro:
                     port_protocol.update({port_pro.group(1): port_pro.group(2)})
                     ace = re.sub(port_pro.group(1), "", ace, 1)
@@ -153,8 +153,8 @@ class AclsFacts(object):
                 "dod_host_prohibited",
                 "dod_net_prohibited",
                 "echo_request",
-                "echo",
                 "echo_reply",
+                "echo",
                 "general_parameter_problem",
                 "host_isolated",
                 "host_precedence_unreachable",
@@ -180,6 +180,7 @@ class AclsFacts(object):
                 "port_unreachable",
                 "precedence_unreachable",
                 "protocol_unreachable",
+                "unreachable",
                 "reassembly_timeout",
                 "redirect",
                 "router_advertisement",
@@ -191,7 +192,6 @@ class AclsFacts(object):
                 "timestamp_request",
                 "traceroute",
                 "ttl_exceeded",
-                "unreachable",
             ],
             "igmp": ["dvmrp", "host_query", "host_report"],
         }
@@ -261,7 +261,11 @@ class AclsFacts(object):
                             for option in protocol_options[pro]:
                                 option = re.sub("_", "-", option)
                                 if option in ace:
-                                    if option == "echo" and "echo_request" in options:
+                                    if option == "echo" and (
+                                        "echo_request" in options or "echo_reply" in options
+                                    ):
+                                        continue
+                                    elif option == "unreachable" and "port_unreachable" in options:
                                         continue
                                     option = re.sub("-", "_", option)
                                     options.update({option: True})

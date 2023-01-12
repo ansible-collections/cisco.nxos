@@ -336,7 +336,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     get_config,
     get_connection,
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -412,8 +411,6 @@ def main():
         diff_against=dict(choices=["running", "startup", "intended"]),
         diff_ignore_lines=dict(type="list", elements="str"),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     mutually_exclusive = [("lines", "src", "replace_src"), ("parents", "src")]
 

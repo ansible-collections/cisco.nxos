@@ -97,9 +97,9 @@ def get_instance_data(key, cr_key, cr, existing_key):
         instance = cr._ref[cr_key]["existing"][existing_key]
 
     patterns = {
-        "destination_groups": r"destination-group (\d+)",
-        "sensor_groups": r"sensor-group (\d+)",
-        "subscriptions": r"subscription (\d+)",
+        "destination_groups": r"destination-group (\S+)",
+        "sensor_groups": r"sensor-group (\S+)",
+        "subscriptions": r"subscription (\S+)",
     }
     if key in patterns.keys():
         m = re.search(patterns[key], cr._ref["_resource_key"])

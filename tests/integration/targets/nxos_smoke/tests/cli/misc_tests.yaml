@@ -6,6 +6,5 @@
     - name: Test that provider values are properly ignored
       cisco.nxos.nxos_command:
         commands: show version
-        provider: "{{ nxapi }}"
 
   when: "ansible_connection != 'local'"

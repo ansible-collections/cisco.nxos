@@ -35,9 +35,6 @@ from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
 
 
 def set_module_args(args, ignore_provider=None):
-    if "provider" not in args and not ignore_provider:
-        args["provider"] = {"transport": args.get("transport") or "cli"}
-
     return _set_module_args(args)
 
 

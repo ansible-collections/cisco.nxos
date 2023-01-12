@@ -8,7 +8,7 @@
     kickstart_image_file: "{{ ki }}"
     issu: "{{ issu }}"
 
-- name: Set OS image {{ si }} boot pointers
+- name: Set boot pointers for OS image {{ si }}
   when: force
   cisco.nxos.nxos_config:
     lines:
@@ -19,7 +19,7 @@
       - copy run start
     match: line
 
-- name: Boot image {{ si }} using reload
+- name: "Boot image using reload {{ si }}"
   ignore_errors: true # noqa ignore-errors
   when: force
   cisco.nxos.nxos_command:

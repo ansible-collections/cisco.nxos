@@ -103,7 +103,6 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -262,8 +261,6 @@ def main():
         v3_report_supp=dict(required=False, type="bool"),
         state=dict(choices=["present", "default"], default="present"),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 

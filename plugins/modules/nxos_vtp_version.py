@@ -92,7 +92,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     load_config,
-    nxos_argument_spec,
     run_commands,
 )
 
@@ -165,8 +164,6 @@ def get_vtp_password(module):
 
 def main():
     argument_spec = dict(version=dict(type="str", choices=["1", "2"], required=True))
-
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 

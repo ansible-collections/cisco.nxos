@@ -261,7 +261,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
-    nxos_argument_spec,
 )
 
 
@@ -790,8 +789,6 @@ def main():
         state=dict(choices=["present", "absent"], default="present", required=False),
         retain_route_target=dict(required=False, type="str"),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     mutually_exclusive = [
         ("dampening_state", "dampening_routemap"),

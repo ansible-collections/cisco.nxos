@@ -222,7 +222,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
-    nxos_argument_spec,
 )
 
 
@@ -348,7 +347,7 @@ def get_existing(module, args, warnings):
             existing["neighbor"] = module.params["neighbor"]
             existing["vrf"] = module.params["vrf"]
     else:
-        warnings.append("The BGP process didn't exist but the task" " just created it.")
+        warnings.append("The BGP process didn't exist but the task just created it.")
     return existing
 
 
@@ -507,7 +506,6 @@ def main():
             choices=["disable", "fabric_border_leaf", "fabric_external"],
         ),
     )
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(
         argument_spec=argument_spec,

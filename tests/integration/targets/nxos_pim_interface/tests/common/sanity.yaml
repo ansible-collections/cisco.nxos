@@ -30,12 +30,13 @@
       - default interface {{ testint }}
 
 - name: Ensure {{testint}} is layer3
-  cisco.nxos.nxos_interface:
-    interface: "{{ testint }}"
-    mode: layer3
-    description: Configured by Ansible - Layer3
-    admin_state: up
-    state: present
+  cisco.nxos.nxos_interfaces:
+    config:
+      - name: "{{ testint }}"
+        mode: layer3
+        description: Configured by Ansible - Layer3
+        enabled: true
+    state: merged
 
 - block:
     - name: Configure nxos_pim_interface state absent

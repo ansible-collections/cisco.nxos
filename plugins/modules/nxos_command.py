@@ -144,10 +144,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     transform_commands,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-    run_commands,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
 
 
 def parse_commands(module, warnings):
@@ -182,8 +179,6 @@ def main():
         retries=dict(default=10, type="int"),
         interval=dict(default=1, type="int"),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 

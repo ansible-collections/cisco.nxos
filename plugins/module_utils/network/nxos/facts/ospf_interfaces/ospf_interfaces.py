@@ -76,7 +76,9 @@ class Ospf_interfacesFacts(object):
 
             objs = sorted(
                 objs,
-                key=lambda i: [int(k) if k.isdigit() else k for k in i["name"].split("/")],
+                key=lambda i: [
+                    int(k) if k.isdigit() else k for k in i["name"].replace(".", "/").split("/")
+                ],
             )
 
         ansible_facts["ansible_network_resources"].pop("ospf_interfaces", None)

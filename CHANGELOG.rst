@@ -5,6 +5,95 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v4.0.1
+======
+
+Bugfixes
+--------
+
+- `nxos_acls` - Parse ICMP echo-reply and echo options correctly (https://github.com/ansible-collections/cisco.nxos/issues/583).
+- `nxos_acls` - Parse ICMP port-unreachable and unreachable options correctly (https://github.com/ansible-collections/cisco.nxos/issues/529).
+- `nxos_acls` - Parse port-protocol options with hypenated names correctly (https://github.com/ansible-collections/cisco.nxos/issues/557).
+
+v4.0.0
+======
+
+Major Changes
+-------------
+
+- Please use either of the following connection types - network_cli, httpapi or netconf.
+- This release drops support for `connection: local` and provider dictionary.
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- This release removes the following deprecated plugins that have reached their end-of-life.
+- nxos_acl
+- nxos_acl_interface
+- nxos_interface
+- nxos_interface_ospf
+- nxos_l2_interface
+- nxos_l3_interface
+- nxos_linkagg
+- nxos_lldp
+- nxos_ospf
+- nxos_ospf_vrf
+- nxos_smu
+- nxos_static_route
+- nxos_vlan
+
+v3.2.0
+======
+
+Minor Changes
+-------------
+
+- `nxos_l3_interfaces` - Add support for toggling ipv6 redirects (https://github.com/ansible-collections/cisco.nxos/issues/569).
+
+Bugfixes
+--------
+
+- `nxos_telemetry` - Allow destination-group & sensor-group id to be strings.
+- `nxos_telemetry` - Allow sensor-group paths to be generated without additional properties.
+
+v3.1.2
+======
+
+Bugfixes
+--------
+
+- `nxos_facts` - Fixes parsing of module info json data when TABLE_modinfo entry is a list (https://github.com/ansible-collections/cisco.nxos/issues/559).
+
+v3.1.1
+======
+
+Bugfixes
+--------
+
+- Fix issue with modules related to OSPF interfaces failing when the target NXOS device has subinterfaces.
+
+v3.1.0
+======
+
+Minor Changes
+-------------
+
+- `nxos_snmp_server` - Add support for localizedV2key (https://github.com/ansible-collections/cisco.nxos/issues/415).
+- `nxos_snmp_server` - Add support for sha-256 based based user authentication.
+
+Bugfixes
+--------
+
+- `nxos_file_copy` - Skip `vrf` when running against MDS switches (https://github.com/ansible-collections/cisco.nxos/issues/508).
+- `nxos_interfaces` - Enable all virtual interfaces with `enabled` set to True (https://github.com/ansible-collections/cisco.nxos/issues/335).
+- `nxos_ntp_global` - Ensure idempotence for aliased keys (https://github.com/ansible-collections/cisco.nxos/issues/484).
+- `nxos_snmp_server` - Fix typo for traps link cisco-xcvr-mon-status-chg.
+
+Documentation Changes
+---------------------
+
+- Updated documentation in nxos_snmp_server, nxos_ntp_global and nxos_logging_global modules to reflect which options are unsupported on MDS switches.
+
 v3.0.0
 ======
 
@@ -70,8 +159,7 @@ v2.8.2
 Release Summary
 ---------------
 
-- The v2.8.1 of the cisco.nxos collection is not available on Ansible Automation Hub. Please download and use v2.8.2 which
-  also contains an additional bug fix for the `nxos_ntp_global` module.
+The v2.8.1 of the cisco.nxos collection is not available on Ansible Automation Hub. Please download and use v2.8.2 which also contains an additional bug fix.
 
 Bugfixes
 --------
