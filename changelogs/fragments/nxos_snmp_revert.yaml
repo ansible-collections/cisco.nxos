@@ -1,0 +1,3 @@
+---
+trivial:
+  - Update nxos_snmp_server tests for CI.

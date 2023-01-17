@@ -907,3 +907,15 @@ releases:
       - remove_net_changes.yaml
       - remove_provider.yaml
     release_date: "2022-10-13"
+  4.0.1:
+    changes:
+      bugfixes:
+        - "`nxos_acls` - Parse ICMP echo-reply and echo options correctly (https://github.com/ansible-collections/cisco.nxos/issues/583)."
+        - "`nxos_acls` - Parse ICMP port-unreachable and unreachable options correctly
+          (https://github.com/ansible-collections/cisco.nxos/issues/529)."
+        - "`nxos_acls` - Parse port-protocol options with hypenated names correctly
+          (https://github.com/ansible-collections/cisco.nxos/issues/557)."
+    fragments:
+      - nxos_acls.yaml
+      - nxos_pim.yaml
+    release_date: "2022-11-30"
