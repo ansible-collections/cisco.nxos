@@ -145,7 +145,6 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     hostname=HostnameFacts,
 )
 MDS_FACT_RESOURCE_SUBSETS = dict(
-    interfaces=InterfacesFacts,
     logging_global=Logging_globalFacts,
     ntp_global=Ntp_globalFacts,
     snmp_server=Snmp_serverFacts,
