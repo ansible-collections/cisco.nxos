@@ -19,6 +19,14 @@ merged:
             priv:
               privacy_password: "{{ admin_snmp_passwd_2 }}"
           user: admin
+        - authentication:
+            algorithm: md5
+            localized_key: true
+            password: "{{ zuul_snmp_passwd }}"
+            priv:
+              privacy_password: "{{ zuul_snmp_passwd }}"
+          group: network-admin
+          user: zuul
   commands:
     - snmp-server contact nxosswitchadmin@localhost
     - snmp-server location serverroom-1
@@ -93,6 +101,14 @@ merged:
               privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
           group: network-operator
           user: snmp_user_2
+        - authentication:
+            algorithm: md5
+            localized_key: true
+            password: "{{ zuul_snmp_passwd }}"
+            priv:
+              privacy_password: "{{ zuul_snmp_passwd }}"
+          group: network-admin
+          user: zuul
       use_acls:
         - ipv4: acl1
           ipv6: acl2
@@ -171,6 +187,16 @@ replaced:
             priv:
               privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
               aes_128: true
+
+        - authentication:
+            algorithm: md5
+            localized_key: true
+            password: "{{ zuul_snmp_passwd }}"
+            priv:
+              privacy_password: "{{ zuul_snmp_passwd }}"
+          group: network-admin
+          user: zuul
+
       use_acls:
         - user: snmp_user_1
           ipv4: acl1
