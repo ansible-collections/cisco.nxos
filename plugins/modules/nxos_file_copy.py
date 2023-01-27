@@ -311,8 +311,11 @@ class FilePush(FileCopy):
             self._module.fail_json("Could not transfer file. Not enough space on device.")
 
         # frp = full_remote_path, flp = full_local_path
-        frp = "{0}{1}".format(file_system, remote_file)
+        frp = remote_file
+        if not file_system.startswith("bootflash:"):
+            frp = "{0}{1}".format(file_system, remote_file)
         flp = os.path.join(os.path.abspath(local_file))
+
         try:
             self._connection.copy_file(
                 source=flp,
