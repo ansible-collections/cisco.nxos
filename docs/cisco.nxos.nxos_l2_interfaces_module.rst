@@ -95,6 +95,7 @@ Parameters
                 </td>
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>dot1q-tunnel</li>
                                     <li>access</li>
                                     <li>trunk</li>
                                     <li>fex-fabric</li>
