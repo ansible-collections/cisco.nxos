@@ -100,7 +100,8 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">10</div>
                 </td>
                 <td>
-                        <div>Specifies the number of retries a command should by tried before it is considered failed.  The command is run on the target device every retry and evaluated against the <em>wait_for</em> conditionals.</div>
+                        <div>Specifies the number of retries a command should by tried before it is considered failed. The command is run on the target device every retry and evaluated against the <em>wait_for</em> conditionals.</div>
+                        <div>The commands are run once when <em>retries</em> is set to <code>0</code>.</div>
                 </td>
             </tr>
             <tr>
