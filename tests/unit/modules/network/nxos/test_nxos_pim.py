@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosPimModule(TestNxosModule):
-
     module = nxos_pim
 
     def setUp(self):

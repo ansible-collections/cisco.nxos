@@ -34,7 +34,6 @@ ignore_provider_arg = True
 
 
 class TestNxosLacpInterfacesModule(TestNxosModule):
-
     module = nxos_lacp_interfaces
 
     def setUp(self):

@@ -35,7 +35,6 @@ ignore_provider_arg = True
 
 
 class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
-
     # Testing strategy
     # ------------------
     # (a) The unit tests cover `merged` and `replaced` for every attribute.

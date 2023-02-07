@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosVrfafModule(TestNxosModule):
-
     module = nxos_vrf_af
 
     def setUp(self):

@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosBgpNeighborAfModule(TestNxosModule):
-
     module = nxos_bgp_neighbor_af
 
     def setUp(self):

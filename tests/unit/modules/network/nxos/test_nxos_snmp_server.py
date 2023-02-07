@@ -34,7 +34,6 @@ ignore_provider_arg = True
 
 
 class TestNxosSnmpServerModule(TestNxosModule):
-
     module = nxos_snmp_server
 
     def setUp(self):

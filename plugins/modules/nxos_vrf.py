@@ -521,7 +521,6 @@ def map_config_to_obj(want, element_spec, module):
 
 
 def check_declarative_intent_params(want, module, element_spec, result):
-
     have = None
     is_delay = False
 

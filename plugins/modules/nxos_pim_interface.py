@@ -423,7 +423,6 @@ def config_pim_interface(delta, existing, jp_bidir, isauth):
 
 
 def get_pim_interface_defaults():
-
     args = dict(
         dr_prio=PARAM_TO_DEFAULT_KEYMAP.get("dr_prio"),
         bfd=PARAM_TO_DEFAULT_KEYMAP.get("bfd"),

@@ -27,7 +27,6 @@ from .nxos_module import TestNxosModule, set_module_args
 
 
 class TestNxosBannerModule(TestNxosModule):
-
     module = nxos_banner
 
     def setUp(self):

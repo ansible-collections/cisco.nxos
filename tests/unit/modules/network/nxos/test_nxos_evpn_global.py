@@ -30,7 +30,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosEvpnGlobalModule(TestNxosModule):
-
     module = nxos_evpn_global
 
     def setUp(self):

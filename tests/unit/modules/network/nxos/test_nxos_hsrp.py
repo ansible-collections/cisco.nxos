@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, set_module_args
 
 
 class TestNxosHsrpModule(TestNxosModule):
-
     module = nxos_hsrp
 
     def setUp(self):
