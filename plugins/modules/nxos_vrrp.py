@@ -177,7 +177,7 @@ def is_default(interface, module):
                 return True
             else:
                 return False
-    except (KeyError):
+    except KeyError:
         return "DNE"
 
 

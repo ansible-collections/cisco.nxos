@@ -41,7 +41,6 @@ msg = nxosCmdRef_import_check()
 
 @pytest.mark.skipif(len(msg), reason=msg)
 class TestNxosBfdGlobalModule(TestNxosModule):
-
     module = nxos_bfd_global
 
     def setUp(self):

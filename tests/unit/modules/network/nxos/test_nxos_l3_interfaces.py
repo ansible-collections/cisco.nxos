@@ -38,7 +38,6 @@ ignore_provider_arg = True
 
 
 class TestNxosL3InterfacesModule(TestNxosModule):
-
     module = nxos_l3_interfaces
 
     def setUp(self):

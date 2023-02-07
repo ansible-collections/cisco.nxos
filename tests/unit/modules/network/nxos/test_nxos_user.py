@@ -32,7 +32,6 @@ ignore_provider_arg = True
 
 
 class TestNxosUserModule(TestNxosModule):
-
     module = nxos_user
 
     def setUp(self):

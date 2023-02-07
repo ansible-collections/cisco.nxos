@@ -38,7 +38,6 @@ ignore_provider_arg = True
 
 
 class TestNxosBfdInterfacesModule(TestNxosModule):
-
     module = nxos_bfd_interfaces
 
     def setUp(self):
