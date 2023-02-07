@@ -21,7 +21,3 @@
       - no snmp-server host 192.0.2.2 informs version 3 auth NMS
       - no snmp-server host 192.0.3.2 informs version 3 auth NMS
   ignore_errors: true
-
-- name: Remove remaining configuration
-  cisco.nxos.nxos_snmp_server:
-    state: deleted
