@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosBgpModule(TestNxosModule):
-
     module = nxos_bgp
 
     def setUp(self):
@@ -113,7 +112,6 @@ class TestNxosBgpModule(TestNxosModule):
 
 
 class TestNxosBgp32BitsAS(TestNxosModule):
-
     module = nxos_bgp
 
     def setUp(self):

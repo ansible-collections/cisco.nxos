@@ -372,7 +372,6 @@ class ShowZoneStatus(object):
         return output
 
     def update(self):
-
         output = self.execute_show_zone_status_cmd().split("\n")
 
         patfordefzone = "VSAN: " + str(self.vsan) + r" default-zone:\s+(\S+).*"
@@ -439,7 +438,6 @@ def getMemType(supported_choices, allmemkeys, default="pwwn"):
 
 
 def main():
-
     supported_choices = ["device_alias"]
     zone_member_spec = dict(
         pwwn=dict(required=True, type="str", aliases=["device_alias"]),

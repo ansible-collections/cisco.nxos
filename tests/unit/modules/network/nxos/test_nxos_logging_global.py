@@ -37,7 +37,6 @@ ignore_provider_arg = True
 
 
 class TestNxosLoggingGlobalModule(TestNxosModule):
-
     module = nxos_logging_global
 
     def setUp(self):

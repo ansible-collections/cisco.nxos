@@ -48,7 +48,6 @@ ignore_provider_arg = True
 
 @pytest.mark.skipif(len(msg), reason=msg)
 class TestNxosTelemetryModule(TestNxosModule):
-
     module = nxos_telemetry
 
     def setUp(self):

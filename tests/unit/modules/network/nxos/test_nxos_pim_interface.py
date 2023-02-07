@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosIPInterfaceModule(TestNxosModule):
-
     module = nxos_pim_interface
 
     def setUp(self):
@@ -123,7 +122,6 @@ class TestNxosIPInterfaceModule(TestNxosModule):
 
 
 class TestNxosPimInterfaceBfdModule(TestNxosModule):
-
     module = nxos_pim_interface
 
     def setUp(self):

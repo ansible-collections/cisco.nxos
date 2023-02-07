@@ -163,7 +163,6 @@ class Hardware(FactsBase):
 
 
 class Interfaces(FactsBase):
-
     INTERFACE_MAP = frozenset(
         [
             ("state", "state"),
