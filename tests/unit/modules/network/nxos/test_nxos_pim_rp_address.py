@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosPimRpAddressModule(TestNxosModule):
-
     module = nxos_pim_rp_address
 
     def setUp(self):

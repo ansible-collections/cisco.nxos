@@ -18,7 +18,6 @@ from .nxos_module import TestNxosModule
 
 
 class TestNxosAclsModule(TestNxosModule):
-
     module = nxos_acls
 
     def setUp(self):

@@ -38,7 +38,6 @@ ignore_provider_arg = True
 
 
 class TestNxosHsrpInterfacesModule(TestNxosModule):
-
     module = nxos_hsrp_interfaces
 
     def setUp(self):

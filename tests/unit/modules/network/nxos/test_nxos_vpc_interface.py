@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosVpcModule(TestNxosModule):
-
     module = nxos_vpc_interface
 
     def setUp(self):

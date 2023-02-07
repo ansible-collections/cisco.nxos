@@ -35,7 +35,6 @@ ignore_provider_arg = True
 
 
 class TestNxosOspfv2Module(TestNxosModule):
-
     module = nxos_ospfv2
 
     def setUp(self):

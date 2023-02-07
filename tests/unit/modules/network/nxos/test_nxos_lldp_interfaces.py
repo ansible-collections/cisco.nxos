@@ -16,7 +16,6 @@ from .nxos_module import TestNxosModule, load_fixture
 
 
 class TestNxosLldpInterfacesModule(TestNxosModule):
-
     module = nxos_lldp_interfaces
 
     def setUp(self):

@@ -35,7 +35,6 @@ ignore_provider_arg = True
 
 
 class TestNxosBgpGlobalModule(TestNxosModule):
-
     module = nxos_bgp_global
 
     def setUp(self):

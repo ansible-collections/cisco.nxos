@@ -248,7 +248,7 @@ def get_snmp_host(host, udp, module):
 
         if find:
             fix_find = {}
-            for (key, value) in find.items():
+            for key, value in find.items():
                 if isinstance(value, str):
                     fix_find[key] = value.strip()
                 else:
