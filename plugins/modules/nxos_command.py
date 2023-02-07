@@ -63,7 +63,7 @@ options:
       failed. The command is run on the target device every retry and evaluated against
       the I(wait_for) conditionals.
     - The commands are run once when I(retries) is set to C(0).
-    default: 10
+    default: 9
     type: int
   interval:
     description:
@@ -177,7 +177,7 @@ def main():
         commands=dict(type="list", required=True, elements="raw"),
         wait_for=dict(type="list", aliases=["waitfor"], elements="str"),
         match=dict(default="all", choices=["any", "all"]),
-        retries=dict(default=10, type="int"),
+        retries=dict(default=9, type="int"),
         interval=dict(default=1, type="int"),
     )
 

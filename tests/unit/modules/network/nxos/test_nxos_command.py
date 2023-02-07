@@ -83,7 +83,7 @@ class TestNxosCommandModule(TestNxosModule):
         wait_for = 'result[0] contains "test string"'
         set_module_args(dict(commands=["show version"], wait_for=wait_for))
         self.execute_module(failed=True)
-        self.assertEqual(self.run_commands.call_count, 11)
+        self.assertEqual(self.run_commands.call_count, 10)
 
     def test_nxos_command_retries(self):
         wait_for = 'result[0] contains "test string"'
