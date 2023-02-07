@@ -16,7 +16,6 @@ from .nxos_module import TestNxosModule, load_fixture
 
 
 class TestNxosStaticRoutesModule(TestNxosModule):
-
     module = nxos_static_routes
 
     def setUp(self):

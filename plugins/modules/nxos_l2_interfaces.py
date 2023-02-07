@@ -93,6 +93,7 @@ options:
           as changed=True.
         type: str
         choices:
+        - dot1q-tunnel
         - access
         - trunk
         - fex-fabric

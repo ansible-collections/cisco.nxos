@@ -35,7 +35,6 @@ ignore_provider_arg = True
 
 
 class TestNxosNtpGlobalModule(TestNxosModule):
-
     module = nxos_ntp_global
 
     def setUp(self):

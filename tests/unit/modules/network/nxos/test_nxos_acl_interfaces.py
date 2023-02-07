@@ -16,7 +16,6 @@ from .nxos_module import TestNxosModule, load_fixture
 
 
 class TestNxosAclInterfacesModule(TestNxosModule):
-
     module = nxos_acl_interfaces
 
     def setUp(self):

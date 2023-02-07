@@ -36,7 +36,6 @@ ignore_provider_arg = True
 
 
 class TestNxosHostnameModule(TestNxosModule):
-
     module = nxos_hostname
 
     def setUp(self):

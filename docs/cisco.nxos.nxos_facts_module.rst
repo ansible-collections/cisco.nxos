@@ -17,7 +17,7 @@ Version added: 1.0.0
 
 Synopsis
 --------
-- Collects facts from Cisco Nexus devices running the NX-OS operating system.  Fact collection is supported over both Cli and Nxapi transports.  This module prepends all of the base network fact keys with ``ansible_net_<fact>``.  The facts module will always collect a base set of facts from the device and can enable or disable collection of additional facts.
+- Collects facts from Cisco Nexus devices running the NX-OS operating system.  Fact collection is supported over both ``network_cli`` and ``httpapi``. This module prepends all of the base network fact keys with ``ansible_net_<fact>``. The facts module will always collect a base set of facts from the device and can enable or disable collection of additional facts.
 
 
 
@@ -49,7 +49,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>When &#x27;True&#x27; a list of network resources for which resource modules are available will be provided.</div>
+                        <div>When set to <code>true</code> a list of network resources for which resource modules are available will be provided.</div>
                 </td>
             </tr>
             <tr>
@@ -65,7 +65,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are <code>all</code>, <code>bfd_interfaces</code>, <code>lag_interfaces</code>, <code>telemetry</code>, <code>vlans</code>, <code>lacp</code>, <code>lacp_interfaces</code>, <code>interfaces</code>, <code>l3_interfaces</code>, <code>l2_interfaces</code>, <code>lldp_global</code>, <code>acls</code>, <code>acl_interfaces</code>, <code>ospfv2</code>, <code>ospfv3</code>, <code>ospf_interfaces</code>, <code>bgp_global</code>, <code>bgp_address_family</code>, <code>route_maps</code>, <code>prefix_lists</code>, <code>logging_global</code>, <code>ntp_global</code>, <code>snmp_server</code>.</div>
+                        <div>When supplied, this argument will gather configuration facts only for the given subset. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
+                        <div>Valid subsets are <code>all</code>, <code>bfd_interfaces</code>, <code>lag_interfaces</code>, <code>telemetry</code>, <code>vlans</code>, <code>lacp</code>, <code>lacp_interfaces</code>, <code>interfaces</code>, <code>l3_interfaces</code>, <code>l2_interfaces</code>, <code>lldp_global</code>, <code>acls</code>, <code>acl_interfaces</code>, <code>ospfv2</code>, <code>ospfv3</code>, <code>ospf_interfaces</code>, <code>bgp_global</code>, <code>bgp_address_family</code>, <code>route_maps</code>, <code>prefix_lists</code>, <code>logging_global</code>, <code>ntp_global</code>, <code>snmp_server</code>, <code>hostname</code>.</div>
                 </td>
             </tr>
             <tr>
@@ -82,7 +83,7 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">"min"</div>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset.  Possible values for this argument include <code>all</code>, <code>hardware</code>, <code>config</code>, <code>legacy</code>, <code>interfaces</code>, and <code>min</code>.  Can specify a list of values to include a larger subset.  Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
+                        <div>When supplied, this argument will gather operational facts only for the given subset. Possible values for this argument include <code>all</code>, <code>hardware</code>, <code>config</code>, <code>legacy</code>, <code>interfaces</code>, and <code>min</code>.  Can specify a list of values to include a larger subset.  Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected.</div>
                 </td>
             </tr>
     </table>

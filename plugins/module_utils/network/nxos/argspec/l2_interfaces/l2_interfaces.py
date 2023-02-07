@@ -44,7 +44,7 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                 },
                 "mode": {
                     "type": "str",
-                    "choices": ["access", "trunk", "fex-fabric", "fabricpath"],
+                    "choices": ["access", "dot1q-tunnel", "trunk", "fex-fabric", "fabricpath"],
                 },
                 "name": {"required": True, "type": "str"},
                 "trunk": {

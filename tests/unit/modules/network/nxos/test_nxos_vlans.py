@@ -38,7 +38,6 @@ ignore_provider_arg = True
 
 
 class TestNxosVlansModule(TestNxosModule):
-
     module = nxos_vlans
 
     def setUp(self):

@@ -31,7 +31,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosCommandModule(TestNxosModule):
-
     module = nxos_command
 
     def setUp(self):

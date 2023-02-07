@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosOverlayGlobalModule(TestNxosModule):
-
     module = nxos_overlay_global
 
     def setUp(self):

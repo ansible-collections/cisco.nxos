@@ -198,7 +198,6 @@ def flatten_list(command_lists):
 
 
 def get_vrf_list(module):
-
     try:
         body = run_commands(module, ["show vrf all | json"])[0]
         vrf_table = body["TABLE_vrf"]["ROW_vrf"]
