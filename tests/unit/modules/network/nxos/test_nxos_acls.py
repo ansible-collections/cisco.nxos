@@ -639,6 +639,9 @@ class TestNxosAclsModule(TestNxosModule):
                 10 permit udp any any
                 20 deny tcp any any
                 30 remark for resetting to default run resequence ip access-list TEST_RESEQUENCE_ipv6 2 3
+              ipv6 access-list TEST_PREFIX_HOST
+                10 permit ipv6 fd00:976a::/32 any
+                20 permit ipv6 2001:db8:85a3::8a2e:370:7334/128 any
             """,
         )
         set_module_args(dict(state="gathered"))
@@ -666,6 +669,25 @@ class TestNxosAclsModule(TestNxosModule):
                             {
                                 "sequence": 30,
                                 "remark": "for resetting to default run resequence ip access-list TEST_RESEQUENCE_ipv6 2 3",
+                            },
+                        ],
+                    },
+                    {
+                        "name": "TEST_PREFIX_HOST",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "ipv6",
+                                "source": {"prefix": "fd00:976a::/32"},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "permit",
+                                "protocol": "ipv6",
+                                "source": {"host": "2001:db8:85a3::8a2e:370:7334"},
+                                "destination": {"any": True},
                             },
                         ],
                     },
@@ -740,4 +762,5 @@ class TestNxosAclsModule(TestNxosModule):
             },
         ]
         result = self.execute_module(changed=False)
+        print(result["gathered"])
         self.assertEqual(result["gathered"], gathered)
