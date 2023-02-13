@@ -629,7 +629,7 @@ class TestNxosAclsModule(TestNxosModule):
     def test_nxos_acls_parse_remark(self):
         self.execute_show_command.return_value = dedent(
             """\
-               ip access-list TEST_RESEQUENCE
+              ip access-list TEST_RESEQUENCE
                 10 permit ip 10.0.0.0/24 any
                 20 deny tcp any eq ftp-data any eq domain
                 25 permit icmp any any echo-reply
