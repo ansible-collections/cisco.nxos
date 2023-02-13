@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_acls` - Fix how IPv6 prefixes are converted to hosts (https://github.com/ansible-collections/cisco.nxos/issues/623)."

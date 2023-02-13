@@ -23,6 +23,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acls.acls import (
     AclsArgs,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    validate_ipv4_addr,
+    validate_ipv6_addr,
+)
 
 
 class AclsFacts(object):
@@ -96,11 +100,15 @@ class AclsFacts(object):
         else:
             # it could be a.b.c.d or a.b.c.d/x or a.b.c.d/32
             if "/" in option:  # or 'host' in option:
-                ip = re.search(r"(.*)/(\d+)", option)
-                if int(ip.group(2)) < 32 or 32 < int(ip.group(2)) < 128:
-                    ret_dict.update({"prefix": option})
+                prefix = re.search(r"(.*)/(\d+)", option)
+                ip = prefix.group(1)
+                cidr = prefix.group(2)
+                if (validate_ipv4_addr(option) and int(cidr) == 32) or (
+                    validate_ipv6_addr(option) and int(cidr) == 128
+                ):
+                    ret_dict.update({"host": ip})
                 else:
-                    ret_dict.update({"host": ip.group(1)})
+                    ret_dict.update({"prefix": option})
             else:
                 ret_dict.update({"address": option})
                 wb = ace.split()[1]
