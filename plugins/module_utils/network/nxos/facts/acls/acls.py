@@ -201,6 +201,39 @@ class AclsFacts(object):
                 "traceroute",
                 "ttl_exceeded",
             ],
+            "icmpv6": [
+                "beyond_scope",
+                "destination_unreachable",
+                "echo_reply",
+                "echo_request",
+                "fragments",
+                "header",
+                "hop_limit",
+                "mld_query",
+                "mld_reduction",
+                "mld_report",
+                "mldv2",
+                "nd_na",
+                "nd_ns",
+                "next_header",
+                "no_admin",
+                "no_route",
+                "packet_too_big",
+                "parameter_option",
+                "parameter_problem",
+                "port_unreachable",
+                "reassembly_timeout",
+                "renum_command",
+                "renum_result",
+                "renum_seq_number",
+                "router_advertisement",
+                "router_renumbering",
+                "router_solicitation",
+                "time_exceeded",
+                "unreachable",
+                "telemetry_path",
+                "telemetry_queue",
+            ],
             "igmp": ["dvmrp", "host_query", "host_report"],
         }
         if conf:
@@ -239,8 +272,13 @@ class AclsFacts(object):
 
                     if not rem and seq:
                         ace = re.sub(grant, "", ace, 1)
+
                         pro = ace.split()[0]
-                        entry.update({"protocol": pro})
+                        if pro == "icmp" and config["afi"] == "ipv6":
+                            entry.update({"protocol": "icmpv6"})
+                        else:
+                            entry.update({"protocol": pro})
+
                         ace = re.sub(pro, "", ace, 1)
                         ace, source = self.get_endpoint(ace, pro)
                         entry.update({"source": source})
@@ -263,11 +301,13 @@ class AclsFacts(object):
                         if log:
                             entry.update({"log": True})
 
-                        if pro == "tcp" or pro == "icmp" or pro == "igmp":
+                        pro = entry.get("protocol", "")
+                        if pro in ["tcp", "icmp", "icmpv6", "igmp"]:
                             pro_options = {}
                             options = {}
                             for option in protocol_options[pro]:
-                                option = re.sub("_", "-", option)
+                                if option not in ["telemetry_path", "telemetry_queue"]:
+                                    option = re.sub("_", "-", option)
                                 if option in ace:
                                     if option == "echo" and (
                                         "echo_request" in options or "echo_reply" in options
