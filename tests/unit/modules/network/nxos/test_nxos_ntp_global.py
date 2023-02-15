@@ -26,7 +26,6 @@ from textwrap import dedent
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_ntp_global
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from .nxos_module import TestNxosModule, set_module_args
 

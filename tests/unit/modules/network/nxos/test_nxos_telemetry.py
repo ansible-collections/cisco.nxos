@@ -28,11 +28,7 @@ from textwrap import dedent
 # shippable, which fails this test due to import yaml & import ordereddict.
 import pytest
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.telemetry.telemetry import (
-    Telemetry,
-)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    NxosCmdRef,
     nxosCmdRef_import_check,
 )
 from ansible_collections.cisco.nxos.plugins.modules import nxos_telemetry

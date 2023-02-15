@@ -11,7 +11,7 @@ __metaclass__ = type
 from textwrap import dedent
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_acls
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import MagicMock, patch
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
 
 from .nxos_module import TestNxosModule
