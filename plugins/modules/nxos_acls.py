@@ -352,6 +352,103 @@ options:
                       unreachable:
                         description: All unreachables
                         type: bool
+                  icmpv6:
+                    description: ICMPv6 protocol options.
+                    type: dict
+                    suboptions:
+                      beyond_scope:
+                        description: Destination beyond scope.
+                        type: bool
+                      destination_unreachable:
+                        description: Destination address is unreachable.
+                        type: bool
+                      echo_reply:
+                        description: Echo reply.
+                        type: bool
+                      echo_request:
+                        description: Echo request (ping).
+                        type: bool
+                      fragments:
+                        description: Check non-initial fragments.
+                        type: bool
+                      header:
+                        description: Parameter header problem.
+                        type: bool
+                      hop_limit:
+                        description: Hop limit exceeded in transit.
+                        type: bool
+                      mld_query:
+                        description: Multicast Listener Discovery Query.
+                        type: bool
+                      mld_reduction:
+                        description: Multicast Listener Discovery Reduction.
+                        type: bool
+                      mld_report:
+                        description: Multicast Listener Discovery Report.
+                        type: bool
+                      mldv2:
+                        description: Multicast Listener Discovery Protocol.
+                        type: bool
+                      nd_na:
+                        description: Neighbor discovery neighbor advertisements.
+                        type: bool
+                      nd_ns:
+                        description: Neighbor discovery neighbor solicitations.
+                        type: bool
+                      next_header:
+                        description: Parameter next header problems.
+                        type: bool
+                      no_admin:
+                        description: Administration prohibited destination.
+                        type: bool
+                      no_route:
+                        description: No route to destination.
+                        type: bool
+                      packet_too_big:
+                        description: Packet too big.
+                        type: bool
+                      parameter_option:
+                        description: Parameter option problems.
+                        type: bool
+                      parameter_problem:
+                        description: All parameter problems.
+                        type: bool
+                      port_unreachable:
+                        description: Port unreachable.
+                        type: bool
+                      reassembly_timeout:
+                        description: Reassembly timeout.
+                        type: bool
+                      renum_command:
+                        description: Router renumbering command.
+                        type: bool
+                      renum_result:
+                        description: Router renumbering result.
+                        type: bool
+                      renum_seq_number:
+                        description: Router renumbering sequence number reset.
+                        type: bool
+                      router_advertisement:
+                        description: Neighbor discovery router advertisements.
+                        type: bool
+                      router_renumbering:
+                        description: All router renumbering.
+                        type: bool
+                      router_solicitation:
+                        description: Neighbor discovery router solicitations.
+                        type: bool
+                      time_exceeded:
+                        description: All time exceeded.
+                        type: bool
+                      unreachable:
+                        description: All unreachable.
+                        type: bool
+                      telemetry_path:
+                        description: IPT enabled.
+                        type: bool
+                      telemetry_queue:
+                        description: Flow of interest for BDC/HDC.
+                        type: bool
                   tcp:
                     description: TCP flags.
                     type: dict

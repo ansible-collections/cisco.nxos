@@ -642,6 +642,9 @@ class TestNxosAclsModule(TestNxosModule):
               ipv6 access-list TEST_PREFIX_HOST
                 10 permit ipv6 fd00:976a::/32 any
                 20 permit ipv6 2001:db8:85a3::8a2e:370:7334/128 any
+              ipv6 access-list TEST_ICMPv6
+                10 permit icmp any any nd-na
+                20 deny icmp any any nd-ns telemetry_path
             """,
         )
         set_module_args(dict(state="gathered"))
@@ -687,6 +690,36 @@ class TestNxosAclsModule(TestNxosModule):
                                 "grant": "permit",
                                 "protocol": "ipv6",
                                 "source": {"host": "2001:db8:85a3::8a2e:370:7334"},
+                                "destination": {"any": True},
+                            },
+                        ],
+                    },
+                    {
+                        "name": "TEST_ICMPv6",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "icmpv6",
+                                "protocol_options": {
+                                    "icmpv6": {
+                                        "nd_na": True,
+                                    },
+                                },
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "deny",
+                                "protocol": "icmpv6",
+                                "protocol_options": {
+                                    "icmpv6": {
+                                        "nd_ns": True,
+                                        "telemetry_path": True,
+                                    },
+                                },
+                                "source": {"any": True},
                                 "destination": {"any": True},
                             },
                         ],
@@ -762,5 +795,61 @@ class TestNxosAclsModule(TestNxosModule):
             },
         ]
         result = self.execute_module(changed=False)
-        print(result["gathered"])
         self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_acls_icmpv6_1(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+              ipv6 access-list TEST_ICMPv6
+                20 deny icmp any any nd-ns telemetry_path
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv6",
+                        acls=[
+                            dict(
+                                name="TEST_ICMPv6",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        destination=dict(any=True),
+                                        source=dict(host="192.0.2.1"),
+                                        sequence=10,
+                                        protocol="icmpv6",
+                                        protocol_options=dict(
+                                            icmpv6=dict(
+                                                nd_na=True,
+                                            ),
+                                        ),
+                                    ),
+                                    dict(
+                                        grant="deny",
+                                        destination=dict(any=True),
+                                        source=dict(any=True),
+                                        sequence=20,
+                                        protocol="icmpv6",
+                                        protocol_options=dict(
+                                            icmpv6=dict(
+                                                nd_ns=True,
+                                                telemetry_path=True,
+                                            ),
+                                        ),
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+
+        commands = [
+            "ipv6 access-list TEST_ICMPv6",
+            "10 permit icmp host 192.0.2.1 any nd-na",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)

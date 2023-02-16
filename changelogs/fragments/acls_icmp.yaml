@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - "`nxos_acls` - Support ICMPv6 option. Please refer to module doc for all new options (https://github.com/ansible-collections/cisco.nxos/issues/624)."

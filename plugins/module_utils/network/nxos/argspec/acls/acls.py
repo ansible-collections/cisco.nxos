@@ -154,6 +154,62 @@ class AclsArgs(object):  # pylint: disable=R0903
                                             },
                                             "type": "dict",
                                         },
+                                        "icmpv6": {
+                                            "type": "dict",
+                                            "options": {
+                                                "beyond_scope": {"type": "bool"},
+                                                "destination_unreachable": {
+                                                    "type": "bool",
+                                                },
+                                                "echo_reply": {"type": "bool"},
+                                                "echo_request": {"type": "bool"},
+                                                "fragments": {"type": "bool"},
+                                                "header": {"type": "bool"},
+                                                "hop_limit": {"type": "bool"},
+                                                "mld_query": {"type": "bool"},
+                                                "mld_reduction": {"type": "bool"},
+                                                "mld_report": {"type": "bool"},
+                                                "mldv2": {"type": "bool"},
+                                                "nd_na": {"type": "bool"},
+                                                "nd_ns": {"type": "bool"},
+                                                "next_header": {"type": "bool"},
+                                                "no_admin": {"type": "bool"},
+                                                "no_route": {"type": "bool"},
+                                                "packet_too_big": {"type": "bool"},
+                                                "parameter_option": {
+                                                    "type": "bool",
+                                                },
+                                                "parameter_problem": {
+                                                    "type": "bool",
+                                                },
+                                                "port_unreachable": {
+                                                    "type": "bool",
+                                                },
+                                                "reassembly_timeout": {
+                                                    "type": "bool",
+                                                },
+                                                "renum_command": {"type": "bool"},
+                                                "renum_result": {"type": "bool"},
+                                                "renum_seq_number": {
+                                                    "type": "bool",
+                                                },
+                                                "router_advertisement": {
+                                                    "type": "bool",
+                                                },
+                                                "router_renumbering": {
+                                                    "type": "bool",
+                                                },
+                                                "router_solicitation": {
+                                                    "type": "bool",
+                                                },
+                                                "time_exceeded": {"type": "bool"},
+                                                "unreachable": {"type": "bool"},
+                                                "telemetry_path": {"type": "bool"},
+                                                "telemetry_queue": {
+                                                    "type": "bool",
+                                                },
+                                            },
+                                        },
                                         "igmp": {
                                             "mutually_exclusive": [
                                                 [
