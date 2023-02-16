@@ -19,14 +19,12 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    dict_diff,
     remove_empties,
     to_list,
 )
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    flatten_dict,
     get_interface_type,
     normalize_interface,
     search_obj_in_list,

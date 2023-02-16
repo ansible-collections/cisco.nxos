@@ -8,17 +8,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import pytest
-
 from ansible_collections.cisco.nxos.plugins.modules.storage import nxos_zone_zoneset
-from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_zone_zoneset import (
-    ShowZone,
-    ShowZoneset,
-    ShowZonesetActive,
-    ShowZoneStatus,
-)
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleExitJson, AnsibleFailJson
 
 from ..nxos_module import TestNxosModule, load_fixture, set_module_args
 

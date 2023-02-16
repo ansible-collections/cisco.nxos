@@ -10,10 +10,6 @@ __metaclass__ = type
 import pytest
 
 from ansible_collections.cisco.nxos.plugins.modules.storage import nxos_devicealias
-from ansible_collections.cisco.nxos.plugins.modules.storage.nxos_devicealias import (
-    showDeviceAliasDatabase,
-    showDeviceAliasStatus,
-)
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 

@@ -213,7 +213,6 @@ messages:
 """
 
 
-import json
 import re
 
 from ansible.module_utils.basic import AnsibleModule
