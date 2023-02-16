@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "nxos_acls - Detect duplicate ACE error message from CLI and fail (https://github.com/ansible-collections/cisco.nxos/issues/611)."

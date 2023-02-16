@@ -5,6 +5,24 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v4.1.0
+======
+
+Minor Changes
+-------------
+
+- `nxos_acls` - Support ICMPv6 option. Please refer to module doc for all new options (https://github.com/ansible-collections/cisco.nxos/issues/624).
+- `nxos_facts` - Update facts gathering logic to ensure that `gather_network_resources: all` does not fail for NX-OS on MDS switches.
+- `nxos_l2_interfaces` - Add new mode dot1q-tunnel (https://github.com/ansible-collections/cisco.nxos/issues/600).
+
+Bugfixes
+--------
+
+- `nxos_acls` - Fix how IPv6 prefixes are converted to hosts (https://github.com/ansible-collections/cisco.nxos/issues/623).
+- `nxos_file_copy` - stop prepending redundant bootflash: to remote file names
+- nxos_acls - Detect duplicate ACE error message from CLI and fail (https://github.com/ansible-collections/cisco.nxos/issues/611).
+- nxos_command - Run & evaluate commands at least once even when retries is set to 0 (https://github.com/ansible-collections/cisco.nxos/issues/607).
+
 v4.0.1
 ======
 
