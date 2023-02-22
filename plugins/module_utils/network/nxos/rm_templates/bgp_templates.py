@@ -110,7 +110,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             "result": {
                 "peers": {
                     "{{ name }}": {
-                       "bmp_activate_server": "{{ bmp_activate_server }}",
+                        "bmp_activate_server": "{{ bmp_activate_server }}",
                     },
                 },
             },
