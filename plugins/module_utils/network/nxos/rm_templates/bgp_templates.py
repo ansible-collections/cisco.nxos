@@ -109,9 +109,9 @@ class Bgp_templatesTemplate(NetworkTemplate):
             "setval": "bmp-activate-server {{ bmp_activate_server }}",
             "result": {
                 "peers": {
-                   "{{ name }}": {
+                    "{{ name }}": {
                        "bmp_activate_server": "{{ bmp_activate_server }}",
-                   },
+                    },
                 },
             },
         },
@@ -223,9 +223,9 @@ class Bgp_templatesTemplate(NetworkTemplate):
             "setval": "ebgp-multihop {{ ebgp_multihop }}",
             "result": {
                 "peers": {
-                   "{{ name }}": {
+                    "{{ name }}": {
                         "ebgp_multihop": "{{ ebgp_multihop }}",
-                   },
+                    },
                 },
             },
         },
