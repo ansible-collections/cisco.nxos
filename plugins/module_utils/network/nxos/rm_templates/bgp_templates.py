@@ -222,11 +222,11 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "ebgp-multihop {{ ebgp_multihop }}",
             "result": {
-               "peers": {
+                "peers": {
                    "{{ name }}": {
                         "ebgp_multihop": "{{ ebgp_multihop }}",
                    },
-               },
+                },
             },
         },
         {
@@ -382,9 +382,9 @@ class Bgp_templatesTemplate(NetworkTemplate):
             "setval": "remote-as {{ remote_as }}",
             "result": {
                 "peers": {
-                   "{{ name }}": {
+                    "{{ name }}": {
                         "remote_as": "{{ remote_as }}",
-                   },
+                    },
                 },
             },
         },
