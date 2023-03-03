@@ -37,7 +37,7 @@ class Bgp_templatesFacts(object):
         """Wrapper method for `connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
-        return connection.get("show running-config bgp | section 'template'")
+        return connection.get("show running-config bgp")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Bgp_templates network resource
@@ -63,7 +63,13 @@ class Bgp_templatesFacts(object):
         objs = {}
         # pop top-level keys and assign values to them
         for k, v in iteritems(parsed):
-            objs[k] = list(v.values())
+            if k == "as_number":
+                objs[k] = v
+            else:
+                objs[k] = list(v.values())
+                for x in objs[k]:
+                    if "address_family" in x:
+                        x["address_family"] = list(x["address_family"].values())
 
         ansible_facts["ansible_network_resources"].pop("bgp_templates", None)
 

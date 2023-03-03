@@ -38,7 +38,10 @@ options:
     description: A list of BGP templates.
     type: dict
     suboptions:
-      peers:
+      as_number:
+        description: Autonomous System Number of the router.
+        type: str
+      peer:
         description: Configure BGP peer templates.
         type: list
         elements: dict

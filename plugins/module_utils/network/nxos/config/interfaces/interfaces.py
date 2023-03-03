@@ -83,7 +83,7 @@ class Interfaces(ConfigBase):
 
     def edit_config(self, commands):
         """Wrapper method for `_connection.edit_config()`
-        This method exists solely to allow the unit test framework to mock device connection calls.
+        This method exists solely to allow the unit test framework to mcdock device connection calls.
         """
         return self._connection.edit_config(commands)
 

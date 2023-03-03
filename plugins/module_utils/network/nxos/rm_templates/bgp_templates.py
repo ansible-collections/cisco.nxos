@@ -29,6 +29,18 @@ class Bgp_templatesTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
+            "name": "as_number",
+            "getval": re.compile(
+                r"""
+                ^router\sbgp\s(?P<as_number>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "router bgp {{ as_number }}",
+            "result": {
+                "as_number": "{{ as_number }}",
+            },
+        },
+        {
             "name": "peer.name",
             "getval": re.compile(
                 r"""
@@ -37,7 +49,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "template peer {{ name }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "name": "{{ name }}",
                     },
@@ -56,7 +68,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "bfd": {
                             "set": "{{ True if bfd is defined and singlehop is undefined and multihop is undefined else None }}",
@@ -84,7 +96,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
                       " min_rx {{ bfd.multihop.interval.min_rx_interval }}"
                       " multiplier {{ bfd.multihop.interval.multiplier }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "bfd": {
                             "multihop": {
@@ -108,7 +120,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "bmp-activate-server {{ bmp_activate_server }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "bmp_activate_server": "{{ bmp_activate_server }}",
                     },
@@ -124,7 +136,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "capability suppress 4-byte-as",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "capability": {
                             "suppress_4_byte_as": "{{ not not suppress_4_byte_as }}",
@@ -142,7 +154,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "description {{ description }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "description": "{{ description }}",
                     },
@@ -158,7 +170,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "disable-connected-check",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "disable_connected_check": "{{ not not disable_connected_check }}",
                     },
@@ -174,7 +186,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "dont-capability-negotiate",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "dont_capability_negotiate": "{{ not not dont_capability_negotiate }}",
                     },
@@ -190,7 +202,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "dscp {{ dscp }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "dscp": "{{ dscp }}",
                     },
@@ -206,7 +218,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "dynamic-capability",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "dynamic_capability": "{{ not not dynamic_capability }}",
                     },
@@ -222,7 +234,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "ebgp-multihop {{ ebgp_multihop }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "ebgp_multihop": "{{ ebgp_multihop }}",
                     },
@@ -240,7 +252,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "graceful-shutdown{{ (' route-map ' + graceful_shutdown.route_map) if graceful_shutdown.route_map is defined }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "graceful_shutdown": {
                             "activate": {
@@ -262,7 +274,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "inherit peer-session {{ inherit.peer_session }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "inherit": {
                             "peer_session": "{{ peer_session }}",
@@ -280,7 +292,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "local-as {{ local_as }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "local_as": "{{ local_as }}",
                     },
@@ -297,7 +309,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "log-neighbor-changes{{ ' disable' if log_neighbor_changes.disable is defined }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "log_neighbor_changes": {
                             "set": "{{ True if log_neighbor_changes is defined and disable is undefined }}",
@@ -316,7 +328,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "low-memory exempt",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "low_memory": {
                             "exempt": "{{ not not exempt }}",
@@ -334,7 +346,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "password{{ (' ' + password.encryption|string) if password.encryption is defined }} {{ password.key }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "password": {
                             "encryption": "{{ encryption }}",
@@ -356,7 +368,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "path_attribute": [
                             {
@@ -381,7 +393,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "remote-as {{ remote_as }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "remote_as": "{{ remote_as }}",
                     },
@@ -399,7 +411,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "remove-private-as",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "remove_private_as": {
                             "set": "{{ True if remove_private_as is defined and replace_as is undefined and all is undefined else None }}",
@@ -419,7 +431,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "shutdown",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "shutdown": "{{ not not shutdown }}",
                     },
@@ -435,7 +447,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "timers {{ timers.keepalive }} {{ timers.holdtime }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "timers": {
                             "keepalive": "{{ keepalive }}",
@@ -455,7 +467,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "transport connection-mode passive",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "transport": {
                             "connection_mode": {
@@ -475,7 +487,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "ttl-security hops {{ ttl_security.hops }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "ttl_security": {
                             "hops": "{{ hops }}",
@@ -493,7 +505,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "update-source {{ update_source }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "update_source": "{{ update_source }}",
                     },
@@ -512,7 +524,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "address-family {{ afi }}{{ (' ' + safi) if safi is defined else '' }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "address_family": {
                             "{{ afi + '_' + safi|d() }}": {
@@ -526,6 +538,80 @@ class Bgp_templatesTemplate(NetworkTemplate):
             "shared": True,
         },
         {
+            "name": "advertise_map.exist_map",
+            "getval": re.compile(
+                r"""
+                advertise-map
+                \s(?P<route_map>\S+)
+                \sexist-map\s(?P<exist_map>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "advertise-map {{ advertise_map.route_map }} exist-map {{ advertise_map.exist_map }}",
+            "result": {
+                "peer": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "advertise_map": {
+                                    "route_map": "{{ route_map }}",
+                                    "exist_map": "{{ exist_map }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "advertise_map.non_exist_map",
+            "getval": re.compile(
+                r"""
+                advertise-map
+                \s(?P<route_map>\S+)
+                \snon-exist-map\s(?P<non_exist_map>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "advertise-map {{ advertise_map.route_map }} non-exist-map {{ advertise_map.non_exist_map }}",
+            "result": {
+                "peer": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "advertise_map": {
+                                    "route_map": "{{ route_map }}",
+                                    "non_exist_map": "{{ non_exist_map }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "advertisement_interval",
+            "getval": re.compile(
+                r"""
+                advertisement-interval
+                \s(?P<advertisement_interval>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "advertisement-interval {{ advertisement_interval }}",
+            "result": {
+                "peer": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "advertisement_interval": "{{ advertisement_interval }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
             "name": "allowas_in",
             "getval": re.compile(
                 r"""
@@ -535,7 +621,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "allowas-in{{ ' ' + allowas_in.max_occurences|string if allowas_in.max_occurences is defined else '' }}",
             "result": {
-                "peers": {
+                "peer": {
                     "{{ name }}": {
                         "address_family": {
                             "{{ afi + '_' + safi|d() }}": {
@@ -543,6 +629,127 @@ class Bgp_templatesTemplate(NetworkTemplate):
                                     "set": "{{ True if allowas_in is defined and max_occurences is undefined }}",
                                     "max_occurences": "{{ max_occurences }}",
                                 },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "as_override",
+            "getval": re.compile(
+                r"""
+                (?P<as_override>as-override)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "as-override",
+            "result": {
+                "peer": {
+                    "{{ name }}": {
+                        "address_family": {
+                            "{{ afi + '_' + safi|d() }}": {
+                                "as_override": "{{ not not as_override }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "capability.additional_paths.receive",
+            "getval": re.compile(
+                r"""
+                capability\sadditional-paths
+                \s(?P<receive>receive)
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "capability additional-paths receive{{ ' disable' if capability.additional_paths.receive == 'disable' else '' }}",
+            "result": {
+                "peer": {
+                    "{{ name }}": {
+                        "address_family": {
+                            "{{ afi + '_' + safi|d() }}": {
+                                "capability": {
+                                    "additional_paths": {
+                                        "receive": "{{ 'disable' if disable is defined else 'enable' }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "capability.additional_paths.send",
+            "getval": re.compile(
+                r"""
+                capability\sadditional-paths
+                \s(?P<send>send)
+                (\s(?P<disable>disable))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "capability additional-paths send{{ ' disable' if capability.additional_paths.send == 'disable' else '' }}",
+            "result": {
+                "peer": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "capability": {
+                                    "additional_paths": {
+                                        "send": "{{ 'disable' if disable is defined else 'enable' }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "default_originate",
+            "getval": re.compile(
+                r"""
+                (?P<default_originate>default-originate)
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "default-originate{{ ' route-map ' + default_originate.route_map if default_originate.route_map is defined else '' }}",
+            "result": {
+                "peer": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "default_originate": {
+                                    "set": "{{ True if default_originate is defined and route_map is not defined }}",
+                                    "route_map": "{{ route_map }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "disable_peer_as_check",
+            "getval": re.compile(
+                r"""
+                (?P<disable_peer_as_check>disable-peer-as-check)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "disable-peer-as-check",
+            "result": {
+                "peer": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "disable_peer_as_check": "{{ not not disable_peer_as_check }}",
                             },
                         },
                     },
