@@ -37,7 +37,7 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
             "type": "dict",
             "options": {
                 "as_number": {"type": "str"},
-                "peer": {
+                "neighbor": {
                     "type": "list",
                     "elements": "dict",
                     "options": {

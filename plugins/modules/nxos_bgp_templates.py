@@ -41,7 +41,7 @@ options:
       as_number:
         description: Autonomous System Number of the router.
         type: str
-      peer:
+      neighbor:
         description: Configure BGP peer templates.
         type: list
         elements: dict

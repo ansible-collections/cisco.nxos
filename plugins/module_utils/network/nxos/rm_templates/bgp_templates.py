@@ -49,7 +49,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "template peer {{ name }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "name": "{{ name }}",
                     },
@@ -68,7 +68,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "bfd": {
                             "set": "{{ True if bfd is defined and singlehop is undefined and multihop is undefined else None }}",
@@ -96,7 +96,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
                       " min_rx {{ bfd.multihop.interval.min_rx_interval }}"
                       " multiplier {{ bfd.multihop.interval.multiplier }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "bfd": {
                             "multihop": {
@@ -120,7 +120,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "bmp-activate-server {{ bmp_activate_server }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "bmp_activate_server": "{{ bmp_activate_server }}",
                     },
@@ -136,7 +136,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "capability suppress 4-byte-as",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "capability": {
                             "suppress_4_byte_as": "{{ not not suppress_4_byte_as }}",
@@ -154,7 +154,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "description {{ description }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "description": "{{ description }}",
                     },
@@ -170,7 +170,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "disable-connected-check",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "disable_connected_check": "{{ not not disable_connected_check }}",
                     },
@@ -186,7 +186,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "dont-capability-negotiate",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "dont_capability_negotiate": "{{ not not dont_capability_negotiate }}",
                     },
@@ -202,7 +202,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "dscp {{ dscp }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "dscp": "{{ dscp }}",
                     },
@@ -218,7 +218,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "dynamic-capability",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "dynamic_capability": "{{ not not dynamic_capability }}",
                     },
@@ -234,7 +234,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "ebgp-multihop {{ ebgp_multihop }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "ebgp_multihop": "{{ ebgp_multihop }}",
                     },
@@ -252,7 +252,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "graceful-shutdown{{ (' route-map ' + graceful_shutdown.route_map) if graceful_shutdown.route_map is defined }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "graceful_shutdown": {
                             "activate": {
@@ -274,7 +274,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "inherit peer-session {{ inherit.peer_session }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "inherit": {
                             "peer_session": "{{ peer_session }}",
@@ -292,7 +292,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "local-as {{ local_as }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "local_as": "{{ local_as }}",
                     },
@@ -309,7 +309,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "log-neighbor-changes{{ ' disable' if log_neighbor_changes.disable is defined }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "log_neighbor_changes": {
                             "set": "{{ True if log_neighbor_changes is defined and disable is undefined }}",
@@ -328,7 +328,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "low-memory exempt",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "low_memory": {
                             "exempt": "{{ not not exempt }}",
@@ -346,7 +346,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "password{{ (' ' + password.encryption|string) if password.encryption is defined }} {{ password.key }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "password": {
                             "encryption": "{{ encryption }}",
@@ -368,7 +368,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "path_attribute": [
                             {
@@ -393,7 +393,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "remote-as {{ remote_as }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "remote_as": "{{ remote_as }}",
                     },
@@ -411,7 +411,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "remove-private-as",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "remove_private_as": {
                             "set": "{{ True if remove_private_as is defined and replace_as is undefined and all is undefined else None }}",
@@ -431,7 +431,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "shutdown",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "shutdown": "{{ not not shutdown }}",
                     },
@@ -447,7 +447,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "timers {{ timers.keepalive }} {{ timers.holdtime }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "timers": {
                             "keepalive": "{{ keepalive }}",
@@ -467,7 +467,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "transport connection-mode passive",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "transport": {
                             "connection_mode": {
@@ -487,7 +487,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "ttl-security hops {{ ttl_security.hops }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "ttl_security": {
                             "hops": "{{ hops }}",
@@ -505,7 +505,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "update-source {{ update_source }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "update_source": "{{ update_source }}",
                     },
@@ -524,7 +524,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "address-family {{ afi }}{{ (' ' + safi) if safi is defined else '' }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             "{{ afi + '_' + safi|d() }}": {
@@ -549,7 +549,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "advertise-map {{ advertise_map.route_map }} exist-map {{ advertise_map.exist_map }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             '{{ afi + "_" + safi|d() }}': {
@@ -575,7 +575,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "advertise-map {{ advertise_map.route_map }} non-exist-map {{ advertise_map.non_exist_map }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             '{{ afi + "_" + safi|d() }}': {
@@ -600,7 +600,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "advertisement-interval {{ advertisement_interval }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             '{{ afi + "_" + safi|d() }}': {
@@ -621,7 +621,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "allowas-in{{ ' ' + allowas_in.max_occurences|string if allowas_in.max_occurences is defined else '' }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             "{{ afi + '_' + safi|d() }}": {
@@ -645,7 +645,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "as-override",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             "{{ afi + '_' + safi|d() }}": {
@@ -668,7 +668,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "capability additional-paths receive{{ ' disable' if capability.additional_paths.receive == 'disable' else '' }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             "{{ afi + '_' + safi|d() }}": {
@@ -695,7 +695,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "capability additional-paths send{{ ' disable' if capability.additional_paths.send == 'disable' else '' }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             '{{ afi + "_" + safi|d() }}': {
@@ -721,7 +721,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "default-originate{{ ' route-map ' + default_originate.route_map if default_originate.route_map is defined else '' }}",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             '{{ afi + "_" + safi|d() }}': {
@@ -745,11 +745,432 @@ class Bgp_templatesTemplate(NetworkTemplate):
             ),
             "setval": "disable-peer-as-check",
             "result": {
-                "peer": {
+                "neighbor": {
                     "{{ name }}": {
                         "address_family": {
                             '{{ afi + "_" + safi|d() }}': {
                                 "disable_peer_as_check": "{{ not not disable_peer_as_check }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "filter_list.inbound",
+            "getval": re.compile(
+                r"""
+                filter-list
+                \s(?P<in>\S+)\s(?:in)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "filter-list {{ filter_list.inbound }} in",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "filter_list": {
+                                    "inbound": "{{ in }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "inherit.peer_session",
+            "getval": re.compile(
+                r"""
+                inherit\speer-session
+                \s(?P<peer_session>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "inherit peer-session {{ inherit.peer_session }}",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "inherit": {
+                                    "peer_session": "{{ peer_session }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "filter_list.outbound",
+            "getval": re.compile(
+                r"""
+                filter-list
+                \s(?P<out>\S+)\s(?:out)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "filter-list {{ filter_list.outbound }} out",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "filter_list": {
+                                    "outbound": "{{ out }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "maximum_prefix",
+            "getval": re.compile(
+                r"""
+                maximum-prefix
+                \s(?P<max_prefix_limit>\d+)
+                (\s(?P<generate_warning_threshold>\d+))?
+                (\srestart\s(?P<restart_interval>\d+))?
+                (\s(?P<warning_only>warning-only))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "maximum_prefix": {
+                                    "max_prefix_limit": "{{ max_prefix_limit }}",
+                                    "generate_warning_threshold": "{{ generate_warning_threshold }}",
+                                    "restart_interval": "{{ restart_interval }}",
+                                    "warning_only": "{{ not not warning_only }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "next_hop_self",
+            "getval": re.compile(
+                r"""
+                (?P<next_hop_self>next-hop-self)
+                (\s(?P<all_routes>all))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "next-hop-self{{ ' all' if next_hop_self.all_routes|d(False) else '' }}",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "next_hop_self": {
+                                    "set": "{{ True if next_hop_self is defined and all_routes is not defined }}",
+                                    "all_routes": "{{ not not all_routes }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "next_hop_third_party",
+            "getval": re.compile(
+                r"""
+                no\s(?P<next_hop_third_party>next-hop-third-party)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "next-hop-third-party",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "next_hop_third_party": "{{ not next_hop_third_party }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "prefix_list.inbound",
+            "getval": re.compile(
+                r"""
+                prefix-list
+                \s(?P<in>\S+)\s(?:in)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "prefix-list {{ prefix_list.inbound }} in",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "prefix_list": {
+                                    "inbound": "{{ in }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "prefix_list.outbound",
+            "getval": re.compile(
+                r"""
+                prefix-list
+                \s(?P<out>\S+)\s(?:out)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "prefix-list {{ prefix_list.outbound }} out",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "prefix_list": {
+                                    "outbound": "{{ out }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "route_map.inbound",
+            "getval": re.compile(
+                r"""
+                route-map
+                \s(?P<in>\S+)\s(?:in)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "route-map {{ route_map.inbound }} in",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "route_map": {
+                                    "inbound": "{{ in }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "route_map.outbound",
+            "getval": re.compile(
+                r"""
+                route-map
+                \s(?P<out>\S+)\s(?:out)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "route-map {{ route_map.outbound }} out",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "route_map": {
+                                    "outbound": "{{ out }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "route_reflector_client",
+            "getval": re.compile(
+                r"""
+                (?P<route_reflector_client>route-reflector-client)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "route-reflector-client",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "route_reflector_client": "{{ not not route_reflector_client }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "send_community.standard",
+            "getval": re.compile(
+                r"""
+                (?P<send_community>send-community)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "send-community",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "send_community": {
+                                    "standard": "{{ True if send_community is defined }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "send_community.extended",
+            "getval": re.compile(
+                r"""
+                send-community
+                \s(?P<extended>extended)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "send-community extended",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "send_community": {
+                                    "extended": "{{ True if extended is defined }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "soft_reconfiguration_inbound",
+            "getval": re.compile(
+                r"""
+                (?P<soft_reconfiguration_inbound>soft-reconfiguration\sinbound)
+                (\s(?P<always>always))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "soft-reconfiguration inbound{{ ' always' if soft_reconfiguration_inbound.always|d(False) else '' }}",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "soft_reconfiguration_inbound": {
+                                    "set": "{{ True if soft_reconfiguration_inbound is defined and always is undefined }}",
+                                    "always": "{{ not not always }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "soo",
+            "getval": re.compile(
+                r"""
+                soo\s(?P<soo>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "soo {{ soo }}",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "soo": "{{ soo }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "suppress_inactive",
+            "getval": re.compile(
+                r"""
+                (?P<suppress_inactive>suppress-inactive)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "suppress-inactive",
+            "result": {
+                "neighbor": {
+                    "{{ name) }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "suppress_inactive": "{{ not not suppress_inactive }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "unsuppress_map",
+            "getval": re.compile(
+                r"""
+                unsuppress-map\s(?P<unsuppress_map>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "unsuppress-map {{ unsuppress_map }}",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "unsuppress_map": "{{ unsuppress_map }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "weight",
+            "getval": re.compile(
+                r"""
+                weight\s(?P<weight>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "weight {{ weight }}",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "weight": "{{ weight }}",
                             },
                         },
                     },
