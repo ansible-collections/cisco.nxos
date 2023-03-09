@@ -80,7 +80,7 @@ class Bgp_templatesFacts(object):
             bgp_templates_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts["bgp_templates"] = params["config"]
+        facts["bgp_templates"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

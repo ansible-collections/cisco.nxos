@@ -18,6 +18,8 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+from copy import deepcopy
+
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -45,7 +47,61 @@ class Bgp_templates(ResourceModule):
             resource="bgp_templates",
             tmplt=Bgp_templatesTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "bfd",
+            "bfd.multihop.interval",
+            "bmp_activate_server",
+            "capability",
+            "description",
+            "disable_connected_check",
+            "dont_capability_negotiate",
+            "dscp",
+            "dynamic_capability",
+            "ebgp_multihop",
+            "graceful_shutdown",
+            "inherit.peer_session",
+            "local_as",
+            "log_neighbor_changes",
+            "low_memory",
+            "password",
+            "path_attribute",
+            "remote_as",
+            "remove_private_as",
+            "shutdown",
+            "timers",
+            "transport",
+            "ttl_security",
+            "update_source",
+        ]
+        self.af_parsers = [
+            "advertise_map.exist_map",
+            "advertise_map.non_exist_map",
+            "advertisement_interval",
+            "allowas_in",
+            "as_override",
+            "capability.additional_paths.receive",
+            "capability.additional_paths.send",
+            "default_originate",
+            "disable_peer_as_check",
+            "filter_list.inbound",
+            "inherit.peer_policy",
+            "filter_list.outbound",
+            "maximum_prefix",
+            "next_hop_self",
+            "next_hop_third_party",
+            "prefix_list.inbound",
+            "prefix_list.outbound",
+            "route_map.inbound",
+            "route_map.outbound",
+            "route_reflector_client",
+            "send_community.standard",
+            "send_community.extended",
+            "soft_reconfiguration_inbound",
+            "soo",
+            "suppress_inactive",
+            "unsuppress_map",
+            "weight",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -62,12 +118,17 @@ class Bgp_templates(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        wantd = self._list_to_dict(deepcopy(self.want))
+        haved = self._list_to_dict(deepcopy(self.have))
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
+
+        w_asn = wantd.pop("as_number", "")
+        h_asn = haved.pop("as_number", "")
+
+        asn = w_asn or h_asn
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
@@ -76,12 +137,20 @@ class Bgp_templates(ResourceModule):
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
+            cmds = []
             for k, have in iteritems(haved):
                 if k not in wantd:
-                    self._compare(want={}, have=have)
+                    cmds.append("no template peer {0}".format(have["name"]))
+            self.commands.extend(cmds)
 
         for k, want in iteritems(wantd):
+            begin = len(self.commands)
             self._compare(want=want, have=haved.pop(k, {}))
+            if len(self.commands) != begin:
+                self.commands.insert(begin, "template peer {0}".format(want["name"]))
+
+        if self.commands:
+            self.commands.insert(0, "router bgp {0}".format(asn))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -90,3 +159,36 @@ class Bgp_templates(ResourceModule):
         for the Bgp_templates network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+
+        w_af = want.get("address_family", {})
+        h_af = have.get("address_family", {})
+        self._afs_compare(want=w_af, have=h_af)
+
+    def _afs_compare(self, want, have):
+        for name, wentry in iteritems(want):
+            begin = len(self.commands)
+            self._af_compare(want=wentry, have=have.pop(name, {}))
+            if begin != len(self.commands):
+                self.commands.insert(begin, self._tmplt.render(wentry, "address_family", False))
+        for name, hentry in iteritems(have):
+            self.commands.append(self._tmplt.render(hentry, "address_family", True))
+
+    def _af_compare(self, want, have):
+        self.compare(parsers=self.af_parsers, want=want, have=have)
+
+    def _list_to_dict(self, data):
+        new_data = {}
+        new_data["as_number"] = data.pop("as_number", None)
+
+        for k, v in iteritems(data):
+            for entry in v:
+                if "address_family" in entry:
+                    entry["address_family"] = {
+                        (x["afi"], x.get("safi")): x for x in entry["address_family"]
+                    }
+
+            # attach top-level keys with their values
+            tmp = {(k + "_" + x["name"]): x for x in v}
+            new_data.update(tmp)
+
+        return new_data

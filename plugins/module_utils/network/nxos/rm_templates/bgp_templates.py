@@ -22,6 +22,21 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def _tmplt_bfd(proc):
+    bfd = proc.get("bfd", {})
+    cmd = None
+
+    if bfd.get("set"):
+        cmd = "bfd"
+    if bfd.get("singlehop"):
+        cmd = "bfd singlehop"
+    elif bfd.get("multihop", {}).get("set"):
+        cmd = "bfd multihop"
+
+    if cmd:
+        return cmd
+
+
 class Bgp_templatesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_templatesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -66,7 +81,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
                 (\s(?P<multihop>multihop))?
                 $""", re.VERBOSE,
             ),
-            "setval": "",
+            "setval": _tmplt_bfd,
             "result": {
                 "neighbor": {
                     "{{ name }}": {
@@ -781,30 +796,6 @@ class Bgp_templatesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "inherit.peer_session",
-            "getval": re.compile(
-                r"""
-                inherit\speer-session
-                \s(?P<peer_session>\S+)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "inherit peer-session {{ inherit.peer_session }}",
-            "result": {
-                "neighbor": {
-                    "{{ name }}": {
-                        "address_family": {
-                            '{{ afi + "_" + safi|d() }}': {
-                                "inherit": {
-                                    "peer_session": "{{ peer_session }}",
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
             "name": "filter_list.outbound",
             "getval": re.compile(
                 r"""
@@ -821,6 +812,30 @@ class Bgp_templatesTemplate(NetworkTemplate):
                             '{{ afi + "_" + safi|d() }}': {
                                 "filter_list": {
                                     "outbound": "{{ out }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "inherit.peer_policy",
+            "getval": re.compile(
+                r"""
+                inherit\speer-policy
+                \s(?P<peer_policy>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "inherit peer-policy {{ inherit.peer_policy }}",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "inherit": {
+                                    "peer_policy": "{{ peer_policy }}",
                                 },
                             },
                         },

@@ -121,7 +121,7 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                 },
                                 "inherit": {
                                     "type": "dict",
-                                    "options": {"peer_session": {"type": "str"}},
+                                    "options": {"peer_policy": {"type": "str"}},
                                 },
                                 "maximum_prefix": {
                                     "type": "dict",
@@ -157,15 +157,6 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "route_reflector_client": {"type": "bool"},
-                                "send_community": {
-                                    "type": "dict",
-                                    "options": {
-                                        "set": {"type": "bool"},
-                                        "extended": {"type": "bool"},
-                                        "standard": {"type": "bool"},
-                                        "both": {"type": "bool"},
-                                    },
-                                },
                                 "soft_reconfiguration_inbound": {
                                     "type": "dict",
                                     "options": {
@@ -191,9 +182,12 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                         "interval": {
                                             "type": "dict",
                                             "options": {
-                                                "tx_interval": {"type": "int"},
-                                                "min_rx_interval": {"type": "int"},
-                                                "multiplier": {"type": "int"},
+                                                "tx_interval": {"type": "int", "required": True},
+                                                "min_rx_interval": {
+                                                    "type": "int",
+                                                    "required": True,
+                                                },
+                                                "multiplier": {"type": "int", "required": True},
                                             },
                                         },
                                     },
@@ -305,6 +299,7 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
             "choices": [
                 "merged",
                 "replaced",
+                "overridden",
                 "deleted",
                 "purged",
                 "parsed",

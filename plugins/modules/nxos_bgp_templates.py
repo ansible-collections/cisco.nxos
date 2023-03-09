@@ -133,11 +133,11 @@ options:
                     description: Apply policy to outgoing routes.
                     type: str
               inherit:
-                description: Inherit a template.
+                description: Inherit a peer-policy template.
                 type: dict
                 suboptions:
-                  peer_session:
-                    description: Peer-session template to inherit.
+                  peer_policy:
+                    description: Peer-policy template to inherit.
                     type: str
               maximum_prefix:
                 description: Maximum number of prefixes from this neighbor.
@@ -183,30 +183,14 @@ options:
                 type: dict
                 suboptions:
                   inbound:
-                    description: Apply policy to incoming routes.
+                    description: Name of policy to apply to incoming routes.
                     type: str
                   outbound:
-                    description: Apply policy to outgoing routes.
+                    description: Name of policy to apply to outgoing routes.
                     type: str
               route_reflector_client:
                 description: Configure a neighbor as Route reflector client.
                 type: bool
-              send_community:
-                description: Send Community attribute to this neighbor.
-                type: dict
-                suboptions:
-                  set:
-                    description: Set send-community attribute.
-                    type: bool
-                  extended:
-                    description: Send Extended Community attribute.
-                    type: bool
-                  standard:
-                    description: Send Standard Community attribute.
-                    type: bool
-                  both:
-                    description: Send Standard and Extended Community attributes.
-                    type: bool
               soft_reconfiguration_inbound:
                 description: Soft reconfiguration.
                 type: dict
@@ -253,12 +237,15 @@ options:
                       tx_interval:
                         description: TX interval in milliseconds.
                         type: int
+                        required: true
                       min_rx_interval:
                         description: Minimum RX interval.
                         type: int
+                        required: true
                       multiplier:
                         description: Detect Multiplier.
                         type: int
+                        required: true
           bmp_activate_server:
             description: Specify server ID for activating BMP monitoring for the peer.
             type: int
@@ -423,6 +410,7 @@ options:
     choices:
     - merged
     - replaced
+    - overridden
     - deleted
     - purged
     - parsed

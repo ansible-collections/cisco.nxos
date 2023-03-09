@@ -544,7 +544,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Inherit a template.</div>
+                        <div>Inherit a peer-policy template.</div>
                 </td>
             </tr>
                                 <tr>
@@ -554,7 +554,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>peer_session</b>
+                    <b>peer_policy</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -563,7 +563,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Peer-session template to inherit.</div>
+                        <div>Peer-policy template to inherit.</div>
                 </td>
             </tr>
 
@@ -844,7 +844,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Apply policy to incoming routes.</div>
+                        <div>Name of policy to apply to incoming routes.</div>
                 </td>
             </tr>
             <tr>
@@ -863,7 +863,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Apply policy to outgoing routes.</div>
+                        <div>Name of policy to apply to outgoing routes.</div>
                 </td>
             </tr>
 
@@ -912,117 +912,6 @@ Parameters
                         <div>Sub Address Family indicator.</div>
                 </td>
             </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>send_community</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Send Community attribute to this neighbor.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>both</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Send Standard and Extended Community attributes.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>extended</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Send Extended Community attribute.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>set</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Set send-community attribute.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>standard</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Send Standard Community attribute.</div>
-                </td>
-            </tr>
-
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -1231,6 +1120,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
@@ -1251,6 +1141,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
@@ -1271,6 +1162,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
                     </div>
                 </td>
                 <td>
@@ -2264,6 +2156,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
+                                    <li>overridden</li>
                                     <li>deleted</li>
                                     <li>purged</li>
                                     <li>parsed</li>
