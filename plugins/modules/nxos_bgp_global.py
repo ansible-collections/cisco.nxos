@@ -1680,6 +1680,7 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
+            ["state", "purged", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],

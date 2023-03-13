@@ -31,6 +31,17 @@
     config:
     state: overridden
 
+- name: Purged with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.nxos.nxos_interfaces:
+    config:
+    state: purged
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state purged'
+
 - ansible.builtin.assert:
     that:
       - result.msg == 'value of config parameter must not be empty for state overridden'

@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Add purged state in required_if during module invocation for resource modules supporting purged state.

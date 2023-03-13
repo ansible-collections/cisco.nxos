@@ -20,6 +20,17 @@
     config:
     state: replaced
 
+- name: Purged with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.nxos.nxos_bgp_global:
+    config:
+    state: purged
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state purged'
+
 - ansible.builtin.assert:
     that:
       - result.msg == 'value of config parameter must not be empty for state replaced'

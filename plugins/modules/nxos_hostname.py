@@ -216,6 +216,7 @@ def main():
             ["state", "replaced", ["config"]],
             ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
+            ["state", "purged", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],
         supports_check_mode=True,
