@@ -178,14 +178,33 @@ class Route_maps(ResourceModule):
             wx = get_from_dict(want, x) or []
             hx = get_from_dict(have, x) or []
 
-            try:
-                if isinstance(wx, list):
-                    wx = set(wx)
-                if isinstance(hx, list):
-                    hx = set(hx)
-            except TypeError:
-                # list elements may contain list of dict 
-                pass
+            if x == "set.ip.next_hop.verify_availability":
+                w_set = {}
+                for i in range(0, len(wx)):
+                    w_set[wx[i]["address"]] = wx[i]
+                h_set = {}
+                for i in range(0, len(hx)):
+                    h_set[hx[i]["address"]] = hx[i]
+                sum_set = list(set(list(w_set) + list(h_set)))
+                for each in sum_set:
+                    if each in w_set and each in h_set and w_set[each] == h_set[each]:
+                        for i in range(0, len(want["set"]["ip"]["next_hop"]["verify_availability"])):
+                            if want["set"]["ip"]["next_hop"]["verify_availability"][i]["address"] == each:
+                                want["set"]["ip"]["next_hop"]["verify_availability"].pop(i)
+                                break
+                        for i in range(0, len(have["set"]["ip"]["next_hop"]["verify_availability"])):
+                            if have["set"]["ip"]["next_hop"]["verify_availability"][i]["address"] == each:
+                                have["set"]["ip"]["next_hop"]["verify_availability"].pop(i)
+                                break
+                        w_set.pop(each)
+                        h_set.pop(each)
+                wx = w_set
+                hx = h_set
+
+            if isinstance(wx, list):
+                wx = set(wx)
+            if isinstance(hx, list):
+                hx = set(hx)
 
             if wx != hx:
                 # negate existing config so that want is not appended
