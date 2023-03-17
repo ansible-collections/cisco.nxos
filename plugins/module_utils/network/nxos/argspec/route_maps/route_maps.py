@@ -333,6 +333,33 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                             "options": {"prefix_list": {"type": "str"}},
                                         },
                                         "precedence": {"type": "str"},
+                                        "next_hop": {
+                                            "type": "dict",
+                                            "mutually_exclusive": [
+                                                ["address", "peer_address", "redist_unchanged", "verify_availability"],
+                                                ["address", "peer_address", "unchanged", "verify_availability"],
+                                            ],
+                                            "options": {
+                                                "address": {"type": "str"},
+                                                "drop_on_fail": {"type": "bool", "default": False},
+                                                "force_order": {"type": "bool", "default": False},
+                                                "load_share": {"type": "bool", "default": False},
+                                                "peer_address": {"type": "bool"},
+                                                "redist_unchanged": {"type": "bool"},
+                                                "unchanged": {"type": "bool"},
+                                                "verify_availability": {
+                                                    "type": "list",
+                                                    "elements": "dict",
+                                                    "options": {
+                                                        "address": {"type": "str", "required": True},
+                                                        "track": {"type": "int", "required": True},
+                                                        "drop_on_fail": {"type": "bool", "default": False},
+                                                        "force_order": {"type": "bool", "default": False},
+                                                        "load_share": {"type": "bool", "default": False},
+                                                    },
+                                                },
+                                            },
+                                        },
                                     },
                                 },
                                 "ipv6": {

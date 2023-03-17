@@ -85,6 +85,21 @@ def _tmplt_set_metric(data):
     return cmd
 
 
+def _tmplt_set_ip_next_hop_verify_availability(data):
+    cmd = []
+    for each in data["set"]["ip"]["next_hop"]["verify_availability"]:
+        cmd_tmpl = "set ip next-hop verify-availability"
+        cmd_tmpl += " {address} track {track}".format(**each)
+        if "load_share" in each and each["load_share"]:
+            cmd_tmpl += " load-share"
+        if "force_order" in each and each["force_order"]:
+            cmd_tmpl += " force-order"
+        if "drop_on_fail" in each and each["drop_on_fail"]:
+            cmd_tmpl += " drop-on-fail"
+        cmd.append(cmd_tmpl)
+    return cmd
+
+
 class Route_mapsTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Route_mapsTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -1087,6 +1102,150 @@ class Route_mapsTemplate(NetworkTemplate):
                             "set": {
                                 "ip": {
                                     "precedence": "{{ precedence }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "set.ip.next_hop",
+            "getval": re.compile(
+                r"""
+                \s+set\sip\snext-hop
+                \s(?P<address>(\s?((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4})+)
+                (\s+(?P<load_share>load-share))?
+                (\s+(?P<force_order>force-order))?
+                (\s+(?P<drop_on_fail>drop-on-fail))?
+                \s*$""", re.VERBOSE,
+            ),
+            "setval": "set ip next-hop {{ set.ip.next_hop.address }}"
+                      "{{ ' load-share' if set.ip.next_hop.load_share else '' }}"
+                      "{{ ' force-order' if set.ip.next_hop.force_order else '' }}"
+                      "{{ ' drop-on-fail' if set.ip.next_hop.drop_on_fail else '' }}",
+            "result": {
+                "{{ route_map }}": {
+                    "entries": {
+                        "{{ sequence }}": {
+                            "set": {
+                                "ip": {
+                                    "next_hop": {
+                                        "address": "{{ address }}",
+                                        "load_share": "{{ not not load_share|d(False) }}",
+                                        "force_order": "{{ not not force_order|d(False) }}",
+                                        "drop_on_fail": "{{ not not drop_on_fail|d(False) }}",
+                                    }
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "set.ip.next_hop.peer_address",
+            "getval": re.compile(
+                r"""
+                \s+set\sip\snext-hop
+                \s(?P<peer_address>peer-address)
+                \s*$""", re.VERBOSE,
+            ),
+            "setval": "set ip next-hop peer-address",
+            "result": {
+                "{{ route_map }}": {
+                    "entries": {
+                        "{{ sequence }}": {
+                            "set": {
+                                "ip": {
+                                    "next_hop": {
+                                        "peer_address": "{{ not not peer_address }}",
+                                    }
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "set.ip.next_hop.redist_unchanged",
+            "getval": re.compile(
+                r"""
+                \s+set\sip\snext-hop
+                \s(?P<redist_unchanged>redist-unchanged)
+                \s*$""", re.VERBOSE,
+            ),
+            "setval": "set ip next-hop redist-unchanged",
+            "result": {
+                "{{ route_map }}": {
+                    "entries": {
+                        "{{ sequence }}": {
+                            "set": {
+                                "ip": {
+                                    "next_hop": {
+                                        "redist_unchanged": "{{ not not redist_unchanged }}",
+                                    }
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "set.ip.next_hop.unchanged",
+            "getval": re.compile(
+                r"""
+                \s+set\sip\snext-hop
+                \s(?P<unchanged>unchanged)
+                \s*$""", re.VERBOSE,
+            ),
+            "setval": "set ip next-hop unchanged",
+            "result": {
+                "{{ route_map }}": {
+                    "entries": {
+                        "{{ sequence }}": {
+                            "set": {
+                                "ip": {
+                                    "next_hop": {
+                                        "unchanged": "{{ not not unchanged }}",
+                                    }
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "set.ip.next_hop.verify_availability",
+            "getval": re.compile(
+                r"""
+                \s+set\sip\snext-hop\sverify-availability
+                \s(?P<address>\S+)
+                \strack\s(?P<track>\d)
+                (\s(?P<load_share>load-share))?
+                (\s(?P<force_order>force-order))?
+                (\s(?P<drop_on_fail>drop-on-fail))?
+                \s*$""", re.VERBOSE,
+            ),
+            "setval": _tmplt_set_ip_next_hop_verify_availability,
+            "result": {
+                "{{ route_map }}": {
+                    "entries": {
+                        "{{ sequence }}": {
+                            "set": {
+                                "ip": {
+                                    "next_hop": {
+                                        "verify_availability": [ {
+                                            "address": "{{ address }}",
+                                            "track": "{{ track }}",
+                                            "load_share": "{{ not not load_share|d(False) }}",
+                                            "force_order": "{{ not not force_order|d(False) }}",
+                                            "drop_on_fail": "{{ not not drop_on_fail|d(False) }}",
+                                        } ],
+                                    },
                                 },
                             },
                         },

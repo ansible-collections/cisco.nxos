@@ -332,6 +332,51 @@ options:
                   precedence:
                     description: Set precedence field.
                     type: str
+                  next-hop:
+                    description: Set next-hop IP address (for policy-based routing)
+                    type: dict
+                    suboptions:
+                      address:
+                        description: Set space-separated list of next-hop IP addresses. Address ordering is important. Also don`t use unnecessary spaces.
+                        type: str
+                      drop_on_fail:
+                        description: Drop packets instead of using default routing when the configured next hop becomes unreachable
+                        type: bool
+                      force_order:
+                        description: Enable next-hop ordering as specified in the address parameter.
+                        type: bool
+                      load_share:
+                        description: Enable traffic load balancing across a maximum of 32 next-hop addresses
+                        type: bool
+                      peer_address: BGP prefix next hop is set to the peer’s local address. If no next hop is set in the route map, the next hop is set to the one stored in the path.
+                        description:
+                        type: bool
+                      redist_unchanged:
+                        description: Set for next-hop address conservation for non-local generated routes. Used with redistribute command. Available to maintain BGP routing compliant with RFC 4271 on Nexus OS
+                        type: bool
+                      unchanged:
+                        description:  Set for next-hop address conservation in eBGP outgoing updates
+                        type: bool
+                      verify_availability:
+                        description: Set next-hop ip address tracking with IP SLA
+                        type: list
+                        elements: dict
+                        suboptions:
+                          address:
+                            description: Set one next-hop address
+                            type: str
+                          track:
+                            description: Set track number
+                            type: int
+                          drop_on_fail:
+                            description: Drop packets instead of using default routing when the configured next hop becomes unreachable
+                            type: bool
+                          force_order:
+                            description: Enable next-hop ordering as specified in the address parameter.
+                            type: bool
+                          load_share:
+                            description: Enable traffic load balancing across a maximum of 32 next-hop addresses
+                            type: bool
               ipv6:
                 description: Configure IPv6 features.
                 type: dict
