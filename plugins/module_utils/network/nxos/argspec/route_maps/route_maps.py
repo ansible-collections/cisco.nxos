@@ -336,8 +336,18 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                         "next_hop": {
                                             "type": "dict",
                                             "mutually_exclusive": [
-                                                ["address", "peer_address", "redist_unchanged", "verify_availability"],
-                                                ["address", "peer_address", "unchanged", "verify_availability"],
+                                                [
+                                                    "address",
+                                                    "peer_address",
+                                                    "redist_unchanged",
+                                                    "verify_availability",
+                                                ],
+                                                [
+                                                    "address",
+                                                    "peer_address",
+                                                    "unchanged",
+                                                    "verify_availability",
+                                                ],
                                             ],
                                             "options": {
                                                 "address": {"type": "str"},
@@ -351,11 +361,23 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                     "type": "list",
                                                     "elements": "dict",
                                                     "options": {
-                                                        "address": {"type": "str", "required": True},
+                                                        "address": {
+                                                            "type": "str",
+                                                            "required": True,
+                                                        },
                                                         "track": {"type": "int", "required": True},
-                                                        "drop_on_fail": {"type": "bool", "default": False},
-                                                        "force_order": {"type": "bool", "default": False},
-                                                        "load_share": {"type": "bool", "default": False},
+                                                        "drop_on_fail": {
+                                                            "type": "bool",
+                                                            "default": False,
+                                                        },
+                                                        "force_order": {
+                                                            "type": "bool",
+                                                            "default": False,
+                                                        },
+                                                        "load_share": {
+                                                            "type": "bool",
+                                                            "default": False,
+                                                        },
                                                     },
                                                 },
                                             },
