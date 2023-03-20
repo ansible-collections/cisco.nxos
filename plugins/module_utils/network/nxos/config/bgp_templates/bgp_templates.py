@@ -64,7 +64,6 @@ class Bgp_templates(ResourceModule):
             "log_neighbor_changes",
             "low_memory",
             "password",
-            "path_attribute",
             "remote_as",
             "remove_private_as",
             "shutdown",
@@ -94,8 +93,6 @@ class Bgp_templates(ResourceModule):
             "route_map.inbound",
             "route_map.outbound",
             "route_reflector_client",
-            "send_community.standard",
-            "send_community.extended",
             "soft_reconfiguration_inbound",
             "soo",
             "suppress_inactive",
@@ -159,10 +156,29 @@ class Bgp_templates(ResourceModule):
         for the Bgp_templates network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_path_attribute(want=want, have=have)
 
         w_af = want.get("address_family", {})
         h_af = have.get("address_family", {})
         self._afs_compare(want=w_af, have=h_af)
+
+    def _compare_path_attribute(self, want, have):
+        """Custom handling of neighbor path_attribute
+           option.
+
+        :params want: the want neighbor dictionary
+        :params have: the have neighbor dictionary
+        """
+        w_p_attr = want.get("path_attribute", {})
+        h_p_attr = have.get("path_attribute", {})
+
+        for wkey, wentry in iteritems(w_p_attr):
+            if wentry != h_p_attr.pop(wkey, {}):
+                self.addcmd(wentry, "path_attribute", False)
+
+        # remove remaining items in have for replaced
+        for hkey, hentry in iteritems(h_p_attr):
+            self.addcmd(hentry, "path_attribute", True)
 
     def _afs_compare(self, want, have):
         for name, wentry in iteritems(want):
@@ -177,6 +193,19 @@ class Bgp_templates(ResourceModule):
         self.compare(parsers=self.af_parsers, want=want, have=have)
 
     def _list_to_dict(self, data):
+        def _build_key(x):
+            """Build primary key for path_attribute
+               option.
+            :params x: path_attribute dictionary
+            :returns: primary key as tuple
+            """
+            key_1 = "start_{0}".format(x.get("range", {}).get("start", ""))
+            key_2 = "end_{0}".format(x.get("range", {}).get("end", ""))
+            key_3 = "type_{0}".format(x.get("type", ""))
+            key_4 = x["action"]
+
+            return (key_1, key_2, key_3, key_4)
+
         new_data = {}
         new_data["as_number"] = data.pop("as_number", None)
 
@@ -185,6 +214,10 @@ class Bgp_templates(ResourceModule):
                 if "address_family" in entry:
                     entry["address_family"] = {
                         (x["afi"], x.get("safi")): x for x in entry["address_family"]
+                    }
+                if "path_attribute" in entry:
+                    entry["path_attribute"] = {
+                        _build_key(x): x for x in entry.get("path_attribute", [])
                     }
 
             # attach top-level keys with their values

@@ -33,8 +33,18 @@ def _tmplt_bfd(proc):
     elif bfd.get("multihop", {}).get("set"):
         cmd = "bfd multihop"
 
-    if cmd:
-        return cmd
+    return cmd
+
+
+def _tmplt_path_attribute(proc):
+    cmd = "path-attribute {action}".format(**proc)
+
+    if "type" in proc:
+        cmd += " {type}".format(**proc)
+    elif "range" in proc:
+        cmd += " range {start} {end}".format(**proc["range"])
+    cmd += " in"
+    return cmd
 
 
 class Bgp_templatesTemplate(NetworkTemplate):
@@ -265,7 +275,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "graceful-shutdown{{ (' route-map ' + graceful_shutdown.route_map) if graceful_shutdown.route_map is defined }}",
+            "setval": "graceful-shutdown activate{{ (' route-map ' + graceful_shutdown.activate.route_map) if graceful_shutdown.activate.route_map is defined }}",
             "result": {
                 "neighbor": {
                     "{{ name }}": {
@@ -381,7 +391,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
                 \sin
                 $""", re.VERBOSE,
             ),
-            "setval": "",
+            "setval": _tmplt_path_attribute,
             "result": {
                 "neighbor": {
                     "{{ name }}": {
@@ -403,14 +413,14 @@ class Bgp_templatesTemplate(NetworkTemplate):
             "name": "remote_as",
             "getval": re.compile(
                 r"""
-                \sremote-as\s(?P<remote_as>\S+)
+                remote-as\s(?P<remote_as>.+)
                 $""", re.VERBOSE,
             ),
             "setval": "remote-as {{ remote_as }}",
             "result": {
                 "neighbor": {
                     "{{ name }}": {
-                        "remote_as": "{{ remote_as }}",
+                        "remote_as": "{{ remote_as|string }}",
                     },
                 },
             },
@@ -424,7 +434,9 @@ class Bgp_templatesTemplate(NetworkTemplate):
                 (\s(?P<replace_as>replace-as))?
                 $""", re.VERBOSE,
             ),
-            "setval": "remove-private-as",
+            "setval": "remove-private-as"
+                      "{{ ' replace-as' if remove_private_as.replace_as|d(False) else '' }}"
+                      "{{ ' all' if remove_private_as.all|d(False) else '' }}",
             "result": {
                 "neighbor": {
                     "{{ name }}": {
@@ -500,7 +512,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
                 ttl-security\shops\s(?P<hops>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "ttl-security hops {{ ttl_security.hops }}",
+            "setval": "ttl-security hops {{ ttl_security.hops|string }}",
             "result": {
                 "neighbor": {
                     "{{ name }}": {
@@ -855,7 +867,11 @@ class Bgp_templatesTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "",
+            "setval": "maximum-prefix"
+                      "{{ ' ' + maximum_prefix.max_prefix_limit|string if maximum_prefix.max_prefix_limit|d(None) else '' }}"
+                      "{{ ' ' + maximum_prefix.generate_warning_threshold|string if maximum_prefix.generate_warning_threshold|d(None) else '' }}"
+                      "{{ ' restart ' + maximum_prefix.restart_interval|string if maximum_prefix.restart_interval|d(None) else '' }}"
+                      "{{ ' warning-only' if maximum_prefix.warning_only|d(False) else '' }}",
             "result": {
                 "neighbor": {
                     "{{ name }}": {
@@ -1037,53 +1053,6 @@ class Bgp_templatesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "send_community.standard",
-            "getval": re.compile(
-                r"""
-                (?P<send_community>send-community)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "send-community",
-            "result": {
-                "neighbor": {
-                    "{{ name }}": {
-                        "address_family": {
-                            '{{ afi + "_" + safi|d() }}': {
-                                "send_community": {
-                                    "standard": "{{ True if send_community is defined }}",
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "send_community.extended",
-            "getval": re.compile(
-                r"""
-                send-community
-                \s(?P<extended>extended)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "send-community extended",
-            "result": {
-                "neighbor": {
-                    "{{ name }}": {
-                        "address_family": {
-                            '{{ afi + "_" + safi|d() }}': {
-                                "send_community": {
-                                    "extended": "{{ True if extended is defined }}",
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
             "name": "soft_reconfiguration_inbound",
             "getval": re.compile(
                 r"""
@@ -1140,7 +1109,7 @@ class Bgp_templatesTemplate(NetworkTemplate):
             "setval": "suppress-inactive",
             "result": {
                 "neighbor": {
-                    "{{ name) }}": {
+                    "{{ name }}": {
                         "address_family": {
                             '{{ afi + "_" + safi|d() }}': {
                                 "suppress_inactive": "{{ not not suppress_inactive }}",
