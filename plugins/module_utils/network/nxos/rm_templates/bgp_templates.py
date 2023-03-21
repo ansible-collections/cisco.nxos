@@ -275,7 +275,8 @@ class Bgp_templatesTemplate(NetworkTemplate):
                 (\sroute-map\s(?P<route_map>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "graceful-shutdown activate{{ (' route-map ' + graceful_shutdown.activate.route_map) if graceful_shutdown.activate.route_map is defined }}",
+            "setval": "graceful-shutdown activate"
+                      "{{ (' route-map ' + graceful_shutdown.activate.route_map) if graceful_shutdown.activate.route_map is defined }}",
             "result": {
                 "neighbor": {
                     "{{ name }}": {
