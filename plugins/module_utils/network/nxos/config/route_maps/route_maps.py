@@ -189,7 +189,8 @@ class Route_maps(ResourceModule):
                 for each in sum_set:
                     if each in w_set and each in h_set and w_set[each] == h_set[each]:
                         for i in range(
-                            0, len(want["set"]["ip"]["next_hop"]["verify_availability"])
+                            0,
+                            len(want["set"]["ip"]["next_hop"]["verify_availability"]),
                         ):
                             if (
                                 want["set"]["ip"]["next_hop"]["verify_availability"][i]["address"]
@@ -198,7 +199,8 @@ class Route_maps(ResourceModule):
                                 want["set"]["ip"]["next_hop"]["verify_availability"].pop(i)
                                 break
                         for i in range(
-                            0, len(have["set"]["ip"]["next_hop"]["verify_availability"])
+                            0,
+                            len(have["set"]["ip"]["next_hop"]["verify_availability"]),
                         ):
                             if (
                                 have["set"]["ip"]["next_hop"]["verify_availability"][i]["address"]
