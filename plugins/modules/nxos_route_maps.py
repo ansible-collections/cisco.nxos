@@ -332,7 +332,7 @@ options:
                   precedence:
                     description: Set precedence field.
                     type: str
-                  next-hop:
+                  next_hop:
                     description: Set next-hop IP address (for policy-based routing)
                     type: dict
                     suboptions:
