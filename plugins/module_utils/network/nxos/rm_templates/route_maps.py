@@ -136,7 +136,7 @@ class Route_mapsTemplate(NetworkTemplate):
             "name": "description",
             "getval": re.compile(
                 r"""
-                \s+description\s(?P<description>\S+)
+                \s+description\s(?P<description>.+)
                 $""", re.VERBOSE,
             ),
             "setval": "description {{ description }}",
