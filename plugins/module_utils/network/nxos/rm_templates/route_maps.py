@@ -1135,7 +1135,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                         "load_share": "{{ not not load_share|d(False) }}",
                                         "force_order": "{{ not not force_order|d(False) }}",
                                         "drop_on_fail": "{{ not not drop_on_fail|d(False) }}",
-                                    },
+                                    }
                                 },
                             },
                         },
@@ -1160,7 +1160,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "ip": {
                                     "next_hop": {
                                         "peer_address": "{{ not not peer_address }}",
-                                    },
+                                    }
                                 },
                             },
                         },
@@ -1185,7 +1185,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "ip": {
                                     "next_hop": {
                                         "redist_unchanged": "{{ not not redist_unchanged }}",
-                                    },
+                                    }
                                 },
                             },
                         },
@@ -1210,7 +1210,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                 "ip": {
                                     "next_hop": {
                                         "unchanged": "{{ not not unchanged }}",
-                                    },
+                                    }
                                 },
                             },
                         },
@@ -1244,7 +1244,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                             "load_share": "{{ not not load_share|d(False) }}",
                                             "force_order": "{{ not not force_order|d(False) }}",
                                             "drop_on_fail": "{{ not not drop_on_fail|d(False) }}",
-                                        }, ],
+                                        } ],
                                     },
                                 },
                             },

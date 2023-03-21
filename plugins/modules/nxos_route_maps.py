@@ -348,8 +348,8 @@ options:
                       load_share:
                         description: Enable traffic load balancing across a maximum of 32 next-hop addresses
                         type: bool
-                      peer_address: BGP prefix next hop is set to the peer’s local address. If no next hop is set in the route map, the next hop is set to the one stored in the path.
-                        description:
+                      peer_address:
+                        description: BGP prefix next hop is set to the peer’s local address. If no next hop is set in the route map, the next hop is set to the one stored in the path.
                         type: bool
                       redist_unchanged:
                         description: Set for next-hop address conservation for non-local generated routes. Used with redistribute command. Available to maintain BGP routing compliant with RFC 4271 on Nexus OS
