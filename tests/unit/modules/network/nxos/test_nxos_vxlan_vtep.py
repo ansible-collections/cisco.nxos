@@ -100,3 +100,19 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
             ),
         )
         self.execute_module(changed=False, commands=[])
+
+    def test_nxos_vxlan_vtep_advertise_virtual_rmac(self):
+        set_module_args(
+            dict(
+                interface="nve1",
+                advertise_virtual_rmac="true",
+            ),
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "interface nve1",
+                "terminal dont-ask",
+                "advertise virtual-rmac",
+            ],
+        )
