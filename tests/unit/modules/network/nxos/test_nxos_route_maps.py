@@ -1039,47 +1039,69 @@ class TestNxosRouteMapsModule(TestNxosModule):
                         action="permit",
                         sequence=10,
                         description="*** first stanza ***",
-                        set=dict(ip=dict(next_hop=dict(verify_availability=[
-                            dict(
-                                address="3.3.3.3",
-                                track=1,
-                                drop_on_fail=False,
-                                force_order=False,
-                                load_share=False,
+                        set=dict(
+                            ip=dict(
+                                next_hop=dict(
+                                    verify_availability=[
+                                        dict(
+                                            address="3.3.3.3",
+                                            track=1,
+                                            drop_on_fail=False,
+                                            force_order=False,
+                                            load_share=False,
+                                        ),
+                                        dict(
+                                            address="5.5.5.5",
+                                            track=3,
+                                            drop_on_fail=False,
+                                            force_order=False,
+                                            load_share=False,
+                                        ),
+                                    ],
+                                ),
+                                tag=True,
                             ),
-                            dict(
-                                address="5.5.5.5",
-                                track=3,
-                                drop_on_fail=False,
-                                force_order=False,
-                                load_share=False,
-                            ),
-                        ]),tag=True)),
+                        ),
                     ),
                     dict(
                         action="permit",
                         sequence=20,
-                        set=dict(ip=dict(next_hop=dict(
-                            address="2.2.2.2 5.5.5.5",
-                            drop_on_fail=False,
-                            force_order=False,
-                            load_share=True,
-                        ),tag=True)),
+                        set=dict(
+                            ip=dict(
+                                next_hop=dict(
+                                    address="2.2.2.2 5.5.5.5",
+                                    drop_on_fail=False,
+                                    force_order=False,
+                                    load_share=True,
+                                ),
+                                tag=True,
+                            ),
+                        ),
                     ),
                     dict(
                         action="permit",
                         sequence=30,
-                        set=dict(ip=dict(next_hop=dict(
-                            peer_address=True,
-                        ),tag=True)),
+                        set=dict(
+                            ip=dict(
+                                next_hop=dict(
+                                    peer_address=True,
+                                ),
+                                tag=True,
+                            ),
+                        ),
                     ),
                     dict(
                         action="permit",
                         sequence=30,
-                        set=dict(ip=dict(next_hop=dict(
-                            unchanged=True,
-                            redist_unchanged=True,
-                        ),tag=True)),
+                        set=dict(
+                            ip=dict(
+                                next_hop=dict(
+                                    unchanged=True,
+                                    redist_unchanged=True,
+                                ),
+                                tag=True,
+                            ),
+                        ),
                     ),
                 ],
             ),
@@ -1115,47 +1137,65 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 action="permit",
                                 sequence=10,
                                 description="*** first stanza ***",
-                                set=dict(ip=dict(next_hop=dict(verify_availability=[
-                                    dict(
-                                        address="3.3.3.3",
-                                        track=1,
-                                        drop_on_fail=False,
-                                        force_order=False,
-                                        load_share=False,
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            verify_availability=[
+                                                dict(
+                                                    address="3.3.3.3",
+                                                    track=1,
+                                                    drop_on_fail=False,
+                                                    force_order=False,
+                                                    load_share=False,
+                                                ),
+                                                dict(
+                                                    address="5.5.5.5",
+                                                    track=3,
+                                                    drop_on_fail=False,
+                                                    force_order=False,
+                                                    load_share=False,
+                                                ),
+                                            ],
+                                        ),
                                     ),
-                                    dict(
-                                        address="5.5.5.5",
-                                        track=3,
-                                        drop_on_fail=False,
-                                        force_order=False,
-                                        load_share=False,
-                                    ),
-                                ],),),),
+                                ),
                             ),
                             dict(
                                 action="permit",
                                 sequence=20,
-                                set=dict(ip=dict(next_hop=dict(
-                                    address="5.5.5.5 2.2.2.2",
-                                    drop_on_fail=True,
-                                    force_order=False,
-                                    load_share=True,
-                                ),),),
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            address="5.5.5.5 2.2.2.2",
+                                            drop_on_fail=True,
+                                            force_order=False,
+                                            load_share=True,
+                                        ),
+                                    ),
+                                ),
                             ),
                             dict(
                                 action="permit",
                                 sequence=30,
-                                set=dict(ip=dict(next_hop=dict(
-                                    peer_address=True,
-                                ),),),
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            peer_address=True,
+                                        ),
+                                    ),
+                                ),
                             ),
                             dict(
                                 action="permit",
                                 sequence=40,
-                                set=dict(ip=dict(next_hop=dict(
-                                    unchanged=True,
-                                    redist_unchanged=True,
-                                ),),),
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            unchanged=True,
+                                            redist_unchanged=True,
+                                        ),
+                                    ),
+                                ),
                             ),
                         ],
                     ),
@@ -1184,47 +1224,65 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 action="permit",
                                 sequence=10,
                                 description="*** first stanza ***",
-                                set=dict(ip=dict(next_hop=dict(verify_availability=[
-                                    dict(
-                                        address="3.3.3.3",
-                                        track=1,
-                                        drop_on_fail=False,
-                                        force_order=False,
-                                        load_share=False,
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            verify_availability=[
+                                                dict(
+                                                    address="3.3.3.3",
+                                                    track=1,
+                                                    drop_on_fail=False,
+                                                    force_order=False,
+                                                    load_share=False,
+                                                ),
+                                                dict(
+                                                    address="5.5.5.5",
+                                                    track=3,
+                                                    drop_on_fail=False,
+                                                    force_order=False,
+                                                    load_share=False,
+                                                ),
+                                            ],
+                                        ),
                                     ),
-                                    dict(
-                                        address="5.5.5.5",
-                                        track=3,
-                                        drop_on_fail=False,
-                                        force_order=False,
-                                        load_share=False,
-                                    ),
-                                ],),),),
+                                ),
                             ),
                             dict(
                                 action="permit",
                                 sequence=20,
-                                set=dict(ip=dict(next_hop=dict(
-                                    address="5.5.5.5 2.2.2.2",
-                                    drop_on_fail=True,
-                                    force_order=False,
-                                    load_share=True,
-                                ),),),
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            address="5.5.5.5 2.2.2.2",
+                                            drop_on_fail=True,
+                                            force_order=False,
+                                            load_share=True,
+                                        ),
+                                    ),
+                                ),
                             ),
                             dict(
                                 action="permit",
                                 sequence=30,
-                                set=dict(ip=dict(next_hop=dict(
-                                    peer_address=True,
-                                ),),),
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            peer_address=True,
+                                        ),
+                                    ),
+                                ),
                             ),
                             dict(
                                 action="permit",
                                 sequence=40,
-                                set=dict(ip=dict(next_hop=dict(
-                                    unchanged=True,
-                                    redist_unchanged=True,
-                                ),),),
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            unchanged=True,
+                                            redist_unchanged=True,
+                                        ),
+                                    ),
+                                ),
                             ),
                         ],
                     ),
@@ -1276,47 +1334,65 @@ class TestNxosRouteMapsModule(TestNxosModule):
                                 action="permit",
                                 sequence=10,
                                 description="*** first stanza ***",
-                                set=dict(ip=dict(next_hop=dict(verify_availability=[
-                                    dict(
-                                        address="3.3.3.3",
-                                        track=1,
-                                        drop_on_fail=False,
-                                        force_order=False,
-                                        load_share=False,
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            verify_availability=[
+                                                dict(
+                                                    address="3.3.3.3",
+                                                    track=1,
+                                                    drop_on_fail=False,
+                                                    force_order=False,
+                                                    load_share=False,
+                                                ),
+                                                dict(
+                                                    address="5.5.5.5",
+                                                    track=3,
+                                                    drop_on_fail=False,
+                                                    force_order=False,
+                                                    load_share=False,
+                                                ),
+                                            ],
+                                        ),
                                     ),
-                                    dict(
-                                        address="5.5.5.5",
-                                        track=3,
-                                        drop_on_fail=False,
-                                        force_order=False,
-                                        load_share=False,
-                                    ),
-                                ],),),),
+                                ),
                             ),
                             dict(
                                 action="permit",
                                 sequence=20,
-                                set=dict(ip=dict(next_hop=dict(
-                                    address="5.5.5.5 2.2.2.2",
-                                    drop_on_fail=True,
-                                    force_order=False,
-                                    load_share=True,
-                                ),),),
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            address="5.5.5.5 2.2.2.2",
+                                            drop_on_fail=True,
+                                            force_order=False,
+                                            load_share=True,
+                                        ),
+                                    ),
+                                ),
                             ),
                             dict(
                                 action="permit",
                                 sequence=30,
-                                set=dict(ip=dict(next_hop=dict(
-                                    peer_address=True,
-                                ),),),
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            peer_address=True,
+                                        ),
+                                    ),
+                                ),
                             ),
                             dict(
                                 action="permit",
                                 sequence=40,
-                                set=dict(ip=dict(next_hop=dict(
-                                    unchanged=True,
-                                    redist_unchanged=True,
-                                ),),),
+                                set=dict(
+                                    ip=dict(
+                                        next_hop=dict(
+                                            unchanged=True,
+                                            redist_unchanged=True,
+                                        ),
+                                    ),
+                                ),
                             ),
                         ],
                     ),

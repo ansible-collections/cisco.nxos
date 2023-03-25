@@ -166,7 +166,7 @@ class Route_maps(ResourceModule):
                 pos = begin
                 for i in range(begin, len(self.commands)):
                     if self.commands[i][0:3] == "no ":
-                        self.commands.insert(pos,self.commands.pop(i))
+                        self.commands.insert(pos, self.commands.pop(i))
                         pos += 1
                 self.commands.insert(begin, self._tmplt.render(wentry, "route_map", False))
         # remove superfluos entries from have
@@ -188,12 +188,22 @@ class Route_maps(ResourceModule):
                 sum_set = list(set(list(w_set) + list(h_set)))
                 for each in sum_set:
                     if each in w_set and each in h_set and w_set[each] == h_set[each]:
-                        for i in range(0, len(want["set"]["ip"]["next_hop"]["verify_availability"])):
-                            if want["set"]["ip"]["next_hop"]["verify_availability"][i]["address"] == each:
+                        for i in range(
+                            0, len(want["set"]["ip"]["next_hop"]["verify_availability"])
+                        ):
+                            if (
+                                want["set"]["ip"]["next_hop"]["verify_availability"][i]["address"]
+                                == each
+                            ):
                                 want["set"]["ip"]["next_hop"]["verify_availability"].pop(i)
                                 break
-                        for i in range(0, len(have["set"]["ip"]["next_hop"]["verify_availability"])):
-                            if have["set"]["ip"]["next_hop"]["verify_availability"][i]["address"] == each:
+                        for i in range(
+                            0, len(have["set"]["ip"]["next_hop"]["verify_availability"])
+                        ):
+                            if (
+                                have["set"]["ip"]["next_hop"]["verify_availability"][i]["address"]
+                                == each
+                            ):
                                 have["set"]["ip"]["next_hop"]["verify_availability"].pop(i)
                                 break
                         w_set.pop(each)
