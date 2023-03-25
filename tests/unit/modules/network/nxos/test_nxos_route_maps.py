@@ -1011,3 +1011,331 @@ class TestNxosRouteMapsModule(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], [])
+
+    def test_nxos_route_maps_next_hop_gathered(self):
+        # test gathered for empty config
+        self.get_config.return_value = dedent(
+            """\
+            route-map TEST permit 10
+              description *** first stanza ***
+              set ip next-hop verify-availability 3.3.3.3 track 1
+              set ip next-hop verify-availability 5.5.5.5 track 3
+            route-map TEST permit 20
+              set ip next-hop 2.2.2.2 5.5.5.5 load-share
+            route-map TEST permit 30
+              set ip next-hop peer-address
+            route-map TEST permit 40
+              set ip next-hop unchanged
+              set ip next-hop redist-unchanged
+            """,
+        )
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+
+        gathered = [
+            dict(
+                route_map="TEST",
+                entries=[
+                    dict(
+                        action="permit",
+                        sequence=10,
+                        description="*** first stanza ***",
+                        set=dict(ip=dict(next_hop=dict(verify_availability=[
+                            dict(
+                                address="3.3.3.3",
+                                track=1,
+                                drop_on_fail=False,
+                                force_order=False,
+                                load_share=False,
+                            ),
+                            dict(
+                                address="5.5.5.5",
+                                track=3,
+                                drop_on_fail=False,
+                                force_order=False,
+                                load_share=False,
+                            ),
+                        ]),tag=True)),
+                    ),
+                    dict(
+                        action="permit",
+                        sequence=20,
+                        set=dict(ip=dict(next_hop=dict(
+                            address="2.2.2.2 5.5.5.5",
+                            drop_on_fail=False,
+                            force_order=False,
+                            load_share=True,
+                        ),tag=True)),
+                    ),
+                    dict(
+                        action="permit",
+                        sequence=30,
+                        set=dict(ip=dict(next_hop=dict(
+                            peer_address=True,
+                        ),tag=True)),
+                    ),
+                    dict(
+                        action="permit",
+                        sequence=30,
+                        set=dict(ip=dict(next_hop=dict(
+                            unchanged=True,
+                            redist_unchanged=True,
+                        ),tag=True)),
+                    ),
+                ],
+            ),
+        ]
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(set(result["gathered"][0]), set(gathered[0]))
+
+    def test_nxos_route_maps_next_hop_merged_idempotent(self):
+        # test merged
+        self.get_config.return_value = dedent(
+            """\
+            route-map TEST permit 10
+              description *** first stanza ***
+              set ip next-hop verify-availability 3.3.3.3 track 1
+              set ip next-hop verify-availability 5.5.5.5 track 3
+            route-map TEST permit 20
+              set ip next-hop 5.5.5.5 2.2.2.2 load-share  drop-on-fail
+            route-map TEST permit 30
+              set ip next-hop peer-address
+            route-map TEST permit 40
+              set ip next-hop unchanged
+              set ip next-hop redist-unchanged
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                description="*** first stanza ***",
+                                set=dict(ip=dict(next_hop=dict(verify_availability=[
+                                    dict(
+                                        address="3.3.3.3",
+                                        track=1,
+                                        drop_on_fail=False,
+                                        force_order=False,
+                                        load_share=False,
+                                    ),
+                                    dict(
+                                        address="5.5.5.5",
+                                        track=3,
+                                        drop_on_fail=False,
+                                        force_order=False,
+                                        load_share=False,
+                                    ),
+                                ],),),),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=20,
+                                set=dict(ip=dict(next_hop=dict(
+                                    address="5.5.5.5 2.2.2.2",
+                                    drop_on_fail=True,
+                                    force_order=False,
+                                    load_share=True,
+                                ),),),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=30,
+                                set=dict(ip=dict(next_hop=dict(
+                                    peer_address=True,
+                                ),),),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=40,
+                                set=dict(ip=dict(next_hop=dict(
+                                    unchanged=True,
+                                    redist_unchanged=True,
+                                ),),),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = []
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], commands)
+
+    def test_nxos_route_maps_next_hop_linear_merged(self):
+        # test merged for linear attributes
+        self.get_config.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                description="*** first stanza ***",
+                                set=dict(ip=dict(next_hop=dict(verify_availability=[
+                                    dict(
+                                        address="3.3.3.3",
+                                        track=1,
+                                        drop_on_fail=False,
+                                        force_order=False,
+                                        load_share=False,
+                                    ),
+                                    dict(
+                                        address="5.5.5.5",
+                                        track=3,
+                                        drop_on_fail=False,
+                                        force_order=False,
+                                        load_share=False,
+                                    ),
+                                ],),),),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=20,
+                                set=dict(ip=dict(next_hop=dict(
+                                    address="5.5.5.5 2.2.2.2",
+                                    drop_on_fail=True,
+                                    force_order=False,
+                                    load_share=True,
+                                ),),),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=30,
+                                set=dict(ip=dict(next_hop=dict(
+                                    peer_address=True,
+                                ),),),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=40,
+                                set=dict(ip=dict(next_hop=dict(
+                                    unchanged=True,
+                                    redist_unchanged=True,
+                                ),),),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "route-map TEST permit 10",
+            "description *** first stanza ***",
+            "set ip next-hop verify-availability 3.3.3.3 track 1",
+            "set ip next-hop verify-availability 5.5.5.5 track 3",
+            "route-map TEST permit 20",
+            "set ip next-hop 5.5.5.5 2.2.2.2 load-share drop-on-fail",
+            "route-map TEST permit 30",
+            "set ip next-hop peer-address",
+            "route-map TEST permit 40",
+            "set ip next-hop unchanged",
+            "set ip next-hop redist-unchanged",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_next_hop_replaced(self):
+        # test replaced for linear attributes
+        self.get_config.return_value = dedent(
+            """\
+            route-map TEST permit 10
+              set ip next-hop 5.5.5.5 2.2.2.2 load-share  drop-on-fail
+            route-map TEST permit 20
+              description *** second stanza ***
+              set ip next-hop verify-availability 3.3.3.3 track 1
+              set ip next-hop verify-availability 5.5.5.5 track 3
+            route-map TEST permit 30
+              set ip next-hop peer-address
+            route-map TEST permit 40
+              set ip next-hop unchanged
+              set ip next-hop redist-unchanged
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                description="*** first stanza ***",
+                                set=dict(ip=dict(next_hop=dict(verify_availability=[
+                                    dict(
+                                        address="3.3.3.3",
+                                        track=1,
+                                        drop_on_fail=False,
+                                        force_order=False,
+                                        load_share=False,
+                                    ),
+                                    dict(
+                                        address="5.5.5.5",
+                                        track=3,
+                                        drop_on_fail=False,
+                                        force_order=False,
+                                        load_share=False,
+                                    ),
+                                ],),),),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=20,
+                                set=dict(ip=dict(next_hop=dict(
+                                    address="5.5.5.5 2.2.2.2",
+                                    drop_on_fail=True,
+                                    force_order=False,
+                                    load_share=True,
+                                ),),),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=30,
+                                set=dict(ip=dict(next_hop=dict(
+                                    peer_address=True,
+                                ),),),
+                            ),
+                            dict(
+                                action="permit",
+                                sequence=40,
+                                set=dict(ip=dict(next_hop=dict(
+                                    unchanged=True,
+                                    redist_unchanged=True,
+                                ),),),
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "route-map TEST permit 10",
+            "no set ip next-hop verify-availability 3.3.3.3 track 1",
+            "no set ip next-hop verify-availability 5.5.5.5 track 3",
+            "no description *** second stanza ***",
+            "set ip next-hop 5.5.5.5 2.2.2.2 load-share drop-on-fail",
+            "route-map TEST permit 20",
+            "no set ip next-hop 5.5.5.5 2.2.2.2 load-share drop-on-fail",
+            "set ip next-hop verify-availability 3.3.3.3 track 1",
+            "set ip next-hop verify-availability 5.5.5.5 track 3",
+            "description *** first stanza ***",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
