@@ -104,6 +104,12 @@ options:
       an existing gateway config.
     type: str
     version_added: 1.1.0
+  advertise_virtual_rmac:
+    description:
+    - The advertise_virtual_rmac parameter lets BGP to use the VMAC with VIP as next-hop when
+      advertising type-2 routes. Should be used together with advertise_pip parameter from
+      cisco.nxos.nxos_bgp_address_family module.
+    type: bool
 """
 EXAMPLES = """
 - cisco.nxos.nxos_vxlan_vtep:
@@ -146,6 +152,7 @@ BOOL_PARAMS = [
     "host_reachability",
     "global_ingress_replication_bgp",
     "global_suppress_arp",
+    "advertise_virtual_rmac",
 ]
 PARAM_TO_COMMAND_KEYMAP = {
     "description": "description",
@@ -159,6 +166,7 @@ PARAM_TO_COMMAND_KEYMAP = {
     "source_interface": "source-interface",
     "source_interface_hold_down_time": "source-interface hold-down-time",
     "multisite_border_gateway_interface": "multisite border-gateway interface",
+    "advertise_virtual_rmac": "advertise virtual-rmac",
 }
 PARAM_TO_DEFAULT_KEYMAP = {
     "description": False,
@@ -170,11 +178,20 @@ PARAM_TO_DEFAULT_KEYMAP = {
 def get_value(arg, config, module):
     if arg in BOOL_PARAMS:
         REGEX = re.compile(r"\s+{0}\s*$".format(PARAM_TO_COMMAND_KEYMAP[arg]), re.M)
+        NO_REGEX = re.compile(r"\s+no\s{0}\s*$".format(PARAM_TO_COMMAND_KEYMAP[arg]), re.M)
         NO_SHUT_REGEX = re.compile(r"\s+no shutdown\s*$", re.M)
         value = False
         if arg == "shutdown":
             try:
                 if NO_SHUT_REGEX.search(config):
+                    value = False
+                elif REGEX.search(config):
+                    value = True
+            except TypeError:
+                value = False
+        elif arg == "advertise_virtual_rmac":
+            try:
+                if NO_REGEX.search(config):
                     value = False
                 elif REGEX.search(config):
                     value = True
@@ -398,6 +415,7 @@ def main():
         source_interface_hold_down_time=dict(required=False, type="str"),
         state=dict(choices=["present", "absent"], default="present", required=False),
         multisite_border_gateway_interface=dict(required=False, type="str"),
+        advertise_virtual_rmac=dict(required=False, type="bool"),
     )
 
     mutually_exclusive = [("global_ingress_replication_bgp", "global_mcast_group_L2")]
