@@ -51,7 +51,9 @@ class FactsBase(object):
             if output == "json-pretty":
                 # reattempt with | json
                 resp = run_commands(
-                    self.module, [{"command": command, "output": "json"}], check_rc="retry_json",
+                    self.module,
+                    [{"command": command, "output": "json"}],
+                    check_rc="retry_json",
                 )
 
         try:
