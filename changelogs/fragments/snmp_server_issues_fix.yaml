@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - "`snmp_server` - fix community option to produce proper configuration with ipv4acl and ipv6acl."
+  - "`snmp_server` - fix host delete when authentication options are enables."
