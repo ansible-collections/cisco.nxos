@@ -1,10 +1,11 @@
+---
 name: Test collection
 
 concurrency:
   group: ${{ github.head_ref }}
   cancel-in-progress: true
 
-on:
+on:  # yamllint disable-line rule:truthy
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -24,22 +25,21 @@ jobs:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
-
   all_green:
     if: ${{ always() }}
     needs:
-    - ansible-lint
-    - changelog
-    - sanity
-    - unit-galaxy
-    - unit-source
+      - ansible-lint
+      - changelog
+      - sanity
+      - unit-galaxy
+      - unit-source
     runs-on: ubuntu-latest
     steps:
-    - run: >-
-        python -c "assert set([
-        '${{ needs.ansible-lint.result }}',
-        '${{ needs.changelog.result }}',
-        '${{ needs.sanity.result }}',
-        '${{ needs.unit-galaxy.result }}',
-        '${{ needs.unit-source.result }}'
-        ]) == {'success'}"
+      - run: >-
+          python -c "assert set([
+          '${{ needs.ansible-lint.result }}',
+          '${{ needs.changelog.result }}',
+          '${{ needs.sanity.result }}',
+          '${{ needs.unit-galaxy.result }}',
+          '${{ needs.unit-source.result }}'
+          ]) == {'success'}"
