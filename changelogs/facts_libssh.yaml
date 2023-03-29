@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - "`facts` - Attempt to execute json output commands with | json-pretty first and fall back to | json if unsupported.
+    This is a temporary workaround until https://github.com/ansible/pylibssh/issues/208 is fixed."

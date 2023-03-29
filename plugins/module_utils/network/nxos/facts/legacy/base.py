@@ -38,8 +38,22 @@ class FactsBase(object):
 
     def run(self, command, output="text"):
         command_string = command
+        if output == "json":
+            # Not all devices support | json-pretty but is a workaround for
+            # libssh issue https://github.com/ansible/pylibssh/issues/208
+            output = "json-pretty"
+
+        resp = []
         command = {"command": command, "output": output}
-        resp = run_commands(self.module, [command], check_rc="retry_json")
+        try:
+            resp = run_commands(self.module, [command], check_rc="retry_json")
+        except Exception:
+            if output == "json-pretty":
+                # reattempt with | json
+                resp = run_commands(
+                    self.module, [{"command": command, "output": "json"}], check_rc="retry_json",
+                )
+
         try:
             return resp[0]
         except IndexError:
