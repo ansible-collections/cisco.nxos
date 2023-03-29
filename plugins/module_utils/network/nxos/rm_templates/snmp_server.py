@@ -48,34 +48,6 @@ def _template_hosts(data):
     return cmd
 
 
-def _tmplt_users_auth(data):
-    cmd = "snmp-server user {0}".format(data["user"])
-
-    if "group" in data:
-        cmd += " {0}".format(data["group"])
-    if "authentication" in data:
-        auth = data["authentication"]
-        if "algorithm" in auth:
-            cmd += " auth {0}".format(auth["algorithm"])
-        if "password" in auth:
-            cmd += " {0}".format(auth["password"])
-        priv = auth.get("priv", {})
-        if priv:
-            cmd += " priv"
-            if priv.get("aes_128", False):
-                cmd += " aes-128"
-            if "privacy_password" in priv:
-                cmd += " {0}".format(priv["privacy_password"])
-        if auth.get("localized_key", False):
-            cmd += " localizedkey"
-        elif auth.get("localizedv2_key", False):
-            cmd += " localizedV2key"
-        if "engine_id" in auth:
-            cmd += " engineID {0}".format(auth["engine_id"])
-
-        return cmd
-
-
 class Snmp_serverTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Snmp_serverTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -1486,7 +1458,19 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sengineID\s(?P<engine_id>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": _tmplt_users_auth,
+            "setval":  "snmp-server user "
+                      "{{ user if user is defined else '' }}"
+                      "{{ (' ' + group) if group is defined else '' }}"
+                      "{{ (' auth ' + authentication.algorithm) if authentication is defined and authentication.algorithm is defined else '' }}"
+                      "{{ (' ' + authentication.password) if authentication is defined and authentication.password is defined else '' }}"
+                      "{{ (' priv') if authentication is defined and authentication.priv is defined else '' }}"
+                      "{{ (' aes-128') if authentication is defined and authentication.priv is defined and authentication.priv.aes_128 is defined else ''}}"
+                      "{{ (' ' + authentication.priv.privacy_password) if authentication is defined and authentication.priv is defined and authentication.priv.privacy_password is defined else '' }}"
+                      "{{ ' localizedkey' if authentication is defined and authentication.localized_key is defined else ''}}"
+                      "{{ ' localizedV2key' if authentication is defined and authentication.localizedv2x_key is defined else ''}}"
+                      "{{ (' engineID ' + authentication.engine_id) if authentication is defined and authentication.engine_id is defined else '' }}",
+            "remval": "snmp-server user "
+                      "{{ user if user is defined else '' }}",
             "result": {
                 "users": {
                     "auth": [
@@ -1504,7 +1488,6 @@ class Snmp_serverTemplate(NetworkTemplate):
                                     "aes_128": "{{ not not aes_128 }}",
                                 },
                             },
-
                         },
                     ],
                 },

@@ -793,10 +793,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
             ignore_provider_arg,
         )
         commands = [
-            "no snmp-server user user2 network-admin auth md5 0x5632724fb8ac3699296af262 priv"
-            " 0x5632724fb8ac3699296af262 localizedkey engineID 2:2:2:2:2",
-            "no snmp-server user user3 network-admin auth md5 0x5632724fb8ac3699296af262 priv"
-            " aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3",
+            "no snmp-server user user2",
+            "no snmp-server user user3",
             "snmp-server user user4 network-admin auth md5 0x5632724fb8ac3699296af262 priv aes-128"
             " 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3",
         ]
@@ -854,7 +852,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                 running_config=dedent(
                     """\
                     snmp-server community private group network-admin
-                    snmp-server community public use-ipv4acl myacl
+                    snmp-server community public use-ipv4acl myacl use-ipv6acl myaclv6
                     snmp-server globalEnforcePriv
                     snmp-server tcp-session auth
                     snmp-server counter cache timeout 1800
@@ -885,7 +883,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             contact="testswitch@localhost",
             communities=[
                 dict(name="private", group="network-admin"),
-                dict(name="public", use_ipv4acl="myacl"),
+                dict(name="public", use_ipv4acl="myacl", use_ipv6acl="myaclv6"),
             ],
             context=dict(name="public", vrf="siteA"),
             counter=dict(cache=dict(timeout=1800)),
@@ -935,6 +933,10 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     contact="testswitch@localhost",
                     context=dict(name="public", vrf="siteA"),
                     counter=dict(cache=dict(timeout=1800)),
+                    communities=[
+                        dict(name="private", group="network-admin"),
+                        dict(name="public", use_ipv4acl="myacl", use_ipv6acl="myaclv6"),
+                    ],
                     drop=dict(unknown_engine_id=True, unknown_user=True),
                     engine_id=dict(local="'00:00:00:63:00:01:00:10:20:15:10:03'"),
                     global_enforce_priv=True,
@@ -967,6 +969,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server location lab",
             "snmp-server mib community-map public context public1",
             "snmp-server source-interface traps Ethernet1/2",
+            "snmp-server community private group network-admin",
+            "snmp-server community public use-ipv4acl myacl use-ipv6acl myaclv6",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(set(result["rendered"]), set(rendered))
