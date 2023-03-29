@@ -76,23 +76,6 @@ def _tmplt_users_auth(data):
         return cmd
 
 
-def _template_communities(data):
-    cmd = "snmp-server community {0}".format(data["name"])
-
-    if "group" in data:
-        cmd += " group {0}".format(data["group"])
-    elif "use_ipv4acl" in data:
-        cmd += " use-ipv4acl {0}".format(data["use_ipv4acl"])
-    elif "use_ipv6acl" in data:
-        cmd += " use-ipv6acl {0}".format(data["use_ipv6acl"])
-    elif data.get("ro", False):
-        cmd += " ro"
-    elif data.get("rw", False):
-        cmd += " rw"
-
-    return cmd
-
-
 class Snmp_serverTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Snmp_serverTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -125,7 +108,13 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\suse-ipv6acl\s(?P<use_ipv6acl>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": _template_communities,
+            "setval": "snmp-server community "
+                      "{{ name }}"
+                      "{{ (' group ' + group) if group is defined else '' }}"
+                      "{{ (' use-ipv4acl ' + use_ipv4acl) if use_ipv4acl is defined else '' }}"
+                      "{{ (' use-ipv6acl ' + use_ipv6acl) if use_ipv6acl is defined else '' }}"
+                      "{{ ' ro' if ro|d(False) else ''}}"
+                      "{{ ' rw' if rw|d(False) else ''}}",
             "result": {
                 "communities": [
                     {
