@@ -1238,13 +1238,15 @@ class Route_mapsTemplate(NetworkTemplate):
                             "set": {
                                 "ip": {
                                     "next_hop": {
-                                        "verify_availability": [ {
-                                            "address": "{{ address }}",
-                                            "track": "{{ track }}",
-                                            "load_share": "{{ not not load_share|d(False) }}",
-                                            "force_order": "{{ not not force_order|d(False) }}",
-                                            "drop_on_fail": "{{ not not drop_on_fail|d(False) }}",
-                                        }, ],
+                                        "verify_availability": [
+                                            {
+                                                "address": "{{ address }}",
+                                                "track": "{{ track }}",
+                                                "load_share": "{{ not not load_share|d(False) }}",
+                                                "force_order": "{{ not not force_order|d(False) }}",
+                                                "drop_on_fail": "{{ not not drop_on_fail|d(False) }}",
+                                            },
+                                        ],
                                     },
                                 },
                             },
