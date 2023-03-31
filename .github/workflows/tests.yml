@@ -20,7 +20,7 @@ jobs:
   unit-galaxy:
     uses: ansible-network/github_actions/.github/workflows/unit_galaxy.yml@main
   unit-source:
-    uses: ansible-network/github_actions/.github/workflows/unit_source.yml@main
+    uses: Qalthos/github_actions/.github/workflows/unit_source.yml@prereleases
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
