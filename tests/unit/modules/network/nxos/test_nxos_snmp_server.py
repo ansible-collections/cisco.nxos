@@ -793,8 +793,10 @@ class TestNxosSnmpServerModule(TestNxosModule):
             ignore_provider_arg,
         )
         commands = [
-            "no snmp-server user user2",
-            "no snmp-server user user3",
+            "no snmp-server user user2 network-admin auth md5 0x5632724fb8ac3699296af262 priv"
+            " 0x5632724fb8ac3699296af262 localizedkey engineID 2:2:2:2:2",
+            "no snmp-server user user3 network-admin auth md5 0x5632724fb8ac3699296af262 priv"
+            " aes-128 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3",
             "snmp-server user user4 network-admin auth md5 0x5632724fb8ac3699296af262 priv aes-128"
             " 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3",
         ]
