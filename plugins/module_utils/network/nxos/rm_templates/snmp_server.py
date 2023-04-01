@@ -1498,6 +1498,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": _tmplt_users_auth,
+            "remval": "snmp-server user {{ user }}",
             "result": {
                 "users": {
                     "auth": [
