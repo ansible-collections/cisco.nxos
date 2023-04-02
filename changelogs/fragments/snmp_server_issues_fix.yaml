@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`snmp_server` - fix community option to produce proper configuration with ipv4acl and ipv6acl."
