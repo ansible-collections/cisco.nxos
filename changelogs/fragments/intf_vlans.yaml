@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`interfaces` - Correctly enable/disable VLAN interfaces (https://github.com/ansible-collections/cisco.nxos/issues/539)."
