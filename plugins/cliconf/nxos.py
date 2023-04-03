@@ -418,7 +418,7 @@ class Cliconf(CliconfBase):
                 cmd = "%s | json native" % command
             else:
                 cmd = "%s | %s" % (command, output)
-        elif output == "text" and not re.search(output, command):
+        elif output == "text" and re.search(output, command):
             cmd = command.rsplit("|", 1)[0]
         else:
             cmd = command
