@@ -332,10 +332,77 @@ options:
                   precedence:
                     description: Set precedence field.
                     type: str
+                  next_hop:
+                    description: Set next-hop IP address (for policy-based routing)
+                    type: dict
+                    suboptions:
+                      address:
+                        description: Set space-separated list of next-hop IP addresses. Address ordering is important. Also don`t use unnecessary spaces.
+                        type: str
+                      drop_on_fail:
+                        description: Drop packets instead of using default routing when the configured next hop becomes unreachable
+                        type: bool
+                        default: false
+                      force_order:
+                        description: Enable next-hop ordering as specified in the address parameter.
+                        type: bool
+                        default: false
+                      load_share:
+                        description: Enable traffic load balancing across a maximum of 32 next-hop addresses
+                        type: bool
+                        default: false
+                      peer_address:
+                        description:
+                          - BGP prefix next hop is set to the local address of the peer.
+                          - If no next hop is set in the route map, the next hop is set to the one stored in the path.
+                        type: bool
+                      redist_unchanged:
+                        description:
+                          - Set for next-hop address conservation for non-local generated routes.
+                          - Used with redistribute command. Available to maintain BGP routing compliant with RFC 4271 on Nexus OS.
+                        type: bool
+                      unchanged:
+                        description:  Set for next-hop address conservation in eBGP outgoing updates
+                        type: bool
+                      verify_availability:
+                        description: Set next-hop ip address tracking with IP SLA
+                        type: list
+                        elements: dict
+                        suboptions:
+                          address:
+                            description: Set one next-hop address
+                            type: str
+                            required: true
+                          track:
+                            description: Set track number
+                            type: int
+                            required: true
+                          drop_on_fail:
+                            description: Drop packets instead of using default routing when the configured next hop becomes unreachable
+                            type: bool
+                            default: false
+                          force_order:
+                            description: Enable next-hop ordering as specified in the address parameter.
+                            type: bool
+                            default: false
+                          load_share:
+                            description: Enable traffic load balancing across a maximum of 32 next-hop addresses
+                            type: bool
+                            default: false
               ipv6:
                 description: Configure IPv6 features.
                 type: dict
-                suboptions: *id002
+                suboptions:
+                  address:
+                    description: Specify IP address.
+                    type: dict
+                    suboptions:
+                      prefix_list:
+                        description: Name of prefix list (Max Size 63).
+                        type: str
+                  precedence:
+                    description: Set precedence field.
+                    type: str
               label_index:
                 description: Set Segment Routing (SR) label index of route.
                 type: int
@@ -486,6 +553,47 @@ EXAMPLES = """
                   group_range:
                     first: 239.0.0.1
                     last: 239.255.255.255
+
+      - route_map: rmap3
+        entries:
+        - sequence: 10
+          description: "*** first stanza ***"
+          action: permit
+          set:
+            ip:
+              next_hop:
+                verify_availability:
+                - address: 3.3.3.3
+                  track: 1
+                - address: 4.4.4.4
+                  track: 3
+
+        - sequence: 20
+          description: "*** second stanza ***"
+          action: permit
+          set:
+            ip:
+              next_hop:
+                address: 6.6.6.6 2.2.2.2
+                load_share: true
+                drop_on_fail: true
+
+        - sequence: 30
+          description: "*** third stanza ***"
+          action: permit
+          set:
+            ip:
+              next_hop:
+                peer_address: true
+
+        - sequence: 40
+          description: "*** fourth stanza ***"
+          action: permit
+          set:
+            ip:
+              next_hop:
+                unchanged: true
+                redist_unchanged: true
     state: merged
 
 # Task output
@@ -515,6 +623,20 @@ EXAMPLES = """
 #    - "match route-type level-1 level-2"
 #    - "match tag 2"
 #    - "description rmap2-40-deny"
+#    - "route-map rmap3 permit 10"
+#    - "description *** first stanza ***"
+#    - "set ip next-hop verify-availability 3.3.3.3 track 1"
+#    - "set ip next-hop verify-availability 4.4.4.4 track 3"
+#    - "route-map rmap3 permit 20"
+#    - "description *** second stanza ***"
+#    - "set ip next-hop 6.6.6.6 2.2.2.2 load-share  drop-on-fail"
+#    - "route-map rmap3 permit 30"
+#    - "description *** third stanza ***"
+#    - "set ip next-hop peer-address"
+#    - "route-map rmap3 permit 40"
+#    - "description *** fourth stanza ***"
+#    - "set ip next-hop unchanged"
+#    - "set ip next-hop redist-unchanged"
 #
 #  after:
 #   - route_map: rmap1
@@ -592,6 +714,47 @@ EXAMPLES = """
 #         tags:
 #         - 2
 #       sequence: 40
+#
+#   - route_map: rmap3
+#     entries:
+#     - sequence: 10
+#       description: "*** first stanza ***"
+#       action: permit
+#       set:
+#         ip:
+#           next_hop:
+#             verify_availability:
+#             - address: 3.3.3.3
+#               track: 1
+#             - address: 4.4.4.4
+#               track: 3
+#
+#     - sequence: 20
+#       description: "*** second stanza ***"
+#       action: permit
+#       set:
+#         ip:
+#           next_hop:
+#             address: 6.6.6.6 2.2.2.2
+#             load_share: true
+#             drop_on_fail: true
+#
+#     - sequence: 30
+#       description: "*** third stanza ***"
+#       action: permit
+#       set:
+#         ip:
+#           next_hop:
+#             peer_address: true
+#
+#     - sequence: 40
+#       description: "*** fourth stanza ***"
+#       action: permit
+#       set:
+#         ip:
+#           next_hop:
+#             unchanged: true
+#             redist_unchanged: true
 
 # After state:
 # ------------
@@ -618,7 +781,21 @@ EXAMPLES = """
 #   match route-type level-1 level-2
 #   match tag 2
 #   description rmap2-40-deny
-
+# route-map rmap3 permit 10
+#   description *** first stanza ***
+#   set ip next-hop verify-availability 3.3.3.3 track 1
+#   set ip next-hop verify-availability 4.4.4.4 track 3
+# route-map rmap3 permit 20
+#   description *** second stanza ***
+#   set ip next-hop 6.6.6.6 2.2.2.2 load-share  drop-on-fail
+# route-map rmap3 permit 30
+#   description *** third stanza ***
+#   set ip next-hop peer-address
+# route-map rmap3 permit 40
+#   description *** fourth stanza ***
+#   set ip next-hop unchanged
+#   set ip next-hop redist-unchanged
+#
 # Using replaced
 # (for the listed route-map(s), sequences that are in running-config but not in the task are negated)
 
@@ -647,7 +824,21 @@ EXAMPLES = """
 #   match route-type level-1 level-2
 #   match tag 2
 #   description rmap2-40-deny
-
+# route-map rmap3 permit 10
+#   description *** first stanza ***
+#   set ip next-hop verify-availability 3.3.3.3 track 1
+#   set ip next-hop verify-availability 4.4.4.4 track 3
+# route-map rmap3 permit 20
+#   description *** second stanza ***
+#   set ip next-hop 6.6.6.6 2.2.2.2 load-share  drop-on-fail
+# route-map rmap3 permit 30
+#   description *** third stanza ***
+#   set ip next-hop peer-address
+# route-map rmap3 permit 40
+#   description *** fourth stanza ***
+#   set ip next-hop unchanged
+#   set ip next-hop redist-unchanged
+#
 - name: Replace route-maps configurations of listed route-maps with provided configurations
   cisco.nxos.nxos_route_maps:
     config:
@@ -668,6 +859,34 @@ EXAMPLES = """
             set:
               community:
                 local_as: True
+
+      - route_map: rmap3
+        entries:
+        - sequence: 10
+          description: "*** first stanza ***"
+          action: permit
+          set:
+            ip:
+              next_hop:
+                verify_availability:
+                - address: 3.3.3.3
+                  track: 1
+        - sequence: 20
+          description: "*** second stanza ***"
+          action: permit
+          set:
+            ip:
+              next_hop:
+                peer_address: true
+        - sequence: 30
+          description: "*** third stanza ***"
+          action: permit
+          set:
+            ip:
+              next_hop:
+                address: 6.6.6.6 2.2.2.2
+                load_share: true
+                drop_on_fail: true
     state: replaced
 
 # Task output
@@ -749,6 +968,47 @@ EXAMPLES = """
 #         - 2
 #       sequence: 40
 #
+#   - route_map: rmap3
+#     entries:
+#     - sequence: 10
+#       description: "*** first stanza ***"
+#       action: permit
+#       set:
+#         ip:
+#           next_hop:
+#             verify_availability:
+#             - address: 3.3.3.3
+#               track: 1
+#             - address: 4.4.4.4
+#               track: 3
+#
+#     - sequence: 20
+#       description: "*** second stanza ***"
+#       action: permit
+#       set:
+#         ip:
+#           next_hop:
+#             address: 6.6.6.6 2.2.2.2
+#             load_share: true
+#             drop_on_fail: true
+#
+#     - sequence: 30
+#       description: "*** third stanza ***"
+#       action: permit
+#       set:
+#         ip:
+#           next_hop:
+#             peer_address: true
+#
+#     - sequence: 40
+#       description: "*** fourth stanza ***"
+#       action: permit
+#       set:
+#         ip:
+#           next_hop:
+#             unchanged: true
+#             redist_unchanged: true
+#
 #  commands:
 #    - no route-map rmap1 permit 10
 #    - route-map rmap1 deny 20
@@ -758,6 +1018,15 @@ EXAMPLES = """
 #    - match ip address prefix-list AllowPrefix1
 #    - no set dampening 30 1500 10000 120
 #    - set community local-AS
+#    - route-map rmap3 permit 10
+#    - no set ip next-hop verify-availability 4.4.4.4 track 3
+#    - route-map rmap3 permit 20
+#    - no set ip next-hop 6.6.6.6 2.2.2.2 load-share drop-on-fail
+#    - set ip next-hop peer-address
+#    - route-map rmap3 permit 30
+#    - no set ip next-hop peer-address
+#    - set ip next-hop 6.6.6.6 2.2.2.2 load-share drop-on-fail
+#    - no route-map rmap3 permit 40
 #
 #  after:
 #    - route_map: rmap1
@@ -819,6 +1088,33 @@ EXAMPLES = """
 #            - 2
 #          sequence: 40
 #
+#    - route_map: rmap3
+#      entries:
+#      - sequence: 10
+#        description: "*** first stanza ***"
+#        action: permit
+#        set:
+#          ip:
+#            next_hop:
+#              verify_availability:
+#              - address: 3.3.3.3
+#                track: 1
+#      - sequence: 20
+#        description: "*** second stanza ***"
+#        action: permit
+#        set:
+#          ip:
+#            next_hop:
+#              peer_address: true
+#      - sequence: 30
+#        description: "*** third stanza ***"
+#        action: permit
+#        set:
+#          ip:
+#            next_hop:
+#              address: 6.6.6.6 2.2.2.2
+#              load_share: true
+#              drop_on_fail: true
 
 # After state:
 # ------------
@@ -840,6 +1136,15 @@ EXAMPLES = """
 #   match route-type level-1 level-2
 #   match tag 2
 #   description rmap2-40-deny
+# route-map rmap3 permit 10
+#   description *** first stanza ***
+#   set ip next-hop verify-availability 3.3.3.3 track 1
+# route-map rmap3 permit 20
+#   description *** second stanza ***
+#   set ip next-hop peer-address
+# route-map rmap3 permit 30
+#   description *** third stanza ***
+#   set ip next-hop 6.6.6.6 2.2.2.2 load-share  drop-on-fail
 
 # Using overridden
 
