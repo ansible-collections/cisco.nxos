@@ -402,6 +402,7 @@ class Cliconf(CliconfBase):
                 out = self._connection.get_prompt()
 
     def _get_command_with_output(self, command, output):
+        output_re = r".+\|\s*json(?:-pretty)?$"
         options_values = self.get_option_values()
         if output not in options_values["output"]:
             raise ValueError(
@@ -409,7 +410,7 @@ class Cliconf(CliconfBase):
                 % (output, ",".join(options_values["output"])),
             )
 
-        if output in ["json", "json-pretty"] and not command.endswith("| json"):
+        if output in ["json", "json-pretty"] and not re.search(output_re, command):
             device_info = self.get_device_info()
             model = device_info.get("network_os_model", "")
             platform = device_info.get("network_os_platform", "")
@@ -417,7 +418,7 @@ class Cliconf(CliconfBase):
                 cmd = "%s | json native" % command
             else:
                 cmd = "%s | %s" % (command, output)
-        elif output == "text" and command.endswith("| json"):
+        elif output == "text" and not re.search(output, command):
             cmd = command.rsplit("|", 1)[0]
         else:
             cmd = command
