@@ -59,6 +59,7 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
                 r"""
                 (vrf\s(?P<vrf>\S+))?
                 \s*neighbor\s(?P<neighbor>\S+)
+                (\sremote-as\s\S+)?
                 \saddress-family
                 \s(?P<afi>\S+)
                 (\s(?P<safi>\S+))?
