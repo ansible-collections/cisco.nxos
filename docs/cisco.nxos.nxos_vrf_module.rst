@@ -413,7 +413,7 @@ Examples
         - {name: ntc1, description: purge test1}
         - {name: ntc2, description: purge test2}
         state: present
-        purge: yes
+        purge: true
 
     - name: Delete VRFs exist on switch
       cisco.nxos.nxos_vrf:
