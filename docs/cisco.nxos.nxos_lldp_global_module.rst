@@ -525,8 +525,8 @@ Examples
           port_id: 1
           reinit: 5
           tlv_select:
-            dcbxp: yes
-            power_management: yes
+            dcbxp: true
+            power_management: true
         state: rendered
 
     # Task Output (redacted)

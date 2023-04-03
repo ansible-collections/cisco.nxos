@@ -78,7 +78,7 @@ options:
 
 EXAMPLES = """
 - name: Install OS on N9k
-  check_mode: no
+  check_mode: false
   cisco.nxos.nxos_install_os:
     system_image_file: nxos.7.0.3.I6.1.bin
     issu: desired
