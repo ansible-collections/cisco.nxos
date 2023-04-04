@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`route_maps` - resolve route-map description parameter idempotency"
