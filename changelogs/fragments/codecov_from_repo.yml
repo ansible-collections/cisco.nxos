@@ -1,3 +1,0 @@
----
-trivial:
-  - Added codecov to run from the ansible-network/github_actions repo and changed workflow file name for concsistency.

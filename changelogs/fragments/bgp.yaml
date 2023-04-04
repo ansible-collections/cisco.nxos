@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "[bgp] Fix parsing remote-as for Nexus 3K (https://github.com/ansible-collections/cisco.nxos/issues/653)."

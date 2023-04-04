@@ -947,3 +947,30 @@ releases:
       - snmp.yaml
       - unused_imports.yaml
     release_date: "2023-02-16"
+  4.2.0:
+    changes:
+      bugfixes:
+        - "`bgp` - Fix parsing remote-as for Nexus 3K (https://github.com/ansible-collections/cisco.nxos/issues/653)."
+        - "`facts` - Attempt to execute json output commands with | json-pretty first
+          and fall back to | json if unsupported. This is a temporary workaround until
+          https://github.com/ansible/pylibssh/issues/208 is fixed."
+        - "`interfaces` - Correctly enable/disable VLAN interfaces (https://github.com/ansible-collections/cisco.nxos/issues/539)."
+        - "`route_maps` - resolve route-map description parameter idempotency"
+        - "`snmp_server` - fix community option to produce proper configuration with
+          ipv4acl and ipv6acl."
+      minor_changes:
+        - "`nxos_route_maps` - add support for 'set ip next-hop <>' command in route-maps"
+        - "`nxos_vxlan_vtep` - add support for 'advertise virtual-rmac' command under
+          nve interface"
+    fragments:
+      - bgp.yaml
+      - bool.yaml
+      - ci_codecov.yml
+      - codecov_from_repo.yml
+      - facts_libssh.yaml
+      - intf_vlans.yaml
+      - nxos_route_maps.yaml
+      - nxos_vxlan_vtep.yaml
+      - route_maps.yaml
+      - snmp_server_issues_fix.yaml
+    release_date: "2023-04-04"

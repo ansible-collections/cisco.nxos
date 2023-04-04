@@ -1,3 +1,0 @@
----
-minor_changes:
-  - "`nxos_route_maps` - add support for 'set ip next-hop <>' command in route-maps"
