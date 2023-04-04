@@ -48,11 +48,11 @@ repos:
         name: Sort import statements using isort
 
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 23.3.0
     hooks:
       - id: black
 
   - repo: https://github.com/ansible-network/collection_prep
-    rev: 1.1.0
+    rev: 1.1.1
     hooks:
       - id: update-docs
