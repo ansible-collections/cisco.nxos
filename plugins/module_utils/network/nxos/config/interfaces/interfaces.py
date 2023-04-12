@@ -35,7 +35,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
-    remove_rsvd_interfaces,
     search_obj_in_list,
 )
 

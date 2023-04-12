@@ -18,8 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-import re
-
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems

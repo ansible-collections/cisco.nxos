@@ -30,9 +30,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    get_interface_type,
     normalize_interface,
-    remove_rsvd_interfaces,
     search_obj_in_list,
 )
 

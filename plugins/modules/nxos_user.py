@@ -132,7 +132,7 @@ options:
       absolute.  It will remove any previously configured usernames on the device
       with the exception of the `admin` user which cannot be deleted per nxos constraints.
     type: bool
-    default: no
+    default: false
   state:
     description:
     - The C(state) argument configures the state of the username definition as it
@@ -155,7 +155,7 @@ EXAMPLES = """
 
 - name: remove all users except admin
   cisco.nxos.nxos_user:
-    purge: yes
+    purge: true
 
 - name: set multiple users role
   cisco.nxos.nxos_user:

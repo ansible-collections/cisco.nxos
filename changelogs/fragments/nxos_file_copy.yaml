@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "`nxos_file_copy` - stop prepending redundant bootflash: to remote file names"

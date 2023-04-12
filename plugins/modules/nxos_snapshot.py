@@ -92,7 +92,7 @@ options:
     description:
     - Specify to locally store a new created snapshot, to be used when C(action=create).
     type: bool
-    default: no
+    default: false
   path:
     description:
     - Specify the path of the file where new created snapshot or snapshots comparison

@@ -26,9 +26,8 @@ from textwrap import dedent
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_neighbor_address_family
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from .nxos_module import TestNxosModule, set_module_args
 
 
 ignore_provider_arg = True
@@ -2680,3 +2679,37 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_nbr_parsed_3K(self):
+        # test parsed for neighbor remote-as 3K config
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    router bgp 65535
+                      neighbor 192.168.20.2 remote-as 56789
+                        address-family ipv4 unicast
+                          soft-reconfiguration inbound always
+                    """,
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = dict(
+            as_number="65535",
+            neighbors=[
+                dict(
+                    neighbor_address="192.168.20.2",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="unicast",
+                            soft_reconfiguration_inbound=dict(always=True),
+                        ),
+                    ],
+                ),
+            ],
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)

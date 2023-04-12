@@ -23,9 +23,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.interfaces.interfaces import (
     InterfacesArgs,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    default_intf_enabled,
-)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     get_interface_type,
 )

@@ -634,6 +634,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
+                (\sremote-as\s(?P<remote_as>\S+))?
                 $""", re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }}",
@@ -643,6 +644,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "neighbors": {
                             "{{ neighbor_address }}": {
                                 "neighbor_address": "{{ neighbor_address }}",
+                                "remote_as": "{{ remote_as }}",
                             },
                         },
                     },

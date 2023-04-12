@@ -304,7 +304,7 @@ Examples
 
     - name: remove all users except admin
       cisco.nxos.nxos_user:
-        purge: yes
+        purge: true
 
     - name: set multiple users role
       cisco.nxos.nxos_user:

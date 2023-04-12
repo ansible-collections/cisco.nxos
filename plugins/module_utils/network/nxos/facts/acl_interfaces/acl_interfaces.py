@@ -24,9 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acl_interfaces.acl_interfaces import (
     Acl_interfacesArgs,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    normalize_interface,
-)
 
 
 class Acl_interfacesFacts(object):

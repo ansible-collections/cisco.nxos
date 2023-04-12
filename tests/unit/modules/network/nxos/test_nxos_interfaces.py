@@ -24,17 +24,10 @@ __metaclass__ = type
 
 from textwrap import dedent
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.interfaces.interfaces import (
-    Interfaces,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.interfaces.interfaces import (
-    InterfacesFacts,
-)
 from ansible_collections.cisco.nxos.plugins.modules import nxos_interfaces
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from .nxos_module import TestNxosModule, set_module_args
 
 
 ignore_provider_arg = True
@@ -740,3 +733,42 @@ class TestNxosInterfacesModule(TestNxosModule):
         set_module_args(playbook, ignore_provider_arg)
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_vlan_enabled(self):
+        sysdefs = dedent(
+            """\
+          !
+          ! Interfaces default to L3 !!
+          !
+          no system default switchport
+          no system default switchport shutdown
+        """,
+        )
+        intf = dedent(
+            """\
+          interface Vlan9
+            no shutdown
+          interface Vlan10
+        """,
+        )
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+        self.get_system_defaults.return_value = sysdefs
+
+        playbook = dict(
+            config=[
+                dict(name="Vlan9", enabled=False),
+                dict(name="Vlan10", enabled=True),
+                dict(name="Vlan11", enabled=True),
+            ],
+        )
+        merged = [
+            "interface Vlan9",
+            "shutdown",
+            "interface Vlan10",
+            "no shutdown",
+            "interface Vlan11",
+            "no shutdown",
+        ]
+        playbook["state"] = "merged"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=merged)

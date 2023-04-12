@@ -26,9 +26,8 @@ from textwrap import dedent
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_global
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from .nxos_module import TestNxosModule, set_module_args
 
 
 ignore_provider_arg = True
@@ -973,3 +972,36 @@ class TestNxosBgpGlobalModule(TestNxosModule):
 
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_global_neighbor_3K(self):
+        run_cfg = dedent(
+            """\
+            router bgp 65535
+              neighbor 192.168.20.2 remote-as 56789
+                address-family ipv4 unicast
+                  soft-reconfiguration inbound always
+            """,
+        )
+        self.get_config.return_value = ""
+        self.cfg_get_config.return_value = ""
+
+        set_module_args(
+            dict(
+                running_config=run_cfg,
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+
+        parsed = {
+            "as_number": "65535",
+            "neighbors": [
+                {
+                    "neighbor_address": "192.168.20.2",
+                    "remote_as": "56789",
+                },
+            ],
+        }
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)
