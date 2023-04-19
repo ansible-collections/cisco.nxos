@@ -974,3 +974,11 @@ releases:
       - route_maps.yaml
       - snmp_server_issues_fix.yaml
     release_date: "2023-04-04"
+  4.3.0:
+    changes:
+      release_summary:
+        Re-releasing v4.2.0 of this collection since the previously
+        build failed to upload in Automation Hub.
+    fragments:
+      - release_430.yaml
+    release_date: "2023-04-05"

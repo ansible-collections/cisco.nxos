@@ -5,6 +5,14 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v4.3.0
+======
+
+Release Summary
+---------------
+
+Re-releasing v4.2.0 of this collection since the previously build failed to upload in Automation Hub.
+
 v4.2.0
 ======
 
