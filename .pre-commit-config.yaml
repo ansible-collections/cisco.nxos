@@ -56,3 +56,4 @@ repos:
     rev: 1.1.1
     hooks:
       - id: update-docs
+      - id: autoversion
