@@ -2679,3 +2679,37 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_nbr_parsed_3K(self):
+        # test parsed for neighbor remote-as 3K config
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    router bgp 65535
+                      neighbor 192.168.20.2 remote-as 56789
+                        address-family ipv4 unicast
+                          soft-reconfiguration inbound always
+                    """,
+                ),
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+        parsed = dict(
+            as_number="65535",
+            neighbors=[
+                dict(
+                    neighbor_address="192.168.20.2",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="unicast",
+                            soft_reconfiguration_inbound=dict(always=True),
+                        ),
+                    ],
+                ),
+            ],
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)

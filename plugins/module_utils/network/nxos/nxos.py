@@ -1009,6 +1009,8 @@ def default_intf_enabled(name="", sysdefs=None, mode=None):
 
     if re.search("port-channel|loopback", name):
         default = True
+    elif re.search("Vlan", name):
+        default = False
     else:
         if mode is None:
             # intf 'switchport' cli is not present so use the user-system-default

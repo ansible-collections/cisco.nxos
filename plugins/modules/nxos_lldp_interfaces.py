@@ -144,7 +144,7 @@ EXAMPLES = """
   cisco.nxos.nxos_lldp_interfaces:
     config:
     - name: Ethernet1/4
-      transmit: no
+      transmit: false
       tlv_set:
         vlan: 2
     state: replaced
@@ -177,7 +177,7 @@ EXAMPLES = """
   cisco.nxos.nxos_lldp_interfaces:
     config:
     - name: Ethernet1/7
-      receive: no
+      receive: false
       tlv_set:
         vlan: 12
     state: overridden
