@@ -972,3 +972,36 @@ class TestNxosBgpGlobalModule(TestNxosModule):
 
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_global_neighbor_3K(self):
+        run_cfg = dedent(
+            """\
+            router bgp 65535
+              neighbor 192.168.20.2 remote-as 56789
+                address-family ipv4 unicast
+                  soft-reconfiguration inbound always
+            """,
+        )
+        self.get_config.return_value = ""
+        self.cfg_get_config.return_value = ""
+
+        set_module_args(
+            dict(
+                running_config=run_cfg,
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+
+        parsed = {
+            "as_number": "65535",
+            "neighbors": [
+                {
+                    "neighbor_address": "192.168.20.2",
+                    "remote_as": "56789",
+                },
+            ],
+        }
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)

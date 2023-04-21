@@ -248,8 +248,8 @@ Examples
       cisco.nxos.nxos_nxapi:
         enable_http: false
         https_port: 9443
-        https: yes
-        enable_sandbox: no
+        https: true
+        enable_sandbox: false
 
     - name: remove NXAPI configuration
       cisco.nxos.nxos_nxapi:
