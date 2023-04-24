@@ -285,7 +285,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Enables/disables ip redirects</div>
+                        <div>Enables/disables ip redirects.</div>
                 </td>
             </tr>
 
