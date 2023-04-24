@@ -130,6 +130,7 @@ EXAMPLES = """
 
 # Before state:
 # -------------
+#
 # switch# show running-config | section interface
 # interface Ethernet1/1
 #   description testing
@@ -151,6 +152,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 # - description: testing
 #   name: Ethernet1/1
@@ -173,6 +175,7 @@ EXAMPLES = """
 
 # After state:
 # ------------
+#
 # switch# show running-config | section interface
 # interface Ethernet1/1
 #   description Configured by Ansible
@@ -189,6 +192,7 @@ EXAMPLES = """
 
 # Before state:
 # -------------
+#
 # switch# show running-config | section interface
 # interface Ethernet1/1
 #   description Updated by Ansible
@@ -215,6 +219,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 # - description: Updated by Ansible
 #   name: Ethernet1/1
@@ -239,6 +244,7 @@ EXAMPLES = """
 
 # After state:
 # ------------
+#
 # switch# show running-config | section interface
 # interface Ethernet1/1
 #   description Updated by Ansible
@@ -254,6 +260,7 @@ EXAMPLES = """
 
 # Before state:
 # -------------
+#
 # switch# show running-config | section interface
 # interface Ethernet1/1
 #   description Updated by Ansible
@@ -279,6 +286,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 # - description: Updated by Ansible
 #   name: Ethernet1/1
@@ -302,6 +310,7 @@ EXAMPLES = """
 
 # After state:
 # ------------
+#
 # switch# show running-config | section interface
 # interface Ethernet1/1
 # interface Ethernet1/2
@@ -316,6 +325,7 @@ EXAMPLES = """
 
 # Before state:
 # -------------
+#
 # switch# show running-config | section interface
 # interface Ethernet1/1
 # interface Ethernet1/2
@@ -334,6 +344,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 # - name: Ethernet1/1
 # - description: Configured by Ansible Network
@@ -353,6 +364,7 @@ EXAMPLES = """
 
 # After state:
 # ------------
+#
 # switch# show running-config | section interface
 # interface Ethernet1/1
 # interface Ethernet1/2
@@ -378,6 +390,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # rendered:
 #   - "interface Ethernet1/1"
 #   - "description outbound-intf"
@@ -391,6 +404,7 @@ EXAMPLES = """
 
 # parsed.cfg
 # ------------
+#
 # interface Ethernet1/800
 #   description test-1
 #   speed 1000
@@ -410,6 +424,7 @@ EXAMPLES = """
 
 # Task output
 # -----------
+#
 #  parsed:
 #    - description: "test-1"
 #      duplex: "half"
@@ -427,6 +442,7 @@ EXAMPLES = """
 
 # Before state:
 # -------------
+#
 # switch# show running-config | section interface
 # interface Ethernet1/1
 #   description outbound-intf
@@ -445,6 +461,7 @@ EXAMPLES = """
 
 # Task output
 # -----------
+#
 # - name: Ethernet1/1
 #   description: outbound-intf
 #   mode: layer2
@@ -457,6 +474,7 @@ EXAMPLES = """
 
 # Before state:
 # -------------
+#
 # switch# show running-config | section interface
 # interface Vlan1
 # interface Vlan42
@@ -478,6 +496,7 @@ EXAMPLES = """
 
 # Task output
 # ------------
+#
 # before:
 #   - name: Vlan1
 #   - mtu: '1800'
@@ -500,6 +519,7 @@ EXAMPLES = """
 
 # After state:
 # -------------
+#
 # switch# show running-config | section interface
 # interface Vlan1
 # interface port-channel11
