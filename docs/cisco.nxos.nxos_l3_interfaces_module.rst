@@ -561,15 +561,15 @@ Examples
     #   ip address dhcp
     #   vrf member management
 
-    - name: Override device configuration of all L3 interfaces on device with provided
-        configuration.
+    - name: Override device configuration with provided configuration.
       cisco.nxos.nxos_l3_interfaces:
         config:
         - ipv4:
           - address: dhcp
           name: mgmt0
         - name: Ethernet1/6
-          ipv4: 192.168.22.3/4
+          ipv4:
+          - address: 192.168.22.3/24
         state: overridden
 
     # Task Output

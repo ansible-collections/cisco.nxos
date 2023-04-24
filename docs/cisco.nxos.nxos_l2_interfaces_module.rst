@@ -240,7 +240,7 @@ Examples
     # Before state:
     # -------------
     #
-    switch# show running-config | section interface
+    # switch# show running-config | section interface
     # interface Ethernet1/1
     # interface Ethernet1/2
     #   switchport trunk native vlan 20
@@ -248,7 +248,7 @@ Examples
     #   ip address dhcp
     #   ipv6 address auto-config
 
-    - name: Merge provided configuration with device configuration.
+    - name: Merge provided configuration with device configuration
       cisco.nxos.nxos_l2_interfaces:
         config:
         - name: Ethernet1/1
