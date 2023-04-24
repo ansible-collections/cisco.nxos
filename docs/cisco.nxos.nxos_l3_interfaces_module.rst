@@ -354,7 +354,19 @@ Examples
     # Before state:
     # -------------
     #
+    # router# show running-config | section interface
     # interface Ethernet1/6
+    #   description Configured by Ansible Network
+    #   no switchport
+    #   no shutdown
+    # interface Ethernet1/7
+    #   description Configured by Ansible
+    #   no switchport
+    #   no shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
 
     - name: Merge provided configuration with device configuration.
       cisco.nxos.nxos_l3_interfaces:
@@ -370,23 +382,65 @@ Examples
           - address: fd5d:12c9:2201:2::1/64
             tag: 6
         - name: Ethernet1/7.42
-          dot1q: 42
           redirects: false
           unreachables: false
         state: merged
 
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - name: Ethernet1/6
+    # - name: Ethernet1/7
+    # - ipv4:
+    #   - address: dhcp
+    #   name: mgmt0
+    # commands:
+    # - interface Ethernet1/6
+    # - ip address 192.168.1.1/24 tag 5
+    # - ip address 10.1.1.1/24 secondary tag 10
+    # - ipv6 address fd5d:12c9:2201:2::1/64 tag 6
+    # - interface Ethernet1/7
+    # - no ip redirects
+    # after:
+    # - ipv4:
+    #   - address: 192.168.1.1/24
+    #     tag: 5
+    #   - address: 10.1.1.1/24
+    #     secondary: true
+    #     tag: 10
+    #   ipv6:
+    #   - address: fd5d:12c9:2201:2::1/64
+    #     tag: 6
+    #   name: Ethernet1/6
+    #   redirects: false
+    # - name: Ethernet1/7
+    #   redirects: false
+    # - ipv4:
+    #   - address: dhcp
+    #   name: mgmt0
+
     # After state:
     # ------------
     #
+    # router# show running-config | section interface
     # interface Ethernet1/6
-    #   ip address 192.168.22.1/24 tag 5
-    #   ip address 10.1.1.1/24 secondary tag 10
-    # interface Ethernet1/6
-    #   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
-    # interface Ethernet1/7.42
-    #   encapsulation dot1q 42
+    #   description Configured by Ansible Network
+    #   no switchport
     #   no ip redirects
-    #   no ip unreachables
+    #   ip address 192.168.1.1/24 tag 5
+    #   ip address 10.1.1.1/24 secondary tag 10
+    #   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
+    #   no shutdown
+    # interface Ethernet1/7
+    #   description Configured by Ansible
+    #   no switchport
+    #   no ip redirects
+    #   no shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
 
 
     # Using replaced
@@ -394,9 +448,24 @@ Examples
     # Before state:
     # -------------
     #
+    # router# show running-config | section interface
     # interface Ethernet1/6
-    #   ip address 192.168.22.1/24
-    #   ipv6 address "fd5d:12c9:2201:1::1/64"
+    #   description Configured by Ansible Network
+    #   no switchport
+    #   no ip redirects
+    #   ip address 192.168.1.1/24 tag 5
+    #   ip address 10.1.1.1/24 secondary tag 10
+    #   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
+    #   no shutdown
+    # interface Ethernet1/7
+    #   description Configured by Ansible
+    #   no switchport
+    #   no ip redirects
+    #   no shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
 
     - name: Replace device configuration of specified L3 interfaces with provided configuration.
       cisco.nxos.nxos_l3_interfaces:
@@ -406,47 +475,184 @@ Examples
             - address: 192.168.22.3/24
         state: replaced
 
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - ipv4:
+    #   - address: 192.168.1.1/24
+    #     tag: 5
+    #   - address: 10.1.1.1/24
+    #     secondary: true
+    #     tag: 10
+    #   ipv6:
+    #   - address: fd5d:12c9:2201:2::1/64
+    #     tag: 6
+    #   name: Ethernet1/6
+    #   redirects: false
+    # - name: Ethernet1/7
+    #   redirects: false
+    # - ipv4:
+    #   - address: dhcp
+    #   name: mgmt0
+    # commands:
+    # - interface Ethernet1/6
+    # - ip address 192.168.22.3/24
+    # - no ipv6 address fd5d:12c9:2201:2::1/64
+    # - ip redirects
+    # after:
+    # - ipv4:
+    #   - address: 192.168.22.3/24
+    #   - address: 10.1.1.1/24
+    #     secondary: true
+    #     tag: 10
+    #   name: Ethernet1/6
+    #   redirects: false
+    # - name: Ethernet1/7
+    #   redirects: false
+    # - ipv4:
+    #   - address: dhcp
+    #   name: mgmt0
+
     # After state:
     # ------------
     #
+    # router# show running-config | section interface
     # interface Ethernet1/6
+    #   description Configured by Ansible Network
+    #   no switchport
+    #   no ip redirects
     #   ip address 192.168.22.3/24
-
+    #   ip address 10.1.1.1/24 secondary tag 10
+    #   no shutdown
+    # interface Ethernet1/7
+    #   description Configured by Ansible
+    #   no switchport
+    #   no ip redirects
+    #   no shutdown
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
 
     # Using overridden
 
     # Before state:
     # -------------
     #
-    # interface Ethernet1/2
-    #   ip address 192.168.22.1/24
+    # router# show running-config | section interface
     # interface Ethernet1/6
-    #   ipv6 address "fd5d:12c9:2201:1::1/64"
+    #   description Configured by Ansible Network
+    #   no switchport
+    #   no ip redirects
+    #   ip address 192.168.1.1/24 tag 5
+    #   ip address 10.1.1.1/24 secondary tag 10
+    #   ipv6 address fd5d:12c9:2201:2::1/64 tag 6
+    #   no shutdown
+    # interface Ethernet1/7
+    #   description Configured by Ansible
+    #   no switchport
+    #   no ip redirects
+    #   no shutdown
+    # interface Ethernet1/7.42
+    #   no ip redirects
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
 
     - name: Override device configuration of all L3 interfaces on device with provided
         configuration.
       cisco.nxos.nxos_l3_interfaces:
         config:
-        - name: Ethernet1/2
+        - ipv4:
+          - address: dhcp
+          name: mgmt0
+        - name: Ethernet1/6
           ipv4: 192.168.22.3/4
         state: overridden
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - ipv4:
+    #   - address: 192.168.1.1/24
+    #     tag: 5
+    #   - address: 10.1.1.1/24
+    #     secondary: true
+    #     tag: 10
+    #   ipv6:
+    #   - address: fd5d:12c9:2201:2::1/64
+    #     tag: 6
+    #   name: Ethernet1/6
+    #   redirects: false
+    # - name: Ethernet1/7
+    #   redirects: false
+    # - name: Ethernet1/7.42
+    #   redirects: false
+    # - ipv4:
+    #   - address: dhcp
+    #   name: mgmt0
+    # commands:
+    # - interface Ethernet1/6
+    # - no ipv6 address fd5d:12c9:2201:2::1/64
+    # - no ip address 10.1.1.1/24 secondary
+    # - ip address 192.168.22.3/24
+    # - ip redirects
+    # - interface Ethernet1/7
+    # - ip redirects
+    # - interface Ethernet1/7.42
+    # - ip redirects
+    # after:
+    # - ipv4:
+    #   - address: 192.168.22.3/24
+    #   name: Ethernet1/6
+    # - name: Ethernet1/7
+    # - name: Ethernet1/7.42
+    # - ipv4:
+    #   - address: dhcp
+    #   name: mgmt0
 
     # After state:
     # ------------
     #
-    # interface Ethernet1/2
-    #   ipv4 address 192.168.22.3/24
+    # router# show running-config | section interface
     # interface Ethernet1/6
+    #   description Configured by Ansible Network
+    #   no switchport
+    #   ip address 192.168.22.3/24
+    #   no shutdown
+    # interface Ethernet1/7
+    #   description Configured by Ansible
+    #   no switchport
+    #   no shutdown
+    # interface Ethernet1/7.42
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
 
     # Using deleted
 
     # Before state:
     # -------------
     #
+    # router# show running-config | section interface
     # interface Ethernet1/6
-    #   ip address 192.168.22.1/24
-    # interface Ethernet1/2
-    #   ipv6 address "fd5d:12c9:2201:1::1/64"
+    #   description Configured by Ansible Network
+    #   no switchport
+    #   ip address 192.168.22.3/24
+    #   no shutdown
+    # interface Ethernet1/7
+    #   description Configured by Ansible
+    #   no switchport
+    #   no shutdown
+    # interface Ethernet1/7.42
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
 
     - name: Delete L3 attributes of given interfaces (This won't delete the interface
         itself).
@@ -456,11 +662,47 @@ Examples
         - name: Ethernet1/2
         state: deleted
 
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - name: Ethernet1/2
+    # - ipv4:
+    #   - address: 192.168.22.3/24
+    #   name: Ethernet1/6
+    # - name: Ethernet1/7
+    # - name: Ethernet1/7.42
+    # - ipv4:
+    #   - address: dhcp
+    #   name: mgmt0
+    # commands:
+    # - interface Ethernet1/6
+    # - no ip address
+    # after:
+    # - name: Ethernet1/2
+    # - name: Ethernet1/7
+    # - name: Ethernet1/7.42
+    # - ipv4:
+    #   - address: dhcp
+    #   name: mgmt0
+
     # After state:
     # ------------
     #
+    # router# show running-config | section interface
     # interface Ethernet1/6
-    # interface Ethernet1/2
+    #   description Configured by Ansible Network
+    #   no switchport
+    #   no shutdown
+    # interface Ethernet1/7
+    #   description Configured by Ansible
+    #   no switchport
+    #   no shutdown
+    # interface Ethernet1/7.42
+    # interface mgmt0
+    #   description mgmt interface
+    #   ip address dhcp
+    #   vrf member management
 
     # Using rendered
 
@@ -480,20 +722,21 @@ Examples
             tag: 6
         state: rendered
 
-    # Task Output (redacted)
-    # -----------------------
-
+    # Task Output
+    # -----------
+    #
     # rendered:
-    #   - "interface Ethernet1/800"
-    #   - "ip address 192.168.1.100/24 tag 5"
-    #   - "ip address 10.1.1.1/24 secondary tag 10"
-    #   - "interface Ethernet1/800"
-    #   - "ipv6 address fd5d:12c9:2201:2::1/64 tag 6"
+    #   - interface Ethernet1/800
+    #   - ip address 192.168.1.100/24 tag 5
+    #   - ip address 10.1.1.1/24 secondary tag 10
+    #   - interface Ethernet1/800
+    #   - ipv6 address fd5d:12c9:2201:2::1/64 tag 6
 
     # Using parsed
 
     # parsed.cfg
-    # ------------
+    # ----------
+    #
     # interface Ethernet1/800
     #   ip address 192.168.1.100/24 tag 5
     #   ip address 10.1.1.1/24 secondary tag 10
@@ -510,9 +753,9 @@ Examples
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed
 
-    # Task output (redacted)
-    # -----------------------
-
+    # Task output
+    # -----------
+    #
     # parsed:
     #   - name: Ethernet1/800
     #     ipv4:
@@ -530,8 +773,9 @@ Examples
 
     # Using gathered
 
-    # Existing device config state
-    # -------------------------------
+    # Before state:
+    # -------------
+    #
     # interface Ethernet1/1
     #   ip address 192.0.2.100/24
     # interface Ethernet1/2
@@ -544,9 +788,9 @@ Examples
       cisco.nxos.nxos_l3_interfaces:
         state: gathered
 
-    # Task output (redacted)
-    # -----------------------
-
+    # Task output
+    # -----------
+    #
     # gathered:
     #   - name: Ethernet1/1
     #     ipv4:
