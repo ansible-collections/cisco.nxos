@@ -111,15 +111,15 @@ options:
     - rendered
     - parsed
     default: merged
-
 """
+
 EXAMPLES = """
 # Using merged
 
 # Before state:
 # -------------
 #
-switch# show running-config | section interface
+# switch# show running-config | section interface
 # interface Ethernet1/1
 # interface Ethernet1/2
 #   switchport trunk native vlan 20
@@ -127,7 +127,7 @@ switch# show running-config | section interface
 #   ip address dhcp
 #   ipv6 address auto-config
 
-- name: Merge provided configuration with device configuration.
+- name: Merge provided configuration with device configuration
   cisco.nxos.nxos_l2_interfaces:
     config:
     - name: Ethernet1/1
@@ -446,6 +446,7 @@ switch# show running-config | section interface
 #    trunk:
 #      native_vlan: 10
 """
+
 RETURN = """
 before:
   description: The configuration as structured data prior to module invocation.
