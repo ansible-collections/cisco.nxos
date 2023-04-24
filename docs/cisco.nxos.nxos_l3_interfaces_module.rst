@@ -438,7 +438,6 @@ Examples
     #   ipv4 address 192.168.22.3/24
     # interface Ethernet1/6
 
-
     # Using deleted
 
     # Before state:

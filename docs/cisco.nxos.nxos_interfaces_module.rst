@@ -339,7 +339,6 @@ Examples
     #   ip address dhcp
     #   vrf member management
 
-
     # Using replaced
 
     # Before state:
