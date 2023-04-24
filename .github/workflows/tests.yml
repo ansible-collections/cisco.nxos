@@ -30,7 +30,7 @@ jobs:
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
   all_green:
-    if: ${{ always() }}
+    if: ${{ always() && (github.event_name != 'schedule') }}
     needs:
       - ansible-lint
       - changelog
