@@ -107,7 +107,7 @@ options:
         type: bool
       unreachables:
         description:
-        - Enables/disables ip redirects
+        - Enables/disables ip redirects.
         type: bool
       evpn_multisite_tracking:
         description:

@@ -67,8 +67,8 @@ options:
         type: str
       enabled:
         description:
-        - Administrative state of the interface. Set the value to C(true) to administratively
-          enable the interface or C(false) to disable it
+        - Administrative state of the interface. Set the value to C(true) to
+          administratively enable the interface or C(false) to disable it
         type: bool
       speed:
         description:
