@@ -162,6 +162,47 @@ class Hardware(FactsBase):
                 self.facts["memtotal_mb"] = self.parse_memtotal_mb(data)
                 self.facts["memfree_mb"] = self.parse_memfree_mb(data)
 
+        data = None
+        data = self.run("show processes cpu | include CPU")
+
+        if data:
+            self.facts["cpu_utilization"] = self.parse_cpu_utilization(data)
+
+    def parse_cpu_utilization(self, data):
+        facts = dict()
+        match_nomral_nm, match_nomral = "", ""
+        match_core = ""
+        for line in data.split("\n"):
+            _temp = ""
+            match_nomral_nm = re.match(
+                r"^CPU\sutilization\sfor\sfive\sseconds:\s(?P<f_se_nom>\d+)%/(?P<f_s_denom>\d+)%\)?;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?%",
+                line,
+            )
+            match_core = re.match(
+                r"^Core\s(?P<core>\d+)?:\sCPU\sutilization\sfor\sfive\sseconds:\s(?P<f_s_denom>\d+)?%;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?",
+                line,
+            )
+            match_nomral = re.match(
+                r"^CPU\sutilization\sfor\sfive\sseconds:\s(?P<f_s_denom>\d+)?%;\sone\sminute:\s(?P<a_min>\d+)?%;\sfive\sminutes:\s(?P<f_min>\d+)?%",
+                line,
+            )
+
+            if match_nomral_nm or match_nomral:
+                _temp = match_nomral_nm if match_nomral_nm else match_nomral
+                facts["core"] = {}
+                if match_nomral_nm:
+                    facts["core"]["mic_seconds"] = int(_temp.group("f_se_nom"))
+                facts["core"]["five_seconds"] = int(_temp.group("f_s_denom"))
+                facts["core"]["one_minute"] = int(_temp.group("a_min"))
+                facts["core"]["five_minutes"] = int(_temp.group("f_min"))
+            if match_core:
+                _core = "core_" + str(match_core.group("core"))
+                facts[_core] = {}
+                facts[_core]["five_seconds"] = int(match_core.group("f_s_denom"))
+                facts[_core]["one_minute"] = int(match_core.group("a_min"))
+                facts[_core]["five_minutes"] = int(match_core.group("f_min"))
+        return facts
+
     def parse_filesystems(self, data):
         return re.findall(r"^Usage for (\S+)//", data, re.M)
 
