@@ -169,7 +169,7 @@ class Hardware(FactsBase):
             self.facts["cpu_utilization"] = self.parse_cpu_utilization(data)
 
     def parse_cpu_utilization(self, data):
-        facts = dict()
+        facts = {}
         match_nomral_nm, match_nomral = "", ""
         match_core = ""
         for line in data.split("\n"):
