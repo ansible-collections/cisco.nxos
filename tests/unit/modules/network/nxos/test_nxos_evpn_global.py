@@ -33,7 +33,7 @@ class TestNxosEvpnGlobalModule(TestNxosModule):
     module = nxos_evpn_global
 
     def setUp(self):
-        super(TestNxosEvpnGlobalModule, self).setUp()
+        super().setUp()
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_global.get_config",
         )
@@ -51,7 +51,7 @@ class TestNxosEvpnGlobalModule(TestNxosModule):
         self.get_capabilities.return_value = {"network_api": "cliconf"}
 
     def tearDown(self):
-        super(TestNxosEvpnGlobalModule, self).tearDown()
+        super().tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_get_capabilities.stop()
@@ -68,11 +68,11 @@ class TestNxosEvpnGlobalModule(TestNxosModule):
         return self.execute_module(*args, **kwargs)
 
     def test_nxos_evpn_global_enable(self):
-        set_module_args(dict(nv_overlay_evpn=True))
+        set_module_args({"nv_overlay_evpn": True})
         commands = ["nv overlay evpn"]
         self.start_unconfigured(changed=True, commands=commands)
 
     def test_nxos_evpn_global_disable(self):
-        set_module_args(dict(nv_overlay_evpn=False))
+        set_module_args({"nv_overlay_evpn": False})
         commands = ["no nv overlay evpn"]
         self.start_configured(changed=True, commands=commands)

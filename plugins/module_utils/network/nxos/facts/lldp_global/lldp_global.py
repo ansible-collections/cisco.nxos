@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -19,24 +18,20 @@ import re
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lldp_global.lldp_global import (
     Lldp_globalArgs,
 )
 
 
-class Lldp_globalFacts(object):
-    """The nxos lldp_global fact class"""
+class Lldp_globalFacts:
+    """The nxos lldp_global fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Lldp_globalArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -48,9 +43,8 @@ class Lldp_globalFacts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
-
         if not data:
             data = connection.get("show running-config | include lldp")
 
@@ -62,13 +56,13 @@ class Lldp_globalFacts(object):
             params = utils.validate_config(self.argument_spec, {"config": objs})
             facts["lldp_global"] = params["config"]
             facts = utils.remove_empties(facts)
-        ansible_facts["ansible_network_resources"].update((facts))
+        ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts
 
     def render_config(self, spec, conf):
         """
         Render config as dictionary structure and delete keys
-          from spec for null values
+          from spec for null values.
 
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration
@@ -94,13 +88,10 @@ class Lldp_globalFacts(object):
                     if len(key2) == 1:
                         if "port" in key2[0] or "system" in key2[0]:  # nested dicts
                             key2 = key2[0].split("_")
-                            # config[tlv_select][system][name]=False
                             config[key1][key2[0]][key2[1]] = False
                         else:
-                            # config[tlv_select][dcbxp]=False
                             config[key1][key2[0]] = False
                     else:
-                        # config[tlv_select][management_address][v6]=False
                         config[key1][key2[0]][key2[1]] = False
                 else:
                     config[key1] = key2  # config[reinit]=4

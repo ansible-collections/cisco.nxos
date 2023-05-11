@@ -75,7 +75,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -111,14 +110,14 @@ def get_snmp_contact(module):
 
 
 def main():
-    argument_spec = dict(
-        contact=dict(required=True, type="str"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "contact": {"required": True, "type": "str"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     contact = module.params["contact"]
@@ -130,9 +129,8 @@ def main():
     if state == "absent":
         if existing and existing["contact"] == contact:
             commands.append("no snmp-server contact")
-    elif state == "present":
-        if not existing or existing["contact"] != contact:
-            commands.append("snmp-server contact {0}".format(contact))
+    elif state == "present" and (not existing or existing["contact"] != contact):
+        commands.append(f"snmp-server contact {contact}")
 
     cmds = flatten_list(commands)
     if cmds:

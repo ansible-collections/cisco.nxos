@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_global import (
     Bgp_globalTemplate,
@@ -33,12 +31,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Bgp_global(ResourceModule):
-    """
-    The nxos_bgp_global config class
-    """
+    """The nxos_bgp_global config class."""
 
-    def __init__(self, module):
-        super(Bgp_global, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -97,7 +93,7 @@ class Bgp_global(ResourceModule):
         self._af_data = {}
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -170,7 +166,7 @@ class Bgp_global(ResourceModule):
             )
 
     def _compare_confederation_peers(self, want, have):
-        """Custom handling of confederation.peers option
+        """Custom handling of confederation.peers option.
 
         :params want: the want BGP dictionary
         :params have: the have BGP dictionary
@@ -190,7 +186,7 @@ class Bgp_global(ResourceModule):
                 self.addcmd(want, "confederation.peers", False)
 
     def _compare_neighbors(self, want, have, vrf=None):
-        """Custom handling of neighbors option
+        """Custom handling of neighbors option.
 
         :params want: the want BGP dictionary
         :params have: the have BGP dictionary
@@ -267,11 +263,11 @@ class Bgp_global(ResourceModule):
                 self.addcmd(wentry, "path_attribute", False)
 
         # remove remaining items in have for replaced
-        for hkey, hentry in iteritems(h_p_attr):
+        for _hkey, hentry in iteritems(h_p_attr):
             self.addcmd(hentry, "path_attribute", True)
 
     def _vrfs_compare(self, want, have):
-        """Custom handling of VRFs option
+        """Custom handling of VRFs option.
 
         :params want: the want BGP dictionary
         :params have: the have BGP dictionary
@@ -304,11 +300,11 @@ class Bgp_global(ResourceModule):
             """Build primary key for path_attribute
                option.
             :params x: path_attribute dictionary
-            :returns: primary key as tuple
+            :returns: primary key as tuple.
             """
-            key_1 = "start_{0}".format(x.get("range", {}).get("start", ""))
-            key_2 = "end_{0}".format(x.get("range", {}).get("end", ""))
-            key_3 = "type_{0}".format(x.get("type", ""))
+            key_1 = "start_{}".format(x.get("range", {}).get("start", ""))
+            key_2 = "end_{}".format(x.get("range", {}).get("end", ""))
+            key_3 = "type_{}".format(x.get("type", ""))
             key_4 = x["action"]
 
             return (key_1, key_2, key_3, key_4)
@@ -345,7 +341,7 @@ class Bgp_global(ResourceModule):
                      'nbrs': set()
                  }
              }
-         }
+         }.
         """
         data = self._get_config().split("\n")
         cur_nbr = None

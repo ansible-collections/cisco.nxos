@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,7 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 def _tmplt_confederation_peers(proc):
     cmd = "confederation peers"
     for peer in proc.get("confederation", {})["peers"]:
-        cmd += " {0}".format(peer)
+        cmd += f" {peer}"
     return cmd
 
 
@@ -54,11 +53,12 @@ def _tmplt_bfd(proc):
 
     if cmd:
         return cmd
+    return None
 
 
 class Bgp_globalTemplate(NetworkTemplate):
-    def __init__(self, lines=None, module=None):
-        super(Bgp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+    def __init__(self, lines=None, module=None) -> None:
+        super().__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [

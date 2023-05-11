@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -21,9 +20,7 @@
 #   builder template.
 #
 #############################################
-"""
-The module file for nxos_acls
-"""
+"""The module file for nxos_acls."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -892,7 +889,6 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acls.acls import (
     AclsArgs,
 )
@@ -901,7 +897,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acl
 
 def main():
     """
-    Main entry point for module execution
+    Main entry point for module execution.
 
     :returns: the result form module invocation
     """

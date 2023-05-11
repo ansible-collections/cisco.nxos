@@ -110,7 +110,6 @@ changed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -177,28 +176,25 @@ def get_udld_global(module):
     udld_table = run_commands(module, [command])[0]
 
     status = str(udld_table.get("udld-global-mode", None))
-    if status == "enabled-aggressive":
-        aggressive = "enabled"
-    else:
-        aggressive = "disabled"
+    aggressive = "enabled" if status == "enabled-aggressive" else "disabled"
 
     interval = str(udld_table.get("message-interval", None))
-    udld = dict(msg_time=interval, aggressive=aggressive)
+    udld = {"msg_time": interval, "aggressive": aggressive}
 
     return udld
 
 
 def main():
-    argument_spec = dict(
-        aggressive=dict(required=False, choices=["enabled", "disabled"]),
-        msg_time=dict(required=False, type="str"),
-        reset=dict(required=False, type="bool"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "aggressive": {"required": False, "choices": ["enabled", "disabled"]},
+        "msg_time": {"required": False, "type": "str"},
+        "reset": {"required": False, "type": "bool"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     aggressive = module.params["aggressive"]
     msg_time = module.params["msg_time"]
@@ -208,8 +204,8 @@ def main():
     if reset and state == "absent":
         module.fail_json(msg="state must be present when using reset flag.")
 
-    args = dict(aggressive=aggressive, msg_time=msg_time, reset=reset)
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    args = {"aggressive": aggressive, "msg_time": msg_time, "reset": reset}
+    proposed = {k: v for k, v in args.items() if v is not None}
 
     existing = get_udld_global(module)
     end_state = existing

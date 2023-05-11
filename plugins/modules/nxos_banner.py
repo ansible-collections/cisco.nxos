@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
 
@@ -99,7 +98,6 @@ import re
 
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -114,7 +112,7 @@ def execute_show_command(module, command):
 
 
 def map_obj_to_commands(want, have, module):
-    commands = list()
+    commands = []
     state = module.params["state"]
     platform_regex = "Nexus.*Switch"
 
@@ -126,7 +124,7 @@ def map_obj_to_commands(want, have, module):
             commands.append("no banner %s" % module.params["banner"])
 
     elif state == "present" and want.get("text") != have.get("text"):
-        banner_cmd = "banner %s @\n%s\n@" % (
+        banner_cmd = "banner {} @\n{}\n@".format(
             module.params["banner"],
             want["text"],
         )
@@ -147,16 +145,10 @@ def map_config_to_obj(module):
 
     if isinstance(output, dict):
         output = list(output.values())
-        if output != []:
-            output = output[0]
-        else:
-            output = ""
+        output = output[0] if output != [] else ""
         if isinstance(output, dict):
             output = list(output.values())
-            if output != []:
-                output = output[0]
-            else:
-                output = ""
+            output = output[0] if output != [] else ""
     else:
         output = output.rstrip()
 
@@ -177,12 +169,12 @@ def map_params_to_obj(module):
 
 
 def main():
-    """main entry point for module execution"""
-    argument_spec = dict(
-        banner=dict(required=True, choices=["exec", "motd"]),
-        text=dict(),
-        state=dict(default="present", choices=["present", "absent"]),
-    )
+    """Main entry point for module execution."""
+    argument_spec = {
+        "banner": {"required": True, "choices": ["exec", "motd"]},
+        "text": {},
+        "state": {"default": "present", "choices": ["present", "absent"]},
+    }
 
     required_if = [("state", "present", ("text",))]
 
@@ -192,7 +184,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
 
     result = {"changed": False}
     if warnings:
@@ -208,10 +200,7 @@ def main():
             if msgs:
                 for item in msgs:
                     if item:
-                        if isinstance(item, dict):
-                            err_str = item["clierror"]
-                        else:
-                            err_str = item
+                        err_str = item["clierror"] if isinstance(item, dict) else item
                         if "more than 40 lines" in err_str or "buffer overflowed" in err_str:
                             load_config(module, commands)
 

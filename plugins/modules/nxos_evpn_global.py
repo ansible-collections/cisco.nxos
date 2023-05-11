@@ -55,7 +55,6 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     get_config,
@@ -64,18 +63,18 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 
 
 def main():
-    argument_spec = dict(nv_overlay_evpn=dict(required=True, type="bool"))
+    argument_spec = {"nv_overlay_evpn": {"required": True, "type": "bool"}}
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     result = {"changed": False}
 
-    warnings = list()
+    warnings = []
     if warnings:
         result["warnings"] = warnings
 
     config = get_config(module)
-    commands = list()
+    commands = []
 
     info = get_capabilities(module).get("device_info", {})
     os_platform = info.get("network_os_platform", "")

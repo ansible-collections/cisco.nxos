@@ -192,7 +192,6 @@ changed:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_interface_type,
     load_config,
@@ -210,7 +209,7 @@ def execute_show_command(command, module, command_type="cli_show"):
 
 
 def get_interface_mode(interface, intf_type, module):
-    command = "show interface {0}".format(interface)
+    command = f"show interface {interface}"
     interface = {}
     mode = "unknown"
 
@@ -249,7 +248,7 @@ def flatten_list(command_lists):
 
 
 def get_igmp_interface(module, interface):
-    command = "show ip igmp interface {0}".format(interface)
+    command = f"show ip igmp interface {interface}"
     igmp = {}
 
     key_map = {
@@ -287,7 +286,7 @@ def get_igmp_interface(module, interface):
     # the  next block of code is used to retrieve anything with:
     # ip igmp static-oif *** i.e.. could be route-map ROUTEMAP
     # or PREFIX source <ip>, etc.
-    command = "show run interface {0} | inc oif".format(interface)
+    command = f"show run interface {interface} | inc oif"
 
     body = execute_show_command(command, module, command_type="cli_show_ascii")[0]
 
@@ -371,7 +370,7 @@ def config_igmp_interface(delta, existing, existing_oif_prefix_source):
                     # add new prefix/sources
                     pf = each["prefix"]
                     src = ""
-                    if "source" in each.keys():
+                    if "source" in each:
                         src = each["source"]
                     if src:
                         commands.append(CMDS.get("oif_prefix_source").format(pf, src))
@@ -382,7 +381,7 @@ def config_igmp_interface(delta, existing, existing_oif_prefix_source):
                     # remove stale prefix/sources
                     pf = each["prefix"]
                     src = ""
-                    if "source" in each.keys():
+                    if "source" in each:
                         src = each["source"]
                     if src:
                         commands.append("no " + CMDS.get("oif_prefix_source").format(pf, src))
@@ -401,11 +400,10 @@ def config_igmp_interface(delta, existing, existing_oif_prefix_source):
             else:
                 command = CMDS.get(key).format(value)
         elif not value:
-            command = "no {0}".format(CMDS.get(key).format(value))
+            command = f"no {CMDS.get(key).format(value)}"
 
-        if command:
-            if command not in commands:
-                commands.append(command)
+        if command and command not in commands:
+            commands.append(command)
         command = None
 
     return commands
@@ -425,22 +423,22 @@ def get_igmp_interface_defaults():
     report_llg = False
     immediate_leave = False
 
-    args = dict(
-        version=version,
-        startup_query_interval=startup_query_interval,
-        startup_query_count=startup_query_count,
-        robustness=robustness,
-        querier_timeout=querier_timeout,
-        query_mrt=query_mrt,
-        query_interval=query_interval,
-        last_member_qrt=last_member_qrt,
-        last_member_query_count=last_member_query_count,
-        group_timeout=group_timeout,
-        report_llg=report_llg,
-        immediate_leave=immediate_leave,
-    )
+    args = {
+        "version": version,
+        "startup_query_interval": startup_query_interval,
+        "startup_query_count": startup_query_count,
+        "robustness": robustness,
+        "querier_timeout": querier_timeout,
+        "query_mrt": query_mrt,
+        "query_interval": query_interval,
+        "last_member_qrt": last_member_qrt,
+        "last_member_query_count": last_member_query_count,
+        "group_timeout": group_timeout,
+        "report_llg": report_llg,
+        "immediate_leave": immediate_leave,
+    }
 
-    default = dict((param, value) for (param, value) in args.items() if value is not None)
+    default = {param: value for (param, value) in args.items() if value is not None}
 
     return default
 
@@ -463,16 +461,16 @@ def config_remove_oif(existing, existing_oif_prefix_source):
     commands = []
     command = None
     if existing.get("oif_routemap"):
-        commands.append("no ip igmp static-oif route-map {0}".format(existing.get("oif_routemap")))
+        commands.append("no ip igmp static-oif route-map {}".format(existing.get("oif_routemap")))
     elif existing_oif_prefix_source:
         for each in existing_oif_prefix_source:
             if each.get("prefix") and each.get("source"):
-                command = "no ip igmp static-oif {0} source {1} ".format(
+                command = "no ip igmp static-oif {} source {} ".format(
                     each.get("prefix"),
                     each.get("source"),
                 )
             elif each.get("prefix"):
-                command = "no ip igmp static-oif {0}".format(each.get("prefix"))
+                command = "no ip igmp static-oif {}".format(each.get("prefix"))
             if command:
                 commands.append(command)
             command = None
@@ -481,25 +479,25 @@ def config_remove_oif(existing, existing_oif_prefix_source):
 
 
 def main():
-    argument_spec = dict(
-        interface=dict(required=True, type="str"),
-        version=dict(required=False, type="str", choices=["2", "3", "default"]),
-        startup_query_interval=dict(required=False, type="str"),
-        startup_query_count=dict(required=False, type="str"),
-        robustness=dict(required=False, type="str"),
-        querier_timeout=dict(required=False, type="str"),
-        query_mrt=dict(required=False, type="str"),
-        query_interval=dict(required=False, type="str"),
-        last_member_qrt=dict(required=False, type="str"),
-        last_member_query_count=dict(required=False, type="str"),
-        group_timeout=dict(required=False, type="str"),
-        report_llg=dict(type="bool"),
-        immediate_leave=dict(type="bool"),
-        oif_routemap=dict(required=False, type="str"),
-        oif_ps=dict(required=False, type="raw"),
-        restart=dict(type="bool", default=False),
-        state=dict(choices=["present", "absent", "default"], default="present"),
-    )
+    argument_spec = {
+        "interface": {"required": True, "type": "str"},
+        "version": {"required": False, "type": "str", "choices": ["2", "3", "default"]},
+        "startup_query_interval": {"required": False, "type": "str"},
+        "startup_query_count": {"required": False, "type": "str"},
+        "robustness": {"required": False, "type": "str"},
+        "querier_timeout": {"required": False, "type": "str"},
+        "query_mrt": {"required": False, "type": "str"},
+        "query_interval": {"required": False, "type": "str"},
+        "last_member_qrt": {"required": False, "type": "str"},
+        "last_member_query_count": {"required": False, "type": "str"},
+        "group_timeout": {"required": False, "type": "str"},
+        "report_llg": {"type": "bool"},
+        "immediate_leave": {"type": "bool"},
+        "oif_routemap": {"required": False, "type": "str"},
+        "oif_ps": {"required": False, "type": "raw"},
+        "restart": {"type": "bool", "default": False},
+        "state": {"choices": ["present", "absent", "default"], "default": "present"},
+    }
 
     mutually_exclusive = [("oif_ps", "oif_routemap")]
 
@@ -509,7 +507,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
 
     state = module.params["state"]
     interface = module.params["interface"]
@@ -562,7 +560,7 @@ def main():
 
     changed = False
     commands = []
-    proposed = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed = {k: v for k, v in module.params.items() if v is not None and k in args}
 
     CANNOT_ABSENT = [
         "version",
@@ -620,7 +618,7 @@ def main():
     cmds = []
     results = {}
     if commands:
-        commands.insert(0, ["interface {0}".format(interface)])
+        commands.insert(0, [f"interface {interface}"])
         cmds = flatten_list(commands)
 
         if module.check_mode:

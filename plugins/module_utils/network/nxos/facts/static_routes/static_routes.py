@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -20,24 +19,20 @@ import re
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.static_routes.static_routes import (
     Static_routesArgs,
 )
 
 
-class Static_routesFacts(object):
-    """The nxos static_routes fact class"""
+class Static_routesFacts:
+    """The nxos static_routes fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Static_routesArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -49,10 +44,7 @@ class Static_routesFacts(object):
         if not data:
             non_vrf_data = connection.get("show running-config | include '^ip(v6)* route'")
             vrf_data = connection.get("show running-config | section '^vrf context'")
-            if non_vrf_data:
-                non_vrf_data = non_vrf_data.split("\n")
-            else:
-                non_vrf_data = []
+            non_vrf_data = non_vrf_data.split("\n") if non_vrf_data else []
             vrf_data = vrf_data.split("\nvrf context")
             # as we split based on 'vrf context', it is stripped from the data except the first element
         else:
@@ -90,7 +82,7 @@ class Static_routesFacts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         objs = []
         resources = self.get_device_data(connection, data)
@@ -108,9 +100,7 @@ class Static_routesFacts(object):
         return ansible_facts
 
     def get_inner_dict(self, conf, inner_dict):
-        """
-        This method parses the command to create the innermost dictionary of the config
-        """
+        """This method parses the command to create the innermost dictionary of the config."""
         conf = re.sub(r"\s*ip(v6)? route", "", conf)
         # strip 'ip route'
         inner_dict["dest"] = re.match(r"^\s*(\S+\/\d+) .*", conf).group(1)
@@ -178,7 +168,7 @@ class Static_routesFacts(object):
             "dest_vrf",
         ]
         for p in params:
-            if p in inner_dict.keys():
+            if p in inner_dict:
                 next_hop.update({p: inner_dict[p]})
 
         if inner_dict["dest"] not in dest_list:
@@ -194,14 +184,13 @@ class Static_routesFacts(object):
     def render_config(self, spec, con):
         """
         Render config as dictionary structure and delete keys
-          from spec for null values
+          from spec for null values.
 
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration
         :rtype: dictionary
         :returns: The generated config
         """
-        # config=deepcopy(spec)
         config = []
         global_afi_list = []
         global_af = []

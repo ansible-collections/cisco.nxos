@@ -32,19 +32,19 @@ ignore_provider_arg = True
 
 
 class TestNxosPingModule(TestNxosModule):
-    """Class used for Unit Tests agains ios_ping module"""
+    """Class used for Unit Tests agains ios_ping module."""
 
     module = nxos_ping
 
     def setUp(self):
-        super(TestNxosPingModule, self).setUp()
+        super().setUp()
         self.mock_run_commands = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_ping.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
     def tearDown(self):
-        super(TestNxosPingModule, self).tearDown()
+        super().tearDown()
         self.mock_run_commands.stop()
 
     def test_nxos_ping_expected_success(self):
@@ -62,15 +62,15 @@ class TestNxosPingModule(TestNxosModule):
             round-trip min/avg/max = 1.597/2.32/4.197 ms
         """,
         ]
-        set_module_args(dict(dest="172.28.128.7", vrf="management"))
+        set_module_args({"dest": "172.28.128.7", "vrf": "management"})
         result = self.execute_module()
-        self.assertEqual(result["commands"], ["ping 172.28.128.7 count 5 vrf management"])
-        self.assertEqual(result["packet_loss"], "0.00%")
-        self.assertEqual(result["packets_rx"], 5)
-        self.assertEqual(result["packets_tx"], 5)
-        self.assertEqual(result["rtt"]["min"], 1.597)
-        self.assertEqual(result["rtt"]["avg"], 2.32)
-        self.assertEqual(result["rtt"]["max"], 4.197)
+        assert result["commands"] == ["ping 172.28.128.7 count 5 vrf management"]
+        assert result["packet_loss"] == "0.00%"
+        assert result["packets_rx"] == 5
+        assert result["packets_tx"] == 5
+        assert result["rtt"]["min"] == 1.597
+        assert result["rtt"]["avg"] == 2.32
+        assert result["rtt"]["max"] == 4.197
 
     def test_nxos_ping_expected_failure(self):
         self.run_commands.return_value = [
@@ -86,7 +86,7 @@ class TestNxosPingModule(TestNxosModule):
             5 packets transmitted, 0 packets received, 100.00% packet loss
         """,
         ]
-        set_module_args(dict(dest="172.28.128.8", vrf="management", state="absent"))
+        set_module_args({"dest": "172.28.128.8", "vrf": "management", "state": "absent"})
         self.execute_module(failed=False)
 
     def test_nxos_ping_expected_success_but_failed(self):
@@ -103,9 +103,9 @@ class TestNxosPingModule(TestNxosModule):
             5 packets transmitted, 0 packets received, 100.00% packet loss
         """,
         ]
-        set_module_args(dict(dest="172.28.128.8", vrf="management"))
+        set_module_args({"dest": "172.28.128.8", "vrf": "management"})
         result = self.execute_module(failed=True)
-        self.assertEqual(result["msg"], "Ping failed unexpectedly")
+        assert result["msg"] == "Ping failed unexpectedly"
 
     def test_nxos_ping_expected_failure_but_succeeded(self):
         self.run_commands.return_value = [
@@ -122,9 +122,9 @@ class TestNxosPingModule(TestNxosModule):
             round-trip min/avg/max = 1.597/2.32/4.197 ms
         """,
         ]
-        set_module_args(dict(dest="172.28.128.7", vrf="management", state="absent"))
+        set_module_args({"dest": "172.28.128.7", "vrf": "management", "state": "absent"})
         result = self.execute_module(failed=True)
-        self.assertEqual(result["msg"], "Ping succeeded unexpectedly")
+        assert result["msg"] == "Ping succeeded unexpectedly"
 
     def test_nxos_ping_expected_success_source(self):
         self.run_commands.return_value = [
@@ -141,18 +141,15 @@ class TestNxosPingModule(TestNxosModule):
             round-trip min/avg/max = 1.597/2.32/4.197 ms
         """,
         ]
-        set_module_args(dict(dest="172.28.128.7", source="192.168.1.10"))
+        set_module_args({"dest": "172.28.128.7", "source": "192.168.1.10"})
         result = self.execute_module()
-        self.assertEqual(
-            result["commands"],
-            ["ping 172.28.128.7 count 5 source 192.168.1.10"],
-        )
-        self.assertEqual(result["packet_loss"], "0.00%")
-        self.assertEqual(result["packets_rx"], 5)
-        self.assertEqual(result["packets_tx"], 5)
-        self.assertEqual(result["rtt"]["min"], 1.597)
-        self.assertEqual(result["rtt"]["avg"], 2.32)
-        self.assertEqual(result["rtt"]["max"], 4.197)
+        assert result["commands"] == ["ping 172.28.128.7 count 5 source 192.168.1.10"]
+        assert result["packet_loss"] == "0.00%"
+        assert result["packets_rx"] == 5
+        assert result["packets_tx"] == 5
+        assert result["rtt"]["min"] == 1.597
+        assert result["rtt"]["avg"] == 2.32
+        assert result["rtt"]["max"] == 4.197
 
     def test_nxos_ping_expected_success_df_bit(self):
         self.run_commands.return_value = [
@@ -169,9 +166,9 @@ class TestNxosPingModule(TestNxosModule):
             round-trip min/avg/max = 1.597/2.32/4.197 ms
         """,
         ]
-        set_module_args(dict(dest="172.28.128.7", df_bit=True))
+        set_module_args({"dest": "172.28.128.7", "df_bit": True})
         result = self.execute_module()
-        self.assertEqual(result["commands"], ["ping 172.28.128.7 count 5 df-bit"])
+        assert result["commands"] == ["ping 172.28.128.7 count 5 df-bit"]
 
     def test_nxos_ping_expected_success_size(self):
         self.run_commands.return_value = [
@@ -188,9 +185,9 @@ class TestNxosPingModule(TestNxosModule):
             round-trip min/avg/max = 1.597/2.32/4.197 ms
         """,
         ]
-        set_module_args(dict(dest="172.28.128.7", size=65468))
+        set_module_args({"dest": "172.28.128.7", "size": 65468})
         result = self.execute_module()
-        self.assertEqual(result["commands"], ["ping 172.28.128.7 count 5 packet-size 65468"])
+        assert result["commands"] == ["ping 172.28.128.7 count 5 packet-size 65468"]
 
     def test_nxos_ping_expected_success_all(self):
         self.run_commands.return_value = [
@@ -208,22 +205,17 @@ class TestNxosPingModule(TestNxosModule):
         """,
         ]
         set_module_args(
-            dict(
-                dest="172.28.128.7",
-                count=10,
-                size=65468,
-                df_bit=True,
-                source="192.168.1.1",
-                vrf="management",
-            ),
+            {
+                "dest": "172.28.128.7",
+                "count": 10,
+                "size": 65468,
+                "df_bit": True,
+                "source": "192.168.1.1",
+                "vrf": "management",
+            },
         )
         result = self.execute_module()
-        self.assertEqual(
-            result["commands"],
-            [
-                "ping 172.28.128.7 count 10 source 192.168.1.1 vrf management packet-size 65468 df-bit",
-            ],
-        )
+        assert result["commands"] == ["ping 172.28.128.7 count 10 source 192.168.1.1 vrf management packet-size 65468 df-bit"]
 
     def test_nxos_ping_failed_cant_bind(self):
         self.run_commands.return_value = [
@@ -232,17 +224,17 @@ class TestNxosPingModule(TestNxosModule):
         """,
         ]
         set_module_args(
-            dict(
-                dest="172.28.128.7",
-                count=10,
-                size=65468,
-                df_bit=True,
-                source="192.168.1.1",
-                vrf="management",
-            ),
+            {
+                "dest": "172.28.128.7",
+                "count": 10,
+                "size": 65468,
+                "df_bit": True,
+                "source": "192.168.1.1",
+                "vrf": "management",
+            },
         )
         result = self.execute_module(failed=True)
-        self.assertEqual(result["msg"], "Can't bind to source address.")
+        assert result["msg"] == "Can't bind to source address."
 
     def test_nxos_ping_failed_bad_context(self):
         self.run_commands.return_value = [
@@ -250,13 +242,13 @@ class TestNxosPingModule(TestNxosModule):
             ping: bad context site-1
         """,
         ]
-        set_module_args(dict(dest="172.28.128.7", count=10, vrf="site-1"))
+        set_module_args({"dest": "172.28.128.7", "count": 10, "vrf": "site-1"})
         result = self.execute_module(failed=True)
-        self.assertEqual(result["msg"], "Wrong VRF name inserted.")
+        assert result["msg"] == "Wrong VRF name inserted."
 
     def test_nxos_ping_failed_error(self):
-        """Test for successful pings when destination should be reachable"""
+        """Test for successful pings when destination should be reachable."""
         self.run_commands.return_value = [""""""]
-        set_module_args(dict(dest="172.28.128.7", count=10, vrf="site-1"))
+        set_module_args({"dest": "172.28.128.7", "count": 10, "vrf": "site-1"})
         result = self.execute_module(failed=True)
-        self.assertEqual(result["msg"], "An unexpected error occurred. Check all params.")
+        assert result["msg"] == "An unexpected error occurred. Check all params."

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)#!/usr/bin/python
@@ -19,7 +18,6 @@ import re
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.interfaces.interfaces import (
     InterfacesArgs,
 )
@@ -28,18 +26,15 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 )
 
 
-class InterfacesFacts(object):
-    """The nxos interfaces fact class"""
+class InterfacesFacts:
+    """The nxos interfaces fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = InterfacesArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -50,7 +45,7 @@ class InterfacesFacts(object):
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         objs = []
         if not data:
@@ -82,7 +77,7 @@ class InterfacesFacts(object):
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration
         :rtype: dictionary
-        :returns: The generated config
+        :returns: The generated config.
         """
         config = deepcopy(spec)
 

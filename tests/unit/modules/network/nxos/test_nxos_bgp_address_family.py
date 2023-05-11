@@ -48,7 +48,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
     module = nxos_bgp_address_family
 
     def setUp(self):
-        super(TestNxosBGPAddressFamilyModule, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -61,7 +61,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosBGPAddressFamilyModule, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
@@ -77,35 +77,35 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            additional_paths=dict(
-                                install_backup=True,
-                                receive=True,
-                                selection=dict(route_map="rmap1"),
-                                send=True,
-                            ),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            additional_paths=dict(
-                                install_backup=False,
-                                receive=True,
-                                selection=dict(route_map="rmap2"),
-                                send=False,
-                            ),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "additional_paths": {
+                                "install_backup": True,
+                                "receive": True,
+                                "selection": {"route_map": "rmap1"},
+                                "send": True,
+                            },
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "additional_paths": {
+                                "install_backup": False,
+                                "receive": True,
+                                "selection": {"route_map": "rmap2"},
+                                "send": False,
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -123,7 +123,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no additional-paths send",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_additional_paths_replaced(self):
         # test replaced for config->address_family->additional_paths
@@ -144,25 +144,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            additional_paths=dict(selection=dict(route_map="rmap1")),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            additional_paths=dict(install_backup=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "additional_paths": {"selection": {"route_map": "rmap1"}},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "additional_paths": {"install_backup": True},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -177,7 +177,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no additional-paths send",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_l2vpn_keys_merged(self):
         # test merged for config->address_family->advertise_pip, advertise_system_mac, allow_vni_in_ethertag
@@ -189,21 +189,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="l2vpn",
-                            safi="evpn",
-                            advertise_pip=False,
-                            advertise_system_mac=True,
-                            allow_vni_in_ethertag=True,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "l2vpn",
+                            "safi": "evpn",
+                            "advertise_pip": False,
+                            "advertise_system_mac": True,
+                            "allow_vni_in_ethertag": True,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -214,7 +214,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "allow-vni-in-ethertag",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_l2vpn_keys_replaced(self):
         # test replaced for config->address_family->advertise_pip, advertise_system_mac, allow_vni_in_ethertag
@@ -227,13 +227,13 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[dict(afi="l2vpn", safi="evpn", advertise_pip=True)],
-                ),
-                state="replaced",
-            ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [{"afi": "l2vpn", "safi": "evpn", "advertise_pip": True}],
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -244,7 +244,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no allow-vni-in-ethertag",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_client_to_client_merged(self):
         # test merged for config->address_family->client_to_client
@@ -257,25 +257,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            client_to_client=dict(no_reflection=True),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            client_to_client=dict(no_reflection=False),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "client_to_client": {"no_reflection": True},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "client_to_client": {"no_reflection": False},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -287,7 +287,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "client-to-client reflection",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_client_to_client_replaced(self):
         # test replaced for config->address_family->client_to_client
@@ -303,25 +303,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            client_to_client=dict(no_reflection=True),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            client_to_client=dict(no_reflection=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "client_to_client": {"no_reflection": True},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "client_to_client": {"no_reflection": True},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -330,7 +330,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "client-to-client reflection",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_aggregate_address_merged(self):
         # test merged for config->address_family->aggregate_address
@@ -343,45 +343,45 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            aggregate_address=[
-                                dict(prefix="192.168.1.0/24", summary_only=True),
-                                dict(
-                                    prefix="192.168.2.0/24",
-                                    advertise_map="rmap1",
-                                    as_set=True,
-                                    attribute_map="rmap2",
-                                ),
-                                dict(
-                                    prefix="192.168.3.0/24",
-                                    suppress_map="rmap3",
-                                ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "aggregate_address": [
+                                {"prefix": "192.168.1.0/24", "summary_only": True},
+                                {
+                                    "prefix": "192.168.2.0/24",
+                                    "advertise_map": "rmap1",
+                                    "as_set": True,
+                                    "attribute_map": "rmap2",
+                                },
+                                {
+                                    "prefix": "192.168.3.0/24",
+                                    "suppress_map": "rmap3",
+                                },
                             ],
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            aggregate_address=[
-                                dict(prefix="10.0.0.0/8", summary_only=True),
-                                dict(
-                                    prefix="11.0.0.0/8",
-                                    advertise_map="rmap1",
-                                    as_set=True,
-                                    attribute_map="rmap2",
-                                ),
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "aggregate_address": [
+                                {"prefix": "10.0.0.0/8", "summary_only": True},
+                                {
+                                    "prefix": "11.0.0.0/8",
+                                    "advertise_map": "rmap1",
+                                    "as_set": True,
+                                    "attribute_map": "rmap2",
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -396,7 +396,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "aggregate-address 11.0.0.0/8 advertise-map rmap1 as-set attribute-map rmap2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_aggregate_address_replaced(self):
         # test replaced for config->address_family->aggregate_address
@@ -416,40 +416,40 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            aggregate_address=[
-                                dict(
-                                    prefix="192.168.2.0/24",
-                                    advertise_map="rmap1",
-                                    as_set=True,
-                                    attribute_map="rmap2",
-                                ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "aggregate_address": [
+                                {
+                                    "prefix": "192.168.2.0/24",
+                                    "advertise_map": "rmap1",
+                                    "as_set": True,
+                                    "attribute_map": "rmap2",
+                                },
                             ],
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            aggregate_address=[
-                                dict(prefix="12.0.0.0/8", summary_only=True),
-                                dict(
-                                    prefix="14.0.0.0/8",
-                                    advertise_map="rmap1",
-                                    as_set=True,
-                                    attribute_map="rmap3",
-                                ),
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "aggregate_address": [
+                                {"prefix": "12.0.0.0/8", "summary_only": True},
+                                {
+                                    "prefix": "14.0.0.0/8",
+                                    "advertise_map": "rmap1",
+                                    "as_set": True,
+                                    "attribute_map": "rmap3",
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -465,7 +465,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "aggregate-address 14.0.0.0/8 advertise-map rmap1 as-set attribute-map rmap3",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_dampen_igp_metric_merged(self):
         # test merged for config->address_family->dampen_igp_metric
@@ -478,21 +478,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(afi="ipv4", safi="multicast", dampen_igp_metric=300),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            dampen_igp_metric=1800,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "multicast", "dampen_igp_metric": 300},
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "dampen_igp_metric": 1800,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -504,7 +504,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "dampen-igp-metric 1800",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_dampen_igp_metric_replaced(self):
         # test merged for config->address_family->dampen_igp_metric
@@ -521,21 +521,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(afi="ipv4", safi="multicast"),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            dampen_igp_metric=1800,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "multicast"},
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "dampen_igp_metric": 1800,
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -544,7 +544,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no dampen-igp-metric 300",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_dampening_merged(self):
         # test merged for config->address_family->dampening
@@ -559,40 +559,40 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="unicast",
-                            dampening=dict(set=False),
-                        ),
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            dampening=dict(
-                                decay_half_life=4,
-                                start_reuse_route=23,
-                                start_suppress_route=24,
-                                max_suppress_time=25,
-                            ),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            dampening=dict(
-                                decay_half_life=3,
-                                start_reuse_route=22,
-                                start_suppress_route=23,
-                                max_suppress_time=24,
-                            ),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "dampening": {"set": False},
+                        },
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "dampening": {
+                                "decay_half_life": 4,
+                                "start_reuse_route": 23,
+                                "start_suppress_route": 24,
+                                "max_suppress_time": 25,
+                            },
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "dampening": {
+                                "decay_half_life": 3,
+                                "start_reuse_route": 22,
+                                "start_suppress_route": 23,
+                                "max_suppress_time": 24,
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -606,7 +606,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "dampening 3 22 23 24",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_dampening_replaced(self):
         # test replaced for config->address_family->dampening
@@ -623,26 +623,26 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(afi="ipv4", safi="multicast"),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            dampening=dict(
-                                decay_half_life=3,
-                                start_reuse_route=22,
-                                start_suppress_route=23,
-                                max_suppress_time=23,
-                            ),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "multicast"},
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "dampening": {
+                                "decay_half_life": 3,
+                                "start_reuse_route": 22,
+                                "start_suppress_route": 23,
+                                "max_suppress_time": 23,
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -651,7 +651,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no dampening 4 23 24 25",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_dampening_route_map_merged(self):
         # test merged for config->address_family->dampening->route_map
@@ -664,25 +664,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            dampening=dict(route_map="rmap3"),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            dampening=dict(route_map="rmap2"),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "dampening": {"route_map": "rmap3"},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "dampening": {"route_map": "rmap2"},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -694,7 +694,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "dampening route-map rmap2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_dampening_route_map_replaced(self):
         # test replaced for config->address_family->dampening->route_map
@@ -709,20 +709,20 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            dampening=dict(route_map="rmap3"),
-                        ),
-                        dict(vrf="site-1", afi="ipv4", safi="unicast"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "dampening": {"route_map": "rmap3"},
+                        },
+                        {"vrf": "site-1", "afi": "ipv4", "safi": "unicast"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -732,7 +732,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no dampening route-map rmap1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_default_information_merged(self):
         # test merged for config->address_family->default_information
@@ -745,25 +745,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            default_information=dict(originate=True),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            default_information=dict(originate=False),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "default_information": {"originate": True},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "default_information": {"originate": False},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -775,7 +775,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no default-information originate",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_default_information_replaced(self):
         # test replaced for config->address_family->default_information
@@ -790,21 +790,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(afi="ipv4", safi="multicast"),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            default_information=dict(originate=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "multicast"},
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "default_information": {"originate": True},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -813,7 +813,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no default-information originate",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_default_metric_merged(self):
         # test merged for config->address_family->default_metric
@@ -826,21 +826,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(afi="ipv4", safi="multicast", default_metric=7200),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            default_metric=10000,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "multicast", "default_metric": 7200},
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "default_metric": 10000,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -852,7 +852,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "default-metric 10000",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_default_metric_replaced(self):
         # test replaced for config->address_family->default_metric
@@ -869,21 +869,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(afi="ipv4", safi="multicast"),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            default_metric=6400,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "multicast"},
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "default_metric": 6400,
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -892,7 +892,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no default-metric 8400",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_distance_merged(self):
         # test merged for config->address_family->distance
@@ -905,25 +905,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            distance=dict(ebgp_routes=25, ibgp_routes=12, local_routes=4),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            distance=dict(ebgp_routes=20, ibgp_routes=18, local_routes=3),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "distance": {"ebgp_routes": 25, "ibgp_routes": 12, "local_routes": 4},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "distance": {"ebgp_routes": 20, "ibgp_routes": 18, "local_routes": 3},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -935,7 +935,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "distance 20 18 3",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_distance_replaced(self):
         # test replaced for config->address_family->distance
@@ -952,21 +952,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(afi="ipv4", safi="multicast"),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            distance=dict(ebgp_routes=20, ibgp_routes=18, local_routes=2),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "multicast"},
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "distance": {"ebgp_routes": 20, "ibgp_routes": 18, "local_routes": 2},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -975,7 +975,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no distance 25 12 4",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_export_gateway_ip_merged(self):
         # test merged for config->address_family->export_gateway_ip
@@ -991,32 +991,32 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            export_gateway_ip=False,
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="multicast",
-                            export_gateway_ip=True,
-                        ),
-                        dict(
-                            vrf="site-2",
-                            afi="ipv4",
-                            safi="multicast",
-                            export_gateway_ip=True,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "export_gateway_ip": False,
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "export_gateway_ip": True,
+                        },
+                        {
+                            "vrf": "site-2",
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "export_gateway_ip": True,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1031,7 +1031,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "export-gateway-ip",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_export_gateway_ip_replaced(self):
         # test replaced for config->address_family->export_gateway_ip
@@ -1049,27 +1049,27 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            export_gateway_ip=False,
-                        ),
-                        dict(vrf="site-1", afi="ipv4", safi="multicast"),
-                        dict(
-                            vrf="site-2",
-                            afi="ipv4",
-                            safi="unicast",
-                            export_gateway_ip=True,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "export_gateway_ip": False,
+                        },
+                        {"vrf": "site-1", "afi": "ipv4", "safi": "multicast"},
+                        {
+                            "vrf": "site-2",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "export_gateway_ip": True,
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1081,7 +1081,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no export-gateway-ip",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_inject_map_merged(self):
         # test merged for config->address_family->inject_map
@@ -1094,38 +1094,38 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            inject_map=[
-                                dict(
-                                    route_map="rmap1",
-                                    exist_map="rmap2",
-                                    copy_attributes=True,
-                                ),
-                                dict(route_map="rmap1", exist_map="rmap3"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "inject_map": [
+                                {
+                                    "route_map": "rmap1",
+                                    "exist_map": "rmap2",
+                                    "copy_attributes": True,
+                                },
+                                {"route_map": "rmap1", "exist_map": "rmap3"},
                             ],
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            inject_map=[
-                                dict(
-                                    route_map="rmap3",
-                                    exist_map="rmap4",
-                                    copy_attributes=True,
-                                ),
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "inject_map": [
+                                {
+                                    "route_map": "rmap3",
+                                    "exist_map": "rmap4",
+                                    "copy_attributes": True,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1138,7 +1138,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "inject-map rmap3 exist-map rmap4 copy-attributes",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_inject_map_replaced(self):
         # test replaced for config->address_family->inject_map
@@ -1154,31 +1154,31 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            inject_map=[dict(route_map="rmap1", exist_map="rmap3")],
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            inject_map=[
-                                dict(
-                                    route_map="rmap3",
-                                    exist_map="rmap4",
-                                    copy_attributes=True,
-                                ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "inject_map": [{"route_map": "rmap1", "exist_map": "rmap3"}],
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "inject_map": [
+                                {
+                                    "route_map": "rmap3",
+                                    "exist_map": "rmap4",
+                                    "copy_attributes": True,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1187,7 +1187,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no inject-map rmap1 exist-map rmap2 copy-attributes",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_maximum_paths_merged(self):
         # test merged for config->address_family->maximum_paths
@@ -1203,35 +1203,35 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            maximum_paths=dict(parallel_paths=15, ibgp=dict(parallel_paths=64)),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            maximum_paths=dict(
-                                parallel_paths=14,
-                                eibgp=dict(parallel_paths=68),
-                                local=dict(parallel_paths=30),
-                            ),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="multicast",
-                            maximum_paths=dict(mixed=dict(parallel_paths=40)),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "maximum_paths": {"parallel_paths": 15, "ibgp": {"parallel_paths": 64}},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "maximum_paths": {
+                                "parallel_paths": 14,
+                                "eibgp": {"parallel_paths": 68},
+                                "local": {"parallel_paths": 30},
+                            },
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "maximum_paths": {"mixed": {"parallel_paths": 40}},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1247,7 +1247,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "maximum-paths mixed 40",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_maximum_paths_replaced(self):
         # test replaced for config->address_family->maximum_paths
@@ -1266,26 +1266,26 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            maximum_paths=dict(parallel_paths=15, ibgp=dict(parallel_paths=64)),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            maximum_paths=dict(local=dict(parallel_paths=30)),
-                        ),
-                        dict(vrf="site-1", afi="ipv4", safi="multicast"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "maximum_paths": {"parallel_paths": 15, "ibgp": {"parallel_paths": 64}},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "maximum_paths": {"local": {"parallel_paths": 30}},
+                        },
+                        {"vrf": "site-1", "afi": "ipv4", "safi": "multicast"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1297,7 +1297,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no maximum-paths mixed 40",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_network_merged(self):
         # test merged for config->address_family->network
@@ -1310,32 +1310,32 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            networks=[
-                                dict(prefix="192.168.1.0/24", route_map="rmap2"),
-                                dict(prefix="192.168.2.0/24"),
-                                dict(prefix="192.168.3.0/24", route_map="rmap3"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "networks": [
+                                {"prefix": "192.168.1.0/24", "route_map": "rmap2"},
+                                {"prefix": "192.168.2.0/24"},
+                                {"prefix": "192.168.3.0/24", "route_map": "rmap3"},
                             ],
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            networks=[
-                                dict(prefix="10.0.0.0/8"),
-                                dict(prefix="11.0.0.0/8", route_map="rmap2"),
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "networks": [
+                                {"prefix": "10.0.0.0/8"},
+                                {"prefix": "11.0.0.0/8", "route_map": "rmap2"},
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1350,7 +1350,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "network 11.0.0.0/8 route-map rmap2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_network_replaced(self):
         # test replaced for config->address_family->network
@@ -1369,25 +1369,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            networks=[dict(prefix="192.168.3.0/24", route_map="rmap4")],
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            networks=[dict(prefix="11.0.0.0/8", route_map="rmap2")],
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "networks": [{"prefix": "192.168.3.0/24", "route_map": "rmap4"}],
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "networks": [{"prefix": "11.0.0.0/8", "route_map": "rmap2"}],
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1402,7 +1402,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no network 192.168.1.0/24 route-map rmap1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nexthop_merged(self):
         # test merged for config->address_family->network
@@ -1415,30 +1415,30 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            nexthop=dict(
-                                route_map="rmap1",
-                                trigger_delay=dict(critical_delay=120, non_critical_delay=180),
-                            ),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            nexthop=dict(
-                                trigger_delay=dict(critical_delay=110, non_critical_delay=170),
-                            ),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "nexthop": {
+                                "route_map": "rmap1",
+                                "trigger_delay": {"critical_delay": 120, "non_critical_delay": 180},
+                            },
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "nexthop": {
+                                "trigger_delay": {"critical_delay": 110, "non_critical_delay": 170},
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1451,7 +1451,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "nexthop trigger-delay critical 110 non-critical 170",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nexthop_replaced(self):
         # test replaced for config->address_family->network
@@ -1468,27 +1468,27 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            nexthop=dict(route_map="rmap1"),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            nexthop=dict(
-                                trigger_delay=dict(critical_delay=110, non_critical_delay=170),
-                            ),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "nexthop": {"route_map": "rmap1"},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "nexthop": {
+                                "trigger_delay": {"critical_delay": 110, "non_critical_delay": 170},
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1500,7 +1500,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no nexthop route-map rmap2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_redistribute_merged(self):
         # test merged for config->address_family->redistribute
@@ -1513,49 +1513,49 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number=65563,
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            redistribute=[
-                                dict(
-                                    protocol="eigrp",
-                                    id="100",
-                                    route_map="test-1",
-                                ),
-                                dict(
-                                    protocol="eigrp",
-                                    id="101",
-                                    route_map="test-2",
-                                ),
-                                dict(protocol="static", route_map="test-4"),
-                                dict(protocol="hmm", route_map="test-5"),
+            {
+                "config": {
+                    "as_number": 65563,
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "redistribute": [
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "100",
+                                    "route_map": "test-1",
+                                },
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "101",
+                                    "route_map": "test-2",
+                                },
+                                {"protocol": "static", "route_map": "test-4"},
+                                {"protocol": "hmm", "route_map": "test-5"},
                             ],
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            redistribute=[
-                                dict(
-                                    protocol="eigrp",
-                                    id="100",
-                                    route_map="test-18",
-                                ),
-                                dict(
-                                    protocol="ospf",
-                                    id="101",
-                                    route_map="test-2",
-                                ),
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "redistribute": [
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "100",
+                                    "route_map": "test-18",
+                                },
+                                {
+                                    "protocol": "ospf",
+                                    "id": "101",
+                                    "route_map": "test-2",
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1571,7 +1571,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "redistribute ospf 101 route-map test-2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_redistribute_replaced(self):
         # test replaced for config->address_family->redistribute
@@ -1590,39 +1590,39 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number=65563,
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            redistribute=[
-                                dict(
-                                    protocol="eigrp",
-                                    id="100",
-                                    route_map="test-1",
-                                ),
-                                dict(protocol="static", route_map="test-5"),
-                                dict(protocol="hmm", route_map="test-5"),
+            {
+                "config": {
+                    "as_number": 65563,
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "redistribute": [
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "100",
+                                    "route_map": "test-1",
+                                },
+                                {"protocol": "static", "route_map": "test-5"},
+                                {"protocol": "hmm", "route_map": "test-5"},
                             ],
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            redistribute=[
-                                dict(
-                                    protocol="ospf",
-                                    id="101",
-                                    route_map="test-2",
-                                ),
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "redistribute": [
+                                {
+                                    "protocol": "ospf",
+                                    "id": "101",
+                                    "route_map": "test-2",
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1635,7 +1635,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no redistribute eigrp 100 route-map test-18",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_retain_merged(self):
         # test merged for config->address_family->retain
@@ -1648,25 +1648,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            retain=dict(route_target=dict(retain_all=True)),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            retain=dict(route_target=dict(route_map="rmap1")),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "retain": {"route_target": {"retain_all": True}},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "retain": {"route_target": {"route_map": "rmap1"}},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1678,7 +1678,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "retain route-target route-map rmap1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_retain_replaced(self):
         # test replaced for config->address_family->retain
@@ -1693,20 +1693,20 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            retain=dict(route_target=dict(retain_all=True)),
-                        ),
-                        dict(vrf="site-1", afi="ipv4", safi="unicast"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "retain": {"route_target": {"retain_all": True}},
+                        },
+                        {"vrf": "site-1", "afi": "ipv4", "safi": "unicast"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1716,7 +1716,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no retain route-target route-map rmap1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_suppress_inactive_merged(self):
         # test merged for config->address_family->suppress_inactive
@@ -1729,25 +1729,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            suppress_inactive=True,
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            suppress_inactive=False,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "suppress_inactive": True,
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "suppress_inactive": False,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1759,7 +1759,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no suppress-inactive",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_suppress_inactive_replaced(self):
         # test replaced for config->address_family->suppress_inactive
@@ -1774,20 +1774,20 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            suppress_inactive=True,
-                        ),
-                        dict(vrf="site-1", afi="ipv4", safi="unicast"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "suppress_inactive": True,
+                        },
+                        {"vrf": "site-1", "afi": "ipv4", "safi": "unicast"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1797,7 +1797,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no suppress-inactive",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_table_map_merged(self):
         # test merged for config->address_family->table_map
@@ -1810,25 +1810,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            table_map=dict(name="rmap2", filter=True),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            table_map=dict(name="rmap1", filter=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "table_map": {"name": "rmap2", "filter": True},
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "table_map": {"name": "rmap1", "filter": True},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1837,7 +1837,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "table-map rmap2 filter",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_table_map_replaced(self):
         # test replaced for config->address_family->table_map
@@ -1850,20 +1850,20 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            table_map=dict(name="rmap2", filter=True),
-                        ),
-                        dict(vrf="site-1", afi="ipv4", safi="unicast"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "table_map": {"name": "rmap2", "filter": True},
+                        },
+                        {"vrf": "site-1", "afi": "ipv4", "safi": "unicast"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1875,7 +1875,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no table-map rmap1 filter",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_timers_merged(self):
         # test merged for config->address_family->table_map
@@ -1888,29 +1888,29 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            timers=dict(
-                                bestpath_defer=dict(defer_time=120, maximum_defer_time=380),
-                            ),
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            timers=dict(
-                                bestpath_defer=dict(defer_time=110, maximum_defer_time=350),
-                            ),
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "timers": {
+                                "bestpath_defer": {"defer_time": 120, "maximum_defer_time": 380},
+                            },
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "timers": {
+                                "bestpath_defer": {"defer_time": 110, "maximum_defer_time": 350},
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1922,7 +1922,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "timers bestpath-defer 110 maximum 350",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_timers_replaced(self):
         # test replaced for config->address_family->table_map
@@ -1937,22 +1937,22 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            timers=dict(
-                                bestpath_defer=dict(defer_time=120, maximum_defer_time=380),
-                            ),
-                        ),
-                        dict(vrf="site-1", afi="ipv4", safi="unicast"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "timers": {
+                                "bestpath_defer": {"defer_time": 120, "maximum_defer_time": 380},
+                            },
+                        },
+                        {"vrf": "site-1", "afi": "ipv4", "safi": "unicast"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1962,7 +1962,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no timers bestpath-defer 100 maximum 350",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_wait_igp_convergence_merged(self):
         # test merged for config->address_family->wait_igp_convergence
@@ -1975,25 +1975,25 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            wait_igp_convergence=True,
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            wait_igp_convergence=False,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "wait_igp_convergence": True,
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "wait_igp_convergence": False,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2005,7 +2005,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no wait-igp-convergence",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_wait_igp_convergence_replaced(self):
         # test replaced for config->address_family->wait_igp_convergence
@@ -2020,21 +2020,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(afi="ipv4", safi="multicast"),
-                        dict(
-                            afi="ipv4",
-                            safi="unicast",
-                            wait_igp_convergence=True,
-                        ),
-                        dict(vrf="site-1", afi="ipv4", safi="unicast"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "multicast"},
+                        {
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "wait_igp_convergence": True,
+                        },
+                        {"vrf": "site-1", "afi": "ipv4", "safi": "unicast"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2048,13 +2048,13 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no wait-igp-convergence",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_af_parsed(self):
         # test parsed
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     router bgp 65563
                       address-family ipv4 multicast
@@ -2064,24 +2064,24 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                           timers bestpath-defer 100 maximum 350
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
             ignore_provider_arg,
         )
-        parsed = dict(
-            as_number="65563",
-            address_family=[
-                dict(afi="ipv4", safi="multicast", wait_igp_convergence=True),
-                dict(
-                    vrf="site-1",
-                    afi="ipv4",
-                    safi="unicast",
-                    timers=dict(bestpath_defer=dict(defer_time=100, maximum_defer_time=350)),
-                ),
+        parsed = {
+            "as_number": "65563",
+            "address_family": [
+                {"afi": "ipv4", "safi": "multicast", "wait_igp_convergence": True},
+                {
+                    "vrf": "site-1",
+                    "afi": "ipv4",
+                    "safi": "unicast",
+                    "timers": {"bestpath_defer": {"defer_time": 100, "maximum_defer_time": 350}},
+                },
             ],
-        )
+        }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed
 
     def test_nxos_bgp_af_gathered(self):
         # test gathered
@@ -2102,21 +2102,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
 
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
-        gathered = dict(
-            as_number="65563",
-            address_family=[
-                dict(afi="ipv4", safi="multicast", wait_igp_convergence=True),
-                dict(
-                    vrf="site-1",
-                    afi="ipv4",
-                    safi="unicast",
-                    timers=dict(bestpath_defer=dict(defer_time=100, maximum_defer_time=350)),
-                ),
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
+        gathered = {
+            "as_number": "65563",
+            "address_family": [
+                {"afi": "ipv4", "safi": "multicast", "wait_igp_convergence": True},
+                {
+                    "vrf": "site-1",
+                    "afi": "ipv4",
+                    "safi": "unicast",
+                    "timers": {"bestpath_defer": {"defer_time": 100, "maximum_defer_time": 350}},
+                },
             ],
-        )
+        }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_bgp_af_gathered_empty(self):
         # test gathered
@@ -2125,9 +2125,9 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
 
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], {})
+        assert result["gathered"] == {}
 
     def test_nxos_bgp_af_rendered(self):
         # test gathered
@@ -2137,38 +2137,38 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         )
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number=65563,
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            redistribute=[
-                                dict(
-                                    protocol="eigrp",
-                                    id="100",
-                                    route_map="test-1",
-                                ),
-                                dict(protocol="static", route_map="test-5"),
+            {
+                "config": {
+                    "as_number": 65563,
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "redistribute": [
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "100",
+                                    "route_map": "test-1",
+                                },
+                                {"protocol": "static", "route_map": "test-5"},
                             ],
-                        ),
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            redistribute=[
-                                dict(
-                                    protocol="ospf",
-                                    id="101",
-                                    route_map="test-2",
-                                ),
+                        },
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "redistribute": [
+                                {
+                                    "protocol": "ospf",
+                                    "id": "101",
+                                    "route_map": "test-2",
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="rendered",
-            ),
+                },
+                "state": "rendered",
+            },
             ignore_provider_arg,
         )
         rendered = [
@@ -2181,7 +2181,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "redistribute ospf 101 route-map test-2",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(set(result["rendered"]), set(rendered))
+        assert set(result["rendered"]) == set(rendered)
 
     def test_nxos_bgp_af_delete(self):
         # test gathered
@@ -2206,18 +2206,18 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         )
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(afi="ipv4", safi="multicast"),
-                        dict(vrf="site-1", afi="ipv4", safi="unicast"),
-                        dict(vrf="site-1", afi="ipv6", safi="multicast"),
-                        dict(vrf="site-2", afi="ipv6", safi="unicast"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "multicast"},
+                        {"vrf": "site-1", "afi": "ipv4", "safi": "unicast"},
+                        {"vrf": "site-1", "afi": "ipv6", "safi": "multicast"},
+                        {"vrf": "site-2", "afi": "ipv6", "safi": "unicast"},
                     ],
-                ),
-                state="deleted",
-            ),
+                },
+                "state": "deleted",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2231,7 +2231,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no address-family ipv6 unicast",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_af_idempotent(self):
         # test idempotent
@@ -2244,19 +2244,19 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         )
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            wait_igp_convergence=True,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "wait_igp_convergence": True,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         self.execute_module(changed=False)
@@ -2284,19 +2284,19 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         )
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="multicast",
-                            wait_igp_convergence=False,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "multicast",
+                            "wait_igp_convergence": False,
+                        },
                     ],
-                ),
-                state="overridden",
-            ),
+                },
+                "state": "overridden",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2312,7 +2312,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no wait-igp-convergence",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_af_delete(self):
         # test gathered
@@ -2337,7 +2337,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
 
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         commands = [
             "router bgp 65563",
             "no address-family ipv4 multicast",
@@ -2350,7 +2350,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no address-family ipv6 unicast",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_vrf_af_advertise_l2vpn_evpn(self):
         # test merged for config->vrf->address_family->advertise l2vpn evpn
@@ -2365,26 +2365,26 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            advertise_l2vpn_evpn=True,
-                        ),
-                        dict(
-                            vrf="site-2",
-                            afi="ipv4",
-                            safi="unicast",
-                            advertise_l2vpn_evpn=False,
-                        ),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "advertise_l2vpn_evpn": True,
+                        },
+                        {
+                            "vrf": "site-2",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "advertise_l2vpn_evpn": False,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2397,7 +2397,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no advertise l2vpn evpn",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_vrf_af_advertise_l2vpn_evpn_replaced(self):
         # test replaced for config->vrf->address_family->advertise l2vpn evpn
@@ -2412,21 +2412,21 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65563",
-                    address_family=[
-                        dict(
-                            vrf="site-1",
-                            afi="ipv4",
-                            safi="unicast",
-                            advertise_l2vpn_evpn=True,
-                        ),
-                        dict(vrf="site-2", afi="ipv4", safi="unicast"),
+            {
+                "config": {
+                    "as_number": "65563",
+                    "address_family": [
+                        {
+                            "vrf": "site-1",
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "advertise_l2vpn_evpn": True,
+                        },
+                        {"vrf": "site-2", "afi": "ipv4", "safi": "unicast"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2439,4 +2439,4 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             "no advertise l2vpn evpn",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)

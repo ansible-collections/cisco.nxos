@@ -32,7 +32,7 @@ class TestNxosEvpnVniModule(TestNxosModule):
     module = nxos_evpn_vni
 
     def setUp(self):
-        super(TestNxosEvpnVniModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_evpn_vni.load_config",
@@ -45,7 +45,7 @@ class TestNxosEvpnVniModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosEvpnVniModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
 
@@ -54,24 +54,16 @@ class TestNxosEvpnVniModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_evpn_vni_present(self):
-        set_module_args(dict(vni="6000", route_target_import="5000:10", state="present"))
+        set_module_args({"vni": "6000", "route_target_import": "5000:10", "state": "present"})
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"],
-            [
-                "evpn",
-                "vni 6000 l2",
-                "route-target import 5000:10",
-                "no route-target import auto",
-            ],
-        )
+        assert result["commands"] == ["evpn", "vni 6000 l2", "route-target import 5000:10", "no route-target import auto"]
 
     def test_nxos_evpn_vni_absent_not_existing(self):
-        set_module_args(dict(vni="12000", state="absent"))
+        set_module_args({"vni": "12000", "state": "absent"})
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_evpn_vni_absent_existing(self):
-        set_module_args(dict(vni="6000", state="absent"))
+        set_module_args({"vni": "6000", "state": "absent"})
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["evpn", "no vni 6000 l2"])
+        assert result["commands"] == ["evpn", "no vni 6000 l2"]

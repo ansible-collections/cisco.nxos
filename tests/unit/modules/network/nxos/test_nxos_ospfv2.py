@@ -37,7 +37,7 @@ class TestNxosOspfv2Module(TestNxosModule):
     module = nxos_ospfv2
 
     def setUp(self):
-        super(TestNxosOspfv2Module, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -50,56 +50,56 @@ class TestNxosOspfv2Module(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosOspfv2Module, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
     def test_nxos_ospfv2_merged(self):
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            router_id="203.0.113.20",
-                            redistribute=[
-                                dict(
-                                    protocol="eigrp",
-                                    id="100",
-                                    route_map="rmap_1",
-                                ),
-                                dict(
-                                    protocol="direct",
-                                    route_map="direct-connect",
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "router_id": "203.0.113.20",
+                            "redistribute": [
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "100",
+                                    "route_map": "rmap_1",
+                                },
+                                {
+                                    "protocol": "direct",
+                                    "route_map": "direct-connect",
+                                },
                             ],
-                            log_adjacency_changes=dict(detail=True),
-                        ),
-                        dict(
-                            process_id="200",
-                            router_id="198.51.100.1",
-                            areas=[
-                                dict(
-                                    area_id="0.0.0.100",
-                                    filter_list=[
-                                        dict(route_map="rmap_1", direction="in"),
-                                        dict(route_map="rmap_2", direction="out"),
+                            "log_adjacency_changes": {"detail": True},
+                        },
+                        {
+                            "process_id": "200",
+                            "router_id": "198.51.100.1",
+                            "areas": [
+                                {
+                                    "area_id": "0.0.0.100",
+                                    "filter_list": [
+                                        {"route_map": "rmap_1", "direction": "in"},
+                                        {"route_map": "rmap_2", "direction": "out"},
                                     ],
-                                    ranges=[
-                                        dict(prefix="198.51.100.64/27"),
-                                        dict(prefix="198.51.100.96/27"),
+                                    "ranges": [
+                                        {"prefix": "198.51.100.64/27"},
+                                        {"prefix": "198.51.100.96/27"},
                                     ],
-                                ),
-                                dict(
-                                    area_id="0.0.0.101",
-                                    authentication=dict(message_digest=True),
-                                ),
+                                },
+                                {
+                                    "area_id": "0.0.0.101",
+                                    "authentication": {"message_digest": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -117,7 +117,7 @@ class TestNxosOspfv2Module(TestNxosModule):
             "area 0.0.0.101 authentication message-digest",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv2_merged_idempotent(self):
         self.get_config.return_value = dedent(
@@ -136,53 +136,53 @@ class TestNxosOspfv2Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            router_id="203.0.113.20",
-                            redistribute=[
-                                dict(
-                                    protocol="eigrp",
-                                    id="100",
-                                    route_map="rmap_1",
-                                ),
-                                dict(
-                                    protocol="direct",
-                                    route_map="direct-connect",
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "router_id": "203.0.113.20",
+                            "redistribute": [
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "100",
+                                    "route_map": "rmap_1",
+                                },
+                                {
+                                    "protocol": "direct",
+                                    "route_map": "direct-connect",
+                                },
                             ],
-                        ),
-                        dict(
-                            process_id="200",
-                            router_id="198.51.100.1",
-                            areas=[
-                                dict(
-                                    area_id="0.0.0.100",
-                                    filter_list=[
-                                        dict(route_map="rmap_1", direction="in"),
-                                        dict(route_map="rmap_2", direction="out"),
+                        },
+                        {
+                            "process_id": "200",
+                            "router_id": "198.51.100.1",
+                            "areas": [
+                                {
+                                    "area_id": "0.0.0.100",
+                                    "filter_list": [
+                                        {"route_map": "rmap_1", "direction": "in"},
+                                        {"route_map": "rmap_2", "direction": "out"},
                                     ],
-                                    ranges=[
-                                        dict(prefix="198.51.100.64/27"),
-                                        dict(prefix="198.51.100.96/27"),
+                                    "ranges": [
+                                        {"prefix": "198.51.100.64/27"},
+                                        {"prefix": "198.51.100.96/27"},
                                     ],
-                                ),
-                                dict(
-                                    area_id="0.0.0.101",
-                                    authentication=dict(message_digest=True),
-                                ),
+                                },
+                                {
+                                    "area_id": "0.0.0.101",
+                                    "authentication": {"message_digest": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_ospfv2_merged_update(self):
         self.get_config.return_value = dedent(
@@ -201,30 +201,30 @@ class TestNxosOspfv2Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            router_id="203.0.113.20",
-                            redistribute=[
-                                dict(
-                                    protocol="eigrp",
-                                    id="100",
-                                    route_map="rmap_2",
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "router_id": "203.0.113.20",
+                            "redistribute": [
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "100",
+                                    "route_map": "rmap_2",
+                                },
                             ],
-                            areas=[
-                                dict(
-                                    area_id="0.0.0.101",
-                                    stub=dict(no_summary=True),
-                                ),
+                            "areas": [
+                                {
+                                    "area_id": "0.0.0.101",
+                                    "stub": {"no_summary": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
 
@@ -235,7 +235,7 @@ class TestNxosOspfv2Module(TestNxosModule):
         ]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv2_replaced(self):
         self.get_config.return_value = dedent(
@@ -254,23 +254,23 @@ class TestNxosOspfv2Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            router_id="203.0.113.20",
-                            areas=[
-                                dict(
-                                    area_id="0.0.0.101",
-                                    stub=dict(no_summary=True),
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "router_id": "203.0.113.20",
+                            "areas": [
+                                {
+                                    "area_id": "0.0.0.101",
+                                    "stub": {"no_summary": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -280,7 +280,7 @@ class TestNxosOspfv2Module(TestNxosModule):
             "area 0.0.0.101 stub no-summary",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv2_replaced_idempotent(self):
         self.get_config.return_value = dedent(
@@ -299,53 +299,53 @@ class TestNxosOspfv2Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            router_id="203.0.113.20",
-                            redistribute=[
-                                dict(
-                                    protocol="eigrp",
-                                    id="100",
-                                    route_map="rmap_1",
-                                ),
-                                dict(
-                                    protocol="direct",
-                                    route_map="direct-connect",
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "router_id": "203.0.113.20",
+                            "redistribute": [
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "100",
+                                    "route_map": "rmap_1",
+                                },
+                                {
+                                    "protocol": "direct",
+                                    "route_map": "direct-connect",
+                                },
                             ],
-                        ),
-                        dict(
-                            process_id="200",
-                            router_id="198.51.100.1",
-                            areas=[
-                                dict(
-                                    area_id="0.0.0.100",
-                                    filter_list=[
-                                        dict(route_map="rmap_1", direction="in"),
-                                        dict(route_map="rmap_2", direction="out"),
+                        },
+                        {
+                            "process_id": "200",
+                            "router_id": "198.51.100.1",
+                            "areas": [
+                                {
+                                    "area_id": "0.0.0.100",
+                                    "filter_list": [
+                                        {"route_map": "rmap_1", "direction": "in"},
+                                        {"route_map": "rmap_2", "direction": "out"},
                                     ],
-                                    ranges=[
-                                        dict(prefix="198.51.100.64/27"),
-                                        dict(prefix="198.51.100.96/27"),
+                                    "ranges": [
+                                        {"prefix": "198.51.100.64/27"},
+                                        {"prefix": "198.51.100.96/27"},
                                     ],
-                                ),
-                                dict(
-                                    area_id="0.0.0.101",
-                                    authentication=dict(message_digest=True),
-                                ),
+                                },
+                                {
+                                    "area_id": "0.0.0.101",
+                                    "authentication": {"message_digest": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_ospfv2_overridden(self):
         self.get_config.return_value = dedent(
@@ -364,10 +364,10 @@ class TestNxosOspfv2Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(processes=[dict(process_id="300", router_id="203.0.113.20")]),
-                state="overridden",
-            ),
+            {
+                "config": {"processes": [{"process_id": "300", "router_id": "203.0.113.20"}]},
+                "state": "overridden",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -377,7 +377,7 @@ class TestNxosOspfv2Module(TestNxosModule):
             "router-id 203.0.113.20",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv2_overridden_idempotent(self):
         self.get_config.return_value = dedent(
@@ -396,53 +396,53 @@ class TestNxosOspfv2Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            router_id="203.0.113.20",
-                            redistribute=[
-                                dict(
-                                    protocol="eigrp",
-                                    id="100",
-                                    route_map="rmap_1",
-                                ),
-                                dict(
-                                    protocol="direct",
-                                    route_map="direct-connect",
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "router_id": "203.0.113.20",
+                            "redistribute": [
+                                {
+                                    "protocol": "eigrp",
+                                    "id": "100",
+                                    "route_map": "rmap_1",
+                                },
+                                {
+                                    "protocol": "direct",
+                                    "route_map": "direct-connect",
+                                },
                             ],
-                        ),
-                        dict(
-                            process_id="200",
-                            router_id="198.51.100.1",
-                            areas=[
-                                dict(
-                                    area_id="0.0.0.100",
-                                    filter_list=[
-                                        dict(route_map="rmap_1", direction="in"),
-                                        dict(route_map="rmap_2", direction="out"),
+                        },
+                        {
+                            "process_id": "200",
+                            "router_id": "198.51.100.1",
+                            "areas": [
+                                {
+                                    "area_id": "0.0.0.100",
+                                    "filter_list": [
+                                        {"route_map": "rmap_1", "direction": "in"},
+                                        {"route_map": "rmap_2", "direction": "out"},
                                     ],
-                                    ranges=[
-                                        dict(prefix="198.51.100.64/27"),
-                                        dict(prefix="198.51.100.96/27"),
+                                    "ranges": [
+                                        {"prefix": "198.51.100.64/27"},
+                                        {"prefix": "198.51.100.96/27"},
                                     ],
-                                ),
-                                dict(
-                                    area_id="0.0.0.101",
-                                    authentication=dict(message_digest=True),
-                                ),
+                                },
+                                {
+                                    "area_id": "0.0.0.101",
+                                    "authentication": {"message_digest": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="overridden",
-            ),
+                },
+                "state": "overridden",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_ospfv2_deleted(self):
         self.get_config.return_value = dedent(
@@ -463,16 +463,16 @@ class TestNxosOspfv2Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(processes=[dict(process_id="100"), dict(process_id="300")]),
-                state="deleted",
-            ),
+            {
+                "config": {"processes": [{"process_id": "100"}, {"process_id": "300"}]},
+                "state": "deleted",
+            },
             ignore_provider_arg,
         )
         commands = ["no router ospf 100", "no router ospf 300"]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_nxos_ospfv2_deleted_idempotent(self):
         self.get_config.return_value = dedent(
@@ -493,15 +493,15 @@ class TestNxosOspfv2Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(processes=[dict(process_id="400"), dict(process_id="500")]),
-                state="deleted",
-            ),
+            {
+                "config": {"processes": [{"process_id": "400"}, {"process_id": "500"}]},
+                "state": "deleted",
+            },
             ignore_provider_arg,
         )
 
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_ospfv2_deleted_all(self):
         self.get_config.return_value = dedent(
@@ -521,7 +521,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               router-id 192.0.168.102
             """,
         )
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
 
         commands = [
             "no router ospf 100",
@@ -530,7 +530,7 @@ class TestNxosOspfv2Module(TestNxosModule):
         ]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv2_process_id_word(self):
         self.get_config.return_value = dedent(
@@ -542,20 +542,20 @@ class TestNxosOspfv2Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(process_id="100", router_id="203.0.113.20"),
-                        dict(process_id="TEST-1", router_id="198.51.100.1"),
-                        dict(process_id="TEST-2", router_id="198.52.200.1"),
+            {
+                "config": {
+                    "processes": [
+                        {"process_id": "100", "router_id": "203.0.113.20"},
+                        {"process_id": "TEST-1", "router_id": "198.51.100.1"},
+                        {"process_id": "TEST-2", "router_id": "198.52.200.1"},
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
 
         commands = ["router ospf TEST-2", "router-id 198.52.200.1"]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)

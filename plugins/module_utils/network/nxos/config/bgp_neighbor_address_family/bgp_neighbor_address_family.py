@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -26,7 +25,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_neighbor_address_family import (
     Bgp_neighbor_address_familyTemplate,
@@ -34,12 +32,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Bgp_neighbor_address_family(ResourceModule):
-    """
-    The nxos_bgp_neighbor_address_family config class
-    """
+    """The nxos_bgp_neighbor_address_family config class."""
 
-    def __init__(self, module):
-        super(Bgp_neighbor_address_family, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -78,7 +74,7 @@ class Bgp_neighbor_address_family(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -170,7 +166,7 @@ class Bgp_neighbor_address_family(ResourceModule):
                 self.addcmd(have_af, "address_family", True)
 
             if len(self.commands) != begin:
-                self.commands.insert(begin, "neighbor {0}".format(w_nbr["neighbor_address"]))
+                self.commands.insert(begin, "neighbor {}".format(w_nbr["neighbor_address"]))
 
         if self.state in ["overridden", "deleted"]:
             for k, h_nbr in iteritems(h_nbrs):
@@ -180,11 +176,11 @@ class Bgp_neighbor_address_family(ResourceModule):
                     for k, have_af in iteritems(have_afs):
                         self.addcmd(have_af, "address_family", True)
                 if len(self.commands) != begin:
-                    self.commands.insert(begin, "neighbor {0}".format(h_nbr["neighbor_address"]))
+                    self.commands.insert(begin, "neighbor {}".format(h_nbr["neighbor_address"]))
 
         if vrf:
             if len(self.commands) != begin_vrf:
-                self.commands.insert(begin_vrf, "vrf {0}".format(vrf))
+                self.commands.insert(begin_vrf, f"vrf {vrf}")
         else:
             self._vrfs_compare(want, have)
 

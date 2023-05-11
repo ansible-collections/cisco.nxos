@@ -34,7 +34,7 @@ class TestNxosFeatureModule(TestNxosModule):
     module = nxos_feature
 
     def setUp(self):
-        super(TestNxosFeatureModule, self).setUp()
+        super().setUp()
         self.mock_run_commands = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.run_commands",
         )
@@ -57,7 +57,7 @@ class TestNxosFeatureModule(TestNxosModule):
         self.get_capabilities.return_value = {"network_api": "cliconf"}
 
     def tearDown(self):
-        super(TestNxosFeatureModule, self).tearDown()
+        super().tearDown()
         self.mock_run_commands.stop()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
@@ -66,7 +66,7 @@ class TestNxosFeatureModule(TestNxosModule):
     def load_fixtures(self, commands=None, device=""):
         def load_from_file(*args, **kwargs):
             module, commands = args
-            output = list()
+            output = []
 
             for item in commands:
                 try:
@@ -83,21 +83,21 @@ class TestNxosFeatureModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_feature_enable(self):
-        set_module_args(dict(feature="nve", state="enabled"))
+        set_module_args({"feature": "nve", "state": "enabled"})
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["terminal dont-ask", "feature nv overlay"])
+        assert result["commands"] == ["terminal dont-ask", "feature nv overlay"]
 
     def test_nxos_feature_disable(self):
-        set_module_args(dict(feature="ospf", state="disabled"))
+        set_module_args({"feature": "ospf", "state": "disabled"})
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["terminal dont-ask", "no feature ospf"])
+        assert result["commands"] == ["terminal dont-ask", "no feature ospf"]
 
 
 class TestNxosFeatureModuleMDS(TestNxosModule):
     module = nxos_feature
 
     def setUp(self):
-        super(TestNxosFeatureModuleMDS, self).setUp()
+        super().setUp()
         self.mock_run_commands = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_feature.run_commands",
         )
@@ -126,7 +126,7 @@ class TestNxosFeatureModuleMDS(TestNxosModule):
         }
 
     def tearDown(self):
-        super(TestNxosFeatureModuleMDS, self).tearDown()
+        super().tearDown()
         self.mock_run_commands.stop()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
@@ -135,7 +135,7 @@ class TestNxosFeatureModuleMDS(TestNxosModule):
     def load_fixtures(self, commands=None, device=""):
         def load_from_file(*args, **kwargs):
             module, commands = args
-            output = list()
+            output = []
 
             for item in commands:
                 try:
@@ -152,21 +152,21 @@ class TestNxosFeatureModuleMDS(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_feature_enable(self):
-        set_module_args(dict(feature="fcrxbbcredit", state="enabled"))
+        set_module_args({"feature": "fcrxbbcredit", "state": "enabled"})
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["terminal dont-ask", "feature fcrxbbcredit"])
+        assert result["commands"] == ["terminal dont-ask", "feature fcrxbbcredit"]
 
     def test_nxos_feature_disable(self):
-        set_module_args(dict(feature="port-track", state="disabled"))
+        set_module_args({"feature": "port-track", "state": "disabled"})
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["terminal dont-ask", "no feature port-track"])
+        assert result["commands"] == ["terminal dont-ask", "no feature port-track"]
 
     def test_nxos_feature_enable_already_enabled(self):
-        set_module_args(dict(feature="analytics", state="enabled"))
+        set_module_args({"feature": "analytics", "state": "enabled"})
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_feature_disable_already_disabled(self):
-        set_module_args(dict(feature="sftp-server", state="disabled"))
+        set_module_args({"feature": "sftp-server", "state": "disabled"})
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_vlans class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -26,7 +25,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_empties,
     to_list,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     search_obj_in_list,
@@ -34,16 +32,14 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Vlans(ConfigBase):
-    """
-    The nxos_vlans class
-    """
+    """The nxos_vlans class."""
 
     gather_subset = ["min"]
 
     gather_network_resources = ["vlans"]
 
-    def __init__(self, module):
-        super(Vlans, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_platform(self):
         """Wrapper method for getting platform info
@@ -52,7 +48,7 @@ class Vlans(ConfigBase):
         return self.facts.get("ansible_net_platform", "")
 
     def get_vlans_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -75,7 +71,7 @@ class Vlans(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -129,7 +125,7 @@ class Vlans(ConfigBase):
 
     def set_config(self, existing_vlans_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -141,7 +137,7 @@ class Vlans(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -152,10 +148,10 @@ class Vlans(ConfigBase):
         state = self._module.params["state"]
         if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state),
+                msg=f"value of config parameter must not be empty for state {state}",
             )
 
-        commands = list()
+        commands = []
         if state == "overridden":
             commands.extend(self._state_overridden(want, have))
         elif state == "deleted":
@@ -172,7 +168,7 @@ class Vlans(ConfigBase):
     def remove_default_states(self, obj):
         """Removes non-empty but default states from the obj."""
         default_states = {"enabled": True, "state": "active", "mode": "ce"}
-        for k in default_states.keys():
+        for k in default_states:
             if obj.get(k) == default_states[k]:
                 obj.pop(k, None)
         return obj
@@ -190,7 +186,7 @@ class Vlans(ConfigBase):
             diff = dict_diff(want, obj_in_have)
             # Remove merge items from diff; what's left will be used to
             # remove states not specified in the playbook
-            for k in dict(set(want.items()) - set(obj_in_have.items())).keys():
+            for k in dict(set(want.items()) - set(obj_in_have.items())):
                 diff.pop(k, None)
         else:
             diff = want
@@ -240,7 +236,7 @@ class Vlans(ConfigBase):
         return cmds
 
     def _state_merged(self, w, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -252,7 +248,7 @@ class Vlans(ConfigBase):
         return cmds
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -272,7 +268,7 @@ class Vlans(ConfigBase):
         return commands
 
     def del_attribs(self, obj):
-        """Returns a list of commands to reset states to default"""
+        """Returns a list of commands to reset states to default."""
         commands = []
         if not obj:
             return commands
@@ -327,8 +323,7 @@ class Vlans(ConfigBase):
     def _sanitize(self, vlans):
         sanitized_vlans = []
         for vlan in vlans:
-            if not re.search("N[567][7K]", self._platform):
-                if "mode" in vlan:
-                    del vlan["mode"]
+            if not re.search("N[567][7K]", self._platform) and "mode" in vlan:
+                del vlan["mode"]
             sanitized_vlans.append(remove_empties(vlan))
         return sanitized_vlans

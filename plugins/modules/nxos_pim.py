@@ -84,7 +84,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -130,7 +129,7 @@ def apply_key_map(key_map, table):
 
 
 def get_commands(module, existing, proposed, candidate):
-    commands = list()
+    commands = []
     proposed_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, proposed)
 
     for key, value in proposed_commands.items():
@@ -142,7 +141,7 @@ def get_commands(module, existing, proposed, candidate):
             elif value == "none":
                 command = "ip pim ssm range none"
             elif value:
-                command = "ip pim ssm range {0}".format(value)
+                command = f"ip pim ssm range {value}"
         elif key == "ip pim bfd":
             no_cmd = "no " if value == "disable" else ""
             command = no_cmd + key
@@ -155,17 +154,17 @@ def get_commands(module, existing, proposed, candidate):
 
 
 def main():
-    argument_spec = dict(
-        bfd=dict(required=False, type="str", choices=["enable", "disable"]),
-        ssm_range=dict(required=False, type="list", default=[], elements="str"),
-    )
+    argument_spec = {
+        "bfd": {"required": False, "type": "str", "choices": ["enable", "disable"]},
+        "ssm_range": {"required": False, "type": "list", "default": [], "elements": "str"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
-    warnings = list()
+    warnings = []
     result = {"changed": False, "commands": [], "warnings": warnings}
 
     params = module.params
-    args = [k for k in PARAM_TO_COMMAND_KEYMAP.keys() if params[k] is not None]
+    args = [k for k in PARAM_TO_COMMAND_KEYMAP if params[k] is not None]
 
     # SSM syntax check
     if "ssm_range" in args:
@@ -179,7 +178,7 @@ def main():
                 )
 
     existing = get_existing(module, args)
-    proposed_args = dict((k, v) for k, v in params.items() if k in args)
+    proposed_args = {k: v for k, v in params.items() if k in args}
 
     proposed = {}
     for key, value in proposed_args.items():
@@ -188,8 +187,8 @@ def main():
                 if existing.get(key):
                     proposed[key] = "default"
             else:
-                v = sorted(set([str(i) for i in value]))
-                ex = sorted(set([str(i) for i in existing.get(key, [])]))
+                v = sorted({str(i) for i in value})
+                ex = sorted({str(i) for i in existing.get(key, [])})
                 if v != ex:
                     proposed[key] = " ".join(str(s) for s in v)
 

@@ -76,7 +76,6 @@ status:
 
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
 
 
@@ -99,7 +98,7 @@ def rollback(filename, module):
 
 
 def main():
-    argument_spec = dict(checkpoint_file=dict(required=False), rollback_to=dict(required=False))
+    argument_spec = {"checkpoint_file": {"required": False}, "rollback_to": {"required": False}}
 
     module = AnsibleModule(
         argument_spec=argument_spec,

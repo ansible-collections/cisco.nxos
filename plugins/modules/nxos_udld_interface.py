@@ -120,7 +120,6 @@ changed:
 
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -174,7 +173,7 @@ def get_commands_config_udld_interface1(delta, interface, module, existing):
         commands.append("udld aggressive")
     else:
         commands.append("no udld aggressive")
-    commands.insert(0, "interface {0}".format(interface))
+    commands.insert(0, f"interface {interface}")
 
     return commands
 
@@ -184,10 +183,7 @@ def get_commands_config_udld_interface2(delta, interface, module, existing):
     existing, mode_str = get_udld_interface(module, interface)
     mode = delta["mode"]
     if mode == "enabled":
-        if mode_str == "no udld enable":
-            command = "udld enable"
-        else:
-            command = "no udld disable"
+        command = "udld enable" if mode_str == "no udld enable" else "no udld disable"
     else:
         if mode_str == "no udld disable":
             command = "udld disable"
@@ -195,7 +191,7 @@ def get_commands_config_udld_interface2(delta, interface, module, existing):
             command = "no udld enable"
     if command:
         commands.append(command)
-        commands.insert(0, "interface {0}".format(interface))
+        commands.insert(0, f"interface {interface}")
 
     return commands
 
@@ -209,38 +205,32 @@ def get_commands_remove_udld_interface(delta, interface, module, existing):
         command = "no udld aggressive"
     else:
         if mode == "enabled":
-            if mode_str == "udld enable":
-                command = "no udld enable"
-            else:
-                command = "udld disable"
+            command = "no udld enable" if mode_str == "udld enable" else "udld disable"
         elif mode == "disabled":
-            if mode_str == "no udld disable":
-                command = "udld disable"
-            else:
-                command = "no udld enable"
+            command = "udld disable" if mode_str == "no udld disable" else "no udld enable"
     if command:
         commands.append(command)
-        commands.insert(0, "interface {0}".format(interface))
+        commands.insert(0, f"interface {interface}")
 
     return commands
 
 
 def main():
-    argument_spec = dict(
-        mode=dict(choices=["enabled", "disabled", "aggressive"], required=True),
-        interface=dict(type="str", required=True),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "mode": {"choices": ["enabled", "disabled", "aggressive"], "required": True},
+        "interface": {"type": "str", "required": True},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     interface = module.params["interface"].lower()
     mode = module.params["mode"]
     state = module.params["state"]
 
-    proposed = dict(mode=mode)
+    proposed = {"mode": mode}
     existing, mode_str = get_udld_interface(module, interface)
     end_state = existing
 

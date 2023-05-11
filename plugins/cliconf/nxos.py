@@ -44,6 +44,7 @@ options:
     - name: ansible_nxos_config_commands
 """
 
+import contextlib
 import json
 import re
 
@@ -60,10 +61,10 @@ from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base imp
 
 
 class Cliconf(CliconfBase):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self._module_context = {}
         self._device_info = {}
-        super(Cliconf, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def read_module_context(self, module_key):
         if self._module_context.get(module_key):
@@ -74,7 +75,6 @@ class Cliconf(CliconfBase):
     def save_module_context(self, module_key, module_context):
         self._module_context[module_key] = module_context
 
-        return None
 
     def get_device_info(self):
         if not self._device_info:
@@ -152,14 +152,12 @@ class Cliconf(CliconfBase):
 
         if diff_match not in option_values["diff_match"]:
             raise ValueError(
-                "'match' value %s in invalid, valid values are %s"
-                % (diff_match, ", ".join(option_values["diff_match"])),
+                "'match' value {} in invalid, valid values are {}".format(diff_match, ", ".join(option_values["diff_match"])),
             )
 
         if diff_replace not in option_values["diff_replace"]:
             raise ValueError(
-                "'replace' value %s in invalid, valid values are %s"
-                % (diff_replace, ", ".join(option_values["diff_replace"])),
+                "'replace' value {} in invalid, valid values are {}".format(diff_replace, ", ".join(option_values["diff_replace"])),
             )
 
         # prepare candidate configuration
@@ -186,15 +184,14 @@ class Cliconf(CliconfBase):
         options_values = self.get_option_values()
         if format not in options_values["format"]:
             raise ValueError(
-                "'format' value %s is invalid. Valid values are %s"
-                % (format, ",".join(options_values["format"])),
+                "'format' value {} is invalid. Valid values are {}".format(format, ",".join(options_values["format"])),
             )
 
         lookup = {"running": "running-config", "startup": "startup-config"}
         if source not in lookup:
             raise ValueError("fetching configuration from %s is not supported" % source)
 
-        cmd = "show {0} ".format(lookup[source])
+        cmd = f"show {lookup[source]} "
         if format and format != "text":
             cmd += "| %s " % format
 
@@ -212,10 +209,10 @@ class Cliconf(CliconfBase):
         requests = []
 
         if replace:
-            device_info = self.get_device_info()
+            self.get_device_info()
             # not all NX-OS versions support `config replace`
             # we let the device throw the invalid command error
-            candidate = "config replace {0}".format(replace)
+            candidate = f"config replace {replace}"
 
         if commit:
             self.send_command("configure terminal")
@@ -262,7 +259,7 @@ class Cliconf(CliconfBase):
         if commands is None:
             raise ValueError("'commands' value is required")
 
-        responses = list()
+        responses = []
         for cmd in to_list(commands):
             if not isinstance(cmd, Mapping):
                 cmd = {"command": cmd}
@@ -283,13 +280,12 @@ class Cliconf(CliconfBase):
                     out = to_text(out, errors="surrogate_or_strict").strip()
                 except UnicodeError:
                     raise ConnectionError(
-                        message="Failed to decode output from %s: %s" % (cmd, to_text(out)),
+                        message=f"Failed to decode output from {cmd}: {to_text(out)}",
                     )
 
-                try:
+                with contextlib.suppress(ValueError):
                     out = json.loads(out)
-                except ValueError:
-                    pass
+
 
                 responses.append(out)
         return responses
@@ -318,7 +314,7 @@ class Cliconf(CliconfBase):
         }
 
     def get_capabilities(self):
-        result = super(Cliconf, self).get_capabilities()
+        result = super().get_capabilities()
         result["rpc"] += ["get_diff", "run_commands"]
         result["device_operations"] = self.get_device_operations()
         result.update(self.get_option_values())
@@ -384,7 +380,7 @@ class Cliconf(CliconfBase):
     def set_cli_prompt_context(self):
         """
         Make sure we are in the operational cli context
-        :return: None
+        :return: None.
         """
         if self._connection.connected:
             out = self._connection.get_prompt()
@@ -406,8 +402,7 @@ class Cliconf(CliconfBase):
         options_values = self.get_option_values()
         if output not in options_values["output"]:
             raise ValueError(
-                "'output' value %s is invalid. Valid values are %s"
-                % (output, ",".join(options_values["output"])),
+                "'output' value {} is invalid. Valid values are {}".format(output, ",".join(options_values["output"])),
             )
 
         if output in ["json", "json-pretty"] and not re.search(output_re, command):
@@ -417,7 +412,7 @@ class Cliconf(CliconfBase):
             if platform.startswith("DS-") and "MDS" in model:
                 cmd = "%s | json native" % command
             else:
-                cmd = "%s | %s" % (command, output)
+                cmd = f"{command} | {output}"
         elif output == "text" and re.search(output_re, command):
             cmd = command.rsplit("|", 1)[0]
         else:

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -17,7 +16,6 @@ based on the configuration.
 
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
     Ospfv3Args,
 )
@@ -26,10 +24,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 )
 
 
-class Ospfv3Facts(object):
-    """The nxos ospfv3 facts class"""
+class Ospfv3Facts:
+    """The nxos ospfv3 facts class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Ospfv3Args.argument_spec
 
@@ -40,7 +38,7 @@ class Ospfv3Facts(object):
         return connection.get("show running-config | section '^router ospfv3'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Ospfv3 network resource
+        """Populate the facts for Ospfv3 network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -72,11 +70,10 @@ class Ospfv3Facts(object):
                 if "areas" in entry:
                     entry["areas"] = list(entry["areas"].values())
 
-                if "address_family" in entry:
-                    if "areas" in entry["address_family"]:
-                        entry["address_family"]["areas"] = list(
-                            entry["address_family"]["areas"].values(),
-                        )
+                if "address_family" in entry and "areas" in entry["address_family"]:
+                    entry["address_family"]["areas"] = list(
+                        entry["address_family"]["areas"].values(),
+                    )
 
                 ipv6["processes"].append(entry)
 

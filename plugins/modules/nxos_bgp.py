@@ -283,7 +283,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -396,31 +395,28 @@ def get_value(arg, config):
     command = PARAM_TO_COMMAND_KEYMAP.get(arg)
 
     if command.split()[0] == "event-history":
-        has_size = re.search(r"^\s+{0} size\s(?P<value>.*)$".format(command), config, re.M)
+        has_size = re.search(fr"^\s+{command} size\s(?P<value>.*)$", config, re.M)
 
-        if command == "event-history detail":
-            value = False
-        else:
-            value = "size_small"
+        value = False if command == "event-history detail" else "size_small"
 
         if has_size:
             value = "size_%s" % has_size.group("value")
 
     elif arg in ["enforce_first_as", "fast_external_fallover"]:
-        no_command_re = re.compile(r"no\s+{0}\s*".format(command), re.M)
+        no_command_re = re.compile(fr"no\s+{command}\s*", re.M)
         value = True
 
         if no_command_re.search(config):
             value = False
 
     elif arg in BOOL_PARAMS:
-        has_command = re.search(r"^\s+{0}\s*$".format(command), config, re.M)
+        has_command = re.search(fr"^\s+{command}\s*$", config, re.M)
         value = False
 
         if has_command:
             value = True
     else:
-        command_val_re = re.compile(r"(?:{0}\s)(?P<value>.*)".format(command), re.M)
+        command_val_re = re.compile(fr"(?:{command}\s)(?P<value>.*)", re.M)
         value = ""
 
         has_command = command_val_re.search(config)
@@ -450,10 +446,10 @@ def get_existing(module, args, warnings):
 
     if asn_match:
         existing_asn = asn_match.group("existing_asn")
-        bgp_parent = "router bgp {0}".format(existing_asn)
+        bgp_parent = f"router bgp {existing_asn}"
 
         if module.params["vrf"] != "default":
-            parents = [bgp_parent, "vrf {0}".format(module.params["vrf"])]
+            parents = [bgp_parent, "vrf {}".format(module.params["vrf"])]
         else:
             parents = [bgp_parent]
 
@@ -468,7 +464,7 @@ def get_existing(module, args, warnings):
                 existing["vrf"] = "default"
 
     if not existing and module.params["vrf"] != "default" and module.params["state"] == "present":
-        msg = "VRF {0} doesn't exist.".format(module.params["vrf"])
+        msg = "VRF {} doesn't exist.".format(module.params["vrf"])
         warnings.append(msg)
 
     return existing
@@ -485,7 +481,7 @@ def apply_key_map(key_map, table):
 
 
 def state_present(module, existing, proposed, candidate):
-    commands = list()
+    commands = []
     proposed_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, proposed)
     existing_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, existing)
 
@@ -493,25 +489,25 @@ def state_present(module, existing, proposed, candidate):
         if value is True:
             commands.append(key)
         elif value is False:
-            commands.append("no {0}".format(key))
+            commands.append(f"no {key}")
         elif value == "default":
             default_value = PARAM_TO_DEFAULT_KEYMAP.get(key)
             existing_value = existing_commands.get(key)
 
             if default_value:
-                commands.append("{0} {1}".format(key, default_value))
+                commands.append(f"{key} {default_value}")
             elif existing_value:
                 if key == "confederation peers":
                     existing_value = " ".join(existing_value)
-                commands.append("no {0} {1}".format(key, existing_value))
+                commands.append(f"no {key} {existing_value}")
         elif not value:
             existing_value = existing_commands.get(key)
             if existing_value:
-                commands.append("no {0} {1}".format(key, existing_value))
+                commands.append(f"no {key} {existing_value}")
         elif key == "confederation peers":
-            commands.append("{0} {1}".format(key, value))
+            commands.append(f"{key} {value}")
         elif key.startswith("timers bgp"):
-            command = "timers bgp {0} {1}".format(
+            command = "timers bgp {} {}".format(
                 proposed["timer_bgp_keepalive"],
                 proposed["timer_bgp_hold"],
             )
@@ -520,21 +516,21 @@ def state_present(module, existing, proposed, candidate):
         else:
             if value.startswith("size"):
                 value = value.replace("_", " ")
-            command = "{0} {1}".format(key, value)
+            command = f"{key} {value}"
             commands.append(command)
 
     parents = []
     if commands:
         commands = fix_commands(commands)
-        parents = ["router bgp {0}".format(module.params["asn"])]
+        parents = ["router bgp {}".format(module.params["asn"])]
         if module.params["vrf"] != "default":
-            parents.append("vrf {0}".format(module.params["vrf"]))
+            parents.append("vrf {}".format(module.params["vrf"]))
     elif proposed:
         if module.params["vrf"] != "default":
-            commands.append("vrf {0}".format(module.params["vrf"]))
-            parents = ["router bgp {0}".format(module.params["asn"])]
+            commands.append("vrf {}".format(module.params["vrf"]))
+            parents = ["router bgp {}".format(module.params["asn"])]
         else:
-            commands.append("router bgp {0}".format(module.params["asn"]))
+            commands.append("router bgp {}".format(module.params["asn"]))
 
     candidate.add(commands, parents=parents)
 
@@ -543,10 +539,10 @@ def state_absent(module, existing, candidate):
     commands = []
     parents = []
     if module.params["vrf"] == "default":
-        commands.append("no router bgp {0}".format(module.params["asn"]))
+        commands.append("no router bgp {}".format(module.params["asn"]))
     elif existing.get("vrf") == module.params["vrf"]:
-        commands.append("no vrf {0}".format(module.params["vrf"]))
-        parents = ["router bgp {0}".format(module.params["asn"])]
+        commands.append("no vrf {}".format(module.params["vrf"]))
+        parents = ["router bgp {}".format(module.params["asn"])]
 
     candidate.add(commands, parents=parents)
 
@@ -602,27 +598,27 @@ def fix_commands(commands):
 
 
 def main():
-    argument_spec = dict(
-        asn=dict(required=True, type="str"),
-        vrf=dict(required=False, type="str", default="default"),
-        bestpath_always_compare_med=dict(required=False, type="bool"),
-        bestpath_aspath_multipath_relax=dict(required=False, type="bool"),
-        bestpath_compare_neighborid=dict(required=False, type="bool"),
-        bestpath_compare_routerid=dict(required=False, type="bool"),
-        bestpath_cost_community_ignore=dict(required=False, type="bool"),
-        bestpath_med_confed=dict(required=False, type="bool"),
-        bestpath_med_missing_as_worst=dict(required=False, type="bool"),
-        bestpath_med_non_deterministic=dict(required=False, type="bool"),
-        cluster_id=dict(required=False, type="str"),
-        confederation_id=dict(required=False, type="str"),
-        confederation_peers=dict(required=False, type="list", elements="str"),
-        disable_policy_batching=dict(required=False, type="bool"),
-        disable_policy_batching_ipv4_prefix_list=dict(required=False, type="str"),
-        disable_policy_batching_ipv6_prefix_list=dict(required=False, type="str"),
-        enforce_first_as=dict(required=False, type="bool"),
-        event_history_cli=dict(
-            required=False,
-            choices=[
+    argument_spec = {
+        "asn": {"required": True, "type": "str"},
+        "vrf": {"required": False, "type": "str", "default": "default"},
+        "bestpath_always_compare_med": {"required": False, "type": "bool"},
+        "bestpath_aspath_multipath_relax": {"required": False, "type": "bool"},
+        "bestpath_compare_neighborid": {"required": False, "type": "bool"},
+        "bestpath_compare_routerid": {"required": False, "type": "bool"},
+        "bestpath_cost_community_ignore": {"required": False, "type": "bool"},
+        "bestpath_med_confed": {"required": False, "type": "bool"},
+        "bestpath_med_missing_as_worst": {"required": False, "type": "bool"},
+        "bestpath_med_non_deterministic": {"required": False, "type": "bool"},
+        "cluster_id": {"required": False, "type": "str"},
+        "confederation_id": {"required": False, "type": "str"},
+        "confederation_peers": {"required": False, "type": "list", "elements": "str"},
+        "disable_policy_batching": {"required": False, "type": "bool"},
+        "disable_policy_batching_ipv4_prefix_list": {"required": False, "type": "str"},
+        "disable_policy_batching_ipv6_prefix_list": {"required": False, "type": "str"},
+        "enforce_first_as": {"required": False, "type": "bool"},
+        "event_history_cli": {
+            "required": False,
+            "choices": [
                 "true",
                 "false",
                 "default",
@@ -631,10 +627,10 @@ def main():
                 "size_large",
                 "size_disable",
             ],
-        ),
-        event_history_detail=dict(
-            required=False,
-            choices=[
+        },
+        "event_history_detail": {
+            "required": False,
+            "choices": [
                 "true",
                 "false",
                 "default",
@@ -643,10 +639,10 @@ def main():
                 "size_large",
                 "size_disable",
             ],
-        ),
-        event_history_events=dict(
-            required=False,
-            choices=[
+        },
+        "event_history_events": {
+            "required": False,
+            "choices": [
                 "true",
                 "false",
                 "default",
@@ -655,10 +651,10 @@ def main():
                 "size_large",
                 "size_disable",
             ],
-        ),
-        event_history_periodic=dict(
-            required=False,
-            choices=[
+        },
+        "event_history_periodic": {
+            "required": False,
+            "choices": [
                 "true",
                 "false",
                 "default",
@@ -667,27 +663,27 @@ def main():
                 "size_large",
                 "size_disable",
             ],
-        ),
-        fast_external_fallover=dict(required=False, type="bool"),
-        flush_routes=dict(required=False, type="bool"),
-        graceful_restart=dict(required=False, type="bool"),
-        graceful_restart_helper=dict(required=False, type="bool"),
-        graceful_restart_timers_restart=dict(required=False, type="str"),
-        graceful_restart_timers_stalepath_time=dict(required=False, type="str"),
-        isolate=dict(required=False, type="bool"),
-        local_as=dict(required=False, type="str"),
-        log_neighbor_changes=dict(required=False, type="bool"),
-        maxas_limit=dict(required=False, type="str"),
-        neighbor_down_fib_accelerate=dict(required=False, type="bool"),
-        reconnect_interval=dict(required=False, type="str"),
-        router_id=dict(required=False, type="str"),
-        shutdown=dict(required=False, type="bool"),
-        suppress_fib_pending=dict(required=False, type="bool"),
-        timer_bestpath_limit=dict(required=False, type="str"),
-        timer_bgp_hold=dict(required=False, type="str"),
-        timer_bgp_keepalive=dict(required=False, type="str"),
-        state=dict(choices=["present", "absent"], default="present", required=False),
-    )
+        },
+        "fast_external_fallover": {"required": False, "type": "bool"},
+        "flush_routes": {"required": False, "type": "bool"},
+        "graceful_restart": {"required": False, "type": "bool"},
+        "graceful_restart_helper": {"required": False, "type": "bool"},
+        "graceful_restart_timers_restart": {"required": False, "type": "str"},
+        "graceful_restart_timers_stalepath_time": {"required": False, "type": "str"},
+        "isolate": {"required": False, "type": "bool"},
+        "local_as": {"required": False, "type": "str"},
+        "log_neighbor_changes": {"required": False, "type": "bool"},
+        "maxas_limit": {"required": False, "type": "str"},
+        "neighbor_down_fib_accelerate": {"required": False, "type": "bool"},
+        "reconnect_interval": {"required": False, "type": "str"},
+        "router_id": {"required": False, "type": "str"},
+        "shutdown": {"required": False, "type": "bool"},
+        "suppress_fib_pending": {"required": False, "type": "bool"},
+        "timer_bestpath_limit": {"required": False, "type": "str"},
+        "timer_bgp_hold": {"required": False, "type": "str"},
+        "timer_bgp_keepalive": {"required": False, "type": "str"},
+        "state": {"choices": ["present", "absent"], "default": "present", "required": False},
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -695,8 +691,8 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
-    result = dict(changed=False, warnings=warnings)
+    warnings = []
+    result = {"changed": False, "warnings": warnings}
 
     state = module.params["state"]
 
@@ -712,15 +708,14 @@ def main():
     args = PARAM_TO_COMMAND_KEYMAP.keys()
     existing = get_existing(module, args, warnings)
 
-    if existing.get("asn") and state == "present":
-        if existing.get("asn") != module.params["asn"]:
-            module.fail_json(
-                msg="Another BGP ASN already exists.",
-                proposed_asn=module.params["asn"],
-                existing_asn=existing.get("asn"),
-            )
+    if existing.get("asn") and state == "present" and existing.get("asn") != module.params["asn"]:
+        module.fail_json(
+            msg="Another BGP ASN already exists.",
+            proposed_asn=module.params["asn"],
+            existing_asn=existing.get("asn"),
+        )
 
-    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed_args = {k: v for k, v in module.params.items() if v is not None and k in args}
     proposed = {}
     for key, value in proposed_args.items():
         if key not in ["asn", "vrf"]:
@@ -731,8 +726,8 @@ def main():
                     if existing.get(key):
                         proposed[key] = "default"
                 else:
-                    v = set([int(i) for i in value])
-                    ex = set([int(i) for i in existing.get(key)])
+                    v = {int(i) for i in value}
+                    ex = {int(i) for i in existing.get(key)}
                     if v != ex:
                         proposed[key] = " ".join(str(s) for s in v)
             else:

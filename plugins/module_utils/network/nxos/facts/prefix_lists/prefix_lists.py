@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -16,7 +15,6 @@ based on the configuration.
 """
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.prefix_lists.prefix_lists import (
     Prefix_listsArgs,
 )
@@ -25,10 +23,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 )
 
 
-class Prefix_listsFacts(object):
-    """The nxos prefix_lists facts class"""
+class Prefix_listsFacts:
+    """The nxos prefix_lists facts class."""
 
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self._module = module
         self.argument_spec = Prefix_listsArgs.argument_spec
 
@@ -39,7 +37,7 @@ class Prefix_listsFacts(object):
         return connection.get("show running-config | section 'ip(.*) prefix-list'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Prefix_lists network resource
+        """Populate the facts for Prefix_lists network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -61,8 +59,7 @@ class Prefix_listsFacts(object):
             # pre-sort lists of dictionaries
             for item in objs:
                 item["prefix_lists"] = sorted(
-                    list(item["prefix_lists"].values()),
-                    key=lambda k: k["name"],
+                    item["prefix_lists"].values(), key=lambda k: k["name"],
                 )
                 for x in item["prefix_lists"]:
                     if "entries" in x:

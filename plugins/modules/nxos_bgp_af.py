@@ -257,7 +257,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -326,7 +325,7 @@ DAMPENING_PARAMS = [
 
 def get_value(arg, config, module):
     command = PARAM_TO_COMMAND_KEYMAP[arg]
-    command_val_re = re.compile(r"(?:{0}\s)(?P<value>.*)$".format(command), re.M)
+    command_val_re = re.compile(fr"(?:{command}\s)(?P<value>.*)$", re.M)
     has_command_val = command_val_re.search(config)
 
     if arg in ["networks", "redistribute", "inject_map"]:
@@ -375,7 +374,7 @@ def get_value(arg, config, module):
                     value = dampening_group["max_suppress"]
             else:
                 if arg == "dampening_state":
-                    value = True if "dampening" in config else False
+                    value = "dampening" in config
     elif arg == "table_map_filter":
         tmf_regex = re.compile(r"\s+table-map.*filter$", re.M)
         value = False
@@ -390,7 +389,7 @@ def get_value(arg, config, module):
             value = has_tablemap.group("value")
 
     elif arg == "client_to_client":
-        no_command_re = re.compile(r"^\s+no\s{0}\s*$".format(command), re.M)
+        no_command_re = re.compile(fr"^\s+no\s{command}\s*$", re.M)
         value = True
 
         if no_command_re.search(config):
@@ -407,7 +406,7 @@ def get_value(arg, config, module):
                     value = route_target.replace("route-map ", "")
 
     elif arg in BOOL_PARAMS:
-        command_re = re.compile(r"^\s+{0}\s*$".format(command), re.M)
+        command_re = re.compile(fr"^\s+{command}\s*$", re.M)
         value = False
 
         if command_re.search(config):
@@ -431,11 +430,11 @@ def get_existing(module, args, warnings):
 
     if match_asn:
         existing_asn = match_asn.group("existing_asn")
-        parents = ["router bgp {0}".format(existing_asn)]
+        parents = [f"router bgp {existing_asn}"]
         if module.params["vrf"] != "default":
-            parents.append("vrf {0}".format(module.params["vrf"]))
+            parents.append("vrf {}".format(module.params["vrf"]))
 
-        parents.append("address-family {0} {1}".format(module.params["afi"], module.params["safi"]))
+        parents.append("address-family {} {}".format(module.params["afi"], module.params["safi"]))
         config = netcfg.get_section(parents)
 
         if config:
@@ -445,7 +444,7 @@ def get_existing(module, args, warnings):
                     if gv:
                         existing[arg] = gv
                     else:
-                        if arg != "client_to_client" and arg in PARAM_TO_DEFAULT_KEYMAP.keys():
+                        if arg != "client_to_client" and arg in PARAM_TO_DEFAULT_KEYMAP:
                             existing[arg] = PARAM_TO_DEFAULT_KEYMAP.get(arg)
                         else:
                             existing[arg] = gv
@@ -456,7 +455,7 @@ def get_existing(module, args, warnings):
             existing["vrf"] = module.params["vrf"]
     else:
         warnings.append(
-            "The BGP process {0} didn't exist but the task just created it.".format(
+            "The BGP process {} didn't exist but the task just created it.".format(
                 module.params["asn"],
             ),
         )
@@ -475,13 +474,13 @@ def apply_key_map(key_map, table):
 
 
 def fix_proposed(module, proposed, existing):
-    commands = list()
+    commands = []
     command = ""
     fixed_proposed = {}
     for key, value in proposed.items():
         if key in DAMPENING_PARAMS:
             if value != "default":
-                command = "dampening {0} {1} {2} {3}".format(
+                command = "dampening {} {} {} {}".format(
                     proposed.get("dampening_half_time"),
                     proposed.get("dampening_reuse_time"),
                     proposed.get("dampening_suppress_time"),
@@ -489,7 +488,7 @@ def fix_proposed(module, proposed, existing):
                 )
             else:
                 if existing.get(key):
-                    command = "no dampening {0} {1} {2} {3}".format(
+                    command = "no dampening {} {} {} {}".format(
                         existing["dampening_half_time"],
                         existing["dampening_reuse_time"],
                         existing["dampening_suppress_time"],
@@ -498,7 +497,7 @@ def fix_proposed(module, proposed, existing):
             if "default" in command:
                 command = ""
         elif key.startswith("distance"):
-            command = "distance {0} {1} {2}".format(
+            command = "distance {} {} {}".format(
                 proposed.get("distance_ebgp"),
                 proposed.get("distance_ibgp"),
                 proposed.get("distance_local"),
@@ -506,9 +505,8 @@ def fix_proposed(module, proposed, existing):
         else:
             fixed_proposed[key] = value
 
-        if command:
-            if command not in commands:
-                commands.append(command)
+        if command and command not in commands:
+            commands.append(command)
 
     return fixed_proposed, commands
 
@@ -518,31 +516,31 @@ def default_existing(existing_value, key, value):
     if key == "network":
         for network in existing_value:
             if len(network) == 2:
-                commands.append("no network {0} route-map {1}".format(network[0], network[1]))
+                commands.append(f"no network {network[0]} route-map {network[1]}")
             elif len(network) == 1:
-                commands.append("no network {0}".format(network[0]))
+                commands.append(f"no network {network[0]}")
 
     elif key == "inject-map":
         for maps in existing_value:
             if len(maps) == 2:
-                commands.append("no inject-map {0} exist-map {1}".format(maps[0], maps[1]))
+                commands.append(f"no inject-map {maps[0]} exist-map {maps[1]}")
             elif len(maps) == 3:
                 commands.append(
-                    "no inject-map {0} exist-map {1} " "copy-attributes".format(maps[0], maps[1]),
+                    "no inject-map {} exist-map {} " "copy-attributes".format(maps[0], maps[1]),
                 )
 
     elif key == "redistribute":
         for maps in existing_value:
-            commands.append("no redistribute {0} route-map {1}".format(maps[0], maps[1]))
+            commands.append(f"no redistribute {maps[0]} route-map {maps[1]}")
 
     elif key == "retain route-target":
         if existing_value == "all":
-            commands.append("no {0} {1}".format(key, existing_value))
+            commands.append(f"no {key} {existing_value}")
         elif existing_value != "default":
-            commands.append("no {0} route-map {1}".format(key, existing_value))
+            commands.append(f"no {key} route-map {existing_value}")
 
     else:
-        commands.append("no {0} {1}".format(key, existing_value))
+        commands.append(f"no {key} {existing_value}")
     return commands
 
 
@@ -554,17 +552,17 @@ def get_network_command(existing, key, value):
             inet = [inet]
         if inet not in existing_networks:
             if len(inet) == 1:
-                command = "{0} {1}".format(key, inet[0])
+                command = f"{key} {inet[0]}"
             elif len(inet) == 2:
-                command = "{0} {1} route-map {2}".format(key, inet[0], inet[1])
+                command = f"{key} {inet[0]} route-map {inet[1]}"
             if command:
                 commands.append(command)
     for enet in existing_networks:
         if enet not in value:
             if len(enet) == 1:
-                command = "no {0} {1}".format(key, enet[0])
+                command = f"no {key} {enet[0]}"
             elif len(enet) == 2:
-                command = "no {0} {1} route-map {2}".format(key, enet[0], enet[1])
+                command = f"no {key} {enet[0]} route-map {enet[1]}"
             if command:
                 commands.append(command)
     return commands
@@ -578,17 +576,17 @@ def get_inject_map_command(existing, key, value):
             maps = [maps]
         if maps not in existing_maps:
             if len(maps) == 2:
-                command = "inject-map {0} exist-map {1}".format(maps[0], maps[1])
+                command = f"inject-map {maps[0]} exist-map {maps[1]}"
             elif len(maps) == 3:
-                command = "inject-map {0} exist-map {1} " "copy-attributes".format(maps[0], maps[1])
+                command = "inject-map {} exist-map {} " "copy-attributes".format(maps[0], maps[1])
             if command:
                 commands.append(command)
     for emaps in existing_maps:
         if emaps not in value:
             if len(emaps) == 2:
-                command = "no inject-map {0} exist-map {1}".format(emaps[0], emaps[1])
+                command = f"no inject-map {emaps[0]} exist-map {emaps[1]}"
             elif len(emaps) == 3:
-                command = "no inject-map {0} exist-map {1} " "copy-attributes".format(
+                command = "no inject-map {} exist-map {} " "copy-attributes".format(
                     emaps[0],
                     emaps[1],
                 )
@@ -604,11 +602,11 @@ def get_redistribute_command(existing, key, value):
         if not isinstance(rule, list):
             rule = [rule]
         if rule not in existing_rules:
-            command = "redistribute {0} route-map {1}".format(rule[0], rule[1])
+            command = f"redistribute {rule[0]} route-map {rule[1]}"
             commands.append(command)
     for erule in existing_rules:
         if erule not in value:
-            command = "no redistribute {0} route-map {1}".format(erule[0], erule[1])
+            command = f"no redistribute {erule[0]} route-map {erule[1]}"
             commands.append(command)
     return commands
 
@@ -617,7 +615,7 @@ def get_table_map_command(module, existing, key, value):
     commands = []
     if key == "table-map":
         if value != "default":
-            command = "{0} {1}".format(key, module.params["table_map"])
+            command = "{} {}".format(key, module.params["table_map"])
             if (
                 module.params["table_map_filter"] is not None
                 and module.params["table_map_filter"] != "default"
@@ -626,7 +624,7 @@ def get_table_map_command(module, existing, key, value):
             commands.append(command)
         else:
             if existing.get("table_map"):
-                command = "no {0} {1}".format(key, existing.get("table_map"))
+                command = "no {} {}".format(key, existing.get("table_map"))
                 commands.append(command)
     return commands
 
@@ -635,16 +633,13 @@ def get_retain_route_target_command(existing, key, value):
     commands = []
     if key == "retain route-target":
         if value != "default":
-            if value == "all":
-                command = "{0} {1}".format(key, value)
-            else:
-                command = "{0} route-map {1}".format(key, value)
+            command = f"{key} {value}" if value == "all" else f"{key} route-map {value}"
         else:
             existing_value = existing.get("retain_route_target")
             if existing_value == "all":
-                command = "no {0} {1}".format(key, existing_value)
+                command = f"no {key} {existing_value}"
             else:
-                command = "no {0} route-map {1}".format(key, existing_value)
+                command = f"no {key} route-map {existing_value}"
         commands.append(command)
     return commands
 
@@ -655,7 +650,7 @@ def get_default_table_map_filter(existing):
     if existing_table_map_filter:
         existing_table_map = existing.get("table_map")
         if existing_table_map:
-            command = "table-map {0}".format(existing_table_map)
+            command = f"table-map {existing_table_map}"
             commands.append(command)
     return commands
 
@@ -666,7 +661,7 @@ def state_present(module, existing, proposed, candidate):
     existing_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, existing)
     for key, value in proposed_commands.items():
         if key == "address-family":
-            addr_family_command = "address-family {0} {1}".format(
+            addr_family_command = "address-family {} {}".format(
                 module.params["afi"],
                 module.params["safi"],
             )
@@ -682,11 +677,11 @@ def state_present(module, existing, proposed, candidate):
             commands.append(key)
 
         elif value is False:
-            commands.append("no {0}".format(key))
+            commands.append(f"no {key}")
 
         elif value == "default":
             if key in PARAM_TO_DEFAULT_KEYMAP:
-                commands.append("{0} {1}".format(key, PARAM_TO_DEFAULT_KEYMAP[key]))
+                commands.append(f"{key} {PARAM_TO_DEFAULT_KEYMAP[key]}")
 
             elif existing_commands.get(key):
                 if key == "table-map-filter":
@@ -721,15 +716,15 @@ def state_present(module, existing, proposed, candidate):
                     commands.extend(retain_route_target_commands)
 
             else:
-                command = "{0} {1}".format(key, value)
+                command = f"{key} {value}"
                 commands.append(command)
 
     if commands:
-        parents = ["router bgp {0}".format(module.params["asn"])]
+        parents = ["router bgp {}".format(module.params["asn"])]
         if module.params["vrf"] != "default":
-            parents.append("vrf {0}".format(module.params["vrf"]))
+            parents.append("vrf {}".format(module.params["vrf"]))
 
-        addr_family_command = "address-family {0} {1}".format(
+        addr_family_command = "address-family {} {}".format(
             module.params["afi"],
             module.params["safi"],
         )
@@ -741,54 +736,54 @@ def state_present(module, existing, proposed, candidate):
 
 def state_absent(module, candidate):
     commands = []
-    parents = ["router bgp {0}".format(module.params["asn"])]
+    parents = ["router bgp {}".format(module.params["asn"])]
     if module.params["vrf"] != "default":
-        parents.append("vrf {0}".format(module.params["vrf"]))
+        parents.append("vrf {}".format(module.params["vrf"]))
 
-    commands.append("no address-family {0} {1}".format(module.params["afi"], module.params["safi"]))
+    commands.append("no address-family {} {}".format(module.params["afi"], module.params["safi"]))
     candidate.add(commands, parents=parents)
 
 
 def main():
-    argument_spec = dict(
-        asn=dict(required=True, type="str"),
-        vrf=dict(required=False, type="str", default="default"),
-        safi=dict(required=True, type="str", choices=["unicast", "multicast", "evpn"]),
-        afi=dict(
-            required=True,
-            type="str",
-            choices=["ipv4", "ipv6", "vpnv4", "vpnv6", "l2vpn"],
-        ),
-        additional_paths_install=dict(required=False, type="bool"),
-        additional_paths_receive=dict(required=False, type="bool"),
-        additional_paths_selection=dict(required=False, type="str"),
-        additional_paths_send=dict(required=False, type="bool"),
-        advertise_l2vpn_evpn=dict(required=False, type="bool"),
-        client_to_client=dict(required=False, type="bool"),
-        dampen_igp_metric=dict(required=False, type="str"),
-        dampening_state=dict(required=False, type="bool"),
-        dampening_half_time=dict(required=False, type="str"),
-        dampening_max_suppress_time=dict(required=False, type="str"),
-        dampening_reuse_time=dict(required=False, type="str"),
-        dampening_routemap=dict(required=False, type="str"),
-        dampening_suppress_time=dict(required=False, type="str"),
-        default_information_originate=dict(required=False, type="bool"),
-        default_metric=dict(required=False, type="str"),
-        distance_ebgp=dict(required=False, type="str"),
-        distance_ibgp=dict(required=False, type="str"),
-        distance_local=dict(required=False, type="str"),
-        inject_map=dict(required=False, type="list", elements="list"),
-        maximum_paths=dict(required=False, type="str"),
-        maximum_paths_ibgp=dict(required=False, type="str"),
-        networks=dict(required=False, type="list", elements="list"),
-        next_hop_route_map=dict(required=False, type="str"),
-        redistribute=dict(required=False, type="list", elements="list"),
-        suppress_inactive=dict(required=False, type="bool"),
-        table_map=dict(required=False, type="str"),
-        table_map_filter=dict(required=False, type="bool"),
-        state=dict(choices=["present", "absent"], default="present", required=False),
-        retain_route_target=dict(required=False, type="str"),
-    )
+    argument_spec = {
+        "asn": {"required": True, "type": "str"},
+        "vrf": {"required": False, "type": "str", "default": "default"},
+        "safi": {"required": True, "type": "str", "choices": ["unicast", "multicast", "evpn"]},
+        "afi": {
+            "required": True,
+            "type": "str",
+            "choices": ["ipv4", "ipv6", "vpnv4", "vpnv6", "l2vpn"],
+        },
+        "additional_paths_install": {"required": False, "type": "bool"},
+        "additional_paths_receive": {"required": False, "type": "bool"},
+        "additional_paths_selection": {"required": False, "type": "str"},
+        "additional_paths_send": {"required": False, "type": "bool"},
+        "advertise_l2vpn_evpn": {"required": False, "type": "bool"},
+        "client_to_client": {"required": False, "type": "bool"},
+        "dampen_igp_metric": {"required": False, "type": "str"},
+        "dampening_state": {"required": False, "type": "bool"},
+        "dampening_half_time": {"required": False, "type": "str"},
+        "dampening_max_suppress_time": {"required": False, "type": "str"},
+        "dampening_reuse_time": {"required": False, "type": "str"},
+        "dampening_routemap": {"required": False, "type": "str"},
+        "dampening_suppress_time": {"required": False, "type": "str"},
+        "default_information_originate": {"required": False, "type": "bool"},
+        "default_metric": {"required": False, "type": "str"},
+        "distance_ebgp": {"required": False, "type": "str"},
+        "distance_ibgp": {"required": False, "type": "str"},
+        "distance_local": {"required": False, "type": "str"},
+        "inject_map": {"required": False, "type": "list", "elements": "list"},
+        "maximum_paths": {"required": False, "type": "str"},
+        "maximum_paths_ibgp": {"required": False, "type": "str"},
+        "networks": {"required": False, "type": "list", "elements": "list"},
+        "next_hop_route_map": {"required": False, "type": "str"},
+        "redistribute": {"required": False, "type": "list", "elements": "list"},
+        "suppress_inactive": {"required": False, "type": "bool"},
+        "table_map": {"required": False, "type": "str"},
+        "table_map_filter": {"required": False, "type": "bool"},
+        "state": {"choices": ["present", "absent"], "default": "present", "required": False},
+        "retain_route_target": {"required": False, "type": "str"},
+    }
 
     mutually_exclusive = [
         ("dampening_state", "dampening_routemap"),
@@ -812,19 +807,18 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
-    result = dict(changed=False, warnings=warnings)
+    warnings = []
+    result = {"changed": False, "warnings": warnings}
 
     state = module.params["state"]
 
-    if module.params["advertise_l2vpn_evpn"]:
-        if module.params["vrf"] == "default":
-            module.fail_json(
-                msg="It is not possible to advertise L2VPN "
-                "EVPN in the default VRF. Please specify "
-                "another one.",
-                vrf=module.params["vrf"],
-            )
+    if module.params["advertise_l2vpn_evpn"] and module.params["vrf"] == "default":
+        module.fail_json(
+            msg="It is not possible to advertise L2VPN "
+            "EVPN in the default VRF. Please specify "
+            "another one.",
+            vrf=module.params["vrf"],
+        )
 
     if module.params["table_map_filter"] and not module.params["table_map"]:
         module.fail_json(msg="table_map param is needed when using" " table_map_filter filter.")
@@ -832,20 +826,18 @@ def main():
     args = PARAM_TO_COMMAND_KEYMAP.keys()
     existing = get_existing(module, args, warnings)
 
-    if existing.get("asn") and state == "present":
-        if existing.get("asn") != module.params["asn"]:
-            module.fail_json(
-                msg="Another BGP ASN already exists.",
-                proposed_asn=module.params["asn"],
-                existing_asn=existing.get("asn"),
-            )
+    if existing.get("asn") and state == "present" and existing.get("asn") != module.params["asn"]:
+        module.fail_json(
+            msg="Another BGP ASN already exists.",
+            proposed_asn=module.params["asn"],
+            existing_asn=existing.get("asn"),
+        )
 
-    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed_args = {k: v for k, v in module.params.items() if v is not None and k in args}
 
     for arg in ["networks", "inject_map", "redistribute"]:
-        if proposed_args.get(arg):
-            if proposed_args[arg][0] == "default":
-                proposed_args[arg] = "default"
+        if proposed_args.get(arg) and proposed_args[arg][0] == "default":
+            proposed_args[arg] = "default"
 
     proposed = {}
     for key, value in proposed_args.items():

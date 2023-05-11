@@ -215,7 +215,6 @@ vlan_list:
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import Connection
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.facts.facts import (
     FactsArgs,
 )
@@ -240,7 +239,7 @@ def get_chassis_type(connection):
 
 def main():
     """
-    Main entry point for module execution
+    Main entry point for module execution.
 
     :returns: ansible_facts
     """

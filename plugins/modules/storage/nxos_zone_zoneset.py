@@ -216,7 +216,6 @@ messages:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -226,10 +225,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 __metaclass__ = type
 
 
-class ShowZonesetActive(object):
-    """docstring for ShowZonesetActive"""
+class ShowZonesetActive:
+    """docstring for ShowZonesetActive."""
 
-    def __init__(self, module, vsan):
+    def __init__(self, module, vsan) -> None:
         self.vsan = vsan
         self.module = module
         self.activeZSName = None
@@ -259,10 +258,10 @@ class ShowZonesetActive(object):
         return False
 
 
-class ShowZoneset(object):
-    """docstring for ShowZoneset"""
+class ShowZoneset:
+    """docstring for ShowZoneset."""
 
-    def __init__(self, module, vsan):
+    def __init__(self, module, vsan) -> None:
         self.vsan = vsan
         self.module = module
         self.zsDetails = {}
@@ -292,18 +291,18 @@ class ShowZoneset(object):
                 self.zsDetails[zonesetname] = v
 
     def isZonesetPresent(self, zsname):
-        return zsname in self.zsDetails.keys()
+        return zsname in self.zsDetails
 
     def isZonePresentInZoneset(self, zsname, zname):
-        if zsname in self.zsDetails.keys():
+        if zsname in self.zsDetails:
             return zname in self.zsDetails[zsname]
         return False
 
 
-class ShowZone(object):
-    """docstring for ShowZone"""
+class ShowZone:
+    """docstring for ShowZone."""
 
-    def __init__(self, module, vsan):
+    def __init__(self, module, vsan) -> None:
         self.vsan = vsan
         self.module = module
         self.zDetails = {}
@@ -337,10 +336,10 @@ class ShowZone(object):
                     self.zDetails[zonename] = v
 
     def isZonePresent(self, zname):
-        return zname in self.zDetails.keys()
+        return zname in self.zDetails
 
     def isZoneMemberPresent(self, zname, cmd):
-        if zname in self.zDetails.keys():
+        if zname in self.zDetails:
             zonememlist = self.zDetails[zname]
             for eachline in zonememlist:
                 if cmd in eachline:
@@ -351,10 +350,10 @@ class ShowZone(object):
         return self.zDetails
 
 
-class ShowZoneStatus(object):
-    """docstring for ShowZoneStatus"""
+class ShowZoneStatus:
+    """docstring for ShowZoneStatus."""
 
-    def __init__(self, module, vsan):
+    def __init__(self, module, vsan) -> None:
         self.vsan = vsan
         self.vsanAbsent = False
         self.module = module
@@ -438,48 +437,48 @@ def getMemType(supported_choices, allmemkeys, default="pwwn"):
 
 def main():
     supported_choices = ["device_alias"]
-    zone_member_spec = dict(
-        pwwn=dict(required=True, type="str", aliases=["device_alias"]),
-        devtype=dict(type="str", choices=["initiator", "target", "both"]),
-        remove=dict(type="bool", default=False),
-    )
+    zone_member_spec = {
+        "pwwn": {"required": True, "type": "str", "aliases": ["device_alias"]},
+        "devtype": {"type": "str", "choices": ["initiator", "target", "both"]},
+        "remove": {"type": "bool", "default": False},
+    }
 
-    zone_spec = dict(
-        name=dict(required=True, type="str"),
-        members=dict(type="list", elements="dict", options=zone_member_spec),
-        remove=dict(type="bool", default=False),
-    )
+    zone_spec = {
+        "name": {"required": True, "type": "str"},
+        "members": {"type": "list", "elements": "dict", "options": zone_member_spec},
+        "remove": {"type": "bool", "default": False},
+    }
 
-    zoneset_member_spec = dict(
-        name=dict(required=True, type="str"),
-        remove=dict(type="bool", default=False),
-    )
+    zoneset_member_spec = {
+        "name": {"required": True, "type": "str"},
+        "remove": {"type": "bool", "default": False},
+    }
 
-    zoneset_spec = dict(
-        name=dict(type="str", required=True),
-        members=dict(type="list", elements="dict", options=zoneset_member_spec),
-        remove=dict(type="bool", default=False),
-        action=dict(type="str", choices=["activate", "deactivate"]),
-    )
+    zoneset_spec = {
+        "name": {"type": "str", "required": True},
+        "members": {"type": "list", "elements": "dict", "options": zoneset_member_spec},
+        "remove": {"type": "bool", "default": False},
+        "action": {"type": "str", "choices": ["activate", "deactivate"]},
+    }
 
-    zonedetails_spec = dict(
-        vsan=dict(required=True, type="int"),
-        mode=dict(type="str", choices=["enhanced", "basic"]),
-        default_zone=dict(type="str", choices=["permit", "deny"]),
-        smart_zoning=dict(type="bool"),
-        zone=dict(type="list", elements="dict", options=zone_spec),
-        zoneset=dict(type="list", elements="dict", options=zoneset_spec),
-    )
+    zonedetails_spec = {
+        "vsan": {"required": True, "type": "int"},
+        "mode": {"type": "str", "choices": ["enhanced", "basic"]},
+        "default_zone": {"type": "str", "choices": ["permit", "deny"]},
+        "smart_zoning": {"type": "bool"},
+        "zone": {"type": "list", "elements": "dict", "options": zone_spec},
+        "zoneset": {"type": "list", "elements": "dict", "options": zoneset_spec},
+    }
 
-    argument_spec = dict(
-        zone_zoneset_details=dict(type="list", elements="dict", options=zonedetails_spec),
-    )
+    argument_spec = {
+        "zone_zoneset_details": {"type": "list", "elements": "dict", "options": zonedetails_spec},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
-    messages = list()
-    commands = list()
+    warnings = []
+    messages = []
+    commands = []
     result = {"changed": False}
 
     commands_executed = []
@@ -498,10 +497,7 @@ def main():
         sw_mode = shZoneStatusObj.getMode()
         sw_smart_zoning = shZoneStatusObj.getSmartZoningStatus()
 
-        if sw_smart_zoning.lower() == "Enabled".lower():
-            sw_smart_zoning_bool = True
-        else:
-            sw_smart_zoning_bool = False
+        sw_smart_zoning_bool = sw_smart_zoning.lower() == "Enabled".lower()
 
         if shZoneStatusObj.isVsanAbsent():
             module.fail_json(
@@ -858,12 +854,11 @@ def main():
         if commands_executed:
             if op_mode == "enhanced":
                 commands_executed.append("zone commit vsan " + str(vsan))
-            elif op_mode is None:
-                if sw_mode == "enhanced":
-                    commands_executed.append("zone commit vsan " + str(vsan))
+            elif op_mode is None and sw_mode == "enhanced":
+                commands_executed.append("zone commit vsan " + str(vsan))
 
     if commands_executed:
-        commands_executed = ["terminal dont-ask"] + commands_executed + ["no terminal dont-ask"]
+        commands_executed = ["terminal dont-ask", *commands_executed] + ["no terminal dont-ask"]
 
     cmds = flatten_list(commands_executed)
     if cmds:

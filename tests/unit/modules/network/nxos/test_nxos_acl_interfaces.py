@@ -19,7 +19,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
     module = nxos_acl_interfaces
 
     def setUp(self):
-        super(TestNxosAclInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -52,7 +52,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestNxosAclInterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -69,95 +69,95 @@ class TestNxosAclInterfacesModule(TestNxosModule):
 
     def test_nxos_acl_interfaces_merged(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/3",
-                        access_groups=[
-                            dict(
-                                afi="ipv4",
-                                acls=[dict(name="ACL1-v4", direction="in")],
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/3",
+                        "access_groups": [
+                            {
+                                "afi": "ipv4",
+                                "acls": [{"name": "ACL1-v4", "direction": "in"}],
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = ["interface Ethernet1/3", "ip access-group ACL1-v4 in"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_acl_interfaces_merged_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        access_groups=[
-                            dict(
-                                afi="ipv4",
-                                acls=[dict(name="ACL1v4", direction="out")],
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "access_groups": [
+                            {
+                                "afi": "ipv4",
+                                "acls": [{"name": "ACL1v4", "direction": "out"}],
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/4",
-                        access_groups=[
-                            dict(
-                                afi="ipv6",
-                                acls=[
-                                    dict(
-                                        name="ACL2v6",
-                                        direction="in",
-                                        port=True,
-                                    ),
+                    },
+                    {
+                        "name": "Ethernet1/4",
+                        "access_groups": [
+                            {
+                                "afi": "ipv6",
+                                "acls": [
+                                    {
+                                        "name": "ACL2v6",
+                                        "direction": "in",
+                                        "port": True,
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_acl_interfaces_replaced(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        access_groups=[
-                            dict(
-                                afi="ipv6",
-                                acls=[
-                                    dict(
-                                        name="ACL1v6",
-                                        direction="in",
-                                        port=True,
-                                    ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "access_groups": [
+                            {
+                                "afi": "ipv6",
+                                "acls": [
+                                    {
+                                        "name": "ACL1v6",
+                                        "direction": "in",
+                                        "port": True,
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/5",
-                        access_groups=[
-                            dict(
-                                afi="ipv4",
-                                acls=[
-                                    dict(
-                                        name="ACL2v4",
-                                        direction="in",
-                                        port=True,
-                                    ),
+                    },
+                    {
+                        "name": "Ethernet1/5",
+                        "access_groups": [
+                            {
+                                "afi": "ipv4",
+                                "acls": [
+                                    {
+                                        "name": "ACL2v4",
+                                        "direction": "in",
+                                        "port": True,
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "interface Ethernet1/2",
@@ -170,46 +170,46 @@ class TestNxosAclInterfacesModule(TestNxosModule):
 
     def test_nxos_acl_interfaces_replaced_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        access_groups=[
-                            dict(
-                                afi="ipv4",
-                                acls=[dict(name="ACL1v4", direction="out")],
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "access_groups": [
+                            {
+                                "afi": "ipv4",
+                                "acls": [{"name": "ACL1v4", "direction": "out"}],
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_acl_interfaces_overridden(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/3",
-                        access_groups=[
-                            dict(
-                                afi="ipv4",
-                                acls=[
-                                    dict(name="ACL2v4", direction="out"),
-                                    dict(
-                                        name="PortACL",
-                                        direction="in",
-                                        port=True,
-                                    ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/3",
+                        "access_groups": [
+                            {
+                                "afi": "ipv4",
+                                "acls": [
+                                    {"name": "ACL2v4", "direction": "out"},
+                                    {
+                                        "name": "PortACL",
+                                        "direction": "in",
+                                        "port": True,
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         commands = [
             "interface Ethernet1/2",
@@ -224,104 +224,104 @@ class TestNxosAclInterfacesModule(TestNxosModule):
 
     def test_nxos_acl_interfaces_overridden_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        access_groups=[
-                            dict(
-                                afi="ipv4",
-                                acls=[dict(name="ACL1v4", direction="out")],
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "access_groups": [
+                            {
+                                "afi": "ipv4",
+                                "acls": [{"name": "ACL1v4", "direction": "out"}],
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/4",
-                        access_groups=[
-                            dict(
-                                afi="ipv6",
-                                acls=[
-                                    dict(
-                                        name="ACL2v6",
-                                        direction="in",
-                                        port=True,
-                                    ),
+                    },
+                    {
+                        "name": "Ethernet1/4",
+                        "access_groups": [
+                            {
+                                "afi": "ipv6",
+                                "acls": [
+                                    {
+                                        "name": "ACL2v6",
+                                        "direction": "in",
+                                        "port": True,
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_acl_interfaces_deletedname(self):
-        set_module_args(dict(config=[dict(name="Ethernet1/2")], state="deleted"))
+        set_module_args({"config": [{"name": "Ethernet1/2"}], "state": "deleted"})
         commands = ["interface Ethernet1/2", "no ip access-group ACL1v4 out"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_acl_interfaces_deletedafi(self):
         set_module_args(
-            dict(
-                config=[dict(name="Ethernet1/2", access_groups=[dict(afi="ipv4")])],
-                state="deleted",
-            ),
+            {
+                "config": [{"name": "Ethernet1/2", "access_groups": [{"afi": "ipv4"}]}],
+                "state": "deleted",
+            },
         )
         commands = ["interface Ethernet1/2", "no ip access-group ACL1v4 out"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_acl_interfaces_deletedacl(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        access_groups=[
-                            dict(
-                                afi="ipv4",
-                                acls=[dict(name="ACL1v4", direction="out")],
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "access_groups": [
+                            {
+                                "afi": "ipv4",
+                                "acls": [{"name": "ACL1v4", "direction": "out"}],
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         commands = ["interface Ethernet1/2", "no ip access-group ACL1v4 out"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_acl_interfaces_rendered(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        access_groups=[
-                            dict(
-                                afi="ipv4",
-                                acls=[dict(name="ACL1v4", direction="out")],
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "access_groups": [
+                            {
+                                "afi": "ipv4",
+                                "acls": [{"name": "ACL1v4", "direction": "out"}],
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/4",
-                        access_groups=[
-                            dict(
-                                afi="ipv6",
-                                acls=[
-                                    dict(
-                                        name="ACL2v6",
-                                        direction="in",
-                                        port=True,
-                                    ),
+                    },
+                    {
+                        "name": "Ethernet1/4",
+                        "access_groups": [
+                            {
+                                "afi": "ipv6",
+                                "acls": [
+                                    {
+                                        "name": "ACL2v6",
+                                        "direction": "in",
+                                        "port": True,
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "interface Ethernet1/2",
@@ -330,15 +330,15 @@ class TestNxosAclInterfacesModule(TestNxosModule):
             "ipv6 port traffic-filter ACL2v6 in",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands), result["rendered"])
+        assert sorted(result["rendered"]) == sorted(commands), result["rendered"]
 
     def test_nxos_acl_interfaces_parsed(self):
         set_module_args(
-            dict(
-                running_config="""interface Ethernet1/2\n ip access-group ACL1v4 out\n interface Ethernet1/4\n \
+            {
+                "running_config": """interface Ethernet1/2\n ip access-group ACL1v4 out\n interface Ethernet1/4\n \
           ipv6 port traffic-filter ACL2v6 in""",
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         compare_list = [
@@ -361,10 +361,10 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                 "name": "Ethernet1/4",
             },
         ]
-        self.assertEqual(result["parsed"], compare_list, result["parsed"])
+        assert result["parsed"] == compare_list, result["parsed"]
 
     def test_nxos_acl_interfaces_gathered(self):
-        set_module_args(dict(config=[], state="gathered"))
+        set_module_args({"config": [], "state": "gathered"})
         result = self.execute_module(changed=False)
         compare_list = [
             {
@@ -386,4 +386,4 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                 "name": "Ethernet1/4",
             },
         ]
-        self.assertEqual(result["gathered"], compare_list, result["gathered"])
+        assert result["gathered"] == compare_list, result["gathered"]

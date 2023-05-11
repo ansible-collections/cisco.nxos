@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)#!/usr/bin/python
@@ -19,24 +18,20 @@ import re
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lag_interfaces.lag_interfaces import (
     Lag_interfacesArgs,
 )
 
 
-class Lag_interfacesFacts(object):
-    """The nxos lag_interfaces fact class"""
+class Lag_interfacesFacts:
+    """The nxos lag_interfaces fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Lag_interfacesArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -47,7 +42,7 @@ class Lag_interfacesFacts(object):
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         objs = []
         if not data:
@@ -69,7 +64,7 @@ class Lag_interfacesFacts(object):
     def render_config(self, spec, conf, connection):
         """
         Render config as dictionary structure and delete keys
-          from spec for null values
+          from spec for null values.
 
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration
@@ -96,7 +91,7 @@ class Lag_interfacesFacts(object):
                 member.update(match_line.groupdict())
 
             if member and member.get("port_channel", None):
-                port_channel = "port-channel{0}".format(member.pop("port_channel"))
+                port_channel = "port-channel{}".format(member.pop("port_channel"))
                 for x in result:
                     if x["name"] == port_channel:
                         x["members"].append(utils.remove_empties(member))

@@ -239,7 +239,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_interface_type,
     load_config,
@@ -251,29 +250,27 @@ def search_obj_in_list(name, lst):
     for o in lst:
         if o["name"] == name:
             return o
+    return None
 
 
 def execute_show_command(command, module):
-    if "show run" not in command:
-        output = "json"
-    else:
-        output = "text"
+    output = "json" if "show run" not in command else "text"
     cmds = [{"command": command, "output": output}]
     body = run_commands(module, cmds)
     return body
 
 
 def get_existing_vrfs(module):
-    objs = list()
+    objs = []
     command = "show vrf all"
     try:
         body = execute_show_command(command, module)[0]
     except IndexError:
-        return list()
+        return []
     try:
         vrf_table = body["TABLE_vrf"]["ROW_vrf"]
     except (TypeError, IndexError, KeyError):
-        return list()
+        return []
 
     if isinstance(vrf_table, list):
         for vrf in vrf_table:
@@ -290,7 +287,7 @@ def get_existing_vrfs(module):
 
 
 def map_obj_to_commands(updates, module):
-    commands = list()
+    commands = []
     want, have = updates
     state = module.params["state"]
     purge = module.params["purge"]
@@ -302,19 +299,16 @@ def map_obj_to_commands(updates, module):
         admin_state = w["admin_state"]
         vni = w["vni"]
         interfaces = w.get("interfaces") or []
-        if purge:
-            state = "absent"
-        else:
-            state = w["state"]
+        state = "absent" if purge else w["state"]
         del w["state"]
 
         obj_in_have = search_obj_in_list(name, have)
         if state == "absent" and obj_in_have:
-            commands.append("no vrf context {0}".format(name))
+            commands.append(f"no vrf context {name}")
 
         elif state == "present":
             if not obj_in_have:
-                commands.append("vrf context {0}".format(name))
+                commands.append(f"vrf context {name}")
                 for item in args:
                     candidate = w.get(item)
                     if candidate and candidate != "default":
@@ -328,19 +322,18 @@ def map_obj_to_commands(updates, module):
 
                 if interfaces and interfaces[0] != "default":
                     for i in interfaces:
-                        commands.append("interface {0}".format(i))
+                        commands.append(f"interface {i}")
                         if get_interface_type(i) in (
                             "ethernet",
                             "portchannel",
                         ):
                             commands.append("no switchport")
-                        commands.append("vrf member {0}".format(name))
+                        commands.append(f"vrf member {name}")
 
             else:
                 # If vni is already configured on vrf, unconfigure it first.
-                if vni:
-                    if obj_in_have.get("vni") and vni != obj_in_have.get("vni"):
-                        commands.append("no vni {0}".format(obj_in_have.get("vni")))
+                if vni and obj_in_have.get("vni") and vni != obj_in_have.get("vni"):
+                    commands.append("no vni {}".format(obj_in_have.get("vni")))
 
                 for item in args:
                     candidate = w.get(item)
@@ -358,60 +351,59 @@ def map_obj_to_commands(updates, module):
                         commands.append("shutdown")
 
                 if commands:
-                    commands.insert(0, "vrf context {0}".format(name))
+                    commands.insert(0, f"vrf context {name}")
                     commands.append("exit")
 
                 if interfaces and interfaces[0] != "default":
                     if not obj_in_have["interfaces"]:
                         for i in interfaces:
-                            commands.append("vrf context {0}".format(name))
+                            commands.append(f"vrf context {name}")
                             commands.append("exit")
-                            commands.append("interface {0}".format(i))
+                            commands.append(f"interface {i}")
                             if get_interface_type(i) in (
                                 "ethernet",
                                 "portchannel",
                             ):
                                 commands.append("no switchport")
-                            commands.append("vrf member {0}".format(name))
+                            commands.append(f"vrf member {name}")
 
                     elif set(interfaces) != set(obj_in_have["interfaces"]):
                         missing_interfaces = list(set(interfaces) - set(obj_in_have["interfaces"]))
                         for i in missing_interfaces:
-                            commands.append("vrf context {0}".format(name))
+                            commands.append(f"vrf context {name}")
                             commands.append("exit")
-                            commands.append("interface {0}".format(i))
+                            commands.append(f"interface {i}")
                             if get_interface_type(i) in (
                                 "ethernet",
                                 "portchannel",
                             ):
                                 commands.append("no switchport")
-                            commands.append("vrf member {0}".format(name))
+                            commands.append(f"vrf member {name}")
 
                         superfluous_interfaces = list(
                             set(obj_in_have["interfaces"]) - set(interfaces),
                         )
                         for i in superfluous_interfaces:
-                            commands.append("vrf context {0}".format(name))
+                            commands.append(f"vrf context {name}")
                             commands.append("exit")
-                            commands.append("interface {0}".format(i))
+                            commands.append(f"interface {i}")
                             if get_interface_type(i) in (
                                 "ethernet",
                                 "portchannel",
                             ):
                                 commands.append("no switchport")
-                            commands.append("no vrf member {0}".format(name))
-                elif interfaces and interfaces[0] == "default":
-                    if obj_in_have["interfaces"]:
-                        for i in obj_in_have["interfaces"]:
-                            commands.append("vrf context {0}".format(name))
-                            commands.append("exit")
-                            commands.append("interface {0}".format(i))
-                            if get_interface_type(i) in (
-                                "ethernet",
-                                "portchannel",
-                            ):
-                                commands.append("no switchport")
-                            commands.append("no vrf member {0}".format(name))
+                            commands.append(f"no vrf member {name}")
+                elif interfaces and interfaces[0] == "default" and obj_in_have["interfaces"]:
+                    for i in obj_in_have["interfaces"]:
+                        commands.append(f"vrf context {name}")
+                        commands.append("exit")
+                        commands.append(f"interface {i}")
+                        if get_interface_type(i) in (
+                            "ethernet",
+                            "portchannel",
+                        ):
+                            commands.append("no switchport")
+                        commands.append(f"no vrf member {name}")
 
     if purge:
         existing = get_existing_vrfs(module)
@@ -422,7 +414,7 @@ def map_obj_to_commands(updates, module):
                 else:
                     obj_in_want = search_obj_in_list(h["name"], want)
                     if not obj_in_want:
-                        commands.append("no vrf context {0}".format(h["name"]))
+                        commands.append("no vrf context {}".format(h["name"]))
 
     return commands
 
@@ -432,10 +424,13 @@ def validate_vrf(name, module):
         name = name.strip()
         if name == "default":
             module.fail_json(msg="cannot use default as name of a VRF")
+            return None
         elif len(name) > 32:
             module.fail_json(msg="VRF name exceeded max length of 32", name=name)
+            return None
         else:
             return name
+    return None
 
 
 def map_params_to_obj(module):
@@ -467,7 +462,7 @@ def map_params_to_obj(module):
 
 
 def get_value(arg, config, module):
-    extra_arg_regex = re.compile(r"(?:{0}\s)(?P<value>.*)$".format(arg), re.M)
+    extra_arg_regex = re.compile(fr"(?:{arg}\s)(?P<value>.*)$", re.M)
     value = ""
     if arg in config:
         value = extra_arg_regex.search(config).group("value")
@@ -475,32 +470,32 @@ def get_value(arg, config, module):
 
 
 def map_config_to_obj(want, element_spec, module):
-    objs = list()
+    objs = []
 
     for w in want:
         obj = deepcopy(element_spec)
         del obj["delay"]
         del obj["state"]
 
-        command = "show vrf {0}".format(w["name"])
+        command = "show vrf {}".format(w["name"])
         try:
             body = execute_show_command(command, module)[0]
             vrf_table = body["TABLE_vrf"]["ROW_vrf"]
         except (TypeError, IndexError):
-            return list()
+            return []
 
         name = vrf_table["vrf_name"]
         obj["name"] = name
         obj["admin_state"] = vrf_table["vrf_state"].lower()
 
-        command = "show run all | section vrf.context.{0}".format(name)
+        command = f"show run all | section vrf.context.{name}"
         body = execute_show_command(command, module)[0]
         extra_params = ["vni", "rd", "description"]
         for param in extra_params:
             obj[param] = get_value(param, body, module)
 
         obj["interfaces"] = []
-        command = "show vrf {0} interface".format(name)
+        command = f"show vrf {name} interface"
         try:
             body = execute_show_command(command, module)[0]
             vrf_int = body["TABLE_if"]["ROW_if"]
@@ -541,7 +536,7 @@ def check_declarative_intent_params(want, module, element_spec, result):
             if obj_in_have:
                 interfaces = obj_in_have.get("interfaces")
                 if interfaces is not None and i not in interfaces:
-                    module.fail_json(msg="Interface %s not configured on vrf %s" % (i, w["name"]))
+                    module.fail_json(msg="Interface {} not configured on vrf {}".format(i, w["name"]))
 
 
 def vrf_error_check(module, commands, responses):
@@ -557,28 +552,28 @@ def vrf_error_check(module, commands, responses):
 
 
 def main():
-    """main entry point for module execution"""
-    element_spec = dict(
-        name=dict(type="str", aliases=["vrf"]),
-        description=dict(type="str"),
-        vni=dict(type="str"),
-        rd=dict(type="str"),
-        admin_state=dict(type="str", default="up", choices=["up", "down"]),
-        interfaces=dict(type="list", elements="str"),
-        associated_interfaces=dict(type="list", elements="str"),
-        delay=dict(type="int", default=10),
-        state=dict(type="str", default="present", choices=["present", "absent"]),
-    )
+    """Main entry point for module execution."""
+    element_spec = {
+        "name": {"type": "str", "aliases": ["vrf"]},
+        "description": {"type": "str"},
+        "vni": {"type": "str"},
+        "rd": {"type": "str"},
+        "admin_state": {"type": "str", "default": "up", "choices": ["up", "down"]},
+        "interfaces": {"type": "list", "elements": "str"},
+        "associated_interfaces": {"type": "list", "elements": "str"},
+        "delay": {"type": "int", "default": 10},
+        "state": {"type": "str", "default": "present", "choices": ["present", "absent"]},
+    }
 
     aggregate_spec = deepcopy(element_spec)
 
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
 
-    argument_spec = dict(
-        aggregate=dict(type="list", elements="dict", options=aggregate_spec),
-        purge=dict(type="bool", default=False),
-    )
+    argument_spec = {
+        "aggregate": {"type": "list", "elements": "dict", "options": aggregate_spec},
+        "purge": {"type": "bool", "default": False},
+    }
 
     argument_spec.update(element_spec)
 
@@ -591,7 +586,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
     result = {"changed": False}
     if warnings:
         result["warnings"] = warnings

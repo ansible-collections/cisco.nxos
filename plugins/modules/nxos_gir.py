@@ -166,7 +166,6 @@ changed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -176,10 +175,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 def get_system_mode(module):
     command = {"command": "show system mode", "output": "text"}
     body = run_commands(module, [command])[0]
-    if body and "normal" in body.lower():
-        mode = "normal"
-    else:
-        mode = "maintenance"
+    mode = "normal" if body and "normal" in body.lower() else "maintenance"
     return mode
 
 
@@ -200,7 +196,7 @@ def get_reset_reasons(module):
 
 
 def get_commands(module, state, mode):
-    commands = list()
+    commands = []
     if module.params["system_mode_maintenance"] is True and mode == "normal":
         commands.append("system mode maintenance")
     elif module.params["system_mode_maintenance"] is False and mode == "maintenance":
@@ -220,13 +216,13 @@ def get_commands(module, state, mode):
         timeout = get_maintenance_timeout(module)
         if state == "present" and timeout != module.params["system_mode_maintenance_timeout"]:
             commands.append(
-                "system mode maintenance timeout {0}".format(
+                "system mode maintenance timeout {}".format(
                     module.params["system_mode_maintenance_timeout"],
                 ),
             )
         elif state == "absent" and timeout == module.params["system_mode_maintenance_timeout"]:
             commands.append(
-                "no system mode maintenance timeout {0}".format(
+                "no system mode maintenance timeout {}".format(
                     module.params["system_mode_maintenance_timeout"],
                 ),
             )
@@ -267,14 +263,14 @@ def get_commands(module, state, mode):
 
 
 def main():
-    argument_spec = dict(
-        system_mode_maintenance=dict(required=False, type="bool"),
-        system_mode_maintenance_dont_generate_profile=dict(required=False, type="bool"),
-        system_mode_maintenance_timeout=dict(required=False, type="str"),
-        system_mode_maintenance_shutdown=dict(required=False, type="bool"),
-        system_mode_maintenance_on_reload_reset_reason=dict(
-            required=False,
-            choices=[
+    argument_spec = {
+        "system_mode_maintenance": {"required": False, "type": "bool"},
+        "system_mode_maintenance_dont_generate_profile": {"required": False, "type": "bool"},
+        "system_mode_maintenance_timeout": {"required": False, "type": "str"},
+        "system_mode_maintenance_shutdown": {"required": False, "type": "bool"},
+        "system_mode_maintenance_on_reload_reset_reason": {
+            "required": False,
+            "choices": [
                 "hw_error",
                 "svc_failure",
                 "kern_failure",
@@ -286,9 +282,9 @@ def main():
                 "any_other",
                 "maintenance",
             ],
-        ),
-        state=dict(choices=["absent", "present"], default="present", required=False),
-    )
+        },
+        "state": {"choices": ["absent", "present"], "default": "present", "required": False},
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -313,7 +309,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
 
     state = module.params["state"]
     mode = get_system_mode(module)

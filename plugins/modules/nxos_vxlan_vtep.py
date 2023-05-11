@@ -139,7 +139,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -177,8 +176,8 @@ PARAM_TO_DEFAULT_KEYMAP = {
 
 def get_value(arg, config, module):
     if arg in BOOL_PARAMS:
-        REGEX = re.compile(r"\s+{0}\s*$".format(PARAM_TO_COMMAND_KEYMAP[arg]), re.M)
-        NO_REGEX = re.compile(r"\s+no\s{0}\s*$".format(PARAM_TO_COMMAND_KEYMAP[arg]), re.M)
+        REGEX = re.compile(fr"\s+{PARAM_TO_COMMAND_KEYMAP[arg]}\s*$", re.M)
+        NO_REGEX = re.compile(fr"\s+no\s{PARAM_TO_COMMAND_KEYMAP[arg]}\s*$", re.M)
         NO_SHUT_REGEX = re.compile(r"\s+no shutdown\s*$", re.M)
         value = False
         if arg == "shutdown":
@@ -205,12 +204,12 @@ def get_value(arg, config, module):
                 value = False
     else:
         REGEX = re.compile(
-            r"(?:{0}\s)(?P<value>.*)$".format(PARAM_TO_COMMAND_KEYMAP[arg]),
+            fr"(?:{PARAM_TO_COMMAND_KEYMAP[arg]}\s)(?P<value>.*)$",
             re.M,
         )
-        NO_DESC_REGEX = re.compile(r"\s+{0}\s*$".format("no description"), re.M)
+        NO_DESC_REGEX = re.compile(r"\s+{}\s*$".format("no description"), re.M)
         SOURCE_INTF_REGEX = re.compile(
-            r"(?:{0}\s)(?P<value>\S+)$".format(PARAM_TO_COMMAND_KEYMAP[arg]),
+            fr"(?:{PARAM_TO_COMMAND_KEYMAP[arg]}\s)(?P<value>\S+)$",
             re.M,
         )
         value = ""
@@ -220,7 +219,7 @@ def get_value(arg, config, module):
             elif PARAM_TO_COMMAND_KEYMAP[arg] in config:
                 value = REGEX.search(config).group("value").strip()
         elif arg == "source_interface":
-            for line in config.splitlines():
+            for _line in config.splitlines():
                 try:
                     if PARAM_TO_COMMAND_KEYMAP[arg] in config:
                         value = SOURCE_INTF_REGEX.search(config).group("value").strip()
@@ -261,7 +260,7 @@ def get_existing(module, args):
     existing = {}
     netcfg = CustomNetworkConfig(indent=2, contents=get_config(module, flags=["all"]))
 
-    interface_string = "interface {0}".format(module.params["interface"].lower())
+    interface_string = "interface {}".format(module.params["interface"].lower())
     parents = [interface_string]
     config = netcfg.get_section(parents)
 
@@ -356,7 +355,7 @@ def gsa_tcam_check(module):
 
 
 def state_present(module, existing, proposed, candidate):
-    commands = list()
+    commands = []
     proposed_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, proposed)
     existing_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, existing)
     for key, value in proposed_commands.items():
@@ -364,18 +363,18 @@ def state_present(module, existing, proposed, candidate):
             commands.append(key)
 
         elif value is False:
-            commands.append("no {0}".format(key))
+            commands.append(f"no {key}")
 
         elif value == "default":
             if existing_commands.get(key):
                 existing_value = existing_commands.get(key)
                 if "global mcast-group" in key:
-                    commands.append("no {0}".format(key))
+                    commands.append(f"no {key}")
                 else:
-                    commands.append("no {0} {1}".format(key, existing_value))
+                    commands.append(f"no {key} {existing_value}")
             else:
                 if key.replace(" ", "_").replace("-", "_") in BOOL_PARAMS:
-                    commands.append("no {0}".format(key.lower()))
+                    commands.append(f"no {key.lower()}")
                     module.exit_json(commands=commands)
         else:
             if "L2" in key:
@@ -383,40 +382,40 @@ def state_present(module, existing, proposed, candidate):
             elif "L3" in key:
                 commands.append("global mcast-group " + value + " L3")
             else:
-                command = "{0} {1}".format(key, value.lower())
+                command = f"{key} {value.lower()}"
                 commands.append(command)
 
     if commands:
         commands = fix_commands(commands, module)
-        parents = ["interface {0}".format(module.params["interface"].lower())]
+        parents = ["interface {}".format(module.params["interface"].lower())]
         candidate.add(commands, parents=parents)
     else:
         if not existing and module.params["interface"]:
-            commands = ["interface {0}".format(module.params["interface"].lower())]
+            commands = ["interface {}".format(module.params["interface"].lower())]
             candidate.add(commands, parents=[])
 
 
 def state_absent(module, existing, proposed, candidate):
-    commands = ["no interface {0}".format(module.params["interface"].lower())]
+    commands = ["no interface {}".format(module.params["interface"].lower())]
     candidate.add(commands, parents=[])
 
 
 def main():
-    argument_spec = dict(
-        interface=dict(required=True, type="str"),
-        description=dict(required=False, type="str"),
-        host_reachability=dict(required=False, type="bool"),
-        global_ingress_replication_bgp=dict(required=False, type="bool"),
-        global_suppress_arp=dict(required=False, type="bool"),
-        global_mcast_group_L2=dict(required=False, type="str"),
-        global_mcast_group_L3=dict(required=False, type="str"),
-        shutdown=dict(required=False, type="bool"),
-        source_interface=dict(required=False, type="str"),
-        source_interface_hold_down_time=dict(required=False, type="str"),
-        state=dict(choices=["present", "absent"], default="present", required=False),
-        multisite_border_gateway_interface=dict(required=False, type="str"),
-        advertise_virtual_rmac=dict(required=False, type="bool"),
-    )
+    argument_spec = {
+        "interface": {"required": True, "type": "str"},
+        "description": {"required": False, "type": "str"},
+        "host_reachability": {"required": False, "type": "bool"},
+        "global_ingress_replication_bgp": {"required": False, "type": "bool"},
+        "global_suppress_arp": {"required": False, "type": "bool"},
+        "global_mcast_group_L2": {"required": False, "type": "str"},
+        "global_mcast_group_L3": {"required": False, "type": "str"},
+        "shutdown": {"required": False, "type": "bool"},
+        "source_interface": {"required": False, "type": "str"},
+        "source_interface_hold_down_time": {"required": False, "type": "str"},
+        "state": {"choices": ["present", "absent"], "default": "present", "required": False},
+        "multisite_border_gateway_interface": {"required": False, "type": "str"},
+        "advertise_virtual_rmac": {"required": False, "type": "bool"},
+    }
 
     mutually_exclusive = [("global_ingress_replication_bgp", "global_mcast_group_L2")]
 
@@ -426,7 +425,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
     result = {"changed": False, "commands": [], "warnings": warnings}
 
     state = module.params["state"]
@@ -434,17 +433,14 @@ def main():
     args = PARAM_TO_COMMAND_KEYMAP.keys()
 
     existing = get_existing(module, args)
-    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed_args = {k: v for k, v in module.params.items() if v is not None and k in args}
     proposed = {}
     for key, value in proposed_args.items():
         if key != "interface":
             if str(value).lower() == "default":
                 value = PARAM_TO_DEFAULT_KEYMAP.get(key)
                 if value is None:
-                    if key in BOOL_PARAMS:
-                        value = False
-                    else:
-                        value = "default"
+                    value = False if key in BOOL_PARAMS else "default"
             if str(existing.get(key)).lower() != str(value).lower():
                 proposed[key] = value
 

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -19,7 +18,6 @@ import re
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_interfacesArgs,
 )
@@ -28,18 +26,15 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 )
 
 
-class Lacp_interfacesFacts(object):
-    """The nxos lacp_interfaces fact class"""
+class Lacp_interfacesFacts:
+    """The nxos lacp_interfaces fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Lacp_interfacesArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -51,7 +46,7 @@ class Lacp_interfacesFacts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         objs = []
 
@@ -79,7 +74,7 @@ class Lacp_interfacesFacts(object):
     def render_config(self, spec, conf):
         """
         Render config as dictionary structure and delete keys
-          from spec for null values
+          from spec for null values.
 
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration

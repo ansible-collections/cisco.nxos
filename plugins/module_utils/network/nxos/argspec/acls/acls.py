@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -21,17 +20,15 @@
 #   builder template.
 #
 #############################################
-"""
-The arg spec for the nxos_acls module
-"""
+"""The arg spec for the nxos_acls module."""
 from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
 
 
-class AclsArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_acls module"""
+class AclsArgs:  # pylint: disable=R0903
+    """The arg spec for the nxos_acls module."""
 
     argument_spec = {
         "config": {

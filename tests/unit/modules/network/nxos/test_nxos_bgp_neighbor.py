@@ -32,7 +32,7 @@ class TestNxosBgpNeighborModule(TestNxosModule):
     module = nxos_bgp_neighbor
 
     def setUp(self):
-        super(TestNxosBgpNeighborModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor.load_config",
@@ -45,7 +45,7 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosBgpNeighborModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
 
@@ -55,30 +55,30 @@ class TestNxosBgpNeighborModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_bfd_1(self):
         # None (disable) -> enable
-        set_module_args(dict(asn=65535, neighbor="1.1.1.1", bfd="enable"))
+        set_module_args({"asn": 65535, "neighbor": "1.1.1.1", "bfd": "enable"})
         self.execute_module(
             changed=True,
             commands=["router bgp 65535", "neighbor 1.1.1.1", "bfd"],
         )
 
         # enable -> enable (idempotence)
-        set_module_args(dict(asn=65535, neighbor="1.1.1.2", bfd="enable"))
+        set_module_args({"asn": 65535, "neighbor": "1.1.1.2", "bfd": "enable"})
         self.execute_module(changed=False)
 
     def test_nxos_bgp_neighbor_bfd_2(self):
         # enable -> None (disable)
-        set_module_args(dict(asn=65535, neighbor="1.1.1.2", bfd="disable"))
+        set_module_args({"asn": 65535, "neighbor": "1.1.1.2", "bfd": "disable"})
         self.execute_module(
             changed=True,
             commands=["router bgp 65535", "neighbor 1.1.1.2", "no bfd"],
         )
 
         # None (disable) -> disable (idempotence)
-        set_module_args(dict(asn=65535, neighbor="1.1.1.1", bfd="disable"))
+        set_module_args({"asn": 65535, "neighbor": "1.1.1.1", "bfd": "disable"})
         self.execute_module(changed=False)
 
     def test_nxos_bgp_neighbor(self):
-        set_module_args(dict(asn=65535, neighbor="192.0.2.3", description="some words"))
+        set_module_args({"asn": 65535, "neighbor": "192.0.2.3", "description": "some words"})
         self.execute_module(
             changed=True,
             commands=[
@@ -89,15 +89,15 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         )
 
     def test_nxos_bgp_neighbor_absent(self):
-        set_module_args(dict(asn=65535, neighbor="1.1.1.1", state="absent"))
+        set_module_args({"asn": 65535, "neighbor": "1.1.1.1", "state": "absent"})
         self.execute_module(changed=True, commands=["router bgp 65535", "no neighbor 1.1.1.1"])
 
     def test_nxos_bgp_neighbor_remove_private_as(self):
-        set_module_args(dict(asn=65535, neighbor="3.3.3.4", remove_private_as="all"))
+        set_module_args({"asn": 65535, "neighbor": "3.3.3.4", "remove_private_as": "all"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_bgp_neighbor_remove_private_as_changed(self):
-        set_module_args(dict(asn=65535, neighbor="3.3.3.4", remove_private_as="replace-as"))
+        set_module_args({"asn": 65535, "neighbor": "3.3.3.4", "remove_private_as": "replace-as"})
         self.execute_module(
             changed=True,
             commands=[
@@ -108,7 +108,7 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         )
 
     def test_nxos_bgp_neighbor_peertype_border_leaf(self):
-        set_module_args(dict(asn=65535, neighbor="192.0.2.3", peer_type="fabric_border_leaf"))
+        set_module_args({"asn": 65535, "neighbor": "192.0.2.3", "peer_type": "fabric_border_leaf"})
         self.execute_module(
             changed=True,
             commands=[
@@ -119,7 +119,7 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         )
 
     def test_nxos_bgp_neighbor_peertype_external(self):
-        set_module_args(dict(asn=65535, neighbor="192.0.2.3", peer_type="fabric_external"))
+        set_module_args({"asn": 65535, "neighbor": "192.0.2.3", "peer_type": "fabric_external"})
         self.execute_module(
             changed=True,
             commands=[
@@ -130,9 +130,9 @@ class TestNxosBgpNeighborModule(TestNxosModule):
         )
 
     def test_nxos_bgp_neighbor_peertype_border_leaf_exists(self):
-        set_module_args(dict(asn=65535, neighbor="5.5.5.5", peer_type="fabric_border_leaf"))
+        set_module_args({"asn": 65535, "neighbor": "5.5.5.5", "peer_type": "fabric_border_leaf"})
         self.execute_module(changed=False)
 
     def test_nxos_bgp_neighbor_peertype_external_exists(self):
-        set_module_args(dict(asn=65535, neighbor="6.6.6.6", peer_type="fabric_external"))
+        set_module_args({"asn": 65535, "neighbor": "6.6.6.6", "peer_type": "fabric_external"})
         self.execute_module(changed=False)

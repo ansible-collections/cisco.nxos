@@ -236,7 +236,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.n
 
 
 class FileCopy:
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self._module = module
         self._connection = get_resource_connection(self._module)
         device_info = self._connection.get_device_info()
@@ -245,12 +245,12 @@ class FileCopy:
 
 
 class FilePush(FileCopy):
-    def __init__(self, module):
-        super(FilePush, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
         self.result = {}
 
     def md5sum_check(self, dst, file_system):
-        command = "show file {0}{1} md5sum".format(file_system, dst)
+        command = f"show file {file_system}{dst} md5sum"
         remote_filehash = self._connection.run_commands(command)[0]
         remote_filehash = to_bytes(remote_filehash, errors="surrogate_or_strict")
 
@@ -258,21 +258,18 @@ class FilePush(FileCopy):
         try:
             with open(local_file, "rb") as f:
                 filecontent = f.read()
-        except (OSError, IOError) as exc:
-            self._module.fail_json("Error reading the file: {0}".format(to_text(exc)))
+        except OSError as exc:
+            self._module.fail_json(f"Error reading the file: {to_text(exc)}")
 
         filecontent = to_bytes(filecontent, errors="surrogate_or_strict")
         local_filehash = hashlib.md5(filecontent).hexdigest()
 
         decoded_rhash = remote_filehash.decode("UTF-8")
 
-        if local_filehash == decoded_rhash:
-            return True
-        else:
-            return False
+        return local_filehash == decoded_rhash
 
     def remote_file_exists(self, remote_file, file_system):
-        command = "dir {0}/{1}".format(file_system, remote_file)
+        command = f"dir {file_system}/{remote_file}"
         body = self._connection.run_commands(command)[0]
 
         if "No such file" in body:
@@ -281,7 +278,7 @@ class FilePush(FileCopy):
             return self.md5sum_check(remote_file, file_system)
 
     def get_flash_size(self, file_system):
-        command = "dir {0}".format(file_system)
+        command = f"dir {file_system}"
         body = self._connection.run_commands(command)[0]
 
         match = re.search(r"(\d+) bytes free", body)
@@ -291,9 +288,11 @@ class FilePush(FileCopy):
 
         match = re.search(r"No such file or directory", body)
         if match:
-            self._module.fail_json("Invalid nxos filesystem {0}".format(file_system))
+            self._module.fail_json(f"Invalid nxos filesystem {file_system}")
+            return None
         else:
-            self._module.fail_json("Unable to determine size of filesystem {0}".format(file_system))
+            self._module.fail_json(f"Unable to determine size of filesystem {file_system}")
+            return None
 
     def enough_space(self, file, file_system):
         flash_size = self.get_flash_size(file_system)
@@ -310,10 +309,9 @@ class FilePush(FileCopy):
         if not self.enough_space(local_file, file_system):
             self._module.fail_json("Could not transfer file. Not enough space on device.")
 
-        # frp = full_remote_path, flp = full_local_path
         frp = remote_file
         if not file_system.startswith("bootflash:"):
-            frp = "{0}{1}".format(file_system, remote_file)
+            frp = f"{file_system}{remote_file}"
         flp = os.path.join(os.path.abspath(local_file))
 
         try:
@@ -334,7 +332,7 @@ class FilePush(FileCopy):
         file_system = self._module.params["file_system"]
 
         if not os.path.isfile(local_file):
-            self._module.fail_json("Local file {0} not found".format(local_file))
+            self._module.fail_json(f"Local file {local_file} not found")
 
         remote_file = remote_file or os.path.basename(local_file)
         remote_exists = self.remote_file_exists(remote_file, file_system)
@@ -359,8 +357,8 @@ class FilePush(FileCopy):
 
 
 class FilePull(FileCopy):
-    def __init__(self, module):
-        super(FilePull, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
         self.result = {}
 
     def mkdir(self, directory):
@@ -387,14 +385,8 @@ class FilePull(FileCopy):
             vrf = " vrf " + self._module.params["vrf"]
         else:
             vrf = ""
-        if self._module.params["file_pull_compact"]:
-            compact = " compact "
-        else:
-            compact = ""
-        if self._module.params["file_pull_kstack"]:
-            kstack = " use-kstack "
-        else:
-            kstack = ""
+        compact = " compact " if self._module.params["file_pull_compact"] else ""
+        kstack = " use-kstack " if self._module.params["file_pull_kstack"] else ""
 
         # Create local file directory under NX-OS filesystem if
         # local_file_directory playbook parameter is set.
@@ -436,10 +428,7 @@ class FilePull(FileCopy):
             self.copy_file_from_remote(local_file, local_file_dir, file_system)
 
         self.result["remote_file"] = remote_file
-        if local_file_dir:
-            dir = local_file_dir
-        else:
-            dir = ""
+        dir = local_file_dir if local_file_dir else ""
         self.result["local_file"] = file_system + dir + "/" + local_file
         self.result["remote_scp_server"] = self._module.params["remote_scp_server"]
         self.result["file_system"] = self._module.params["file_system"]
@@ -451,26 +440,26 @@ class FilePull(FileCopy):
 
 
 def main():
-    argument_spec = dict(
-        vrf=dict(type="str", default="management"),
-        connect_ssh_port=dict(type="int", default=22),
-        file_system=dict(type="str", default="bootflash:"),
-        file_pull=dict(type="bool", default=False),
-        file_pull_timeout=dict(type="int", default=300),
-        file_pull_protocol=dict(
-            type="str",
-            default="scp",
-            choices=["scp", "sftp", "http", "https", "tftp", "ftp"],
-        ),
-        file_pull_compact=dict(type="bool", default=False),
-        file_pull_kstack=dict(type="bool", default=False),
-        local_file=dict(type="path"),
-        local_file_directory=dict(type="path"),
-        remote_file=dict(type="path"),
-        remote_scp_server=dict(type="str"),
-        remote_scp_server_user=dict(type="str"),
-        remote_scp_server_password=dict(no_log=True),
-    )
+    argument_spec = {
+        "vrf": {"type": "str", "default": "management"},
+        "connect_ssh_port": {"type": "int", "default": 22},
+        "file_system": {"type": "str", "default": "bootflash:"},
+        "file_pull": {"type": "bool", "default": False},
+        "file_pull_timeout": {"type": "int", "default": 300},
+        "file_pull_protocol": {
+            "type": "str",
+            "default": "scp",
+            "choices": ["scp", "sftp", "http", "https", "tftp", "ftp"],
+        },
+        "file_pull_compact": {"type": "bool", "default": False},
+        "file_pull_kstack": {"type": "bool", "default": False},
+        "local_file": {"type": "path"},
+        "local_file_directory": {"type": "path"},
+        "remote_file": {"type": "path"},
+        "remote_scp_server": {"type": "str"},
+        "remote_scp_server_user": {"type": "str"},
+        "remote_scp_server_password": {"no_log": True},
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -481,12 +470,9 @@ def main():
 
     file_pull = module.params["file_pull"]
 
-    warnings = list()
+    warnings = []
 
-    if file_pull:
-        result = FilePull(module).run()
-    else:
-        result = FilePush(module).run()
+    result = FilePull(module).run() if file_pull else FilePush(module).run()
 
     result["warnings"] = warnings
 

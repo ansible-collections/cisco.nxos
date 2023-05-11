@@ -109,7 +109,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -127,7 +126,7 @@ PARAM_TO_COMMAND_KEYMAP = {
 
 def get_value(arg, config, module):
     command = PARAM_TO_COMMAND_KEYMAP.get(arg)
-    command_re = re.compile(r"(?:{0}\s)(?P<value>.*)$".format(command), re.M)
+    command_re = re.compile(fr"(?:{command}\s)(?P<value>.*)$", re.M)
     value = ""
     if command in config:
         value = command_re.search(config).group("value")
@@ -138,7 +137,7 @@ def get_route_target_value(arg, config, module):
     splitted_config = config.splitlines()
     value_list = []
     command = PARAM_TO_COMMAND_KEYMAP.get(arg)
-    command_re = re.compile(r"(?:{0}\s)(?P<value>.*)$".format(command), re.M)
+    command_re = re.compile(fr"(?:{command}\s)(?P<value>.*)$", re.M)
 
     for line in splitted_config:
         value = ""
@@ -151,7 +150,7 @@ def get_route_target_value(arg, config, module):
 def get_existing(module, args):
     existing = {}
     netcfg = CustomNetworkConfig(indent=2, contents=get_config(module))
-    parents = ["evpn", "vni {0} l2".format(module.params["vni"])]
+    parents = ["evpn", "vni {} l2".format(module.params["vni"])]
     config = netcfg.get_section(parents)
 
     if config:
@@ -162,7 +161,7 @@ def get_existing(module, args):
                 else:
                     existing[arg] = get_route_target_value(arg, config, module)
 
-        existing_fix = dict((k, v) for k, v in existing.items() if v)
+        existing_fix = {k: v for k, v in existing.items() if v}
         if not existing_fix:
             existing = existing_fix
 
@@ -192,8 +191,8 @@ def fix_proposed(proposed_commands):
 
 
 def state_present(module, existing, proposed):
-    commands = list()
-    parents = list()
+    commands = []
+    parents = []
     proposed_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, proposed)
     existing_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, existing)
 
@@ -207,7 +206,7 @@ def state_present(module, existing, proposed):
 
                 if existing_value:
                     for target in existing_value:
-                        commands.append("no {0} {1}".format(key, target))
+                        commands.append(f"no {key} {target}")
             elif not isinstance(value, list):
                 value = [value]
 
@@ -216,54 +215,54 @@ def state_present(module, existing, proposed):
                     continue
                 if existing:
                     if target not in existing.get(key.replace("-", "_").replace(" ", "_")):
-                        commands.append("{0} {1}".format(key, target))
+                        commands.append(f"{key} {target}")
                 else:
-                    commands.append("{0} {1}".format(key, target))
+                    commands.append(f"{key} {target}")
 
             if existing.get(key.replace("-", "_").replace(" ", "_")):
                 for exi in existing.get(key.replace("-", "_").replace(" ", "_")):
                     if exi not in value:
-                        commands.append("no {0} {1}".format(key, exi))
+                        commands.append(f"no {key} {exi}")
 
         elif value == "default":
             existing_value = existing_commands.get(key)
             if existing_value:
-                commands.append("no {0} {1}".format(key, existing_value))
+                commands.append(f"no {key} {existing_value}")
         else:
-            command = "{0} {1}".format(key, value)
+            command = f"{key} {value}"
             commands.append(command)
 
     if commands:
-        parents = ["evpn", "vni {0} l2".format(module.params["vni"])]
+        parents = ["evpn", "vni {} l2".format(module.params["vni"])]
 
     return commands, parents
 
 
 def state_absent(module, existing, proposed):
-    commands = ["no vni {0} l2".format(module.params["vni"])]
+    commands = ["no vni {} l2".format(module.params["vni"])]
     parents = ["evpn"]
     return commands, parents
 
 
 def main():
-    argument_spec = dict(
-        vni=dict(required=True, type="str"),
-        route_distinguisher=dict(required=False, type="str"),
-        route_target_both=dict(required=False, type="list", elements="str"),
-        route_target_import=dict(required=False, type="list", elements="str"),
-        route_target_export=dict(required=False, type="list", elements="str"),
-        state=dict(choices=["present", "absent"], default="present", required=False),
-    )
+    argument_spec = {
+        "vni": {"required": True, "type": "str"},
+        "route_distinguisher": {"required": False, "type": "str"},
+        "route_target_both": {"required": False, "type": "list", "elements": "str"},
+        "route_target_import": {"required": False, "type": "list", "elements": "str"},
+        "route_target_export": {"required": False, "type": "list", "elements": "str"},
+        "state": {"choices": ["present", "absent"], "default": "present", "required": False},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
-    results = dict(changed=False, warnings=warnings)
+    warnings = []
+    results = {"changed": False, "warnings": warnings}
 
     state = module.params["state"]
     args = PARAM_TO_COMMAND_KEYMAP.keys()
     existing = get_existing(module, args)
-    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed_args = {k: v for k, v in module.params.items() if v is not None and k in args}
     commands = []
     parents = []
 

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -28,7 +27,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
     remove_empties,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_address_family import (
     Bgp_address_familyTemplate,
@@ -36,12 +34,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Bgp_address_family(ResourceModule):
-    """
-    The nxos_bgp_address_family config class
-    """
+    """The nxos_bgp_address_family config class."""
 
-    def __init__(self, module):
-        super(Bgp_address_family, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -80,7 +76,7 @@ class Bgp_address_family(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -115,8 +111,8 @@ class Bgp_address_family(ResourceModule):
         # if state is overridden or deleted, remove superfluos config
         if self.state in ["deleted", "overridden"]:
             if (haved and haved["as_number"] == wantd.get("as_number")) or not wantd:
-                remove = True if self.state == "deleted" else False
-                purge = True if not wantd else False
+                remove = self.state == "deleted"
+                purge = bool(not wantd)
                 self._remove_af(want_af, have_af, remove=remove, purge=purge)
 
                 for k, hvrf in iteritems(hvrfs):
@@ -137,7 +133,7 @@ class Bgp_address_family(ResourceModule):
 
                 # add VRF command at correct position once
                 if cur_ptr != len(self.commands):
-                    self.commands.insert(cur_ptr, "vrf {0}".format(wk))
+                    self.commands.insert(cur_ptr, f"vrf {wk}")
 
         if self.commands:
             self.commands.insert(0, "router bgp {as_number}".format(**haved or wantd))
@@ -178,7 +174,7 @@ class Bgp_address_family(ResourceModule):
 
     def _bgp_af_list_to_dict(self, entry):
         def _build_key(data):
-            """Build primary key for each dict
+            """Build primary key for each dict.
 
             :params x: dictionary
             :returns: primary key as tuple
@@ -215,14 +211,14 @@ class Bgp_address_family(ResourceModule):
 
         # group AFs by VRFs
         # vrf_ denotes global AFs
-        for k in af.keys():
+        for k in af:
             for x in k:
                 if x.startswith("vrf_"):
                     if x not in temp:
                         temp[x] = {}
                     temp[x][k] = af[k]
 
-        for k in temp.keys():
+        for k in temp:
             if k == "vrf_":
                 # populate global AFs
                 entry["address_family"][k] = temp[k]
@@ -249,5 +245,5 @@ class Bgp_address_family(ResourceModule):
             ):
                 self.addcmd(v, "address_family", True)
         if cur_ptr < len(self.commands) and vrf:
-            self.commands.insert(cur_ptr, "vrf {0}".format(vrf))
+            self.commands.insert(cur_ptr, f"vrf {vrf}")
             self.commands.append("exit")

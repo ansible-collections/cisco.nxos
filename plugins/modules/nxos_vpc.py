@@ -157,7 +157,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -233,17 +232,14 @@ def get_vpc(module):
         domain = str(body["vpc-domain-id"])
     else:
         body = run_commands(module, ["show run vpc | inc domain"])[0]
-        if body:
-            domain = body.split()[2]
-        else:
-            domain = "not configured"
+        domain = body.split()[2] if body else "not configured"
 
     vpc = {}
     if domain != "not configured":
         run = get_config(module, flags=["vpc all"])
         if run:
             vpc["domain"] = domain
-            for key in PARAM_TO_DEFAULT_KEYMAP.keys():
+            for key in PARAM_TO_DEFAULT_KEYMAP:
                 vpc[key] = PARAM_TO_DEFAULT_KEYMAP.get(key)
             vpc["auto_recovery"] = get_auto_recovery_default(module)
             vpc_list = run.split("\n")
@@ -264,11 +260,11 @@ def get_vpc(module):
                     line = each.split()
                     vpc["delay_restore_orphan_port"] = line[-1]
                 if "auto-recovery" in each:
-                    vpc["auto_recovery"] = False if "no " in each else True
+                    vpc["auto_recovery"] = "no " not in each
                     line = each.split()
                     vpc["auto_recovery_reload_delay"] = line[-1]
                 if "peer-gateway" in each:
-                    vpc["peer_gw"] = False if "no " in each else True
+                    vpc["peer_gw"] = "no " not in each
                 if "peer-keepalive destination" in each:
                     # destination is reqd; src & vrf are optional
                     m = re.search(
@@ -278,7 +274,7 @@ def get_vpc(module):
                         each,
                     )
                     if m:
-                        for pkl in m.groupdict().keys():
+                        for pkl in m.groupdict():
                             if m.group(pkl):
                                 vpc[pkl] = m.group(pkl)
     return vpc
@@ -296,9 +292,9 @@ def pkl_dependencies(module, delta, existing):
     Example:
       CLI:       peer-keepalive dest 10.1.1.1 source 10.1.1.2 vrf orange
       Playbook:  {pkl_dest: 10.1.1.1, pkl_vrf: blue}
-      Result:    peer-keepalive dest 10.1.1.1 source 10.1.1.2 vrf blue
+      Result:    peer-keepalive dest 10.1.1.1 source 10.1.1.2 vrf blue.
     """
-    pkl_existing = [i for i in existing.keys() if i.startswith("pkl")]
+    pkl_existing = [i for i in existing if i.startswith("pkl")]
     for pkl in pkl_existing:
         param = module.params.get(pkl)
         if not delta.get(pkl):
@@ -347,26 +343,26 @@ def get_commands_to_config_vpc(module, vpc, domain, existing):
             commands.append(command)
 
     if commands or domain_only:
-        commands.insert(0, "vpc domain {0}".format(domain))
+        commands.insert(0, f"vpc domain {domain}")
     return commands
 
 
 def main():
-    argument_spec = dict(
-        domain=dict(required=True, type="str"),
-        role_priority=dict(required=False, type="str"),
-        system_priority=dict(required=False, type="str"),
-        pkl_src=dict(required=False),
-        pkl_dest=dict(required=False),
-        pkl_vrf=dict(required=False),
-        peer_gw=dict(required=False, type="bool"),
-        auto_recovery=dict(required=False, type="bool"),
-        auto_recovery_reload_delay=dict(required=False, type="str"),
-        delay_restore=dict(required=False, type="str"),
-        delay_restore_interface_vlan=dict(required=False, type="str"),
-        delay_restore_orphan_port=dict(required=False, type="str"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "domain": {"required": True, "type": "str"},
+        "role_priority": {"required": False, "type": "str"},
+        "system_priority": {"required": False, "type": "str"},
+        "pkl_src": {"required": False},
+        "pkl_dest": {"required": False},
+        "pkl_vrf": {"required": False},
+        "peer_gw": {"required": False, "type": "bool"},
+        "auto_recovery": {"required": False, "type": "bool"},
+        "auto_recovery_reload_delay": {"required": False, "type": "str"},
+        "delay_restore": {"required": False, "type": "str"},
+        "delay_restore_interface_vlan": {"required": False, "type": "str"},
+        "delay_restore_orphan_port": {"required": False, "type": "str"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     mutually_exclusive = [("auto_recovery", "auto_recovery_reload_delay")]
     module = AnsibleModule(
@@ -375,7 +371,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "warnings": warnings}
 
     domain = module.params["domain"]
@@ -392,20 +388,20 @@ def main():
     delay_restore_orphan_port = module.params["delay_restore_orphan_port"]
     state = module.params["state"]
 
-    args = dict(
-        domain=domain,
-        role_priority=role_priority,
-        system_priority=system_priority,
-        pkl_src=pkl_src,
-        pkl_dest=pkl_dest,
-        pkl_vrf=pkl_vrf,
-        peer_gw=peer_gw,
-        auto_recovery=auto_recovery,
-        auto_recovery_reload_delay=auto_recovery_reload_delay,
-        delay_restore=delay_restore,
-        delay_restore_interface_vlan=delay_restore_interface_vlan,
-        delay_restore_orphan_port=delay_restore_orphan_port,
-    )
+    args = {
+        "domain": domain,
+        "role_priority": role_priority,
+        "system_priority": system_priority,
+        "pkl_src": pkl_src,
+        "pkl_dest": pkl_dest,
+        "pkl_vrf": pkl_vrf,
+        "peer_gw": peer_gw,
+        "auto_recovery": auto_recovery,
+        "auto_recovery_reload_delay": auto_recovery_reload_delay,
+        "delay_restore": delay_restore,
+        "delay_restore_interface_vlan": delay_restore_interface_vlan,
+        "delay_restore_orphan_port": delay_restore_orphan_port,
+    }
 
     if not pkl_dest:
         if pkl_src:
@@ -419,14 +415,13 @@ def main():
                 module.fail_json(
                     msg="dest IP for peer-keepalive is required" " when vrf is present",
                 )
-    if pkl_vrf:
-        if pkl_vrf.lower() not in get_vrf_list(module):
-            module.fail_json(
-                msg="The VRF you are trying to use for the peer "
-                "keepalive link is not on device yet. Add it"
-                " first, please.",
-            )
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    if pkl_vrf and pkl_vrf.lower() not in get_vrf_list(module):
+        module.fail_json(
+            msg="The VRF you are trying to use for the peer "
+            "keepalive link is not on device yet. Add it"
+            " first, please.",
+        )
+    proposed = {k: v for k, v in args.items() if v is not None}
     existing = get_vpc(module)
 
     commands = []
@@ -443,15 +438,14 @@ def main():
             pkl_dependencies(module, delta, existing)
             command = get_commands_to_config_vpc(module, delta, domain, existing)
             commands.append(command)
-    elif state == "absent":
-        if existing:
-            if domain != existing["domain"]:
-                module.fail_json(
-                    msg="You are trying to remove a domain that " "does not exist on the device",
-                )
-            else:
-                commands.append("terminal dont-ask")
-                commands.append("no vpc domain {0}".format(domain))
+    elif state == "absent" and existing:
+        if domain != existing["domain"]:
+            module.fail_json(
+                msg="You are trying to remove a domain that " "does not exist on the device",
+            )
+        else:
+            commands.append("terminal dont-ask")
+            commands.append(f"no vpc domain {domain}")
 
     cmds = flatten_list(commands)
     results["commands"] = cmds

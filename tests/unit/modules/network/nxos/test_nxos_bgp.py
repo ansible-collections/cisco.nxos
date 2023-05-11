@@ -32,7 +32,7 @@ class TestNxosBgpModule(TestNxosModule):
     module = nxos_bgp
 
     def setUp(self):
-        super(TestNxosBgpModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config",
@@ -45,7 +45,7 @@ class TestNxosBgpModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosBgpModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
 
@@ -54,57 +54,54 @@ class TestNxosBgpModule(TestNxosModule):
         self.load_config.return_value = []
 
     def test_nxos_bgp(self):
-        set_module_args(dict(asn=65535, router_id="192.0.2.1"))
+        set_module_args({"asn": 65535, "router_id": "192.0.2.1"})
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["router bgp 65535", "router-id 192.0.2.1"])
+        assert result["commands"] == ["router bgp 65535", "router-id 192.0.2.1"]
 
     def test_nxos_bgp_change_nothing(self):
-        set_module_args(dict(asn=65535, router_id="192.168.1.1"))
+        set_module_args({"asn": 65535, "router_id": "192.168.1.1"})
         self.execute_module(changed=False)
 
     def test_nxos_bgp_wrong_asn(self):
-        set_module_args(dict(asn=10, router_id="192.168.1.1"))
+        set_module_args({"asn": 10, "router_id": "192.168.1.1"})
         result = self.execute_module(failed=True)
-        self.assertEqual(result["msg"], "Another BGP ASN already exists.")
+        assert result["msg"] == "Another BGP ASN already exists."
 
     def test_nxos_bgp_remove(self):
-        set_module_args(dict(asn=65535, state="absent"))
+        set_module_args({"asn": 65535, "state": "absent"})
         self.execute_module(changed=True, commands=["no router bgp 65535"])
 
     def test_nxos_bgp_remove_vrf(self):
-        set_module_args(dict(asn=65535, vrf="test2", state="absent"))
+        set_module_args({"asn": 65535, "vrf": "test2", "state": "absent"})
         self.execute_module(changed=True, commands=["router bgp 65535", "no vrf test2"])
 
     def test_nxos_bgp_remove_nonexistant_vrf(self):
-        set_module_args(dict(asn=65535, vrf="foo", state="absent"))
+        set_module_args({"asn": 65535, "vrf": "foo", "state": "absent"})
         self.execute_module(changed=False)
 
     def test_nxos_bgp_remove_wrong_asn(self):
-        set_module_args(dict(asn=10, state="absent"))
+        set_module_args({"asn": 10, "state": "absent"})
         self.execute_module(changed=False)
 
     def test_nxos_bgp_vrf(self):
-        set_module_args(dict(asn=65535, vrf="test", router_id="192.0.2.1"))
+        set_module_args({"asn": 65535, "vrf": "test", "router_id": "192.0.2.1"})
         result = self.execute_module(
             changed=True,
             commands=["router bgp 65535", "vrf test", "router-id 192.0.2.1"],
         )
-        self.assertEqual(result["warnings"], ["VRF test doesn't exist."])
+        assert result["warnings"] == ["VRF test doesn't exist."]
 
     def test_nxos_bgp_global_param(self):
-        set_module_args(dict(asn=65535, shutdown=True))
+        set_module_args({"asn": 65535, "shutdown": True})
         self.execute_module(changed=True, commands=["router bgp 65535", "shutdown"])
 
     def test_nxos_bgp_global_param_outside_default(self):
-        set_module_args(dict(asn=65535, vrf="test", shutdown=True))
+        set_module_args({"asn": 65535, "vrf": "test", "shutdown": True})
         result = self.execute_module(failed=True)
-        self.assertEqual(
-            result["msg"],
-            'Global params can be modified only under "default" VRF.',
-        )
+        assert result["msg"] == 'Global params can be modified only under "default" VRF.'
 
     def test_nxos_bgp_default_value(self):
-        set_module_args(dict(asn=65535, graceful_restart_timers_restart="default"))
+        set_module_args({"asn": 65535, "graceful_restart_timers_restart": "default"})
         self.execute_module(
             changed=True,
             commands=["router bgp 65535", "graceful-restart restart-time 120"],
@@ -115,7 +112,7 @@ class TestNxosBgp32BitsAS(TestNxosModule):
     module = nxos_bgp
 
     def setUp(self):
-        super(TestNxosBgp32BitsAS, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp.load_config",
@@ -128,7 +125,7 @@ class TestNxosBgp32BitsAS(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosBgp32BitsAS, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
 
@@ -137,14 +134,14 @@ class TestNxosBgp32BitsAS(TestNxosModule):
         self.load_config.return_value = []
 
     def test_nxos_bgp_change_nothing(self):
-        set_module_args(dict(asn="65535.65535", router_id="192.168.1.1"))
+        set_module_args({"asn": "65535.65535", "router_id": "192.168.1.1"})
         self.execute_module(changed=False)
 
     def test_nxos_bgp_wrong_asn(self):
-        set_module_args(dict(asn="65535.10", router_id="192.168.1.1"))
+        set_module_args({"asn": "65535.10", "router_id": "192.168.1.1"})
         result = self.execute_module(failed=True)
-        self.assertEqual(result["msg"], "Another BGP ASN already exists.")
+        assert result["msg"] == "Another BGP ASN already exists."
 
     def test_nxos_bgp_remove(self):
-        set_module_args(dict(asn="65535.65535", state="absent"))
+        set_module_args({"asn": "65535.65535", "state": "absent"})
         self.execute_module(changed=True, commands=["no router bgp 65535.65535"])

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_lldp_interfaces class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 from __future__ import absolute_import, division, print_function
 
@@ -23,7 +22,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_empties,
     to_list,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
@@ -34,19 +32,17 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Lldp_interfaces(ConfigBase):
-    """
-    The nxos_lldp_interfaces class
-    """
+    """The nxos_lldp_interfaces class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["lldp_interfaces"]
 
-    def __init__(self, module):
-        super(Lldp_interfaces, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_lldp_interfaces_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -68,14 +64,14 @@ class Lldp_interfaces(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
         state = self._module.params["state"]
         action_states = ["merged", "replaced", "deleted", "overridden"]
 
@@ -106,7 +102,7 @@ class Lldp_interfaces(ConfigBase):
 
     def set_config(self, existing_lldp_interfaces_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -130,7 +126,7 @@ class Lldp_interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -167,7 +163,7 @@ class Lldp_interfaces(ConfigBase):
         return commands
 
     def _state_gathered(self, have):
-        """The command generator when state is gathered
+        """The command generator when state is gathered.
 
         :rtype: A list
         :returns: the commands necessary to reproduce the current configuration
@@ -178,7 +174,7 @@ class Lldp_interfaces(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -188,7 +184,7 @@ class Lldp_interfaces(ConfigBase):
         del_commands = []
         delete_dict = {}
         obj_in_have = flatten_dict(search_obj_in_list(want["name"], have, "name"))
-        for k1 in obj_in_have.keys():
+        for k1 in obj_in_have:
             if k1 not in want.keys():
                 delete_dict.update({k1: obj_in_have[k1]})
 
@@ -207,7 +203,7 @@ class Lldp_interfaces(ConfigBase):
         return commands
 
     def _state_overridden(self, want, have):
-        """The command generator when state is overridden
+        """The command generator when state is overridden.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -234,7 +230,7 @@ class Lldp_interfaces(ConfigBase):
         return commands
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -243,7 +239,7 @@ class Lldp_interfaces(ConfigBase):
         return self.set_commands(want, have)
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration

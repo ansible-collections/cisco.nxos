@@ -32,7 +32,7 @@ class TestNxosVpcModule(TestNxosModule):
     module = nxos_vpc
 
     def setUp(self):
-        super(TestNxosVpcModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc.get_config",
@@ -50,7 +50,7 @@ class TestNxosVpcModule(TestNxosModule):
         self.run_commands = self.mock_run_commands.start()
 
     def tearDown(self):
-        super(TestNxosVpcModule, self).tearDown()
+        super().tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_run_commands.stop()
@@ -58,7 +58,7 @@ class TestNxosVpcModule(TestNxosModule):
     def load_fixtures(self, commands=None, device=""):
         def load_from_file(*args, **kwargs):
             module, commands = args
-            output = list()
+            output = []
 
             for command in commands:
                 filename = str(command).split(" | ", 1)[0].replace(" ", "_")
@@ -66,9 +66,9 @@ class TestNxosVpcModule(TestNxosModule):
             return output
 
         def vrf_load_from_file(*args, **kwargs):
-            """Load vpc output for vrf tests"""
+            """Load vpc output for vrf tests."""
             module, commands = args
-            output = list()
+            output = []
             for command in commands:
                 filename = "vrf_test_" + str(command).split(" | ", 1)[0].replace(" ", "_")
                 output.append(load_fixture("nxos_vpc", filename))
@@ -82,15 +82,15 @@ class TestNxosVpcModule(TestNxosModule):
 
     def test_nxos_vpc_present(self):
         set_module_args(
-            dict(
-                domain=100,
-                role_priority=32667,
-                system_priority=2000,
-                pkl_dest="192.168.100.4",
-                pkl_src="10.1.100.20",
-                peer_gw=True,
-                auto_recovery=True,
-            ),
+            {
+                "domain": 100,
+                "role_priority": 32667,
+                "system_priority": 2000,
+                "pkl_dest": "192.168.100.4",
+                "pkl_src": "10.1.100.20",
+                "peer_gw": True,
+                "auto_recovery": True,
+            },
         )
         self.execute_module(
             changed=True,
@@ -108,12 +108,12 @@ class TestNxosVpcModule(TestNxosModule):
     def test_nxos_vpc_vrf_1(self):
         # No vrf -> vrf 'default'
         set_module_args(
-            dict(
-                domain=100,
-                pkl_dest="192.168.1.1",
-                pkl_src="10.1.1.1",
-                pkl_vrf="default",
-            ),
+            {
+                "domain": 100,
+                "pkl_dest": "192.168.1.1",
+                "pkl_src": "10.1.1.1",
+                "pkl_vrf": "default",
+            },
         )
         self.execute_module(
             changed=True,
@@ -128,12 +128,12 @@ class TestNxosVpcModule(TestNxosModule):
         # All pkl commands should be present
         self.get_config.return_value = load_fixture("nxos_vpc", "vrf_test_vpc_config")
         set_module_args(
-            dict(
-                domain=100,
-                pkl_dest="192.168.1.1",
-                pkl_src="10.1.1.1",
-                pkl_vrf="test-vrf",
-            ),
+            {
+                "domain": 100,
+                "pkl_dest": "192.168.1.1",
+                "pkl_src": "10.1.1.1",
+                "pkl_vrf": "test-vrf",
+            },
         )
         self.execute_module(
             changed=True,
@@ -149,11 +149,11 @@ class TestNxosVpcModule(TestNxosModule):
         # Existing pkl_src should be retained even though playbook does not specify it
         self.get_config.return_value = load_fixture("nxos_vpc", "vrf_test_vpc_config")
         set_module_args(
-            dict(
-                domain=100,
-                pkl_dest="192.168.1.1",
-                pkl_vrf="obviously-different-vrf",
-            ),
+            {
+                "domain": 100,
+                "pkl_dest": "192.168.1.1",
+                "pkl_vrf": "obviously-different-vrf",
+            },
         )
         self.execute_module(
             changed=True,
@@ -168,7 +168,7 @@ class TestNxosVpcModule(TestNxosModule):
         # vrf 'my_vrf'-> vrf 'management'
         # 'management' is the default value for vrf, it will not nvgen
         self.get_config.return_value = load_fixture("nxos_vpc", "vrf_test_vpc_config")
-        set_module_args(dict(domain=100, pkl_dest="192.168.1.1", pkl_vrf="management"))
+        set_module_args({"domain": 100, "pkl_dest": "192.168.1.1", "pkl_vrf": "management"})
         self.execute_module(
             changed=True,
             device="_vrf_test",
@@ -182,19 +182,19 @@ class TestNxosVpcModule(TestNxosModule):
         # vrf 'my_vrf' -> vrf 'my_vrf' (idempotence)
         self.get_config.return_value = load_fixture("nxos_vpc", "vrf_test_vpc_config")
         set_module_args(
-            dict(
-                domain=100,
-                pkl_dest="192.168.1.1",
-                pkl_src="10.1.1.1",
-                pkl_vrf="my_vrf",
-            ),
+            {
+                "domain": 100,
+                "pkl_dest": "192.168.1.1",
+                "pkl_src": "10.1.1.1",
+                "pkl_vrf": "my_vrf",
+            },
         )
         self.execute_module(changed=False, device="_vrf_test")
 
     def test_nxos_vpc_vrf_6(self):
         # vrf 'my_vrf' -> absent tests
         self.get_config.return_value = load_fixture("nxos_vpc", "vrf_test_vpc_config")
-        set_module_args(dict(domain=100, state="absent"))
+        set_module_args({"domain": 100, "state": "absent"})
         self.execute_module(
             changed=True,
             device="_vrf_test",
@@ -205,12 +205,12 @@ class TestNxosVpcModule(TestNxosModule):
         # dest 192.168.1.1 source 10.1.1.1 vrf my_vrf -> (dest only) (idempotence)
         # pkl_src/pkl_vrf not in playbook but exists on device.
         self.get_config.return_value = load_fixture("nxos_vpc", "vrf_test_vpc_config")
-        set_module_args(dict(domain=100, pkl_dest="192.168.1.1"))
+        set_module_args({"domain": 100, "pkl_dest": "192.168.1.1"})
         self.execute_module(changed=False, device="_vrf_test")
 
     def test_nxos_vpc_vrf_8(self):
         # dest 192.168.1.1 source 10.1.1.1 vrf my_vrf -> (optional vrf) (idempotence)
         # pkl_src not in playbook but exists on device.
         self.get_config.return_value = load_fixture("nxos_vpc", "vrf_test_vpc_config")
-        set_module_args(dict(domain=100, pkl_dest="192.168.1.1", pkl_vrf="my_vrf"))
+        set_module_args({"domain": 100, "pkl_dest": "192.168.1.1", "pkl_vrf": "my_vrf"})
         self.execute_module(changed=False, device="_vrf_test")

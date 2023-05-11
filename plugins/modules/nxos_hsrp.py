@@ -144,7 +144,6 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     get_interface_type,
@@ -175,7 +174,7 @@ def apply_key_map(key_map, table):
 
 
 def get_interface_mode(interface, intf_type, module):
-    command = "show interface {0} | json".format(interface)
+    command = f"show interface {interface} | json"
     interface = {}
     mode = "unknown"
     try:
@@ -194,7 +193,7 @@ def get_interface_mode(interface, intf_type, module):
 
 
 def get_hsrp_group(group, interface, module):
-    command = "show hsrp group {0} all | json".format(group)
+    command = f"show hsrp group {group} all | json"
     hsrp = {}
 
     hsrp_key = {
@@ -258,7 +257,7 @@ def get_hsrp_group_unknown_enum(module, command, hsrp_table):
 
 
 def get_commands_remove_hsrp(group, interface):
-    commands = ["interface {0}".format(interface), "no hsrp {0}".format(group)]
+    commands = [f"interface {interface}", f"no hsrp {group}"]
     return commands
 
 
@@ -290,7 +289,7 @@ def get_commands_config_hsrp(delta, interface, args, existing):
             else:
                 del delta["priority"]
         else:
-            delta["priority"] = "priority {0}".format(delta["priority"])
+            delta["priority"] = "priority {}".format(delta["priority"])
 
     if vip:
         if vip == "default":
@@ -299,7 +298,7 @@ def get_commands_config_hsrp(delta, interface, args, existing):
             else:
                 del delta["vip"]
         else:
-            delta["vip"] = "ip {0}".format(delta["vip"])
+            delta["vip"] = "ip {}".format(delta["vip"])
 
     for key in delta:
         command = config_args.get(key, "DNE").format(**delta)
@@ -320,10 +319,10 @@ def get_commands_config_hsrp(delta, interface, args, existing):
             auth_string = args["auth_string"]
         if auth_string != "default":
             if auth_type == "md5":
-                command = "authentication md5 key-string {0} {1}".format(auth_enc, auth_string)
+                command = f"authentication md5 key-string {auth_enc} {auth_string}"
                 commands.append(command)
             elif auth_type == "text":
-                command = "authentication text {0}".format(auth_string)
+                command = f"authentication text {auth_string}"
                 commands.append(command)
         else:
             if existing and existing.get("auth_string") != PARAM_TO_DEFAULT_KEYMAP.get(
@@ -332,7 +331,7 @@ def get_commands_config_hsrp(delta, interface, args, existing):
                 commands.append("no authentication")
 
     if commands and not group:
-        commands.insert(0, "hsrp {0}".format(args["group"]))
+        commands.insert(0, "hsrp {}".format(args["group"]))
 
     version = delta.get("version", None)
     if version:
@@ -341,17 +340,16 @@ def get_commands_config_hsrp(delta, interface, args, existing):
         elif version == "1":
             command = "hsrp version 1"
         commands.insert(0, command)
-        commands.insert(0, "interface {0}".format(interface))
+        commands.insert(0, f"interface {interface}")
 
-    if commands:
-        if not commands[0].startswith("interface"):
-            commands.insert(0, "interface {0}".format(interface))
+    if commands and not commands[0].startswith("interface"):
+        commands.insert(0, f"interface {interface}")
 
     return commands
 
 
 def is_default(interface, module):
-    command = "show run interface {0}".format(interface)
+    command = f"show run interface {interface}"
 
     try:
         body = run_commands(module, [command], check_rc=False)[0]
@@ -359,10 +357,7 @@ def is_default(interface, module):
             return "DNE"
         else:
             raw_list = body.split("\n")
-            if raw_list[-1].startswith("interface"):
-                return True
-            else:
-                return False
+            return bool(raw_list[-1].startswith("interface"))
     except KeyError:
         return "DNE"
 
@@ -374,22 +369,22 @@ def validate_config(body, vip, module):
 
 
 def main():
-    argument_spec = dict(
-        group=dict(required=True, type="str"),
-        interface=dict(required=True),
-        version=dict(choices=["1", "2"], default="1", required=False),
-        priority=dict(type="str", required=False),
-        preempt=dict(type="str", choices=["disabled", "enabled"], required=False),
-        vip=dict(type="str", required=False),
-        auth_type=dict(choices=["text", "md5"], required=False),
-        auth_string=dict(type="str", required=False),
-        state=dict(choices=["absent", "present"], required=False, default="present"),
-    )
+    argument_spec = {
+        "group": {"required": True, "type": "str"},
+        "interface": {"required": True},
+        "version": {"choices": ["1", "2"], "default": "1", "required": False},
+        "priority": {"type": "str", "required": False},
+        "preempt": {"type": "str", "choices": ["disabled", "enabled"], "required": False},
+        "vip": {"type": "str", "required": False},
+        "auth_type": {"choices": ["text", "md5"], "required": False},
+        "auth_string": {"type": "str", "required": False},
+        "state": {"choices": ["absent", "present"], "required": False, "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
-    results = dict(changed=False, warnings=warnings)
+    warnings = []
+    results = {"changed": False, "warnings": warnings}
 
     interface = module.params["interface"].lower()
     group = module.params["group"]
@@ -437,24 +432,23 @@ def main():
             interface=interface,
         )
 
-    if auth_type or auth_string:
-        if not (auth_type and auth_string):
-            module.fail_json(
-                msg="When using auth parameters, you need BOTH " "auth_type AND auth_string.",
-            )
+    if (auth_type or auth_string) and not (auth_type and auth_string):
+        module.fail_json(
+            msg="When using auth parameters, you need BOTH " "auth_type AND auth_string.",
+        )
 
-    args = dict(
-        group=group,
-        version=version,
-        priority=priority,
-        preempt=preempt,
-        vip=vip,
-        auth_type=auth_type,
-        auth_string=auth_string,
-        auth_enc=auth_enc,
-    )
+    args = {
+        "group": group,
+        "version": version,
+        "priority": priority,
+        "preempt": preempt,
+        "vip": vip,
+        "auth_type": auth_type,
+        "auth_string": auth_string,
+        "auth_enc": auth_enc,
+    }
 
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    proposed = {k: v for k, v in args.items() if v is not None}
 
     existing = get_hsrp_group(group, interface, module)
 
@@ -476,10 +470,9 @@ def main():
             command = get_commands_config_hsrp(delta, interface, args, existing)
             commands.extend(command)
 
-    elif state == "absent":
-        if existing:
-            command = get_commands_remove_hsrp(group, interface)
-            commands.extend(command)
+    elif state == "absent" and existing:
+        command = get_commands_remove_hsrp(group, interface)
+        commands.extend(command)
 
     if commands:
         if module.check_mode:

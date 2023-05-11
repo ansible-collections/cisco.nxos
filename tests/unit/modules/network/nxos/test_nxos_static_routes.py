@@ -19,7 +19,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
     module = nxos_static_routes
 
     def setUp(self):
-        super(TestNxosStaticRoutesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -52,7 +52,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestNxosStaticRoutesModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -75,30 +75,30 @@ class TestNxosStaticRoutesModule(TestNxosModule):
 
     def test_nxos_static_routes_merged(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[
-                                    dict(
-                                        dest="192.0.2.32/28",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="192.0.2.40",
-                                                interface="Ethernet1/2",
-                                                admin_distance=5,
-                                            ),
+            {
+                "config": [
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "192.0.2.32/28",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.40",
+                                                "interface": "Ethernet1/2",
+                                                "admin_distance": 5,
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "configure terminal",
@@ -108,58 +108,58 @@ class TestNxosStaticRoutesModule(TestNxosModule):
 
     def test_nxos_static_routes_merged_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[
-                                    dict(
-                                        dest="192.0.2.16/28",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="192.0.2.24",
-                                                route_name="initial_route",
-                                            ),
+            {
+                "config": [
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "192.0.2.16/28",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.24",
+                                                "route_name": "initial_route",
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_static_routes_replaced(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[
-                                    dict(
-                                        dest="192.0.2.16/28",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="192.0.2.50",
-                                                tag=12,
-                                                route_name="replaced_route",
-                                            ),
+            {
+                "config": [
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "192.0.2.16/28",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.50",
+                                                "tag": 12,
+                                                "route_name": "replaced_route",
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "configure terminal",
@@ -170,58 +170,58 @@ class TestNxosStaticRoutesModule(TestNxosModule):
 
     def test_nxos_static_routes_replaced_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[
-                                    dict(
-                                        dest="192.0.2.16/28",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="192.0.2.24",
-                                                route_name="initial_route",
-                                            ),
+            {
+                "config": [
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "192.0.2.16/28",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.24",
+                                                "route_name": "initial_route",
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_static_routes_overridden(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[
-                                    dict(
-                                        dest="192.0.2.112/28",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="192.0.2.68",
-                                                route_name="overridden_route",
-                                                dest_vrf="end_vrf",
-                                            ),
+            {
+                "config": [
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "192.0.2.112/28",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.68",
+                                                "route_name": "overridden_route",
+                                                "dest_vrf": "end_vrf",
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         commands = [
             "configure terminal",
@@ -235,53 +235,53 @@ class TestNxosStaticRoutesModule(TestNxosModule):
 
     def test_nxos_static_routes_overridden_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        vrf="test",
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[
-                                    dict(
-                                        dest="192.0.2.96/28",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="192.0.2.122",
-                                                dest_vrf="dest_vrf",
-                                            ),
+            {
+                "config": [
+                    {
+                        "vrf": "test",
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "192.0.2.96/28",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.122",
+                                                "dest_vrf": "dest_vrf",
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                routes=[
-                                    dict(
-                                        dest="192.0.2.16/28",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="192.0.2.24",
-                                                route_name="initial_route",
-                                            ),
+                    },
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "dest": "192.0.2.16/28",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "192.0.2.24",
+                                                "route_name": "initial_route",
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_static_routes_deletedvrf(self):
-        set_module_args(dict(config=[dict(vrf="test")], state="deleted"))
+        set_module_args({"config": [{"vrf": "test"}], "state": "deleted"})
         commands = [
             "vrf context test",
             "no ip route 192.0.2.96/28 192.0.2.122 vrf dest_vrf",
@@ -291,10 +291,10 @@ class TestNxosStaticRoutesModule(TestNxosModule):
 
     def test_nxos_static_routes_deletedafi(self):
         set_module_args(
-            dict(
-                config=[dict(address_families=[dict(afi="ipv4")])],
-                state="deleted",
-            ),
+            {
+                "config": [{"address_families": [{"afi": "ipv4"}]}],
+                "state": "deleted",
+            },
         )
         commands = [
             "configure terminal",
@@ -304,15 +304,15 @@ class TestNxosStaticRoutesModule(TestNxosModule):
 
     def test_nxos_static_routes_deleteddest(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        vrf="test",
-                        address_families=[dict(afi="ipv4", routes=[dict(dest="192.0.2.96/28")])],
-                    ),
+            {
+                "config": [
+                    {
+                        "vrf": "test",
+                        "address_families": [{"afi": "ipv4", "routes": [{"dest": "192.0.2.96/28"}]}],
+                    },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         commands = [
             "vrf context test",
@@ -322,31 +322,31 @@ class TestNxosStaticRoutesModule(TestNxosModule):
 
     def test_nxos_static_routes_deletedroute(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        vrf="test",
-                        address_families=[
-                            dict(
-                                afi="ipv6",
-                                routes=[
-                                    dict(
-                                        dest="2001:db8:12::/32",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="2001:db8::1001",
-                                                route_name="ipv6_route",
-                                                admin_distance=3,
-                                            ),
+            {
+                "config": [
+                    {
+                        "vrf": "test",
+                        "address_families": [
+                            {
+                                "afi": "ipv6",
+                                "routes": [
+                                    {
+                                        "dest": "2001:db8:12::/32",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "2001:db8::1001",
+                                                "route_name": "ipv6_route",
+                                                "admin_distance": 3,
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="deleted",
-            ),
+                "state": "deleted",
+            },
         )
         commands = [
             "vrf context test",
@@ -356,48 +356,48 @@ class TestNxosStaticRoutesModule(TestNxosModule):
 
     def test_nxos_static_routes_rendered(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        vrf="testvrf",
-                        address_families=[
-                            dict(
-                                afi="ipv6",
-                                routes=[
-                                    dict(
-                                        dest="1200:10::/64",
-                                        next_hops=[
-                                            dict(
-                                                forward_router_address="2048:ae12::/64",
-                                                interface="Eth1/4",
-                                                admin_distance=5,
-                                            ),
+            {
+                "config": [
+                    {
+                        "vrf": "testvrf",
+                        "address_families": [
+                            {
+                                "afi": "ipv6",
+                                "routes": [
+                                    {
+                                        "dest": "1200:10::/64",
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "2048:ae12::/64",
+                                                "interface": "Eth1/4",
+                                                "admin_distance": 5,
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "vrf context testvrf",
             "ipv6 route 1200:10::/64 Ethernet1/4 2048:ae12::/64 5",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands), result["rendered"])
+        assert sorted(result["rendered"]) == sorted(commands), result["rendered"]
 
     def test_nxos_static_routes_parsed(self):
         set_module_args(
-            dict(
-                running_config="""ip route 192.0.2.16/28 192.0.2.24 name initial_route
+            {
+                "running_config": """ip route 192.0.2.16/28 192.0.2.24 name initial_route
         vrf context test
           ip route 192.0.2.96/28 192.0.2.122 vrf dest_vrf
           ipv6 route 2001:db8:12::/32 2001:db8::1001 name ipv6_route 3""",
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         compare_list = [
@@ -454,10 +454,10 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                 ],
             },
         ]
-        self.assertEqual(result["parsed"], compare_list, result["parsed"])
+        assert result["parsed"] == compare_list, result["parsed"]
 
     def test_nxos_static_routes_gathered(self):
-        set_module_args(dict(config=[], state="gathered"))
+        set_module_args({"config": [], "state": "gathered"})
         result = self.execute_module(changed=False)
         compare_list = [
             {
@@ -513,4 +513,4 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                 ],
             },
         ]
-        self.assertEqual(result["gathered"], compare_list, result["gathered"])
+        assert result["gathered"] == compare_list, result["gathered"]

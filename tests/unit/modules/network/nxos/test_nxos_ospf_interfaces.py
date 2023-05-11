@@ -45,7 +45,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
     module = nxos_ospf_interfaces
 
     def setUp(self):
-        super(TestNxosOspfInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -58,7 +58,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosOspfInterfacesModule, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
@@ -80,65 +80,65 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                processes=[
-                                    dict(
-                                        process_id="102",
-                                        area=dict(area_id="1.1.1.2"),
-                                    ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "processes": [
+                                    {
+                                        "process_id": "102",
+                                        "area": {"area_id": "1.1.1.2"},
+                                    },
                                 ],
-                            ),
-                            dict(
-                                afi="ipv6",
-                                processes=[
-                                    dict(
-                                        process_id="200",
-                                        area=dict(area_id="2.2.2.8"),
-                                    ),
+                            },
+                            {
+                                "afi": "ipv6",
+                                "processes": [
+                                    {
+                                        "process_id": "200",
+                                        "area": {"area_id": "2.2.2.8"},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                processes=[
-                                    dict(
-                                        process_id="101",
-                                        area=dict(area_id="2.2.2.3"),
-                                    ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "processes": [
+                                    {
+                                        "process_id": "101",
+                                        "area": {"area_id": "2.2.2.3"},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/3",
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                processes=[
-                                    dict(
-                                        process_id="300",
-                                        area=dict(
-                                            area_id="2.2.2.3",
-                                            secondaries="False",
-                                        ),
-                                    ),
+                    },
+                    {
+                        "name": "Ethernet1/3",
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "processes": [
+                                    {
+                                        "process_id": "300",
+                                        "area": {
+                                            "area_id": "2.2.2.3",
+                                            "secondaries": "False",
+                                        },
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -151,7 +151,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ipv6 router ospfv3 300 area 2.2.2.3 secondaries none",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_af_process_area_replaced(self):
         # test replaced for config->af->processes->area
@@ -171,39 +171,39 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                processes=[
-                                    dict(
-                                        process_id="200",
-                                        area=dict(area_id="2.2.2.8"),
-                                    ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "processes": [
+                                    {
+                                        "process_id": "200",
+                                        "area": {"area_id": "2.2.2.8"},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                processes=[
-                                    dict(
-                                        process_id="102",
-                                        area=dict(area_id="1.1.1.2"),
-                                    ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "processes": [
+                                    {
+                                        "process_id": "102",
+                                        "area": {"area_id": "1.1.1.2"},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -216,7 +216,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "no ipv6 router ospfv3 100 area 4.4.4.4",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_af_process_multiareas_merged(self):
         # test merged for config->af->processes->multiareas
@@ -238,43 +238,43 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                processes=[
-                                    dict(
-                                        process_id="100",
-                                        multi_areas=["1.1.1.3"],
-                                    ),
-                                    dict(
-                                        process_id="200",
-                                        multi_areas=["3.3.3.3", "4.4.4.4"],
-                                    ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "processes": [
+                                    {
+                                        "process_id": "100",
+                                        "multi_areas": ["1.1.1.3"],
+                                    },
+                                    {
+                                        "process_id": "200",
+                                        "multi_areas": ["3.3.3.3", "4.4.4.4"],
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                processes=[
-                                    dict(
-                                        process_id="109",
-                                        multi_areas=["5.5.5.5", "5.5.5.6"],
-                                    ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "processes": [
+                                    {
+                                        "process_id": "109",
+                                        "multi_areas": ["5.5.5.5", "5.5.5.6"],
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -287,7 +287,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ipv6 router ospfv3 109 multi-area 5.5.5.6",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_af_process_multiareas_replaced(self):
         # test replaced for config->af->processes->multiareas
@@ -312,47 +312,47 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                processes=[
-                                    dict(
-                                        process_id="100",
-                                        multi_areas=["1.1.1.3"],
-                                    ),
-                                    dict(
-                                        process_id="102",
-                                        multi_areas=["2.2.2.2"],
-                                    ),
-                                    dict(
-                                        process_id="200",
-                                        multi_areas=["3.3.3.3", "4.4.4.4"],
-                                    ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "processes": [
+                                    {
+                                        "process_id": "100",
+                                        "multi_areas": ["1.1.1.3"],
+                                    },
+                                    {
+                                        "process_id": "102",
+                                        "multi_areas": ["2.2.2.2"],
+                                    },
+                                    {
+                                        "process_id": "200",
+                                        "multi_areas": ["3.3.3.3", "4.4.4.4"],
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv6",
-                                processes=[
-                                    dict(
-                                        process_id="109",
-                                        multi_areas=["5.5.5.6"],
-                                    ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv6",
+                                "processes": [
+                                    {
+                                        "process_id": "109",
+                                        "multi_areas": ["5.5.5.6"],
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -370,7 +370,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ipv6 router ospfv3 109 multi-area 5.5.5.6",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_af_multiareas_merged(self):
         # test merged for config->af->multiareas
@@ -392,22 +392,22 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(afi="ipv4", multi_areas=["1.1.1.1", "1.1.1.3"]),
-                            dict(afi="ipv6", multi_areas=["3.3.3.3", "4.4.4.4"]),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {"afi": "ipv4", "multi_areas": ["1.1.1.1", "1.1.1.3"]},
+                            {"afi": "ipv6", "multi_areas": ["3.3.3.3", "4.4.4.4"]},
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[dict(afi="ipv6", multi_areas=["5.5.5.6"])],
-                    ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [{"afi": "ipv6", "multi_areas": ["5.5.5.6"]}],
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -419,7 +419,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ipv6 router ospfv3 multi-area 5.5.5.6",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_af_multiareas_replaced(self):
         # test replaced for config->af->multiareas
@@ -441,19 +441,19 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(afi="ipv4", multi_areas=["1.1.1.1", "1.1.1.3"]),
-                            dict(afi="ipv6", multi_areas=["3.3.3.3", "4.4.4.4"]),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {"afi": "ipv4", "multi_areas": ["1.1.1.1", "1.1.1.3"]},
+                            {"afi": "ipv6", "multi_areas": ["3.3.3.3", "4.4.4.4"]},
                         ],
-                    ),
-                    dict(name="Ethernet1/2"),
+                    },
+                    {"name": "Ethernet1/2"},
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -468,7 +468,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "no ipv6 router ospfv3 multi-area 5.5.5.5",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_authentication_merged(self):
         # test merged for config->af->authentication
@@ -488,32 +488,32 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                authentication=dict(key_chain="test-1", message_digest=True),
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "authentication": {"key_chain": "test-1", "message_digest": True},
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[dict(afi="ipv4", authentication=dict(null_auth=True))],
-                    ),
-                    dict(
-                        name="Ethernet1/3",
-                        address_family=[dict(afi="ipv4", authentication=dict(enable=True))],
-                    ),
-                    dict(
-                        name="Ethernet1/4",
-                        address_family=[dict(afi="ipv4", authentication=dict(enable=False))],
-                    ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [{"afi": "ipv4", "authentication": {"null_auth": True}}],
+                    },
+                    {
+                        "name": "Ethernet1/3",
+                        "address_family": [{"afi": "ipv4", "authentication": {"enable": True}}],
+                    },
+                    {
+                        "name": "Ethernet1/4",
+                        "address_family": [{"afi": "ipv4", "authentication": {"enable": False}}],
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -528,7 +528,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "no ip ospf authentication",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_authentication_replaced(self):
         # test merged for config->af->authentication
@@ -548,20 +548,20 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(name="Ethernet1/1"),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[dict(afi="ipv4", authentication=dict(null_auth=True))],
-                    ),
-                    dict(
-                        name="Ethernet1/3",
-                        address_family=[dict(afi="ipv4", authentication=dict(enable=True))],
-                    ),
+            {
+                "config": [
+                    {"name": "Ethernet1/1"},
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [{"afi": "ipv4", "authentication": {"null_auth": True}}],
+                    },
+                    {
+                        "name": "Ethernet1/3",
+                        "address_family": [{"afi": "ipv4", "authentication": {"enable": True}}],
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -574,7 +574,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ip ospf authentication",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_authentication_key_merged(self):
         # test merged for config->af->authentication_key
@@ -593,38 +593,38 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                authentication_key=dict(encryption=3, key="77840f9d4d882176"),
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "authentication_key": {"encryption": 3, "key": "77840f9d4d882176"},
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                authentication_key=dict(encryption=0, key="password"),
-                            ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "authentication_key": {"encryption": 0, "key": "password"},
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/3",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                authentication_key=dict(encryption=7, key="712090404011C031628"),
-                            ),
+                    },
+                    {
+                        "name": "Ethernet1/3",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "authentication_key": {"encryption": 7, "key": "712090404011C031628"},
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -636,7 +636,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ip ospf authentication-key 7 712090404011C031628",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_authentication_key_replaced(self):
         # test replaced for config->af->authentication_key
@@ -656,21 +656,21 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(name="Ethernet1/1"),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                authentication_key=dict(encryption=0, key="password"),
-                            ),
+            {
+                "config": [
+                    {"name": "Ethernet1/1"},
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "authentication_key": {"encryption": 0, "key": "password"},
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -680,7 +680,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ip ospf authentication-key 0 password",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_message_digest_key_merged(self):
         # test merged for config->af->message_digest_key
@@ -699,46 +699,46 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                message_digest_key=dict(
-                                    key_id=101,
-                                    encryption=3,
-                                    key="abc01d272be25d29",
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "message_digest_key": {
+                                    "key_id": 101,
+                                    "encryption": 3,
+                                    "key": "abc01d272be25d29",
+                                },
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                message_digest_key=dict(key_id=1, encryption=0, key="password"),
-                            ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "message_digest_key": {"key_id": 1, "encryption": 0, "key": "password"},
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/3",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                message_digest_key=dict(
-                                    key_id=2,
-                                    encryption=7,
-                                    key="712090404011C031628",
-                                ),
-                            ),
+                    },
+                    {
+                        "name": "Ethernet1/3",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "message_digest_key": {
+                                    "key_id": 2,
+                                    "encryption": 7,
+                                    "key": "712090404011C031628",
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -750,7 +750,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ip ospf message-digest-key 2 md5 7 712090404011C031628",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_message_digest_key_replaced(self):
         # test replaced for config->af->message_digest_key
@@ -770,21 +770,21 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(name="Ethernet1/1"),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                message_digest_key=dict(key_id=1, encryption=0, key="password1"),
-                            ),
+            {
+                "config": [
+                    {"name": "Ethernet1/1"},
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "message_digest_key": {"key_id": 1, "encryption": 0, "key": "password1"},
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -794,7 +794,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ip ospf message-digest-key 1 md5 0 password1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_linear_args_1_merged(self):
         # test merged for config->af->cost, dead_interval, hello_interval
@@ -819,34 +819,34 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(afi="ipv4", cost=200),
-                            dict(
-                                afi="ipv6",
-                                dead_interval=5000,
-                                hello_interval=9000,
-                            ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {"afi": "ipv4", "cost": 200},
+                            {
+                                "afi": "ipv6",
+                                "dead_interval": 5000,
+                                "hello_interval": 9000,
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                cost=120,
-                                dead_interval=3400,
-                                hello_interval=8100,
-                            ),
-                            dict(afi="ipv6", cost=180, dead_interval=3000),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "cost": 120,
+                                "dead_interval": 3400,
+                                "hello_interval": 8100,
+                            },
+                            {"afi": "ipv6", "cost": 180, "dead_interval": 3000},
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -862,7 +862,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ip ospf hello-interval 8100",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_linear_args_1_replaced(self):
         # test replaced for config->af->cost, dead_interval, hello_interval
@@ -887,19 +887,19 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[dict(afi="ipv4", cost=200, hello_interval=9000)],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[dict(afi="ipv6", cost=180, dead_interval=3000)],
-                    ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [{"afi": "ipv4", "cost": 200, "hello_interval": 9000}],
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [{"afi": "ipv6", "cost": 180, "dead_interval": 3000}],
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -916,7 +916,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ospfv3 dead-interval 3000",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_linear_args_2_merged(self):
         # test merged for config->af->instance, mtu_ignore, network
@@ -938,29 +938,29 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                mtu_ignore=True,
-                                network="point-to-point",
-                            ),
-                            dict(afi="ipv6", instance=210),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "mtu_ignore": True,
+                                "network": "point-to-point",
+                            },
+                            {"afi": "ipv6", "instance": 210},
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(afi="ipv4", mtu_ignore=False),
-                            dict(afi="ipv6", network="broadcast"),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {"afi": "ipv4", "mtu_ignore": False},
+                            {"afi": "ipv6", "network": "broadcast"},
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -973,7 +973,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ospfv3 network broadcast",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_linear_args_2_replaced(self):
         # test replaced for config->af->instance, mtu_ignore, network
@@ -996,23 +996,23 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                mtu_ignore=False,
-                                network="point-to-point",
-                            ),
-                            dict(afi="ipv6", instance=200),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "mtu_ignore": False,
+                                "network": "point-to-point",
+                            },
+                            {"afi": "ipv6", "instance": 200},
                         ],
-                    ),
-                    dict(name="Ethernet1/2"),
+                    },
+                    {"name": "Ethernet1/2"},
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1025,7 +1025,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "no ospfv3 network point-to-point",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_linear_args_3_merged(self):
         # test merged for config->af->passive_interface, priority, retransmit_interval
@@ -1048,43 +1048,43 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                passive_interface=False,
-                                retransmit_interval=8000,
-                            ),
-                            dict(afi="ipv6", passive_interface=True),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "passive_interface": False,
+                                "retransmit_interval": 8000,
+                            },
+                            {"afi": "ipv6", "passive_interface": True},
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                passive_interface=True,
-                                retransmit_interval=5000,
-                            ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "passive_interface": True,
+                                "retransmit_interval": 5000,
+                            },
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/3",
-                        address_family=[
-                            dict(
-                                afi="ipv4",
-                                passive_interface=True,
-                                priority=200,
-                            ),
-                            dict(afi="ipv6", retransmit_interval=5100),
+                    },
+                    {
+                        "name": "Ethernet1/3",
+                        "address_family": [
+                            {
+                                "afi": "ipv4",
+                                "passive_interface": True,
+                                "priority": 200,
+                            },
+                            {"afi": "ipv6", "retransmit_interval": 5100},
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1100,7 +1100,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ospfv3 retransmit-interval 5100",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_linear_args_3_replaced(self):
         # test merged for config->af->passive_interface, priority, retransmit_interval
@@ -1126,23 +1126,23 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(name="Ethernet1/1"),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(afi="ipv4", retransmit_interval=5100),
-                            dict(
-                                afi="ipv6",
-                                passive_interface=True,
-                                priority=140,
-                            ),
+            {
+                "config": [
+                    {"name": "Ethernet1/1"},
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {"afi": "ipv4", "retransmit_interval": 5100},
+                            {
+                                "afi": "ipv6",
+                                "passive_interface": True,
+                                "priority": 140,
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1154,7 +1154,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ip ospf retransmit-interval 5100",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_linear_args_4_merged(self):
         # test merged for config->af->shutdown, transmit_delay
@@ -1175,32 +1175,32 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(afi="ipv4", shutdown=False, transmit_delay=210),
-                            dict(afi="ipv6", shutdown=True),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {"afi": "ipv4", "shutdown": False, "transmit_delay": 210},
+                            {"afi": "ipv6", "shutdown": True},
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[
-                            dict(afi="ipv4", shutdown=True),
-                            dict(afi="ipv6", transmit_delay=300),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [
+                            {"afi": "ipv4", "shutdown": True},
+                            {"afi": "ipv6", "transmit_delay": 300},
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/3",
-                        address_family=[
-                            dict(afi="ipv4", shutdown=True, transmit_delay=430),
-                            dict(afi="ipv6", shutdown=True, transmit_delay=120),
+                    },
+                    {
+                        "name": "Ethernet1/3",
+                        "address_family": [
+                            {"afi": "ipv4", "shutdown": True, "transmit_delay": 430},
+                            {"afi": "ipv6", "shutdown": True, "transmit_delay": 120},
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1218,7 +1218,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ospfv3 transmit-delay 120",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_linear_args_4_replaced(self):
         # test replaced for config->af->shutdown, transmit_delay
@@ -1241,16 +1241,16 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(name="Ethernet1/1"),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[dict(afi="ipv6", transmit_delay=300)],
-                    ),
+            {
+                "config": [
+                    {"name": "Ethernet1/1"},
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [{"afi": "ipv6", "transmit_delay": 300}],
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1263,13 +1263,13 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "ospfv3 transmit-delay 300",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_parsed(self):
         # test parsed
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     interface Ethernet1/1
                       no switchport
@@ -1284,8 +1284,8 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                       no switchport
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
             ignore_provider_arg,
         )
         parsed = [
@@ -1328,7 +1328,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             {"name": "Ethernet1/4"},
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed
 
     def test_nxos_ospf_interfaces_gathered(self):
         # test gathered
@@ -1347,7 +1347,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
         gathered = [
             {
                 "name": "Ethernet1/1",
@@ -1388,7 +1388,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             {"name": "Ethernet1/4"},
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_ospf_interfaces_sanity(self):
         # test gathered
@@ -1396,10 +1396,10 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
         gathered = []
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_ospf_interfaces_overridden(self):
         # test overriden
@@ -1421,18 +1421,18 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(afi="ipv4", shutdown=False, transmit_delay=300),
-                            dict(afi="ipv6", shutdown=True),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {"afi": "ipv4", "shutdown": False, "transmit_delay": 300},
+                            {"afi": "ipv6", "shutdown": True},
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1448,7 +1448,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "no ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_deleted(self):
         # test deleted
@@ -1470,7 +1470,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(config=[dict(name="Ethernet1/1")], state="deleted"),
+            {"config": [{"name": "Ethernet1/1"}], "state": "deleted"},
             ignore_provider_arg,
         )
         commands = [
@@ -1479,7 +1479,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "no ospfv3 transmit-delay 200",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_deleted_all(self):
         # test deleted
@@ -1500,7 +1500,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
               no switchport
             """,
         )
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         commands = [
             "interface Ethernet1/1",
             "no ip ospf shutdown",
@@ -1512,7 +1512,7 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "no ip ospf message-digest-key 101 md5 3 109a86e9d947cc5d",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospf_interfaces_passive_intf(self):
         # test edge cases for passive_interface
@@ -1531,30 +1531,30 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/1",
-                        address_family=[
-                            dict(afi="ipv4", passive_interface=False),
-                            dict(afi="ipv6", passive_interface=False),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/1",
+                        "address_family": [
+                            {"afi": "ipv4", "passive_interface": False},
+                            {"afi": "ipv6", "passive_interface": False},
                         ],
-                    ),
-                    dict(
-                        name="Ethernet1/2",
-                        address_family=[dict(afi="ipv4", default_passive_interface=True)],
-                    ),
-                    dict(
-                        name="Ethernet1/3",
-                        address_family=[dict(afi="ipv6", default_passive_interface=True)],
-                    ),
-                    dict(
-                        name="Ethernet1/4",
-                        address_family=[dict(afi="ipv4", default_passive_interface=True)],
-                    ),
+                    },
+                    {
+                        "name": "Ethernet1/2",
+                        "address_family": [{"afi": "ipv4", "default_passive_interface": True}],
+                    },
+                    {
+                        "name": "Ethernet1/3",
+                        "address_family": [{"afi": "ipv6", "default_passive_interface": True}],
+                    },
+                    {
+                        "name": "Ethernet1/4",
+                        "address_family": [{"afi": "ipv4", "default_passive_interface": True}],
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1567,4 +1567,4 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
             "default ospfv3 passive-interface",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)

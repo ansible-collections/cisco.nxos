@@ -84,7 +84,6 @@ updates:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -111,31 +110,30 @@ def get_current(module):
 
 
 def main():
-    argument_spec = dict(
-        master=dict(required=False, type="bool"),
-        stratum=dict(required=False, type="str"),
-        logging=dict(required=False, type="bool"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "master": {"required": False, "type": "bool"},
+        "stratum": {"required": False, "type": "str"},
+        "logging": {"required": False, "type": "bool"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     master = module.params["master"]
     stratum = module.params["stratum"]
     logging = module.params["logging"]
     state = module.params["state"]
 
-    if stratum and master is False:
-        if stratum != 8:
-            module.fail_json(msg="master MUST be True when stratum is changed")
+    if stratum and master is False and stratum != 8:
+        module.fail_json(msg="master MUST be True when stratum is changed")
 
     current = get_current(module)
 
     result = {"changed": False}
 
-    commands = list()
+    commands = []
 
     if state == "absent":
         if current["master"]:

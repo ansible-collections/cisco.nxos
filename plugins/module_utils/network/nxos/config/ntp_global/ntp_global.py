@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -27,7 +26,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ntp_global import (
     Ntp_globalTemplate,
@@ -35,12 +33,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Ntp_global(ResourceModule):
-    """
-    The nxos_ntp_global config class
-    """
+    """The nxos_ntp_global config class."""
 
-    def __init__(self, module):
-        super(Ntp_global, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -60,7 +56,7 @@ class Ntp_global(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -142,7 +138,7 @@ class Ntp_global(ResourceModule):
 
     def _ntp_list_to_dict(self, data):
         """Convert all list to dicts to dicts
-        of dicts
+        of dicts.
         """
         tmp = deepcopy(data)
         if "access_group" in tmp:
@@ -155,7 +151,7 @@ class Ntp_global(ResourceModule):
             "servers": "server",
             "trusted_keys": "key_id",
         }
-        for k in pkey.keys():
+        for k in pkey:
             if k in tmp:
                 tmp[k] = {i[pkey[k]]: i for i in tmp[k]}
         return tmp

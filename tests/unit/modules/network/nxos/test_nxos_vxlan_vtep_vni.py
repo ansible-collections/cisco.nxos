@@ -32,7 +32,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
     module = nxos_vxlan_vtep_vni
 
     def setUp(self):
-        super(TestNxosVxlanVtepVniModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep_vni.load_config",
@@ -45,7 +45,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosVxlanVtepVniModule, self).tearDown()
+        super().tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
 
@@ -54,28 +54,28 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_vxlan_vtep_vni_present_no_change(self):
-        set_module_args(dict(interface="nve1", vni=6000))
+        set_module_args({"interface": "nve1", "vni": 6000})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_vxlan_vtep_vni(self):
-        set_module_args(dict(interface="nve1", vni=5000))
+        set_module_args({"interface": "nve1", "vni": 5000})
         self.execute_module(changed=True, commands=["interface nve1", "member vni 5000"])
 
     def test_nxos_vxlan_vtep_vni_absent(self):
-        set_module_args(dict(interface="nve1", vni=6000, state="absent"))
+        set_module_args({"interface": "nve1", "vni": 6000, "state": "absent"})
         self.execute_module(changed=True, commands=["interface nve1", "no member vni 6000"])
 
     def test_nxos_vxlan_vtep_vni_absent_no_change(self):
-        set_module_args(dict(interface="nve2", vni=6000, state="absent"))
+        set_module_args({"interface": "nve2", "vni": 6000, "state": "absent"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_vxlan_vtep_vni_multi_ingress_repl(self):
         set_module_args(
-            dict(
-                interface="nve1",
-                vni=5000,
-                multisite_ingress_replication="enable",
-            ),
+            {
+                "interface": "nve1",
+                "vni": 5000,
+                "multisite_ingress_replication": "enable",
+            },
         )
         commands = [
             "interface nve1",
@@ -83,15 +83,15 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
             "multisite ingress-replication",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_vxlan_vtep_vni_multi_ingress_repl_opt(self):
         set_module_args(
-            dict(
-                interface="nve1",
-                vni=5000,
-                multisite_ingress_replication="optimized",
-            ),
+            {
+                "interface": "nve1",
+                "vni": 5000,
+                "multisite_ingress_replication": "optimized",
+            },
         )
         commands = [
             "interface nve1",
@@ -99,14 +99,14 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
             "multisite ingress-replication optimized",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_vxlan_vtep_vni_multi_ingress_repl_opt_exists(self):
         set_module_args(
-            dict(
-                interface="nve1",
-                vni=6000,
-                multisite_ingress_replication="optimized",
-            ),
+            {
+                "interface": "nve1",
+                "vni": 6000,
+                "multisite_ingress_replication": "optimized",
+            },
         )
         self.execute_module(changed=False, commands=[])

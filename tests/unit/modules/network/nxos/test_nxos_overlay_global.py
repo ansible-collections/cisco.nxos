@@ -32,7 +32,7 @@ class TestNxosOverlayGlobalModule(TestNxosModule):
     module = nxos_overlay_global
 
     def setUp(self):
-        super(TestNxosOverlayGlobalModule, self).setUp()
+        super().setUp()
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_overlay_global.load_config",
         )
@@ -44,7 +44,7 @@ class TestNxosOverlayGlobalModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosOverlayGlobalModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
 
@@ -53,9 +53,6 @@ class TestNxosOverlayGlobalModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_overlay_global_up(self):
-        set_module_args(dict(anycast_gateway_mac="a.a.a"))
+        set_module_args({"anycast_gateway_mac": "a.a.a"})
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"],
-            ["fabric forwarding anycast-gateway-mac 000A.000A.000A"],
-        )
+        assert result["commands"] == ["fabric forwarding anycast-gateway-mac 000A.000A.000A"]

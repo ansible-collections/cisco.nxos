@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -19,7 +18,6 @@ import re
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acls.acls import (
     AclsArgs,
 )
@@ -29,18 +27,15 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 )
 
 
-class AclsFacts(object):
-    """The nxos acls fact class"""
+class AclsFacts:
+    """The nxos acls fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = AclsArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
         self.generated_spec = utils.generate_dict(facts_argument_spec)
@@ -57,7 +52,7 @@ class AclsFacts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         if not data:
             data = self.get_device_data(connection)
@@ -113,7 +108,7 @@ class AclsFacts(object):
                 ret_dict.update({"address": option})
                 wb = ace.split()[1]
                 ret_dict.update({"wildcard_bits": wb})
-                ace = re.sub("{0}".format(wb), "", ace, 1)
+                ace = re.sub(f"{wb}", "", ace, 1)
         ace = re.sub(option, "", ace, 1)
         if pro in ["tcp", "udp"]:
             keywords = ["eq", "lt", "gt", "neq", "range"]
@@ -144,7 +139,7 @@ class AclsFacts(object):
     def render_config(self, spec, conf):
         """
         Render config as dictionary structure and delete keys
-          from spec for null values
+          from spec for null values.
 
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration

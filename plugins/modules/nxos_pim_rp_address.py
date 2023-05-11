@@ -88,7 +88,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -118,24 +117,21 @@ def get_existing(module, args, gl):
                 existing["route_map"] = value
             elif values[1] == "prefix-list":
                 existing["prefix_list"] = value
-            elif values[1] == "group-list":
-                if value != "224.0.0.0/4":  # ignore default group-list
-                    existing["group_list"] = value
+            elif values[1] == "group-list" and value != "224.0.0.0/4":  # ignore default group-list
+                existing["group_list"] = value
 
     return existing
 
 
 def state_present(module, existing, proposed, candidate):
     address = module.params["rp_address"]
-    command = "ip pim rp-address {0}".format(address)
+    command = f"ip pim rp-address {address}"
     if module.params["group_list"] and not proposed.get("group_list"):
         command += " group-list " + module.params["group_list"]
-    if module.params["prefix_list"]:
-        if not proposed.get("prefix_list"):
-            command += " prefix-list " + module.params["prefix_list"]
-    if module.params["route_map"]:
-        if not proposed.get("route_map"):
-            command += " route-map " + module.params["route_map"]
+    if module.params["prefix_list"] and not proposed.get("prefix_list"):
+        command += " prefix-list " + module.params["prefix_list"]
+    if module.params["route_map"] and not proposed.get("route_map"):
+        command += " route-map " + module.params["route_map"]
     commands = build_command(proposed, command)
     if commands:
         candidate.add(commands, parents=[])
@@ -144,7 +140,7 @@ def state_present(module, existing, proposed, candidate):
 def build_command(param_dict, command):
     for param in ["group_list", "prefix_list", "route_map"]:
         if param_dict.get(param):
-            command += " {0} {1}".format(param.replace("_", "-"), param_dict.get(param))
+            command += " {} {}".format(param.replace("_", "-"), param_dict.get(param))
     if param_dict.get("bidir"):
         command += " bidir"
     return [command]
@@ -154,7 +150,7 @@ def state_absent(module, existing, candidate):
     address = module.params["rp_address"]
 
     commands = []
-    command = "no ip pim rp-address {0}".format(address)
+    command = f"no ip pim rp-address {address}"
     if module.params["group_list"] == existing.get("group_list"):
         commands = build_command(existing, command)
     elif not module.params["group_list"]:
@@ -181,14 +177,14 @@ def get_proposed(pargs, existing):
 
 
 def main():
-    argument_spec = dict(
-        rp_address=dict(required=True, type="str"),
-        group_list=dict(required=False, type="str"),
-        prefix_list=dict(required=False, type="str"),
-        route_map=dict(required=False, type="str"),
-        bidir=dict(required=False, type="bool"),
-        state=dict(choices=["present", "absent"], default="present", required=False),
-    )
+    argument_spec = {
+        "rp_address": {"required": True, "type": "str"},
+        "group_list": {"required": False, "type": "str"},
+        "prefix_list": {"required": False, "type": "str"},
+        "route_map": {"required": False, "type": "str"},
+        "bidir": {"required": False, "type": "bool"},
+        "state": {"choices": ["present", "absent"], "default": "present", "required": False},
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -200,14 +196,14 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
     result = {"changed": False, "commands": [], "warnings": warnings}
 
     state = module.params["state"]
 
     args = ["rp_address", "group_list", "prefix_list", "route_map", "bidir"]
 
-    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed_args = {k: v for k, v in module.params.items() if v is not None and k in args}
 
     if module.params["group_list"]:
         existing = get_existing(module, args, True)
@@ -231,15 +227,11 @@ def main():
         if msgs:
             for item in msgs:
                 if item:
-                    if isinstance(item, dict):
-                        err_str = item["clierror"]
-                    else:
-                        err_str = item
-                    if "No policy was configured" in err_str:
-                        if state == "absent":
-                            addr = module.params["rp_address"]
-                            new_cmd = "no ip pim rp-address {0}".format(addr)
-                            load_config(module, new_cmd)
+                    err_str = item["clierror"] if isinstance(item, dict) else item
+                    if "No policy was configured" in err_str and state == "absent":
+                        addr = module.params["rp_address"]
+                        new_cmd = f"no ip pim rp-address {addr}"
+                        load_config(module, new_cmd)
 
     module.exit_json(**result)
 

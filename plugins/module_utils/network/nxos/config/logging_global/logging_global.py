@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -28,7 +27,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
     get_from_dict,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.logging_global import (
     Logging_globalTemplate,
@@ -39,12 +37,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Logging_global(ResourceModule):
-    """
-    The nxos_logging_global config class
-    """
+    """The nxos_logging_global config class."""
 
-    def __init__(self, module):
-        super(Logging_global, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -79,12 +75,11 @@ class Logging_global(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
-
         if self.state not in ["parsed", "gathered"]:
             self.generate_commands()
             self.run_commands()
@@ -155,7 +150,7 @@ class Logging_global(ResourceModule):
         self._compare_lists(want, have)
 
     def _compare_lists(self, want, have):
-        """Compare list of dictionaries"""
+        """Compare list of dictionaries."""
         for x in ["facilities", "hosts"]:
             wantx = want.get(x, {})
             havex = have.get(x, {})
@@ -172,7 +167,7 @@ class Logging_global(ResourceModule):
 
     def _logging_list_to_dict(self, data):
         """Convert all list to dicts to dicts
-        of dicts and substitute severity values
+        of dicts and substitute severity values.
         """
         tmp = deepcopy(data)
         pkey = {"hosts": "host", "facilities": "facility"}

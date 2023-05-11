@@ -119,7 +119,6 @@ changed:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -127,10 +126,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 
 
 def execute_show_command(command, module, command_type="cli_show"):
-    if "show run" not in command:
-        output = "json"
-    else:
-        output = "text"
+    output = "json" if "show run" not in command else "text"
 
     commands = [{"command": command, "output": output}]
     return run_commands(module, commands)
@@ -154,10 +150,7 @@ def get_ntp_source(module):
 
     if output:
         try:
-            if "interface" in output[0]:
-                source_type = "source-interface"
-            else:
-                source_type = "source"
+            source_type = "source-interface" if "interface" in output[0] else "source"
             source = output[0].split()[2].lower()
         except (AttributeError, IndexError):
             source_type = None
@@ -172,10 +165,7 @@ def get_ntp_peer(module):
     response = execute_show_command(command, module, command_type="cli_show_ascii")
 
     if response:
-        if isinstance(response, list):
-            ntp = response[0]
-        else:
-            ntp = response
+        ntp = response[0] if isinstance(response, list) else response
         if ntp:
             ntp_regex = (
                 r".*ntp\s(server\s(?P<address>\S+)|peer\s(?P<peer_address>\S+))"
@@ -202,10 +192,7 @@ def get_ntp_peer(module):
                     vrf_name = group_ntp["vrf_name"]
                     key_id = group_ntp["key_id"]
 
-                    if prefer is not None:
-                        prefer = "enabled"
-                    else:
-                        prefer = "disabled"
+                    prefer = "enabled" if prefer is not None else "disabled"
 
                     if address is not None:
                         peer_type = "server"
@@ -213,15 +200,15 @@ def get_ntp_peer(module):
                         peer_type = "peer"
                         address = peer_address
 
-                    args = dict(
-                        peer_type=peer_type,
-                        address=address,
-                        prefer=prefer,
-                        vrf_name=vrf_name,
-                        key_id=key_id,
-                    )
+                    args = {
+                        "peer_type": peer_type,
+                        "address": address,
+                        "prefer": prefer,
+                        "vrf_name": vrf_name,
+                        "key_id": key_id,
+                    }
 
-                    ntp_peer = dict((k, v) for k, v in args.items())
+                    ntp_peer = dict(args.items())
                     ntp_peer_list.append(ntp_peer)
                 except AttributeError:
                     ntp_peer_list = []
@@ -255,11 +242,11 @@ def set_ntp_server_peer(peer_type, address, prefer, key_id, vrf_name):
     if prefer:
         command_strings.append(" prefer")
     if key_id:
-        command_strings.append(" key {0}".format(key_id))
+        command_strings.append(f" key {key_id}")
     if vrf_name:
-        command_strings.append(" use-vrf {0}".format(vrf_name))
+        command_strings.append(f" use-vrf {vrf_name}")
 
-    command_strings.insert(0, "ntp {0} {1}".format(peer_type, address))
+    command_strings.insert(0, f"ntp {peer_type} {address}")
 
     command = "".join(command_strings)
 
@@ -301,34 +288,34 @@ def config_ntp(delta, existing):
     if peer_type:
         if existing.get("peer_type") and existing.get("address"):
             ntp_cmds.append(
-                "no ntp {0} {1}".format(existing.get("peer_type"), existing.get("address")),
+                "no ntp {} {}".format(existing.get("peer_type"), existing.get("address")),
             )
         ntp_cmds.append(set_ntp_server_peer(peer_type, address, prefer, key_id, vrf_name))
     if source:
         existing_source_type = existing.get("source_type")
         existing_source = existing.get("source")
         if existing_source_type and source_type != existing_source_type:
-            ntp_cmds.append("no ntp {0} {1}".format(existing_source_type, existing_source))
+            ntp_cmds.append(f"no ntp {existing_source_type} {existing_source}")
         if source == "default":
             if existing_source_type and existing_source:
-                ntp_cmds.append("no ntp {0} {1}".format(existing_source_type, existing_source))
+                ntp_cmds.append(f"no ntp {existing_source_type} {existing_source}")
         else:
-            ntp_cmds.append("ntp {0} {1}".format(source_type, source))
+            ntp_cmds.append(f"ntp {source_type} {source}")
 
     return ntp_cmds
 
 
 def main():
-    argument_spec = dict(
-        server=dict(type="str"),
-        peer=dict(type="str"),
-        key_id=dict(type="str"),
-        prefer=dict(type="str", choices=["enabled", "disabled"]),
-        vrf_name=dict(type="str"),
-        source_addr=dict(type="str"),
-        source_int=dict(type="str"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "server": {"type": "str"},
+        "peer": {"type": "str"},
+        "key_id": {"type": "str"},
+        "prefer": {"type": "str", "choices": ["enabled", "disabled"]},
+        "vrf_name": {"type": "str"},
+        "source_addr": {"type": "str"},
+        "source_int": {"type": "str"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -336,7 +323,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
 
     server = module.params["server"] or None
     peer = module.params["peer"] or None
@@ -369,21 +356,20 @@ def main():
         source_type = "source-interface"
         source = source_int
 
-    if key_id or vrf_name or prefer:
-        if not server and not peer:
-            module.fail_json(msg="Please supply the server or peer parameter")
+    if (key_id or vrf_name or prefer) and not server and not peer:
+        module.fail_json(msg="Please supply the server or peer parameter")
 
-    args = dict(
-        peer_type=peer_type,
-        address=address,
-        key_id=key_id,
-        prefer=prefer,
-        vrf_name=vrf_name,
-        source_type=source_type,
-        source=source,
-    )
+    args = {
+        "peer_type": peer_type,
+        "address": address,
+        "key_id": key_id,
+        "prefer": prefer,
+        "vrf_name": vrf_name,
+        "source_type": source_type,
+        "source": source,
+    }
 
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    proposed = {k: v for k, v in args.items() if v is not None}
 
     existing, peer_server_list = get_ntp_existing(address, peer_type, module)
 
@@ -393,9 +379,8 @@ def main():
 
     if state == "present":
         delta = dict(set(proposed.items()).difference(existing.items()))
-        if delta.get("key_id") and delta.get("key_id") == "default":
-            if not existing.get("key_id"):
-                delta.pop("key_id")
+        if delta.get("key_id") and delta.get("key_id") == "default" and not existing.get("key_id"):
+            delta.pop("key_id")
         if delta:
             command = config_ntp(delta, existing)
             if command:
@@ -403,7 +388,7 @@ def main():
 
     elif state == "absent":
         if existing.get("peer_type") and existing.get("address"):
-            command = "no ntp {0} {1}".format(existing["peer_type"], existing["address"])
+            command = "no ntp {} {}".format(existing["peer_type"], existing["address"])
             if command:
                 commands.append([command])
 
@@ -412,12 +397,11 @@ def main():
         proposed_source_type = proposed.get("source_type")
         proposed_source = proposed.get("source")
 
-        if proposed_source_type:
-            if proposed_source_type == existing_source_type:
-                if proposed_source == existing_source:
-                    command = "no ntp {0} {1}".format(existing_source_type, existing_source)
-                    if command:
-                        commands.append([command])
+        if proposed_source_type and proposed_source_type == existing_source_type:
+            if proposed_source == existing_source:
+                command = f"no ntp {existing_source_type} {existing_source}"
+                if command:
+                    commands.append([command])
 
     cmds = flatten_list(commands)
     if cmds:

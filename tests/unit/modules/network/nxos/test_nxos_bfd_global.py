@@ -43,7 +43,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
     module = nxos_bfd_global
 
     def setUp(self):
-        super(TestNxosBfdGlobalModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_bfd_global.load_config",
@@ -61,7 +61,7 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.get_platform_shortname = self.mock_get_platform_shortname.start()
 
     def tearDown(self):
-        super(TestNxosBfdGlobalModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.execute_show_command.stop()
         self.get_platform_shortname.stop()
@@ -74,19 +74,19 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = "feature bfd"
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                echo_interface="deleted",
-                echo_rx_interval=50,
-                interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                slow_timer=2000,
-                startup_timer=5,
-                ipv4_echo_rx_interval=50,
-                ipv4_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                ipv4_slow_timer=2000,
-                ipv6_echo_rx_interval=50,
-                ipv6_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                ipv6_slow_timer=2000,
-            ),
+            {
+                "echo_interface": "deleted",
+                "echo_rx_interval": 50,
+                "interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "slow_timer": 2000,
+                "startup_timer": 5,
+                "ipv4_echo_rx_interval": 50,
+                "ipv4_interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "ipv4_slow_timer": 2000,
+                "ipv6_echo_rx_interval": 50,
+                "ipv6_interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "ipv6_slow_timer": 2000,
+            },
         )
         self.execute_module(changed=False)
 
@@ -97,19 +97,19 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = "feature bfd"
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                echo_interface="loopback1",
-                echo_rx_interval=51,
-                interval={"tx": 51, "min_rx": 51, "multiplier": 4},
-                slow_timer=2001,
-                startup_timer=6,
-                ipv4_echo_rx_interval=51,
-                ipv4_interval={"tx": 51, "min_rx": 51, "multiplier": 4},
-                ipv4_slow_timer=2001,
-                ipv6_echo_rx_interval=51,
-                ipv6_interval={"tx": 51, "min_rx": 51, "multiplier": 4},
-                ipv6_slow_timer=2001,
-            ),
+            {
+                "echo_interface": "loopback1",
+                "echo_rx_interval": 51,
+                "interval": {"tx": 51, "min_rx": 51, "multiplier": 4},
+                "slow_timer": 2001,
+                "startup_timer": 6,
+                "ipv4_echo_rx_interval": 51,
+                "ipv4_interval": {"tx": 51, "min_rx": 51, "multiplier": 4},
+                "ipv4_slow_timer": 2001,
+                "ipv6_echo_rx_interval": 51,
+                "ipv6_interval": {"tx": 51, "min_rx": 51, "multiplier": 4},
+                "ipv6_slow_timer": 2001,
+            },
         )
         self.execute_module(
             changed=True,
@@ -133,19 +133,19 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = "feature bfd"
         self.get_platform_shortname.return_value = "N3K"
         set_module_args(
-            dict(
-                echo_interface="deleted",
-                echo_rx_interval=250,
-                interval={"tx": 250, "min_rx": 250, "multiplier": 3},
-                slow_timer=2000,
-                startup_timer=5,
-                ipv4_echo_rx_interval=250,
-                ipv4_interval={"tx": 250, "min_rx": 250, "multiplier": 3},
-                ipv4_slow_timer=2000,
-                ipv6_echo_rx_interval=250,
-                ipv6_interval={"tx": 250, "min_rx": 250, "multiplier": 3},
-                ipv6_slow_timer=2000,
-            ),
+            {
+                "echo_interface": "deleted",
+                "echo_rx_interval": 250,
+                "interval": {"tx": 250, "min_rx": 250, "multiplier": 3},
+                "slow_timer": 2000,
+                "startup_timer": 5,
+                "ipv4_echo_rx_interval": 250,
+                "ipv4_interval": {"tx": 250, "min_rx": 250, "multiplier": 3},
+                "ipv4_slow_timer": 2000,
+                "ipv6_echo_rx_interval": 250,
+                "ipv6_interval": {"tx": 250, "min_rx": 250, "multiplier": 3},
+                "ipv6_slow_timer": 2000,
+            },
         )
         self.execute_module(changed=False)
 
@@ -154,16 +154,16 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = "feature bfd"
         self.get_platform_shortname.return_value = "N35"
         set_module_args(
-            dict(
-                echo_interface="deleted",
-                echo_rx_interval=50,
-                interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                slow_timer=2000,
-                startup_timer=5,
-                ipv4_echo_rx_interval=50,
-                ipv4_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                ipv4_slow_timer=2000,
-            ),
+            {
+                "echo_interface": "deleted",
+                "echo_rx_interval": 50,
+                "interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "slow_timer": 2000,
+                "startup_timer": 5,
+                "ipv4_echo_rx_interval": 50,
+                "ipv4_interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "ipv4_slow_timer": 2000,
+            },
         )
         self.execute_module(changed=False)
 
@@ -172,14 +172,14 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = "feature bfd"
         self.get_platform_shortname.return_value = "N6K"
         set_module_args(
-            dict(
-                echo_interface="deleted",
-                interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                slow_timer=2000,
-                fabricpath_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                fabricpath_slow_timer=2000,
-                fabricpath_vlan=1,
-            ),
+            {
+                "echo_interface": "deleted",
+                "interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "slow_timer": 2000,
+                "fabricpath_interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "fabricpath_slow_timer": 2000,
+                "fabricpath_vlan": 1,
+            },
         )
         self.execute_module(changed=False)
 
@@ -188,21 +188,21 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = "feature bfd"
         self.get_platform_shortname.return_value = "N7K"
         set_module_args(
-            dict(
-                echo_interface="deleted",
-                echo_rx_interval=50,
-                interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                slow_timer=2000,
-                ipv4_echo_rx_interval=50,
-                ipv4_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                ipv4_slow_timer=2000,
-                ipv6_echo_rx_interval=50,
-                ipv6_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                ipv6_slow_timer=2000,
-                fabricpath_interval={"tx": 50, "min_rx": 50, "multiplier": 3},
-                fabricpath_slow_timer=2000,
-                fabricpath_vlan=1,
-            ),
+            {
+                "echo_interface": "deleted",
+                "echo_rx_interval": 50,
+                "interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "slow_timer": 2000,
+                "ipv4_echo_rx_interval": 50,
+                "ipv4_interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "ipv4_slow_timer": 2000,
+                "ipv6_echo_rx_interval": 50,
+                "ipv6_interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "ipv6_slow_timer": 2000,
+                "fabricpath_interval": {"tx": 50, "min_rx": 50, "multiplier": 3},
+                "fabricpath_slow_timer": 2000,
+                "fabricpath_vlan": 1,
+            },
         )
         self.execute_module(changed=False)
 
@@ -211,19 +211,19 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture(module_name, "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                echo_interface="deleted",
-                echo_rx_interval=51,
-                interval={"tx": 51, "min_rx": 51, "multiplier": 3},
-                slow_timer=2000,
-                startup_timer=5,
-                ipv4_echo_rx_interval=50,
-                ipv4_interval={"tx": 51, "min_rx": 51, "multiplier": 3},
-                ipv4_slow_timer=2000,
-                ipv6_echo_rx_interval=50,
-                ipv6_interval={"tx": 51, "min_rx": 51, "multiplier": 3},
-                ipv6_slow_timer=2000,
-            ),
+            {
+                "echo_interface": "deleted",
+                "echo_rx_interval": 51,
+                "interval": {"tx": 51, "min_rx": 51, "multiplier": 3},
+                "slow_timer": 2000,
+                "startup_timer": 5,
+                "ipv4_echo_rx_interval": 50,
+                "ipv4_interval": {"tx": 51, "min_rx": 51, "multiplier": 3},
+                "ipv4_slow_timer": 2000,
+                "ipv6_echo_rx_interval": 50,
+                "ipv6_interval": {"tx": 51, "min_rx": 51, "multiplier": 3},
+                "ipv6_slow_timer": 2000,
+            },
         )
         self.execute_module(
             changed=True,
@@ -247,19 +247,19 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture(module_name, "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                echo_interface="loopback2",
-                echo_rx_interval=56,
-                interval={"tx": 51, "min_rx": 52, "multiplier": 4},
-                slow_timer=2001,
-                startup_timer=6,
-                ipv4_echo_rx_interval=54,
-                ipv4_interval={"tx": 54, "min_rx": 54, "multiplier": 4},
-                ipv4_slow_timer=2004,
-                ipv6_echo_rx_interval=56,
-                ipv6_interval={"tx": 56, "min_rx": 56, "multiplier": 6},
-                ipv6_slow_timer=2006,
-            ),
+            {
+                "echo_interface": "loopback2",
+                "echo_rx_interval": 56,
+                "interval": {"tx": 51, "min_rx": 52, "multiplier": 4},
+                "slow_timer": 2001,
+                "startup_timer": 6,
+                "ipv4_echo_rx_interval": 54,
+                "ipv4_interval": {"tx": 54, "min_rx": 54, "multiplier": 4},
+                "ipv4_slow_timer": 2004,
+                "ipv6_echo_rx_interval": 56,
+                "ipv6_interval": {"tx": 56, "min_rx": 56, "multiplier": 6},
+                "ipv6_slow_timer": 2006,
+            },
         )
         self.execute_module(changed=False)
 
@@ -268,21 +268,21 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture(module_name, "N7K.cfg")
         self.get_platform_shortname.return_value = "N7K"
         set_module_args(
-            dict(
-                echo_interface="deleted",
-                echo_rx_interval=51,
-                interval={"tx": 51, "min_rx": 51, "multiplier": 3},
-                slow_timer=2002,
-                ipv4_echo_rx_interval=51,
-                ipv4_interval={"tx": 51, "min_rx": 51, "multiplier": 3},
-                ipv4_slow_timer=2002,
-                ipv6_echo_rx_interval=51,
-                ipv6_interval={"tx": 51, "min_rx": 51, "multiplier": 3},
-                ipv6_slow_timer=2002,
-                fabricpath_interval={"tx": 51, "min_rx": 51, "multiplier": 3},
-                fabricpath_slow_timer=2003,
-                fabricpath_vlan=3,
-            ),
+            {
+                "echo_interface": "deleted",
+                "echo_rx_interval": 51,
+                "interval": {"tx": 51, "min_rx": 51, "multiplier": 3},
+                "slow_timer": 2002,
+                "ipv4_echo_rx_interval": 51,
+                "ipv4_interval": {"tx": 51, "min_rx": 51, "multiplier": 3},
+                "ipv4_slow_timer": 2002,
+                "ipv6_echo_rx_interval": 51,
+                "ipv6_interval": {"tx": 51, "min_rx": 51, "multiplier": 3},
+                "ipv6_slow_timer": 2002,
+                "fabricpath_interval": {"tx": 51, "min_rx": 51, "multiplier": 3},
+                "fabricpath_slow_timer": 2003,
+                "fabricpath_vlan": 3,
+            },
         )
         self.execute_module(
             changed=True,
@@ -308,20 +308,20 @@ class TestNxosBfdGlobalModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture(module_name, "N7K.cfg")
         self.get_platform_shortname.return_value = "N7K"
         set_module_args(
-            dict(
-                echo_interface="loopback2",
-                echo_rx_interval=56,
-                interval={"tx": 51, "min_rx": 52, "multiplier": 4},
-                slow_timer=2001,
-                ipv4_echo_rx_interval=54,
-                ipv4_interval={"tx": 54, "min_rx": 54, "multiplier": 4},
-                ipv4_slow_timer=2004,
-                ipv6_echo_rx_interval=56,
-                ipv6_interval={"tx": 56, "min_rx": 56, "multiplier": 6},
-                ipv6_slow_timer=2006,
-                fabricpath_interval={"tx": 58, "min_rx": 58, "multiplier": 8},
-                fabricpath_slow_timer=2008,
-                fabricpath_vlan=2,
-            ),
+            {
+                "echo_interface": "loopback2",
+                "echo_rx_interval": 56,
+                "interval": {"tx": 51, "min_rx": 52, "multiplier": 4},
+                "slow_timer": 2001,
+                "ipv4_echo_rx_interval": 54,
+                "ipv4_interval": {"tx": 54, "min_rx": 54, "multiplier": 4},
+                "ipv4_slow_timer": 2004,
+                "ipv6_echo_rx_interval": 56,
+                "ipv6_interval": {"tx": 56, "min_rx": 56, "multiplier": 6},
+                "ipv6_slow_timer": 2006,
+                "fabricpath_interval": {"tx": 58, "min_rx": 58, "multiplier": 8},
+                "fabricpath_slow_timer": 2008,
+                "fabricpath_vlan": 2,
+            },
         )
         self.execute_module(changed=False)

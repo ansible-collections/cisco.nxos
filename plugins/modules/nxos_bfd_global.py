@@ -138,7 +138,6 @@ cmds:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     NxosCmdRef,
     load_config,
@@ -291,24 +290,24 @@ def reorder_cmds(cmds):
 
 
 def main():
-    argument_spec = dict(
-        echo_interface=dict(required=False, type="str"),
-        echo_rx_interval=dict(required=False, type="int"),
-        interval=dict(required=False, type="dict"),
-        slow_timer=dict(required=False, type="int"),
-        startup_timer=dict(required=False, type="int"),
-        ipv4_echo_rx_interval=dict(required=False, type="int"),
-        ipv4_interval=dict(required=False, type="dict"),
-        ipv4_slow_timer=dict(required=False, type="int"),
-        ipv6_echo_rx_interval=dict(required=False, type="int"),
-        ipv6_interval=dict(required=False, type="dict"),
-        ipv6_slow_timer=dict(required=False, type="int"),
-        fabricpath_interval=dict(required=False, type="dict"),
-        fabricpath_slow_timer=dict(required=False, type="int"),
-        fabricpath_vlan=dict(required=False, type="int"),
-    )
+    argument_spec = {
+        "echo_interface": {"required": False, "type": "str"},
+        "echo_rx_interval": {"required": False, "type": "int"},
+        "interval": {"required": False, "type": "dict"},
+        "slow_timer": {"required": False, "type": "int"},
+        "startup_timer": {"required": False, "type": "int"},
+        "ipv4_echo_rx_interval": {"required": False, "type": "int"},
+        "ipv4_interval": {"required": False, "type": "dict"},
+        "ipv4_slow_timer": {"required": False, "type": "int"},
+        "ipv6_echo_rx_interval": {"required": False, "type": "int"},
+        "ipv6_interval": {"required": False, "type": "dict"},
+        "ipv6_slow_timer": {"required": False, "type": "int"},
+        "fabricpath_interval": {"required": False, "type": "dict"},
+        "fabricpath_slow_timer": {"required": False, "type": "int"},
+        "fabricpath_vlan": {"required": False, "type": "int"},
+    }
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
-    warnings = list()
+    warnings = []
 
     cmd_ref = NxosCmdRef(module, BFD_CMD_REF)
     cmd_ref.get_existing()

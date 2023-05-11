@@ -85,7 +85,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     get_interface_type,
@@ -96,16 +95,13 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 
 
 def execute_show_command(command, module):
-    if "show run" not in command:
-        output = "json"
-    else:
-        output = "text"
+    output = "json" if "show run" not in command else "text"
     cmds = [{"command": command, "output": output}]
     return run_commands(module, cmds)[0]
 
 
 def get_interface_mode(interface, intf_type, module):
-    command = "show interface {0}".format(interface)
+    command = f"show interface {interface}"
     interface = {}
     mode = "unknown"
 
@@ -148,7 +144,7 @@ def get_interface_info(interface, module):
     if not interface.startswith("loopback"):
         interface = interface.capitalize()
 
-    command = "show run interface {0}".format(interface)
+    command = f"show run interface {interface}"
     vrf_regex = r".*vrf\s+member\s+(?P<vrf>\S+).*"
 
     try:
@@ -163,30 +159,27 @@ def get_interface_info(interface, module):
 
 
 def is_default(interface, module):
-    command = "show run interface {0}".format(interface)
+    command = f"show run interface {interface}"
 
     try:
         body = execute_show_command(command, module)
         raw_list = body.split("\n")
-        if raw_list[-1].startswith("interface"):
-            return True
-        else:
-            return False
+        return bool(raw_list[-1].startswith("interface"))
 
     except (KeyError, IndexError):
         return "DNE"
 
 
 def main():
-    argument_spec = dict(
-        vrf=dict(required=True),
-        interface=dict(type="str", required=True),
-        state=dict(default="present", choices=["present", "absent"], required=False),
-    )
+    argument_spec = {
+        "vrf": {"required": True},
+        "interface": {"type": "str", "required": True},
+        "state": {"default": "present", "choices": ["present", "absent"], "required": False},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     vrf = module.params["vrf"]
@@ -218,7 +211,7 @@ def main():
         )
 
     current_vrf = get_interface_info(interface, module)
-    existing = dict(interface=interface, vrf=current_vrf)
+    existing = {"interface": interface, "vrf": current_vrf}
     changed = False
 
     if not existing["vrf"]:
@@ -237,16 +230,15 @@ def main():
     if existing:
         if state == "absent":
             if existing and vrf == existing["vrf"]:
-                command = "no vrf member {0}".format(vrf)
+                command = f"no vrf member {vrf}"
                 commands.append(command)
 
-        elif state == "present":
-            if existing["vrf"] != vrf:
-                command = "vrf member {0}".format(vrf)
-                commands.append(command)
+        elif state == "present" and existing["vrf"] != vrf:
+            command = f"vrf member {vrf}"
+            commands.append(command)
 
     if commands:
-        commands.insert(0, "interface {0}".format(interface))
+        commands.insert(0, f"interface {interface}")
 
     if commands:
         if module.check_mode:

@@ -32,7 +32,7 @@ class TestNxosHsrpModule(TestNxosModule):
     module = nxos_hsrp
 
     def setUp(self):
-        super(TestNxosHsrpModule, self).setUp()
+        super().setUp()
         self.mock_run_commands = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_hsrp.run_commands",
         )
@@ -50,7 +50,7 @@ class TestNxosHsrpModule(TestNxosModule):
         self.get_capabilities.return_value = {"network_api": "cliconf"}
 
     def tearDown(self):
-        super(TestNxosHsrpModule, self).tearDown()
+        super().tearDown()
         self.mock_run_commands.stop()
         self.mock_load_config.stop()
         self.mock_get_capabilities.stop()
@@ -60,26 +60,13 @@ class TestNxosHsrpModule(TestNxosModule):
 
     def test_nxos_hsrp(self):
         set_module_args(
-            dict(
-                group="10",
-                vip="192.0.2.2/8",
-                priority="150",
-                interface="Ethernet1/2",
-                preempt="enabled",
-            ),
+            {
+                "group": "10",
+                "vip": "192.0.2.2/8",
+                "priority": "150",
+                "interface": "Ethernet1/2",
+                "preempt": "enabled",
+            },
         )
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            sorted(result["commands"]),
-            sorted(
-                [
-                    "config t",
-                    "interface ethernet1/2",
-                    "hsrp version 1",
-                    "hsrp 10",
-                    "priority 150",
-                    "ip 192.0.2.2/8",
-                    "preempt",
-                ],
-            ),
-        )
+        assert sorted(result["commands"]) == sorted(["config t", "interface ethernet1/2", "hsrp version 1", "hsrp 10", "priority 150", "ip 192.0.2.2/8", "preempt"])

@@ -37,7 +37,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
     module = nxos_ntp_global
 
     def setUp(self):
-        super(TestNxosNtpGlobalModule, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -50,7 +50,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosNtpGlobalModule, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
@@ -61,30 +61,30 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    access_group=dict(
-                        peer=[
-                            dict(access_list="PeerAcl1"),
-                            dict(access_list="PeerAcl2"),
+            {
+                "config": {
+                    "access_group": {
+                        "peer": [
+                            {"access_list": "PeerAcl1"},
+                            {"access_list": "PeerAcl2"},
                         ],
-                        serve=[
-                            dict(access_list="ServeAcl1"),
-                            dict(access_list="ServeAcl2"),
+                        "serve": [
+                            {"access_list": "ServeAcl1"},
+                            {"access_list": "ServeAcl2"},
                         ],
-                        query_only=[
-                            dict(access_list="QueryAcl1"),
-                            dict(access_list="QueryAcl2"),
+                        "query_only": [
+                            {"access_list": "QueryAcl1"},
+                            {"access_list": "QueryAcl2"},
                         ],
-                        serve_only=[
-                            dict(access_list="ServeOnlyAcl1"),
-                            dict(access_list="ServeOnlyAcl2"),
+                        "serve_only": [
+                            {"access_list": "ServeOnlyAcl1"},
+                            {"access_list": "ServeOnlyAcl2"},
                         ],
-                    ),
-                    allow=dict(control=dict(rate_limit=400), private=True),
-                ),
-                state="merged",
-            ),
+                    },
+                    "allow": {"control": {"rate_limit": 400}, "private": True},
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -100,7 +100,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "ntp allow private",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_linear_merged_idempotent(self):
         # test merged for linear attributes (idempotent)
@@ -119,34 +119,34 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    access_group=dict(
-                        peer=[
-                            dict(access_list="PeerAcl1"),
-                            dict(access_list="PeerAcl2"),
+            {
+                "config": {
+                    "access_group": {
+                        "peer": [
+                            {"access_list": "PeerAcl1"},
+                            {"access_list": "PeerAcl2"},
                         ],
-                        serve=[
-                            dict(access_list="ServeAcl1"),
-                            dict(access_list="ServeAcl2"),
+                        "serve": [
+                            {"access_list": "ServeAcl1"},
+                            {"access_list": "ServeAcl2"},
                         ],
-                        query_only=[
-                            dict(access_list="QueryAcl1"),
-                            dict(access_list="QueryAcl2"),
+                        "query_only": [
+                            {"access_list": "QueryAcl1"},
+                            {"access_list": "QueryAcl2"},
                         ],
-                        serve_only=[
-                            dict(access_list="ServeOnlyAcl1"),
-                            dict(access_list="ServeOnlyAcl2"),
+                        "serve_only": [
+                            {"access_list": "ServeOnlyAcl1"},
+                            {"access_list": "ServeOnlyAcl2"},
                         ],
-                    ),
-                    allow=dict(control=dict(rate_limit=400), private=True),
-                ),
-                state="merged",
-            ),
+                    },
+                    "allow": {"control": {"rate_limit": 400}, "private": True},
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_ntp_global_linear_replaced_idempotent(self):
         # test merged for linear attributes (idempotent)
@@ -165,24 +165,24 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    access_group=dict(
-                        peer=[dict(access_list="PeerAcl1")],
-                        serve=[
-                            dict(access_list="ServeAcl1"),
-                            dict(access_list="ServeAcl2"),
-                            dict(access_list="ServeAcl3"),
+            {
+                "config": {
+                    "access_group": {
+                        "peer": [{"access_list": "PeerAcl1"}],
+                        "serve": [
+                            {"access_list": "ServeAcl1"},
+                            {"access_list": "ServeAcl2"},
+                            {"access_list": "ServeAcl3"},
                         ],
-                        query_only=[
-                            dict(access_list="QueryAcl1"),
-                            dict(access_list="QueryAcl2"),
+                        "query_only": [
+                            {"access_list": "QueryAcl1"},
+                            {"access_list": "QueryAcl2"},
                         ],
-                    ),
-                    allow=dict(control=dict(rate_limit=400)),
-                ),
-                state="replaced",
-            ),
+                    },
+                    "allow": {"control": {"rate_limit": 400}},
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -194,7 +194,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         print(result["commands"])
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_complex_merged(self):
         # test merged for complex attributes
@@ -203,21 +203,21 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    authenticate=True,
-                    authentication_keys=[
-                        dict(id=1, key="testPass", encryption=0),
-                        dict(id=2, key="vagwwtKfkv", encryption=7),
-                        dict(id=3, key="secretPass", encryption=0),
+            {
+                "config": {
+                    "authenticate": True,
+                    "authentication_keys": [
+                        {"id": 1, "key": "testPass", "encryption": 0},
+                        {"id": 2, "key": "vagwwtKfkv", "encryption": 7},
+                        {"id": 3, "key": "secretPass", "encryption": 0},
                     ],
-                    logging=True,
-                    master=dict(stratum=2),
-                    passive=True,
-                    source="192.168.1.1",
-                ),
-                state="merged",
-            ),
+                    "logging": True,
+                    "master": {"stratum": 2},
+                    "passive": True,
+                    "source": "192.168.1.1",
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -231,7 +231,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "ntp source 192.168.1.1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_complex_merged_idempotent(self):
         # test merged for complex attributes
@@ -248,25 +248,25 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    authenticate=True,
-                    authentication_keys=[
-                        dict(id=1, key="testPass", encryption=0),
-                        dict(id=2, key="vagwwtKfkv", encryption=7),
-                        dict(id=3, key="secretPass", encryption=0),
+            {
+                "config": {
+                    "authenticate": True,
+                    "authentication_keys": [
+                        {"id": 1, "key": "testPass", "encryption": 0},
+                        {"id": 2, "key": "vagwwtKfkv", "encryption": 7},
+                        {"id": 3, "key": "secretPass", "encryption": 0},
                     ],
-                    logging=True,
-                    master=dict(stratum=2),
-                    passive=True,
-                    source="192.168.1.1",
-                ),
-                state="merged",
-            ),
+                    "logging": True,
+                    "master": {"stratum": 2},
+                    "passive": True,
+                    "source": "192.168.1.1",
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_ntp_global_complex_merged_idempotent(self):
         # test merged for complex attributes
@@ -283,18 +283,18 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    authentication_keys=[
-                        dict(id=1, key="testPass", encryption=0),
-                        dict(id=2, key="vagwwtKfkvb", encryption=7),
+            {
+                "config": {
+                    "authentication_keys": [
+                        {"id": 1, "key": "testPass", "encryption": 0},
+                        {"id": 2, "key": "vagwwtKfkvb", "encryption": 7},
                     ],
-                    logging=True,
-                    master=dict(stratum=3),
-                    source="192.168.1.1",
-                ),
-                state="replaced",
-            ),
+                    "logging": True,
+                    "master": {"stratum": 3},
+                    "source": "192.168.1.1",
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -305,7 +305,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "no ntp passive",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_complex_2_merged(self):
         # test merged for complex attributes - 2
@@ -314,35 +314,35 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    peers=[
-                        dict(
-                            peer="192.168.1.1",
-                            key_id=2,
-                            minpoll=5,
-                            maxpoll=15,
-                            use_vrf="siteA",
-                            prefer=True,
-                        ),
-                        dict(peer="192.168.1.2", key_id=3, use_vrf="siteB"),
-                        dict(peer="192.168.1.3", maxpoll=10, use_vrf="default"),
+            {
+                "config": {
+                    "peers": [
+                        {
+                            "peer": "192.168.1.1",
+                            "key_id": 2,
+                            "minpoll": 5,
+                            "maxpoll": 15,
+                            "use_vrf": "siteA",
+                            "prefer": True,
+                        },
+                        {"peer": "192.168.1.2", "key_id": 3, "use_vrf": "siteB"},
+                        {"peer": "192.168.1.3", "maxpoll": 10, "use_vrf": "default"},
                     ],
-                    servers=[
-                        dict(
-                            server="203.0.113.1",
-                            key_id=2,
-                            minpoll=5,
-                            maxpoll=15,
-                            use_vrf="siteA",
-                            prefer=True,
-                        ),
-                        dict(server="203.0.113.2", key_id=3, use_vrf="siteB"),
-                        dict(server="203.0.113.3", maxpoll=10, use_vrf="default"),
+                    "servers": [
+                        {
+                            "server": "203.0.113.1",
+                            "key_id": 2,
+                            "minpoll": 5,
+                            "maxpoll": 15,
+                            "use_vrf": "siteA",
+                            "prefer": True,
+                        },
+                        {"server": "203.0.113.2", "key_id": 3, "use_vrf": "siteB"},
+                        {"server": "203.0.113.3", "maxpoll": 10, "use_vrf": "default"},
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -354,7 +354,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "ntp server 203.0.113.3 use-vrf default maxpoll 10",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_complex_2_merged_idempotent(self):
         # test merged for complex attributes - 2 (idempotent)
@@ -369,39 +369,39 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    peers=[
-                        dict(
-                            peer="192.168.1.1",
-                            key_id=2,
-                            minpoll=5,
-                            maxpoll=15,
-                            vrf="siteA",
-                            prefer=True,
-                        ),
-                        dict(peer="192.168.1.2", key_id=3, vrf="siteB"),
-                        dict(peer="192.168.1.3", maxpoll=10, vrf="default"),
+            {
+                "config": {
+                    "peers": [
+                        {
+                            "peer": "192.168.1.1",
+                            "key_id": 2,
+                            "minpoll": 5,
+                            "maxpoll": 15,
+                            "vrf": "siteA",
+                            "prefer": True,
+                        },
+                        {"peer": "192.168.1.2", "key_id": 3, "vrf": "siteB"},
+                        {"peer": "192.168.1.3", "maxpoll": 10, "vrf": "default"},
                     ],
-                    servers=[
-                        dict(
-                            server="203.0.113.1",
-                            key_id=2,
-                            minpoll=5,
-                            maxpoll=15,
-                            vrf="siteA",
-                            prefer=True,
-                        ),
-                        dict(server="203.0.113.2", key_id=3, vrf="siteB"),
-                        dict(server="203.0.113.3", maxpoll=10, vrf="default"),
+                    "servers": [
+                        {
+                            "server": "203.0.113.1",
+                            "key_id": 2,
+                            "minpoll": 5,
+                            "maxpoll": 15,
+                            "vrf": "siteA",
+                            "prefer": True,
+                        },
+                        {"server": "203.0.113.2", "key_id": 3, "vrf": "siteB"},
+                        {"server": "203.0.113.3", "maxpoll": 10, "vrf": "default"},
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_ntp_global_complex_2_replaced(self):
         # test replaced for complex attributes - 2
@@ -416,32 +416,32 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    peers=[
-                        dict(
-                            peer="192.168.1.1",
-                            key_id=2,
-                            minpoll=5,
-                            maxpoll=15,
-                            vrf="siteA",
-                            prefer=True,
-                        ),
-                        dict(peer="192.168.1.2", vrf="siteB"),
+            {
+                "config": {
+                    "peers": [
+                        {
+                            "peer": "192.168.1.1",
+                            "key_id": 2,
+                            "minpoll": 5,
+                            "maxpoll": 15,
+                            "vrf": "siteA",
+                            "prefer": True,
+                        },
+                        {"peer": "192.168.1.2", "vrf": "siteB"},
                     ],
-                    servers=[
-                        dict(
-                            server="203.0.113.1",
-                            key_id=2,
-                            minpoll=5,
-                            maxpoll=15,
-                            vrf="siteA",
-                            prefer=True,
-                        ),
+                    "servers": [
+                        {
+                            "server": "203.0.113.1",
+                            "key_id": 2,
+                            "minpoll": 5,
+                            "maxpoll": 15,
+                            "vrf": "siteA",
+                            "prefer": True,
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -452,7 +452,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "no ntp server 203.0.113.3 use-vrf default maxpoll 10",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_complex_3_merged(self):
         # test merged for complex attributes - 3
@@ -461,17 +461,17 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    trusted_keys=[
-                        dict(key_id=1001),
-                        dict(key_id=1002),
-                        dict(key_id=1003),
+            {
+                "config": {
+                    "trusted_keys": [
+                        {"key_id": 1001},
+                        {"key_id": 1002},
+                        {"key_id": 1003},
                     ],
-                    source_interface="Ethernet1/1",
-                ),
-                state="merged",
-            ),
+                    "source_interface": "Ethernet1/1",
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -481,7 +481,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "ntp source-interface Ethernet1/1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_complex_3_merged_idempotent(self):
         # test merged for complex attributes - 3 (idempotent)
@@ -494,21 +494,21 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    trusted_keys=[
-                        dict(key_id=1001),
-                        dict(key_id=1002),
-                        dict(key_id=1003),
+            {
+                "config": {
+                    "trusted_keys": [
+                        {"key_id": 1001},
+                        {"key_id": 1002},
+                        {"key_id": 1003},
                     ],
-                    source_interface="Ethernet1/1",
-                ),
-                state="merged",
-            ),
+                    "source_interface": "Ethernet1/1",
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_ntp_global_source_interface_merged_idempotent(self):
         # test merged for complex attributes - 3 (idempotent)
@@ -521,11 +521,11 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(config=dict(source_interface="Ethernet1/1"), state="merged"),
+            {"config": {"source_interface": "Ethernet1/1"}, "state": "merged"},
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_ntp_global_complex_3_replaced(self):
         # test replaced for complex attributes - 3
@@ -538,17 +538,17 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    trusted_keys=[
-                        dict(key_id=1001),
-                        dict(key_id=1002),
-                        dict(key_id=1004),
+            {
+                "config": {
+                    "trusted_keys": [
+                        {"key_id": 1001},
+                        {"key_id": 1002},
+                        {"key_id": 1004},
                     ],
-                    source_interface="192.168.1.101",
-                ),
-                state="replaced",
-            ),
+                    "source_interface": "192.168.1.101",
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -557,12 +557,12 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "ntp source-interface 192.168.1.101",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_gathered_empty(self):
-        set_module_args(dict(running_config="", state="gathered"), ignore_provider_arg)
+        set_module_args({"running_config": "", "state": "gathered"}, ignore_provider_arg)
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], {})
+        assert result["gathered"] == {}
 
     def test_nxos_ntp_global_gathered(self):
         self.get_config.return_value = dedent(
@@ -573,7 +573,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp source-interface 192.168.1.100
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
         gathered = {
             "trusted_keys": [
                 {"key_id": 1001},
@@ -583,7 +583,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "source_interface": "192.168.1.100",
         }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_ntp_global_parsed(self):
         cfg = dedent(
@@ -594,7 +594,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp source-interface 192.168.1.100
             """,
         )
-        set_module_args(dict(running_config=cfg, state="parsed"), ignore_provider_arg)
+        set_module_args({"running_config": cfg, "state": "parsed"}, ignore_provider_arg)
         parsed = {
             "trusted_keys": [
                 {"key_id": 1001},
@@ -604,7 +604,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "source_interface": "192.168.1.100",
         }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed
 
     def test_nxos_ntp_global_linear_deleted(self):
         self.get_config.return_value = dedent(
@@ -621,7 +621,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp allow private
             """,
         )
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         commands = [
             "no ntp access-group peer PeerAcl1",
             "no ntp access-group peer PeerAcl2",
@@ -635,7 +635,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "no ntp allow private",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_alias(self):
         self.get_config.return_value = dedent(
@@ -643,31 +643,31 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    servers=[
-                        dict(
-                            server="1.1.1.1",
-                            vrf="management",
-                        ),
-                        dict(
-                            server="1.1.1.3",
-                            use_vrf="v200",
-                        ),
+            {
+                "config": {
+                    "servers": [
+                        {
+                            "server": "1.1.1.1",
+                            "vrf": "management",
+                        },
+                        {
+                            "server": "1.1.1.3",
+                            "use_vrf": "v200",
+                        },
                     ],
-                    peers=[
-                        dict(
-                            peer="192.168.1.1",
-                            vrf="default",
-                        ),
-                        dict(
-                            peer="192.168.1.2",
-                            use_vrf="v200",
-                        ),
+                    "peers": [
+                        {
+                            "peer": "192.168.1.1",
+                            "vrf": "default",
+                        },
+                        {
+                            "peer": "192.168.1.2",
+                            "use_vrf": "v200",
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -677,7 +677,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             "ntp peer 192.168.1.2 use-vrf v200",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ntp_global_alias_idempotent(self):
         self.get_config.return_value = dedent(
@@ -689,31 +689,31 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    servers=[
-                        dict(
-                            server="1.1.1.1",
-                            vrf="management",
-                        ),
-                        dict(
-                            server="1.1.1.3",
-                            use_vrf="v200",
-                        ),
+            {
+                "config": {
+                    "servers": [
+                        {
+                            "server": "1.1.1.1",
+                            "vrf": "management",
+                        },
+                        {
+                            "server": "1.1.1.3",
+                            "use_vrf": "v200",
+                        },
                     ],
-                    peers=[
-                        dict(
-                            peer="192.168.1.1",
-                            vrf="default",
-                        ),
-                        dict(
-                            peer="192.168.1.2",
-                            use_vrf="v200",
-                        ),
+                    "peers": [
+                        {
+                            "peer": "192.168.1.1",
+                            "vrf": "default",
+                        },
+                        {
+                            "peer": "192.168.1.2",
+                            "use_vrf": "v200",
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         self.execute_module(changed=False)

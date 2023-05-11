@@ -37,7 +37,7 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
     module = nxos_lacp_interfaces
 
     def setUp(self):
-        super(TestNxosLacpInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
@@ -60,7 +60,7 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
         self.edit_config = self.mock_edit_config.start()
 
     def tearDown(self):
-        super(TestNxosLacpInterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_FACT_LEGACY_SUBSETS.stop()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
@@ -85,16 +85,16 @@ class TestNxosLacpInterfacesModule(TestNxosModule):
         """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(
-                    name="port-channel1",
-                    convergence={"graceful": False},
-                    suspend_individual=True,
-                    mode="delay",
-                ),
+        playbook = {
+            "config": [
+                {
+                    "name": "port-channel1",
+                    "convergence": {"graceful": False},
+                    "suspend_individual": True,
+                    "mode": "delay",
+                },
             ],
-        )
+        }
         # Expected result commands for each 'state'
         merged = [
             "interface port-channel1",

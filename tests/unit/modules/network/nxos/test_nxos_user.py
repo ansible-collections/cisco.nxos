@@ -35,7 +35,7 @@ class TestNxosUserModule(TestNxosModule):
     module = nxos_user
 
     def setUp(self):
-        super(TestNxosUserModule, self).setUp()
+        super().setUp()
 
         self.mock_run_commands = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_user.run_commands",
@@ -58,7 +58,7 @@ class TestNxosUserModule(TestNxosModule):
         self.get_device_info = self.mock_get_device_info.start()
 
     def tearDown(self):
-        super(TestNxosUserModule, self).tearDown()
+        super().tearDown()
         self.mock_run_commands.stop()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
@@ -92,7 +92,7 @@ class TestNxosUserModule(TestNxosModule):
             "network_os_image": "bootflash:///m9100-s5ek9-mz.8.4.2b.bin",
             "network_os_platform": "DS-C9710",
         }
-        set_module_args(dict(name="ansible-test-2", configured_password="ansible"))
+        set_module_args({"name": "ansible-test-2", "configured_password": "ansible"})
         self.execute_module(
             changed=True,
             commands=[

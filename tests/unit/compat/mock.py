@@ -41,7 +41,7 @@ except ImportError:
     # Python 2
     # pylint: disable=wildcard-import,unused-wildcard-import
     try:
-        from mock import *
+        from unittest.mock import *
     except ImportError:
         print("You need the mock library installed on python2.x to run tests")
 
@@ -67,8 +67,7 @@ if sys.version_info >= (3,) and sys.version_info < (3, 4, 4):
             # newline that our naive format() added
             data_as_list[-1] = data_as_list[-1][:-1]
 
-        for line in data_as_list:
-            yield line
+        yield from data_as_list
 
     def mock_open(mock=None, read_data=""):
         """
@@ -97,8 +96,7 @@ if sys.version_info >= (3,) and sys.version_info < (3, 4, 4):
             if handle.readline.return_value is not None:
                 while True:
                     yield handle.readline.return_value
-            for line in _data:
-                yield line
+            yield from _data
 
         global file_spec
         if file_spec is None:

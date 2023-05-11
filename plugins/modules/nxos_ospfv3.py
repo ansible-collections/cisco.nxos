@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -22,9 +21,7 @@
 #
 #############################################
 
-"""
-The module file for nxos_ospfv3
-"""
+"""The module file for nxos_ospfv3."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -1666,7 +1663,6 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
     Ospfv3Args,
 )
@@ -1677,7 +1673,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.osp
 
 def main():
     """
-    Main entry point for module execution
+    Main entry point for module execution.
 
     :returns: the result form module invocation
     """

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_static_routes class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 from __future__ import absolute_import, division, print_function
 
@@ -24,7 +23,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_empties,
     to_list,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
@@ -33,19 +31,17 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Static_routes(ConfigBase):
-    """
-    The nxos_xstatic_routes class
-    """
+    """The nxos_xstatic_routes class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["static_routes"]
 
-    def __init__(self, module):
-        super(Static_routes, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_static_routes_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -68,14 +64,14 @@ class Static_routes(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        warnings = list()
-        commands = list()
+        warnings = []
+        commands = []
         state = self._module.params["state"]
         action_states = ["merged", "replaced", "deleted", "overridden"]
 
@@ -105,7 +101,7 @@ class Static_routes(ConfigBase):
 
     def set_config(self, existing_static_routes_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -123,7 +119,7 @@ class Static_routes(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -160,7 +156,7 @@ class Static_routes(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -174,14 +170,14 @@ class Static_routes(ConfigBase):
         # in replaced, we check if whatever in have is in want, unlike merged. This is because we need to apply deleted on have config
         if obj_in_have and obj_in_have != {"vrf": "default"}:
             want_afi_list = []
-            if "address_families" in want.keys():
+            if "address_families" in want:
                 want_afi_list = [w["afi"] for w in want["address_families"]]
             if len(want_afi_list) > 0:
                 for h in obj_in_have["address_families"]:
                     if h["afi"] in want_afi_list:
                         want_afi = search_obj_in_list(h["afi"], want["address_families"], "afi")
                         want_dest_list = []
-                        if "routes" in want_afi.keys():
+                        if "routes" in want_afi:
                             want_dest_list = [w["dest"] for w in want_afi["routes"]]
                         if len(want_dest_list) > 0:
                             for ro in h["routes"]:
@@ -192,7 +188,7 @@ class Static_routes(ConfigBase):
                                         "dest",
                                     )
                                     want_next_hops = []
-                                    if "next_hops" in want_dest.keys():
+                                    if "next_hops" in want_dest:
                                         want_next_hops = list(want_dest["next_hops"])
                                     if len(want_next_hops) > 0:
                                         for next_hop in ro["next_hops"]:
@@ -255,7 +251,7 @@ class Static_routes(ConfigBase):
                             if (
                                 state == "overridden"
                             ):  # want has no 'routes' key, so delete all routes under that afi
-                                if "routes" in h.keys():
+                                if "routes" in h:
                                     delete_dict = {
                                         "vrf": obj_in_have["vrf"],
                                         "address_families": [
@@ -297,7 +293,7 @@ class Static_routes(ConfigBase):
         return commands
 
     def _state_overridden(self, want, have):
-        """The command generator when state is overridden
+        """The command generator when state is overridden.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -313,7 +309,7 @@ class Static_routes(ConfigBase):
         return commands
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -322,7 +318,7 @@ class Static_routes(ConfigBase):
         return self.set_commands(want, have)
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -334,7 +330,7 @@ class Static_routes(ConfigBase):
                 delete_dict = {}
                 obj_in_have = search_obj_in_list(w["vrf"], have, "vrf")
                 if obj_in_have:
-                    if "address_families" in w.keys():
+                    if "address_families" in w:
                         o1 = obj_in_have["address_families"]
                         afi_list = [o["afi"] for o in o1]  # have's afi list
                         for w1 in w["address_families"]:
@@ -343,7 +339,7 @@ class Static_routes(ConfigBase):
                                 state = self._module.params["state"]
                                 if state != "deleted":
                                     # Deleted scope is till afi only. Part below is for use by overridden state.
-                                    if "routes" in w1.keys():
+                                    if "routes" in w1:
                                         for w2 in w1["routes"]:
                                             o3 = search_obj_in_list(
                                                 w2["dest"],
@@ -351,7 +347,7 @@ class Static_routes(ConfigBase):
                                                 "dest",
                                             )
                                             hops = []
-                                            if "next_hops" in w2.keys():
+                                            if "next_hops" in w2:
                                                 for nh in w2["next_hops"]:
                                                     if nh in o3["next_hops"]:
                                                         hops.append(nh)
@@ -480,25 +476,25 @@ class Static_routes(ConfigBase):
             for x in have:
                 if x["vrf"] == want["vrf"]:
                     h1 = x  # this has the 'have' dict with same vrf as want
-            if "address_families" in h1.keys():
+            if "address_families" in h1:
                 afi_list = [h["afi"] for h in h1["address_families"]]
-                if "address_families" in want.keys():
+                if "address_families" in want:
                     for af in want["address_families"]:
                         if af["afi"] in afi_list:
                             for x in h1["address_families"]:
                                 if x["afi"] == af["afi"]:
                                     h2 = x  # this has the have dict with same vrf and afi as want
                             dest_list = [h["dest"] for h in h2["routes"]]
-                            if "routes" in af.keys():
+                            if "routes" in af:
                                 for ro in af["routes"]:
                                     if ro["dest"] in dest_list:
                                         for x in h2["routes"]:
                                             if x["dest"] == ro["dest"]:
                                                 h3 = x  # this has the have dict with same vrf, afi and dest as want
                                         next_hop_list = list(h3["next_hops"])
-                                        if "next_hops" in ro.keys():
+                                        if "next_hops" in ro:
                                             for nh in ro["next_hops"]:
-                                                if "interface" in nh.keys():
+                                                if "interface" in nh:
                                                     nh["interface"] = normalize_interface(
                                                         nh["interface"],
                                                     )
@@ -514,7 +510,7 @@ class Static_routes(ConfigBase):
                                                     vrf_list.append(want["vrf"])
                                     else:
                                         # no match for dest
-                                        if "next_hops" in ro.keys():
+                                        if "next_hops" in ro:
                                             for nh in ro["next_hops"]:
                                                 commands = self.set_next_hop(
                                                     want,
@@ -525,7 +521,7 @@ class Static_routes(ConfigBase):
                                                 )
                         else:
                             # no match for afi
-                            if "routes" in af.keys():
+                            if "routes" in af:
                                 for ro in af["routes"]:
                                     for nh in ro["next_hops"]:
                                         commands = self.set_next_hop(want, af, nh, ro, commands)

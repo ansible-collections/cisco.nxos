@@ -27,16 +27,15 @@ from os import path
 try:
     from unittest.mock import MagicMock
 except ImportError:
-    from mock import MagicMock
+    from unittest.mock import MagicMock
 
 from ansible.module_utils._text import to_bytes, to_text
-
 from ansible_collections.cisco.nxos.plugins.cliconf import nxos
 from ansible_collections.cisco.nxos.tests.unit.compat import unittest
 
 
 class TestPluginCLIConfNXOS(unittest.TestCase):
-    """Test class for NXOS CLI Conf Methods"""
+    """Test class for NXOS CLI Conf Methods."""
 
     def setUp(self):
         self._mock_connection = MagicMock()
@@ -55,17 +54,14 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
 
         def _connection_side_effect(*args, **kwargs):
             try:
-                if args:
-                    value = args[0]
-                else:
-                    value = kwargs.get("command")
+                value = args[0] if args else kwargs.get("command")
 
                 fixture_path = path.abspath(
                     b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" "))),
                 )
                 with open(fixture_path, "rb") as file_desc:
                     return to_text(file_desc.read())
-            except (OSError, IOError):
+            except OSError:
                 if args:
                     value = args[0]
                     return value
@@ -80,7 +76,7 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
         pass
 
     def test_get_device_info_nxos(self):
-        """Test get_device_info for nxos"""
+        """Test get_device_info for nxos."""
         device_info = self._cliconf.get_device_info()
 
         mock_device_info = {
@@ -92,10 +88,10 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
             "network_os_version": "9.3(3)",
         }
 
-        self.assertEqual(device_info, mock_device_info)
+        assert device_info == mock_device_info
 
     def test_get_device_info_mds(self):
-        """Test get_device_info for mds"""
+        """Test get_device_info for mds."""
         self._prepare(platform="mds")
         device_info = self._cliconf.get_device_info()
         mock_device_info = {
@@ -107,18 +103,18 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
             "network_os_platform": "DS-C9710",
         }
 
-        self.assertEqual(device_info, mock_device_info)
+        assert device_info == mock_device_info
 
     def test_get_command_with_output_nxos(self):
-        """Test _get_command_with_output for nxos"""
+        """Test _get_command_with_output for nxos."""
         self._prepare()
         cmd = self._cliconf._get_command_with_output(command="show version", output="json")
 
-        self.assertEqual(cmd, "show version | json")
+        assert cmd == "show version | json"
 
     def test_get_command_with_output_mds(self):
-        """Test _get_command_with_output for mds"""
+        """Test _get_command_with_output for mds."""
         self._prepare(platform="mds")
         cmd = self._cliconf._get_command_with_output(command="show version", output="json")
 
-        self.assertEqual(cmd, "show version | json native")
+        assert cmd == "show version | json native"

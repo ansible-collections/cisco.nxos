@@ -131,7 +131,6 @@ packet_loss:
     sample: "0.00%"
 """
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
 
 
@@ -139,22 +138,19 @@ def get_summary(results_list, reference_point):
     summary_string = results_list[reference_point + 1]
     summary_list = summary_string.split(",")
 
-    summary = dict(
-        packets_tx=int(summary_list[0].split("packets")[0].strip()),
-        packets_rx=int(summary_list[1].split("packets")[0].strip()),
-        packet_loss=summary_list[2].split("packet")[0].strip(),
-    )
+    summary = {
+        "packets_tx": int(summary_list[0].split("packets")[0].strip()),
+        "packets_rx": int(summary_list[1].split("packets")[0].strip()),
+        "packet_loss": summary_list[2].split("packet")[0].strip(),
+    }
 
-    if "bytes from" not in results_list[reference_point - 2]:
-        ping_pass = False
-    else:
-        ping_pass = True
+    ping_pass = not "bytes from" not in results_list[reference_point - 2]
 
     return summary, ping_pass
 
 
 def get_rtt(results_list, packet_loss, location):
-    rtt = dict(min=None, avg=None, max=None)
+    rtt = {"min": None, "avg": None, "max": None}
 
     if packet_loss != "100.00%":
         rtt_string = results_list[location]
@@ -208,15 +204,15 @@ def get_ping_results(command, module):
 
 
 def main():
-    argument_spec = dict(
-        dest=dict(required=True),
-        count=dict(required=False, default=5, type="int"),
-        vrf=dict(required=False),
-        source=dict(required=False),
-        size=dict(required=False, type="int"),
-        df_bit=dict(required=False, default=False, type="bool"),
-        state=dict(required=False, choices=["present", "absent"], default="present"),
-    )
+    argument_spec = {
+        "dest": {"required": True},
+        "count": {"required": False, "default": 5, "type": "int"},
+        "vrf": {"required": False},
+        "source": {"required": False},
+        "size": {"required": False, "type": "int"},
+        "df_bit": {"required": False, "default": False, "type": "bool"},
+        "state": {"required": False, "choices": ["present", "absent"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
@@ -225,14 +221,14 @@ def main():
     size = module.params["size"]
     df_bit = module.params["df_bit"]
 
-    ping_command = "ping {0}".format(destination)
+    ping_command = f"ping {destination}"
     for command in ["count", "source", "vrf"]:
         arg = module.params[command]
         if arg:
-            ping_command += " {0} {1}".format(command, arg)
+            ping_command += f" {command} {arg}"
 
     if size:
-        ping_command += " packet-size {0}".format(size)
+        ping_command += f" packet-size {size}"
 
     if df_bit:
         ping_command += " df-bit"

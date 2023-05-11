@@ -77,7 +77,7 @@ def get_connection(module):
 
 
 class Cli:
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self._module = module
         self._device_configs = {}
         self._connection = None
@@ -90,7 +90,7 @@ class Cli:
         return self._connection
 
     def get_config(self, flags=None):
-        """Retrieves the current config from the device or cache"""
+        """Retrieves the current config from the device or cache."""
         flags = [] if flags is None else flags
 
         cmd = "show running-config "
@@ -111,7 +111,7 @@ class Cli:
             return cfg
 
     def run_commands(self, commands, check_rc=True):
-        """Run list of commands on remote device and return results"""
+        """Run list of commands on remote device and return results."""
         connection = self._get_connection()
 
         try:
@@ -124,16 +124,15 @@ class Cli:
                     for index, resp in enumerate(out):
                         if (
                             "Invalid command at" in resp or "Ambiguous command at" in resp
-                        ) and "json" in resp:
-                            if commands[index]["output"] == "json":
-                                commands[index]["output"] = "text"
-                                out = connection.run_commands(commands, check_rc)
+                        ) and "json" in resp and commands[index]["output"] == "json":
+                            commands[index]["output"] = "text"
+                            out = connection.run_commands(commands, check_rc)
             return out
         except ConnectionError as exc:
             self._module.fail_json(msg=to_text(exc))
 
     def load_config(self, config, return_error=False, opts=None, replace=None):
-        """Sends configuration commands to the remote device"""
+        """Sends configuration commands to the remote device."""
         if opts is None:
             opts = {}
 
@@ -187,7 +186,7 @@ class Cli:
         return response
 
     def get_capabilities(self):
-        """Returns platform info of the remove device"""
+        """Returns platform info of the remove device."""
         if hasattr(self._module, "_capabilities"):
             return self._module._capabilities
 
@@ -215,11 +214,10 @@ class Cli:
         except ConnectionError as exc:
             self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
-        return None
 
 
 class HttpApi:
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self._module = module
         self._device_configs = {}
         self._module_context = {}
@@ -233,7 +231,7 @@ class HttpApi:
         return self._connection_obj
 
     def run_commands(self, commands, check_rc=True):
-        """Runs list of commands on remote device and returns results"""
+        """Runs list of commands on remote device and returns results."""
         try:
             out = self._connection.send_request(commands)
         except ConnectionError as exc:
@@ -252,7 +250,7 @@ class HttpApi:
         return out
 
     def get_config(self, flags=None):
-        """Retrieves the current config from the device or cache"""
+        """Retrieves the current config from the device or cache."""
         flags = [] if flags is None else flags
 
         cmd = "show running-config "
@@ -303,7 +301,7 @@ class HttpApi:
         return diff
 
     def load_config(self, commands, return_error=False, opts=None, replace=None):
-        """Sends the ordered set of commands to the device"""
+        """Sends the ordered set of commands to the device."""
         if opts is None:
             opts = {}
 
@@ -333,12 +331,12 @@ class HttpApi:
         return responses
 
     def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
-        resp = list()
+        resp = []
 
         self.check_edit_config_capability(candidate, commit, replace, comment)
 
         if replace:
-            candidate = "config replace {0}".format(replace)
+            candidate = f"config replace {replace}"
 
         responses = self._connection.send_request(candidate, output="config")
         for response in to_list(responses):
@@ -350,7 +348,7 @@ class HttpApi:
         return resp
 
     def get_capabilities(self):
-        """Returns platform info of the remove device"""
+        """Returns platform info of the remove device."""
         try:
             capabilities = self._connection.get_capabilities()
         except ConnectionError as exc:
@@ -387,7 +385,6 @@ class HttpApi:
         except ConnectionError as exc:
             self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
-        return None
 
 
 class NxosCmdRef:
@@ -424,9 +421,8 @@ class NxosCmdRef:
           multiplier: 3
     """
 
-    def __init__(self, module, cmd_ref_str, ref_only=False):
+    def __init__(self, module, cmd_ref_str, ref_only=False) -> None:
         """Initialize cmd_ref from yaml data."""
-
         self._module = module
         self._check_imports()
         self._yaml_load(cmd_ref_str)
@@ -469,14 +465,14 @@ class NxosCmdRef:
         ref = self._ref
         feature = ref["_template"].get("feature")
         if feature:
-            show_cmd = "show run | incl 'feature {0}'".format(feature)
+            show_cmd = f"show run | incl 'feature {feature}'"
             output = self.execute_show_command(show_cmd, "text")
             if not output or "CLI command error" in output:
                 msg = "** 'feature {0}' is not enabled. Module will auto-enable feature {0} ** ".format(
                     feature,
                 )
                 self._module.warn(msg)
-                ref["_proposed"].append("feature {0}".format(feature))
+                ref["_proposed"].append(f"feature {feature}")
                 ref["_cli_is_feature_disabled"] = ref["_proposed"]
 
     def get_platform_shortname(self):
@@ -516,7 +512,7 @@ class NxosCmdRef:
         return shortname
 
     def get_platform_defaults(self):
-        """Update ref with platform specific defaults"""
+        """Update ref with platform specific defaults."""
         plat = self.get_platform_shortname()
         if not plat:
             return
@@ -535,16 +531,16 @@ class NxosCmdRef:
                 ref[k][plat_key] = ref[k][plat][plat_key]
 
     def normalize_defaults(self):
-        """Update ref defaults with normalized data"""
+        """Update ref defaults with normalized data."""
         ref = self._ref
         for k in ref["commands"]:
             if "default" in ref[k] and ref[k]["default"]:
                 kind = ref[k]["kind"]
-                if "int" == kind:
+                if kind == "int":
                     ref[k]["default"] = int(ref[k]["default"])
-                elif "list" == kind:
+                elif kind == "list":
                     ref[k]["default"] = [str(i) for i in ref[k]["default"]]
-                elif "dict" == kind:
+                elif kind == "dict":
                     for key, v in ref[k]["default"].items():
                         if v:
                             v = str(v)
@@ -577,20 +573,20 @@ class NxosCmdRef:
         """
         ref = self._ref
         pattern = re.compile(ref[k]["getval"])
-        multiple = "multiple" in ref[k].keys()
+        multiple = "multiple" in ref[k]
         match_lines = [re.search(pattern, line) for line in output]
-        if "dict" == ref[k]["kind"]:
+        if ref[k]["kind"] == "dict":
             match = [m for m in match_lines if m]
             if not match:
                 return None
             if len(match) > 1 and not multiple:
-                raise ValueError("get_existing: multiple matches found for property {0}".format(k))
+                raise ValueError(f"get_existing: multiple matches found for property {k}")
         else:
             match = [m.groups() for m in match_lines if m]
             if not match:
                 return None
             if len(match) > 1 and not multiple:
-                raise ValueError("get_existing: multiple matches found for property {0}".format(k))
+                raise ValueError(f"get_existing: multiple matches found for property {k}")
             for item in match:
                 index = match.index(item)
                 match[index] = list(item)  # tuple to list
@@ -671,23 +667,23 @@ class NxosCmdRef:
             for item in match:
                 index = match.index(item)
                 kind = ref[k]["kind"]
-                if "int" == kind:
+                if kind == "int":
                     ref[k]["existing"][index] = int(item[0])
-                elif "list" == kind:
+                elif kind == "list":
                     ref[k]["existing"][index] = [str(i) for i in item[0]]
-                elif "dict" == kind:
+                elif kind == "dict":
                     # The getval pattern should contain regex named group keys that
                     # match up with the setval named placeholder keys; e.g.
                     #   getval: my-cmd (?P<foo>\d+) bar (?P<baz>\d+)
                     #   setval: my-cmd {foo} bar {baz}
                     ref[k]["existing"][index] = {}
-                    for key in item.groupdict().keys():
+                    for key in item.groupdict():
                         ref[k]["existing"][index][key] = str(item.group(key))
-                elif "str" == kind:
+                elif kind == "str":
                     ref[k]["existing"][index] = item[0]
                 else:
                     raise ValueError(
-                        "get_existing: unknown 'kind' value specified for key '{0}'".format(k),
+                        f"get_existing: unknown 'kind' value specified for key '{k}'",
                     )
 
     def get_playvals(self):
@@ -701,13 +697,13 @@ class NxosCmdRef:
             # Resource module builder packs playvals under 'config' key
             param_data = module.params.get("config")
             params["global"] = param_data
-            for key in param_data.keys():
+            for key in param_data:
                 if isinstance(param_data[key], list):
                     params[key] = param_data[key]
         else:
             params["global"] = module.params
-        for k in ref.keys():
-            for level in params.keys():
+        for k in ref:
+            for level in params:
                 if isinstance(params[level], dict):
                     params[level] = [params[level]]
                 for item in params[level]:
@@ -717,28 +713,28 @@ class NxosCmdRef:
                         playval = item[k]
                         index = params[level].index(item)
                         # Normalize each value
-                        if "int" == ref[k]["kind"]:
+                        if ref[k]["kind"] == "int":
                             playval = int(playval)
-                        elif "list" == ref[k]["kind"]:
+                        elif ref[k]["kind"] == "list":
                             playval = [str(i) for i in playval]
-                        elif "dict" == ref[k]["kind"]:
+                        elif ref[k]["kind"] == "dict":
                             for key, v in playval.items():
                                 playval[key] = str(v)
                         ref[k]["playval"][index] = playval
 
     def build_cmd_set(self, playval, existing, k):
         """Helper function to create list of commands to configure device
-        Return a list of commands
+        Return a list of commands.
         """
         ref = self._ref
         proposed = ref["_proposed"]
         cmd = None
         kind = ref[k]["kind"]
-        if "int" == kind:
+        if kind == "int":
             cmd = ref[k]["setval"].format(playval)
-        elif "list" == kind:
+        elif kind == "list":
             cmd = ref[k]["setval"].format(*(playval))
-        elif "dict" == kind:
+        elif kind == "dict":
             # The setval pattern should contain placeholder keys that
             # match up with the getval regex named group keys; e.g.
             #   getval: my-cmd (?P<foo>\d+) bar (?P<baz>\d+)
@@ -754,14 +750,14 @@ class NxosCmdRef:
                 cmd = tmplt.format(**playval)
             else:
                 cmd = ref[k]["setval"].format(**playval)
-        elif "str" == kind:
+        elif kind == "str":
             if "deleted" in str(playval):
                 if existing:
                     cmd = "no " + ref[k]["setval"].format(existing)
             else:
                 cmd = ref[k]["setval"].format(playval)
         else:
-            raise ValueError("get_proposed: unknown 'kind' value specified for key '{0}'".format(k))
+            raise ValueError(f"get_proposed: unknown 'kind' value specified for key '{k}'")
         if cmd:
             if ref["_state"] in self.absent_states and not re.search(r"^no", cmd):
                 cmd = "no " + cmd
@@ -810,33 +806,31 @@ class NxosCmdRef:
             #   dictionary changed size during iteration error
             playval_copy = deepcopy(playval)
             existing = ref[k].get("existing", ref[k]["default"])
-            multiple = "multiple" in ref[k].keys()
+            multiple = "multiple" in ref[k]
 
             # Multiple Instances:
             if isinstance(existing, dict) and multiple:
-                for ekey, evalue in existing.items():
+                for _ekey, evalue in existing.items():
                     if isinstance(evalue, dict):
                         # Remove values set to string 'None' from dvalue
-                        evalue = dict((k, v) for k, v in evalue.items() if v != "None")
+                        evalue = {k: v for k, v in evalue.items() if v != "None"}
                     for pkey, pvalue in playval.items():
-                        if compare(pvalue, evalue):
-                            if playval_copy.get(pkey):
-                                del playval_copy[pkey]
+                        if compare(pvalue, evalue) and playval_copy.get(pkey):
+                            del playval_copy[pkey]
                 if not playval_copy:
                     continue
             # Single Instance:
             else:
                 for pkey, pval in playval.items():
-                    if compare(pval, existing):
-                        if playval_copy.get(pkey):
-                            del playval_copy[pkey]
+                    if compare(pval, existing) and playval_copy.get(pkey):
+                        del playval_copy[pkey]
                 if not playval_copy:
                     continue
 
             playval = playval_copy
             # Multiple Instances:
             if isinstance(existing, dict):
-                for dkey, dvalue in existing.items():
+                for _dkey, dvalue in existing.items():
                     for pval in playval.values():
                         self.build_cmd_set(pval, dvalue, k)
             # Single Instance:
@@ -851,7 +845,7 @@ class NxosCmdRef:
 
 
 def nxosCmdRef_import_check():
-    """Return import error messages or empty string"""
+    """Return import error messages or empty string."""
     msg = ""
     if not HAS_YAML:
         msg += "Mandatory python library 'PyYAML' is not present, try 'pip install PyYAML'\n"
@@ -868,15 +862,15 @@ def is_text(cmd):
 
 def to_command(module, commands):
     transform = ComplexList(
-        dict(
-            command=dict(key=True),
-            output=dict(type="str", default="text"),
-            prompt=dict(type="list"),
-            answer=dict(type="list"),
-            newline=dict(type="bool", default=True),
-            sendonly=dict(type="bool", default=False),
-            check_all=dict(type="bool", default=False),
-        ),
+        {
+            "command": {"key": True},
+            "output": {"type": "str", "default": "text"},
+            "prompt": {"type": "list"},
+            "answer": {"type": "list"},
+            "newline": {"type": "bool", "default": True},
+            "sendonly": {"type": "bool", "default": False},
+            "check_all": {"type": "bool", "default": False},
+        },
         module,
     )
 
@@ -932,9 +926,9 @@ def get_diff(
 
 
 def normalize_interface(name):
-    """Return the normalized interface name"""
+    """Return the normalized interface name."""
     if not name:
-        return
+        return None
 
     def _get_number(name):
         digits = ""
@@ -957,21 +951,15 @@ def normalize_interface(name):
         if_type = None
 
     number_list = name.split(" ")
-    if len(number_list) == 2:
-        number = number_list[-1].strip()
-    else:
-        number = _get_number(name)
+    number = number_list[-1].strip() if len(number_list) == 2 else _get_number(name)
 
-    if if_type:
-        proper_interface = if_type + number
-    else:
-        proper_interface = name
+    proper_interface = if_type + number if if_type else name
 
     return proper_interface
 
 
 def get_interface_type(interface):
-    """Gets the type of interface"""
+    """Gets the type of interface."""
     if interface.upper().startswith("ET"):
         return "ethernet"
     elif interface.upper().startswith("VL"):

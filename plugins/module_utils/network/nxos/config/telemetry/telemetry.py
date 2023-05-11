@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Cisco and/or its affiliates.
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_telemetry class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 from __future__ import absolute_import, division, print_function
 
@@ -19,7 +18,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.cmdref.telemetry.telemetry import (
     TMS_DESTGROUP,
     TMS_GLOBAL,
@@ -43,21 +41,19 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Telemetry(ConfigBase):
-    """
-    The nxos_telemetry class
-    """
+    """The nxos_telemetry class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["telemetry"]
 
-    def __init__(self, module):
-        super(Telemetry, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_telemetry_facts(self, data=None):
         """Get the 'facts' (the current configuration)
         :rtype: A dictionary
-        :returns: The current configuration as a dictionary
+        :returns: The current configuration as a dictionary.
         """
         facts, _warnings = Facts(self._module).get_facts(
             self.gather_subset,
@@ -75,11 +71,11 @@ class Telemetry(ConfigBase):
     def execute_module(self):
         """Execute the module
         :rtype: A dictionary
-        :returns: The result from module execution
+        :returns: The result from module execution.
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
 
         state = self._module.params["state"]
         if "overridden" in state:
@@ -131,10 +127,10 @@ class Telemetry(ConfigBase):
             collect the current configuration (as a dict from facts)
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
+                  to the desired configuration.
         """
         config = self._module.params["config"]
-        want = dict((k, v) for k, v in config.items() if v is not None)
+        want = {k: v for k, v in config.items() if v is not None}
         have = existing_tms_global_facts
         resp = self.set_state(want, have)
         return to_list(resp)
@@ -145,7 +141,7 @@ class Telemetry(ConfigBase):
         :param have: the current configuration as a dictionary
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
+                  to the desired configuration.
         """
         state = self._module.params["state"]
 
@@ -244,7 +240,7 @@ class Telemetry(ConfigBase):
         """The command generator when state is replaced
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
-                  to the desired configuration
+                  to the desired configuration.
         """
         commands = []
         massaged_have = massage_data(have)
@@ -277,9 +273,6 @@ class Telemetry(ConfigBase):
         # - want (set) have (not set) (add want)
         # - want (not set) have (set) (delete have)
         # - want (not set) have (not set) (no action)
-        # global_ctx = ref['tms_global']._ref['_template']['context']
-        # property_ctx = ref['tms_global']._ref['certificate'].get('context')
-        # setval = ref['tms_global']._ref['certificate']['setval']
         #
         all_global_properties = [
             "certificate",
@@ -307,14 +300,13 @@ class Telemetry(ConfigBase):
                         cmd = [setval.format(**want.get(property))]
                     else:
                         cmd = [setval.format(want.get(property))]
-            elif want.get(property) is None:
-                if have.get(property) is not None:
-                    if kind == "dict":
-                        cmd = ["no " + setval.format(**have.get(property))]
-                    else:
-                        cmd = ["no " + setval.format(have.get(property))]
-                    if property in dest_profile_properties:
-                        dest_profile_remote_commands.extend(cmd)
+            elif want.get(property) is None and have.get(property) is not None:
+                if kind == "dict":
+                    cmd = ["no " + setval.format(**have.get(property))]
+                else:
+                    cmd = ["no " + setval.format(have.get(property))]
+                if property in dest_profile_properties:
+                    dest_profile_remote_commands.extend(cmd)
 
             if cmd is not None:
                 ctx = global_ctx
@@ -372,18 +364,18 @@ class Telemetry(ConfigBase):
 
             if not want_resources and have_resources:
                 # want not and have not set so delete have
-                for key in have_resources.keys():
-                    remove_context = ["{0} {1} {2}".format("no", name, key)]
+                for key in have_resources:
+                    remove_context = ["{} {} {}".format("no", name, key)]
                     delete[resource].extend(global_ctx)
                     if remove_context[0] not in delete[resource]:
                         delete[resource].extend(remove_context)
             else:
                 # want and have are set.
                 # process wants:
-                for want_key in want_resources.keys():
+                for want_key in want_resources:
                     if want_key not in have_resources.keys():
                         # Want resource key not in have resource key so add it
-                        property_ctx = ["{0} {1}".format(name, want_key)]
+                        property_ctx = [f"{name} {want_key}"]
                         for item in want_resources[want_key]:
                             if resource == "TMS_DESTGROUP":
                                 cmd = [setval.format(**item[cmd_property])]
@@ -427,7 +419,7 @@ class Telemetry(ConfigBase):
                                 if cmd.get("sensor_group"):
                                     add[resource].extend(cmd["sensor_group"])
 
-                    elif want_key in have_resources.keys():
+                    elif want_key in have_resources:
                         # Want resource key exists in have resource keys but we need to
                         # inspect the individual items under the resource key
                         # for differences
@@ -436,7 +428,7 @@ class Telemetry(ConfigBase):
                                 if item is None:
                                     continue
                                 # item wanted but does not exist so add it
-                                property_ctx = ["{0} {1}".format(name, want_key)]
+                                property_ctx = [f"{name} {want_key}"]
                                 if resource == "TMS_DESTGROUP":
                                     cmd = [setval.format(**item[cmd_property])]
                                     add[resource].extend(global_ctx)
@@ -480,13 +472,13 @@ class Telemetry(ConfigBase):
                                         add[resource].extend(cmd["sensor_group"])
 
                 # process haves:
-                for have_key in have_resources.keys():
+                for have_key in have_resources:
                     if have_key not in want_resources.keys():
                         # Want resource key is not in have resource keys so remove it
-                        cmd = ["no " + "{0} {1}".format(name, have_key)]
+                        cmd = ["no " + f"{name} {have_key}"]
                         delete[resource].extend(global_ctx)
                         delete[resource].extend(cmd)
-                    elif have_key in want_resources.keys():
+                    elif have_key in want_resources:
                         # Have resource key exists in want resource keys but we need to
                         # inspect the individual items under the resource key
                         # for differences
@@ -495,7 +487,7 @@ class Telemetry(ConfigBase):
                                 if item is None:
                                     continue
                                 # have item not wanted so remove it
-                                property_ctx = ["{0} {1}".format(name, have_key)]
+                                property_ctx = [f"{name} {have_key}"]
                                 if resource == "TMS_DESTGROUP":
                                     cmd = ["no " + setval.format(**item[cmd_property])]
                                     delete[resource].extend(global_ctx)
@@ -562,7 +554,7 @@ class Telemetry(ConfigBase):
         """The command generator when state is merged
         :rtype: A list
         :returns: the commands necessary to merge the provided into
-                  the current configuration
+                  the current configuration.
         """
         commands = cmd_ref["TMS_GLOBAL"]["ref"][0].get_proposed()
 
@@ -585,7 +577,7 @@ class Telemetry(ConfigBase):
         """The command generator when state is deleted
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
-                  of the provided objects
+                  of the provided objects.
         """
         commands = []
         if want != have:

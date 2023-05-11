@@ -48,7 +48,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
     module = nxos_route_maps
 
     def setUp(self):
-        super(TestNxosRouteMapsModule, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -61,7 +61,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosRouteMapsModule, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
@@ -72,75 +72,75 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="rmap1",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                description="rmap1-permit-10",
-                                continue_sequence=30,
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=40,
-                                description="rmap1-deny-40",
-                                set=dict(
-                                    as_path=dict(prepend=dict(last_as=10), tag=True),
-                                    comm_list="comm1",
-                                    dampening=dict(
-                                        half_life=10,
-                                        start_reuse_route=20,
-                                        start_suppress_route=30,
-                                        max_suppress_time=80,
-                                    ),
-                                    extcomm_list="extcomm1",
-                                    forwarding_address=True,
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "route_map": "rmap1",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "description": "rmap1-permit-10",
+                                "continue_sequence": 30,
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 40,
+                                "description": "rmap1-deny-40",
+                                "set": {
+                                    "as_path": {"prepend": {"last_as": 10}, "tag": True},
+                                    "comm_list": "comm1",
+                                    "dampening": {
+                                        "half_life": 10,
+                                        "start_reuse_route": 20,
+                                        "start_suppress_route": 30,
+                                        "max_suppress_time": 80,
+                                    },
+                                    "extcomm_list": "extcomm1",
+                                    "forwarding_address": True,
+                                },
+                            },
                         ],
-                    ),
-                    dict(
-                        route_map="rmap2",
-                        entries=[
-                            dict(
-                                sequence=10,
-                                action="permit",
-                                set=dict(
-                                    null_interface="null0",
-                                    ip=dict(
-                                        address=dict(prefix_list="prefixlist1"),
-                                        precedence="critical",
-                                    ),
-                                    ipv6=dict(
-                                        address=dict(prefix_list="prefixlist2"),
-                                        precedence="immediate",
-                                    ),
-                                    label_index=20,
-                                    level="level-1",
-                                    local_preference=200,
-                                    metric=dict(
-                                        bandwidth=1000,
-                                        igrp_delay_metric=90,
-                                        igrp_reliability_metric=80,
-                                        igrp_effective_bandwidth_metric=100,
-                                        igrp_mtu=900,
-                                    ),
-                                    metric_type="external",
-                                    nssa_only=True,
-                                    origin="egp",
-                                    path_selection="all",
-                                    tag=10,
-                                    weight=40,
-                                ),
-                            ),
+                    },
+                    {
+                        "route_map": "rmap2",
+                        "entries": [
+                            {
+                                "sequence": 10,
+                                "action": "permit",
+                                "set": {
+                                    "null_interface": "null0",
+                                    "ip": {
+                                        "address": {"prefix_list": "prefixlist1"},
+                                        "precedence": "critical",
+                                    },
+                                    "ipv6": {
+                                        "address": {"prefix_list": "prefixlist2"},
+                                        "precedence": "immediate",
+                                    },
+                                    "label_index": 20,
+                                    "level": "level-1",
+                                    "local_preference": 200,
+                                    "metric": {
+                                        "bandwidth": 1000,
+                                        "igrp_delay_metric": 90,
+                                        "igrp_reliability_metric": 80,
+                                        "igrp_effective_bandwidth_metric": 100,
+                                        "igrp_mtu": 900,
+                                    },
+                                    "metric_type": "external",
+                                    "nssa_only": True,
+                                    "origin": "egp",
+                                    "path_selection": "all",
+                                    "tag": 10,
+                                    "weight": 40,
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -173,7 +173,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "set weight 40",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_route_maps_linear_merged_idempotent(self):
         # test merged for linear attributes
@@ -210,80 +210,80 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="rmap1",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                description="rmap1-permit-10",
-                                continue_sequence=30,
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=40,
-                                description="rmap1-deny-40",
-                                set=dict(
-                                    as_path=dict(prepend=dict(last_as=10), tag=True),
-                                    comm_list="comm1",
-                                    dampening=dict(
-                                        half_life=10,
-                                        start_reuse_route=20,
-                                        start_suppress_route=30,
-                                        max_suppress_time=80,
-                                    ),
-                                    extcomm_list="extcomm1",
-                                    forwarding_address=True,
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "route_map": "rmap1",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "description": "rmap1-permit-10",
+                                "continue_sequence": 30,
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 40,
+                                "description": "rmap1-deny-40",
+                                "set": {
+                                    "as_path": {"prepend": {"last_as": 10}, "tag": True},
+                                    "comm_list": "comm1",
+                                    "dampening": {
+                                        "half_life": 10,
+                                        "start_reuse_route": 20,
+                                        "start_suppress_route": 30,
+                                        "max_suppress_time": 80,
+                                    },
+                                    "extcomm_list": "extcomm1",
+                                    "forwarding_address": True,
+                                },
+                            },
                         ],
-                    ),
-                    dict(
-                        route_map="rmap2",
-                        entries=[
-                            dict(
-                                sequence=10,
-                                action="permit",
-                                set=dict(
-                                    null_interface="null0",
-                                    ip=dict(
-                                        address=dict(prefix_list="prefixlist1"),
-                                        precedence="critical",
-                                    ),
-                                    ipv6=dict(
-                                        address=dict(prefix_list="prefixlist2"),
-                                        precedence="immediate",
-                                    ),
-                                    label_index=20,
-                                    level="level-1",
-                                    local_preference=200,
-                                    metric=dict(
-                                        bandwidth=1000,
-                                        igrp_delay_metric=90,
-                                        igrp_reliability_metric=80,
-                                        igrp_effective_bandwidth_metric=100,
-                                        igrp_mtu=900,
-                                    ),
-                                    metric_type="external",
-                                    nssa_only=True,
-                                    origin="egp",
-                                    path_selection="all",
-                                    tag=10,
-                                    weight=40,
-                                ),
-                            ),
+                    },
+                    {
+                        "route_map": "rmap2",
+                        "entries": [
+                            {
+                                "sequence": 10,
+                                "action": "permit",
+                                "set": {
+                                    "null_interface": "null0",
+                                    "ip": {
+                                        "address": {"prefix_list": "prefixlist1"},
+                                        "precedence": "critical",
+                                    },
+                                    "ipv6": {
+                                        "address": {"prefix_list": "prefixlist2"},
+                                        "precedence": "immediate",
+                                    },
+                                    "label_index": 20,
+                                    "level": "level-1",
+                                    "local_preference": 200,
+                                    "metric": {
+                                        "bandwidth": 1000,
+                                        "igrp_delay_metric": 90,
+                                        "igrp_reliability_metric": 80,
+                                        "igrp_effective_bandwidth_metric": 100,
+                                        "igrp_mtu": 900,
+                                    },
+                                    "metric_type": "external",
+                                    "nssa_only": True,
+                                    "origin": "egp",
+                                    "path_selection": "all",
+                                    "tag": 10,
+                                    "weight": 40,
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = []
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_nxos_route_maps_linear_replaced(self):
         # test replaced for linear attributes
@@ -320,47 +320,47 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="rmap1",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                description="rmap1-permit-10",
-                                continue_sequence=40,
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=40,
-                                description="rmap1-deny-40-2",
-                                set=dict(
-                                    extcomm_list="extcomm2",
-                                    forwarding_address=True,
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "route_map": "rmap1",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "description": "rmap1-permit-10",
+                                "continue_sequence": 40,
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 40,
+                                "description": "rmap1-deny-40-2",
+                                "set": {
+                                    "extcomm_list": "extcomm2",
+                                    "forwarding_address": True,
+                                },
+                            },
                         ],
-                    ),
-                    dict(route_map="rmap2"),
-                    dict(
-                        route_map="rmap3",
-                        entries=[
-                            dict(
-                                sequence=11,
-                                action="deny",
-                                set=dict(
-                                    ip=dict(
-                                        address=dict(prefix_list="prefixlist1"),
-                                        precedence="critical",
-                                    ),
-                                ),
-                            ),
+                    },
+                    {"route_map": "rmap2"},
+                    {
+                        "route_map": "rmap3",
+                        "entries": [
+                            {
+                                "sequence": 11,
+                                "action": "deny",
+                                "set": {
+                                    "ip": {
+                                        "address": {"prefix_list": "prefixlist1"},
+                                        "precedence": "critical",
+                                    },
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -379,13 +379,13 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "set ip precedence critical",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_route_maps_parsed(self):
         # test parsed
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     route-map rmap1 permit 10
                       description rmap1-permit-10
@@ -403,54 +403,54 @@ class TestNxosRouteMapsModule(TestNxosModule):
                       set ipv6 precedence immediate
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
             ignore_provider_arg,
         )
 
         parsed = [
-            dict(
-                route_map="rmap1",
-                entries=[
-                    dict(
-                        action="permit",
-                        sequence=10,
-                        description="rmap1-permit-10",
-                        continue_sequence=30,
-                    ),
-                    dict(
-                        action="deny",
-                        sequence=40,
-                        description="rmap1-deny-40",
-                        set=dict(as_path=dict(prepend=dict(last_as=10), tag=True)),
-                    ),
+            {
+                "route_map": "rmap1",
+                "entries": [
+                    {
+                        "action": "permit",
+                        "sequence": 10,
+                        "description": "rmap1-permit-10",
+                        "continue_sequence": 30,
+                    },
+                    {
+                        "action": "deny",
+                        "sequence": 40,
+                        "description": "rmap1-deny-40",
+                        "set": {"as_path": {"prepend": {"last_as": 10}, "tag": True}},
+                    },
                 ],
-            ),
-            dict(
-                route_map="rmap2",
-                entries=[
-                    dict(
-                        sequence=10,
-                        action="permit",
-                        set=dict(
-                            null_interface="null0",
-                            ip=dict(
-                                address=dict(prefix_list="prefixlist1"),
-                                precedence="critical",
-                            ),
-                            ipv6=dict(
-                                address=dict(prefix_list="prefixlist2"),
-                                precedence="immediate",
-                            ),
-                        ),
-                    ),
+            },
+            {
+                "route_map": "rmap2",
+                "entries": [
+                    {
+                        "sequence": 10,
+                        "action": "permit",
+                        "set": {
+                            "null_interface": "null0",
+                            "ip": {
+                                "address": {"prefix_list": "prefixlist1"},
+                                "precedence": "critical",
+                            },
+                            "ipv6": {
+                                "address": {"prefix_list": "prefixlist2"},
+                                "precedence": "immediate",
+                            },
+                        },
+                    },
                 ],
-            ),
+            },
         ]
 
         result = self.execute_module(changed=False)
-        self.assertEqual(set(result["parsed"][0]), set(parsed[0]))
-        self.assertEqual(set(result["parsed"][1]), set(parsed[1]))
+        assert set(result["parsed"][0]) == set(parsed[0])
+        assert set(result["parsed"][1]) == set(parsed[1])
 
     def test_nxos_route_maps_gathered(self):
         # test parsed
@@ -472,95 +472,95 @@ class TestNxosRouteMapsModule(TestNxosModule):
               set ipv6 precedence immediate
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
 
         gathered = [
-            dict(
-                route_map="rmap1",
-                entries=[
-                    dict(
-                        action="permit",
-                        sequence=10,
-                        description="rmap1-permit-10",
-                        continue_sequence=30,
-                    ),
-                    dict(
-                        action="deny",
-                        sequence=40,
-                        description="rmap1-deny-40",
-                        set=dict(as_path=dict(prepend=dict(last_as=10), tag=True)),
-                    ),
+            {
+                "route_map": "rmap1",
+                "entries": [
+                    {
+                        "action": "permit",
+                        "sequence": 10,
+                        "description": "rmap1-permit-10",
+                        "continue_sequence": 30,
+                    },
+                    {
+                        "action": "deny",
+                        "sequence": 40,
+                        "description": "rmap1-deny-40",
+                        "set": {"as_path": {"prepend": {"last_as": 10}, "tag": True}},
+                    },
                 ],
-            ),
-            dict(
-                route_map="rmap2",
-                entries=[
-                    dict(
-                        sequence=10,
-                        action="permit",
-                        set=dict(
-                            null_interface="null0",
-                            ip=dict(
-                                address=dict(prefix_list="prefixlist1"),
-                                precedence="critical",
-                            ),
-                            ipv6=dict(
-                                address=dict(prefix_list="prefixlist2"),
-                                precedence="immediate",
-                            ),
-                        ),
-                    ),
+            },
+            {
+                "route_map": "rmap2",
+                "entries": [
+                    {
+                        "sequence": 10,
+                        "action": "permit",
+                        "set": {
+                            "null_interface": "null0",
+                            "ip": {
+                                "address": {"prefix_list": "prefixlist1"},
+                                "precedence": "critical",
+                            },
+                            "ipv6": {
+                                "address": {"prefix_list": "prefixlist2"},
+                                "precedence": "immediate",
+                            },
+                        },
+                    },
                 ],
-            ),
+            },
         ]
 
         result = self.execute_module(changed=False)
-        self.assertEqual(set(result["gathered"][0]), set(gathered[0]))
-        self.assertEqual(set(result["gathered"][1]), set(gathered[1]))
+        assert set(result["gathered"][0]) == set(gathered[0])
+        assert set(result["gathered"][1]) == set(gathered[1])
 
     def test_nxos_route_maps_rendered(self):
         # test rendered
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="rmap1",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                description="rmap1-permit-10",
-                                continue_sequence=40,
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=40,
-                                description="rmap1-deny-40-2",
-                                set=dict(
-                                    extcomm_list="extcomm2",
-                                    forwarding_address=True,
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "route_map": "rmap1",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "description": "rmap1-permit-10",
+                                "continue_sequence": 40,
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 40,
+                                "description": "rmap1-deny-40-2",
+                                "set": {
+                                    "extcomm_list": "extcomm2",
+                                    "forwarding_address": True,
+                                },
+                            },
                         ],
-                    ),
-                    dict(
-                        route_map="rmap3",
-                        entries=[
-                            dict(
-                                sequence=11,
-                                action="deny",
-                                set=dict(
-                                    ip=dict(
-                                        address=dict(prefix_list="prefixlist1"),
-                                        precedence="critical",
-                                    ),
-                                ),
-                            ),
+                    },
+                    {
+                        "route_map": "rmap3",
+                        "entries": [
+                            {
+                                "sequence": 11,
+                                "action": "deny",
+                                "set": {
+                                    "ip": {
+                                        "address": {"prefix_list": "prefixlist1"},
+                                        "precedence": "critical",
+                                    },
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
             ignore_provider_arg,
         )
         rendered = [
@@ -576,7 +576,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "set ip precedence critical",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(set(result["rendered"]), set(rendered))
+        assert set(result["rendered"]) == set(rendered)
 
     def test_nxos_route_maps_overridden(self):
         # test overridden
@@ -601,44 +601,44 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="rmap1",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                description="rmap1-permit-10",
-                                continue_sequence=30,
-                            ),
-                            dict(
-                                action="deny",
-                                sequence=40,
-                                description="rmap1-deny-40",
-                                set=dict(
-                                    ipv6=dict(
-                                        address=dict(prefix_list="prefixlist2"),
-                                        precedence="immediate",
-                                    ),
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "route_map": "rmap1",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "description": "rmap1-permit-10",
+                                "continue_sequence": 30,
+                            },
+                            {
+                                "action": "deny",
+                                "sequence": 40,
+                                "description": "rmap1-deny-40",
+                                "set": {
+                                    "ipv6": {
+                                        "address": {"prefix_list": "prefixlist2"},
+                                        "precedence": "immediate",
+                                    },
+                                },
+                            },
                         ],
-                    ),
-                    dict(
-                        route_map="rmap2",
-                        entries=[
-                            dict(
-                                sequence=10,
-                                action="permit",
-                                description="rmap2-permit-10",
-                                set=dict(null_interface="null0"),
-                            ),
+                    },
+                    {
+                        "route_map": "rmap2",
+                        "entries": [
+                            {
+                                "sequence": 10,
+                                "action": "permit",
+                                "description": "rmap2-permit-10",
+                                "set": {"null_interface": "null0"},
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -652,7 +652,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "set ipv6 precedence immediate",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_route_maps_deleted_1(self):
         # test deleted - single route-map
@@ -677,7 +677,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(config=[dict(route_map="rmap1")], state="deleted"),
+            {"config": [{"route_map": "rmap1"}], "state": "deleted"},
             ignore_provider_arg,
         )
         commands = [
@@ -685,7 +685,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "no route-map rmap1 deny 40",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_route_maps_deleted_2(self):
         # test deleted - all route-maps
@@ -709,7 +709,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
               description rmap3-permit-21
             """,
         )
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         commands = [
             "no route-map rmap1 permit 10",
             "no route-map rmap1 deny 40",
@@ -719,7 +719,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "no route-map rmap3 permit 22",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_route_maps_complex_merged(self):
         # test merged for complex attributes
@@ -728,109 +728,109 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="rmap1",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                match=dict(
-                                    as_number=dict(
-                                        asn=["64455", "65546"],
-                                        as_path_list=["acl1", "acl2"],
-                                    ),
-                                    as_path=["65565", "65578", "65590"],
-                                    community=dict(community_list=["comm1", "comm2"]),
-                                    evpn=dict(route_types=["1", "2-mac-ip"]),
-                                    extcommunity=dict(
-                                        extcommunity_list=[
+            {
+                "config": [
+                    {
+                        "route_map": "rmap1",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "match": {
+                                    "as_number": {
+                                        "asn": ["64455", "65546"],
+                                        "as_path_list": ["acl1", "acl2"],
+                                    },
+                                    "as_path": ["65565", "65578", "65590"],
+                                    "community": {"community_list": ["comm1", "comm2"]},
+                                    "evpn": {"route_types": ["1", "2-mac-ip"]},
+                                    "extcommunity": {
+                                        "extcommunity_list": [
                                             "extcomm1",
                                             "extcomm2",
                                         ],
-                                    ),
-                                    interfaces=["Ethernet1/1", "Ethernet1/2"],
-                                    ip=dict(
-                                        address=dict(
-                                            access_list="acl1",
-                                            prefix_lists=["pl1", "pl2", "pl3"],
-                                        ),
-                                        multicast=dict(
-                                            group=dict(prefix="239.0.0.1/24"),
-                                            rp=dict(
-                                                prefix="209.165.201.0/27",
-                                                rp_type="Bidir",
-                                            ),
-                                            source="192.168.1.0/24",
-                                        ),
-                                        next_hop=dict(prefix_lists=["pl1", "pl2"]),
-                                        route_source=dict(prefix_lists=["pl3", "pl4"]),
-                                    ),
-                                    mac_list=["mac1", "mac2"],
-                                    metric=[100, 200],
-                                    ospf_area=[200, 300],
-                                    route_types=["external", "inter-area"],
-                                    source_protocol=["eigrp", "ospf"],
-                                    tags=[10, 200],
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=20,
-                                match=dict(
-                                    ipv6=dict(
-                                        address=dict(
-                                            access_list="acl1",
-                                            prefix_lists=["pl1", "pl2", "pl3"],
-                                        ),
-                                        multicast=dict(
-                                            group=dict(prefix="239.0.0.1/24"),
-                                            rp=dict(
-                                                prefix="209.165.201.0/27",
-                                                rp_type="Bidir",
-                                            ),
-                                            source="192.168.1.0/24",
-                                        ),
-                                        next_hop=dict(prefix_lists=["pl1", "pl2"]),
-                                        route_source=dict(prefix_lists=["pl3", "pl4"]),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                sequence=40,
-                                action="permit",
-                                set=dict(
-                                    as_path=dict(prepend=dict(as_number=["65546", "78878"])),
-                                    distance=dict(
-                                        igp_ebgp_routes=10,
-                                        internal_routes=20,
-                                        local_routes=90,
-                                    ),
-                                    evpn=dict(gateway_ip=dict(ip="192.168.1.1")),
-                                ),
-                            ),
-                            dict(
-                                sequence=52,
-                                action="permit",
-                                set=dict(
-                                    evpn=dict(gateway_ip=dict(use_nexthop=True)),
-                                    community=dict(
-                                        internet=True,
-                                        number=["655:10", "655:20"],
-                                        no_export=True,
-                                        no_advertise=True,
-                                        local_as=True,
-                                        graceful_shutdown=True,
-                                        additive=True,
-                                    ),
-                                ),
-                            ),
+                                    },
+                                    "interfaces": ["Ethernet1/1", "Ethernet1/2"],
+                                    "ip": {
+                                        "address": {
+                                            "access_list": "acl1",
+                                            "prefix_lists": ["pl1", "pl2", "pl3"],
+                                        },
+                                        "multicast": {
+                                            "group": {"prefix": "239.0.0.1/24"},
+                                            "rp": {
+                                                "prefix": "209.165.201.0/27",
+                                                "rp_type": "Bidir",
+                                            },
+                                            "source": "192.168.1.0/24",
+                                        },
+                                        "next_hop": {"prefix_lists": ["pl1", "pl2"]},
+                                        "route_source": {"prefix_lists": ["pl3", "pl4"]},
+                                    },
+                                    "mac_list": ["mac1", "mac2"],
+                                    "metric": [100, 200],
+                                    "ospf_area": [200, 300],
+                                    "route_types": ["external", "inter-area"],
+                                    "source_protocol": ["eigrp", "ospf"],
+                                    "tags": [10, 200],
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 20,
+                                "match": {
+                                    "ipv6": {
+                                        "address": {
+                                            "access_list": "acl1",
+                                            "prefix_lists": ["pl1", "pl2", "pl3"],
+                                        },
+                                        "multicast": {
+                                            "group": {"prefix": "239.0.0.1/24"},
+                                            "rp": {
+                                                "prefix": "209.165.201.0/27",
+                                                "rp_type": "Bidir",
+                                            },
+                                            "source": "192.168.1.0/24",
+                                        },
+                                        "next_hop": {"prefix_lists": ["pl1", "pl2"]},
+                                        "route_source": {"prefix_lists": ["pl3", "pl4"]},
+                                    },
+                                },
+                            },
+                            {
+                                "sequence": 40,
+                                "action": "permit",
+                                "set": {
+                                    "as_path": {"prepend": {"as_number": ["65546", "78878"]}},
+                                    "distance": {
+                                        "igp_ebgp_routes": 10,
+                                        "internal_routes": 20,
+                                        "local_routes": 90,
+                                    },
+                                    "evpn": {"gateway_ip": {"ip": "192.168.1.1"}},
+                                },
+                            },
+                            {
+                                "sequence": 52,
+                                "action": "permit",
+                                "set": {
+                                    "evpn": {"gateway_ip": {"use_nexthop": True}},
+                                    "community": {
+                                        "internet": True,
+                                        "number": ["655:10", "655:20"],
+                                        "no_export": True,
+                                        "no_advertise": True,
+                                        "local_as": True,
+                                        "graceful_shutdown": True,
+                                        "additive": True,
+                                    },
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -868,7 +868,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "set evpn gateway-ip use-nexthop",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_route_maps_complex_merged_2(self):
         # test merged for complex attributes
@@ -877,56 +877,56 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="rmap1",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                match=dict(
-                                    ip=dict(
-                                        multicast=dict(
-                                            group_range=dict(
-                                                first="239.0.0.1",
-                                                last="239.255.255.255",
-                                            ),
-                                            rp=dict(
-                                                prefix="209.165.201.0/27",
-                                                rp_type="Bidir",
-                                            ),
-                                            source="192.168.1.0/24",
-                                        ),
-                                    ),
-                                    ipv6=dict(
-                                        multicast=dict(
-                                            group_range=dict(
-                                                first="fd00:80::",
-                                                last="fd00:ff:ffff:ffff::",
-                                            ),
-                                            rp=dict(
-                                                prefix="fd00:280::/25",
-                                                rp_type="Bidir",
-                                            ),
-                                            source="2001:db8:2000::/36",
-                                        ),
-                                    ),
-                                ),
-                                set=dict(
-                                    metric=dict(
-                                        bandwidth=1000,
-                                        igrp_delay_metric=90,
-                                        igrp_reliability_metric=80,
-                                        igrp_effective_bandwidth_metric=100,
-                                    ),
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "route_map": "rmap1",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "match": {
+                                    "ip": {
+                                        "multicast": {
+                                            "group_range": {
+                                                "first": "239.0.0.1",
+                                                "last": "239.255.255.255",
+                                            },
+                                            "rp": {
+                                                "prefix": "209.165.201.0/27",
+                                                "rp_type": "Bidir",
+                                            },
+                                            "source": "192.168.1.0/24",
+                                        },
+                                    },
+                                    "ipv6": {
+                                        "multicast": {
+                                            "group_range": {
+                                                "first": "fd00:80::",
+                                                "last": "fd00:ff:ffff:ffff::",
+                                            },
+                                            "rp": {
+                                                "prefix": "fd00:280::/25",
+                                                "rp_type": "Bidir",
+                                            },
+                                            "source": "2001:db8:2000::/36",
+                                        },
+                                    },
+                                },
+                                "set": {
+                                    "metric": {
+                                        "bandwidth": 1000,
+                                        "igrp_delay_metric": 90,
+                                        "igrp_reliability_metric": 80,
+                                        "igrp_effective_bandwidth_metric": 100,
+                                    },
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -936,7 +936,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "set metric 1000 90 80 100",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_route_maps_complex_replaced(self):
         # test replaced for complex attributes
@@ -949,46 +949,46 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="rmap1",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                match=dict(
-                                    ip=dict(
-                                        address=dict(prefix_lists=["pl4"]),
-                                        multicast=dict(
-                                            group=dict(prefix="239.0.0.1/24"),
-                                            rp=dict(
-                                                prefix="209.165.201.0/27",
-                                                rp_type="Bidir",
-                                            ),
-                                            source="192.168.1.0/24",
-                                        ),
-                                    ),
-                                    ipv6=dict(
-                                        multicast=dict(
-                                            group_range=dict(
-                                                first="fd00:80::",
-                                                last="fd00:ff:ffff:ffff::",
-                                            ),
-                                            rp=dict(
-                                                prefix="fd00:280::/25",
-                                                rp_type="Bidir",
-                                            ),
-                                            source="2001:db8:2000::/36",
-                                        ),
-                                    ),
-                                ),
-                            ),
+            {
+                "config": [
+                    {
+                        "route_map": "rmap1",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "match": {
+                                    "ip": {
+                                        "address": {"prefix_lists": ["pl4"]},
+                                        "multicast": {
+                                            "group": {"prefix": "239.0.0.1/24"},
+                                            "rp": {
+                                                "prefix": "209.165.201.0/27",
+                                                "rp_type": "Bidir",
+                                            },
+                                            "source": "192.168.1.0/24",
+                                        },
+                                    },
+                                    "ipv6": {
+                                        "multicast": {
+                                            "group_range": {
+                                                "first": "fd00:80::",
+                                                "last": "fd00:ff:ffff:ffff::",
+                                            },
+                                            "rp": {
+                                                "prefix": "fd00:280::/25",
+                                                "rp_type": "Bidir",
+                                            },
+                                            "source": "2001:db8:2000::/36",
+                                        },
+                                    },
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -999,7 +999,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "match ip address prefix-list pl4",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_route_maps_gathered_empty(self):
         # test gathered for empty config
@@ -1007,10 +1007,10 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """\
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
 
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], [])
+        assert result["gathered"] == []
 
     def test_nxos_route_maps_next_hop_gathered(self):
         # test gathered for empty config
@@ -1029,86 +1029,86 @@ class TestNxosRouteMapsModule(TestNxosModule):
               set ip next-hop redist-unchanged
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
 
         gathered = [
-            dict(
-                route_map="TEST",
-                entries=[
-                    dict(
-                        action="permit",
-                        sequence=10,
-                        description="*** first stanza ***",
-                        set=dict(
-                            ip=dict(
-                                next_hop=dict(
-                                    verify_availability=[
-                                        dict(
-                                            address="3.3.3.3",
-                                            track=1,
-                                            drop_on_fail=False,
-                                            force_order=False,
-                                            load_share=False,
-                                        ),
-                                        dict(
-                                            address="5.5.5.5",
-                                            track=3,
-                                            drop_on_fail=False,
-                                            force_order=False,
-                                            load_share=False,
-                                        ),
+            {
+                "route_map": "TEST",
+                "entries": [
+                    {
+                        "action": "permit",
+                        "sequence": 10,
+                        "description": "*** first stanza ***",
+                        "set": {
+                            "ip": {
+                                "next_hop": {
+                                    "verify_availability": [
+                                        {
+                                            "address": "3.3.3.3",
+                                            "track": 1,
+                                            "drop_on_fail": False,
+                                            "force_order": False,
+                                            "load_share": False,
+                                        },
+                                        {
+                                            "address": "5.5.5.5",
+                                            "track": 3,
+                                            "drop_on_fail": False,
+                                            "force_order": False,
+                                            "load_share": False,
+                                        },
                                     ],
-                                ),
-                                tag=True,
-                            ),
-                        ),
-                    ),
-                    dict(
-                        action="permit",
-                        sequence=20,
-                        set=dict(
-                            ip=dict(
-                                next_hop=dict(
-                                    address="2.2.2.2 5.5.5.5",
-                                    drop_on_fail=False,
-                                    force_order=False,
-                                    load_share=True,
-                                ),
-                                tag=True,
-                            ),
-                        ),
-                    ),
-                    dict(
-                        action="permit",
-                        sequence=30,
-                        set=dict(
-                            ip=dict(
-                                next_hop=dict(
-                                    peer_address=True,
-                                ),
-                                tag=True,
-                            ),
-                        ),
-                    ),
-                    dict(
-                        action="permit",
-                        sequence=30,
-                        set=dict(
-                            ip=dict(
-                                next_hop=dict(
-                                    unchanged=True,
-                                    redist_unchanged=True,
-                                ),
-                                tag=True,
-                            ),
-                        ),
-                    ),
+                                },
+                                "tag": True,
+                            },
+                        },
+                    },
+                    {
+                        "action": "permit",
+                        "sequence": 20,
+                        "set": {
+                            "ip": {
+                                "next_hop": {
+                                    "address": "2.2.2.2 5.5.5.5",
+                                    "drop_on_fail": False,
+                                    "force_order": False,
+                                    "load_share": True,
+                                },
+                                "tag": True,
+                            },
+                        },
+                    },
+                    {
+                        "action": "permit",
+                        "sequence": 30,
+                        "set": {
+                            "ip": {
+                                "next_hop": {
+                                    "peer_address": True,
+                                },
+                                "tag": True,
+                            },
+                        },
+                    },
+                    {
+                        "action": "permit",
+                        "sequence": 30,
+                        "set": {
+                            "ip": {
+                                "next_hop": {
+                                    "unchanged": True,
+                                    "redist_unchanged": True,
+                                },
+                                "tag": True,
+                            },
+                        },
+                    },
                 ],
-            ),
+            },
         ]
 
         result = self.execute_module(changed=False)
-        self.assertEqual(set(result["gathered"][0]), set(gathered[0]))
+        assert set(result["gathered"][0]) == set(gathered[0])
 
     def test_nxos_route_maps_next_hop_merged_idempotent(self):
         # test merged
@@ -1128,85 +1128,85 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="TEST",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                description="*** first stanza ***",
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            verify_availability=[
-                                                dict(
-                                                    address="3.3.3.3",
-                                                    track=1,
-                                                    drop_on_fail=False,
-                                                    force_order=False,
-                                                    load_share=False,
-                                                ),
-                                                dict(
-                                                    address="5.5.5.5",
-                                                    track=3,
-                                                    drop_on_fail=False,
-                                                    force_order=False,
-                                                    load_share=False,
-                                                ),
+            {
+                "config": [
+                    {
+                        "route_map": "TEST",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "description": "*** first stanza ***",
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "verify_availability": [
+                                                {
+                                                    "address": "3.3.3.3",
+                                                    "track": 1,
+                                                    "drop_on_fail": False,
+                                                    "force_order": False,
+                                                    "load_share": False,
+                                                },
+                                                {
+                                                    "address": "5.5.5.5",
+                                                    "track": 3,
+                                                    "drop_on_fail": False,
+                                                    "force_order": False,
+                                                    "load_share": False,
+                                                },
                                             ],
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=20,
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            address="5.5.5.5 2.2.2.2",
-                                            drop_on_fail=True,
-                                            force_order=False,
-                                            load_share=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=30,
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            peer_address=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=40,
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            unchanged=True,
-                                            redist_unchanged=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 20,
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "address": "5.5.5.5 2.2.2.2",
+                                            "drop_on_fail": True,
+                                            "force_order": False,
+                                            "load_share": True,
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 30,
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "peer_address": True,
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 40,
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "unchanged": True,
+                                            "redist_unchanged": True,
+                                        },
+                                    },
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = []
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands
 
     def test_nxos_route_maps_next_hop_linear_merged(self):
         # test merged for linear attributes
@@ -1215,80 +1215,80 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="TEST",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                description="*** first stanza ***",
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            verify_availability=[
-                                                dict(
-                                                    address="3.3.3.3",
-                                                    track=1,
-                                                    drop_on_fail=False,
-                                                    force_order=False,
-                                                    load_share=False,
-                                                ),
-                                                dict(
-                                                    address="5.5.5.5",
-                                                    track=3,
-                                                    drop_on_fail=False,
-                                                    force_order=False,
-                                                    load_share=False,
-                                                ),
+            {
+                "config": [
+                    {
+                        "route_map": "TEST",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "description": "*** first stanza ***",
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "verify_availability": [
+                                                {
+                                                    "address": "3.3.3.3",
+                                                    "track": 1,
+                                                    "drop_on_fail": False,
+                                                    "force_order": False,
+                                                    "load_share": False,
+                                                },
+                                                {
+                                                    "address": "5.5.5.5",
+                                                    "track": 3,
+                                                    "drop_on_fail": False,
+                                                    "force_order": False,
+                                                    "load_share": False,
+                                                },
                                             ],
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=20,
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            address="5.5.5.5 2.2.2.2",
-                                            drop_on_fail=True,
-                                            force_order=False,
-                                            load_share=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=30,
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            peer_address=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=40,
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            unchanged=True,
-                                            redist_unchanged=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 20,
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "address": "5.5.5.5 2.2.2.2",
+                                            "drop_on_fail": True,
+                                            "force_order": False,
+                                            "load_share": True,
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 30,
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "peer_address": True,
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 40,
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "unchanged": True,
+                                            "redist_unchanged": True,
+                                        },
+                                    },
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1305,7 +1305,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "set ip next-hop redist-unchanged",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_route_maps_next_hop_replaced(self):
         # test replaced for linear attributes
@@ -1325,80 +1325,80 @@ class TestNxosRouteMapsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        route_map="TEST",
-                        entries=[
-                            dict(
-                                action="permit",
-                                sequence=10,
-                                description="*** first stanza ***",
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            verify_availability=[
-                                                dict(
-                                                    address="3.3.3.3",
-                                                    track=1,
-                                                    drop_on_fail=False,
-                                                    force_order=False,
-                                                    load_share=False,
-                                                ),
-                                                dict(
-                                                    address="5.5.5.5",
-                                                    track=3,
-                                                    drop_on_fail=False,
-                                                    force_order=False,
-                                                    load_share=False,
-                                                ),
+            {
+                "config": [
+                    {
+                        "route_map": "TEST",
+                        "entries": [
+                            {
+                                "action": "permit",
+                                "sequence": 10,
+                                "description": "*** first stanza ***",
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "verify_availability": [
+                                                {
+                                                    "address": "3.3.3.3",
+                                                    "track": 1,
+                                                    "drop_on_fail": False,
+                                                    "force_order": False,
+                                                    "load_share": False,
+                                                },
+                                                {
+                                                    "address": "5.5.5.5",
+                                                    "track": 3,
+                                                    "drop_on_fail": False,
+                                                    "force_order": False,
+                                                    "load_share": False,
+                                                },
                                             ],
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=20,
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            address="5.5.5.5 2.2.2.2",
-                                            drop_on_fail=True,
-                                            force_order=False,
-                                            load_share=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=30,
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            peer_address=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
-                            dict(
-                                action="permit",
-                                sequence=40,
-                                set=dict(
-                                    ip=dict(
-                                        next_hop=dict(
-                                            unchanged=True,
-                                            redist_unchanged=True,
-                                        ),
-                                    ),
-                                ),
-                            ),
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 20,
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "address": "5.5.5.5 2.2.2.2",
+                                            "drop_on_fail": True,
+                                            "force_order": False,
+                                            "load_share": True,
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 30,
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "peer_address": True,
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "action": "permit",
+                                "sequence": 40,
+                                "set": {
+                                    "ip": {
+                                        "next_hop": {
+                                            "unchanged": True,
+                                            "redist_unchanged": True,
+                                        },
+                                    },
+                                },
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1414,4 +1414,4 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "description *** first stanza ***",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)

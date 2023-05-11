@@ -80,7 +80,6 @@ import re
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import ConnectionError
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     get_config,
@@ -140,10 +139,10 @@ def get_commands(proposed, existing, state, module):
     feature_check = proposed == existing
     if not feature_check:
         if state == "enabled":
-            command = "feature {0}".format(feature)
+            command = f"feature {feature}"
             commands.append(command)
         elif state == "disabled":
-            command = "no feature {0}".format(feature)
+            command = f"no feature {feature}"
             commands.append(command)
     return commands
 
@@ -175,8 +174,8 @@ def get_mds_mapping_features():
 def validate_feature(module, mode="show"):
     """Some features may need to be mapped due to inconsistency
     between how they appear from "show feature" output and
-    how they are configured"""
-
+    how they are configured.
+    """
     feature = module.params["feature"]
 
     try:
@@ -263,15 +262,15 @@ def validate_feature(module, mode="show"):
 
 
 def main():
-    argument_spec = dict(
-        feature=dict(type="str", required=True),
-        state=dict(choices=["enabled", "disabled"], default="enabled"),
-    )
+    argument_spec = {
+        "feature": {"type": "str", "required": True},
+        "state": {"choices": ["enabled", "disabled"], "default": "enabled"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
-    results = dict(changed=False, warnings=warnings)
+    warnings = []
+    results = {"changed": False, "warnings": warnings}
 
     feature = validate_feature(module)
     state = module.params["state"].lower()
@@ -286,8 +285,8 @@ def main():
     else:
         existstate = available_features[feature]
 
-        existing = dict(state=existstate)
-        proposed = dict(state=state)
+        existing = {"state": existstate}
+        proposed = {"state": state}
         results["changed"] = False
 
         cmds = get_commands(proposed, existing, state, module)

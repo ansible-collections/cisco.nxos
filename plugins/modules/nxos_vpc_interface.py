@@ -79,7 +79,6 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -202,16 +201,16 @@ def get_commands_to_config_vpc_interface(portchannel, delta, config_value, exist
 
     if not delta.get("peer-link") and existing.get("peer-link"):
         commands.append("no vpc peer-link")
-        commands.insert(0, "interface port-channel{0}".format(portchannel))
+        commands.insert(0, f"interface port-channel{portchannel}")
 
     elif delta.get("peer-link") and not existing.get("peer-link"):
         commands.append("vpc peer-link")
-        commands.insert(0, "interface port-channel{0}".format(portchannel))
+        commands.insert(0, f"interface port-channel{portchannel}")
 
     elif delta.get("vpc") and not existing.get("vpc"):
-        command = "vpc {0}".format(config_value)
+        command = f"vpc {config_value}"
         commands.append(command)
-        commands.insert(0, "interface port-channel{0}".format(portchannel))
+        commands.insert(0, f"interface port-channel{portchannel}")
 
     return commands
 
@@ -234,18 +233,18 @@ def state_absent(portchannel, existing):
         command = "no vpc peer-link"
         commands.append(command)
     if commands:
-        commands.insert(0, "interface port-channel{0}".format(portchannel))
+        commands.insert(0, f"interface port-channel{portchannel}")
 
     return commands
 
 
 def main():
-    argument_spec = dict(
-        portchannel=dict(required=True, type="str"),
-        vpc=dict(required=False, type="str"),
-        peer_link=dict(required=False, type="bool"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "portchannel": {"required": True, "type": "str"},
+        "vpc": {"required": False, "type": "str"},
+        "peer_link": {"required": False, "type": "bool"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -253,7 +252,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
     commands = []
     results = {"changed": False, "warnings": warnings}
 
@@ -305,15 +304,14 @@ def main():
     elif peer_link is not None:
         if peer_link_exists(module):
             active_peer_link = get_active_vpc_peer_link(module)[2::]
-            if active_peer_link != portchannel:
-                if peer_link:
-                    module.fail_json(
-                        msg="A peer link already exists on" " the device. Remove it first",
-                        current_peer_link="Po{0}".format(active_peer_link),
-                    )
+            if active_peer_link != portchannel and peer_link:
+                module.fail_json(
+                    msg="A peer link already exists on" " the device. Remove it first",
+                    current_peer_link=f"Po{active_peer_link}",
+                )
         config_value = "peer-link"
 
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    proposed = {k: v for k, v in args.items() if v is not None}
     existing = get_portchannel_vpc_config(module, portchannel)
 
     if state == "present":

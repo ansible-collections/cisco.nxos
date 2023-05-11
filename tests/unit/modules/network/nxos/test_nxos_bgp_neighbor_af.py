@@ -32,7 +32,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
     module = nxos_bgp_neighbor_af
 
     def setUp(self):
-        super(TestNxosBgpNeighborAfModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_neighbor_af.load_config",
@@ -45,7 +45,7 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosBgpNeighborAfModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
 
@@ -55,38 +55,30 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_af(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="192.0.2.3",
-                afi="ipv4",
-                safi="unicast",
-                route_reflector_client=True,
-            ),
+            {
+                "asn": 65535,
+                "neighbor": "192.0.2.3",
+                "afi": "ipv4",
+                "safi": "unicast",
+                "route_reflector_client": True,
+            },
         )
         result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"],
-            [
-                "router bgp 65535",
-                "neighbor 192.0.2.3",
-                "address-family ipv4 unicast",
-                "route-reflector-client",
-            ],
-        )
+        assert result["commands"] == ["router bgp 65535", "neighbor 192.0.2.3", "address-family ipv4 unicast", "route-reflector-client"]
 
     def test_nxos_bgp_neighbor_af_exists(self):
-        set_module_args(dict(asn=65535, neighbor="3.3.3.5", afi="ipv4", safi="unicast"))
+        set_module_args({"asn": 65535, "neighbor": "3.3.3.5", "afi": "ipv4", "safi": "unicast"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_bgp_neighbor_af_absent(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="3.3.3.5",
-                afi="ipv4",
-                safi="unicast",
-                state="absent",
-            ),
+            {
+                "asn": 65535,
+                "neighbor": "3.3.3.5",
+                "afi": "ipv4",
+                "safi": "unicast",
+                "state": "absent",
+            },
         )
         self.execute_module(
             changed=True,
@@ -100,13 +92,13 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_af_advertise_map(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="3.3.3.5",
-                afi="ipv4",
-                safi="unicast",
-                advertise_map_exist=["my_advertise_map", "my_exist_map"],
-            ),
+            {
+                "asn": 65535,
+                "neighbor": "3.3.3.5",
+                "afi": "ipv4",
+                "safi": "unicast",
+                "advertise_map_exist": ["my_advertise_map", "my_exist_map"],
+            },
         )
         self.execute_module(
             changed=True,
@@ -121,16 +113,16 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_af_advertise_map_non_exist(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="3.3.3.5",
-                afi="ipv4",
-                safi="unicast",
-                advertise_map_non_exist=[
+            {
+                "asn": 65535,
+                "neighbor": "3.3.3.5",
+                "afi": "ipv4",
+                "safi": "unicast",
+                "advertise_map_non_exist": [
                     "my_advertise_map",
                     "my_non_exist_map",
                 ],
-            ),
+            },
         )
         self.execute_module(
             changed=True,
@@ -145,13 +137,13 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_af_max_prefix_limit_default(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="3.3.3.5",
-                afi="ipv4",
-                safi="unicast",
-                max_prefix_limit="default",
-            ),
+            {
+                "asn": 65535,
+                "neighbor": "3.3.3.5",
+                "afi": "ipv4",
+                "safi": "unicast",
+                "max_prefix_limit": "default",
+            },
         )
         self.execute_module(
             changed=True,
@@ -166,14 +158,14 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_af_max_prefix(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="3.3.3.5",
-                afi="ipv4",
-                safi="unicast",
-                max_prefix_threshold=20,
-                max_prefix_limit=20,
-            ),
+            {
+                "asn": 65535,
+                "neighbor": "3.3.3.5",
+                "afi": "ipv4",
+                "safi": "unicast",
+                "max_prefix_threshold": 20,
+                "max_prefix_limit": 20,
+            },
         )
         self.execute_module(
             changed=True,
@@ -188,13 +180,13 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_af_disable_peer_as_check(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="3.3.3.5",
-                afi="ipv4",
-                safi="unicast",
-                disable_peer_as_check=True,
-            ),
+            {
+                "asn": 65535,
+                "neighbor": "3.3.3.5",
+                "afi": "ipv4",
+                "safi": "unicast",
+                "disable_peer_as_check": True,
+            },
         )
         self.execute_module(
             changed=True,
@@ -208,13 +200,13 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_af_rewrite_evpn(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="30.30.30.5",
-                afi="l2vpn",
-                safi="evpn",
-                rewrite_evpn_rt_asn=True,
-            ),
+            {
+                "asn": 65535,
+                "neighbor": "30.30.30.5",
+                "afi": "l2vpn",
+                "safi": "evpn",
+                "rewrite_evpn_rt_asn": True,
+            },
         )
         self.execute_module(
             changed=True,
@@ -228,13 +220,13 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_af_rewrite_evpn_disable(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="30.30.30.5",
-                afi="l2vpn",
-                safi="evpn",
-                rewrite_evpn_rt_asn=False,
-            ),
+            {
+                "asn": 65535,
+                "neighbor": "30.30.30.5",
+                "afi": "l2vpn",
+                "safi": "evpn",
+                "rewrite_evpn_rt_asn": False,
+            },
         )
         self.execute_module(
             changed=True,
@@ -248,12 +240,12 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
 
     def test_nxos_bgp_neighbor_af_rewrite_evpn_exists(self):
         set_module_args(
-            dict(
-                asn=65535,
-                neighbor="7.7.7.7",
-                afi="l2vpn",
-                safi="evpn",
-                rewrite_evpn_rt_asn=True,
-            ),
+            {
+                "asn": 65535,
+                "neighbor": "7.7.7.7",
+                "afi": "l2vpn",
+                "safi": "evpn",
+                "rewrite_evpn_rt_asn": True,
+            },
         )
         self.execute_module(changed=False, commands=[])

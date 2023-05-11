@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -21,17 +20,15 @@
 #   builder template.
 #
 #############################################
-"""
-The arg spec for the nxos_lacp_interfaces module
-"""
+"""The arg spec for the nxos_lacp_interfaces module."""
 from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
 
 
-class Lacp_interfacesArgs(object):
-    """The arg spec for the nxos_lacp_interfaces module"""
+class Lacp_interfacesArgs:
+    """The arg spec for the nxos_lacp_interfaces module."""
 
     argument_spec = {
         "running_config": {"type": "str"},

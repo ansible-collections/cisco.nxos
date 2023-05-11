@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_acl_interfaces class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 from __future__ import absolute_import, division, print_function
 
@@ -22,7 +21,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_empties,
     to_list,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     get_interface_type,
@@ -32,19 +30,17 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Acl_interfaces(ConfigBase):
-    """
-    The nxos_acl_interfaces class
-    """
+    """The nxos_acl_interfaces class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["acl_interfaces"]
 
-    def __init__(self, module):
-        super(Acl_interfaces, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_acl_interfaces_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -66,14 +62,14 @@ class Acl_interfaces(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        warnings = list()
-        commands = list()
+        warnings = []
+        commands = []
         self.state = self._module.params["state"]
         action_states = ["merged", "replaced", "deleted", "overridden"]
 
@@ -108,7 +104,7 @@ class Acl_interfaces(ConfigBase):
 
     def set_config(self, existing_acl_interfaces_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -129,7 +125,7 @@ class Acl_interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -139,7 +135,7 @@ class Acl_interfaces(ConfigBase):
         """
         if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(self.state),
+                msg=f"value of config parameter must not be empty for state {self.state}",
             )
 
         commands = []
@@ -170,7 +166,7 @@ class Acl_interfaces(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -181,7 +177,7 @@ class Acl_interfaces(ConfigBase):
         obj_in_have = search_obj_in_list(want["name"], have, "name")
         if obj_in_have != want:
             commands = []
-            if obj_in_have and "access_groups" in obj_in_have.keys():
+            if obj_in_have and "access_groups" in obj_in_have:
                 for ag in obj_in_have["access_groups"]:
                     want_afi = []
                     if want.get("access_groups"):
@@ -208,7 +204,7 @@ class Acl_interfaces(ConfigBase):
         return new_commands
 
     def _state_overridden(self, want, have):
-        """The command generator when state is overridden
+        """The command generator when state is overridden.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -224,7 +220,7 @@ class Acl_interfaces(ConfigBase):
         return commands
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -258,12 +254,11 @@ class Acl_interfaces(ConfigBase):
                                 ]
                         commands.extend(self.process_acl(new_acls, ip, deleted))
                     else:
-                        if not deleted:
-                            if w_afi.get("acls"):
-                                commands.extend(self.process_acl(w_afi["acls"], ip))
+                        if not deleted and w_afi.get("acls"):
+                            commands.extend(self.process_acl(w_afi["acls"], ip))
             else:
                 # only name is given to delete
-                if deleted and "access_groups" in have_name.keys():
+                if deleted and "access_groups" in have_name:
                     commands.extend(self.process_access_group(have_name, True))
         else:
             if not deleted:  # and 'access_groups' in have_name.keys():
@@ -299,7 +294,7 @@ class Acl_interfaces(ConfigBase):
         return commands
 
     def _state_deleted(self, main_want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration

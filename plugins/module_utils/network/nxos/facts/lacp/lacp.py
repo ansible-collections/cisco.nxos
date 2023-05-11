@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -19,24 +18,20 @@ import re
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp.lacp import (
     LacpArgs,
 )
 
 
-class LacpFacts(object):
-    """The nxos lacp fact class"""
+class LacpFacts:
+    """The nxos lacp fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = LacpArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -48,7 +43,7 @@ class LacpFacts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         if not data:
             data = connection.get("show running-config | include lacp")
@@ -65,7 +60,7 @@ class LacpFacts(object):
     def render_config(self, spec, conf):
         """
         Render config as dictionary structure and delete keys
-          from spec for null values
+          from spec for null values.
 
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration
@@ -82,7 +77,7 @@ class LacpFacts(object):
         if a_match:
             address = a_match.group(1)
             config["system"]["mac"]["address"] = address
-            r_match = re.search(r"lacp system-mac {0} role (\S+)".format(address), conf, re.M)
+            r_match = re.search(fr"lacp system-mac {address} role (\S+)", conf, re.M)
             if r_match:
                 config["system"]["mac"]["role"] = r_match.group(1)
 

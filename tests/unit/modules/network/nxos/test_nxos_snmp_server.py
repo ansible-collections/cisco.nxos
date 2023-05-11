@@ -37,7 +37,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
     module = nxos_snmp_server
 
     def setUp(self):
-        super(TestNxosSnmpServerModule, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -50,7 +50,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosSnmpServerModule, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
@@ -61,29 +61,29 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    aaa_user=dict(cache_timeout=36000),
-                    contact="testswitch@localhost",
-                    context=dict(name="public", vrf="siteA", instance="test"),
-                    counter=dict(cache=dict(timeout=1800)),
-                    drop=dict(unknown_engine_id=True, unknown_user=True),
-                    engine_id=dict(local="'00:00:00:63:00:01:00:10:20:15:10:03'"),
-                    communities=[
-                        dict(name="private", group="network-admin"),
-                        dict(community="public", use_ipv4acl="myacl"),
+            {
+                "config": {
+                    "aaa_user": {"cache_timeout": 36000},
+                    "contact": "testswitch@localhost",
+                    "context": {"name": "public", "vrf": "siteA", "instance": "test"},
+                    "counter": {"cache": {"timeout": 1800}},
+                    "drop": {"unknown_engine_id": True, "unknown_user": True},
+                    "engine_id": {"local": "'00:00:00:63:00:01:00:10:20:15:10:03'"},
+                    "communities": [
+                        {"name": "private", "group": "network-admin"},
+                        {"community": "public", "use_ipv4acl": "myacl"},
                     ],
-                    global_enforce_priv=True,
-                    location="lab",
-                    mib=dict(community_map=dict(community="public", context="public1")),
-                    packetsize=484,
-                    protocol=dict(enable=True),
-                    source_interface=dict(informs="Ethernet1/1", traps="Ethernet1/2"),
-                    system_shutdown=True,
-                    tcp_session=dict(auth=True),
-                ),
-                state="merged",
-            ),
+                    "global_enforce_priv": True,
+                    "location": "lab",
+                    "mib": {"community_map": {"community": "public", "context": "public1"}},
+                    "packetsize": 484,
+                    "protocol": {"enable": True},
+                    "source_interface": {"informs": "Ethernet1/1", "traps": "Ethernet1/2"},
+                    "system_shutdown": True,
+                    "tcp_session": {"auth": True},
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -107,7 +107,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server source-interface traps Ethernet1/2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_linear_merged_idempotent(self):
         # test merged for linear attributes
@@ -132,29 +132,29 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    aaa_user=dict(cache_timeout=36000),
-                    contact="testswitch@localhost",
-                    context=dict(name="public", vrf="siteA"),
-                    counter=dict(cache=dict(timeout=1800)),
-                    drop=dict(unknown_engine_id=True, unknown_user=True),
-                    engine_id=dict(local="00:00:00:63:00:01:00:10:20:15:10:03"),
-                    global_enforce_priv=True,
-                    location="lab",
-                    mib=dict(community_map=dict(community="public", context="public1")),
-                    packetsize=484,
-                    protocol=dict(enable=True),
-                    source_interface=dict(informs="Ethernet1/1", traps="Ethernet1/2"),
-                    system_shutdown=True,
-                    tcp_session=dict(auth=True),
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "aaa_user": {"cache_timeout": 36000},
+                    "contact": "testswitch@localhost",
+                    "context": {"name": "public", "vrf": "siteA"},
+                    "counter": {"cache": {"timeout": 1800}},
+                    "drop": {"unknown_engine_id": True, "unknown_user": True},
+                    "engine_id": {"local": "00:00:00:63:00:01:00:10:20:15:10:03"},
+                    "global_enforce_priv": True,
+                    "location": "lab",
+                    "mib": {"community_map": {"community": "public", "context": "public1"}},
+                    "packetsize": 484,
+                    "protocol": {"enable": True},
+                    "source_interface": {"informs": "Ethernet1/1", "traps": "Ethernet1/2"},
+                    "system_shutdown": True,
+                    "tcp_session": {"auth": True},
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_snmp_server_linear_replaced(self):
         # test replaced for linear attributes
@@ -179,23 +179,23 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    aaa_user=dict(cache_timeout=36500),
-                    contact="testswitch@localhost",
-                    context=dict(name="public", vrf="siteA"),
-                    counter=dict(cache=dict(timeout=1860)),
-                    engine_id=dict(local="00:00:00:63:00:01:00:10:20:15:10:03"),
-                    global_enforce_priv=True,
-                    location="lab",
-                    mib=dict(community_map=dict(community="public", context="public1")),
-                    packetsize=484,
-                    protocol=dict(enable=True),
-                    source_interface=dict(informs="Ethernet1/3", traps="Ethernet1/2"),
-                    tcp_session=dict(auth=True),
-                ),
-                state="replaced",
-            ),
+            {
+                "config": {
+                    "aaa_user": {"cache_timeout": 36500},
+                    "contact": "testswitch@localhost",
+                    "context": {"name": "public", "vrf": "siteA"},
+                    "counter": {"cache": {"timeout": 1860}},
+                    "engine_id": {"local": "00:00:00:63:00:01:00:10:20:15:10:03"},
+                    "global_enforce_priv": True,
+                    "location": "lab",
+                    "mib": {"community_map": {"community": "public", "context": "public1"}},
+                    "packetsize": 484,
+                    "protocol": {"enable": True},
+                    "source_interface": {"informs": "Ethernet1/3", "traps": "Ethernet1/2"},
+                    "tcp_session": {"auth": True},
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -207,7 +207,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server aaa-user cache-timeout 36500",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_linear_overridden(self):
         # test overridden for linear attributes
@@ -232,23 +232,23 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    aaa_user=dict(cache_timeout=36500),
-                    contact="testswitch@localhost",
-                    context=dict(name="public", vrf="siteA"),
-                    counter=dict(cache=dict(timeout=1860)),
-                    engine_id=dict(local="00:00:00:63:00:01:00:10:20:15:10:03"),
-                    global_enforce_priv=True,
-                    location="lab",
-                    mib=dict(community_map=dict(community="public", context="public1")),
-                    packetsize=484,
-                    protocol=dict(enable=True),
-                    source_interface=dict(informs="Ethernet1/3", traps="Ethernet1/2"),
-                    tcp_session=dict(auth=True),
-                ),
-                state="overridden",
-            ),
+            {
+                "config": {
+                    "aaa_user": {"cache_timeout": 36500},
+                    "contact": "testswitch@localhost",
+                    "context": {"name": "public", "vrf": "siteA"},
+                    "counter": {"cache": {"timeout": 1860}},
+                    "engine_id": {"local": "00:00:00:63:00:01:00:10:20:15:10:03"},
+                    "global_enforce_priv": True,
+                    "location": "lab",
+                    "mib": {"community_map": {"community": "public", "context": "public1"}},
+                    "packetsize": 484,
+                    "protocol": {"enable": True},
+                    "source_interface": {"informs": "Ethernet1/3", "traps": "Ethernet1/2"},
+                    "tcp_session": {"auth": True},
+                },
+                "state": "overridden",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -260,7 +260,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server aaa-user cache-timeout 36500",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_location_spaces(self):
         # test replaced for linear attributes
@@ -271,13 +271,13 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    contact="test-switch @t localhost",
-                    location="long/and.(complicated) address",
-                ),
-                state="replaced",
-            ),
+            {
+                "config": {
+                    "contact": "test-switch @t localhost",
+                    "location": "long/and.(complicated) address",
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -285,7 +285,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server location long/and.(complicated) address",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_traps_merged(self):
         # test merged for traps
@@ -294,19 +294,19 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    traps=dict(
-                        aaa=dict(server_state_change=True),
-                        bridge=dict(enable=True),
-                        callhome=dict(event_notify=True, smtp_send_fail=True),
-                        bgp=dict(enable=True),
-                        ospf=dict(enable=True),
-                        ospfv3=dict(enable=True),
-                    ),
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "traps": {
+                        "aaa": {"server_state_change": True},
+                        "bridge": {"enable": True},
+                        "callhome": {"event_notify": True, "smtp_send_fail": True},
+                        "bgp": {"enable": True},
+                        "ospf": {"enable": True},
+                        "ospfv3": {"enable": True},
+                    },
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -320,7 +320,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server enable traps ospfv3",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_traps_merged_idempotent(self):
         # test merged for traps (idempotent)
@@ -337,24 +337,24 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    traps=dict(
-                        aaa=dict(server_state_change=True),
-                        bridge=dict(enable=True),
-                        callhome=dict(event_notify=True, smtp_send_fail=True),
-                        bgp=dict(enable=True),
-                        ospf=dict(enable=True),
-                        ospfv3=dict(enable=True),
-                    ),
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "traps": {
+                        "aaa": {"server_state_change": True},
+                        "bridge": {"enable": True},
+                        "callhome": {"event_notify": True, "smtp_send_fail": True},
+                        "bgp": {"enable": True},
+                        "ospf": {"enable": True},
+                        "ospfv3": {"enable": True},
+                    },
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
 
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_snmp_server_traps_replaced(self):
         # test replaced for traps
@@ -369,17 +369,17 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    traps=dict(
-                        aaa=dict(server_state_change=True),
-                        bridge=dict(enable=True),
-                        cfs=dict(merge_failure=True),
-                        link=dict(cisco_xcvr_mon_status_chg=False),
-                    ),
-                ),
-                state="replaced",
-            ),
+            {
+                "config": {
+                    "traps": {
+                        "aaa": {"server_state_change": True},
+                        "bridge": {"enable": True},
+                        "cfs": {"merge_failure": True},
+                        "link": {"cisco_xcvr_mon_status_chg": False},
+                    },
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -389,7 +389,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "no snmp-server enable traps link cisco-xcvr-mon-status-chg",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_traps_replaced(self):
         # test replaced for traps
@@ -403,16 +403,16 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    traps=dict(
-                        aaa=dict(server_state_change=True),
-                        bridge=dict(enable=True),
-                        cfs=dict(merge_failure=True),
-                    ),
-                ),
-                state="replaced",
-            ),
+            {
+                "config": {
+                    "traps": {
+                        "aaa": {"server_state_change": True},
+                        "bridge": {"enable": True},
+                        "cfs": {"merge_failure": True},
+                    },
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -421,7 +421,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server enable traps cfs merge-failure",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_hosts_merged(self):
         # test merged for hosts
@@ -430,45 +430,45 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    hosts=[
-                        dict(
-                            host="192.168.1.1",
-                            version="2c",
-                            community="public",
-                            traps=True,
-                        ),
-                        dict(host="192.168.1.1", source_interface="Ethernet1/1"),
-                        dict(
-                            host="192.168.2.1",
-                            version="1",
-                            community="private",
-                            traps=True,
-                        ),
-                        dict(
-                            host="192.168.2.1",
-                            version="2c",
-                            community="private",
-                            informs=True,
-                        ),
-                        dict(
-                            host="192.168.3.1",
-                            version="3",
-                            auth="private",
-                            informs=True,
-                            udp_port=65550,
-                        ),
-                        dict(
-                            host="192.168.4.1",
-                            version="3",
-                            priv="private",
-                            informs=True,
-                        ),
+            {
+                "config": {
+                    "hosts": [
+                        {
+                            "host": "192.168.1.1",
+                            "version": "2c",
+                            "community": "public",
+                            "traps": True,
+                        },
+                        {"host": "192.168.1.1", "source_interface": "Ethernet1/1"},
+                        {
+                            "host": "192.168.2.1",
+                            "version": "1",
+                            "community": "private",
+                            "traps": True,
+                        },
+                        {
+                            "host": "192.168.2.1",
+                            "version": "2c",
+                            "community": "private",
+                            "informs": True,
+                        },
+                        {
+                            "host": "192.168.3.1",
+                            "version": "3",
+                            "auth": "private",
+                            "informs": True,
+                            "udp_port": 65550,
+                        },
+                        {
+                            "host": "192.168.4.1",
+                            "version": "3",
+                            "priv": "private",
+                            "informs": True,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -480,7 +480,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server host 192.168.3.1 informs version 3 auth private udp-port 65550",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_hosts_merged(self):
         # test merged for hosts
@@ -495,49 +495,49 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    hosts=[
-                        dict(
-                            host="192.168.1.1",
-                            version="2c",
-                            community="public",
-                            traps=True,
-                        ),
-                        dict(host="192.168.1.1", source_interface="Ethernet1/1"),
-                        dict(
-                            host="192.168.2.1",
-                            version="1",
-                            community="private",
-                            traps=True,
-                        ),
-                        dict(
-                            host="192.168.2.1",
-                            version="2c",
-                            community="private",
-                            informs=True,
-                        ),
-                        dict(
-                            host="192.168.3.1",
-                            version="3",
-                            auth="private",
-                            informs=True,
-                            udp_port=65550,
-                        ),
-                        dict(
-                            host="192.168.4.1",
-                            version="3",
-                            priv="private",
-                            informs=True,
-                        ),
+            {
+                "config": {
+                    "hosts": [
+                        {
+                            "host": "192.168.1.1",
+                            "version": "2c",
+                            "community": "public",
+                            "traps": True,
+                        },
+                        {"host": "192.168.1.1", "source_interface": "Ethernet1/1"},
+                        {
+                            "host": "192.168.2.1",
+                            "version": "1",
+                            "community": "private",
+                            "traps": True,
+                        },
+                        {
+                            "host": "192.168.2.1",
+                            "version": "2c",
+                            "community": "private",
+                            "informs": True,
+                        },
+                        {
+                            "host": "192.168.3.1",
+                            "version": "3",
+                            "auth": "private",
+                            "informs": True,
+                            "udp_port": 65550,
+                        },
+                        {
+                            "host": "192.168.4.1",
+                            "version": "3",
+                            "priv": "private",
+                            "informs": True,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_snmp_server_hosts_replaced(self):
         # test replaced for hosts
@@ -552,34 +552,34 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    hosts=[
-                        dict(
-                            host="192.168.1.1",
-                            version="2c",
-                            community="public",
-                            traps=True,
-                        ),
-                        dict(host="192.168.1.1", source_interface="Ethernet1/1"),
-                        dict(
-                            host="192.168.2.1",
-                            version="1",
-                            community="private",
-                            traps=True,
-                        ),
-                        dict(
-                            host="192.168.2.1",
-                            version="2c",
-                            community="private",
-                            informs=True,
-                        ),
-                        dict(host="192.168.2.1", filter_vrf="siteA"),
-                        dict(host="192.168.4.1", use_vrf="siteB"),
+            {
+                "config": {
+                    "hosts": [
+                        {
+                            "host": "192.168.1.1",
+                            "version": "2c",
+                            "community": "public",
+                            "traps": True,
+                        },
+                        {"host": "192.168.1.1", "source_interface": "Ethernet1/1"},
+                        {
+                            "host": "192.168.2.1",
+                            "version": "1",
+                            "community": "private",
+                            "traps": True,
+                        },
+                        {
+                            "host": "192.168.2.1",
+                            "version": "2c",
+                            "community": "private",
+                            "informs": True,
+                        },
+                        {"host": "192.168.2.1", "filter_vrf": "siteA"},
+                        {"host": "192.168.4.1", "use_vrf": "siteB"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -589,7 +589,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server host 192.168.4.1 use-vrf siteB",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_users_merged(self):
         # test merged for users
@@ -598,66 +598,66 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    users=dict(
-                        auth=[
-                            dict(
-                                user="snmp_user_1",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="md5",
-                                    password="0x5632724fb8ac3699296af26281e1d0f1",
-                                    engine_id="1:1:1:1:1",
-                                    localized_key=True,
-                                ),
-                            ),
-                            dict(
-                                user="snmp_user_2",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="md5",
-                                    password="0x5632724fb8ac3699296af26281e1d0f1",
-                                    engine_id="2:2:2:2:2",
-                                    priv=dict(
-                                        privacy_password="0x5632724fb8ac3699296af26281e1d0f1",
-                                    ),
-                                    localizedv2_key=True,
-                                ),
-                            ),
-                            dict(
-                                user="snmp_user_3",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="md5",
-                                    password="0x5632724fb8ac3699296af26281e1d0f1",
-                                    engine_id="3:3:3:3:3",
-                                    priv=dict(
-                                        privacy_password="0x5632724fb8ac3699296af26281e1d0f1",
-                                        aes_128=True,
-                                    ),
-                                    localized_key=True,
-                                ),
-                            ),
-                            dict(
-                                user="snmp_user_4",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="sha-256",
-                                    password="0x5632724fb8ac3699296af26281e1d0f1",
-                                    engine_id="4:4:4:4:4",
-                                    priv=dict(
-                                        privacy_password="0x5632724fb8ac3699296af26281e1d0f1",
-                                        aes_128=True,
-                                    ),
-                                    localized_key=True,
-                                ),
-                            ),
+            {
+                "config": {
+                    "users": {
+                        "auth": [
+                            {
+                                "user": "snmp_user_1",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "md5",
+                                    "password": "0x5632724fb8ac3699296af26281e1d0f1",
+                                    "engine_id": "1:1:1:1:1",
+                                    "localized_key": True,
+                                },
+                            },
+                            {
+                                "user": "snmp_user_2",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "md5",
+                                    "password": "0x5632724fb8ac3699296af26281e1d0f1",
+                                    "engine_id": "2:2:2:2:2",
+                                    "priv": {
+                                        "privacy_password": "0x5632724fb8ac3699296af26281e1d0f1",
+                                    },
+                                    "localizedv2_key": True,
+                                },
+                            },
+                            {
+                                "user": "snmp_user_3",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "md5",
+                                    "password": "0x5632724fb8ac3699296af26281e1d0f1",
+                                    "engine_id": "3:3:3:3:3",
+                                    "priv": {
+                                        "privacy_password": "0x5632724fb8ac3699296af26281e1d0f1",
+                                        "aes_128": True,
+                                    },
+                                    "localized_key": True,
+                                },
+                            },
+                            {
+                                "user": "snmp_user_4",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "sha-256",
+                                    "password": "0x5632724fb8ac3699296af26281e1d0f1",
+                                    "engine_id": "4:4:4:4:4",
+                                    "priv": {
+                                        "privacy_password": "0x5632724fb8ac3699296af26281e1d0f1",
+                                        "aes_128": True,
+                                    },
+                                    "localized_key": True,
+                                },
+                            },
                         ],
-                    ),
-                ),
-                state="merged",
-            ),
+                    },
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -671,7 +671,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             " 0x5632724fb8ac3699296af26281e1d0f1 localizedkey engineID 4:4:4:4:4",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_users_merged(self):
         # test merged for users
@@ -684,68 +684,68 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    users=dict(
-                        auth=[
-                            dict(
-                                user="user1",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="md5",
-                                    password="0x5632724fb8ac3699296af262",
-                                    engine_id="1:1:1:1:1",
-                                    localized_key=True,
-                                ),
-                            ),
-                            dict(
-                                user="user2",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="md5",
-                                    password="0x5632724fb8ac3699296af262",
-                                    engine_id="2:2:2:2:2",
-                                    priv=dict(privacy_password="0x5632724fb8ac3699296af262"),
-                                    localizedv2_key=True,
-                                ),
-                            ),
-                            dict(
-                                user="user3",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="md5",
-                                    password="0x5632724fb8ac3699296af262",
-                                    engine_id="3:3:3:3:3",
-                                    priv=dict(
-                                        privacy_password="0x5632724fb8ac3699296af262",
-                                        aes_128=True,
-                                    ),
-                                    localized_key=True,
-                                ),
-                            ),
-                            dict(
-                                user="user4",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="sha-256",
-                                    password="0x5632724fb8ac3699296af262",
-                                    engine_id="4:4:4:4:4",
-                                    priv=dict(
-                                        privacy_password="0x5632724fb8ac3699296af262",
-                                        aes_128=True,
-                                    ),
-                                    localized_key=True,
-                                ),
-                            ),
+            {
+                "config": {
+                    "users": {
+                        "auth": [
+                            {
+                                "user": "user1",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "md5",
+                                    "password": "0x5632724fb8ac3699296af262",
+                                    "engine_id": "1:1:1:1:1",
+                                    "localized_key": True,
+                                },
+                            },
+                            {
+                                "user": "user2",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "md5",
+                                    "password": "0x5632724fb8ac3699296af262",
+                                    "engine_id": "2:2:2:2:2",
+                                    "priv": {"privacy_password": "0x5632724fb8ac3699296af262"},
+                                    "localizedv2_key": True,
+                                },
+                            },
+                            {
+                                "user": "user3",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "md5",
+                                    "password": "0x5632724fb8ac3699296af262",
+                                    "engine_id": "3:3:3:3:3",
+                                    "priv": {
+                                        "privacy_password": "0x5632724fb8ac3699296af262",
+                                        "aes_128": True,
+                                    },
+                                    "localized_key": True,
+                                },
+                            },
+                            {
+                                "user": "user4",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "sha-256",
+                                    "password": "0x5632724fb8ac3699296af262",
+                                    "engine_id": "4:4:4:4:4",
+                                    "priv": {
+                                        "privacy_password": "0x5632724fb8ac3699296af262",
+                                        "aes_128": True,
+                                    },
+                                    "localized_key": True,
+                                },
+                            },
                         ],
-                    ),
-                ),
-                state="merged",
-            ),
+                    },
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_snmp_server_users_replaced(self):
         # test replaced for users
@@ -757,39 +757,39 @@ class TestNxosSnmpServerModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    users=dict(
-                        auth=[
-                            dict(
-                                user="user1",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="md5",
-                                    password="0x5632724fb8ac3699296af262",
-                                    engine_id="1:1:1:1:1",
-                                    localized_key=True,
-                                ),
-                            ),
-                            dict(
-                                user="user4",
-                                group="network-admin",
-                                authentication=dict(
-                                    algorithm="md5",
-                                    password="0x5632724fb8ac3699296af262",
-                                    engine_id="3:3:3:3:3",
-                                    priv=dict(
-                                        privacy_password="0x5632724fb8ac3699296af262",
-                                        aes_128=True,
-                                    ),
-                                    localized_key=True,
-                                ),
-                            ),
+            {
+                "config": {
+                    "users": {
+                        "auth": [
+                            {
+                                "user": "user1",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "md5",
+                                    "password": "0x5632724fb8ac3699296af262",
+                                    "engine_id": "1:1:1:1:1",
+                                    "localized_key": True,
+                                },
+                            },
+                            {
+                                "user": "user4",
+                                "group": "network-admin",
+                                "authentication": {
+                                    "algorithm": "md5",
+                                    "password": "0x5632724fb8ac3699296af262",
+                                    "engine_id": "3:3:3:3:3",
+                                    "priv": {
+                                        "privacy_password": "0x5632724fb8ac3699296af262",
+                                        "aes_128": True,
+                                    },
+                                    "localized_key": True,
+                                },
+                            },
                         ],
-                    ),
-                ),
-                state="replaced",
-            ),
+                    },
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -801,7 +801,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             " 0x5632724fb8ac3699296af262 localizedkey engineID 3:3:3:3:3",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_deleted(self):
         # test deleted
@@ -825,7 +825,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server source-interface traps Ethernet1/2
             """,
         )
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         commands = [
             "no snmp-server globalEnforcePriv",
             "no snmp-server tcp-session auth",
@@ -845,13 +845,13 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "no snmp-server source-interface traps Ethernet1/2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_snmp_server_parsed(self):
         # test parsed
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     snmp-server community private group network-admin
                     snmp-server community public use-ipv4acl myacl use-ipv6acl myaclv6
@@ -875,83 +875,83 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     snmp-server user snmp_user_1 network-operator auth md5 0x5632724fb8ac3699296af26281e1d0f1 localizedkey
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
             ignore_provider_arg,
         )
 
-        parsed = dict(
-            aaa_user=dict(cache_timeout=36000),
-            contact="testswitch@localhost",
-            communities=[
-                dict(name="private", group="network-admin"),
-                dict(name="public", use_ipv4acl="myacl", use_ipv6acl="myaclv6"),
+        parsed = {
+            "aaa_user": {"cache_timeout": 36000},
+            "contact": "testswitch@localhost",
+            "communities": [
+                {"name": "private", "group": "network-admin"},
+                {"name": "public", "use_ipv4acl": "myacl", "use_ipv6acl": "myaclv6"},
             ],
-            context=dict(name="public", vrf="siteA"),
-            counter=dict(cache=dict(timeout=1800)),
-            drop=dict(unknown_engine_id=True, unknown_user=True),
-            engine_id=dict(local="00:00:00:63:00:01:00:10:20:15:10:03"),
-            global_enforce_priv=True,
-            location="lab",
-            mib=dict(community_map=dict(community="public", context="public1")),
-            packetsize=484,
-            protocol=dict(enable=True),
-            source_interface=dict(informs="Ethernet1/1", traps="Ethernet1/2"),
-            system_shutdown=True,
-            tcp_session=dict(auth=True),
-            users=dict(
-                auth=[
-                    dict(
-                        user="1234",
-                        group="network-admin",
-                        authentication=dict(
-                            algorithm="md5",
-                            password="0x7d425fbf09417c44bca69e1d9e9ce889",
-                            localized_key=True,
-                            priv=dict(privacy_password="0x7d425fbf09417c44bca69e1d9e9ce889"),
-                        ),
-                    ),
-                    dict(
-                        user="snmp_user_1",
-                        group="network-operator",
-                        authentication=dict(
-                            algorithm="md5",
-                            password="0x5632724fb8ac3699296af26281e1d0f1",
-                            localized_key=True,
-                        ),
-                    ),
+            "context": {"name": "public", "vrf": "siteA"},
+            "counter": {"cache": {"timeout": 1800}},
+            "drop": {"unknown_engine_id": True, "unknown_user": True},
+            "engine_id": {"local": "00:00:00:63:00:01:00:10:20:15:10:03"},
+            "global_enforce_priv": True,
+            "location": "lab",
+            "mib": {"community_map": {"community": "public", "context": "public1"}},
+            "packetsize": 484,
+            "protocol": {"enable": True},
+            "source_interface": {"informs": "Ethernet1/1", "traps": "Ethernet1/2"},
+            "system_shutdown": True,
+            "tcp_session": {"auth": True},
+            "users": {
+                "auth": [
+                    {
+                        "user": "1234",
+                        "group": "network-admin",
+                        "authentication": {
+                            "algorithm": "md5",
+                            "password": "0x7d425fbf09417c44bca69e1d9e9ce889",
+                            "localized_key": True,
+                            "priv": {"privacy_password": "0x7d425fbf09417c44bca69e1d9e9ce889"},
+                        },
+                    },
+                    {
+                        "user": "snmp_user_1",
+                        "group": "network-operator",
+                        "authentication": {
+                            "algorithm": "md5",
+                            "password": "0x5632724fb8ac3699296af26281e1d0f1",
+                            "localized_key": True,
+                        },
+                    },
                 ],
-            ),
-        )
+            },
+        }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed
 
     def test_nxos_snmp_server_rendered(self):
         # test rendered
         set_module_args(
-            dict(
-                config=dict(
-                    aaa_user=dict(cache_timeout=36000),
-                    contact="testswitch@localhost",
-                    context=dict(name="public", vrf="siteA"),
-                    counter=dict(cache=dict(timeout=1800)),
-                    communities=[
-                        dict(name="private", group="network-admin"),
-                        dict(name="public", use_ipv4acl="myacl", use_ipv6acl="myaclv6"),
+            {
+                "config": {
+                    "aaa_user": {"cache_timeout": 36000},
+                    "contact": "testswitch@localhost",
+                    "context": {"name": "public", "vrf": "siteA"},
+                    "counter": {"cache": {"timeout": 1800}},
+                    "communities": [
+                        {"name": "private", "group": "network-admin"},
+                        {"name": "public", "use_ipv4acl": "myacl", "use_ipv6acl": "myaclv6"},
                     ],
-                    drop=dict(unknown_engine_id=True, unknown_user=True),
-                    engine_id=dict(local="'00:00:00:63:00:01:00:10:20:15:10:03'"),
-                    global_enforce_priv=True,
-                    location="lab",
-                    mib=dict(community_map=dict(community="public", context="public1")),
-                    packetsize=484,
-                    protocol=dict(enable=True),
-                    source_interface=dict(informs="Ethernet1/1", traps="Ethernet1/2"),
-                    system_shutdown=True,
-                    tcp_session=dict(auth=True),
-                ),
-                state="rendered",
-            ),
+                    "drop": {"unknown_engine_id": True, "unknown_user": True},
+                    "engine_id": {"local": "'00:00:00:63:00:01:00:10:20:15:10:03'"},
+                    "global_enforce_priv": True,
+                    "location": "lab",
+                    "mib": {"community_map": {"community": "public", "context": "public1"}},
+                    "packetsize": 484,
+                    "protocol": {"enable": True},
+                    "source_interface": {"informs": "Ethernet1/1", "traps": "Ethernet1/2"},
+                    "system_shutdown": True,
+                    "tcp_session": {"auth": True},
+                },
+                "state": "rendered",
+            },
             ignore_provider_arg,
         )
         rendered = [
@@ -975,7 +975,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             "snmp-server community public use-ipv4acl myacl use-ipv6acl myaclv6",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(set(result["rendered"]), set(rendered))
+        assert set(result["rendered"]) == set(rendered)
 
     def test_nxos_snmp_server_gathered(self):
         # test gathered
@@ -999,34 +999,34 @@ class TestNxosSnmpServerModule(TestNxosModule):
             snmp-server source-interface traps Ethernet1/2
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
 
-        gathered = dict(
-            aaa_user=dict(cache_timeout=36000),
-            contact="testswitch@localhost",
-            context=dict(name="public", vrf="siteA"),
-            counter=dict(cache=dict(timeout=1800)),
-            drop=dict(unknown_engine_id=True, unknown_user=True),
-            engine_id=dict(local="00:00:00:63:00:01:00:10:20:15:10:03"),
-            global_enforce_priv=True,
-            location="lab",
-            mib=dict(community_map=dict(community="public", context="public1")),
-            packetsize=484,
-            protocol=dict(enable=True),
-            source_interface=dict(informs="Ethernet1/1", traps="Ethernet1/2"),
-            system_shutdown=True,
-            tcp_session=dict(auth=True),
-        )
+        gathered = {
+            "aaa_user": {"cache_timeout": 36000},
+            "contact": "testswitch@localhost",
+            "context": {"name": "public", "vrf": "siteA"},
+            "counter": {"cache": {"timeout": 1800}},
+            "drop": {"unknown_engine_id": True, "unknown_user": True},
+            "engine_id": {"local": "00:00:00:63:00:01:00:10:20:15:10:03"},
+            "global_enforce_priv": True,
+            "location": "lab",
+            "mib": {"community_map": {"community": "public", "context": "public1"}},
+            "packetsize": 484,
+            "protocol": {"enable": True},
+            "source_interface": {"informs": "Ethernet1/1", "traps": "Ethernet1/2"},
+            "system_shutdown": True,
+            "tcp_session": {"auth": True},
+        }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_snmp_server_gathered_empty(self):
         self.get_config.return_value = dedent(
             """\
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
 
         gathered = {}
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered

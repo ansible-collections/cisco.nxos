@@ -277,7 +277,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -346,15 +345,15 @@ def get_value(arg, config, module):
         "soft_reconfiguration_in",
     ]
     command = PARAM_TO_COMMAND_KEYMAP[arg]
-    has_command = re.search(r"^\s+{0}\s*".format(command), config, re.M)
-    has_command_val = re.search(r"(?:{0}\s)(?P<value>.*)$".format(command), config, re.M)
+    has_command = re.search(fr"^\s+{command}\s*", config, re.M)
+    has_command_val = re.search(fr"(?:{command}\s)(?P<value>.*)$", config, re.M)
     value = ""
 
     if arg in custom:
         value = get_custom_value(arg, config, module)
 
     elif arg == "next_hop_third_party":
-        has_no_command = re.search(r"^\s+no\s+{0}\s*$".format(command), config, re.M)
+        has_no_command = re.search(fr"^\s+no\s+{command}\s*$", config, re.M)
         value = False
         if not has_no_command:
             value = True
@@ -367,7 +366,7 @@ def get_value(arg, config, module):
     elif command.startswith("advertise-map"):
         value = []
         has_adv_map = re.search(
-            r"{0}\s(?P<value1>.*)\s{1}\s(?P<value2>.*)$".format(*command.split()),
+            r"{}\s(?P<value1>.*)\s{}\s(?P<value2>.*)$".format(*command.split()),
             config,
             re.M,
         )
@@ -376,7 +375,7 @@ def get_value(arg, config, module):
 
     elif command.split()[0] in ["filter-list", "prefix-list", "route-map"]:
         has_cmd_direction_val = re.search(
-            r"{0}\s(?P<value>.*)\s{1}$".format(*command.split()),
+            r"{}\s(?P<value>.*)\s{}$".format(*command.split()),
             config,
             re.M,
         )
@@ -398,10 +397,7 @@ def get_custom_value(arg, config, module):
         value = "inherit"
         for line in splitted_config:
             if command in line:
-                if "disable" in line:
-                    value = "disable"
-                else:
-                    value = "enable"
+                value = "disable" if "disable" in line else "enable"
     elif arg.startswith("max_prefix"):
         for line in splitted_config:
             if "maximum-prefix" in line:
@@ -422,20 +418,14 @@ def get_custom_value(arg, config, module):
         value = "inherit"
         for line in splitted_config:
             if command in line:
-                if "always" in line:
-                    value = "always"
-                else:
-                    value = "enable"
+                value = "always" if "always" in line else "enable"
 
     elif arg == "send_community":
         value = "none"
         for line in splitted_config:
             if command in line:
                 if "extended" in line:
-                    if value == "standard":
-                        value = "both"
-                    else:
-                        value = "extended"
+                    value = "both" if value == "standard" else "extended"
                 elif "both" in line:
                     value = "both"
                 else:
@@ -453,13 +443,13 @@ def get_existing(module, args, warnings):
 
     if match_asn:
         existing_asn = match_asn.group("existing_asn")
-        parents = ["router bgp {0}".format(existing_asn)]
+        parents = [f"router bgp {existing_asn}"]
 
         if module.params["vrf"] != "default":
-            parents.append("vrf {0}".format(module.params["vrf"]))
+            parents.append("vrf {}".format(module.params["vrf"]))
 
-        parents.append("neighbor {0}".format(module.params["neighbor"]))
-        parents.append("address-family {0} {1}".format(module.params["afi"], module.params["safi"]))
+        parents.append("neighbor {}".format(module.params["neighbor"]))
+        parents.append("address-family {} {}".format(module.params["afi"], module.params["safi"]))
         config = netcfg.get_section(parents)
 
         if config:
@@ -494,40 +484,40 @@ def get_default_command(key, value, existing_commands):
         existing_value = existing_commands.get(key)
         if value == "inherit":
             if existing_value != "inherit":
-                command = "no {0}".format(key)
+                command = f"no {key}"
         else:
             if key == "advertise-map exist-map":
-                command = "no advertise-map {0} exist-map {1}".format(
+                command = "no advertise-map {} exist-map {}".format(
                     existing_value[0],
                     existing_value[1],
                 )
             elif key == "advertise-map non-exist-map":
-                command = "no advertise-map {0} non-exist-map {1}".format(
+                command = "no advertise-map {} non-exist-map {}".format(
                     existing_value[0],
                     existing_value[1],
                 )
             elif key == "filter-list in":
-                command = "no filter-list {0} in".format(existing_value)
+                command = f"no filter-list {existing_value} in"
             elif key == "filter-list out":
-                command = "no filter-list {0} out".format(existing_value)
+                command = f"no filter-list {existing_value} out"
             elif key == "prefix-list in":
-                command = "no prefix-list {0} in".format(existing_value)
+                command = f"no prefix-list {existing_value} in"
             elif key == "prefix-list out":
-                command = "no prefix-list {0} out".format(existing_value)
+                command = f"no prefix-list {existing_value} out"
             elif key == "route-map in":
-                command = "no route-map {0} in".format(existing_value)
+                command = f"no route-map {existing_value} in"
             elif key == "route-map out":
-                command = "no route-map {0} out".format(existing_value)
+                command = f"no route-map {existing_value} out"
             elif key.startswith("maximum-prefix"):
                 command = "no maximum-prefix"
             elif key == "allowas-in max":
-                command = ["no allowas-in {0}".format(existing_value)]
+                command = [f"no allowas-in {existing_value}"]
                 command.append("allowas-in")
             else:
-                command = "no {0} {1}".format(key, existing_value)
+                command = f"no {key} {existing_value}"
     else:
         if key.replace(" ", "_").replace("-", "_") in BOOL_PARAMS:
-            command = "no {0}".format(key)
+            command = f"no {key}"
     return command
 
 
@@ -546,7 +536,7 @@ def fix_proposed(module, existing, proposed):
 
 
 def state_present(module, existing, proposed, candidate):
-    commands = list()
+    commands = []
     proposed = fix_proposed(module, existing, proposed)
 
     proposed_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, proposed)
@@ -565,11 +555,11 @@ def state_present(module, existing, proposed, candidate):
 
         elif key.startswith("maximum-prefix"):
             if module.params["max_prefix_limit"] != "default":
-                command = "maximum-prefix {0}".format(module.params["max_prefix_limit"])
+                command = "maximum-prefix {}".format(module.params["max_prefix_limit"])
                 if module.params["max_prefix_threshold"]:
-                    command += " {0}".format(module.params["max_prefix_threshold"])
+                    command += " {}".format(module.params["max_prefix_threshold"])
                 if module.params["max_prefix_interval"]:
-                    command += " restart {0}".format(module.params["max_prefix_interval"])
+                    command += " restart {}".format(module.params["max_prefix_interval"])
                 elif module.params["max_prefix_warning"]:
                     command += " warning-only"
                 commands.append(command)
@@ -577,10 +567,10 @@ def state_present(module, existing, proposed, candidate):
         elif value is True:
             commands.append(key)
         elif value is False:
-            commands.append("no {0}".format(key))
+            commands.append(f"no {key}")
         elif key == "address-family":
             commands.append(
-                "address-family {0} {1}".format(module.params["afi"], module.params["safi"]),
+                "address-family {} {}".format(module.params["afi"], module.params["safi"]),
             )
         elif key.startswith("capability additional-paths"):
             command = key
@@ -598,26 +588,26 @@ def state_present(module, existing, proposed, candidate):
             if value == "enable":
                 command = key
             elif value == "always":
-                command = "{0} {1}".format(key, value)
+                command = f"{key} {value}"
             commands.append(command)
         elif key == "send-community":
             command = key
             if value in ["standard", "extended"]:
                 commands.append("no " + key + " both")
-            command += " {0}".format(value)
+            command += f" {value}"
             commands.append(command)
         else:
-            command = "{0} {1}".format(key, value)
+            command = f"{key} {value}"
             commands.append(command)
 
     if commands:
-        parents = ["router bgp {0}".format(module.params["asn"])]
+        parents = ["router bgp {}".format(module.params["asn"])]
         if module.params["vrf"] != "default":
-            parents.append("vrf {0}".format(module.params["vrf"]))
+            parents.append("vrf {}".format(module.params["vrf"]))
 
-        parents.append("neighbor {0}".format(module.params["neighbor"]))
+        parents.append("neighbor {}".format(module.params["neighbor"]))
 
-        af_command = "address-family {0} {1}".format(module.params["afi"], module.params["safi"])
+        af_command = "address-family {} {}".format(module.params["afi"], module.params["safi"])
         parents.append(af_command)
         if af_command in commands:
             commands.remove(af_command)
@@ -626,73 +616,73 @@ def state_present(module, existing, proposed, candidate):
 
 def state_absent(module, existing, candidate):
     commands = []
-    parents = ["router bgp {0}".format(module.params["asn"])]
+    parents = ["router bgp {}".format(module.params["asn"])]
     if module.params["vrf"] != "default":
-        parents.append("vrf {0}".format(module.params["vrf"]))
+        parents.append("vrf {}".format(module.params["vrf"]))
 
-    parents.append("neighbor {0}".format(module.params["neighbor"]))
-    commands.append("no address-family {0} {1}".format(module.params["afi"], module.params["safi"]))
+    parents.append("neighbor {}".format(module.params["neighbor"]))
+    commands.append("no address-family {} {}".format(module.params["afi"], module.params["safi"]))
     candidate.add(commands, parents=parents)
 
 
 def main():
-    argument_spec = dict(
-        asn=dict(required=True, type="str"),
-        vrf=dict(required=False, type="str", default="default"),
-        neighbor=dict(required=True, type="str"),
-        afi=dict(
-            required=True,
-            type="str",
-            choices=["ipv4", "ipv6", "vpnv4", "vpnv6", "l2vpn"],
-        ),
-        safi=dict(required=True, type="str", choices=["unicast", "multicast", "evpn"]),
-        additional_paths_receive=dict(
-            required=False,
-            type="str",
-            choices=["enable", "disable", "inherit"],
-        ),
-        additional_paths_send=dict(
-            required=False,
-            type="str",
-            choices=["enable", "disable", "inherit"],
-        ),
-        advertise_map_exist=dict(required=False, type="list", elements="str"),
-        advertise_map_non_exist=dict(required=False, type="list", elements="str"),
-        allowas_in=dict(required=False, type="bool"),
-        allowas_in_max=dict(required=False, type="str"),
-        as_override=dict(required=False, type="bool"),
-        default_originate=dict(required=False, type="bool"),
-        default_originate_route_map=dict(required=False, type="str"),
-        disable_peer_as_check=dict(required=False, type="bool"),
-        filter_list_in=dict(required=False, type="str"),
-        filter_list_out=dict(required=False, type="str"),
-        max_prefix_limit=dict(required=False, type="str"),
-        max_prefix_interval=dict(required=False, type="str"),
-        max_prefix_threshold=dict(required=False, type="str"),
-        max_prefix_warning=dict(required=False, type="bool"),
-        next_hop_self=dict(required=False, type="bool"),
-        next_hop_third_party=dict(required=False, type="bool"),
-        prefix_list_in=dict(required=False, type="str"),
-        prefix_list_out=dict(required=False, type="str"),
-        route_map_in=dict(required=False, type="str"),
-        route_map_out=dict(required=False, type="str"),
-        route_reflector_client=dict(required=False, type="bool"),
-        send_community=dict(
-            required=False,
-            choices=["none", "both", "extended", "standard", "default"],
-        ),
-        soft_reconfiguration_in=dict(
-            required=False,
-            type="str",
-            choices=["enable", "always", "inherit"],
-        ),
-        soo=dict(required=False, type="str"),
-        suppress_inactive=dict(required=False, type="bool"),
-        unsuppress_map=dict(required=False, type="str"),
-        weight=dict(required=False, type="str"),
-        state=dict(choices=["present", "absent"], default="present", required=False),
-        rewrite_evpn_rt_asn=dict(required=False, type="bool"),
-    )
+    argument_spec = {
+        "asn": {"required": True, "type": "str"},
+        "vrf": {"required": False, "type": "str", "default": "default"},
+        "neighbor": {"required": True, "type": "str"},
+        "afi": {
+            "required": True,
+            "type": "str",
+            "choices": ["ipv4", "ipv6", "vpnv4", "vpnv6", "l2vpn"],
+        },
+        "safi": {"required": True, "type": "str", "choices": ["unicast", "multicast", "evpn"]},
+        "additional_paths_receive": {
+            "required": False,
+            "type": "str",
+            "choices": ["enable", "disable", "inherit"],
+        },
+        "additional_paths_send": {
+            "required": False,
+            "type": "str",
+            "choices": ["enable", "disable", "inherit"],
+        },
+        "advertise_map_exist": {"required": False, "type": "list", "elements": "str"},
+        "advertise_map_non_exist": {"required": False, "type": "list", "elements": "str"},
+        "allowas_in": {"required": False, "type": "bool"},
+        "allowas_in_max": {"required": False, "type": "str"},
+        "as_override": {"required": False, "type": "bool"},
+        "default_originate": {"required": False, "type": "bool"},
+        "default_originate_route_map": {"required": False, "type": "str"},
+        "disable_peer_as_check": {"required": False, "type": "bool"},
+        "filter_list_in": {"required": False, "type": "str"},
+        "filter_list_out": {"required": False, "type": "str"},
+        "max_prefix_limit": {"required": False, "type": "str"},
+        "max_prefix_interval": {"required": False, "type": "str"},
+        "max_prefix_threshold": {"required": False, "type": "str"},
+        "max_prefix_warning": {"required": False, "type": "bool"},
+        "next_hop_self": {"required": False, "type": "bool"},
+        "next_hop_third_party": {"required": False, "type": "bool"},
+        "prefix_list_in": {"required": False, "type": "str"},
+        "prefix_list_out": {"required": False, "type": "str"},
+        "route_map_in": {"required": False, "type": "str"},
+        "route_map_out": {"required": False, "type": "str"},
+        "route_reflector_client": {"required": False, "type": "bool"},
+        "send_community": {
+            "required": False,
+            "choices": ["none", "both", "extended", "standard", "default"],
+        },
+        "soft_reconfiguration_in": {
+            "required": False,
+            "type": "str",
+            "choices": ["enable", "always", "inherit"],
+        },
+        "soo": {"required": False, "type": "str"},
+        "suppress_inactive": {"required": False, "type": "bool"},
+        "unsuppress_map": {"required": False, "type": "str"},
+        "weight": {"required": False, "type": "str"},
+        "state": {"choices": ["present", "absent"], "default": "present", "required": False},
+        "rewrite_evpn_rt_asn": {"required": False, "type": "bool"},
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -705,8 +695,8 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
-    result = dict(changed=False, warnings=warnings)
+    warnings = []
+    result = {"changed": False, "warnings": warnings}
 
     state = module.params["state"]
     for key in [
@@ -722,19 +712,18 @@ def main():
     args = PARAM_TO_COMMAND_KEYMAP.keys()
     existing = get_existing(module, args, warnings)
 
-    if existing.get("asn") and state == "present":
-        if existing.get("asn") != module.params["asn"]:
-            module.fail_json(
-                msg="Another BGP ASN already exists.",
-                proposed_asn=module.params["asn"],
-                existing_asn=existing.get("asn"),
-            )
+    if existing.get("asn") and state == "present" and existing.get("asn") != module.params["asn"]:
+        module.fail_json(
+            msg="Another BGP ASN already exists.",
+            proposed_asn=module.params["asn"],
+            existing_asn=existing.get("asn"),
+        )
 
     for param in ["advertise_map_exist", "advertise_map_non_exist"]:
         if module.params[param] == ["default"]:
             module.params[param] = "default"
 
-    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed_args = {k: v for k, v in module.params.items() if v is not None and k in args}
 
     proposed = {}
     for key, value in proposed_args.items():
@@ -745,10 +734,7 @@ def main():
                 elif str(value).lower() == "false":
                     value = False
                 elif str(value).lower() == "default":
-                    if key in BOOL_PARAMS:
-                        value = False
-                    else:
-                        value = "default"
+                    value = False if key in BOOL_PARAMS else "default"
                 elif key == "send_community" and str(value).lower() == "none":
                     value = "default"
             if existing.get(key) != value:
@@ -766,9 +752,8 @@ def main():
             responses = load_config(module, candidate)
             if responses:
                 for resp in responses:
-                    if resp:
-                        if resp.endswith("is valid only for EBGP peers"):
-                            module.fail_json(msg=resp)
+                    if resp and resp.endswith("is valid only for EBGP peers"):
+                        module.fail_json(msg=resp)
         result["changed"] = True
         result["commands"] = candidate
     else:

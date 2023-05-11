@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -16,7 +15,6 @@ based on the configuration.
 """
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ntp_global.ntp_global import (
     Ntp_globalArgs,
 )
@@ -25,10 +23,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 )
 
 
-class Ntp_globalFacts(object):
-    """The nxos ntp_global facts class"""
+class Ntp_globalFacts:
+    """The nxos ntp_global facts class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Ntp_globalArgs.argument_spec
 
@@ -39,7 +37,7 @@ class Ntp_globalFacts(object):
         return connection.get("show running-config ntp")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Ntp_global network resource
+        """Populate the facts for Ntp_global network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -73,7 +71,7 @@ class Ntp_globalFacts(object):
             "trusted_keys": "key_id",
         }
 
-        for x in pkey.keys():
+        for x in pkey:
             if x in objs:
                 objs[x] = sorted(objs[x], key=lambda k: k[pkey[x]])
 

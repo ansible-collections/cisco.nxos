@@ -37,7 +37,7 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
     module = nxos_bfd_interfaces
 
     def setUp(self):
-        super(TestNxosBfdInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
@@ -60,14 +60,14 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
         self.edit_config = self.mock_edit_config.start()
 
     def tearDown(self):
-        super(TestNxosBfdInterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_FACT_LEGACY_SUBSETS.stop()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.mock_FACT_LEGACY_SUBSETS.return_value = dict()
+        self.mock_FACT_LEGACY_SUBSETS.return_value = {}
         self.get_resource_connection_config.return_value = None
         self.edit_config.return_value = None
 
@@ -100,12 +100,12 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
         """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(name="Ethernet1/1", bfd="disable", echo="disable"),
-                dict(name="Ethernet1/2", bfd="disable"),
+        playbook = {
+            "config": [
+                {"name": "Ethernet1/1", "bfd": "disable", "echo": "disable"},
+                {"name": "Ethernet1/2", "bfd": "disable"},
             ],
-        )
+        }
         # Expected result commands for each 'state'
         merged = [
             "interface Ethernet1/1",
@@ -149,14 +149,14 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
         """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(name="Ethernet1/1", bfd="enable", echo="disable"),
-                dict(name="Ethernet1/2"),
+        playbook = {
+            "config": [
+                {"name": "Ethernet1/1", "bfd": "enable", "echo": "disable"},
+                {"name": "Ethernet1/2"},
                 # Eth1/3 not present! Thus overridden should set Eth1/3 to defaults;
                 # replaced should ignore Eth1/3.
             ],
-        )
+        }
         # Expected result commands for each 'state'
         merged = ["interface Ethernet1/1", "bfd", "no bfd echo"]
         deleted = [
@@ -214,7 +214,7 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
         """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(config=[dict(name="Ethernet1/1")])
+        playbook = {"config": [{"name": "Ethernet1/1"}]}
         # Expected result commands for each 'state'
         merged = []
         deleted = ["interface Ethernet1/1", "bfd"]
@@ -255,7 +255,7 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
         """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(config=[dict(name="Ethernet1/1.42", bfd="enable", echo="disable")])
+        playbook = {"config": [{"name": "Ethernet1/1.42", "bfd": "enable", "echo": "disable"}]}
         # Expected result commands for each 'state'
         merged = ["interface Ethernet1/1.42", "bfd", "no bfd echo"]
         deleted = []
@@ -296,12 +296,12 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
         """,
         )
         self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(
-            config=[
-                dict(name="Ethernet1/1", bfd="disable", echo="disable"),
-                dict(name="Ethernet1/2", bfd="enable", echo="enable"),
+        playbook = {
+            "config": [
+                {"name": "Ethernet1/1", "bfd": "disable", "echo": "disable"},
+                {"name": "Ethernet1/2", "bfd": "enable", "echo": "enable"},
             ],
-        )
+        }
         # Expected result commands for each 'state'
         merged = []
         deleted = ["interface Ethernet1/1", "bfd", "bfd echo"]

@@ -63,7 +63,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -79,7 +78,7 @@ def get_existing(module, args):
 
     for arg in args:
         command = PARAM_TO_COMMAND_KEYMAP[arg]
-        has_command = re.findall(r"(?:{0}\s)(?P<value>.*)$".format(command), config, re.M)
+        has_command = re.findall(fr"(?:{command}\s)(?P<value>.*)$", config, re.M)
         value = ""
         if has_command:
             value = has_command[0]
@@ -98,19 +97,19 @@ def apply_key_map(key_map, table):
 
 
 def get_commands(module, existing, proposed, candidate):
-    commands = list()
+    commands = []
     proposed_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, proposed)
     existing_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, existing)
 
     for key, proposed in proposed_commands.items():
         existing_value = existing_commands.get(key)
         if proposed == "default" and existing_value:
-            commands.append("no {0} {1}".format(key, existing_value))
+            commands.append(f"no {key} {existing_value}")
         elif "anycast-gateway-mac" in key and proposed != "default":
             proposed = normalize_mac(proposed, module)
             existing_value = normalize_mac(existing_value, module)
             if proposed != existing_value:
-                command = "{0} {1}".format(key, proposed)
+                command = f"{key} {proposed}"
                 commands.append(command)
     if commands:
         candidate.add(commands, parents=[])
@@ -164,17 +163,17 @@ def normalize_mac(proposed_mac, module):
 
 
 def main():
-    argument_spec = dict(anycast_gateway_mac=dict(required=True, type="str"))
+    argument_spec = {"anycast_gateway_mac": {"required": True, "type": "str"}}
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
     result = {"changed": False, "commands": [], "warnings": warnings}
 
     args = PARAM_TO_COMMAND_KEYMAP.keys()
 
     existing = get_existing(module, args)
-    proposed = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed = {k: v for k, v in module.params.items() if v is not None and k in args}
 
     candidate = CustomNetworkConfig(indent=3)
     get_commands(module, existing, proposed, candidate)

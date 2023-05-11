@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -28,7 +27,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
     get_from_dict,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.snmp_server import (
     Snmp_serverTemplate,
@@ -36,12 +34,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Snmp_server(ResourceModule):
-    """
-    The nxos_snmp_server config class
-    """
+    """The nxos_snmp_server config class."""
 
-    def __init__(self, module):
-        super(Snmp_server, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -128,7 +124,7 @@ class Snmp_server(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -199,9 +195,7 @@ class Snmp_server(ResourceModule):
         self._compare_lists(want=want, have=have)
 
     def _compare_lists(self, want, have):
-        """
-        Compare list of dictionaries
-        """
+        """Compare list of dictionaries."""
         for x in ["users.auth", "users.use_acls", "hosts", "communities"]:
             wantx = get_from_dict(want, x) or {}
             havex = get_from_dict(have, x) or {}

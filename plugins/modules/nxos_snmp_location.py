@@ -80,7 +80,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -116,14 +115,14 @@ def get_snmp_location(module):
 
 
 def main():
-    argument_spec = dict(
-        location=dict(required=True, type="str"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "location": {"required": True, "type": "str"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     location = module.params["location"]
@@ -135,9 +134,8 @@ def main():
     if state == "absent":
         if existing and existing["location"] == location:
             commands.append("no snmp-server location")
-    elif state == "present":
-        if not existing or existing["location"] != location:
-            commands.append("snmp-server location {0}".format(location))
+    elif state == "present" and (not existing or existing["location"] != location):
+        commands.append(f"snmp-server location {location}")
 
     cmds = flatten_list(commands)
     if cmds:

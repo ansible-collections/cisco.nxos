@@ -126,7 +126,6 @@ import re
 from time import sleep
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -141,7 +140,7 @@ def execute_show_command(module, command, output="text"):
 
 
 def get_platform(module):
-    """Determine platform type"""
+    """Determine platform type."""
     data = execute_show_command(module, "show inventory", "json")
     pid = data[0]["TABLE_inv"]["ROW_inv"][0]["productid"]
 
@@ -320,7 +319,7 @@ def parse_show_install(data):
         mo = re.search(r"(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(yes|no)", x)
         if mo:
             ud["processed"].append(x)
-            key = "m%s_%s" % (mo.group(1), mo.group(2))
+            key = f"m{mo.group(1)}_{mo.group(2)}"
             field = "upgrade_needed"
             if mo.group(5) == "yes":
                 ud[field] = True
@@ -346,9 +345,9 @@ def massage_install_data(data):
 
     # Further processing may be needed for result_data
     if len(data) == 2 and isinstance(data[1], dict):
-        if "clierror" in data[1].keys():
+        if "clierror" in data[1]:
             result_data = data[1]["clierror"]
-        elif "code" in data[1].keys() and data[1]["code"] == "500":
+        elif "code" in data[1] and data[1]["code"] == "500":
             # We encountered a backend processing error for nxapi
             result_data = data[1]["msg"]
         else:
@@ -370,10 +369,7 @@ def build_install_cmd_set(issu, image, kick, type, force=True):
     #    * Use hidden 'force' option for disruptive upgrades.
     #    * Note: Not supported on all platforms
     if re.search(r"required|desired|yes", issu):
-        if kick is None:
-            issu_cmd = "non-disruptive"
-        else:
-            issu_cmd = ""
+        issu_cmd = "non-disruptive" if kick is None else ""
     else:
         if kick is None:
             issu_cmd = ""
@@ -388,9 +384,9 @@ def build_install_cmd_set(issu, image, kick, type, force=True):
     else:
         rootcmd = "install all"
     if kick is None:
-        commands.append("%s nxos %s %s" % (rootcmd, image, issu_cmd))
+        commands.append(f"{rootcmd} nxos {image} {issu_cmd}")
     else:
-        commands.append("%s %s system %s kickstart %s" % (rootcmd, issu_cmd, image, kick))
+        commands.append(f"{rootcmd} {issu_cmd} system {image} kickstart {kick}")
 
     return commands
 
@@ -413,7 +409,8 @@ def parse_show_version(data):
 
 def check_mode_legacy(module, issu, image, kick=None):
     """Some platforms/images/transports don't support the 'install all impact'
-    command so we need to use a different method."""
+    command so we need to use a different method.
+    """
     current = execute_show_command(module, "show version", "json")[0]
     # Call parse_show_data on empty string to create the default upgrade
     # data structure dictionary
@@ -452,7 +449,7 @@ def check_mode_legacy(module, issu, image, kick=None):
 
 
 def check_mode_nextgen(module, issu, image, kick=None):
-    """Use the 'install all impact' command for check_mode"""
+    """Use the 'install all impact' command for check_mode."""
     opts = {"ignore_timeout": True}
     commands = build_install_cmd_set(issu, image, kick, "impact")
     data = parse_show_install(load_config(module, commands, True, opts))
@@ -471,7 +468,7 @@ def check_mode_nextgen(module, issu, image, kick=None):
 
 
 def check_install_in_progress(module, commands, opts):
-    for attempt in range(20):
+    for _attempt in range(20):
         data = parse_show_install(load_config(module, commands, True, opts))
         if data["install_in_progress"]:
             sleep(1)
@@ -481,7 +478,7 @@ def check_install_in_progress(module, commands, opts):
 
 
 def check_mode(module, issu, image, kick=None):
-    """Check switch upgrade impact using 'show install all impact' command"""
+    """Check switch upgrade impact using 'show install all impact' command."""
     data = check_mode_nextgen(module, issu, image, kick)
     if data["server_error"]:
         # We encountered an unrecoverable error in the attempt to get upgrade
@@ -497,7 +494,7 @@ def check_mode(module, issu, image, kick=None):
 
 
 def do_install_all(module, issu, image, kick=None):
-    """Perform the switch upgrade using the 'install all' command"""
+    """Perform the switch upgrade using the 'install all' command."""
     impact_data = check_mode(module, issu, image, kick)
     if module.check_mode:
         # Check mode set in the playbook so just return the impact data.
@@ -557,15 +554,15 @@ def do_install_all(module, issu, image, kick=None):
 
 
 def main():
-    argument_spec = dict(
-        system_image_file=dict(required=True),
-        kickstart_image_file=dict(required=False),
-        issu=dict(choices=["required", "desired", "no", "yes"], default="no"),
-    )
+    argument_spec = {
+        "system_image_file": {"required": True},
+        "kickstart_image_file": {"required": False},
+        "issu": {"choices": ["required", "desired", "no", "yes"], "default": "no"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     # Get system_image_file(sif), kickstart_image_file(kif) and
     # issu settings from module params.

@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
 
@@ -149,7 +148,6 @@ import os
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -189,7 +187,7 @@ def get_existing(module):
 
 
 def action_create(module, existing_snapshots):
-    commands = list()
+    commands = []
     exist = False
     for snapshot in existing_snapshots:
         if module.params["snapshot_name"] == snapshot["name"]:
@@ -197,7 +195,7 @@ def action_create(module, existing_snapshots):
 
     if exist is False:
         commands.append(
-            "snapshot create {0} {1}".format(
+            "snapshot create {} {}".format(
                 module.params["snapshot_name"],
                 module.params["description"],
             ),
@@ -207,7 +205,7 @@ def action_create(module, existing_snapshots):
 
 
 def action_add(module, existing_snapshots):
-    commands = list()
+    commands = []
     command = "show snapshot sections"
     sections = []
     body = execute_show_command(command, module)[0]
@@ -247,7 +245,7 @@ def action_add(module, existing_snapshots):
     if proposed not in sections:
         if module.params["element_key2"]:
             commands.append(
-                'snapshot section add {0} "{1}" {2} {3} {4}'.format(
+                'snapshot section add {} "{}" {} {} {}'.format(
                     module.params["section"],
                     module.params["show_command"],
                     module.params["row_id"],
@@ -257,7 +255,7 @@ def action_add(module, existing_snapshots):
             )
         else:
             commands.append(
-                'snapshot section add {0} "{1}" {2} {3}'.format(
+                'snapshot section add {} "{}" {} {}'.format(
                     module.params["section"],
                     module.params["show_command"],
                     module.params["row_id"],
@@ -269,20 +267,20 @@ def action_add(module, existing_snapshots):
 
 
 def action_compare(module, existing_snapshots):
-    command = "show snapshot compare {0} {1}".format(
+    command = "show snapshot compare {} {}".format(
         module.params["snapshot1"],
         module.params["snapshot2"],
     )
 
     if module.params["compare_option"]:
-        command += " {0}".format(module.params["compare_option"])
+        command += " {}".format(module.params["compare_option"])
 
     body = execute_show_command(command, module)[0]
     return body
 
 
 def action_delete(module, existing_snapshots):
-    commands = list()
+    commands = []
 
     exist = False
     for snapshot in existing_snapshots:
@@ -290,13 +288,13 @@ def action_delete(module, existing_snapshots):
             exist = True
 
     if exist:
-        commands.append("snapshot delete {0}".format(module.params["snapshot_name"]))
+        commands.append("snapshot delete {}".format(module.params["snapshot_name"]))
 
     return commands
 
 
 def action_delete_all(module, existing_snapshots):
-    commands = list()
+    commands = []
     if existing_snapshots:
         commands.append("snapshot delete all")
     return commands
@@ -306,13 +304,14 @@ def invoke(name, *args, **kwargs):
     func = globals().get(name)
     if func:
         return func(*args, **kwargs)
+    return None
 
 
 def write_on_file(content, filename, module):
     path = module.params["path"]
     if path[-1] != "/":
         path += "/"
-    filepath = "{0}{1}".format(path, filename)
+    filepath = f"{path}{filename}"
     try:
         report = open(filepath, "w")
         report.write(content)
@@ -324,25 +323,25 @@ def write_on_file(content, filename, module):
 
 
 def main():
-    argument_spec = dict(
-        action=dict(
-            required=True,
-            choices=["create", "add", "compare", "delete", "delete_all"],
-        ),
-        snapshot_name=dict(type="str"),
-        description=dict(type="str"),
-        snapshot1=dict(type="str"),
-        snapshot2=dict(type="str"),
-        compare_option=dict(choices=["summary", "ipv4routes", "ipv6routes"]),
-        comparison_results_file=dict(type="str"),
-        section=dict(type="str"),
-        show_command=dict(type="str"),
-        row_id=dict(type="str"),
-        element_key1=dict(type="str", no_log=False),
-        element_key2=dict(type="str", no_log=False),
-        save_snapshot_locally=dict(type="bool", default=False),
-        path=dict(type="str", default="./"),
-    )
+    argument_spec = {
+        "action": {
+            "required": True,
+            "choices": ["create", "add", "compare", "delete", "delete_all"],
+        },
+        "snapshot_name": {"type": "str"},
+        "description": {"type": "str"},
+        "snapshot1": {"type": "str"},
+        "snapshot2": {"type": "str"},
+        "compare_option": {"choices": ["summary", "ipv4routes", "ipv6routes"]},
+        "comparison_results_file": {"type": "str"},
+        "section": {"type": "str"},
+        "show_command": {"type": "str"},
+        "row_id": {"type": "str"},
+        "element_key1": {"type": "str", "no_log": False},
+        "element_key2": {"type": "str", "no_log": False},
+        "save_snapshot_locally": {"type": "bool", "default": False},
+        "path": {"type": "str", "default": "./"},
+    }
 
     required_if = [
         (
@@ -369,7 +368,7 @@ def main():
     comparison_results_file = module.params["comparison_results_file"]
 
     if not os.path.isdir(module.params["path"]):
-        module.fail_json(msg="{0} is not a valid directory name.".format(module.params["path"]))
+        module.fail_json(msg="{} is not a valid directory name.".format(module.params["path"]))
 
     existing_snapshots = invoke("get_existing", module)
     action_results = invoke("action_%s" % action, module, existing_snapshots)
@@ -384,9 +383,9 @@ def main():
                 snapshot1 = module.params["snapshot1"]
                 snapshot2 = module.params["snapshot2"]
                 compare_option = module.params["compare_option"]
-                command = "show snapshot compare {0} {1}".format(snapshot1, snapshot2)
+                command = f"show snapshot compare {snapshot1} {snapshot2}"
                 if compare_option:
-                    command += " {0}".format(compare_option)
+                    command += f" {compare_option}"
                 content = execute_show_command(command, module)[0]
                 if content:
                     write_on_file(content, comparison_results_file, module)
@@ -401,7 +400,7 @@ def main():
                 and module.params["path"]
                 and module.params["save_snapshot_locally"]
             ):
-                command = "show snapshot dump {0} | json".format(module.params["snapshot_name"])
+                command = "show snapshot dump {} | json".format(module.params["snapshot_name"])
                 content = execute_show_command(command, module)[0]
                 if content:
                     write_on_file(str(content), module.params["snapshot_name"], module)

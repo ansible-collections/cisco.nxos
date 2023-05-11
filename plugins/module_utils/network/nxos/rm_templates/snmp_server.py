@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -23,62 +22,63 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 def _template_hosts(data):
-    cmd = "snmp-server host {0}".format(data["host"])
+    cmd = "snmp-server host {}".format(data["host"])
     if data.get("traps"):
         cmd += " traps"
     if data.get("informs"):
         cmd += " informs"
     if data.get("use_vrf"):
-        cmd += " use-vrf {0}".format(data["use_vrf"])
+        cmd += " use-vrf {}".format(data["use_vrf"])
     if data.get("filter_vrf"):
-        cmd += " filter-vrf {0}".format(data["filter_vrf"])
+        cmd += " filter-vrf {}".format(data["filter_vrf"])
     if data.get("source_interface"):
-        cmd += " source-interface {0}".format(data["source_interface"])
+        cmd += " source-interface {}".format(data["source_interface"])
     if data.get("version"):
-        cmd += " version {0}".format(data["version"])
+        cmd += " version {}".format(data["version"])
     if data.get("community"):
         cmd += " " + data["community"]
     elif data.get("auth"):
-        cmd += " auth {0}".format(data["auth"])
+        cmd += " auth {}".format(data["auth"])
     elif data.get("priv"):
-        cmd += " priv {0}".format(data["priv"])
+        cmd += " priv {}".format(data["priv"])
     if data.get("udp_port"):
-        cmd += " udp-port {0}".format(data["udp_port"])
+        cmd += " udp-port {}".format(data["udp_port"])
 
     return cmd
 
 
 def _tmplt_users_auth(data):
-    cmd = "snmp-server user {0}".format(data["user"])
+    cmd = "snmp-server user {}".format(data["user"])
 
     if "group" in data:
-        cmd += " {0}".format(data["group"])
+        cmd += " {}".format(data["group"])
     if "authentication" in data:
         auth = data["authentication"]
         if "algorithm" in auth:
-            cmd += " auth {0}".format(auth["algorithm"])
+            cmd += " auth {}".format(auth["algorithm"])
         if "password" in auth:
-            cmd += " {0}".format(auth["password"])
+            cmd += " {}".format(auth["password"])
         priv = auth.get("priv", {})
         if priv:
             cmd += " priv"
             if priv.get("aes_128", False):
                 cmd += " aes-128"
             if "privacy_password" in priv:
-                cmd += " {0}".format(priv["privacy_password"])
+                cmd += " {}".format(priv["privacy_password"])
         if auth.get("localized_key", False):
             cmd += " localizedkey"
         elif auth.get("localizedv2_key", False):
             cmd += " localizedV2key"
         if "engine_id" in auth:
-            cmd += " engineID {0}".format(auth["engine_id"])
+            cmd += " engineID {}".format(auth["engine_id"])
 
         return cmd
+    return None
 
 
 class Snmp_serverTemplate(NetworkTemplate):
-    def __init__(self, lines=None, module=None):
-        super(Snmp_serverTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+    def __init__(self, lines=None, module=None) -> None:
+        super().__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [

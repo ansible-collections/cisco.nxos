@@ -48,7 +48,7 @@ class TestNxosOspfv3Module(TestNxosModule):
     module = nxos_ospfv3
 
     def setUp(self):
-        super(TestNxosOspfv3Module, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -61,7 +61,7 @@ class TestNxosOspfv3Module(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosOspfv3Module, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
@@ -76,48 +76,48 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                areas=[
-                                    dict(
-                                        area_id="1.1.1.1",
-                                        filter_list=[
-                                            dict(
-                                                route_map="test-1",
-                                                direction="in",
-                                            ),
-                                            dict(
-                                                route_map="test-2",
-                                                direction="out",
-                                            ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "areas": [
+                                    {
+                                        "area_id": "1.1.1.1",
+                                        "filter_list": [
+                                            {
+                                                "route_map": "test-1",
+                                                "direction": "in",
+                                            },
+                                            {
+                                                "route_map": "test-2",
+                                                "direction": "out",
+                                            },
                                         ],
-                                    ),
-                                    dict(
-                                        area_id="1.1.1.2",
-                                        filter_list=[
-                                            dict(
-                                                route_map="test-3",
-                                                direction="in",
-                                            ),
-                                            dict(
-                                                route_map="test-4",
-                                                direction="out",
-                                            ),
+                                    },
+                                    {
+                                        "area_id": "1.1.1.2",
+                                        "filter_list": [
+                                            {
+                                                "route_map": "test-3",
+                                                "direction": "in",
+                                            },
+                                            {
+                                                "route_map": "test-4",
+                                                "direction": "out",
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -129,7 +129,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "area 1.1.1.2 filter-list route-map test-4 out",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_areas_filter_list_replaced(self):
         # test replaced for config->processes->af->areas->filter_list
@@ -142,48 +142,48 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                areas=[
-                                    dict(
-                                        area_id="1.1.1.1",
-                                        filter_list=[
-                                            dict(
-                                                route_map="test-1",
-                                                direction="in",
-                                            ),
-                                            dict(
-                                                route_map="test-2",
-                                                direction="out",
-                                            ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "areas": [
+                                    {
+                                        "area_id": "1.1.1.1",
+                                        "filter_list": [
+                                            {
+                                                "route_map": "test-1",
+                                                "direction": "in",
+                                            },
+                                            {
+                                                "route_map": "test-2",
+                                                "direction": "out",
+                                            },
                                         ],
-                                    ),
-                                    dict(
-                                        area_id="1.1.1.2",
-                                        filter_list=[
-                                            dict(
-                                                route_map="test-3",
-                                                direction="in",
-                                            ),
-                                            dict(
-                                                route_map="test-4",
-                                                direction="out",
-                                            ),
+                                    },
+                                    {
+                                        "area_id": "1.1.1.2",
+                                        "filter_list": [
+                                            {
+                                                "route_map": "test-3",
+                                                "direction": "in",
+                                            },
+                                            {
+                                                "route_map": "test-4",
+                                                "direction": "out",
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -197,7 +197,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "area 1.1.1.2 filter-list route-map test-4 out",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_areas_ranges_merged(self):
         # test merged for config->processes->af->areas->rang
@@ -210,46 +210,46 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                areas=[
-                                    dict(
-                                        area_id="1.1.1.1",
-                                        ranges=[
-                                            dict(
-                                                prefix="2001:db3::/32",
-                                                cost="20",
-                                            ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "areas": [
+                                    {
+                                        "area_id": "1.1.1.1",
+                                        "ranges": [
+                                            {
+                                                "prefix": "2001:db3::/32",
+                                                "cost": "20",
+                                            },
                                         ],
-                                    ),
-                                    dict(
-                                        area_id="1.1.1.2",
-                                        ranges=[
-                                            dict(prefix="2001:db4::/32", cost=11),
-                                            dict(
-                                                prefix="2001:db5::/32",
-                                                not_advertise=True,
-                                            ),
-                                            dict(
-                                                prefix="2001:db7::/32",
-                                                not_advertise=True,
-                                                cost=18,
-                                            ),
+                                    },
+                                    {
+                                        "area_id": "1.1.1.2",
+                                        "ranges": [
+                                            {"prefix": "2001:db4::/32", "cost": 11},
+                                            {
+                                                "prefix": "2001:db5::/32",
+                                                "not_advertise": True,
+                                            },
+                                            {
+                                                "prefix": "2001:db7::/32",
+                                                "not_advertise": True,
+                                                "cost": 18,
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -261,7 +261,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "area 1.1.1.2 range 2001:db7::/32 not-advertise cost 18",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_areas_ranges_replaced(self):
         # test replaced for config->processes->af->areas->ranges
@@ -274,37 +274,37 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                areas=[
-                                    dict(
-                                        area_id="1.1.1.2",
-                                        ranges=[
-                                            dict(prefix="2001:db4::/32", cost=11),
-                                            dict(
-                                                prefix="2001:db5::/32",
-                                                not_advertise=True,
-                                            ),
-                                            dict(
-                                                prefix="2001:db7::/32",
-                                                not_advertise=True,
-                                                cost=18,
-                                            ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "areas": [
+                                    {
+                                        "area_id": "1.1.1.2",
+                                        "ranges": [
+                                            {"prefix": "2001:db4::/32", "cost": 11},
+                                            {
+                                                "prefix": "2001:db5::/32",
+                                                "not_advertise": True,
+                                            },
+                                            {
+                                                "prefix": "2001:db7::/32",
+                                                "not_advertise": True,
+                                                "cost": 18,
+                                            },
                                         ],
-                                    ),
+                                    },
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -317,7 +317,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "area 1.1.1.2 range 2001:db7::/32 not-advertise cost 18",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_areas_default_cost_merged(self):
         # test merged for config->processes->af->areas->default_cost
@@ -329,24 +329,24 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                areas=[
-                                    dict(area_id="1.1.1.1", default_cost=12),
-                                    dict(area_id="1.1.1.2", default_cost=200),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "areas": [
+                                    {"area_id": "1.1.1.1", "default_cost": 12},
+                                    {"area_id": "1.1.1.2", "default_cost": 200},
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -356,7 +356,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "area 1.1.1.2 default-cost 200",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_areas_default_cost_replaced(self):
         # test merged for config->processes->af->areas->default_cost
@@ -368,21 +368,21 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                areas=[dict(area_id="1.1.1.2", default_cost=200)],
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "areas": [{"area_id": "1.1.1.2", "default_cost": 200}],
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -392,7 +392,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "area 1.1.1.2 default-cost 200",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_default_information_merged(self):
         # test merged for config->processes->af->default_information
@@ -404,23 +404,23 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                default_information=dict(
-                                    originate=dict(always=True, route_map="test-2"),
-                                ),
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "default_information": {
+                                    "originate": {"always": True, "route_map": "test-2"},
+                                },
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -429,7 +429,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "default-information originate always route-map test-2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_default_information_merged_2(self):
         # test merged for config->processes->af->default_information->set
@@ -441,21 +441,21 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                default_information=dict(originate=dict(set=False)),
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "default_information": {"originate": {"set": False}},
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -464,7 +464,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "no default-information originate",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_default_information_replaced(self):
         # test replaced for config->processes->af->default_information
@@ -476,21 +476,21 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                default_information=dict(originate=dict(set=True)),
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "default_information": {"originate": {"set": True}},
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -499,7 +499,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "default-information originate",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_distance_merged(self):
         # test merged for config->processes->af->distance
@@ -511,17 +511,17 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(afi="ipv6", safi="unicast", distance=35),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {"afi": "ipv6", "safi": "unicast", "distance": 35},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -530,7 +530,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "distance 35",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_distance_replaced(self):
         # test replaced for config->processes->af->distance
@@ -544,17 +544,17 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(afi="ipv6", safi="unicast"),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {"afi": "ipv6", "safi": "unicast"},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -563,7 +563,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "no distance 20",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_maximum_paths_merged(self):
         # test merged for config->processes->af->maximum_paths
@@ -575,17 +575,17 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(afi="ipv6", safi="unicast", maximum_paths=27),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {"afi": "ipv6", "safi": "unicast", "maximum_paths": 27},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -594,7 +594,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "maximum-paths 27",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_maximum_paths_replaced(self):
         # test replaced for config->processes->af->maximum_paths
@@ -608,17 +608,17 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(afi="ipv6", safi="unicast"),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {"afi": "ipv6", "safi": "unicast"},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -627,7 +627,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "no maximum-paths 18",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_redistribute_merged(self):
         # test merged for config->processes->af->redistribute
@@ -639,38 +639,38 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                redistribute=[
-                                    dict(
-                                        protocol="eigrp",
-                                        id="100",
-                                        route_map="test-1",
-                                    ),
-                                    dict(
-                                        protocol="eigrp",
-                                        id="101",
-                                        route_map="test-2",
-                                    ),
-                                    dict(
-                                        protocol="bgp",
-                                        id="65563",
-                                        route_map="test-3",
-                                    ),
-                                    dict(protocol="static", route_map="test-4"),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "redistribute": [
+                                    {
+                                        "protocol": "eigrp",
+                                        "id": "100",
+                                        "route_map": "test-1",
+                                    },
+                                    {
+                                        "protocol": "eigrp",
+                                        "id": "101",
+                                        "route_map": "test-2",
+                                    },
+                                    {
+                                        "protocol": "bgp",
+                                        "id": "65563",
+                                        "route_map": "test-3",
+                                    },
+                                    {"protocol": "static", "route_map": "test-4"},
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -682,7 +682,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "redistribute static route-map test-4",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_redistribute_replaced(self):
         # test replaced for config->processes->af->redistribute
@@ -694,33 +694,33 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                redistribute=[
-                                    dict(
-                                        protocol="eigrp",
-                                        id="101",
-                                        route_map="test-2",
-                                    ),
-                                    dict(
-                                        protocol="bgp",
-                                        id="65563",
-                                        route_map="test-3",
-                                    ),
-                                    dict(protocol="static", route_map="test-4"),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "redistribute": [
+                                    {
+                                        "protocol": "eigrp",
+                                        "id": "101",
+                                        "route_map": "test-2",
+                                    },
+                                    {
+                                        "protocol": "bgp",
+                                        "id": "65563",
+                                        "route_map": "test-3",
+                                    },
+                                    {"protocol": "static", "route_map": "test-4"},
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -732,7 +732,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "redistribute static route-map test-4",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_summary_address_merged(self):
         # test merged for config->processes->af->summary_address
@@ -744,28 +744,28 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                summary_address=[
-                                    dict(prefix="2001:db2::/32", tag=19),
-                                    dict(
-                                        prefix="2001:db3::/32",
-                                        not_advertise=True,
-                                    ),
-                                    dict(prefix="2001:db4::/32"),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "summary_address": [
+                                    {"prefix": "2001:db2::/32", "tag": 19},
+                                    {
+                                        "prefix": "2001:db3::/32",
+                                        "not_advertise": True,
+                                    },
+                                    {"prefix": "2001:db4::/32"},
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -776,7 +776,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "summary-address 2001:db4::/32",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_summary_address_replaced(self):
         # test replaced for config->processes->af->summary_address
@@ -788,26 +788,26 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                summary_address=[
-                                    dict(
-                                        prefix="2001:db3::/32",
-                                        not_advertise=True,
-                                    ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "summary_address": [
+                                    {
+                                        "prefix": "2001:db3::/32",
+                                        "not_advertise": True,
+                                    },
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -817,7 +817,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "summary-address 2001:db3::/32 not-advertise",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_table_map_merged(self):
         # test merged for config->processes->af->table_map
@@ -829,21 +829,21 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                table_map=dict(name="test-1", filter=True),
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "table_map": {"name": "test-1", "filter": True},
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -852,7 +852,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "table-map test-1 filter",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_table_map_replaced(self):
         # test replaced for config->processes->af->table_map
@@ -864,21 +864,21 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                table_map=dict(name="test-2"),
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "table_map": {"name": "test-2"},
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -887,7 +887,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "table-map test-2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_timers_merged(self):
         # test merged for config->processes->af->timers
@@ -899,28 +899,28 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                timers=dict(
-                                    throttle=dict(
-                                        spf=dict(
-                                            initial_spf_delay=1100,
-                                            max_wait_time=2805,
-                                        ),
-                                    ),
-                                ),
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "timers": {
+                                    "throttle": {
+                                        "spf": {
+                                            "initial_spf_delay": 1100,
+                                            "max_wait_time": 2805,
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -929,7 +929,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "timers throttle spf 1100 20 2805",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_af_timers_replaced(self):
         # test replaced for config->processes->af->timers
@@ -941,17 +941,17 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(afi="ipv6", safi="unicast"),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {"afi": "ipv6", "safi": "unicast"},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -960,7 +960,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "no timers throttle spf 1000 20 2800",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_areas_nssa_merged(self):
         # test merged for config->processes->areas->nssa
@@ -971,33 +971,33 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            areas=[
-                                dict(
-                                    area_id="1.1.1.1",
-                                    nssa=dict(no_summary=True),
-                                ),
-                                dict(area_id="1.1.1.2", nssa=dict(set=True)),
-                                dict(
-                                    area_id="1.1.1.3",
-                                    nssa=dict(
-                                        default_information_originate=True,
-                                        no_summary=True,
-                                        no_redistribution=True,
-                                        route_map="test-1",
-                                        translate=dict(type7=dict(always=True, supress_fa=True)),
-                                    ),
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "areas": [
+                                {
+                                    "area_id": "1.1.1.1",
+                                    "nssa": {"no_summary": True},
+                                },
+                                {"area_id": "1.1.1.2", "nssa": {"set": True}},
+                                {
+                                    "area_id": "1.1.1.3",
+                                    "nssa": {
+                                        "default_information_originate": True,
+                                        "no_summary": True,
+                                        "no_redistribution": True,
+                                        "route_map": "test-1",
+                                        "translate": {"type7": {"always": True, "supress_fa": True}},
+                                    },
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1008,7 +1008,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "area 1.1.1.3 nssa no-summary no-redistribution default-information-originate route-map test-1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_areas_nssa_merged_2(self):
         # test merged for config->processes->areas->nssa->set
@@ -1019,22 +1019,22 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            areas=[dict(area_id="1.1.1.1", nssa=dict(set=False))],
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "areas": [{"area_id": "1.1.1.1", "nssa": {"set": False}}],
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = ["router ospfv3 100", "no area 1.1.1.1 nssa"]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_areas_nssa_replaced(self):
         # test replaced for config->processes->areas->nssa
@@ -1046,27 +1046,27 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            areas=[
-                                dict(
-                                    area_id="1.1.1.3",
-                                    nssa=dict(
-                                        default_information_originate=True,
-                                        no_summary=True,
-                                        no_redistribution=True,
-                                        route_map="test-1",
-                                    ),
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "areas": [
+                                {
+                                    "area_id": "1.1.1.3",
+                                    "nssa": {
+                                        "default_information_originate": True,
+                                        "no_summary": True,
+                                        "no_redistribution": True,
+                                        "route_map": "test-1",
+                                    },
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1076,7 +1076,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "area 1.1.1.3 nssa no-summary no-redistribution default-information-originate route-map test-1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_areas_stub_merged(self):
         # test merged for config->processes->areas->stub
@@ -1087,27 +1087,27 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            areas=[
-                                dict(
-                                    area_id="1.1.1.3",
-                                    stub=dict(no_summary=True),
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "areas": [
+                                {
+                                    "area_id": "1.1.1.3",
+                                    "stub": {"no_summary": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = ["router ospfv3 100", "area 1.1.1.3 stub no-summary"]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_areas_stub_merged_2(self):
         # test merged for config->processes->areas->stub->set
@@ -1118,23 +1118,23 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            areas=[
-                                dict(area_id="1.1.1.3", stub=dict(set=False)),
-                                dict(
-                                    area_id="1.1.1.4",
-                                    stub=dict(no_summary=True),
-                                ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "areas": [
+                                {"area_id": "1.1.1.3", "stub": {"set": False}},
+                                {
+                                    "area_id": "1.1.1.4",
+                                    "stub": {"no_summary": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1143,7 +1143,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "area 1.1.1.4 stub no-summary",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_areas_stub_replaced(self):
         # test replaced for config->processes->areas->stub
@@ -1154,15 +1154,15 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(processes=[dict(process_id="100", areas=[dict(area_id="1.1.1.3")])]),
-                state="replaced",
-            ),
+            {
+                "config": {"processes": [{"process_id": "100", "areas": [{"area_id": "1.1.1.3"}]}]},
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = ["router ospfv3 100", "no area 1.1.1.3 stub"]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_autocost_flush_route_isolate_merged(self):
         # test merged for config->processes->autocost,flush_routes, isolate
@@ -1173,19 +1173,19 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            auto_cost=dict(reference_bandwidth=100, unit="Gbps"),
-                            flush_routes=True,
-                            isolate=True,
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "auto_cost": {"reference_bandwidth": 100, "unit": "Gbps"},
+                            "flush_routes": True,
+                            "isolate": True,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1195,7 +1195,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "isolate",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_autocost_flush_route_isolate_replaced(self):
         # test merged for config->processes->autocost,flush_routes, isolate
@@ -1207,10 +1207,10 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(processes=[dict(process_id="100", isolate=True)]),
-                state="replaced",
-            ),
+            {
+                "config": {"processes": [{"process_id": "100", "isolate": True}]},
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1220,7 +1220,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "isolate",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_log_adjacency_changes_name_lookup_passive_interface_merged(
         self,
@@ -1233,23 +1233,23 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            log_adjacency_changes=dict(detail=True),
-                            name_lookup=True,
-                            passive_interface=dict(default=True),
-                        ),
-                        dict(
-                            process_id="102",
-                            log_adjacency_changes=dict(log=True),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "log_adjacency_changes": {"detail": True},
+                            "name_lookup": True,
+                            "passive_interface": {"default": True},
+                        },
+                        {
+                            "process_id": "102",
+                            "log_adjacency_changes": {"log": True},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1261,7 +1261,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "log-adjacency-changes",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_log_adjacency_changes_name_lookup_passive_interface_replaced(
         self,
@@ -1275,17 +1275,17 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            passive_interface=dict(default=True),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "passive_interface": {"default": True},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1295,7 +1295,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "passive-interface default",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_max_lsa_router_id_merged(self):
         # test merged for config->processes->max_lsa, router_id
@@ -1309,41 +1309,41 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            router_id="192.168.1.100",
-                            max_lsa=dict(
-                                max_non_self_generated_lsa=4200,
-                                threshold=85,
-                                ignore_count=100,
-                                reset_time=138,
-                            ),
-                        ),
-                        dict(
-                            process_id="102",
-                            router_id="192.168.2.102",
-                            max_lsa=dict(
-                                max_non_self_generated_lsa=4200,
-                                threshold=85,
-                                ignore_time=200,
-                                ignore_count=20,
-                                reset_time=120,
-                            ),
-                        ),
-                        dict(
-                            process_id="103",
-                            max_lsa=dict(
-                                max_non_self_generated_lsa=4200,
-                                warning_only=True,
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "router_id": "192.168.1.100",
+                            "max_lsa": {
+                                "max_non_self_generated_lsa": 4200,
+                                "threshold": 85,
+                                "ignore_count": 100,
+                                "reset_time": 138,
+                            },
+                        },
+                        {
+                            "process_id": "102",
+                            "router_id": "192.168.2.102",
+                            "max_lsa": {
+                                "max_non_self_generated_lsa": 4200,
+                                "threshold": 85,
+                                "ignore_time": 200,
+                                "ignore_count": 20,
+                                "reset_time": 120,
+                            },
+                        },
+                        {
+                            "process_id": "103",
+                            "max_lsa": {
+                                "max_non_self_generated_lsa": 4200,
+                                "warning_only": True,
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1356,7 +1356,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "max-lsa 4200 warning-only",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_max_lsa_router_id_replaced(self):
         # test replaced for config->processes->max_lsa, router_id
@@ -1370,21 +1370,21 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            max_lsa=dict(
-                                max_non_self_generated_lsa=4200,
-                                threshold=85,
-                                warning_only=True,
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "max_lsa": {
+                                "max_non_self_generated_lsa": 4200,
+                                "threshold": 85,
+                                "warning_only": True,
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1393,7 +1393,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "max-lsa 4200 85 warning-only",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_graceful_restart_merged(self):
         # test merged for config->processes->graceful_restart
@@ -1406,21 +1406,21 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            graceful_restart=dict(grace_period=50, helper_disable=True),
-                        ),
-                        dict(
-                            process_id="102",
-                            graceful_restart=dict(planned_only=True),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "graceful_restart": {"grace_period": 50, "helper_disable": True},
+                        },
+                        {
+                            "process_id": "102",
+                            "graceful_restart": {"planned_only": True},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1431,7 +1431,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "graceful-restart planned-only",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_graceful_restart_replaced(self):
         # test replaced for config->processes->graceful_restart
@@ -1444,21 +1444,21 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            graceful_restart=dict(grace_period=10),
-                        ),
-                        dict(
-                            process_id="102",
-                            graceful_restart=dict(helper_disable=True),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "graceful_restart": {"grace_period": 10},
+                        },
+                        {
+                            "process_id": "102",
+                            "graceful_restart": {"helper_disable": True},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1469,7 +1469,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "graceful-restart helper-disable",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_max_metric_merged(self):
         # test merged for config->processes->max_metric
@@ -1480,41 +1480,41 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            max_metric=dict(
-                                router_lsa=dict(
-                                    external_lsa=dict(max_metric_value=2000),
-                                    stub_prefix_lsa=True,
-                                    on_startup=dict(set=True),
-                                ),
-                            ),
-                        ),
-                        dict(
-                            process_id="102",
-                            max_metric=dict(
-                                router_lsa=dict(inter_area_prefix_lsa=dict(max_metric_value=1800)),
-                            ),
-                        ),
-                        dict(
-                            process_id="103",
-                            max_metric=dict(
-                                router_lsa=dict(
-                                    on_startup=dict(
-                                        wait_period=1200,
-                                        wait_for_bgp_asn=65563,
-                                    ),
-                                    inter_area_prefix_lsa=dict(set=True),
-                                ),
-                            ),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "max_metric": {
+                                "router_lsa": {
+                                    "external_lsa": {"max_metric_value": 2000},
+                                    "stub_prefix_lsa": True,
+                                    "on_startup": {"set": True},
+                                },
+                            },
+                        },
+                        {
+                            "process_id": "102",
+                            "max_metric": {
+                                "router_lsa": {"inter_area_prefix_lsa": {"max_metric_value": 1800}},
+                            },
+                        },
+                        {
+                            "process_id": "103",
+                            "max_metric": {
+                                "router_lsa": {
+                                    "on_startup": {
+                                        "wait_period": 1200,
+                                        "wait_for_bgp_asn": 65563,
+                                    },
+                                    "inter_area_prefix_lsa": {"set": True},
+                                },
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1526,7 +1526,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "max-metric router-lsa on-startup 1200 wait-for bgp 65563 inter-area-prefix-lsa",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_max_metric_merged_2(self):
         # test merged for config->processes->max_metric->set
@@ -1539,22 +1539,22 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            max_metric=dict(router_lsa=dict(set=False)),
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "max_metric": {"router_lsa": {"set": False}},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = ["router ospfv3 100", "no max-metric router-lsa"]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_max_metric_replaced(self):
         # test replaced for config->processes->max_metric
@@ -1568,25 +1568,25 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            max_metric=dict(
-                                router_lsa=dict(
-                                    external_lsa=dict(max_metric_value=2000),
-                                    stub_prefix_lsa=True,
-                                    on_startup=dict(set=True),
-                                ),
-                            ),
-                        ),
-                        dict(process_id="102"),
-                        dict(process_id="103"),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "max_metric": {
+                                "router_lsa": {
+                                    "external_lsa": {"max_metric_value": 2000},
+                                    "stub_prefix_lsa": True,
+                                    "on_startup": {"set": True},
+                                },
+                            },
+                        },
+                        {"process_id": "102"},
+                        {"process_id": "103"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1598,7 +1598,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "no max-metric router-lsa",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_timers_shutdown_merged(self):
         # test merged for config->processes->timers, shutdown
@@ -1610,28 +1610,28 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            timers=dict(
-                                lsa_arrival=1200,
-                                lsa_group_pacing=210,
-                                throttle=dict(
-                                    lsa=dict(
-                                        start_interval=100,
-                                        hold_interval=70,
-                                        max_interval=1500,
-                                    ),
-                                ),
-                            ),
-                            shutdown=False,
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "timers": {
+                                "lsa_arrival": 1200,
+                                "lsa_group_pacing": 210,
+                                "throttle": {
+                                    "lsa": {
+                                        "start_interval": 100,
+                                        "hold_interval": 70,
+                                        "max_interval": 1500,
+                                    },
+                                },
+                            },
+                            "shutdown": False,
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1642,7 +1642,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "no shutdown",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_timers_shutdown_replaced(self):
         # test replaced for config->processes->timers, shutdown
@@ -1655,18 +1655,18 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            timers=dict(lsa_arrival=1200),
-                            shutdown=True,
-                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "timers": {"lsa_arrival": 1200},
+                            "shutdown": True,
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1677,7 +1677,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "shutdown",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_vrf_merged(self):
         # test merged for config->processes->vrf
@@ -1689,88 +1689,88 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            vrfs=[
-                                dict(
-                                    vrf="blue",
-                                    areas=[
-                                        dict(
-                                            area_id="1.1.1.1",
-                                            nssa=dict(no_summary=True),
-                                        ),
-                                        dict(
-                                            area_id="1.1.1.2",
-                                            nssa=dict(set=True),
-                                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "vrfs": [
+                                {
+                                    "vrf": "blue",
+                                    "areas": [
+                                        {
+                                            "area_id": "1.1.1.1",
+                                            "nssa": {"no_summary": True},
+                                        },
+                                        {
+                                            "area_id": "1.1.1.2",
+                                            "nssa": {"set": True},
+                                        },
                                     ],
-                                ),
-                                dict(
-                                    vrf="red",
-                                    areas=[
-                                        dict(
-                                            area_id="1.1.1.3",
-                                            nssa=dict(
-                                                default_information_originate=True,
-                                                no_summary=True,
-                                                no_redistribution=True,
-                                                route_map="test-1",
-                                                translate=dict(
-                                                    type7=dict(
-                                                        always=True,
-                                                        supress_fa=True,
-                                                    ),
-                                                ),
-                                            ),
-                                        ),
+                                },
+                                {
+                                    "vrf": "red",
+                                    "areas": [
+                                        {
+                                            "area_id": "1.1.1.3",
+                                            "nssa": {
+                                                "default_information_originate": True,
+                                                "no_summary": True,
+                                                "no_redistribution": True,
+                                                "route_map": "test-1",
+                                                "translate": {
+                                                    "type7": {
+                                                        "always": True,
+                                                        "supress_fa": True,
+                                                    },
+                                                },
+                                            },
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
-                        dict(
-                            process_id="103",
-                            vrfs=[
-                                dict(
-                                    vrf="red",
-                                    max_metric=dict(
-                                        router_lsa=dict(
-                                            on_startup=dict(
-                                                wait_period=1200,
-                                                wait_for_bgp_asn=65563,
-                                            ),
-                                            inter_area_prefix_lsa=dict(set=True),
-                                        ),
-                                    ),
-                                ),
+                        },
+                        {
+                            "process_id": "103",
+                            "vrfs": [
+                                {
+                                    "vrf": "red",
+                                    "max_metric": {
+                                        "router_lsa": {
+                                            "on_startup": {
+                                                "wait_period": 1200,
+                                                "wait_for_bgp_asn": 65563,
+                                            },
+                                            "inter_area_prefix_lsa": {"set": True},
+                                        },
+                                    },
+                                },
                             ],
-                        ),
-                        dict(
-                            process_id="104",
-                            vrfs=[
-                                dict(
-                                    vrf="red",
-                                    timers=dict(
-                                        lsa_arrival=1200,
-                                        lsa_group_pacing=210,
-                                        throttle=dict(
-                                            lsa=dict(
-                                                start_interval=100,
-                                                hold_interval=70,
-                                                max_interval=1500,
-                                            ),
-                                        ),
-                                    ),
-                                    shutdown=True,
-                                ),
+                        },
+                        {
+                            "process_id": "104",
+                            "vrfs": [
+                                {
+                                    "vrf": "red",
+                                    "timers": {
+                                        "lsa_arrival": 1200,
+                                        "lsa_group_pacing": 210,
+                                        "throttle": {
+                                            "lsa": {
+                                                "start_interval": 100,
+                                                "hold_interval": 70,
+                                                "max_interval": 1500,
+                                            },
+                                        },
+                                    },
+                                    "shutdown": True,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1792,7 +1792,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "shutdown",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_vrf_replaced(self):
         # test replaced for config->processes->vrf
@@ -1817,35 +1817,35 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            vrfs=[
-                                dict(
-                                    vrf="blue",
-                                    areas=[
-                                        dict(
-                                            area_id="1.1.1.1",
-                                            nssa=dict(
-                                                no_summary=True,
-                                                translate=dict(
-                                                    type7=dict(
-                                                        always=True,
-                                                        supress_fa=True,
-                                                    ),
-                                                ),
-                                            ),
-                                        ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "vrfs": [
+                                {
+                                    "vrf": "blue",
+                                    "areas": [
+                                        {
+                                            "area_id": "1.1.1.1",
+                                            "nssa": {
+                                                "no_summary": True,
+                                                "translate": {
+                                                    "type7": {
+                                                        "always": True,
+                                                        "supress_fa": True,
+                                                    },
+                                                },
+                                            },
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1857,7 +1857,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "no vrf red",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_top_spec_af_vrf_merged(self):
         # test merged for every nested level
@@ -1869,43 +1869,43 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                redistribute=[
-                                    dict(
-                                        protocol="eigrp",
-                                        id="100",
-                                        route_map="rmap1",
-                                    ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "redistribute": [
+                                    {
+                                        "protocol": "eigrp",
+                                        "id": "100",
+                                        "route_map": "rmap1",
+                                    },
                                 ],
-                            ),
-                            vrfs=[
-                                dict(vrf="blue", router_id="10.0.0.2"),
-                                dict(
-                                    vrf="red",
-                                    areas=[
-                                        dict(
-                                            area_id="1.1.1.1",
-                                            nssa=dict(set=True),
-                                        ),
+                            },
+                            "vrfs": [
+                                {"vrf": "blue", "router_id": "10.0.0.2"},
+                                {
+                                    "vrf": "red",
+                                    "areas": [
+                                        {
+                                            "area_id": "1.1.1.1",
+                                            "nssa": {"set": True},
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
-                        dict(
-                            process_id="103",
-                            vrfs=[dict(vrf="red", shutdown=True)],
-                        ),
+                        },
+                        {
+                            "process_id": "103",
+                            "vrfs": [{"vrf": "red", "shutdown": True}],
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1921,7 +1921,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "shutdown",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_top_spec_af_vrf_replaced(self):
         # test replaced for every nested level
@@ -1941,27 +1941,27 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                redistribute=[
-                                    dict(
-                                        protocol="eigrp",
-                                        id="100",
-                                        route_map="rmap1",
-                                    ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "redistribute": [
+                                    {
+                                        "protocol": "eigrp",
+                                        "id": "100",
+                                        "route_map": "rmap1",
+                                    },
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1972,7 +1972,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "no vrf red",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_top_spec_af_vrf_overridden(self):
         # test overridden for every nested level
@@ -1992,27 +1992,27 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="100",
-                            address_family=dict(
-                                afi="ipv6",
-                                safi="unicast",
-                                redistribute=[
-                                    dict(
-                                        protocol="eigrp",
-                                        id="100",
-                                        route_map="rmap2",
-                                    ),
+            {
+                "config": {
+                    "processes": [
+                        {
+                            "process_id": "100",
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "redistribute": [
+                                    {
+                                        "protocol": "eigrp",
+                                        "id": "100",
+                                        "route_map": "rmap2",
+                                    },
                                 ],
-                            ),
-                        ),
+                            },
+                        },
                     ],
-                ),
-                state="overridden",
-            ),
+                },
+                "state": "overridden",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2025,7 +2025,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             "no router ospfv3 103",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_top_spec_af_vrf_deleted(self):
         # test overridden for every nested level
@@ -2045,15 +2045,15 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(processes=[dict(process_id="100")]),
-                state="deleted",
-            ),
+            {
+                "config": {"processes": [{"process_id": "100"}]},
+                "state": "deleted",
+            },
             ignore_provider_arg,
         )
         commands = ["no router ospfv3 100"]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_top_spec_af_vrf_deleted_all(self):
         # test overridden for every nested level
@@ -2072,16 +2072,16 @@ class TestNxosOspfv3Module(TestNxosModule):
               shutdown
             """,
         )
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         commands = ["no router ospfv3 100", "no router ospfv3 103"]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_ospfv3_parsed(self):
         # test parsed
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     router ospfv3 100
                       address-family ipv6 unicast
@@ -2096,8 +2096,8 @@ class TestNxosOspfv3Module(TestNxosModule):
                         shutdown
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
             ignore_provider_arg,
         )
         parsed = {
@@ -2131,7 +2131,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             ],
         }
         result = self.execute_module(changed=False)
-        self.assertEqual(set(result["parsed"]), set(parsed))
+        assert set(result["parsed"]) == set(parsed)
 
     def test_nxos_ospfv3_gathered(self):
         # test gathered
@@ -2150,7 +2150,7 @@ class TestNxosOspfv3Module(TestNxosModule):
               shutdown
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
         gathered = {
             "processes": [
                 {
@@ -2182,7 +2182,7 @@ class TestNxosOspfv3Module(TestNxosModule):
             ],
         }
         result = self.execute_module(changed=False)
-        self.assertEqual(set(result["gathered"]), set(gathered))
+        assert set(result["gathered"]) == set(gathered)
 
     def test_nxos_ospfv3_process_id_word(self):
         self.get_config.return_value = dedent(
@@ -2194,20 +2194,20 @@ class TestNxosOspfv3Module(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(process_id="100", router_id="203.0.113.20"),
-                        dict(process_id="TEST-1", router_id="198.51.100.1"),
-                        dict(process_id="TEST-2", router_id="198.52.200.1"),
+            {
+                "config": {
+                    "processes": [
+                        {"process_id": "100", "router_id": "203.0.113.20"},
+                        {"process_id": "TEST-1", "router_id": "198.51.100.1"},
+                        {"process_id": "TEST-2", "router_id": "198.52.200.1"},
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
 
         commands = ["router ospfv3 TEST-2", "router-id 198.52.200.1"]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)

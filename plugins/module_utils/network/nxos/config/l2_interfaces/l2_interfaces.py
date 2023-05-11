@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_l2_interfaces class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_diff,
     remove_empties,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
@@ -37,9 +35,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class L2_interfaces(ConfigBase):
-    """
-    The nxos_l2_interfaces class
-    """
+    """The nxos_l2_interfaces class."""
 
     gather_subset = ["!all", "!min"]
 
@@ -47,11 +43,11 @@ class L2_interfaces(ConfigBase):
 
     exclude_params = ["vlan", "allowed_vlans", "native_vlans"]
 
-    def __init__(self, module):
-        super(L2_interfaces, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_l2_interfaces_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -67,7 +63,7 @@ class L2_interfaces(ConfigBase):
         return l2_interfaces_facts
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -119,7 +115,7 @@ class L2_interfaces(ConfigBase):
 
     def set_config(self, existing_l2_interfaces_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -142,15 +138,14 @@ class L2_interfaces(ConfigBase):
 
     def expand_trunk_allowed_vlans(self, d):
         if not d:
-            return None
-        if "trunk" in d and d["trunk"]:
-            if "allowed_vlans" in d["trunk"]:
-                allowed_vlans = vlan_range_to_list(d["trunk"]["allowed_vlans"])
-                vlans_list = [str(l) for l in sorted(allowed_vlans)]
-                d["trunk"]["allowed_vlans"] = ",".join(vlans_list)
+            return
+        if "trunk" in d and d["trunk"] and "allowed_vlans" in d["trunk"]:
+            allowed_vlans = vlan_range_to_list(d["trunk"]["allowed_vlans"])
+            vlans_list = [str(l) for l in sorted(allowed_vlans)]
+            d["trunk"]["allowed_vlans"] = ",".join(vlans_list)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -161,10 +156,10 @@ class L2_interfaces(ConfigBase):
         state = self._module.params["state"]
         if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state),
+                msg=f"value of config parameter must not be empty for state {state}",
             )
 
-        commands = list()
+        commands = []
         if state == "overridden":
             commands.extend(self._state_overridden(want, have))
         elif state == "deleted":
@@ -178,7 +173,7 @@ class L2_interfaces(ConfigBase):
         return commands
 
     def _state_replaced(self, w, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -186,10 +181,7 @@ class L2_interfaces(ConfigBase):
         """
         commands = []
         obj_in_have = flatten_dict(search_obj_in_list(w["name"], have, "name"))
-        if obj_in_have:
-            diff = dict_diff(w, obj_in_have)
-        else:
-            diff = w
+        diff = dict_diff(w, obj_in_have) if obj_in_have else w
         merged_commands = self.set_commands(w, have, True)
         if "name" not in diff:
             diff["name"] = w["name"]
@@ -209,7 +201,7 @@ class L2_interfaces(ConfigBase):
         return commands
 
     def _state_overridden(self, want, have):
-        """The command generator when state is overridden
+        """The command generator when state is overridden.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -235,7 +227,7 @@ class L2_interfaces(ConfigBase):
         return commands
 
     def _state_merged(self, w, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -244,7 +236,7 @@ class L2_interfaces(ConfigBase):
         return self.set_commands(w, have)
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -294,7 +286,7 @@ class L2_interfaces(ConfigBase):
 
         cmd = "switchport "
         if "mode" in d:
-            commands.append(cmd + "mode {0}".format(d["mode"]))
+            commands.append(cmd + "mode {}".format(d["mode"]))
         if "vlan" in d:
             commands.append(cmd + "access vlan " + str(d["vlan"]))
         if "allowed_vlans" in d:
@@ -317,9 +309,9 @@ class L2_interfaces(ConfigBase):
         else:
             diff = self.diff_of_dicts(w, obj_in_have)
             if diff and not replace:
-                if "mode" in diff.keys() and diff["mode"]:
+                if "mode" in diff and diff["mode"]:
                     commands = self.add_commands(diff)
-                if "allowed_vlans" in diff.keys() and diff["allowed_vlans"]:
+                if "allowed_vlans" in diff and diff["allowed_vlans"]:
                     vlan_tobe_added = diff["allowed_vlans"].split(",")
                     vlan_list = vlan_tobe_added[:]
                     if obj_in_have.get("allowed_vlans"):

@@ -88,7 +88,6 @@ changed:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     load_config,
@@ -163,26 +162,26 @@ def get_vtp_password(module):
 
 
 def main():
-    argument_spec = dict(version=dict(type="str", choices=["1", "2"], required=True))
+    argument_spec = {"version": {"type": "str", "choices": ["1", "2"], "required": True}}
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     version = module.params["version"]
 
     existing = get_vtp_config(module)
     end_state = existing
 
-    args = dict(version=version)
+    args = {"version": version}
 
     changed = False
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    proposed = {k: v for k, v in args.items() if v is not None}
     delta = dict(set(proposed.items()).difference(existing.items()))
 
     commands = []
     if delta:
-        commands.append(["vtp version {0}".format(version)])
+        commands.append([f"vtp version {version}"])
 
     cmds = flatten_list(commands)
     if cmds:

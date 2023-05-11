@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_lag_interfaces class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 from __future__ import absolute_import, division, print_function
 
@@ -24,7 +23,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     search_obj_in_list,
     to_list,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
@@ -32,19 +30,17 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Lag_interfaces(ConfigBase):
-    """
-    The nxos_lag_interfaces class
-    """
+    """The nxos_lag_interfaces class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["lag_interfaces"]
 
-    def __init__(self, module):
-        super(Lag_interfaces, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_lag_interfaces_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -60,14 +56,14 @@ class Lag_interfaces(ConfigBase):
         return lag_interfaces_facts
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
 
         if self.state in self.ACTION_STATES:
             existing_lag_interfaces_facts = self.get_lag_interfaces_facts()
@@ -118,7 +114,7 @@ class Lag_interfaces(ConfigBase):
 
     def set_config(self, existing_lag_interfaces_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -136,7 +132,7 @@ class Lag_interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -147,9 +143,9 @@ class Lag_interfaces(ConfigBase):
         state = self._module.params["state"]
         if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state),
+                msg=f"value of config parameter must not be empty for state {state}",
             )
-        commands = list()
+        commands = []
 
         if state == "overridden":
             commands.extend(self._state_overridden(want, have))
@@ -164,7 +160,7 @@ class Lag_interfaces(ConfigBase):
         return commands
 
     def _state_replaced(self, w, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -179,7 +175,7 @@ class Lag_interfaces(ConfigBase):
         return commands
 
     def _state_overridden(self, want, have):
-        """The command generator when state is overridden
+        """The command generator when state is overridden.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -198,7 +194,7 @@ class Lag_interfaces(ConfigBase):
         return commands
 
     def _state_merged(self, w, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -207,7 +203,7 @@ class Lag_interfaces(ConfigBase):
         return self.set_commands(w, have)
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -237,14 +233,13 @@ class Lag_interfaces(ConfigBase):
             h_item = search_obj_in_list(w_item["member"], have, key="member") or {}
             delta = dict_diff(h_item, w_item)
             if delta:
-                if h_item:
-                    if (
-                        "mode" in delta.keys()
-                        and delta["mode"] == "on"
-                        and "mode" not in h_item.keys()
-                    ):
-                        # mode = on will not be displayed in running-config
-                        continue
+                if h_item and (
+                    "mode" in delta
+                    and delta["mode"] == "on"
+                    and "mode" not in h_item.keys()
+                ):
+                    # mode = on will not be displayed in running-config
+                    continue
                 if "member" not in delta.keys():
                     delta["member"] = w_item["member"]
                 diff.append(delta)
@@ -259,11 +254,11 @@ class Lag_interfaces(ConfigBase):
             wmem.append({"member": d["member"]})
         for d in h:
             hmem.append({"member": d["member"]})
-        set_w = set(tuple(sorted(d.items())) for d in wmem)
-        set_h = set(tuple(sorted(d.items())) for d in hmem)
+        set_w = {tuple(sorted(d.items())) for d in wmem}
+        set_h = {tuple(sorted(d.items())) for d in hmem}
         intersection = set_w.intersection(set_h)
         for element in intersection:
-            intersect.append(dict((x, y) for x, y in element))
+            intersect.append(dict(element))
         return intersect
 
     def add_commands(self, diff, name):
@@ -272,14 +267,11 @@ class Lag_interfaces(ConfigBase):
         for d in diff:
             commands.append("interface" + " " + d["member"])
             cmd = ""
-            group_cmd = "channel-group {0}".format(name)
+            group_cmd = f"channel-group {name}"
             if d.get("force"):
                 cmd = group_cmd + " force "
             if "mode" in d:
-                if cmd:
-                    cmd = cmd + " mode " + d["mode"]
-                else:
-                    cmd = group_cmd + " mode " + d["mode"]
+                cmd = cmd + " mode " + d["mode"] if cmd else group_cmd + " mode " + d["mode"]
             if not cmd:
                 cmd = group_cmd
             commands.append(cmd)

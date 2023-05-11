@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Cisco and/or its affiliates.
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -22,17 +21,15 @@
 #
 #############################################
 
-"""
-The arg spec for the nxos_telemetry module
-"""
+"""The arg spec for the nxos_telemetry module."""
 from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
 
 
-class TelemetryArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_telemetry module"""
+class TelemetryArgs:  # pylint: disable=R0903
+    """The arg spec for the nxos_telemetry module."""
 
     argument_spec = {
         "config": {

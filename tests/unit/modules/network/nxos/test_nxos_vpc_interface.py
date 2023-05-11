@@ -32,7 +32,7 @@ class TestNxosVpcModule(TestNxosModule):
     module = nxos_vpc_interface
 
     def setUp(self):
-        super(TestNxosVpcModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_vpc_interface.load_config",
@@ -50,7 +50,7 @@ class TestNxosVpcModule(TestNxosModule):
         self.run_commands = self.mock_run_commands.start()
 
     def tearDown(self):
-        super(TestNxosVpcModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
         self.mock_run_commands.stop()
@@ -58,7 +58,7 @@ class TestNxosVpcModule(TestNxosModule):
     def load_fixtures(self, commands=None, device=""):
         def load_from_file(*args, **kwargs):
             module, commands = args
-            output = list()
+            output = []
             for command in commands:
                 filename = str(command).split(" | ", 1)[0].replace(" ", "_")
                 output.append(load_fixture("nxos_vpc_interface", filename))
@@ -68,11 +68,11 @@ class TestNxosVpcModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_vpc_interface_absent(self):
-        set_module_args(dict(portchannel=10, vpc=100, state="absent"))
+        set_module_args({"portchannel": 10, "vpc": 100, "state": "absent"})
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["interface port-channel10", "no vpc"])
+        assert result["commands"] == ["interface port-channel10", "no vpc"]
 
     def test_nxos_vpc_interface_present(self):
-        set_module_args(dict(portchannel=20, vpc=200, state="present"))
+        set_module_args({"portchannel": 20, "vpc": 200, "state": "present"})
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["interface port-channel20", "vpc 200"])
+        assert result["commands"] == ["interface port-channel20", "vpc 200"]

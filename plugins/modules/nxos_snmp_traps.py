@@ -111,7 +111,6 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     load_config,
@@ -184,11 +183,11 @@ def get_snmp_traps(group, module):
         for line in body:
             if each == "ospf":
                 # ospf behaves differently when routers are present
-                if "snmp-server enable traps ospf" == line:
+                if line == "snmp-server enable traps ospf":
                     resource[each] = True
                     break
             else:
-                if "enable traps {0}".format(each) in line:
+                if f"enable traps {each}" in line:
                     if "no " in line:
                         resource[each] = False
                         break
@@ -200,7 +199,7 @@ def get_snmp_traps(group, module):
             # on some platforms, the 'no' cmd does not
             # show up and so check if the feature is enabled
             body = execute_show_command("show run | inc feature", module)[0]
-            if "feature {0}".format(each) in body:
+            if f"feature {each}" in body:
                 resource[each] = False
 
     find = resource.get(group, None)
@@ -225,13 +224,13 @@ def get_trap_commands(group, state, existing, module):
         if state == "disabled":
             for feature in existing:
                 if existing[feature]:
-                    trap_command = "no snmp-server enable traps {0}".format(feature)
+                    trap_command = f"no snmp-server enable traps {feature}"
                     commands.append(trap_command)
 
         elif state == "enabled":
             for feature in existing:
                 if existing[feature] is False:
-                    trap_command = "snmp-server enable traps {0}".format(feature)
+                    trap_command = f"snmp-server enable traps {feature}"
                     commands.append(trap_command)
 
     else:
@@ -242,20 +241,20 @@ def get_trap_commands(group, state, existing, module):
                 disabled = True
 
             if state == "disabled" and enabled:
-                commands.append(["no snmp-server enable traps {0}".format(group)])
+                commands.append([f"no snmp-server enable traps {group}"])
             elif state == "enabled" and disabled:
-                commands.append(["snmp-server enable traps {0}".format(group)])
+                commands.append([f"snmp-server enable traps {group}"])
         else:
-            module.fail_json(msg="{0} is not a currently " "enabled feature.".format(group))
+            module.fail_json(msg="{} is not a currently " "enabled feature.".format(group))
 
     return commands
 
 
 def main():
-    argument_spec = dict(
-        state=dict(choices=["enabled", "disabled"], default="enabled"),
-        group=dict(
-            choices=[
+    argument_spec = {
+        "state": {"choices": ["enabled", "disabled"], "default": "enabled"},
+        "group": {
+            "choices": [
                 "aaa",
                 "bfd",
                 "bgp",
@@ -287,13 +286,13 @@ def main():
                 "vtp",
                 "all",
             ],
-            required=True,
-        ),
-    )
+            "required": True,
+        },
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     group = module.params["group"].lower()

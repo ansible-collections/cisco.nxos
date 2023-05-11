@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -11,7 +10,6 @@ import platform
 import re
 
 from ansible.module_utils.six import iteritems
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     get_config,
@@ -26,11 +24,11 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 g_config = None
 
 
-class FactsBase(object):
-    def __init__(self, module):
+class FactsBase:
+    def __init__(self, module) -> None:
         self.module = module
-        self.warnings = list()
-        self.facts = dict()
+        self.warnings = []
+        self.facts = {}
         self.capabilities = get_capabilities(self.module)
 
     def populate(self):
@@ -71,7 +69,7 @@ class FactsBase(object):
         return g_config
 
     def transform_dict(self, data, keymap):
-        transform = dict()
+        transform = {}
         for key, fact in keymap:
             if key in data:
                 transform[fact] = data[key]
@@ -100,6 +98,7 @@ class Default(FactsBase):
         match = re.search(r"Processor Board ID\s*(\S+)", data, re.M)
         if match:
             return match.group(1)
+        return None
 
     def platform_facts(self):
         platform_facts = {}
@@ -123,17 +122,18 @@ class Default(FactsBase):
         match = re.search(r"License hostid: VDH=(.+)$", data, re.M)
         if match:
             return match.group(1)
+        return None
 
 
 class Config(FactsBase):
     def populate(self):
-        super(Config, self).populate()
+        super().populate()
         self.facts["config"] = self.get_config()
 
 
 class Features(FactsBase):
     def populate(self):
-        super(Features, self).populate()
+        super().populate()
         data = self.get_config()
 
         if data:
@@ -170,12 +170,14 @@ class Hardware(FactsBase):
         if match:
             memtotal = match.group(1)
             return int(memtotal) / 1024
+        return None
 
     def parse_memfree_mb(self, data):
         match = re.search(r"(\S+)K(\s+|)free", data, re.M)
         if match:
             memfree = match.group(1)
             return int(memfree) / 1024
+        return None
 
 
 class Interfaces(FactsBase):
@@ -214,14 +216,12 @@ class Interfaces(FactsBase):
         if data:
             nxos_os_version = data["device_info"]["network_os_version"]
             unsupported_versions = ["I2", "F1", "A8"]
-            for ver in unsupported_versions:
-                if ver in nxos_os_version:
-                    return False
-            return True
+            return all(ver not in nxos_os_version for ver in unsupported_versions)
+        return None
 
     def populate(self):
-        self.facts["all_ipv4_addresses"] = list()
-        self.facts["all_ipv6_addresses"] = list()
+        self.facts["all_ipv4_addresses"] = []
+        self.facts["all_ipv6_addresses"] = []
         self.facts["neighbors"] = {}
         data = None
 
@@ -262,7 +262,7 @@ class Interfaces(FactsBase):
         self.facts["neighbors"].pop(None, None)  # Remove null key
 
     def populate_structured_interfaces(self, data):
-        interfaces = dict()
+        interfaces = {}
         data = data["TABLE_interface"]["ROW_interface"]
 
         if isinstance(data, dict):
@@ -271,7 +271,7 @@ class Interfaces(FactsBase):
         for item in data:
             name = item["interface"]
 
-            intf = dict()
+            intf = {}
             if "type" in item:
                 intf.update(self.transform_dict(item, self.INTERFACE_SVI_MAP))
             else:
@@ -310,7 +310,7 @@ class Interfaces(FactsBase):
             return ""
 
     def populate_structured_neighbors_lldp(self, data):
-        objects = dict()
+        objects = {}
         data = data["TABLE_nbor"]["ROW_nbor"]
 
         if isinstance(data, dict):
@@ -318,8 +318,8 @@ class Interfaces(FactsBase):
 
         for item in data:
             local_intf = normalize_interface(item["l_port_id"])
-            objects[local_intf] = list()
-            nbor = dict()
+            objects[local_intf] = []
+            nbor = {}
             nbor["port"] = item["port_id"]
             nbor["host"] = nbor["sysname"] = item["chassis_id"]
             objects[local_intf].append(nbor)
@@ -327,7 +327,7 @@ class Interfaces(FactsBase):
         return objects
 
     def populate_structured_neighbors_cdp(self, data):
-        objects = dict()
+        objects = {}
         data = data["TABLE_cdp_neighbor_detail_info"]["ROW_cdp_neighbor_detail_info"]
 
         if isinstance(data, dict):
@@ -339,8 +339,8 @@ class Interfaces(FactsBase):
             else:
                 # in some N7Ks the key has been renamed
                 local_intf = item["interface"]
-            objects[local_intf] = list()
-            nbor = dict()
+            objects[local_intf] = []
+            nbor = {}
             nbor["port"] = item["port_id"]
             nbor["host"] = nbor["sysname"] = item["device_id"]
             objects[local_intf].append(nbor)
@@ -348,7 +348,7 @@ class Interfaces(FactsBase):
         return objects
 
     def parse_interfaces(self, data):
-        parsed = dict()
+        parsed = {}
         key = ""
         for line in data.split("\n"):
             if len(line) == 0:
@@ -364,9 +364,9 @@ class Interfaces(FactsBase):
         return parsed
 
     def populate_interfaces(self, interfaces):
-        facts = dict()
+        facts = {}
         for key, value in iteritems(interfaces):
-            intf = dict()
+            intf = {}
             if get_interface_type(key) == "svi":
                 intf["state"] = self.parse_state(key, value, intf_type="svi")
                 intf["macaddress"] = self.parse_macaddress(value, intf_type="svi")
@@ -401,6 +401,7 @@ class Interfaces(FactsBase):
 
         if match:
             return match.group(1)
+        return None
 
     def parse_macaddress(self, value, intf_type="ethernet"):
         match = None
@@ -411,16 +412,19 @@ class Interfaces(FactsBase):
 
         if match:
             return match.group(1)
+        return None
 
     def parse_mtu(self, value, intf_type="ethernet"):
         match = re.search(r"MTU\s*(\S+)", value, re.M)
         if match:
             return match.group(1)
+        return None
 
     def parse_bandwidth(self, value, intf_type="ethernet"):
         match = re.search(r"BW\s*(\S+)", value, re.M)
         if match:
             return match.group(1)
+        return None
 
     def parse_type(self, value, intf_type="ethernet"):
         match = None
@@ -431,26 +435,31 @@ class Interfaces(FactsBase):
 
         if match:
             return match.group(1)
+        return None
 
     def parse_description(self, value, intf_type="ethernet"):
         match = re.search(r"Description: (.+)$", value, re.M)
         if match:
             return match.group(1)
+        return None
 
     def parse_mode(self, value, intf_type="ethernet"):
         match = re.search(r"Port mode is (\S+)", value, re.M)
         if match:
             return match.group(1)
+        return None
 
     def parse_duplex(self, value, intf_type="ethernet"):
         match = re.search(r"(\S+)-duplex", value, re.M)
         if match:
             return match.group(1)
+        return None
 
     def parse_speed(self, value, intf_type="ethernet"):
         match = re.search(r"duplex, (.+)$", value, re.M)
         if match:
             return match.group(1)
+        return None
 
     def parse_ipv4_address(self, value, intf_type="ethernet"):
         ipv4 = {}
@@ -464,18 +473,18 @@ class Interfaces(FactsBase):
         return ipv4
 
     def populate_neighbors(self, data):
-        objects = dict()
+        objects = {}
         # if there are no neighbors the show command returns
         # ERROR: No neighbour information
         if data.startswith("ERROR"):
-            return dict()
+            return {}
 
         regex = re.compile(r"(\S+)\s+(\S+)\s+\d+\s+\w+\s+(\S+)")
 
         for item in data.split("\n")[4:-1]:
             match = regex.match(item)
             if match:
-                nbor = dict()
+                nbor = {}
                 nbor["host"] = nbor["sysname"] = match.group(1)
                 nbor["port"] = match.group(3)
                 local_intf = normalize_interface(match.group(2))
@@ -486,16 +495,16 @@ class Interfaces(FactsBase):
         return objects
 
     def populate_neighbors_cdp(self, data):
-        facts = dict()
+        facts = {}
 
         for item in data.split("----------------------------------------"):
             if item == "":
                 continue
             local_intf = self.parse_lldp_intf(item)
             if local_intf not in facts:
-                facts[local_intf] = list()
+                facts[local_intf] = []
 
-            fact = dict()
+            fact = {}
             fact["port"] = self.parse_lldp_port(item)
             fact["sysname"] = self.parse_lldp_sysname(item)
             facts[local_intf].append(fact)
@@ -506,21 +515,24 @@ class Interfaces(FactsBase):
         match = re.search(r"Interface:\s*(\S+)", data, re.M)
         if match:
             return match.group(1).strip(",")
+        return None
 
     def parse_lldp_port(self, data):
         match = re.search(r"Port ID \(outgoing port\):\s*(\S+)", data, re.M)
         if match:
             return match.group(1)
+        return None
 
     def parse_lldp_sysname(self, data):
         match = re.search(r"Device ID:(.+)$", data, re.M)
         if match:
             return match.group(1)
+        return None
 
     def populate_ipv6_interfaces(self, interfaces):
-        facts = dict()
+        facts = {}
         for key, value in iteritems(interfaces):
-            intf = dict()
+            intf = {}
             intf["ipv6"] = self.parse_ipv6_address(value)
             facts[key] = intf
 
@@ -631,7 +643,7 @@ class Legacy(FactsBase):
                 self.facts["power_supply_info"] = self.parse_power_supply_info(data)
 
     def parse_structured_interfaces(self, data):
-        objects = list()
+        objects = []
         data = data["TABLE_interface"]["ROW_interface"]
         if isinstance(data, dict):
             objects.append(data["interface"])
@@ -641,7 +653,7 @@ class Legacy(FactsBase):
         return objects
 
     def parse_structured_vlans(self, data):
-        objects = list()
+        objects = []
         data = data["TABLE_vlanbriefxbrief"]["ROW_vlanbriefxbrief"]
         if isinstance(data, dict):
             objects.append(data["vlanshowbr-vlanid-utf"])
@@ -665,7 +677,7 @@ class Legacy(FactsBase):
         return objects
 
     def parse_structured_fan_info(self, data):
-        objects = list()
+        objects = []
 
         for key in ("fandetails", "fandetails_3k"):
             if data.get(key):
@@ -708,6 +720,7 @@ class Legacy(FactsBase):
         match = re.search(r"\s+Device name:\s+(\S+)", data, re.M)
         if match:
             return match.group(1)
+        return None
 
     def parse_os(self, data):
         match = re.search(r"\s+system:\s+version\s*(\S+)", data, re.M)
@@ -717,14 +730,16 @@ class Legacy(FactsBase):
             match = re.search(r"\s+kickstart:\s+version\s*(\S+)", data, re.M)
             if match:
                 return match.group(1)
+            return None
 
     def parse_platform(self, data):
         match = re.search(r"Hardware\n\s+cisco\s+(\S+\s+\S+)", data, re.M)
         if match:
             return match.group(1)
+        return None
 
     def parse_interfaces(self, data):
-        objects = list()
+        objects = []
         for line in data.split("\n"):
             if len(line) == 0:
                 continue
@@ -739,7 +754,7 @@ class Legacy(FactsBase):
         return objects
 
     def parse_vlans(self, data):
-        objects = list()
+        objects = []
         for line in data.splitlines():
             if line == "":
                 continue
@@ -749,7 +764,7 @@ class Legacy(FactsBase):
         return objects
 
     def parse_module(self, data):
-        objects = list()
+        objects = []
         for line in data.splitlines():
             if line == "":
                 break
@@ -762,7 +777,7 @@ class Legacy(FactsBase):
                 match = re.search(r"\d\s*\d*\s*(.+)$", line, re.M)
                 if match:
                     l = match.group(1).split("  ")
-                    items = list()
+                    items = []
                     for item in l:
                         if item == "":
                             continue
@@ -777,7 +792,7 @@ class Legacy(FactsBase):
         return objects
 
     def parse_fan_info(self, data):
-        objects = list()
+        objects = []
 
         for l in data.splitlines():
             if "-----------------" in l or "Status" in l:
@@ -793,7 +808,7 @@ class Legacy(FactsBase):
         return objects
 
     def parse_power_supply_info(self, data):
-        objects = list()
+        objects = []
 
         for l in data.splitlines():
             if l == "":

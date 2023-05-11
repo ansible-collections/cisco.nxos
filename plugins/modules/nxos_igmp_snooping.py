@@ -100,7 +100,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -125,10 +124,7 @@ def flatten_list(command_lists):
 
 def get_group_timeout(config):
     match = re.search(r"  Group timeout configured: (\S+)", config, re.M)
-    if match:
-        value = match.group(1)
-    else:
-        value = ""
+    value = match.group(1) if match else ""
     return value
 
 
@@ -224,15 +220,15 @@ def get_igmp_snooping_defaults():
     v3_report_supp = False
     snooping = True
 
-    args = dict(
-        snooping=snooping,
-        link_local_grp_supp=link_local_grp_supp,
-        report_supp=report_supp,
-        v3_report_supp=v3_report_supp,
-        group_timeout=group_timeout,
-    )
+    args = {
+        "snooping": snooping,
+        "link_local_grp_supp": link_local_grp_supp,
+        "report_supp": report_supp,
+        "v3_report_supp": v3_report_supp,
+        "group_timeout": group_timeout,
+    }
 
-    default = dict((param, value) for (param, value) in args.items() if value is not None)
+    default = {param: value for (param, value) in args.items() if value is not None}
 
     return default
 
@@ -253,18 +249,18 @@ def igmp_snooping_gt_dependency(command, existing, module):
 
 
 def main():
-    argument_spec = dict(
-        snooping=dict(required=False, type="bool"),
-        group_timeout=dict(required=False, type="str"),
-        link_local_grp_supp=dict(required=False, type="bool"),
-        report_supp=dict(required=False, type="bool"),
-        v3_report_supp=dict(required=False, type="bool"),
-        state=dict(choices=["present", "default"], default="present"),
-    )
+    argument_spec = {
+        "snooping": {"required": False, "type": "bool"},
+        "group_timeout": {"required": False, "type": "str"},
+        "link_local_grp_supp": {"required": False, "type": "bool"},
+        "report_supp": {"required": False, "type": "bool"},
+        "v3_report_supp": {"required": False, "type": "bool"},
+        "state": {"choices": ["present", "default"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     snooping = module.params["snooping"]
@@ -274,15 +270,15 @@ def main():
     group_timeout = module.params["group_timeout"]
     state = module.params["state"]
 
-    args = dict(
-        snooping=snooping,
-        link_local_grp_supp=link_local_grp_supp,
-        report_supp=report_supp,
-        v3_report_supp=v3_report_supp,
-        group_timeout=group_timeout,
-    )
+    args = {
+        "snooping": snooping,
+        "link_local_grp_supp": link_local_grp_supp,
+        "report_supp": report_supp,
+        "v3_report_supp": v3_report_supp,
+        "group_timeout": group_timeout,
+    }
 
-    proposed = dict((param, value) for (param, value) in args.items() if value is not None)
+    proposed = {param: value for (param, value) in args.items() if value is not None}
 
     existing = get_igmp_snooping(module)
 

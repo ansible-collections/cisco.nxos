@@ -19,7 +19,7 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
     module = nxos_lldp_interfaces
 
     def setUp(self):
-        super(TestNxosLldpInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -52,7 +52,7 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestNxosLldpInterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -74,16 +74,16 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
 
     def test_nxos_lldp_interfaces_merged(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/3",
-                        receive=False,
-                        tlv_set=dict(vlan=123),
-                    ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/3",
+                        "receive": False,
+                        "tlv_set": {"vlan": 123},
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "interface Ethernet1/3",
@@ -94,33 +94,33 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
 
     def test_nxos_lldp_interfaces_merged_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        receive=False,
-                        tlv_set=dict(vlan=12),
-                    ),
-                    dict(name="Ethernet1/1", receive=True, transmit=False),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "receive": False,
+                        "tlv_set": {"vlan": 12},
+                    },
+                    {"name": "Ethernet1/1", "receive": True, "transmit": False},
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_lldp_interfaces_replaced(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        receive=True,
-                        transmit=False,
-                        tlv_set=dict(management_address="192.0.2.123"),
-                    ),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "receive": True,
+                        "transmit": False,
+                        "tlv_set": {"management_address": "192.0.2.123"},
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "interface Ethernet1/2",
@@ -133,26 +133,26 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
 
     def test_nxos_lldp_interfaces_replaced_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        receive=False,
-                        tlv_set=dict(vlan=12),
-                    ),
-                    dict(name="Ethernet1/1", receive=True, transmit=False),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "receive": False,
+                        "tlv_set": {"vlan": 12},
+                    },
+                    {"name": "Ethernet1/1", "receive": True, "transmit": False},
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_lldp_interfaces_overridden(self):
         set_module_args(
-            dict(
-                config=[dict(name="Ethernet1/4", receive=True, transmit=False)],
-                state="overridden",
-            ),
+            {
+                "config": [{"name": "Ethernet1/4", "receive": True, "transmit": False}],
+                "state": "overridden",
+            },
         )
         commands = [
             "interface Ethernet1/4",
@@ -169,22 +169,22 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
 
     def test_nxos_lldp_interfaces_overridden_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        receive=False,
-                        tlv_set=dict(vlan=12),
-                    ),
-                    dict(name="Ethernet1/1", receive=True, transmit=False),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "receive": False,
+                        "tlv_set": {"vlan": 12},
+                    },
+                    {"name": "Ethernet1/1", "receive": True, "transmit": False},
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_lldp_interfaces_deleted_intf(self):
-        set_module_args(dict(config=[dict(name="Ethernet1/2")], state="deleted"))
+        set_module_args({"config": [{"name": "Ethernet1/2"}], "state": "deleted"})
         commands = [
             "interface Ethernet1/2",
             "lldp receive",
@@ -193,7 +193,7 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_lldp_interfaces_deleted_all(self):
-        set_module_args(dict(state="deleted"))
+        set_module_args({"state": "deleted"})
         commands = [
             "interface Ethernet1/2",
             "lldp receive",
@@ -206,17 +206,17 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
 
     def test_nxos_lldp_interfaces_rendered(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="Ethernet1/2",
-                        receive=False,
-                        tlv_set=dict(vlan=12),
-                    ),
-                    dict(name="Ethernet1/1", receive=True, transmit=False),
+            {
+                "config": [
+                    {
+                        "name": "Ethernet1/2",
+                        "receive": False,
+                        "tlv_set": {"vlan": 12},
+                    },
+                    {"name": "Ethernet1/1", "receive": True, "transmit": False},
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "interface Ethernet1/1",
@@ -227,32 +227,32 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
             "lldp tlv-set vlan 12",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands), result["rendered"])
+        assert sorted(result["rendered"]) == sorted(commands), result["rendered"]
 
     def test_nxos_lldp_interfaces_parsed(self):
         set_module_args(
-            dict(
-                running_config="""interface Ethernet1/1
+            {
+                "running_config": """interface Ethernet1/1
             lldp receive
             no lldp transmit
           interface Ethernet1/2
             no lldp receive
             lldp tlv-set vlan 12""",
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         compare_list = [
             {"name": "Ethernet1/1", "receive": True, "transmit": False},
             {"name": "Ethernet1/2", "receive": False, "tlv_set": {"vlan": 12}},
         ]
-        self.assertEqual(result["parsed"], compare_list, result["parsed"])
+        assert result["parsed"] == compare_list, result["parsed"]
 
     def test_nxos_lldp_interfaces_gathered(self):
-        set_module_args(dict(state="gathered"))
+        set_module_args({"state": "gathered"})
         result = self.execute_module(changed=False)
         compare_list = [
             {"name": "Ethernet1/1", "receive": True, "transmit": False},
             {"name": "Ethernet1/2", "receive": False, "tlv_set": {"vlan": 12}},
         ]
-        self.assertEqual(result["gathered"], compare_list, result["gathered"])
+        assert result["gathered"] == compare_list, result["gathered"]

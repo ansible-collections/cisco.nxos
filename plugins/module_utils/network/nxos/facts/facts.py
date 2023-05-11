@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -15,7 +14,6 @@ calls the appropriate facts gathering function
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts import (
     FactsBase,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acl_interfaces.acl_interfaces import (
     Acl_interfacesFacts,
 )
@@ -107,57 +105,57 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vlan
 )
 
 
-FACT_LEGACY_SUBSETS = dict(
-    default=Default,
-    legacy=Legacy,
-    hardware=Hardware,
-    interfaces=Interfaces,
-    config=Config,
-    features=Features,
-)
-NX_FACT_RESOURCE_SUBSETS = dict(
-    bfd_interfaces=Bfd_interfacesFacts,
-    hsrp_interfaces=Hsrp_interfacesFacts,
-    lag_interfaces=Lag_interfacesFacts,
-    lldp_global=Lldp_globalFacts,
-    telemetry=TelemetryFacts,
-    vlans=VlansFacts,
-    lacp=LacpFacts,
-    lacp_interfaces=Lacp_interfacesFacts,
-    interfaces=InterfacesFacts,
-    l3_interfaces=L3_interfacesFacts,
-    l2_interfaces=L2_interfacesFacts,
-    lldp_interfaces=Lldp_interfacesFacts,
-    acl_interfaces=Acl_interfacesFacts,
-    acls=AclsFacts,
-    static_routes=Static_routesFacts,
-    ospfv2=Ospfv2Facts,
-    ospfv3=Ospfv3Facts,
-    ospf_interfaces=Ospf_interfacesFacts,
-    bgp_global=Bgp_globalFacts,
-    bgp_address_family=Bgp_address_familyFacts,
-    bgp_neighbor_address_family=Bgp_neighbor_address_familyFacts,
-    route_maps=Route_mapsFacts,
-    prefix_lists=Prefix_listsFacts,
-    logging_global=Logging_globalFacts,
-    ntp_global=Ntp_globalFacts,
-    snmp_server=Snmp_serverFacts,
-    hostname=HostnameFacts,
-)
-MDS_FACT_RESOURCE_SUBSETS = dict(
-    logging_global=Logging_globalFacts,
-    ntp_global=Ntp_globalFacts,
-    snmp_server=Snmp_serverFacts,
-)
+FACT_LEGACY_SUBSETS = {
+    "default": Default,
+    "legacy": Legacy,
+    "hardware": Hardware,
+    "interfaces": Interfaces,
+    "config": Config,
+    "features": Features,
+}
+NX_FACT_RESOURCE_SUBSETS = {
+    "bfd_interfaces": Bfd_interfacesFacts,
+    "hsrp_interfaces": Hsrp_interfacesFacts,
+    "lag_interfaces": Lag_interfacesFacts,
+    "lldp_global": Lldp_globalFacts,
+    "telemetry": TelemetryFacts,
+    "vlans": VlansFacts,
+    "lacp": LacpFacts,
+    "lacp_interfaces": Lacp_interfacesFacts,
+    "interfaces": InterfacesFacts,
+    "l3_interfaces": L3_interfacesFacts,
+    "l2_interfaces": L2_interfacesFacts,
+    "lldp_interfaces": Lldp_interfacesFacts,
+    "acl_interfaces": Acl_interfacesFacts,
+    "acls": AclsFacts,
+    "static_routes": Static_routesFacts,
+    "ospfv2": Ospfv2Facts,
+    "ospfv3": Ospfv3Facts,
+    "ospf_interfaces": Ospf_interfacesFacts,
+    "bgp_global": Bgp_globalFacts,
+    "bgp_address_family": Bgp_address_familyFacts,
+    "bgp_neighbor_address_family": Bgp_neighbor_address_familyFacts,
+    "route_maps": Route_mapsFacts,
+    "prefix_lists": Prefix_listsFacts,
+    "logging_global": Logging_globalFacts,
+    "ntp_global": Ntp_globalFacts,
+    "snmp_server": Snmp_serverFacts,
+    "hostname": HostnameFacts,
+}
+MDS_FACT_RESOURCE_SUBSETS = {
+    "logging_global": Logging_globalFacts,
+    "ntp_global": Ntp_globalFacts,
+    "snmp_server": Snmp_serverFacts,
+}
 
 
 class Facts(FactsBase):
-    """The fact class for nxos"""
+    """The fact class for nxos."""
 
     VALID_LEGACY_GATHER_SUBSETS = frozenset(FACT_LEGACY_SUBSETS.keys())
 
-    def __init__(self, module, chassis_type="nexus"):
-        super(Facts, self).__init__(module)
+    def __init__(self, module, chassis_type="nexus") -> None:
+        super().__init__(module)
         self.chassis_type = chassis_type
 
     def get_resource_subsets(self):
@@ -175,7 +173,7 @@ class Facts(FactsBase):
         :param resource_facts_type: List of resource fact types
         :param data: previously collected conf
         :rtype: dict
-        :return: the facts gathered
+        :return: the facts gathered.
         """
         VALID_RESOURCE_SUBSETS = self.get_resource_subsets()
 

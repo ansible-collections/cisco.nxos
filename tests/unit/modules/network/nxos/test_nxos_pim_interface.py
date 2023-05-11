@@ -32,7 +32,7 @@ class TestNxosIPInterfaceModule(TestNxosModule):
     module = nxos_pim_interface
 
     def setUp(self):
-        super(TestNxosIPInterfaceModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_config",
@@ -50,7 +50,7 @@ class TestNxosIPInterfaceModule(TestNxosModule):
         self.run_commands = self.mock_run_commands.start()
 
     def tearDown(self):
-        super(TestNxosIPInterfaceModule, self).tearDown()
+        super().tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_run_commands.stop()
@@ -60,7 +60,7 @@ class TestNxosIPInterfaceModule(TestNxosModule):
 
         def load_from_file(*args, **kwargs):
             module, commands = args
-            output = list()
+            output = []
 
             for command in commands:
                 if type(command) == dict:
@@ -75,13 +75,13 @@ class TestNxosIPInterfaceModule(TestNxosModule):
 
     def test_nxos_pim_interface_present(self):
         set_module_args(
-            dict(
-                interface="eth2/1",
-                dr_prio=10,
-                hello_interval=40,
-                sparse=True,
-                border=False,
-            ),
+            {
+                "interface": "eth2/1",
+                "dr_prio": 10,
+                "hello_interval": 40,
+                "sparse": True,
+                "border": False,
+            },
         )
         self.execute_module(
             changed=True,
@@ -95,13 +95,13 @@ class TestNxosIPInterfaceModule(TestNxosModule):
 
     def test_nxos_pim_interface_jp(self):
         set_module_args(
-            dict(
-                interface="eth2/1",
-                jp_policy_in="JPIN",
-                jp_policy_out="JPOUT",
-                jp_type_in="routemap",
-                jp_type_out="routemap",
-            ),
+            {
+                "interface": "eth2/1",
+                "jp_policy_in": "JPIN",
+                "jp_policy_out": "JPOUT",
+                "jp_type_in": "routemap",
+                "jp_type_out": "routemap",
+            },
         )
         self.execute_module(
             changed=True,
@@ -113,11 +113,11 @@ class TestNxosIPInterfaceModule(TestNxosModule):
         )
 
     def test_nxos_pim_interface_default(self):
-        set_module_args(dict(interface="eth2/1", state="default"))
+        set_module_args({"interface": "eth2/1", "state": "default"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_pim_interface_ip_absent(self):
-        set_module_args(dict(interface="eth2/1", state="absent"))
+        set_module_args({"interface": "eth2/1", "state": "absent"})
         self.execute_module(changed=False, commands=[])
 
 
@@ -125,7 +125,7 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
     module = nxos_pim_interface
 
     def setUp(self):
-        super(TestNxosPimInterfaceBfdModule, self).setUp()
+        super().setUp()
 
         self.mock_get_interface_mode = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_interface_mode",
@@ -148,7 +148,7 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
         self.run_commands = self.mock_run_commands.start()
 
     def tearDown(self):
-        super(TestNxosPimInterfaceBfdModule, self).tearDown()
+        super().tearDown()
         self.mock_get_interface_mode.stop()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
@@ -160,26 +160,26 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
     def test_bfd_1(self):
         # default (None) -> enable
         self.get_config.return_value = None
-        set_module_args(dict(interface="eth2/1", bfd="enable"))
+        set_module_args({"interface": "eth2/1", "bfd": "enable"})
         self.execute_module(changed=True, commands=["interface eth2/1", "ip pim bfd-instance"])
 
         # default (None) -> disable
-        set_module_args(dict(interface="eth2/1", bfd="disable"))
+        set_module_args({"interface": "eth2/1", "bfd": "disable"})
         self.execute_module(
             changed=True,
             commands=["interface eth2/1", "ip pim bfd-instance disable"],
         )
 
         # default (None) -> default (None) (idempotence)
-        set_module_args(dict(interface="eth2/1", bfd="default"))
+        set_module_args({"interface": "eth2/1", "bfd": "default"})
         self.execute_module(changed=False)
 
         # default (None) -> interface state 'default'
-        set_module_args(dict(interface="Ethernet9/3", state="default"))
+        set_module_args({"interface": "Ethernet9/3", "state": "default"})
         self.execute_module(changed=False)
 
         # default (None) -> interface state 'absent'
-        set_module_args(dict(interface="Ethernet9/3", state="absent"))
+        set_module_args({"interface": "Ethernet9/3", "state": "absent"})
         self.execute_module(changed=False)
 
     def test_bfd_2(self):
@@ -189,31 +189,31 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
               ip pim bfd-instance disable
         """
         # disable -> enable
-        set_module_args(dict(interface="Ethernet9/2", bfd="enable"))
+        set_module_args({"interface": "Ethernet9/2", "bfd": "enable"})
         self.execute_module(
             changed=True,
             commands=["interface Ethernet9/2", "ip pim bfd-instance"],
         )
 
         # disable -> disable (idempotence)
-        set_module_args(dict(interface="Ethernet9/2", bfd="disable"))
+        set_module_args({"interface": "Ethernet9/2", "bfd": "disable"})
         self.execute_module(changed=False)
 
         # disable -> default (None)
-        set_module_args(dict(interface="Ethernet9/2", bfd="default"))
+        set_module_args({"interface": "Ethernet9/2", "bfd": "default"})
         self.execute_module(
             changed=True,
             commands=["interface Ethernet9/2", "no ip pim bfd-instance"],
         )
         # disable -> interface state 'default'
-        set_module_args(dict(interface="Ethernet9/3", state="default"))
+        set_module_args({"interface": "Ethernet9/3", "state": "default"})
         self.execute_module(
             changed=True,
             commands=["interface Ethernet9/3", "no ip pim bfd-instance"],
         )
 
         # disable -> interface state 'absent'
-        set_module_args(dict(interface="Ethernet9/3", state="absent"))
+        set_module_args({"interface": "Ethernet9/3", "state": "absent"})
         self.execute_module(
             changed=True,
             commands=["interface Ethernet9/3", "no ip pim bfd-instance"],
@@ -226,32 +226,32 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
               ip pim bfd-instance
         """
         # enable -> disabled
-        set_module_args(dict(interface="Ethernet9/3", bfd="disable"))
+        set_module_args({"interface": "Ethernet9/3", "bfd": "disable"})
         self.execute_module(
             changed=True,
             commands=["interface Ethernet9/3", "ip pim bfd-instance disable"],
         )
 
         # enable -> enable (idempotence)
-        set_module_args(dict(interface="Ethernet9/3", bfd="enable"))
+        set_module_args({"interface": "Ethernet9/3", "bfd": "enable"})
         self.execute_module(changed=False)
 
         # enable -> default (None)
-        set_module_args(dict(interface="Ethernet9/3", bfd="default"))
+        set_module_args({"interface": "Ethernet9/3", "bfd": "default"})
         self.execute_module(
             changed=True,
             commands=["interface Ethernet9/3", "no ip pim bfd-instance"],
         )
 
         # enable -> interface state 'default'
-        set_module_args(dict(interface="Ethernet9/3", state="default"))
+        set_module_args({"interface": "Ethernet9/3", "state": "default"})
         self.execute_module(
             changed=True,
             commands=["interface Ethernet9/3", "no ip pim bfd-instance"],
         )
 
         # enable -> interface state 'absent'
-        set_module_args(dict(interface="Ethernet9/3", state="absent"))
+        set_module_args({"interface": "Ethernet9/3", "state": "absent"})
         self.execute_module(
             changed=True,
             commands=["interface Ethernet9/3", "no ip pim bfd-instance"],
@@ -264,11 +264,11 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
         """
         # update hello-interval (as milliseconds)
         set_module_args(
-            dict(
-                interface="Ethernet9/2",
-                hello_interval=1,
-                hello_interval_ms=True,
-            ),
+            {
+                "interface": "Ethernet9/2",
+                "hello_interval": 1,
+                "hello_interval_ms": True,
+            },
         )
         self.execute_module(
             changed=True,
@@ -277,21 +277,21 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
 
         # idempotent (as milliseconds)
         set_module_args(
-            dict(
-                interface="Ethernet9/2",
-                hello_interval=1000,
-                hello_interval_ms=True,
-            ),
+            {
+                "interface": "Ethernet9/2",
+                "hello_interval": 1000,
+                "hello_interval_ms": True,
+            },
         )
         self.execute_module(changed=False, commands=[])
 
         # update hello-interval (default seconds)
-        set_module_args(dict(interface="Ethernet9/2", hello_interval=2))
+        set_module_args({"interface": "Ethernet9/2", "hello_interval": 2})
         self.execute_module(
             changed=True,
             commands=["interface Ethernet9/2", "ip pim hello-interval 2000"],
         )
 
         # idempotent (default seconds)
-        set_module_args(dict(interface="Ethernet9/2", hello_interval=1))
+        set_module_args({"interface": "Ethernet9/2", "hello_interval": 1})
         self.execute_module(changed=False, commands=[])

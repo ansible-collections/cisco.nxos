@@ -331,7 +331,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     dumps,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     get_connection,
@@ -343,23 +342,19 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 def get_running_config(module, config=None, flags=None):
     contents = module.params["running_config"]
     if not contents:
-        if config:
-            contents = config
-        else:
-            contents = get_config(module, flags=flags)
+        contents = config if config else get_config(module, flags=flags)
     return contents
 
 
 def get_candidate(module):
     candidate = ""
-    if module.params["src"]:
-        if module.params["replace"] != "config":
-            candidate = module.params["src"]
+    if module.params["src"] and module.params["replace"] != "config":
+        candidate = module.params["src"]
     if module.params["replace"] == "config":
-        candidate = "config replace {0}".format(module.params["replace_src"])
+        candidate = "config replace {}".format(module.params["replace_src"])
     elif module.params["lines"]:
         candidate_obj = NetworkConfig(indent=2)
-        parents = module.params["parents"] or list()
+        parents = module.params["parents"] or []
         candidate_obj.add(module.params["lines"], parents=parents)
         candidate = dumps(candidate_obj, "raw")
     return candidate
@@ -391,26 +386,26 @@ def save_config(module, result):
 
 
 def main():
-    """main entry point for module execution"""
-    backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
-    argument_spec = dict(
-        src=dict(type="path"),
-        replace_src=dict(),
-        lines=dict(aliases=["commands"], type="list", elements="str"),
-        parents=dict(type="list", elements="str"),
-        before=dict(type="list", elements="str"),
-        after=dict(type="list", elements="str"),
-        match=dict(default="line", choices=["line", "strict", "exact", "none"]),
-        replace=dict(default="line", choices=["line", "block", "config"]),
-        running_config=dict(aliases=["config"]),
-        intended_config=dict(),
-        defaults=dict(type="bool", default=False),
-        backup=dict(type="bool", default=False),
-        backup_options=dict(type="dict", options=backup_spec),
-        save_when=dict(choices=["always", "never", "modified", "changed"], default="never"),
-        diff_against=dict(choices=["running", "startup", "intended"]),
-        diff_ignore_lines=dict(type="list", elements="str"),
-    )
+    """Main entry point for module execution."""
+    backup_spec = {"filename": {}, "dir_path": {"type": "path"}}
+    argument_spec = {
+        "src": {"type": "path"},
+        "replace_src": {},
+        "lines": {"aliases": ["commands"], "type": "list", "elements": "str"},
+        "parents": {"type": "list", "elements": "str"},
+        "before": {"type": "list", "elements": "str"},
+        "after": {"type": "list", "elements": "str"},
+        "match": {"default": "line", "choices": ["line", "strict", "exact", "none"]},
+        "replace": {"default": "line", "choices": ["line", "block", "config"]},
+        "running_config": {"aliases": ["config"]},
+        "intended_config": {},
+        "defaults": {"type": "bool", "default": False},
+        "backup": {"type": "bool", "default": False},
+        "backup_options": {"type": "dict", "options": backup_spec},
+        "save_when": {"choices": ["always", "never", "modified", "changed"], "default": "never"},
+        "diff_against": {"choices": ["running", "startup", "intended"]},
+        "diff_ignore_lines": {"type": "list", "elements": "str"},
+    }
 
     mutually_exclusive = [("lines", "src", "replace_src"), ("parents", "src")]
 
@@ -429,7 +424,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
 
     result = {"changed": False, "warnings": warnings}
 
@@ -441,9 +436,8 @@ def main():
     contents = None
     flags = ["all"] if module.params["defaults"] else []
     replace_src = module.params["replace_src"]
-    if replace_src:
-        if module.params["replace"] != "config":
-            module.fail_json(msg="replace: config is required with replace_src")
+    if replace_src and module.params["replace"] != "config":
+        module.fail_json(msg="replace: config is required with replace_src")
 
     if module.params["backup"] or (module._diff and module.params["diff_against"] == "running"):
         contents = get_config(module, flags=flags)

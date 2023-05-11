@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -44,7 +43,7 @@ def _tmplt_dampening(proc):
     cmd = "dampening"
 
     if damp.get("set") is False:
-        return "no {0}".format(cmd)
+        return f"no {cmd}"
     if damp.get("route_map"):
         cmd += " route-map {route_map}".format(**damp)
     for x in (
@@ -54,7 +53,7 @@ def _tmplt_dampening(proc):
         "max_suppress_time",
     ):
         if x in damp:
-            cmd += " {0}".format(damp[x])
+            cmd += f" {damp[x]}"
     return cmd
 
 
@@ -67,8 +66,8 @@ def _tmplt_redistribute(redis):
 
 
 class Bgp_address_familyTemplate(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(Bgp_address_familyTemplate, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None) -> None:
+        super().__init__(lines=lines, tmplt=self)
 
     # fmt: off
     PARSERS = [

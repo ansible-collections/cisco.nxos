@@ -47,7 +47,7 @@ class TestNxosTelemetryModule(TestNxosModule):
     module = nxos_telemetry
 
     def setUp(self):
-        super(TestNxosTelemetryModule, self).setUp()
+        super().setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
@@ -80,7 +80,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.get_platform_shortname = self.mock_get_platform_shortname.start()
 
     def tearDown(self):
-        super(TestNxosTelemetryModule, self).tearDown()
+        super().tearDown()
         self.mock_FACT_LEGACY_SUBSETS.stop()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
@@ -89,7 +89,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.get_platform_shortname.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.mock_FACT_LEGACY_SUBSETS.return_value = dict()
+        self.mock_FACT_LEGACY_SUBSETS.return_value = {}
         self.get_resource_connection_config.return_value = "Connection"
         self.get_resource_connection_facts.return_value = "Connection"
         self.edit_config.return_value = None
@@ -104,17 +104,17 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.execute_show_command.return_value = None
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                config=dict(
-                    certificate={
+            {
+                "config": {
+                    "certificate": {
                         "key": "/bootflash/sample.key",
                         "hostname": "server.example.com",
                     },
-                    compression="gzip",
-                    source_interface="Ethernet2/1",
-                    vrf="blue",
-                ),
-            ),
+                    "compression": "gzip",
+                    "source_interface": "Ethernet2/1",
+                    "vrf": "blue",
+                },
+            },
             ignore_provider_arg,
         )
         self.execute_module(
@@ -136,18 +136,18 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.execute_show_command.return_value = None
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                _ansible_check_mode=True,
-                config=dict(
-                    certificate={
+            {
+                "_ansible_check_mode": True,
+                "config": {
+                    "certificate": {
                         "key": "/bootflash/sample.key",
                         "hostname": "server.example.com",
                     },
-                    compression="gzip",
-                    source_interface="Ethernet2/1",
-                    vrf="blue",
-                ),
-            ),
+                    "compression": "gzip",
+                    "source_interface": "Ethernet2/1",
+                    "vrf": "blue",
+                },
+            },
             ignore_provider_arg,
         )
         self.execute_module(
@@ -169,7 +169,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # Configure only vrf
         self.execute_show_command.return_value = None
         self.get_platform_shortname.return_value = "N9K"
-        set_module_args(dict(config=dict(vrf="blue")), ignore_provider_arg)
+        set_module_args({"config": {"vrf": "blue"}}, ignore_provider_arg)
         self.execute_module(
             changed=True,
             commands=[
@@ -186,17 +186,17 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                config=dict(
-                    certificate={
+            {
+                "config": {
+                    "certificate": {
                         "key": "/bootflash/server.key",
                         "hostname": "localhost",
                     },
-                    compression="gzip",
-                    source_interface="loopback55",
-                    vrf="management",
-                ),
-            ),
+                    "compression": "gzip",
+                    "source_interface": "loopback55",
+                    "vrf": "management",
+                },
+            },
             ignore_provider_arg,
         )
         self.execute_module(changed=False)
@@ -208,17 +208,17 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                config=dict(
-                    certificate={
+            {
+                "config": {
+                    "certificate": {
                         "key": "/bootflash/server.key",
                         "hostname": "my_host",
                     },
-                    compression="gzip",
-                    source_interface="loopback55",
-                    vrf="management",
-                ),
-            ),
+                    "compression": "gzip",
+                    "source_interface": "loopback55",
+                    "vrf": "management",
+                },
+            },
             ignore_provider_arg,
         )
         self.execute_module(
@@ -236,17 +236,17 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                config=dict(
-                    certificate={
+            {
+                "config": {
+                    "certificate": {
                         "key": "/bootflash/server.key",
                         "hostname": "localhost",
                     },
-                    compression="gzip",
-                    source_interface="Ethernet8/1",
-                    vrf="management",
-                ),
-            ),
+                    "compression": "gzip",
+                    "source_interface": "Ethernet8/1",
+                    "vrf": "management",
+                },
+            },
             ignore_provider_arg,
         )
         self.execute_module(
@@ -265,17 +265,17 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                config=dict(
-                    certificate={
+            {
+                "config": {
+                    "certificate": {
                         "key": "/bootflash/server_5.key",
                         "hostname": "my_host",
                     },
-                    compression="gzip",
-                    source_interface="Ethernet8/1",
-                    vrf="blue",
-                ),
-            ),
+                    "compression": "gzip",
+                    "source_interface": "Ethernet8/1",
+                    "vrf": "blue",
+                },
+            },
             ignore_provider_arg,
         )
         self.execute_module(
@@ -1325,18 +1325,18 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                state="deleted",
-                config=dict(
-                    certificate={
+            {
+                "state": "deleted",
+                "config": {
+                    "certificate": {
                         "key": "/bootflash/server.key",
                         "hostname": "localhost",
                     },
-                    compression="gzip",
-                    source_interface="loopback55",
-                    vrf="management",
-                ),
-            ),
+                    "compression": "gzip",
+                    "source_interface": "loopback55",
+                    "vrf": "management",
+                },
+            },
             ignore_provider_arg,
         )
         with pytest.raises(AnsibleFailJson) as errinfo:
@@ -1351,7 +1351,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # Make absent with all playbook keys provided
         self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         self.execute_module(changed=True, commands=["no telemetry"])
 
     def test_telemetry_deleted_idempotent_n9k(self):
@@ -1360,7 +1360,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         # Make absent with all playbook keys provided
         self.execute_show_command.return_value = None
         self.get_platform_shortname.return_value = "N9K"
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         self.execute_module(changed=False)
 
     def test_tms_replaced1_n9k(self):
@@ -1369,17 +1369,17 @@ class TestNxosTelemetryModule(TestNxosModule):
         self.execute_show_command.return_value = load_fixture("nxos_telemetry", "N9K.cfg")
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                state="replaced",
-                config=dict(
-                    certificate={
+            {
+                "state": "replaced",
+                "config": {
+                    "certificate": {
                         "key": "/bootflash/sample.key",
                         "hostname": "server.example.com",
                     },
-                    compression="gzip",
-                    vrf="blue",
-                ),
-            ),
+                    "compression": "gzip",
+                    "vrf": "blue",
+                },
+            },
             ignore_provider_arg,
         )
         self.execute_module(
@@ -1760,7 +1760,7 @@ class TestNxosTelemetryModule(TestNxosModule):
         """,
         )
         self.get_platform_shortname.return_value = "N9K"
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
 
         gathered = {
             "certificate": {
@@ -1793,49 +1793,49 @@ class TestNxosTelemetryModule(TestNxosModule):
         }
 
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_tms_names(self):
         # TMS input with strings
         self.execute_show_command.return_value = ""
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                config=dict(
-                    destination_groups=[
-                        dict(
-                            id="collector",
-                            destination=dict(
-                                ip="192.168.1.100",
-                                port=50051,
-                                protocol="gRPC",
-                                encoding="GPB",
-                            ),
-                        ),
+            {
+                "config": {
+                    "destination_groups": [
+                        {
+                            "id": "collector",
+                            "destination": {
+                                "ip": "192.168.1.100",
+                                "port": 50051,
+                                "protocol": "gRPC",
+                                "encoding": "GPB",
+                            },
+                        },
                     ],
-                    sensor_groups=[
-                        dict(
-                            id="dme_bgp",
-                            data_source="DME",
-                            path=dict(
-                                name="sys/bd",
-                                depth="unbounded",
-                            ),
-                        ),
+                    "sensor_groups": [
+                        {
+                            "id": "dme_bgp",
+                            "data_source": "DME",
+                            "path": {
+                                "name": "sys/bd",
+                                "depth": "unbounded",
+                            },
+                        },
                     ],
-                    subscriptions=[
-                        dict(
-                            id="collector_sub",
-                            destination_group="collector",
-                            sensor_group=dict(
-                                id="dme_bgp",
-                                sample_interval=1000,
-                            ),
-                        ),
+                    "subscriptions": [
+                        {
+                            "id": "collector_sub",
+                            "destination_group": "collector",
+                            "sensor_group": {
+                                "id": "dme_bgp",
+                                "sample_interval": 1000,
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         self.execute_module(
@@ -1872,42 +1872,42 @@ class TestNxosTelemetryModule(TestNxosModule):
         )
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
-            dict(
-                config=dict(
-                    destination_groups=[
-                        dict(
-                            id="collector",
-                            destination=dict(
-                                ip="192.168.1.100",
-                                port=50051,
-                                protocol="gRPC",
-                                encoding="GPB",
-                            ),
-                        ),
+            {
+                "config": {
+                    "destination_groups": [
+                        {
+                            "id": "collector",
+                            "destination": {
+                                "ip": "192.168.1.100",
+                                "port": 50051,
+                                "protocol": "gRPC",
+                                "encoding": "GPB",
+                            },
+                        },
                     ],
-                    sensor_groups=[
-                        dict(
-                            id="dme_bgp",
-                            data_source="DME",
-                            path=dict(
-                                name="sys/bd",
-                                depth="unbounded",
-                            ),
-                        ),
+                    "sensor_groups": [
+                        {
+                            "id": "dme_bgp",
+                            "data_source": "DME",
+                            "path": {
+                                "name": "sys/bd",
+                                "depth": "unbounded",
+                            },
+                        },
                     ],
-                    subscriptions=[
-                        dict(
-                            id="collector_sub",
-                            destination_group="collector",
-                            sensor_group=dict(
-                                id="dme_bgp",
-                                sample_interval=1000,
-                            ),
-                        ),
+                    "subscriptions": [
+                        {
+                            "id": "collector_sub",
+                            "destination_group": "collector",
+                            "sensor_group": {
+                                "id": "dme_bgp",
+                                "sample_interval": 1000,
+                            },
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         self.execute_module(changed=False, commands=[])

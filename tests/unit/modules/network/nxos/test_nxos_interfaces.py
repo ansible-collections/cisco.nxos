@@ -37,7 +37,7 @@ class TestNxosInterfacesModule(TestNxosModule):
     module = nxos_interfaces
 
     def setUp(self):
-        super(TestNxosInterfacesModule, self).setUp()
+        super().setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
@@ -70,7 +70,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_platform = self.mock_get_platform.start()
 
     def tearDown(self):
-        super(TestNxosInterfacesModule, self).tearDown()
+        super().tearDown()
         self.mock_FACT_LEGACY_SUBSETS.stop()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
@@ -79,7 +79,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.mock_get_platform.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.mock_FACT_LEGACY_SUBSETS.return_value = dict()
+        self.mock_FACT_LEGACY_SUBSETS.return_value = {}
         self.get_resource_connection_config.return_value = None
         self.edit_config.return_value = None
         if device == "legacy":
@@ -126,28 +126,28 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
-        playbook = dict(
-            config=[
-                dict(name="Ethernet1/1", description="ansible", mode="layer3"),
-                dict(
-                    name="Ethernet1/2",
-                    speed=10000,
-                    duplex="auto",
-                    mtu=1500,
-                    ip_forward=False,
-                    fabric_forwarding_anycast_gateway=False,
-                ),
-                dict(name="Ethernet1/3", description="ansible", mode="layer3"),
-                dict(
-                    name="Ethernet1/3.101",
-                    description="test-sub-intf",
-                    enabled=False,
-                ),
-                dict(name="Ethernet1/4", mode="layer2"),
-                dict(name="Ethernet1/5"),
-                dict(name="loopback1", description="test-loopback"),
+        playbook = {
+            "config": [
+                {"name": "Ethernet1/1", "description": "ansible", "mode": "layer3"},
+                {
+                    "name": "Ethernet1/2",
+                    "speed": 10000,
+                    "duplex": "auto",
+                    "mtu": 1500,
+                    "ip_forward": False,
+                    "fabric_forwarding_anycast_gateway": False,
+                },
+                {"name": "Ethernet1/3", "description": "ansible", "mode": "layer3"},
+                {
+                    "name": "Ethernet1/3.101",
+                    "description": "test-sub-intf",
+                    "enabled": False,
+                },
+                {"name": "Ethernet1/4", "mode": "layer2"},
+                {"name": "Ethernet1/5"},
+                {"name": "loopback1", "description": "test-loopback"},
             ],
-        )
+        }
         merged = [
             # Update existing device states with any differences in the playbook.
             "interface Ethernet1/1",
@@ -284,23 +284,23 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
-        playbook = dict(
-            config=[
+        playbook = {
+            "config": [
                 # Set non-default states on existing objs
-                dict(name="Ethernet1/1", mode="layer3", enabled=True),
-                dict(name="loopback1", enabled=False),
+                {"name": "Ethernet1/1", "mode": "layer3", "enabled": True},
+                {"name": "loopback1", "enabled": False},
                 # Set default states on existing objs
-                dict(name="Ethernet1/2", enabled=True),
-                dict(name="loopback2", enabled=True),
+                {"name": "Ethernet1/2", "enabled": True},
+                {"name": "loopback2", "enabled": True},
                 # Set explicit default state on existing objs (no chg)
-                dict(name="Ethernet1/3", enabled=True),
-                dict(name="loopback3", enabled=True),
-                dict(name="port-channel3", enabled=True),
-                dict(name="loopback4", enabled=True),
-                dict(name="port-channel4", enabled=True),
-                dict(name="Ethernet1/4.101"),
+                {"name": "Ethernet1/3", "enabled": True},
+                {"name": "loopback3", "enabled": True},
+                {"name": "port-channel3", "enabled": True},
+                {"name": "loopback4", "enabled": True},
+                {"name": "port-channel4", "enabled": True},
+                {"name": "Ethernet1/4.101"},
             ],
-        )
+        }
         # Testing with newer code version
         merged = [
             "interface Ethernet1/1",
@@ -426,24 +426,24 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
-        playbook = dict(
-            config=[
+        playbook = {
+            "config": [
                 # Set non-default states on existing objs
-                dict(name="Ethernet1/1", mode="layer3", enabled=True),
-                dict(name="loopback1", enabled=False),
+                {"name": "Ethernet1/1", "mode": "layer3", "enabled": True},
+                {"name": "loopback1", "enabled": False},
                 # Set default states on existing objs
-                dict(name="Ethernet1/2", enabled=False),
-                dict(name="loopback2", enabled=True),
+                {"name": "Ethernet1/2", "enabled": False},
+                {"name": "loopback2", "enabled": True},
                 # Set explicit default state on existing objs (no chg)
-                dict(name="Ethernet1/3", enabled=False),
-                dict(name="loopback3", enabled=True),
-                dict(name="port-channel3", enabled=True),
+                {"name": "Ethernet1/3", "enabled": False},
+                {"name": "loopback3", "enabled": True},
+                {"name": "port-channel3", "enabled": True},
                 # Set default state on non-existent objs; no state changes but need to create intf
-                dict(name="loopback4", enabled=True),
-                dict(name="port-channel4", enabled=True),
-                dict(name="Ethernet1/4.101"),
+                {"name": "loopback4", "enabled": True},
+                {"name": "port-channel4", "enabled": True},
+                {"name": "Ethernet1/4.101"},
             ],
-        )
+        }
         merged = [
             "interface Ethernet1/1",
             "no switchport",
@@ -528,25 +528,25 @@ class TestNxosInterfacesModule(TestNxosModule):
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=replaced)
 
-        playbook = dict(
-            config=[
+        playbook = {
+            "config": [
                 # Set non-default states on existing objs
-                dict(name="Ethernet1/1", mode="layer3", enabled=True),
-                dict(name="loopback1", enabled=False),
+                {"name": "Ethernet1/1", "mode": "layer3", "enabled": True},
+                {"name": "loopback1", "enabled": False},
                 # Set default states on existing objs
-                dict(name="Ethernet1/2", enabled=False),
-                dict(name="loopback2", enabled=True),
+                {"name": "Ethernet1/2", "enabled": False},
+                {"name": "loopback2", "enabled": True},
                 # Set explicit default state on existing objs (no chg)
-                dict(name="Ethernet1/3", enabled=False),
-                dict(name="loopback3", enabled=True),
-                dict(name="port-channel3", enabled=True),
+                {"name": "Ethernet1/3", "enabled": False},
+                {"name": "loopback3", "enabled": True},
+                {"name": "port-channel3", "enabled": True},
                 # Set default state on non-existent objs; no state changes but need to create intf
-                dict(name="loopback4", enabled=True),
-                dict(name="port-channel4", enabled=True),
-                dict(name="Ethernet1/4.101", enabled=False),
-                dict(name="Ethernet1/4.102", enabled=True),
+                {"name": "loopback4", "enabled": True},
+                {"name": "port-channel4", "enabled": True},
+                {"name": "Ethernet1/4.101", "enabled": False},
+                {"name": "Ethernet1/4.102", "enabled": True},
             ],
-        )
+        }
 
         overridden = [
             "interface Ethernet1/2",
@@ -600,12 +600,12 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
-        playbook = dict(
-            config=[
-                dict(name="Ethernet1/1", mode="layer3"),
-                dict(name="Ethernet1/2", mode="layer2", enabled=False),
+        playbook = {
+            "config": [
+                {"name": "Ethernet1/1", "mode": "layer3"},
+                {"name": "Ethernet1/2", "mode": "layer2", "enabled": False},
             ],
-        )
+        }
         merged = []
         playbook["state"] = "merged"
         set_module_args(playbook, ignore_provider_arg)
@@ -634,7 +634,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
-        playbook = dict()
+        playbook = {}
         deleted = [
             "interface Ethernet1/1",
             "no switchport",
@@ -674,7 +674,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
-        playbook = dict()
+        playbook = {}
         playbook["state"] = "gathered"
 
         gathered_facts = [
@@ -689,7 +689,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         ]
         set_module_args(playbook, ignore_provider_arg)
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered_facts)
+        assert result["gathered"] == gathered_facts
 
     def test_7_purged(self):
         # check for parsing correct contexts
@@ -715,13 +715,13 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
-        playbook = dict(
-            config=[
-                dict(name="Vlan42"),
-                dict(name="port-channel10"),
-                dict(name="Ethernet1/2.100"),
+        playbook = {
+            "config": [
+                {"name": "Vlan42"},
+                {"name": "port-channel10"},
+                {"name": "Ethernet1/2.100"},
             ],
-        )
+        }
         playbook["state"] = "purged"
 
         commands = [
@@ -732,7 +732,7 @@ class TestNxosInterfacesModule(TestNxosModule):
 
         set_module_args(playbook, ignore_provider_arg)
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_vlan_enabled(self):
         sysdefs = dedent(
@@ -754,13 +754,13 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
         self.get_system_defaults.return_value = sysdefs
 
-        playbook = dict(
-            config=[
-                dict(name="Vlan9", enabled=False),
-                dict(name="Vlan10", enabled=True),
-                dict(name="Vlan11", enabled=True),
+        playbook = {
+            "config": [
+                {"name": "Vlan9", "enabled": False},
+                {"name": "Vlan10", "enabled": True},
+                {"name": "Vlan11", "enabled": True},
             ],
-        )
+        }
         merged = [
             "interface Vlan9",
             "shutdown",

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_lldp_global class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 from __future__ import absolute_import, division, print_function
 
@@ -22,24 +21,21 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_diff,
     remove_empties,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 
 
 class Lldp_global(ConfigBase):
-    """
-    The nxos_lldp_global class
-    """
+    """The nxos_lldp_global class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["lldp_global"]
 
-    def __init__(self, module):
-        super(Lldp_global, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_lldp_global_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -55,14 +51,14 @@ class Lldp_global(ConfigBase):
         return lldp_global_facts
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        commands = list()
-        warnings = list()
+        commands = []
+        warnings = []
 
         if self.state in self.ACTION_STATES:
             existing_lldp_global_facts = self.get_lldp_global_facts()
@@ -107,7 +103,7 @@ class Lldp_global(ConfigBase):
 
     def set_config(self, existing_lldp_global_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -119,7 +115,7 @@ class Lldp_global(ConfigBase):
         return resp
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -130,9 +126,9 @@ class Lldp_global(ConfigBase):
         state = self._module.params["state"]
         if state in ("merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state),
+                msg=f"value of config parameter must not be empty for state {state}",
             )
-        commands = list()
+        commands = []
 
         if state == "deleted":
             commands = self._state_deleted(have)
@@ -143,7 +139,7 @@ class Lldp_global(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -161,9 +157,7 @@ class Lldp_global(ConfigBase):
         return commands
 
     def delete_nested_dict(self, have, want):
-        """
-        Returns tlv_select nested dict that needs to be defaulted
-        """
+        """Returns tlv_select nested dict that needs to be defaulted."""
         outer_dict = {}
         for key, val in have.items():
             inner_dict = {}
@@ -172,16 +166,14 @@ class Lldp_global(ConfigBase):
                     inner_dict.update({key: val})
                     return inner_dict
             else:
-                if key in want.keys():
+                if key in want:
                     outer_dict.update({key: self.delete_nested_dict(val, want[key])})
                 else:
                     outer_dict.update({key: val})
         return outer_dict
 
     def find_delete_params(self, have, want):
-        """
-        Returns parameters that are present in have and not in want, that need to be defaulted
-        """
+        """Returns parameters that are present in have and not in want, that need to be defaulted."""
         delete_dict = {}
         for key, val in have.items():
             if key not in want.keys():
@@ -194,7 +186,7 @@ class Lldp_global(ConfigBase):
         return delete_dict
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -206,7 +198,7 @@ class Lldp_global(ConfigBase):
         return commands
 
     def _state_deleted(self, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -271,7 +263,6 @@ class Lldp_global(ConfigBase):
 
     def negate_command(self, command, val):
         # for merged, replaced vals need to be checked to add 'no'
-        if self._module.params["state"] == "merged":
-            if not val:
-                command = "no " + command
+        if self._module.params["state"] == "merged" and not val:
+            command = "no " + command
         return command

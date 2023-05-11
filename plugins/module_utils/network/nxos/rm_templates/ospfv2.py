@@ -64,7 +64,7 @@ def _tmplt_default_information(proc):
     command = "default-information originate"
 
     if default_information.get("set") is False:
-        command = "no {0}".format(command)
+        command = f"no {command}"
     else:
         if default_information.get("always"):
             command += " always"
@@ -91,7 +91,7 @@ def _tmplt_max_metric(proc):
     command = "max-metric router-lsa"
 
     if max_metric.get("router_lsa", {}).get("set") is False:
-        command = "no {0}".format(command)
+        command = f"no {command}"
     else:
         external_lsa = max_metric.get("router_lsa", {}).get("external_lsa", {})
         include_stub = max_metric.get("router_lsa", {}).get("include_stub", {})
@@ -121,7 +121,7 @@ def _tmplt_area_nssa(area):
     nssa = area["nssa"]
     command = "area {area_id} nssa".format(**area)
     if nssa.get("set") is False:
-        command = "no {0}".format(command)
+        command = f"no {command}"
     else:
         for attrib in [
             "no_summary",
@@ -129,7 +129,7 @@ def _tmplt_area_nssa(area):
             "default_information_originate",
         ]:
             if nssa.get(attrib):
-                command += " {0}".format(attrib.replace("_", "-"))
+                command += " {}".format(attrib.replace("_", "-"))
     return command
 
 
@@ -138,7 +138,7 @@ def _tmplt_area_nssa_translate(area):
     command = "area {area_id} nssa translate type7".format(**area)
     for attrib in ["always", "never", "supress_fa"]:
         if translate.get(attrib):
-            command += " {0}".format(attrib.replace("_", "-"))
+            command += " {}".format(attrib.replace("_", "-"))
     return command
 
 
@@ -173,7 +173,7 @@ def _tmplt_area_stub(area):
     stub = area["stub"]
     command = "area {area_id} stub".format(**area)
     if stub.get("set") is False:
-        command = "no {0}".format(command)
+        command = f"no {command}"
     elif stub.get("no_summary"):
         command += " no-summary"
     return command
@@ -192,7 +192,7 @@ def _tmplt_capability_vrf_lite(proc):
     command = "capability vrf-lite"
     vrf_lite = proc["capability"]["vrf_lite"]
     if vrf_lite.get("set") is False:
-        command = "no {0}".format(command)
+        command = f"no {command}"
     else:
         if vrf_lite.get("evpn"):
             command += " evpn"
@@ -200,8 +200,8 @@ def _tmplt_capability_vrf_lite(proc):
 
 
 class Ospfv2Template(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(Ospfv2Template, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None) -> None:
+        super().__init__(lines=lines, tmplt=self)
 
     # fmt: off
     PARSERS = [

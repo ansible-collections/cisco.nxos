@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_acls class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 from __future__ import absolute_import, division, print_function
 
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_empties,
     to_list,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acls.acls import (
     AclsArgs,
 )
@@ -36,20 +34,18 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Acls(ConfigBase):
-    """
-    The nxos_acls class
-    """
+    """The nxos_acls class."""
 
     gather_subset = ["!all", "!min"]
 
     gather_network_resources = ["acls"]
 
-    def __init__(self, module):
-        super(Acls, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
         self.state = self._module.params["state"]
 
     def get_acls_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -71,14 +67,14 @@ class Acls(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        warnings = list()
-        commands = list()
+        warnings = []
+        commands = []
         state = self.state
         action_states = ["merged", "replaced", "deleted", "overridden"]
 
@@ -106,7 +102,7 @@ class Acls(ConfigBase):
 
     def set_config(self, existing_acls_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -124,9 +120,7 @@ class Acls(ConfigBase):
         return to_list(resp)
 
     def convert_values(self, want):
-        """
-        This method is used to map and convert the user given values with what will actually be present in the device configuation
-        """
+        """This method is used to map and convert the user given values with what will actually be present in the device configuation."""
         port_protocol = {
             515: "lpd",
             517: "talk",
@@ -209,35 +203,33 @@ class Acls(ConfigBase):
             0: "Default",
             46: "EF",
         }
-        # port_pro_num = list(protocol.keys())
         for afi in want:
-            if "acls" in afi.keys():
+            if "acls" in afi:
                 for acl in afi["acls"]:
-                    if "aces" in acl.keys():
+                    if "aces" in acl:
                         for ace in acl["aces"]:
-                            if "dscp" in ace.keys():
+                            if "dscp" in ace:
                                 if ace["dscp"] in dscp:
                                     ace["dscp"] = dscp[int(ace["dscp"])]
                                 if not ace["dscp"].isdigit():
                                     ace["dscp"] = ace["dscp"].lower()
-                            if "precedence" in ace.keys():
-                                if ace["precedence"].isdigit():
-                                    ace["precedence"] = precedence[int(ace["precedence"])]
+                            if "precedence" in ace and ace["precedence"].isdigit():
+                                ace["precedence"] = precedence[int(ace["precedence"])]
                             if (
-                                "protocol" in ace.keys()
+                                "protocol" in ace
                                 and ace["protocol"].isdigit()
-                                and int(ace["protocol"]) in protocol.keys()
+                                and int(ace["protocol"]) in protocol
                             ):
                                 ace["protocol"] = protocol[int(ace["protocol"])]
                                 # convert number to name
-                            if "protocol" in ace.keys() and ace["protocol"] in ["tcp", "udp"]:
+                            if "protocol" in ace and ace["protocol"] in ["tcp", "udp"]:
                                 for x in ["source", "destination"]:
-                                    if "port_protocol" in ace[x].keys():
+                                    if "port_protocol" in ace[x]:
                                         key = list(ace[x]["port_protocol"].keys())[0]
                                         # key could be eq,gt,lt,neq or range
                                         if key != "range":
                                             val = ace[x]["port_protocol"][key]
-                                            if val.isdigit() and int(val) in port_protocol.keys():
+                                            if val.isdigit() and int(val) in port_protocol:
                                                 ace[x]["port_protocol"][key] = port_protocol[
                                                     int(val)
                                                 ]
@@ -245,18 +237,18 @@ class Acls(ConfigBase):
                                             st = int(ace[x]["port_protocol"]["range"]["start"])
                                             end = int(ace[x]["port_protocol"]["range"]["end"])
 
-                                            if st in port_protocol.keys():
+                                            if st in port_protocol:
                                                 ace[x]["port_protocol"]["range"][
                                                     "start"
                                                 ] = port_protocol[st]
-                                            if end in port_protocol.keys():
+                                            if end in port_protocol:
                                                 ace[x]["port_protocol"]["range"][
                                                     "end"
                                                 ] = port_protocol[end]
         return want
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -295,7 +287,7 @@ class Acls(ConfigBase):
         return commands
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -304,12 +296,11 @@ class Acls(ConfigBase):
         commands = []
         have_afi = search_obj_in_list(want["afi"], have, "afi")
         del_dict = {"acls": []}
-        want_names = []
         if have_afi != want:
             if have_afi:
                 del_dict.update({"afi": have_afi["afi"], "acls": []})
                 if want.get("acls"):
-                    want_names = [w["name"] for w in want["acls"]]
+                    [w["name"] for w in want["acls"]]
                     have_names = [h["name"] for h in have_afi["acls"]]
                     want_acls = want.get("acls")
                     for w in want_acls:
@@ -365,7 +356,7 @@ class Acls(ConfigBase):
         return commands
 
     def _state_overridden(self, want, have):
-        """The command generator when state is overridden
+        """The command generator when state is overridden.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -392,7 +383,7 @@ class Acls(ConfigBase):
         return commands
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -401,7 +392,7 @@ class Acls(ConfigBase):
         return self.set_commands(want, have)
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -417,7 +408,7 @@ class Acls(ConfigBase):
                 if have_afi:
                     if w.get("acls"):
                         for acl in w["acls"]:
-                            if "aces" in acl.keys() and self.state != "deleted":
+                            if "aces" in acl and self.state != "deleted":
                                 have_name = search_obj_in_list(
                                     acl["name"],
                                     have_afi["acls"],
@@ -429,7 +420,7 @@ class Acls(ConfigBase):
                                     for ace in acl["aces"]:
                                         if list(ace.keys()) == ["sequence"]:
                                             # only sequence number is specified to be deleted
-                                            if "aces" in have_name.keys():
+                                            if "aces" in have_name:
                                                 for h_ace in have_name["aces"]:
                                                     if h_ace["sequence"] == ace["sequence"]:
                                                         ace_commands.append(
@@ -437,7 +428,7 @@ class Acls(ConfigBase):
                                                         )
                                                         flag = 1
                                         else:
-                                            if "aces" in have_name.keys():
+                                            if "aces" in have_name:
                                                 for h_ace in have_name["aces"]:
                                                     # when want['ace'] does not have seq number
                                                     if "sequence" not in ace.keys():
@@ -475,11 +466,11 @@ class Acls(ConfigBase):
             for h in have:
                 if h["afi"] == "ipv6":
                     v6 = (acl["name"] for acl in h["acls"])
-                    if "match_local_traffic" in h.keys():
+                    if "match_local_traffic" in h:
                         v6_local = True
                 else:
                     v4 = (acl["name"] for acl in h["acls"])
-                    if "match_local_traffic" in h.keys():
+                    if "match_local_traffic" in h:
                         v4_local = True
 
             self.no_commands(v4, commands, v4_local, "ip")
@@ -502,10 +493,7 @@ class Acls(ConfigBase):
         commands = []
         have_afi = search_obj_in_list(want["afi"], have, "afi")
         ip = ""
-        if "v6" in want["afi"]:
-            ip = "ipv6 "
-        else:
-            ip = "ip "
+        ip = "ipv6 " if "v6" in want["afi"] else "ip "
 
         if have_afi:
             if want.get("acls"):
@@ -530,7 +518,7 @@ class Acls(ConfigBase):
                                 want_seq = [
                                     item["sequence"]
                                     for item in w_acl["aces"]
-                                    if "sequence" in item.keys()
+                                    if "sequence" in item
                                 ]
 
                                 have_seq = [item["sequence"] for item in have_acl["aces"]]
@@ -541,12 +529,12 @@ class Acls(ConfigBase):
                                 temp_list = [
                                     item
                                     for item in w_acl["aces"]
-                                    if "sequence" in item.keys() and item["sequence"] in new_seq
+                                    if "sequence" in item and item["sequence"] in new_seq
                                 ]  # case 2
                                 ace_list.extend(temp_list)
                                 for w in w_acl["aces"]:
                                     self.argument_spec = AclsArgs.argument_spec
-                                    params = utils.validate_config(
+                                    utils.validate_config(
                                         self.argument_spec,
                                         {
                                             "config": [
@@ -562,7 +550,7 @@ class Acls(ConfigBase):
                                             ],
                                         },
                                     )
-                                    if "sequence" in w.keys() and w["sequence"] in common_seq:
+                                    if "sequence" in w and w["sequence"] in common_seq:
                                         temp_obj = search_obj_in_list(
                                             w["sequence"],
                                             have_acl["aces"],
@@ -591,7 +579,7 @@ class Acls(ConfigBase):
 
                         else:
                             commands.append(ip + "access-list " + name)
-                            if "aces" in w_acl.keys():
+                            if "aces" in w_acl:
                                 for w_ace in w_acl["aces"]:
                                     commands.append(self.process_ace(w_ace).strip())
                     commands.extend(ace_commands)
@@ -600,7 +588,7 @@ class Acls(ConfigBase):
                 for w_acl in want["acls"]:
                     name = w_acl["name"]
                     commands.append(ip + "access-list " + name)
-                    if "aces" in w_acl.keys():
+                    if "aces" in w_acl:
                         for w_ace in w_acl["aces"]:
                             commands.append(self.process_ace(w_ace).strip())
 
@@ -626,7 +614,7 @@ class Acls(ConfigBase):
                     if pro != w_ace["protocol"]:
                         self._module.fail_json(msg="protocol and protocol_options mismatch")
                     flags = ""
-                    for k in w_ace["protocol_options"][pro].keys():
+                    for k in w_ace["protocol_options"][pro]:
                         if k not in ["telemetry_queue", "telemetry_path"]:
                             k = re.sub("_", "-", k)
                         flags += k + " "
@@ -658,10 +646,9 @@ class Acls(ConfigBase):
         elif "prefix" in keys:
             ret_addr = endpoint["prefix"] + " "
 
-        if pro in ["tcp", "udp"]:
-            if "port_protocol" in keys:
-                options = self.get_options(endpoint["port_protocol"])
-                ret_addr += options
+        if pro in ["tcp", "udp"] and "port_protocol" in keys:
+            options = self.get_options(endpoint["port_protocol"])
+            ret_addr += options
         return ret_addr
 
     def get_options(self, item):

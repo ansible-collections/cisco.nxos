@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)#!/usr/bin/python
@@ -24,24 +23,20 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     parse_conf_arg,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vlans.vlans import (
     VlansArgs,
 )
 
 
-class VlansFacts(object):
-    """The nxos vlans fact class"""
+class VlansFacts:
+    """The nxos vlans fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = VlansArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -58,7 +53,7 @@ class VlansFacts(object):
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         objs = []
         # **TBD**
@@ -111,7 +106,7 @@ class VlansFacts(object):
         :param vlan: structured data vlan settings (dict) and raw cfg from device
         :rtype: dictionary
         :returns: The generated config
-        Sample inputs: test/units/modules/network/nxos/fixtures/nxos_vlans/show_vlan
+        Sample inputs: test/units/modules/network/nxos/fixtures/nxos_vlans/show_vlan.
         """
         obj = deepcopy(spec)
 
@@ -123,11 +118,10 @@ class VlansFacts(object):
             name = None
         obj["name"] = name
 
-        # mode: 'ce-vlan' or 'fabricpath-vlan'
         obj["mode"] = vlan["vlanshowinfo-vlanmode"].replace("-vlan", "")
 
         # enabled: shutdown, noshutdown
-        obj["enabled"] = True if "noshutdown" in vlan["vlanshowbr-shutstate"] else False
+        obj["enabled"] = "noshutdown" in vlan["vlanshowbr-shutstate"]
 
         # state: active, suspend
         obj["state"] = vlan["vlanshowbr-vlanstate"]
@@ -188,7 +182,7 @@ class VlansFacts(object):
                 # Sample match lines
                 # 202\n  name Production-Segment-100101\n  vn-segment 100101
                 # 5\n  state suspend\n  shutdown\n  name test-changeme\n  vn-segment 942
-                pattern = r"^{0}\s+\S.*vn-segment".format(v["vlan_id"])
+                pattern = r"^{}\s+\S.*vn-segment".format(v["vlan_id"])
                 if re.search(pattern, item, flags=re.DOTALL):
                     vlan["run_cfg"] = item
                     break

@@ -102,7 +102,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -142,7 +141,7 @@ def get_snmp_groups(module):
 
 
 def get_snmp_user(user, module):
-    command = "show snmp user {0}".format(user)
+    command = f"show snmp user {user}"
     body = execute_show_command(command, module, text=True)
     body_text = body[0]
 
@@ -175,10 +174,7 @@ def get_snmp_user(user, module):
         # indexed by 'user'. This is due to a platform bug.
         # Get first element if rt is a list due to the bug
         # or if there is no bug, parse rt directly
-        if isinstance(rt, list):
-            resource_table = rt[0]
-        else:
-            resource_table = rt
+        resource_table = rt[0] if isinstance(rt, list) else rt
 
         resource["user"] = user
         resource["authentication"] = str(resource_table[authkey]).strip()
@@ -264,21 +260,18 @@ def get_non_structured_snmp_user(body_text):
 
 def remove_snmp_user(user, group=None):
     if group:
-        return ["no snmp-server user {0} {1}".format(user, group)]
+        return [f"no snmp-server user {user} {group}"]
     else:
-        return ["no snmp-server user {0}".format(user)]
+        return [f"no snmp-server user {user}"]
 
 
 def config_snmp_user(proposed, user, reset):
-    if reset:
-        commands = remove_snmp_user(user)
-    else:
-        commands = []
+    commands = remove_snmp_user(user) if reset else []
 
     if proposed.get("group"):
         cmd = "snmp-server user {0} {group}".format(user, **proposed)
     else:
-        cmd = "snmp-server user {0}".format(user)
+        cmd = f"snmp-server user {user}"
 
     auth = proposed.get("authentication", None)
     pwd = proposed.get("pwd", None)
@@ -301,15 +294,15 @@ def config_snmp_user(proposed, user, reset):
 
 
 def main():
-    argument_spec = dict(
-        user=dict(required=True, type="str"),
-        group=dict(type="str"),
-        pwd=dict(type="str", no_log=True),
-        privacy=dict(type="str"),
-        authentication=dict(choices=["md5", "sha"]),
-        encrypt=dict(type="bool"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "user": {"required": True, "type": "str"},
+        "group": {"type": "str"},
+        "pwd": {"type": "str", "no_log": True},
+        "privacy": {"type": "str"},
+        "authentication": {"choices": ["md5", "sha"]},
+        "encrypt": {"type": "bool"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -317,7 +310,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     user = module.params["user"]
@@ -328,11 +321,10 @@ def main():
     authentication = module.params["authentication"]
     state = module.params["state"]
 
-    if privacy and encrypt:
-        if not pwd and authentication:
-            module.fail_json(
-                msg="pwd and authentication must be provided " "when using privacy and encrypt",
-            )
+    if privacy and encrypt and not pwd and authentication:
+        module.fail_json(
+            msg="pwd and authentication must be provided " "when using privacy and encrypt",
+        )
 
     if group and group not in get_snmp_groups(module):
         module.fail_json(msg="group not configured yet on switch.")
@@ -363,15 +355,15 @@ def main():
     elif state == "present":
         reset = False
 
-        args = dict(
-            user=user,
-            pwd=pwd,
-            group=group,
-            privacy=privacy,
-            encrypt=encrypt,
-            authentication=authentication,
-        )
-        proposed = dict((k, v) for k, v in args.items() if v is not None)
+        args = {
+            "user": user,
+            "pwd": pwd,
+            "group": group,
+            "privacy": privacy,
+            "encrypt": encrypt,
+            "authentication": authentication,
+        }
+        proposed = {k: v for k, v in args.items() if v is not None}
 
         if not existing:
             if encrypt:

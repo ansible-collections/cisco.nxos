@@ -32,7 +32,7 @@ class TestNxosVrfModule(TestNxosModule):
     module = nxos_vrf
 
     def setUp(self):
-        super(TestNxosVrfModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_vrf.load_config",
@@ -45,14 +45,14 @@ class TestNxosVrfModule(TestNxosModule):
         self.run_commands = self.mock_run_commands.start()
 
     def tearDown(self):
-        super(TestNxosVrfModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_run_commands.stop()
 
     def load_fixtures(self, commands=None, device=""):
         def load_from_file(*args, **kwargs):
             module, commands = args
-            output = list()
+            output = []
 
             for command in commands:
                 if isinstance(command, dict):
@@ -65,22 +65,22 @@ class TestNxosVrfModule(TestNxosModule):
         self.run_commands.side_effect = load_from_file
 
     def test_nxos_vrf_present(self):
-        set_module_args(dict(vrf="ntc", state="present", admin_state="up"))
+        set_module_args({"vrf": "ntc", "state": "present", "admin_state": "up"})
         self.execute_module(changed=True, commands=["vrf context ntc", "no shutdown", "exit"])
 
     def test_nxos_vrf_present_no_change(self):
-        set_module_args(dict(vrf="management", state="present", admin_state="up"))
+        set_module_args({"vrf": "management", "state": "present", "admin_state": "up"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_vrf_absent(self):
-        set_module_args(dict(vrf="management", state="absent"))
+        set_module_args({"vrf": "management", "state": "absent"})
         self.execute_module(changed=True, commands=["no vrf context management"])
 
     def test_nxos_vrf_absent_no_change(self):
-        set_module_args(dict(vrf="ntc", state="absent"))
+        set_module_args({"vrf": "ntc", "state": "absent"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_vrf_default(self):
-        set_module_args(dict(vrf="default"))
+        set_module_args({"vrf": "default"})
         result = self.execute_module(failed=True)
-        self.assertEqual(result["msg"], "cannot use default as name of a VRF")
+        assert result["msg"] == "cannot use default as name of a VRF"

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -16,7 +15,6 @@ based on the configuration.
 """
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.route_maps.route_maps import (
     Route_mapsArgs,
 )
@@ -25,10 +23,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 )
 
 
-class Route_mapsFacts(object):
-    """The nxos route_maps facts class"""
+class Route_mapsFacts:
+    """The nxos route_maps facts class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Route_mapsArgs.argument_spec
 
@@ -39,7 +37,7 @@ class Route_mapsFacts(object):
         return connection.get("show running-config | section '^route-map'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Route_maps network resource
+        """Populate the facts for Route_maps network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary

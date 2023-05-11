@@ -110,7 +110,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -136,7 +135,7 @@ def get_existing(module):
 
 
 def state_present(module, existing, commands):
-    cmds = list()
+    cmds = []
     if existing == commands:
         # Idempotent case
         return cmds
@@ -161,18 +160,19 @@ def invoke(name, *args, **kwargs):
     func = globals().get(name)
     if func:
         return func(*args, **kwargs)
+    return None
 
 
 def main():
-    argument_spec = dict(
-        commands=dict(required=False, type="list", elements="str"),
-        mode=dict(required=True, choices=["maintenance", "normal"]),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "commands": {"required": False, "type": "list", "elements": "str"},
+        "mode": {"required": True, "choices": ["maintenance", "normal"]},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     state = module.params["state"]
     commands = module.params["commands"] or []

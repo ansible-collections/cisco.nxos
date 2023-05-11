@@ -125,7 +125,6 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     get_interface_type,
@@ -143,10 +142,7 @@ PARAM_TO_DEFAULT_KEYMAP = {
 
 
 def execute_show_command(command, module):
-    if "show run" not in command:
-        output = "json"
-    else:
-        output = "text"
+    output = "json" if "show run" not in command else "text"
 
     commands = [{"command": command, "output": output}]
     return run_commands(module, commands)[0]
@@ -165,7 +161,7 @@ def apply_key_map(key_map, table):
 
 
 def is_default(interface, module):
-    command = "show run interface {0}".format(interface)
+    command = f"show run interface {interface}"
 
     try:
         body = execute_show_command(command, module)
@@ -173,16 +169,13 @@ def is_default(interface, module):
             return "DNE"
         else:
             raw_list = body.split("\n")
-            if raw_list[-1].startswith("interface"):
-                return True
-            else:
-                return False
+            return bool(raw_list[-1].startswith("interface"))
     except KeyError:
         return "DNE"
 
 
 def get_interface_mode(interface, intf_type, module):
-    command = "show interface {0}".format(interface)
+    command = f"show interface {interface}"
     interface = {}
     mode = "unknown"
     body = execute_show_command(command, module)
@@ -201,7 +194,7 @@ def get_interface_mode(interface, intf_type, module):
 
 
 def get_vrr_status(group, module, interface):
-    command = "show run all | section interface.{0}$".format(interface)
+    command = f"show run all | section interface.{interface}$"
     body = execute_show_command(command, module)
     vrf_index = None
     admin_state = "shutdown"
@@ -209,7 +202,7 @@ def get_vrr_status(group, module, interface):
     if body:
         splitted_body = body.splitlines()
         for index in range(0, len(splitted_body) - 1):
-            if splitted_body[index].strip() == "vrrp {0}".format(group):
+            if splitted_body[index].strip() == f"vrrp {group}":
                 vrf_index = index
         vrf_section = splitted_body[vrf_index::]
 
@@ -222,7 +215,7 @@ def get_vrr_status(group, module, interface):
 
 
 def get_existing_vrrp(interface, group, module, name):
-    command = "show vrrp detail interface {0}".format(interface)
+    command = f"show vrrp detail interface {interface}"
     body = execute_show_command(command, module)
     vrrp = {}
 
@@ -294,7 +287,7 @@ def get_commands_config_vrrp(delta, existing, group):
             commands.append("no authentication")
 
     if commands:
-        commands.insert(0, "vrrp {0}".format(group))
+        commands.insert(0, f"vrrp {group}")
 
     return commands
 
@@ -333,25 +326,25 @@ def validate_params(param, module):
 
 
 def main():
-    argument_spec = dict(
-        group=dict(required=True, type="str"),
-        interface=dict(required=True),
-        interval=dict(required=False, type="str"),
-        priority=dict(required=False, type="str"),
-        preempt=dict(required=False, type="bool"),
-        vip=dict(required=False, type="str"),
-        admin_state=dict(
-            required=False,
-            type="str",
-            choices=["shutdown", "no shutdown", "default"],
-            default="shutdown",
-        ),
-        authentication=dict(required=False, type="str", no_log=True),
-        state=dict(choices=["absent", "present"], required=False, default="present"),
-    )
+    argument_spec = {
+        "group": {"required": True, "type": "str"},
+        "interface": {"required": True},
+        "interval": {"required": False, "type": "str"},
+        "priority": {"required": False, "type": "str"},
+        "preempt": {"required": False, "type": "bool"},
+        "vip": {"required": False, "type": "str"},
+        "admin_state": {
+            "required": False,
+            "type": "str",
+            "choices": ["shutdown", "no shutdown", "default"],
+            "default": "shutdown",
+        },
+        "authentication": {"required": False, "type": "str", "no_log": True},
+        "state": {"choices": ["absent", "present"], "required": False, "default": "present"},
+    }
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     state = module.params["state"]
@@ -390,17 +383,17 @@ def main():
             interface=interface,
         )
 
-    args = dict(
-        group=group,
-        priority=priority,
-        preempt=preempt,
-        vip=vip,
-        authentication=authentication,
-        interval=interval,
-        admin_state=admin_state,
-    )
+    args = {
+        "group": group,
+        "priority": priority,
+        "preempt": preempt,
+        "vip": vip,
+        "authentication": authentication,
+        "interval": interval,
+        "admin_state": admin_state,
+    }
 
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    proposed = {k: v for k, v in args.items() if v is not None}
     existing = get_existing_vrrp(interface, group, module, name)
 
     commands = []
@@ -411,12 +404,11 @@ def main():
             command = get_commands_config_vrrp(delta, existing, group)
             if command:
                 commands.append(command)
-    elif state == "absent":
-        if existing:
-            commands.append(["no vrrp {0}".format(group)])
+    elif state == "absent" and existing:
+        commands.append([f"no vrrp {group}"])
 
     if commands:
-        commands.insert(0, ["interface {0}".format(interface)])
+        commands.insert(0, [f"interface {interface}"])
         commands = flatten_list(commands)
         results["commands"] = commands
         results["changed"] = True

@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Cisco and/or its affiliates.
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -23,7 +22,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_diff,
     to_list,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
@@ -32,19 +30,16 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class Bfd_interfaces(ConfigBase):
-    """
-    The nxos_bfd_interfaces class
-    """
+    """The nxos_bfd_interfaces class."""
 
     gather_subset = ["min"]
     gather_network_resources = ["bfd_interfaces"]
-    # exclude_params = []
 
-    def __init__(self, module):
-        super(Bfd_interfaces, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_bfd_interfaces_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :returns: A list of interface configs and a platform string
         """
@@ -64,14 +59,14 @@ class Bfd_interfaces(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
         result = {"changed": False}
-        warnings = list()
-        commands = list()
+        warnings = []
+        commands = []
 
         if self.state in self.ACTION_STATES:
             (
@@ -122,7 +117,7 @@ class Bfd_interfaces(ConfigBase):
 
     def set_config(self, existing_bfd_interfaces_facts, platform):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -149,7 +144,7 @@ class Bfd_interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -160,10 +155,10 @@ class Bfd_interfaces(ConfigBase):
         state = self._module.params["state"]
         if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state),
+                msg=f"value of config parameter must not be empty for state {state}",
             )
 
-        cmds = list()
+        cmds = []
         if state == "overridden":
             cmds.extend(self._state_overridden(want, have))
         elif state == "deleted":
@@ -177,7 +172,7 @@ class Bfd_interfaces(ConfigBase):
         return cmds
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -185,10 +180,7 @@ class Bfd_interfaces(ConfigBase):
         """
         cmds = []
         obj_in_have = search_obj_in_list(want["name"], have, "name")
-        if obj_in_have:
-            diff = dict_diff(want, obj_in_have)
-        else:
-            diff = want
+        diff = dict_diff(want, obj_in_have) if obj_in_have else want
         merged_cmds = self.set_commands(want, have)
         if "name" not in diff:
             diff["name"] = want["name"]
@@ -204,7 +196,7 @@ class Bfd_interfaces(ConfigBase):
         return cmds
 
     def _state_overridden(self, want, have):
-        """The command generator when state is overridden
+        """The command generator when state is overridden.
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -228,7 +220,7 @@ class Bfd_interfaces(ConfigBase):
         return cmds
 
     def _state_merged(self, want, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -237,7 +229,7 @@ class Bfd_interfaces(ConfigBase):
         return self.set_commands(want, have)
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration

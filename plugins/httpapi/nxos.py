@@ -35,8 +35,8 @@ OPTIONS = {
 
 
 class HttpApi(HttpApiBase):
-    def __init__(self, *args, **kwargs):
-        super(HttpApi, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self._device_info = None
         self._module_context = {}
 
@@ -49,12 +49,11 @@ class HttpApi(HttpApiBase):
     def save_module_context(self, module_key, module_context):
         self._module_context[module_key] = module_context
 
-        return None
 
     def send_request(self, data, **message_kwargs):
         output = None
-        queue = list()
-        responses = list()
+        queue = []
+        responses = []
 
         for item in to_list(data):
             cmd_output = message_kwargs.get("output") or "text"
@@ -72,7 +71,7 @@ class HttpApi(HttpApiBase):
 
             if output and output != cmd_output:
                 responses.extend(self._run_queue(queue, output))
-                queue = list()
+                queue = []
 
             output = cmd_output
             queue.append(command)
@@ -105,7 +104,7 @@ class HttpApi(HttpApiBase):
             response_data = json.loads(to_text(response_data.getvalue()))
         except ValueError:
             raise ConnectionError(
-                "Response was not valid JSON, got {0}".format(to_text(response_data.getvalue())),
+                f"Response was not valid JSON, got {to_text(response_data.getvalue())}",
             )
 
         results = handle_response(response_data)
@@ -174,7 +173,7 @@ class HttpApi(HttpApiBase):
             "supports_diff_match": True,
             "supports_diff_ignore_lines": True,
             "supports_generate_diff": True,
-            "supports_replace": True if "9K" in platform else False,
+            "supports_replace": "9K" in platform,
         }
 
     def get_capabilities(self):
@@ -213,7 +212,7 @@ def handle_response(response):
                 msg = output.get("msg", "")
                 clierror = output.get("clierror", "")
                 raise ConnectionError(
-                    "%s: %s: %s" % (input_data, msg, clierror),
+                    f"{input_data}: {msg}: {clierror}",
                     code=output["code"],
                 )
             elif "body" in output:
@@ -227,7 +226,7 @@ def handle_response(response):
 
 
 def request_builder(commands, output, version="1.0", chunk="0", sid=None):
-    """Encodes a NXAPI JSON request message"""
+    """Encodes a NXAPI JSON request message."""
     output_to_command_type = {
         "text": "cli_show_ascii",
         "json": "cli_show",
@@ -243,7 +242,7 @@ def request_builder(commands, output, version="1.0", chunk="0", sid=None):
         try:
             command_type = output_to_command_type[output]
         except KeyError:
-            msg = "invalid format, received %s, expected one of %s" % (
+            msg = "invalid format, received {}, expected one of {}".format(
                 output,
                 ",".join(output_to_command_type.keys()),
             )
@@ -263,4 +262,4 @@ def request_builder(commands, output, version="1.0", chunk="0", sid=None):
     msg["input"] = commands
     msg["output_format"] = "json"
 
-    return json.dumps(dict(ins_api=msg))
+    return json.dumps({"ins_api": msg})

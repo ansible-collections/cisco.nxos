@@ -89,7 +89,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -97,10 +96,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 
 
 def execute_show_command(command, module):
-    if "show run" not in command:
-        output = "json"
-    else:
-        output = "text"
+    output = "json" if "show run" not in command else "text"
     cmds = [{"command": command, "output": output}]
 
     body = run_commands(module, cmds)
@@ -132,7 +128,7 @@ def get_snmp_groups(module):
 
 
 def get_snmp_community(module, name):
-    command = "show run snmp all | grep word-exp {0}".format(name)
+    command = f"show run snmp all | grep word-exp {name}"
     data = execute_show_command(command, module)[0]
     community_dict = {}
 
@@ -147,13 +143,13 @@ def get_snmp_community(module, name):
         return community_dict
 
     community_dict["group"] = None
-    group_re = r"snmp-server community {0} group (\S+)".format(community_name)
+    group_re = fr"snmp-server community {community_name} group (\S+)"
     mo = re.search(group_re, data)
     if mo:
         community_dict["group"] = mo.group(1)
 
     community_dict["acl"] = None
-    acl_re = r"snmp-server community {0} use-acl (\S+)".format(community_name)
+    acl_re = fr"snmp-server community {community_name} use-acl (\S+)"
     mo = re.search(acl_re, data)
     if mo:
         community_dict["acl"] = mo.group(1)
@@ -168,7 +164,7 @@ def config_snmp_community(delta, community):
         "no_acl": "no snmp-server community {0} use-acl {no_acl}",
     }
     commands = []
-    for k in delta.keys():
+    for k in delta:
         cmd = CMDS.get(k).format(community, **delta)
         if cmd:
             if "group" in cmd:
@@ -180,13 +176,13 @@ def config_snmp_community(delta, community):
 
 
 def main():
-    argument_spec = dict(
-        community=dict(required=True, type="str"),
-        access=dict(choices=["ro", "rw"]),
-        group=dict(type="str"),
-        acl=dict(type="str"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "community": {"required": True, "type": "str"},
+        "access": {"choices": ["ro", "rw"]},
+        "group": {"type": "str"},
+        "acl": {"type": "str"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -195,7 +191,7 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     access = module.params["access"]
@@ -217,8 +213,8 @@ def main():
         module.fail_json(msg="Group not on switch. Please add before moving forward")
 
     existing = get_snmp_community(module, community)
-    args = dict(group=group, acl=acl)
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    args = {"group": group, "acl": acl}
+    proposed = {k: v for k, v in args.items() if v is not None}
     delta = dict(set(proposed.items()).difference(existing.items()))
     if delta.get("acl") == "default":
         delta.pop("acl")
@@ -229,12 +225,11 @@ def main():
 
     if state == "absent":
         if existing:
-            command = "no snmp-server community {0}".format(community)
+            command = f"no snmp-server community {community}"
             commands.append(command)
-    elif state == "present":
-        if delta:
-            command = config_snmp_community(dict(delta), community)
-            commands.append(command)
+    elif state == "present" and delta:
+        command = config_snmp_community(dict(delta), community)
+        commands.append(command)
 
     cmds = flatten_list(commands)
 

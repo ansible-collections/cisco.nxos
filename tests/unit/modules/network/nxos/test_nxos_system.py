@@ -33,7 +33,7 @@ class TestNxosSystemModule(TestNxosModule):
     module = nxos_system
 
     def setUp(self):
-        super(TestNxosSystemModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_system.get_config",
@@ -46,7 +46,7 @@ class TestNxosSystemModule(TestNxosModule):
         self.load_config = self.mock_load_config.start()
 
     def tearDown(self):
-        super(TestNxosSystemModule, self).tearDown()
+        super().tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
 
@@ -55,22 +55,22 @@ class TestNxosSystemModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_system_hostname_changed(self):
-        set_module_args(dict(hostname="foo"))
+        set_module_args({"hostname": "foo"})
         commands = ["hostname foo"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_system_domain_lookup(self):
-        set_module_args(dict(domain_lookup=True))
+        set_module_args({"domain_lookup": True})
         commands = ["ip domain-lookup"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_system_missing_vrf(self):
-        domain_name = dict(name="example.com", vrf="example")
-        set_module_args(dict(domain_name=domain_name))
+        domain_name = {"name": "example.com", "vrf": "example"}
+        set_module_args({"domain_name": domain_name})
         self.execute_module(failed=True)
 
     def test_nxos_system_domain_name(self):
-        set_module_args(dict(domain_name=["example.net"]))
+        set_module_args({"domain_name": ["example.net"]})
         commands = [
             "no ip domain-name ansible.com",
             "vrf context management",
@@ -82,19 +82,19 @@ class TestNxosSystemModule(TestNxosModule):
 
     def test_nxos_system_domain_name_vrf_only(self):
         set_module_args(
-            dict(
-                domain_name=[
+            {
+                "domain_name": [
                     {"name": "abc.com", "vrf": "test"},
                     {"name": "xyz.com", "vrf": "test2"},
                 ],
-            ),
+            },
         )
         commands = []
         self.execute_module(changed=False, commands=commands, device="vrf_only")
 
     def test_nxos_system_domain_name_complex(self):
-        domain_name = dict(name="example.net", vrf="management")
-        set_module_args(dict(domain_name=[domain_name]))
+        domain_name = {"name": "example.net", "vrf": "management"}
+        set_module_args({"domain_name": [domain_name]})
         commands = [
             "no ip domain-name ansible.com",
             "vrf context management",
@@ -107,7 +107,7 @@ class TestNxosSystemModule(TestNxosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_system_domain_search(self):
-        set_module_args(dict(domain_search=["example.net"]))
+        set_module_args({"domain_search": ["example.net"]})
         commands = [
             "vrf context management",
             "no ip domain-list ansible.com",
@@ -122,8 +122,8 @@ class TestNxosSystemModule(TestNxosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_system_domain_search_complex(self):
-        domain_search = dict(name="example.net", vrf="management")
-        set_module_args(dict(domain_search=[domain_search]))
+        domain_search = {"name": "example.net", "vrf": "management"}
+        set_module_args({"domain_search": [domain_search]})
         commands = [
             "vrf context management",
             "no ip domain-list ansible.com",
@@ -140,7 +140,7 @@ class TestNxosSystemModule(TestNxosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_system_name_servers(self):
-        set_module_args(dict(name_servers=["1.2.3.4", "8.8.8.8"]))
+        set_module_args({"name_servers": ["1.2.3.4", "8.8.8.8"]})
         commands = [
             "no ip name-server 172.26.1.1",
             "vrf context management",
@@ -154,8 +154,8 @@ class TestNxosSystemModule(TestNxosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_system_name_servers_complex(self):
-        name_servers = dict(server="1.2.3.4", vrf="management")
-        set_module_args(dict(name_servers=[name_servers]))
+        name_servers = {"server": "1.2.3.4", "vrf": "management"}
+        set_module_args({"name_servers": [name_servers]})
         commands = [
             "no ip name-server 8.8.8.8",
             "no ip name-server 172.26.1.1",
@@ -172,12 +172,12 @@ class TestNxosSystemModule(TestNxosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_system_system_mtu(self):
-        set_module_args(dict(system_mtu=2000))
+        set_module_args({"system_mtu": 2000})
         commands = ["system jumbomtu 2000"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_system_state_absent(self):
-        set_module_args(dict(state="absent"))
+        set_module_args({"state": "absent"})
         commands = [
             "no hostname",
             "no ip domain-name ansible.com",

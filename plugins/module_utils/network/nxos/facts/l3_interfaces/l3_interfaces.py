@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)#!/usr/bin/python
@@ -19,7 +18,6 @@ import re
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.l3_interfaces.l3_interfaces import (
     L3_interfacesArgs,
 )
@@ -28,18 +26,15 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 )
 
 
-class L3_interfacesFacts(object):
-    """The nxos l3_interfaces fact class"""
+class L3_interfacesFacts:
+    """The nxos l3_interfaces fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = L3_interfacesArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -50,7 +45,7 @@ class L3_interfacesFacts(object):
         :param connection: the device connection
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         objs = []
         if not data:
@@ -82,7 +77,7 @@ class L3_interfacesFacts(object):
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration
         :rtype: dictionary
-        :returns: The generated config
+        :returns: The generated config.
         """
         config = deepcopy(spec)
         match = re.search(r"^(\S+)", conf)
@@ -97,39 +92,36 @@ class L3_interfacesFacts(object):
         config["evpn_multisite_tracking"] = utils.parse_conf_arg(conf, "evpn multisite")
         ipv4_match = re.compile(r"\n  ip address (.*)")
         matches = ipv4_match.findall(conf)
-        if matches:
-            if matches[0]:
-                config["ipv4"] = []
-                for m in matches:
-                    ipv4_conf = m.split()
-                    addr = ipv4_conf[0]
-                    if addr:
-                        config_dict = {"address": addr}
-                        if len(ipv4_conf) > 1:
-                            d = ipv4_conf[1]
-                            if d == "secondary":
-                                config_dict.update({"secondary": True})
-                                if len(ipv4_conf) == 4:
-                                    if ipv4_conf[2] == "tag":
-                                        config_dict.update({"tag": int(ipv4_conf[-1])})
-                            elif d == "tag":
+        if matches and matches[0]:
+            config["ipv4"] = []
+            for m in matches:
+                ipv4_conf = m.split()
+                addr = ipv4_conf[0]
+                if addr:
+                    config_dict = {"address": addr}
+                    if len(ipv4_conf) > 1:
+                        d = ipv4_conf[1]
+                        if d == "secondary":
+                            config_dict.update({"secondary": True})
+                            if len(ipv4_conf) == 4 and ipv4_conf[2] == "tag":
                                 config_dict.update({"tag": int(ipv4_conf[-1])})
-                        config["ipv4"].append(config_dict)
+                        elif d == "tag":
+                            config_dict.update({"tag": int(ipv4_conf[-1])})
+                    config["ipv4"].append(config_dict)
 
         ipv6_match = re.compile(r"\n  ipv6 address (.*)")
         matches = ipv6_match.findall(conf)
-        if matches:
-            if matches[0]:
-                config["ipv6"] = []
-                for m in matches:
-                    ipv6_conf = m.split()
-                    addr = ipv6_conf[0]
-                    if addr:
-                        config_dict = {"address": addr}
-                        if len(ipv6_conf) > 1:
-                            d = ipv6_conf[1]
-                            if d == "tag":
-                                config_dict.update({"tag": int(ipv6_conf[-1])})
-                        config["ipv6"].append(config_dict)
+        if matches and matches[0]:
+            config["ipv6"] = []
+            for m in matches:
+                ipv6_conf = m.split()
+                addr = ipv6_conf[0]
+                if addr:
+                    config_dict = {"address": addr}
+                    if len(ipv6_conf) > 1:
+                        d = ipv6_conf[1]
+                        if d == "tag":
+                            config_dict.update({"tag": int(ipv6_conf[-1])})
+                    config["ipv6"].append(config_dict)
 
         return utils.remove_empties(config)

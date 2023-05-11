@@ -37,7 +37,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
     module = nxos_bgp_global
 
     def setUp(self):
-        super(TestNxosBgpGlobalModule, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -55,70 +55,70 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config = self.mock_cfg_get_config.start()
 
     def tearDown(self):
-        super(TestNxosBgpGlobalModule, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
         self.cfg_get_config.stop()
 
     def test_nxos_bgp_global_merged_basic(self):
         set_module_args(
-            dict(config=dict(as_number="65563"), state="merged"),
+            {"config": {"as_number": "65563"}, "state": "merged"},
             ignore_provider_arg,
         )
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["router bgp 65563"])
+        assert result["commands"] == ["router bgp 65563"]
 
     def test_nxos_bgp_global_merged(self):
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    router_id="198.51.100.2",
-                    log_neighbor_changes=True,
-                    maxas_limit=20,
-                    neighbors=[
-                        dict(
-                            neighbor_address="198.51.100.20",
-                            neighbor_affinity_group=dict(group_id=160),
-                            remote_as="65537",
-                            description="NBR-1",
-                            low_memory=dict(exempt=True),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.21",
-                            remote_as="65537",
-                            password=dict(encryption=7, key="12090404011C03162E"),
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "router_id": "198.51.100.2",
+                    "log_neighbor_changes": True,
+                    "maxas_limit": 20,
+                    "neighbors": [
+                        {
+                            "neighbor_address": "198.51.100.20",
+                            "neighbor_affinity_group": {"group_id": 160},
+                            "remote_as": "65537",
+                            "description": "NBR-1",
+                            "low_memory": {"exempt": True},
+                        },
+                        {
+                            "neighbor_address": "198.51.100.21",
+                            "remote_as": "65537",
+                            "password": {"encryption": 7, "key": "12090404011C03162E"},
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            local_as="200",
-                            log_neighbor_changes=True,
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.0.2.10",
-                                    neighbor_affinity_group=dict(group_id=161),
-                                    remote_as="65538",
-                                    timers=dict(keepalive=5, holdtime=15),
-                                    description="site-1-nbr-1",
-                                    password=dict(
-                                        encryption=3,
-                                        key="13D4D3549493D2877B1DC116EE27A6BE",
-                                    ),
-                                ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "local_as": "200",
+                            "log_neighbor_changes": True,
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.0.2.10",
+                                    "neighbor_affinity_group": {"group_id": 161},
+                                    "remote_as": "65538",
+                                    "timers": {"keepalive": 5, "holdtime": 15},
+                                    "description": "site-1-nbr-1",
+                                    "password": {
+                                        "encryption": 3,
+                                        "key": "13D4D3549493D2877B1DC116EE27A6BE",
+                                    },
+                                },
                             ],
-                        ),
-                        dict(
-                            vrf="site-2",
-                            local_as="300",
-                            log_neighbor_changes=True,
-                            neighbor_down=dict(fib_accelerate=True),
-                        ),
+                        },
+                        {
+                            "vrf": "site-2",
+                            "local_as": "300",
+                            "log_neighbor_changes": True,
+                            "neighbor_down": {"fib_accelerate": True},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -149,56 +149,56 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "neighbor-down fib-accelerate",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_global_bfd(self):
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="198.51.100.20",
-                            bfd=dict(
-                                set=True,
-                                multihop=dict(
-                                    interval=dict(
-                                        tx_interval=300,
-                                        min_rx_interval=258,
-                                        multiplier=12,
-                                    ),
-                                ),
-                            ),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.21",
-                            bfd=dict(
-                                multihop=dict(
-                                    set=True,
-                                    interval=dict(
-                                        tx_interval=301,
-                                        min_rx_interval=260,
-                                        multiplier=15,
-                                    ),
-                                ),
-                            ),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.22",
-                            bfd=dict(singlehop=True),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.23",
-                            bfd=dict(multihop=dict(set=True)),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.24",
-                            bfd=dict(set=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "198.51.100.20",
+                            "bfd": {
+                                "set": True,
+                                "multihop": {
+                                    "interval": {
+                                        "tx_interval": 300,
+                                        "min_rx_interval": 258,
+                                        "multiplier": 12,
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            "neighbor_address": "198.51.100.21",
+                            "bfd": {
+                                "multihop": {
+                                    "set": True,
+                                    "interval": {
+                                        "tx_interval": 301,
+                                        "min_rx_interval": 260,
+                                        "multiplier": 15,
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            "neighbor_address": "198.51.100.22",
+                            "bfd": {"singlehop": True},
+                        },
+                        {
+                            "neighbor_address": "198.51.100.23",
+                            "bfd": {"multihop": {"set": True}},
+                        },
+                        {
+                            "neighbor_address": "198.51.100.24",
+                            "bfd": {"set": True},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -217,7 +217,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "bfd",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_global_bfd(self):
         run_cfg = dedent(
@@ -241,57 +241,57 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = run_cfg
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="198.51.100.20",
-                            bfd=dict(
-                                set=True,
-                                multihop=dict(
-                                    interval=dict(
-                                        tx_interval=300,
-                                        min_rx_interval=258,
-                                        multiplier=12,
-                                    ),
-                                ),
-                            ),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.21",
-                            bfd=dict(
-                                multihop=dict(
-                                    set=True,
-                                    interval=dict(
-                                        tx_interval=301,
-                                        min_rx_interval=260,
-                                        multiplier=15,
-                                    ),
-                                ),
-                            ),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.22",
-                            bfd=dict(singlehop=True),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.23",
-                            bfd=dict(multihop=dict(set=True)),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.24",
-                            bfd=dict(set=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "198.51.100.20",
+                            "bfd": {
+                                "set": True,
+                                "multihop": {
+                                    "interval": {
+                                        "tx_interval": 300,
+                                        "min_rx_interval": 258,
+                                        "multiplier": 12,
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            "neighbor_address": "198.51.100.21",
+                            "bfd": {
+                                "multihop": {
+                                    "set": True,
+                                    "interval": {
+                                        "tx_interval": 301,
+                                        "min_rx_interval": 260,
+                                        "multiplier": 15,
+                                    },
+                                },
+                            },
+                        },
+                        {
+                            "neighbor_address": "198.51.100.22",
+                            "bfd": {"singlehop": True},
+                        },
+                        {
+                            "neighbor_address": "198.51.100.23",
+                            "bfd": {"multihop": {"set": True}},
+                        },
+                        {
+                            "neighbor_address": "198.51.100.24",
+                            "bfd": {"set": True},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
 
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_bgp_global_merged_idempotent(self):
         run_cfg = dedent(
@@ -325,58 +325,58 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.get_config.return_value = run_cfg
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    router_id="198.51.100.2",
-                    log_neighbor_changes=True,
-                    maxas_limit=20,
-                    neighbors=[
-                        dict(
-                            neighbor_address="198.51.100.20",
-                            neighbor_affinity_group=dict(group_id=160),
-                            remote_as="65537",
-                            description="NBR-1",
-                            low_memory=dict(exempt=True),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.21",
-                            remote_as="65537",
-                            password=dict(encryption=7, key="12090404011C03162E"),
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "router_id": "198.51.100.2",
+                    "log_neighbor_changes": True,
+                    "maxas_limit": 20,
+                    "neighbors": [
+                        {
+                            "neighbor_address": "198.51.100.20",
+                            "neighbor_affinity_group": {"group_id": 160},
+                            "remote_as": "65537",
+                            "description": "NBR-1",
+                            "low_memory": {"exempt": True},
+                        },
+                        {
+                            "neighbor_address": "198.51.100.21",
+                            "remote_as": "65537",
+                            "password": {"encryption": 7, "key": "12090404011C03162E"},
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            local_as="200",
-                            log_neighbor_changes=True,
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.0.2.10",
-                                    neighbor_affinity_group=dict(group_id=161),
-                                    remote_as="65538",
-                                    description="site-1-nbr-1",
-                                    password=dict(
-                                        encryption=3,
-                                        key="13D4D3549493D2877B1DC116EE27A6BE",
-                                    ),
-                                ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "local_as": "200",
+                            "log_neighbor_changes": True,
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.0.2.10",
+                                    "neighbor_affinity_group": {"group_id": 161},
+                                    "remote_as": "65538",
+                                    "description": "site-1-nbr-1",
+                                    "password": {
+                                        "encryption": 3,
+                                        "key": "13D4D3549493D2877B1DC116EE27A6BE",
+                                    },
+                                },
                             ],
-                        ),
-                        dict(
-                            vrf="site-2",
-                            local_as="300",
-                            log_neighbor_changes=True,
-                            neighbor_down=dict(fib_accelerate=True),
-                        ),
+                        },
+                        {
+                            "vrf": "site-2",
+                            "local_as": "300",
+                            "log_neighbor_changes": True,
+                            "neighbor_down": {"fib_accelerate": True},
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_bgp_global_replaced(self):
         run_cfg = dedent(
@@ -412,43 +412,43 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = run_cfg
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    router_id="198.51.100.212",
-                    log_neighbor_changes=True,
-                    maxas_limit=20,
-                    neighbors=[
-                        dict(
-                            neighbor_address="198.51.100.20",
-                            neighbor_affinity_group=dict(group_id=161),
-                            remote_as="65537",
-                            description="NBR-1",
-                            low_memory=dict(exempt=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "router_id": "198.51.100.212",
+                    "log_neighbor_changes": True,
+                    "maxas_limit": 20,
+                    "neighbors": [
+                        {
+                            "neighbor_address": "198.51.100.20",
+                            "neighbor_affinity_group": {"group_id": 161},
+                            "remote_as": "65537",
+                            "description": "NBR-1",
+                            "low_memory": {"exempt": True},
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            local_as="200",
-                            log_neighbor_changes=True,
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.0.2.10",
-                                    neighbor_affinity_group=dict(group_id=190),
-                                    remote_as="65538",
-                                    description="site-1-nbr-1",
-                                    password=dict(
-                                        encryption=3,
-                                        key="13D4D3549493D2877B1DC116EE27A6BE",
-                                    ),
-                                ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "local_as": "200",
+                            "log_neighbor_changes": True,
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.0.2.10",
+                                    "neighbor_affinity_group": {"group_id": 190},
+                                    "remote_as": "65538",
+                                    "description": "site-1-nbr-1",
+                                    "password": {
+                                        "encryption": 3,
+                                        "key": "13D4D3549493D2877B1DC116EE27A6BE",
+                                    },
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -463,7 +463,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "no vrf site-2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_global_replaced_idempotent(self):
         run_cfg = dedent(
@@ -491,47 +491,47 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = run_cfg
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    router_id="198.51.100.212",
-                    log_neighbor_changes=True,
-                    maxas_limit=20,
-                    neighbors=[
-                        dict(
-                            neighbor_address="198.51.100.20",
-                            neighbor_affinity_group=dict(group_id=161),
-                            remote_as="65537",
-                            description="NBR-1",
-                            low_memory=dict(exempt=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "router_id": "198.51.100.212",
+                    "log_neighbor_changes": True,
+                    "maxas_limit": 20,
+                    "neighbors": [
+                        {
+                            "neighbor_address": "198.51.100.20",
+                            "neighbor_affinity_group": {"group_id": 161},
+                            "remote_as": "65537",
+                            "description": "NBR-1",
+                            "low_memory": {"exempt": True},
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            local_as="200",
-                            log_neighbor_changes=True,
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.0.2.10",
-                                    neighbor_affinity_group=dict(group_id=190),
-                                    remote_as="65538",
-                                    description="site-1-nbr-1",
-                                    password=dict(
-                                        encryption=3,
-                                        key="13D4D3549493D2877B1DC116EE27A6BE",
-                                    ),
-                                ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "local_as": "200",
+                            "log_neighbor_changes": True,
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.0.2.10",
+                                    "neighbor_affinity_group": {"group_id": 190},
+                                    "remote_as": "65538",
+                                    "description": "site-1-nbr-1",
+                                    "password": {
+                                        "encryption": 3,
+                                        "key": "13D4D3549493D2877B1DC116EE27A6BE",
+                                    },
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_bgp_global_replaced_failed_1(self):
         run_cfg = dedent(
@@ -567,46 +567,46 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = run_cfg
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    router_id="198.51.100.212",
-                    log_neighbor_changes=True,
-                    maxas_limit=20,
-                    neighbors=[
-                        dict(
-                            neighbor_address="198.51.100.20",
-                            neighbor_affinity_group=dict(group_id=161),
-                            remote_as="65537",
-                            description="NBR-1",
-                            low_memory=dict(exempt=True),
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "router_id": "198.51.100.212",
+                    "log_neighbor_changes": True,
+                    "maxas_limit": 20,
+                    "neighbors": [
+                        {
+                            "neighbor_address": "198.51.100.20",
+                            "neighbor_affinity_group": {"group_id": 161},
+                            "remote_as": "65537",
+                            "description": "NBR-1",
+                            "low_memory": {"exempt": True},
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            local_as="200",
-                            log_neighbor_changes=True,
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.0.2.10",
-                                    neighbor_affinity_group=dict(group_id=190),
-                                    remote_as="65538",
-                                    description="site-1-nbr-1",
-                                    password=dict(
-                                        encryption=3,
-                                        key="13D4D3549493D2877B1DC116EE27A6BE",
-                                    ),
-                                ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "local_as": "200",
+                            "log_neighbor_changes": True,
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.0.2.10",
+                                    "neighbor_affinity_group": {"group_id": 190},
+                                    "remote_as": "65538",
+                                    "description": "site-1-nbr-1",
+                                    "password": {
+                                        "encryption": 3,
+                                        "key": "13D4D3549493D2877B1DC116EE27A6BE",
+                                    },
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
-        result = self.execute_module(failed=True)
+        self.execute_module(failed=True)
 
     def test_nxos_bgp_global_replaced_failed_2(self):
         run_cfg = dedent(
@@ -642,40 +642,40 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = run_cfg
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    router_id="198.51.100.2",
-                    log_neighbor_changes=True,
-                    maxas_limit=20,
-                    neighbors=[
-                        dict(
-                            neighbor_address="198.51.100.20",
-                            neighbor_affinity_group=dict(group_id=160),
-                            remote_as="65537",
-                            description="NBR-1",
-                            low_memory=dict(exempt=True),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.21",
-                            remote_as="65537",
-                            password=dict(encryption=7, key="12090404011C03162E"),
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "router_id": "198.51.100.2",
+                    "log_neighbor_changes": True,
+                    "maxas_limit": 20,
+                    "neighbors": [
+                        {
+                            "neighbor_address": "198.51.100.20",
+                            "neighbor_affinity_group": {"group_id": 160},
+                            "remote_as": "65537",
+                            "description": "NBR-1",
+                            "low_memory": {"exempt": True},
+                        },
+                        {
+                            "neighbor_address": "198.51.100.21",
+                            "remote_as": "65537",
+                            "password": {"encryption": 7, "key": "12090404011C03162E"},
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-2",
-                            local_as="300",
-                            log_neighbor_changes=True,
-                            neighbor_down=dict(fib_accelerate=True),
-                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-2",
+                            "local_as": "300",
+                            "log_neighbor_changes": True,
+                            "neighbor_down": {"fib_accelerate": True},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
-        result = self.execute_module(failed=True)
+        self.execute_module(failed=True)
 
     def test_nxos_bgp_global_replaced_failed_3(self):
         run_cfg = dedent(
@@ -711,45 +711,45 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = run_cfg
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    router_id="198.51.100.2",
-                    log_neighbor_changes=True,
-                    maxas_limit=20,
-                    neighbors=[
-                        dict(
-                            neighbor_address="198.51.100.20",
-                            neighbor_affinity_group=dict(group_id=160),
-                            remote_as="65537",
-                            description="NBR-1",
-                            low_memory=dict(exempt=True),
-                        ),
-                        dict(
-                            neighbor_address="198.51.100.21",
-                            remote_as="65537",
-                            password=dict(encryption=7, key="12090404011C03162E"),
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "router_id": "198.51.100.2",
+                    "log_neighbor_changes": True,
+                    "maxas_limit": 20,
+                    "neighbors": [
+                        {
+                            "neighbor_address": "198.51.100.20",
+                            "neighbor_affinity_group": {"group_id": 160},
+                            "remote_as": "65537",
+                            "description": "NBR-1",
+                            "low_memory": {"exempt": True},
+                        },
+                        {
+                            "neighbor_address": "198.51.100.21",
+                            "remote_as": "65537",
+                            "password": {"encryption": 7, "key": "12090404011C03162E"},
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            local_as="200",
-                            log_neighbor_changes=True,
-                        ),
-                        dict(
-                            vrf="site-2",
-                            local_as="300",
-                            log_neighbor_changes=True,
-                            neighbor_down=dict(fib_accelerate=True),
-                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "local_as": "200",
+                            "log_neighbor_changes": True,
+                        },
+                        {
+                            "vrf": "site-2",
+                            "local_as": "300",
+                            "log_neighbor_changes": True,
+                            "neighbor_down": {"fib_accelerate": True},
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
-        result = self.execute_module(failed=True)
+        self.execute_module(failed=True)
 
     def test_nxos_bgp_global_deleted(self):
         run_cfg = dedent(
@@ -783,7 +783,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
 
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         commands = [
             "router bgp 65536",
             "no log-neighbor-changes",
@@ -796,7 +796,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         ]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_global_deleted_idempotent_1(self):
         run_cfg = dedent(
@@ -806,10 +806,10 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
 
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
 
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_bgp_global_deleted_idempotent_2(self):
         run_cfg = dedent(
@@ -844,12 +844,12 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = run_cfg
 
         set_module_args(
-            dict(config=dict(as_number="65539"), state="deleted"),
+            {"config": {"as_number": "65539"}, "state": "deleted"},
             ignore_provider_arg,
         )
 
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_bgp_global_deleted_failed(self):
         run_cfg = dedent(
@@ -884,8 +884,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
 
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
-        result = self.execute_module(failed=True)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
+        self.execute_module(failed=True)
 
     def test_nxos_bgp_global_purged(self):
         run_cfg = dedent(
@@ -919,11 +919,11 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
 
-        set_module_args(dict(state="purged"), ignore_provider_arg)
+        set_module_args({"state": "purged"}, ignore_provider_arg)
         commands = ["no router bgp 65536"]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_global_purged_idempotent(self):
         run_cfg = dedent(
@@ -933,10 +933,10 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
 
-        set_module_args(dict(state="purged"), ignore_provider_arg)
+        set_module_args({"state": "purged"}, ignore_provider_arg)
 
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_bgp_global_purged(self):
         run_cfg = dedent(
@@ -948,19 +948,19 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = run_cfg
 
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65001",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.239.0.13",
-                            peer_type="fabric-external",
-                            remote_as="65002",
-                        ),
+            {
+                "config": {
+                    "as_number": "65001",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.239.0.13",
+                            "peer_type": "fabric-external",
+                            "remote_as": "65002",
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -971,7 +971,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         ]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_global_neighbor_3K(self):
         run_cfg = dedent(
@@ -986,10 +986,10 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.cfg_get_config.return_value = ""
 
         set_module_args(
-            dict(
-                running_config=run_cfg,
-                state="parsed",
-            ),
+            {
+                "running_config": run_cfg,
+                "state": "parsed",
+            },
             ignore_provider_arg,
         )
 
@@ -1004,4 +1004,4 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         }
 
         result = self.execute_module(changed=False)
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed

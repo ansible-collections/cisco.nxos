@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -26,7 +25,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
     get_from_dict,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospfv3 import (
     Ospfv3Template,
@@ -34,12 +32,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Ospfv3(ResourceModule):
-    """
-    The nxos_ospfv3 config class
-    """
+    """The nxos_ospfv3 config class."""
 
-    def __init__(self, module):
-        super(Ospfv3, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
@@ -67,7 +63,7 @@ class Ospfv3(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -189,11 +185,11 @@ class Ospfv3(ResourceModule):
             for key, entry in iteritems(wdict):
                 if entry != hdict.pop(key, {}):
                     entry["area_id"] = want["area_id"]
-                    self.addcmd(entry, "area.{0}".format(attrib), False)
+                    self.addcmd(entry, f"area.{attrib}", False)
             # remove remaining items in have for replaced
             for entry in hdict.values():
                 entry["area_id"] = have["area_id"]
-                self.addcmd(entry, "area.{0}".format(attrib), True)
+                self.addcmd(entry, f"area.{attrib}", True)
 
     def _af_compare_lists(self, want, have):
         for attrib in ["summary_address", "redistribute"]:

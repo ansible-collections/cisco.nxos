@@ -86,7 +86,6 @@ updates:
     sample: ["ip igmp flush-routes"]
 """
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -109,23 +108,23 @@ def get_desired(module):
 
 
 def main():
-    argument_spec = dict(
-        flush_routes=dict(type="bool"),
-        enforce_rtr_alert=dict(type="bool"),
-        restart=dict(type="bool", default=False),
-        state=dict(choices=["present", "default"], default="present"),
-    )
+    argument_spec = {
+        "flush_routes": {"type": "bool"},
+        "enforce_rtr_alert": {"type": "bool"},
+        "restart": {"type": "bool", "default": False},
+        "state": {"choices": ["present", "default"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     current = get_current(module)
     desired = get_desired(module)
 
     state = module.params["state"]
 
-    commands = list()
+    commands = []
 
     if state == "default":
         if current["flush_routes"]:
@@ -140,9 +139,9 @@ def main():
         }
         for arg in ["flush_routes", "enforce_rtr_alert"]:
             if desired[arg] and not current[arg]:
-                commands.append("ip igmp {0}".format(ldict.get(arg)))
+                commands.append(f"ip igmp {ldict.get(arg)}")
             elif current[arg] and not desired[arg]:
-                commands.append("no ip igmp {0}".format(ldict.get(arg)))
+                commands.append(f"no ip igmp {ldict.get(arg)}")
 
     result = {"changed": False, "updates": commands, "warnings": warnings}
 

@@ -159,7 +159,6 @@ updates:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     load_config,
@@ -195,16 +194,15 @@ def check_args(module, warnings, capabilities):
         )
 
     for key in ["http_port", "https_port"]:
-        if module.params[key] is not None:
-            if not 1 <= module.params[key] <= 65535:
-                module.fail_json(msg="%s must be between 1 and 65535" % key)
+        if module.params[key] is not None and not 1 <= module.params[key] <= 65535:
+            module.fail_json(msg="%s must be between 1 and 65535" % key)
 
     return warnings
 
 
 def map_obj_to_commands(want, have, module, warnings, capabilities):
-    send_commands = list()
-    commands = dict()
+    send_commands = []
+    commands = {}
     os_platform = None
     os_version = None
 
@@ -233,13 +231,13 @@ def map_obj_to_commands(want, have, module, warnings, capabilities):
             if want.get(parameter) is False:
                 commands[parameter] = "no nxapi %s" % parameter
             else:
-                commands[parameter] = "nxapi %s port %s" % (
+                commands[parameter] = "nxapi {} port {}".format(
                     parameter,
                     want.get(port_param),
                 )
 
         if needs_update(port_param) and want.get(parameter) is True:
-            commands[parameter] = "nxapi %s port %s" % (
+            commands[parameter] = "nxapi {} port {}".format(
                 parameter,
                 want.get(port_param),
             )
@@ -379,23 +377,23 @@ def map_params_to_obj(module):
 
 
 def main():
-    """main entry point for module execution"""
-    argument_spec = dict(
-        http=dict(aliases=["enable_http"], type="bool", default=True),
-        http_port=dict(type="int", default=80),
-        https=dict(aliases=["enable_https"], type="bool", default=False),
-        https_port=dict(type="int", default=443),
-        sandbox=dict(aliases=["enable_sandbox"], type="bool"),
-        state=dict(default="present", choices=["present", "absent"]),
-        ssl_strong_ciphers=dict(type="bool", default=False),
-        tlsv1_0=dict(type="bool", default=True),
-        tlsv1_1=dict(type="bool", default=False),
-        tlsv1_2=dict(type="bool", default=False),
-    )
+    """Main entry point for module execution."""
+    argument_spec = {
+        "http": {"aliases": ["enable_http"], "type": "bool", "default": True},
+        "http_port": {"type": "int", "default": 80},
+        "https": {"aliases": ["enable_https"], "type": "bool", "default": False},
+        "https_port": {"type": "int", "default": 443},
+        "sandbox": {"aliases": ["enable_sandbox"], "type": "bool"},
+        "state": {"default": "present", "choices": ["present", "absent"]},
+        "ssl_strong_ciphers": {"type": "bool", "default": False},
+        "tlsv1_0": {"type": "bool", "default": True},
+        "tlsv1_1": {"type": "bool", "default": False},
+        "tlsv1_2": {"type": "bool", "default": False},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
     warning_msg = "Module nxos_nxapi currently defaults to configure 'http port 80'. "
     warning_msg += "Default behavior is changing to configure 'https port 443'"
     warning_msg += " when params 'http, http_port, https, https_port' are not set in the playbook"

@@ -144,7 +144,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_lines,
     transform_commands,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
 
 
@@ -171,22 +170,22 @@ def to_cli(obj):
 
 
 def main():
-    """entry point for module execution"""
-    argument_spec = dict(
+    """Entry point for module execution."""
+    argument_spec = {
         # { command: <str>, output: <str>, prompt: <str>, response: <str> }
-        commands=dict(type="list", required=True, elements="raw"),
-        wait_for=dict(type="list", aliases=["waitfor"], elements="str"),
-        match=dict(default="all", choices=["any", "all"]),
-        retries=dict(default=9, type="int"),
-        interval=dict(default=1, type="int"),
-    )
+        "commands": {"type": "list", "required": True, "elements": "raw"},
+        "wait_for": {"type": "list", "aliases": ["waitfor"], "elements": "str"},
+        "match": {"default": "all", "choices": ["any", "all"]},
+        "retries": {"default": 9, "type": "int"},
+        "interval": {"default": 1, "type": "int"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
     result = {"changed": False, "warnings": warnings}
     commands = parse_commands(module, warnings)
-    wait_for = module.params["wait_for"] or list()
+    wait_for = module.params["wait_for"] or []
     conditionals = []
 
     try:
@@ -205,7 +204,7 @@ def main():
             try:
                 if item(responses):
                     if match == "any":
-                        conditionals = list()
+                        conditionals = []
                         break
                     conditionals.remove(item)
             except FailedConditionalError as exc:

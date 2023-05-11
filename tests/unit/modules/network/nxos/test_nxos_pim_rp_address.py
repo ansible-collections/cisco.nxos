@@ -32,7 +32,7 @@ class TestNxosPimRpAddressModule(TestNxosModule):
     module = nxos_pim_rp_address
 
     def setUp(self):
-        super(TestNxosPimRpAddressModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_rp_address.load_config",
@@ -45,7 +45,7 @@ class TestNxosPimRpAddressModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosPimRpAddressModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
 
@@ -54,17 +54,17 @@ class TestNxosPimRpAddressModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_pim_rp_address(self):
-        set_module_args(dict(rp_address="5.6.7.8"))
+        set_module_args({"rp_address": "5.6.7.8"})
         self.execute_module(changed=True, commands=["ip pim rp-address 5.6.7.8"])
 
     def test_nxos_pim_rp_address_no_change(self):
-        set_module_args(dict(rp_address="1.2.3.4"))
+        set_module_args({"rp_address": "1.2.3.4"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_pim_rp_address_absent(self):
-        set_module_args(dict(rp_address="1.2.3.4", state="absent"))
+        set_module_args({"rp_address": "1.2.3.4", "state": "absent"})
         self.execute_module(changed=True, commands=["no ip pim rp-address 1.2.3.4"])
 
     def test_nxos_pim_rp_address_absent_no_change(self):
-        set_module_args(dict(rp_address="5.6.7.8", state="absent"))
+        set_module_args({"rp_address": "5.6.7.8", "state": "absent"})
         self.execute_module(changed=False, commands=[])

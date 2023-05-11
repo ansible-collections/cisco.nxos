@@ -47,7 +47,7 @@ def validate_ipv4_addr(address):
     address = address.split("/")[0]
     try:
         socket.inet_aton(address)
-    except socket.error:
+    except OSError:
         return False
     return address.count(".") == 3
 
@@ -56,15 +56,15 @@ def validate_ipv6_addr(address):
     address = address.split("/")[0]
     try:
         socket.inet_pton(socket.AF_INET6, address)
-    except socket.error:
+    except OSError:
         return False
     return True
 
 
 def normalize_interface(name):
-    """Return the normalized interface name"""
+    """Return the normalized interface name."""
     if not name:
-        return
+        return None
 
     def _get_number(name):
         digits = ""
@@ -87,21 +87,15 @@ def normalize_interface(name):
         if_type = None
 
     number_list = name.split(" ")
-    if len(number_list) == 2:
-        number = number_list[-1].strip()
-    else:
-        number = _get_number(name)
+    number = number_list[-1].strip() if len(number_list) == 2 else _get_number(name)
 
-    if if_type:
-        proper_interface = if_type + number
-    else:
-        proper_interface = name
+    proper_interface = if_type + number if if_type else name
 
     return proper_interface
 
 
 def get_interface_type(interface):
-    """Gets the type of interface"""
+    """Gets the type of interface."""
     if interface.upper().startswith("ET"):
         return "ethernet"
     elif interface.upper().startswith("VL"):
@@ -121,7 +115,7 @@ def get_interface_type(interface):
 
 
 def remove_rsvd_interfaces(interfaces):
-    """Exclude reserved interfaces from user management"""
+    """Exclude reserved interfaces from user management."""
     if not interfaces:
         return []
     return [i for i in interfaces if get_interface_type(i["name"]) != "management"]
@@ -146,7 +140,6 @@ def vlan_range_to_list(vlans):
 
 def numerical_sort(string_int_list):
     """Sorts list of integers that are digits in numerical order."""
-
     as_int_list = []
 
     for vlan in string_int_list:
@@ -186,9 +179,9 @@ def vlan_list_to_range(cmd):
 
 @total_ordering
 class Version:
-    """Simple class to compare arbitrary versions"""
+    """Simple class to compare arbitrary versions."""
 
-    def __init__(self, version_string):
+    def __init__(self, version_string) -> None:
         self.components = version_string.split(".")
 
     def __eq__(self, other):

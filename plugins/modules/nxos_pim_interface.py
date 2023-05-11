@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
 
@@ -169,7 +168,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     get_interface_type,
@@ -245,7 +243,7 @@ def local_existing(gexisting):
 
 def get_interface_mode(interface, intf_type, module):
     mode = "unknown"
-    command = "show interface {0}".format(interface)
+    command = f"show interface {interface}"
     body = execute_show_command(command, module)
 
     try:
@@ -266,7 +264,7 @@ def get_interface_mode(interface, intf_type, module):
 
 def get_pim_interface(module, interface):
     pim_interface = {}
-    body = get_config(module, flags=["interface {0}".format(interface)])
+    body = get_config(module, flags=[f"interface {interface}"])
 
     pim_interface["bfd"] = "default"
     pim_interface["neighbor_type"] = None
@@ -287,10 +285,7 @@ def get_pim_interface(module, interface):
                     r"ip pim jp-policy(?: prefix-list)? (\S+)(?: \S+)?",
                     each,
                 ).group(1)
-                if "prefix-list" in each:
-                    ptype = "prefix"
-                else:
-                    ptype = "routemap"
+                ptype = "prefix" if "prefix-list" in each else "routemap"
                 if "out" in each:
                     pim_interface["jp_policy_out"] = policy_name
                     pim_interface["jp_type_out"] = ptype
@@ -345,14 +340,13 @@ def config_pim_interface(delta, existing, jp_bidir, isauth):
 
     delta = fix_delta(delta, existing)
 
-    if jp_bidir:
-        if delta.get("jp_policy_in") or delta.get("jp_policy_out"):
-            if existing.get("jp_type_in") == "prefix":
-                command = "no ip pim jp-policy prefix-list {0}".format(existing.get("jp_policy_in"))
-            else:
-                command = "no ip pim jp-policy {0}".format(existing.get("jp_policy_in"))
-            if command:
-                commands.append(command)
+    if jp_bidir and (delta.get("jp_policy_in") or delta.get("jp_policy_out")):
+        if existing.get("jp_type_in") == "prefix":
+            command = "no ip pim jp-policy prefix-list {}".format(existing.get("jp_policy_in"))
+        else:
+            command = "no ip pim jp-policy {}".format(existing.get("jp_policy_in"))
+        if command:
+            commands.append(command)
 
     for k, v in delta.items():
         if k in [
@@ -386,31 +380,31 @@ def config_pim_interface(delta, existing, jp_bidir, isauth):
                 if delta.get("neighbor_type") == "prefix":
                     command = PARAM_TO_COMMAND_KEYMAP.get(k).format(temp)
                 elif delta.get("neighbor_type") == "routemap":
-                    command = "ip pim neighbor-policy {0}".format(temp)
+                    command = f"ip pim neighbor-policy {temp}"
                 elif existing.get("neighbor_type") == "prefix":
                     command = PARAM_TO_COMMAND_KEYMAP.get(k).format(temp)
                 elif existing.get("neighbor_type") == "routemap":
-                    command = "ip pim neighbor-policy {0}".format(temp)
+                    command = f"ip pim neighbor-policy {temp}"
             elif k in ["jp_policy_in", "jp_type_in"]:
                 temp = delta.get("jp_policy_in") or existing.get("jp_policy_in")
                 if delta.get("jp_type_in") == "prefix":
                     command = PARAM_TO_COMMAND_KEYMAP.get(k).format(temp)
                 elif delta.get("jp_type_in") == "routemap":
-                    command = "ip pim jp-policy {0} in".format(temp)
+                    command = f"ip pim jp-policy {temp} in"
                 elif existing.get("jp_type_in") == "prefix":
                     command = PARAM_TO_COMMAND_KEYMAP.get(k).format(temp)
                 elif existing.get("jp_type_in") == "routemap":
-                    command = "ip pim jp-policy {0} in".format(temp)
+                    command = f"ip pim jp-policy {temp} in"
             elif k in ["jp_policy_out", "jp_type_out"]:
                 temp = delta.get("jp_policy_out") or existing.get("jp_policy_out")
                 if delta.get("jp_type_out") == "prefix":
                     command = PARAM_TO_COMMAND_KEYMAP.get(k).format(temp)
                 elif delta.get("jp_type_out") == "routemap":
-                    command = "ip pim jp-policy {0} out".format(temp)
+                    command = f"ip pim jp-policy {temp} out"
                 elif existing.get("jp_type_out") == "prefix":
                     command = PARAM_TO_COMMAND_KEYMAP.get(k).format(temp)
                 elif existing.get("jp_type_out") == "routemap":
-                    command = "ip pim jp-policy {0} out".format(temp)
+                    command = f"ip pim jp-policy {temp} out"
             if command:
                 commands.append(command)
         command = None
@@ -423,16 +417,16 @@ def config_pim_interface(delta, existing, jp_bidir, isauth):
 
 
 def get_pim_interface_defaults():
-    args = dict(
-        dr_prio=PARAM_TO_DEFAULT_KEYMAP.get("dr_prio"),
-        bfd=PARAM_TO_DEFAULT_KEYMAP.get("bfd"),
-        border=PARAM_TO_DEFAULT_KEYMAP.get("border"),
-        sparse=PARAM_TO_DEFAULT_KEYMAP.get("sparse"),
-        hello_interval=PARAM_TO_DEFAULT_KEYMAP.get("hello_interval"),
-        hello_auth_key=PARAM_TO_DEFAULT_KEYMAP.get("hello_auth_key"),
-    )
+    args = {
+        "dr_prio": PARAM_TO_DEFAULT_KEYMAP.get("dr_prio"),
+        "bfd": PARAM_TO_DEFAULT_KEYMAP.get("bfd"),
+        "border": PARAM_TO_DEFAULT_KEYMAP.get("border"),
+        "sparse": PARAM_TO_DEFAULT_KEYMAP.get("sparse"),
+        "hello_interval": PARAM_TO_DEFAULT_KEYMAP.get("hello_interval"),
+        "hello_auth_key": PARAM_TO_DEFAULT_KEYMAP.get("hello_auth_key"),
+    }
 
-    default = dict((param, value) for (param, value) in args.items() if value is not None)
+    default = {param: value for (param, value) in args.items() if value is not None}
 
     return default
 
@@ -443,7 +437,7 @@ def default_pim_interface_policies(existing, jp_bidir):
     if jp_bidir:
         if existing.get("jp_policy_in") or existing.get("jp_policy_out"):
             if existing.get("jp_type_in") == "prefix":
-                command = "no ip pim jp-policy prefix-list {0}".format(existing.get("jp_policy_in"))
+                command = "no ip pim jp-policy prefix-list {}".format(existing.get("jp_policy_in"))
         if command:
             commands.append(command)
 
@@ -453,21 +447,20 @@ def default_pim_interface_policies(existing, jp_bidir):
             if k == "jp_policy_in":
                 if existing.get("jp_policy_in"):
                     if existing.get("jp_type_in") == "prefix":
-                        command = "no ip pim jp-policy prefix-list {0} in".format(
+                        command = "no ip pim jp-policy prefix-list {} in".format(
                             existing.get("jp_policy_in"),
                         )
                     else:
-                        command = "no ip pim jp-policy {0} in".format(existing.get("jp_policy_in"))
-            elif k == "jp_policy_out":
-                if existing.get("jp_policy_out"):
-                    if existing.get("jp_type_out") == "prefix":
-                        command = "no ip pim jp-policy prefix-list {0} out".format(
-                            existing.get("jp_policy_out"),
-                        )
-                    else:
-                        command = "no ip pim jp-policy {0} out".format(
-                            existing.get("jp_policy_out"),
-                        )
+                        command = "no ip pim jp-policy {} in".format(existing.get("jp_policy_in"))
+            elif k == "jp_policy_out" and existing.get("jp_policy_out"):
+                if existing.get("jp_type_out") == "prefix":
+                    command = "no ip pim jp-policy prefix-list {} out".format(
+                        existing.get("jp_policy_out"),
+                    )
+                else:
+                    command = "no ip pim jp-policy {} out".format(
+                        existing.get("jp_policy_out"),
+                    )
             if command:
                 commands.append(command)
             command = None
@@ -509,27 +502,27 @@ def normalize_proposed_values(proposed, module):
 
 
 def main():
-    argument_spec = dict(
-        interface=dict(type="str", required=True),
-        sparse=dict(type="bool", default=False),
-        dr_prio=dict(type="str"),
-        hello_auth_key=dict(type="str", no_log=True),
-        hello_interval=dict(type="int"),
-        hello_interval_ms=dict(type="bool"),
-        jp_policy_out=dict(type="str"),
-        jp_policy_in=dict(type="str"),
-        jp_type_out=dict(type="str", choices=["prefix", "routemap"]),
-        jp_type_in=dict(type="str", choices=["prefix", "routemap"]),
-        bfd=dict(type="str", choices=["enable", "disable", "default"]),
-        border=dict(type="bool", default=False),
-        neighbor_policy=dict(type="str"),
-        neighbor_type=dict(type="str", choices=["prefix", "routemap"]),
-        state=dict(
-            type="str",
-            default="present",
-            choices=["absent", "default", "present"],
-        ),
-    )
+    argument_spec = {
+        "interface": {"type": "str", "required": True},
+        "sparse": {"type": "bool", "default": False},
+        "dr_prio": {"type": "str"},
+        "hello_auth_key": {"type": "str", "no_log": True},
+        "hello_interval": {"type": "int"},
+        "hello_interval_ms": {"type": "bool"},
+        "jp_policy_out": {"type": "str"},
+        "jp_policy_in": {"type": "str"},
+        "jp_type_out": {"type": "str", "choices": ["prefix", "routemap"]},
+        "jp_type_in": {"type": "str", "choices": ["prefix", "routemap"]},
+        "bfd": {"type": "str", "choices": ["enable", "disable", "default"]},
+        "border": {"type": "bool", "default": False},
+        "neighbor_policy": {"type": "str"},
+        "neighbor_type": {"type": "str", "choices": ["prefix", "routemap"]},
+        "state": {
+            "type": "str",
+            "default": "present",
+            "choices": ["absent", "default", "present"],
+        },
+    }
 
     required_by = {"hello_interval_ms": "hello_interval"}
     module = AnsibleModule(
@@ -538,7 +531,7 @@ def main():
         required_by=required_by,
     )
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     state = module.params["state"]
@@ -554,21 +547,18 @@ def main():
     if get_interface_mode(interface, intf_type, module) == "layer2":
         module.fail_json(msg="this module only works on Layer 3 interfaces.")
 
-    if jp_policy_in:
-        if not jp_type_in:
-            module.fail_json(msg="jp_type_in required when using jp_policy_in.")
-    if jp_policy_out:
-        if not jp_type_out:
-            module.fail_json(msg="jp_type_out required when using jp_policy_out.")
-    if neighbor_policy:
-        if not neighbor_type:
-            module.fail_json(msg="neighbor_type required when using neighbor_policy.")
+    if jp_policy_in and not jp_type_in:
+        module.fail_json(msg="jp_type_in required when using jp_policy_in.")
+    if jp_policy_out and not jp_type_out:
+        module.fail_json(msg="jp_type_out required when using jp_policy_out.")
+    if neighbor_policy and not neighbor_type:
+        module.fail_json(msg="neighbor_type required when using neighbor_policy.")
 
     get_existing = get_pim_interface(module, interface)
     existing, jp_bidir, isauth = local_existing(get_existing)
 
     args = PARAM_TO_COMMAND_KEYMAP.keys()
-    proposed = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed = {k: v for k, v in module.params.items() if v is not None and k in args}
     normalize_proposed_values(proposed, module)
 
     delta = dict(set(proposed.items()).difference(existing.items()))
@@ -585,7 +575,7 @@ def main():
             commands.append(defaults)
 
     if commands:
-        commands.insert(0, ["interface {0}".format(interface)])
+        commands.insert(0, [f"interface {interface}"])
 
     cmds = flatten_list(commands)
     if cmds:

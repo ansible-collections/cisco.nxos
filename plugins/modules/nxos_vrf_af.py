@@ -167,7 +167,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     get_config,
@@ -176,7 +175,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 
 
 def match_current_rt(rt, direction, current, rt_commands):
-    command = "route-target %s %s" % (direction, rt.get("rt"))
+    command = "route-target {} {}".format(direction, rt.get("rt"))
     match = re.findall(command, current, re.M)
     want = bool(rt.get("state") != "absent")
     if not match and want:
@@ -187,25 +186,25 @@ def match_current_rt(rt, direction, current, rt_commands):
 
 
 def main():
-    argument_spec = dict(
-        vrf=dict(required=True),
-        afi=dict(required=True, choices=["ipv4", "ipv6"]),
-        route_target_both_auto_evpn=dict(required=False, type="bool"),
-        state=dict(choices=["present", "absent"], default="present"),
-        route_targets=dict(
-            type="list",
-            elements="dict",
-            options=dict(
-                rt=dict(type="str", required=True),
-                direction=dict(choices=["import", "export", "both"], default="both"),
-                state=dict(choices=["present", "absent"], default="present"),
-            ),
-        ),
-    )
+    argument_spec = {
+        "vrf": {"required": True},
+        "afi": {"required": True, "choices": ["ipv4", "ipv6"]},
+        "route_target_both_auto_evpn": {"required": False, "type": "bool"},
+        "state": {"choices": ["present", "absent"], "default": "present"},
+        "route_targets": {
+            "type": "list",
+            "elements": "dict",
+            "options": {
+                "rt": {"type": "str", "required": True},
+                "direction": {"choices": ["import", "export", "both"], "default": "both"},
+                "state": {"choices": ["present", "absent"], "default": "present"},
+            },
+        },
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     result = {"changed": False, "warnings": warnings}
 
@@ -222,12 +221,12 @@ def main():
     except ValueError:
         current = None
 
-    commands = list()
+    commands = []
     if current and module.params["state"] == "absent":
         commands.append("no address-family %s unicast" % module.params["afi"])
 
     elif module.params["state"] == "present":
-        rt_commands = list()
+        rt_commands = []
 
         if not current:
             commands.append("address-family %s unicast" % module.params["afi"])

@@ -21,7 +21,7 @@ class TestNxosAclsModule(TestNxosModule):
     module = nxos_acls
 
     def setUp(self):
-        super(TestNxosAclsModule, self).setUp()
+        super().setUp()
 
         self.mock_get_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
@@ -58,7 +58,7 @@ class TestNxosAclsModule(TestNxosModule):
         self.execute_show_command.return_value = dedent(v4 + v6)
 
     def tearDown(self):
-        super(TestNxosAclsModule, self).tearDown()
+        super().tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()
@@ -68,53 +68,53 @@ class TestNxosAclsModule(TestNxosModule):
 
     def test_nxos_acls_merged(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="ACL2v4",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        fragments=True,
-                                        sequence=20,
-                                        protocol="tcp",
-                                        protocol_options=dict(tcp=dict(ack=True)),
-                                    ),
-                                    dict(
-                                        destination=dict(
-                                            address="1.2.2.2",
-                                            wildcard_bits="0.0.255.255",
-                                        ),
-                                        dscp="31",
-                                        grant="permit",
-                                        protocol="ip",
-                                        sequence="25",
-                                        source=dict(
-                                            address="1.1.1.1",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        destination=dict(prefix="2002:2:2:2::/64"),
-                                        source=dict(prefix="2002:1:1:1::/64"),
-                                        sequence=30,
-                                        protocol="icmp",
-                                        protocol_options=dict(icmp=dict(echo_request=True)),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "ACL2v4",
+                                "aces": [
+                                    {
+                                        "grant": "deny",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "fragments": True,
+                                        "sequence": 20,
+                                        "protocol": "tcp",
+                                        "protocol_options": {"tcp": {"ack": True}},
+                                    },
+                                    {
+                                        "destination": {
+                                            "address": "1.2.2.2",
+                                            "wildcard_bits": "0.0.255.255",
+                                        },
+                                        "dscp": "31",
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "sequence": "25",
+                                        "source": {
+                                            "address": "1.1.1.1",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                    },
+                                    {
+                                        "grant": "deny",
+                                        "destination": {"prefix": "2002:2:2:2::/64"},
+                                        "source": {"prefix": "2002:1:1:1::/64"},
+                                        "sequence": 30,
+                                        "protocol": "icmp",
+                                        "protocol_options": {"icmp": {"echo_request": True}},
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(afi="ipv6", acls=[dict(name="ACL2v6")]),
+                    },
+                    {"afi": "ipv6", "acls": [{"name": "ACL2v6"}]},
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "ip access-list ACL2v4",
@@ -127,83 +127,83 @@ class TestNxosAclsModule(TestNxosModule):
 
     def test_nxos_acls_merged_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="ACL1v4",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=10,
-                                        protocol="ip",
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=20,
-                                        protocol="udp",
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "ACL1v4",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 10,
+                                        "protocol": "ip",
+                                    },
+                                    {
+                                        "grant": "deny",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 20,
+                                        "protocol": "udp",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="ACL1v6",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=10,
-                                        protocol="sctp",
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "ACL1v6",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 10,
+                                        "protocol": "sctp",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_acls_replaced(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="ACL1v4",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(host="192.0.2.28"),
-                                        source=dict(any=True),
-                                        log=True,
-                                        sequence=50,
-                                        protocol="icmp",
-                                        protocol_options=dict(
-                                            icmp=dict(administratively_prohibited=True),
-                                        ),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "ACL1v4",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"host": "192.0.2.28"},
+                                        "source": {"any": True},
+                                        "log": True,
+                                        "sequence": 50,
+                                        "protocol": "icmp",
+                                        "protocol_options": {
+                                            "icmp": {"administratively_prohibited": True},
+                                        },
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "ip access-list ACL1v4",
@@ -215,84 +215,84 @@ class TestNxosAclsModule(TestNxosModule):
 
     def test_nxos_acls_replaced_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="ACL1v4",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=10,
-                                        protocol="ip",
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=20,
-                                        protocol="udp",
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "ACL1v4",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 10,
+                                        "protocol": "ip",
+                                    },
+                                    {
+                                        "grant": "deny",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 20,
+                                        "protocol": "udp",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="ACL1v6",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=10,
-                                        protocol="sctp",
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "ACL1v6",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 10,
+                                        "protocol": "sctp",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_acls_overridden(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="ACL2v4",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(host="192.0.2.28"),
-                                        source=dict(any=True),
-                                        log=True,
-                                        sequence=50,
-                                        protocol="icmp",
-                                        protocol_options=dict(
-                                            icmp=dict(administratively_prohibited=True),
-                                        ),
-                                    ),
-                                    dict(remark="Overridden ACL"),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "ACL2v4",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"host": "192.0.2.28"},
+                                        "source": {"any": True},
+                                        "log": True,
+                                        "sequence": 50,
+                                        "protocol": "icmp",
+                                        "protocol_options": {
+                                            "icmp": {"administratively_prohibited": True},
+                                        },
+                                    },
+                                    {"remark": "Overridden ACL"},
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         commands = [
             "no ip access-list ACL1v4",
@@ -305,113 +305,113 @@ class TestNxosAclsModule(TestNxosModule):
 
     def test_nxos_acls_overridden_idempotent(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="ACL1v4",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=10,
-                                        protocol="ip",
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=20,
-                                        protocol="udp",
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "ACL1v4",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 10,
+                                        "protocol": "ip",
+                                    },
+                                    {
+                                        "grant": "deny",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 20,
+                                        "protocol": "udp",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="ACL1v6",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=10,
-                                        protocol="sctp",
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "ACL1v6",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 10,
+                                        "protocol": "sctp",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_acls_deletedafi(self):
-        set_module_args(dict(config=[dict(afi="ipv4")], state="deleted"))
+        set_module_args({"config": [{"afi": "ipv4"}], "state": "deleted"})
         commands = ["no ip access-list ACL1v4"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_acls_deletedall(self):
-        set_module_args(dict(config=[], state="deleted"))
+        set_module_args({"config": [], "state": "deleted"})
         commands = ["no ipv6 access-list ACL1v6", "no ip access-list ACL1v4"]
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_acls_rendered(self):
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="ACL1v4",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=10,
-                                        protocol="ip",
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=20,
-                                        protocol="udp",
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "ACL1v4",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 10,
+                                        "protocol": "ip",
+                                    },
+                                    {
+                                        "grant": "deny",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 20,
+                                        "protocol": "udp",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="ACL1v6",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=10,
-                                        protocol="sctp",
-                                    ),
+                    },
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "ACL1v6",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 10,
+                                        "protocol": "sctp",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
             "ip access-list ACL1v4",
@@ -421,12 +421,12 @@ class TestNxosAclsModule(TestNxosModule):
             "10 permit sctp any any",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands), result["rendered"])
+        assert sorted(result["rendered"]) == sorted(commands), result["rendered"]
 
     def test_nxos_acls_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """
                     ip access-list ACL1v4
                       statistics per-entry
@@ -434,8 +434,8 @@ class TestNxosAclsModule(TestNxosModule):
                       20 deny udp any any dscp AF23 precedence critical
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         compare_list = [
@@ -466,10 +466,10 @@ class TestNxosAclsModule(TestNxosModule):
                 ],
             },
         ]
-        self.assertEqual(result["parsed"], compare_list, result["parsed"])
+        assert result["parsed"] == compare_list, result["parsed"]
 
     def test_nxos_acls_gathered(self):
-        set_module_args(dict(config=[], state="gathered"))
+        set_module_args({"config": [], "state": "gathered"})
         result = self.execute_module(changed=False)
         compare_list = [
             {
@@ -514,7 +514,7 @@ class TestNxosAclsModule(TestNxosModule):
                 "afi": "ipv4",
             },
         ]
-        self.assertEqual(result["gathered"], compare_list, result["gathered"])
+        assert result["gathered"] == compare_list, result["gathered"]
 
     def test_nxos_acls_replaced_2(self):
         self.execute_show_command.return_value = dedent(
@@ -529,49 +529,49 @@ class TestNxosAclsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="99",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(host="192.0.2.1"),
-                                        sequence=10,
-                                        protocol="ip",
-                                    ),
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(host="192.0.2.2"),
-                                        sequence=20,
-                                        protocol="ip",
-                                    ),
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(host="192.0.2.3"),
-                                        sequence=30,
-                                        protocol="ip",
-                                    ),
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(host="192.0.2.1"),
-                                        sequence=40,
-                                        protocol="ip",
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "99",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"host": "192.0.2.1"},
+                                        "sequence": 10,
+                                        "protocol": "ip",
+                                    },
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"host": "192.0.2.2"},
+                                        "sequence": 20,
+                                        "protocol": "ip",
+                                    },
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"host": "192.0.2.3"},
+                                        "sequence": 30,
+                                        "protocol": "ip",
+                                    },
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"host": "192.0.2.1"},
+                                        "sequence": 40,
+                                        "protocol": "ip",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
 
         commands = [
@@ -588,7 +588,7 @@ class TestNxosAclsModule(TestNxosModule):
             "40 permit ip host 192.0.2.1 any",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        assert sorted(result["commands"]) == sorted(commands)
 
     def test_nxos_acls_merged_failure(self):
         self.execute_show_command.return_value = dedent(
@@ -598,33 +598,33 @@ class TestNxosAclsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="99",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(host="192.0.2.1"),
-                                        sequence=10,
-                                        protocol="ip",
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "99",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"host": "192.0.2.1"},
+                                        "sequence": 10,
+                                        "protocol": "ip",
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
 
         result = self.execute_module(failed=True)
         failure_msg = "Cannot update existing ACE 99 of ACL 10 with state merged. Please use state replaced or overridden."
-        self.assertEqual(result["msg"], failure_msg)
+        assert result["msg"] == failure_msg
 
     def test_nxos_acls_parse_remark(self):
         self.execute_show_command.return_value = dedent(
@@ -647,7 +647,7 @@ class TestNxosAclsModule(TestNxosModule):
                 20 deny icmp any any nd-ns telemetry_path
             """,
         )
-        set_module_args(dict(state="gathered"))
+        set_module_args({"state": "gathered"})
 
         gathered = [
             {
@@ -795,7 +795,7 @@ class TestNxosAclsModule(TestNxosModule):
             },
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_acls_icmpv6_1(self):
         self.execute_show_command.return_value = dedent(
@@ -805,46 +805,46 @@ class TestNxosAclsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv6",
-                        acls=[
-                            dict(
-                                name="TEST_ICMPv6",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(any=True),
-                                        source=dict(host="192.0.2.1"),
-                                        sequence=10,
-                                        protocol="icmpv6",
-                                        protocol_options=dict(
-                                            icmpv6=dict(
-                                                nd_na=True,
-                                            ),
-                                        ),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        destination=dict(any=True),
-                                        source=dict(any=True),
-                                        sequence=20,
-                                        protocol="icmpv6",
-                                        protocol_options=dict(
-                                            icmpv6=dict(
-                                                nd_ns=True,
-                                                telemetry_path=True,
-                                            ),
-                                        ),
-                                    ),
+            {
+                "config": [
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "TEST_ICMPv6",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "destination": {"any": True},
+                                        "source": {"host": "192.0.2.1"},
+                                        "sequence": 10,
+                                        "protocol": "icmpv6",
+                                        "protocol_options": {
+                                            "icmpv6": {
+                                                "nd_na": True,
+                                            },
+                                        },
+                                    },
+                                    {
+                                        "grant": "deny",
+                                        "destination": {"any": True},
+                                        "source": {"any": True},
+                                        "sequence": 20,
+                                        "protocol": "icmpv6",
+                                        "protocol_options": {
+                                            "icmpv6": {
+                                                "nd_ns": True,
+                                                "telemetry_path": True,
+                                            },
+                                        },
+                                    },
                                 ],
-                            ),
+                            },
                         ],
-                    ),
+                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
 
         commands = [
@@ -852,4 +852,4 @@ class TestNxosAclsModule(TestNxosModule):
             "10 permit icmp host 192.0.2.1 any nd-na",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], commands)
+        assert result["commands"] == commands

@@ -1,12 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
-"""
-The module file for nxos_route_maps
-"""
+"""The module file for nxos_route_maps."""
 
 from __future__ import absolute_import, division, print_function
 
@@ -1917,7 +1914,6 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.route_maps.route_maps import (
     Route_mapsArgs,
 )
@@ -1928,7 +1924,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.rou
 
 def main():
     """
-    Main entry point for module execution
+    Main entry point for module execution.
 
     :returns: the result form module invocation
     """

@@ -32,7 +32,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
     module = nxos_vxlan_vtep
 
     def setUp(self):
-        super(TestNxosVxlanVtepVniModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep.load_config",
@@ -45,7 +45,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosVxlanVtepVniModule, self).tearDown()
+        super().tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
 
@@ -54,7 +54,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_vxlan_vtep(self):
-        set_module_args(dict(interface="nve1", description="simple description"))
+        set_module_args({"interface": "nve1", "description": "simple description"})
         self.execute_module(
             changed=True,
             commands=[
@@ -65,23 +65,23 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
         )
 
     def test_nxos_vxlan_vtep_present_no_change(self):
-        set_module_args(dict(interface="nve1"))
+        set_module_args({"interface": "nve1"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_vxlan_vtep_absent(self):
-        set_module_args(dict(interface="nve1", state="absent"))
+        set_module_args({"interface": "nve1", "state": "absent"})
         self.execute_module(changed=True, commands=["no interface nve1"])
 
     def test_nxos_vxlan_vtep_absent_no_change(self):
-        set_module_args(dict(interface="nve2", state="absent"))
+        set_module_args({"interface": "nve2", "state": "absent"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_vxlan_vtep_multisite(self):
         set_module_args(
-            dict(
-                interface="nve1",
-                multisite_border_gateway_interface="Loopback10",
-            ),
+            {
+                "interface": "nve1",
+                "multisite_border_gateway_interface": "Loopback10",
+            },
         )
         self.execute_module(
             changed=True,
@@ -94,19 +94,19 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
 
     def test_nxos_vxlan_vtep_multisite_exists(self):
         set_module_args(
-            dict(
-                interface="nve1",
-                multisite_border_gateway_interface="Loopback1",
-            ),
+            {
+                "interface": "nve1",
+                "multisite_border_gateway_interface": "Loopback1",
+            },
         )
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_vxlan_vtep_advertise_virtual_rmac(self):
         set_module_args(
-            dict(
-                interface="nve1",
-                advertise_virtual_rmac="true",
-            ),
+            {
+                "interface": "nve1",
+                "advertise_virtual_rmac": "true",
+            },
         )
         self.execute_module(
             changed=True,

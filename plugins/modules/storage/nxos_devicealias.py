@@ -106,7 +106,6 @@ commands:
 import string
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -118,10 +117,10 @@ __metaclass__ = type
 VALID_DA_CHARS = ("-", "_", "$", "^")
 
 
-class showDeviceAliasStatus(object):
-    """docstring for showDeviceAliasStatus"""
+class showDeviceAliasStatus:
+    """docstring for showDeviceAliasStatus."""
 
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self.module = module
         self.distribute = ""
         self.mode = ""
@@ -153,10 +152,10 @@ class showDeviceAliasStatus(object):
         return self.mode
 
 
-class showDeviceAliasDatabase(object):
-    """docstring for showDeviceAliasDatabase"""
+class showDeviceAliasDatabase:
+    """docstring for showDeviceAliasDatabase."""
 
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self.module = module
         self.da_dict = {}
         self.update()
@@ -167,7 +166,6 @@ class showDeviceAliasDatabase(object):
 
     def update(self):
         command = "show device-alias database"
-        # output = execute_show_command(command, self.module)[0].split("\n")
         output = self.execute_show_cmd(command)
         self.da_list = output.split("\n")
         for eachline in self.da_list:
@@ -176,7 +174,7 @@ class showDeviceAliasDatabase(object):
                 self.da_dict[sv[2]] = sv[4]
 
     def isNameInDaDatabase(self, name):
-        return name in self.da_dict.keys()
+        return name in self.da_dict
 
     def isPwwnInDaDatabase(self, pwwn):
         newpwwn = ":".join(["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")])
@@ -184,13 +182,12 @@ class showDeviceAliasDatabase(object):
 
     def isNamePwwnPresentInDatabase(self, name, pwwn):
         newpwwn = ":".join(["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")])
-        if name in self.da_dict.keys():
-            if newpwwn == self.da_dict[name]:
-                return True
+        if name in self.da_dict and newpwwn == self.da_dict[name]:
+            return True
         return False
 
     def getPwwnByName(self, name):
-        if name in self.da_dict.keys():
+        if name in self.da_dict:
             return self.da_dict[name]
         else:
             return None
@@ -245,29 +242,29 @@ def flatten_list(command_lists):
 
 
 def main():
-    element_spec = dict(
-        name=dict(required=True, type="str"),
-        pwwn=dict(type="str"),
-        remove=dict(type="bool", default=False),
-    )
+    element_spec = {
+        "name": {"required": True, "type": "str"},
+        "pwwn": {"type": "str"},
+        "remove": {"type": "bool", "default": False},
+    }
 
-    element_spec_rename = dict(
-        old_name=dict(required=True, type="str"),
-        new_name=dict(required=True, type="str"),
-    )
+    element_spec_rename = {
+        "old_name": {"required": True, "type": "str"},
+        "new_name": {"required": True, "type": "str"},
+    }
 
-    argument_spec = dict(
-        distribute=dict(type="bool"),
-        mode=dict(type="str", choices=["enhanced", "basic"]),
-        da=dict(type="list", elements="dict", options=element_spec),
-        rename=dict(type="list", elements="dict", options=element_spec_rename),
-    )
+    argument_spec = {
+        "distribute": {"type": "bool"},
+        "mode": {"type": "str", "choices": ["enhanced", "basic"]},
+        "da": {"type": "list", "elements": "dict", "options": element_spec},
+        "rename": {"type": "list", "elements": "dict", "options": element_spec_rename},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
-    messages = list()
-    commands_to_execute = list()
+    warnings = []
+    messages = []
+    commands_to_execute = []
     result = {"changed": False}
 
     distribute = module.params["distribute"]
@@ -297,7 +294,7 @@ def main():
                         + str(name)
                         + ". Note that name cannot be more than 64 alphanumeric chars, "
                         + "it must start with a letter, and can only contain these characters: "
-                        + ", ".join(["'{0}'".format(c) for c in VALID_DA_CHARS]),
+                        + ", ".join([f"'{c}'" for c in VALID_DA_CHARS]),
                     )
                 if not isPwwnValid(pwwn):
                     module.fail_json(
@@ -315,7 +312,7 @@ def main():
                     + str(oldname)
                     + ". Note that name cannot be more than 64 alphanumeric chars, "
                     + "it must start with a letter, and can only contain these characters: "
-                    + ", ".join(["'{0}'".format(c) for c in VALID_DA_CHARS]),
+                    + ", ".join([f"'{c}'" for c in VALID_DA_CHARS]),
                 )
             if not isNameValid(newname):
                 module.fail_json(
@@ -323,7 +320,7 @@ def main():
                     + str(newname)
                     + ". Note that name cannot be more than 64 alphanumeric chars, "
                     + "it must start with a letter, and can only contain these characters: "
-                    + ", ".join(["'{0}'".format(c) for c in VALID_DA_CHARS]),
+                    + ", ".join([f"'{c}'" for c in VALID_DA_CHARS]),
                 )
 
     # Step 0.1: Check DA status
@@ -340,7 +337,6 @@ def main():
             # playbook has distribute as True(enabled)
             if d == "disabled":
                 # but switch distribute is disabled(false), so set it to
-                # true(enabled)
                 commands.append("device-alias distribute")
                 messages.append("device-alias distribute changed from disabled to enabled")
             else:
@@ -351,7 +347,6 @@ def main():
             # playbook has distribute as False(disabled)
             if d == "enabled":
                 # but switch distribute is enabled(true), so set it to
-                # false(disabled)
                 commands.append("no device-alias distribute")
                 messages.append("device-alias distribute changed from enabled to disabled")
             else:
@@ -393,11 +388,11 @@ def main():
     if commands:
         if distribute:
             commands.append("device-alias commit")
-            commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+            commands = ["terminal dont-ask", *commands] + ["no terminal dont-ask"]
         else:
             if distribute is None and d == "enabled":
                 commands.append("device-alias commit")
-                commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                commands = ["terminal dont-ask", *commands] + ["no terminal dont-ask"]
 
     cmds = flatten_list(commands)
 
@@ -461,14 +456,14 @@ def main():
                         da_add_list.append(name)
 
         if len(da_add_list) != 0 or len(da_remove_list) != 0:
-            commands = ["device-alias database"] + commands
+            commands = ["device-alias database", *commands]
             if distribute:
                 commands.append("device-alias commit")
-                commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                commands = ["terminal dont-ask", *commands] + ["no terminal dont-ask"]
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
-                    commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                    commands = ["terminal dont-ask", *commands] + ["no terminal dont-ask"]
 
         cmds = flatten_list(commands)
         if cmds:
@@ -514,14 +509,14 @@ def main():
                 )
 
         if len(commands) != 0:
-            commands = ["device-alias database"] + commands
+            commands = ["device-alias database", *commands]
             if distribute:
                 commands.append("device-alias commit")
-                commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                commands = ["terminal dont-ask", *commands] + ["no terminal dont-ask"]
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
-                    commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                    commands = ["terminal dont-ask", *commands] + ["no terminal dont-ask"]
         cmds = flatten_list(commands)
         if cmds:
             commands_to_execute = commands_to_execute + cmds

@@ -88,7 +88,6 @@ commands:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -98,8 +97,8 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 __metaclass__ = type
 
 
-class Vsan(object):
-    def __init__(self, vsanid):
+class Vsan:
+    def __init__(self, vsanid) -> None:
         self.vsanid = vsanid
         self.vsanname = None
         self.vsanstate = None
@@ -107,10 +106,10 @@ class Vsan(object):
         self.vsaninterfaces = []
 
 
-class GetVsanInfoFromSwitch(object):
-    """docstring for GetVsanInfoFromSwitch"""
+class GetVsanInfoFromSwitch:
+    """docstring for GetVsanInfoFromSwitch."""
 
-    def __init__(self, module):
+    def __init__(self, module) -> None:
         self.module = module
         self.vsaninfo = {}
         self.processShowVsan()
@@ -190,20 +189,20 @@ def flatten_list(command_lists):
 
 
 def main():
-    vsan_element_spec = dict(
-        id=dict(required=True, type="int"),
-        name=dict(type="str"),
-        remove=dict(type="bool"),
-        suspend=dict(type="bool"),
-        interface=dict(type="list", elements="str"),
-    )
+    vsan_element_spec = {
+        "id": {"required": True, "type": "int"},
+        "name": {"type": "str"},
+        "remove": {"type": "bool"},
+        "suspend": {"type": "bool"},
+        "interface": {"type": "list", "elements": "str"},
+    }
 
-    argument_spec = dict(vsan=dict(type="list", elements="dict", options=vsan_element_spec))
+    argument_spec = {"vsan": {"type": "list", "elements": "dict", "options": vsan_element_spec}}
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
-    warnings = list()
-    messages = list()
-    commands_executed = list()
+    warnings = []
+    messages = []
+    commands_executed = []
     result = {"changed": False}
 
     obj = GetVsanInfoFromSwitch(module)
@@ -224,7 +223,7 @@ def main():
                 msg=vsanid + " - This is an invalid vsan. Supported vsan range is 1-4094",
             )
 
-        if vsanid in dictSwVsanObjs.keys():
+        if vsanid in dictSwVsanObjs:
             sw_vsanid = vsanid
             sw_vsanname = dictSwVsanObjs[vsanid].vsanname
             sw_vsanstate = dictSwVsanObjs[vsanid].vsanstate

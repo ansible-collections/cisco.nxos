@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import contextlib
 import json
 import os
 
@@ -53,10 +54,9 @@ def load_fixture(module_name, name, device=""):
     with open(path) as f:
         data = f.read()
 
-    try:
+    with contextlib.suppress(Exception):
         data = json.loads(data)
-    except Exception:
-        pass
+
 
     fixture_data[path] = data
     return data
@@ -93,19 +93,15 @@ class TestNxosModule(ModuleTestCase):
 
         if failed:
             result = self.failed()
-            self.assertTrue(result["failed"], result)
+            assert result["failed"], result
         else:
             result = self.changed(changed)
-            self.assertEqual(result["changed"], changed, result)
+            assert result["changed"] == changed, result
         if commands is not None and len(commands) > 0:
             if sort:
-                self.assertEqual(
-                    sorted(commands),
-                    sorted(result["commands"]),
-                    result["commands"],
-                )
+                assert sorted(commands) == sorted(result["commands"]), result["commands"]
             else:
-                self.assertEqual(commands, result["commands"], result["commands"])
+                assert commands == result["commands"], result["commands"]
 
         return result
 
@@ -113,7 +109,7 @@ class TestNxosModule(ModuleTestCase):
         with self.assertRaises(AnsibleFailJson) as exc:
             self.module.main()
         result = exc.exception.args[0]
-        self.assertTrue(result["failed"], result)
+        assert result["failed"], result
         return result
 
     def changed(self, changed=False):
@@ -121,7 +117,7 @@ class TestNxosModule(ModuleTestCase):
             self.module.main()
 
         result = exc.exception.args[0]
-        self.assertEqual(result["changed"], changed, result)
+        assert result["changed"] == changed, result
         return result
 
     def load_fixtures(self, commands=None, device=""):

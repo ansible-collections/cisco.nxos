@@ -127,7 +127,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     ComplexList,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -147,7 +146,7 @@ def has_vrf(module, vrf):
 
 
 def map_obj_to_commands(want, have, module):
-    commands = list()
+    commands = []
     state = module.params["state"]
 
     def needs_update(x):
@@ -164,9 +163,8 @@ def map_obj_to_commands(want, have, module):
             commands.append("exit")
 
     def add(cmd, commands, vrf=None):
-        if vrf:
-            if not has_vrf(module, vrf):
-                module.fail_json(msg="invalid vrf name %s" % vrf)
+        if vrf and not has_vrf(module, vrf):
+            module.fail_json(msg="invalid vrf name %s" % vrf)
         return remove(cmd, commands, vrf)
 
     if state == "absent":
@@ -259,10 +257,11 @@ def parse_hostname(config):
     match = re.search(r"^hostname (\S+)", config, re.M)
     if match:
         return match.group(1)
+    return None
 
 
 def parse_domain_name(config, vrf_config):
-    objects = list()
+    objects = []
     match = re.search(r"^ip domain-name (\S+)", config, re.M)
     if match:
         objects.append({"name": match.group(1), "vrf": None})
@@ -276,7 +275,7 @@ def parse_domain_name(config, vrf_config):
 
 
 def parse_domain_search(config, vrf_config):
-    objects = list()
+    objects = []
 
     for item in re.findall(r"^ip domain-list (\S+)", config, re.M):
         objects.append({"name": item, "vrf": None})
@@ -289,7 +288,7 @@ def parse_domain_search(config, vrf_config):
 
 
 def parse_name_servers(config, vrf_config, vrfs):
-    objects = list()
+    objects = []
 
     match = re.search("^ip name-server (.+)$", config, re.M)
     if match and "use-vrf" not in match.group(1):
@@ -309,6 +308,7 @@ def parse_system_mtu(config):
     match = re.search(r"^system jumbomtu (\d+)", config, re.M)
     if match:
         return match.group(1)
+    return None
 
 
 def map_config_to_obj(module):
@@ -339,11 +339,11 @@ def map_params_to_obj(module):
         "system_mtu": module.params["system_mtu"],
     }
 
-    domain_name = ComplexList(dict(name=dict(key=True), vrf=dict()), module)
+    domain_name = ComplexList({"name": {"key": True}, "vrf": {}}, module)
 
-    domain_search = ComplexList(dict(name=dict(key=True), vrf=dict()), module)
+    domain_search = ComplexList({"name": {"key": True}, "vrf": {}}, module)
 
-    name_servers = ComplexList(dict(server=dict(key=True), vrf=dict()), module)
+    name_servers = ComplexList({"server": {"key": True}, "vrf": {}}, module)
 
     for arg, cast in [
         ("domain_name", domain_name),
@@ -359,23 +359,23 @@ def map_params_to_obj(module):
 
 
 def main():
-    """main entry point for module execution"""
-    argument_spec = dict(
-        hostname=dict(),
-        domain_lookup=dict(type="bool"),
+    """Main entry point for module execution."""
+    argument_spec = {
+        "hostname": {},
+        "domain_lookup": {"type": "bool"},
         # { name: <str>, vrf: <str> }
-        domain_name=dict(type="list", elements="raw"),
+        "domain_name": {"type": "list", "elements": "raw"},
         # {name: <str>, vrf: <str> }
-        domain_search=dict(type="list", elements="raw"),
+        "domain_search": {"type": "list", "elements": "raw"},
         # { server: <str>; vrf: <str> }
-        name_servers=dict(type="list", elements="raw"),
-        system_mtu=dict(type="str"),
-        state=dict(default="present", choices=["present", "absent"]),
-    )
+        "name_servers": {"type": "list", "elements": "raw"},
+        "system_mtu": {"type": "str"},
+        "state": {"default": "present", "choices": ["present", "absent"]},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     result = {"changed": False}
     if warnings:

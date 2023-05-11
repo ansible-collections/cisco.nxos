@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -25,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospf_interfaces import (
     Ospf_interfacesTemplate,
@@ -33,12 +31,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 
 
 class Ospf_interfaces(ResourceModule):
-    """
-    The nxos_ospf_interfaces config class
-    """
+    """The nxos_ospf_interfaces config class."""
 
-    def __init__(self, module):
-        super(Ospf_interfaces, self).__init__(
+    def __init__(self, module) -> None:
+        super().__init__(
             empty_fact_val=[],
             facts_module=Facts(module),
             module=module,
@@ -63,7 +59,7 @@ class Ospf_interfaces(ResourceModule):
         ]
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution

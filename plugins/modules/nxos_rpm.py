@@ -109,7 +109,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
@@ -127,10 +126,11 @@ def execute_show_command(command, module):
         else:
             time.sleep(2)
             iteration += 1
+    return None
 
 
 def remote_file_exists(module, dst, file_system):
-    command = "dir {0}:/{1}".format(file_system, dst)
+    command = f"dir {file_system}:/{dst}"
     body = execute_show_command(command, module)
     if "No such file" in body:
         return False
@@ -167,19 +167,19 @@ def validate_operation(module, show_cmd, cfg_cmd, pkg, pkg_not_present):
         time.sleep(2)
         iteration += 1
 
-    err = 'Operation "{0}" Failed'.format(cfg_cmd)
+    err = f'Operation "{cfg_cmd}" Failed'
     module.fail_json(msg=err)
 
 
 def add_operation(module, show_cmd, file_system, full_pkg, pkg):
-    cmd = "install add {0}:{1}".format(file_system, full_pkg)
+    cmd = f"install add {file_system}:{full_pkg}"
     config_cmd_operation(module, cmd)
     validate_operation(module, show_cmd, cmd, pkg, False)
     return cmd
 
 
 def activate_operation(module, show_cmd, pkg):
-    cmd = "install activate {0} forced".format(pkg)
+    cmd = f"install activate {pkg} forced"
     config_cmd_operation(module, cmd)
     validate_operation(module, show_cmd, cmd, pkg, False)
     return cmd
@@ -187,10 +187,7 @@ def activate_operation(module, show_cmd, pkg):
 
 def activate_reload(module, pkg, flag):
     iteration = 0
-    if flag:
-        cmd = "install activate {0} forced".format(pkg)
-    else:
-        cmd = "install deactivate {0} forced".format(pkg)
+    cmd = f"install activate {pkg} forced" if flag else f"install deactivate {pkg} forced"
     opts = {"ignore_timeout": True}
     while iteration < 10:
         msg = load_config(module, [cmd], True, opts)
@@ -207,27 +204,25 @@ def activate_reload(module, pkg, flag):
                 ):
                     time.sleep(2)
         iteration += 1
+    return None
 
 
 def commit_operation(module, show_cmd, pkg, flag):
-    cmd = "install commit {0}".format(pkg)
+    cmd = f"install commit {pkg}"
     config_cmd_operation(module, cmd)
     validate_operation(module, show_cmd, cmd, pkg, flag)
     return cmd
 
 
 def deactivate_operation(module, show_cmd, pkg, flag):
-    cmd = "install deactivate {0} forced".format(pkg)
+    cmd = f"install deactivate {pkg} forced"
     config_cmd_operation(module, cmd)
     validate_operation(module, show_cmd, cmd, pkg, flag)
     return cmd
 
 
 def terminal_operation(module, config):
-    if config:
-        cmd = "terminal dont-ask"
-    else:
-        cmd = "no terminal dont-ask"
+    cmd = "terminal dont-ask" if config else "no terminal dont-ask"
     config_cmd_operation(module, cmd)
     return cmd
 
@@ -235,7 +230,7 @@ def terminal_operation(module, config):
 def remove_operation(module, show_cmd, pkg):
     commands = []
     commands.append(terminal_operation(module, True))
-    cmd = "install remove {0} forced".format(pkg)
+    cmd = f"install remove {pkg} forced"
     config_cmd_operation(module, cmd)
     validate_operation(module, show_cmd, cmd, pkg, True)
     commands.append(cmd)
@@ -254,7 +249,7 @@ def install_remove_rpm(module, full_pkg, file_system, state):
     show_active = "show install active"
     show_commit = "show install committed"
     show_patches = "show install patches"
-    show_pkg_info = "show install pkg-info {0}".format(pkg)
+    show_pkg_info = f"show install pkg-info {pkg}"
 
     if state == "present":
         inactive_body = execute_show_command(show_inactive, module)
@@ -282,7 +277,7 @@ def install_remove_rpm(module, full_pkg, file_system, state):
                 # This is smu/patch rpm
                 commands.append(commit_operation(module, show_commit, pkg, False))
             else:
-                err = 'Operation "install activate {0} forced" Failed'.format(pkg)
+                err = f'Operation "install activate {pkg} forced" Failed'
                 module.fail_json(msg=err)
 
     else:
@@ -329,19 +324,19 @@ def install_remove_rpm(module, full_pkg, file_system, state):
 
 
 def main():
-    element_spec = dict(
-        pkg=dict(type="str"),
-        file_system=dict(type="str", default="bootflash"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    element_spec = {
+        "pkg": {"type": "str"},
+        "file_system": {"type": "str", "default": "bootflash"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     aggregate_spec = deepcopy(element_spec)
-    aggregate_spec["pkg"] = dict(required=True)
+    aggregate_spec["pkg"] = {"required": True}
 
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
 
-    argument_spec = dict(aggregate=dict(type="list", elements="dict", options=aggregate_spec))
+    argument_spec = {"aggregate": {"type": "list", "elements": "dict", "options": aggregate_spec}}
 
     argument_spec.update(element_spec)
     required_one_of = [["pkg", "aggregate"]]
@@ -354,7 +349,7 @@ def main():
         supports_check_mode=False,
     )
 
-    warnings = list()
+    warnings = []
     results = {"changed": False, "commands": [], "warnings": warnings}
 
     aggregate = module.params.get("aggregate")

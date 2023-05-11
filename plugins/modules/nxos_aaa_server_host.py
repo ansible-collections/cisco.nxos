@@ -150,7 +150,6 @@ changed:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     load_config,
@@ -184,7 +183,7 @@ def flatten_list(command_lists):
 
 def get_aaa_host_info(module, server_type, address):
     aaa_host_info = {}
-    command = "show run | inc {0}-server.host.{1}".format(server_type, address)
+    command = f"show run | inc {server_type}-server.host.{address}"
 
     body = execute_show_command(command, module)[0]
     if body:
@@ -227,7 +226,7 @@ def get_aaa_host_info(module, server_type, address):
 
 def config_aaa_host(server_type, address, params, existing):
     cmds = []
-    cmd_str = "{0}-server host {1}".format(server_type, address)
+    cmd_str = f"{server_type}-server host {address}"
     cmd_no_str = "no " + cmd_str
 
     key = params.get("key")
@@ -238,9 +237,9 @@ def config_aaa_host(server_type, address, params, existing):
 
     if key:
         if key != "default":
-            cmds.append(cmd_str + " key {0} {1}".format(enc_type, key))
+            cmds.append(cmd_str + f" key {enc_type} {key}")
         else:
-            cmds.append(cmd_no_str + " key 7 {0}".format(existing.get("key")))
+            cmds.append(cmd_no_str + " key 7 {}".format(existing.get("key")))
 
     locdict = {
         "auth_port": "auth-port",
@@ -254,10 +253,10 @@ def config_aaa_host(server_type, address, params, existing):
         item = params.get(key)
         if item:
             if item != "default":
-                cmd_str += " {0} {1}".format(locdict.get(key), item)
+                cmd_str += f" {locdict.get(key)} {item}"
                 nondef = True
             else:
-                cmd_no_str += " {0} 1".format(locdict.get(key))
+                cmd_no_str += f" {locdict.get(key)} 1"
                 defval = True
     if defval:
         cmds.append(cmd_no_str)
@@ -268,21 +267,21 @@ def config_aaa_host(server_type, address, params, existing):
 
 
 def main():
-    argument_spec = dict(
-        server_type=dict(choices=["radius", "tacacs"], required=True),
-        address=dict(type="str", required=True),
-        key=dict(type="str", no_log=False),
-        encrypt_type=dict(type="str", choices=["0", "7"]),
-        host_timeout=dict(type="str"),
-        auth_port=dict(type="str"),
-        acct_port=dict(type="str"),
-        tacacs_port=dict(type="str"),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "server_type": {"choices": ["radius", "tacacs"], "required": True},
+        "address": {"type": "str", "required": True},
+        "key": {"type": "str", "no_log": False},
+        "encrypt_type": {"type": "str", "choices": ["0", "7"]},
+        "host_timeout": {"type": "str"},
+        "auth_port": {"type": "str"},
+        "acct_port": {"type": "str"},
+        "tacacs_port": {"type": "str"},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     server_type = module.params["server_type"]
     address = module.params["address"]
@@ -294,18 +293,18 @@ def main():
     tacacs_port = module.params["tacacs_port"]
     state = module.params["state"]
 
-    args = dict(
-        server_type=server_type,
-        address=address,
-        key=key,
-        encrypt_type=encrypt_type,
-        host_timeout=host_timeout,
-        auth_port=auth_port,
-        acct_port=acct_port,
-        tacacs_port=tacacs_port,
-    )
+    args = {
+        "server_type": server_type,
+        "address": address,
+        "key": key,
+        "encrypt_type": encrypt_type,
+        "host_timeout": host_timeout,
+        "auth_port": auth_port,
+        "acct_port": acct_port,
+        "tacacs_port": tacacs_port,
+    }
 
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    proposed = {k: v for k, v in args.items() if v is not None}
     changed = False
 
     if encrypt_type and not key:
@@ -329,9 +328,8 @@ def main():
             for key, value in proposed.items():
                 if key == "encrypt_type":
                     delta[key] = value
-                if value != existing.get(key):
-                    if value != "default" or existing.get(key):
-                        delta[key] = value
+                if value != existing.get(key) and (value != "default" or existing.get(key)):
+                    delta[key] = value
 
         command = config_aaa_host(server_type, address, delta, existing)
         if command:
@@ -340,7 +338,7 @@ def main():
     elif state == "absent":
         intersect = dict(set(proposed.items()).intersection(existing.items()))
         if intersect.get("address") and intersect.get("server_type"):
-            command = "no {0}-server host {1}".format(
+            command = "no {}-server host {}".format(
                 intersect.get("server_type"),
                 intersect.get("address"),
             )

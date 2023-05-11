@@ -106,7 +106,6 @@ changed:
 import re
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_capabilities,
     load_config,
@@ -195,14 +194,14 @@ def get_vtp_password(module):
 
 
 def main():
-    argument_spec = dict(
-        vtp_password=dict(type="str", no_log=True),
-        state=dict(choices=["absent", "present"], default="present"),
-    )
+    argument_spec = {
+        "vtp_password": {"type": "str", "no_log": True},
+        "state": {"choices": ["absent", "present"], "default": "present"},
+    }
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
-    warnings = list()
+    warnings = []
 
     vtp_password = module.params["vtp_password"] or None
     state = module.params["state"]
@@ -210,10 +209,10 @@ def main():
     existing = get_vtp_config(module)
     end_state = existing
 
-    args = dict(vtp_password=vtp_password)
+    args = {"vtp_password": vtp_password}
 
     changed = False
-    proposed = dict((k, v) for k, v in args.items() if v is not None)
+    proposed = {k: v for k, v in args.items() if v is not None}
     delta = dict(set(proposed.items()).difference(existing.items()))
 
     commands = []
@@ -243,13 +242,12 @@ def main():
             elif existing["vtp_password"] != ("\\"):
                 commands.append(["no vtp password"])
 
-    elif state == "present":
-        if delta:
-            if not existing.get("domain"):
-                module.fail_json(msg="Cannot set vtp password " "before vtp domain is set.")
+    elif state == "present" and delta:
+        if not existing.get("domain"):
+            module.fail_json(msg="Cannot set vtp password " "before vtp domain is set.")
 
-            else:
-                commands.append(["vtp password {0}".format(vtp_password)])
+        else:
+            commands.append([f"vtp password {vtp_password}"])
 
     cmds = flatten_list(commands)
     if cmds:

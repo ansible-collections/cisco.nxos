@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -26,7 +25,7 @@ def _tmplt_area_nssa(area):
     nssa = area["nssa"]
     command = "area {area_id} nssa".format(**area)
     if nssa.get("set") is False:
-        command = "no {0}".format(command)
+        command = f"no {command}"
     else:
         for attrib in [
             "no_summary",
@@ -34,7 +33,7 @@ def _tmplt_area_nssa(area):
             "default_information_originate",
         ]:
             if nssa.get(attrib):
-                command += " {0}".format(attrib.replace("_", "-"))
+                command += " {}".format(attrib.replace("_", "-"))
         if nssa.get("route_map"):
             command += " route-map {route_map}".format(**nssa)
     return command
@@ -45,7 +44,7 @@ def _tmplt_area_nssa_translate(area):
     command = "area {area_id} nssa translate type7".format(**area)
     for attrib in ["always", "never", "supress_fa"]:
         if translate.get(attrib):
-            command += " {0}".format(attrib.replace("_", "-"))
+            command += " {}".format(attrib.replace("_", "-"))
     return command
 
 
@@ -53,7 +52,7 @@ def _tmplt_area_stub(area):
     stub = area["stub"]
     command = "area {area_id} stub".format(**area)
     if stub.get("set") is False:
-        command = "no {0}".format(command)
+        command = f"no {command}"
     elif stub.get("no_summary"):
         command += " no-summary"
     return command
@@ -87,7 +86,7 @@ def _tmplt_max_metric(proc):
     command = "max-metric router-lsa"
 
     if max_metric.get("router_lsa", {}).get("set") is False:
-        command = "no {0}".format(command)
+        command = f"no {command}"
     else:
         external_lsa = max_metric.get("router_lsa", {}).get("external_lsa", {})
         stub_prefix_lsa = max_metric.get("router_lsa", {}).get("stub_prefix_lsa", {})
@@ -127,7 +126,7 @@ def _tmplt_default_information(proc):
     command = "default-information originate"
 
     if default_information.get("set") is False:
-        command = "no {0}".format(command)
+        command = f"no {command}"
     else:
         if default_information.get("always"):
             command += " always"
@@ -164,8 +163,8 @@ def _tmplt_table_map(proc):
 
 
 class Ospfv3Template(NetworkTemplate):
-    def __init__(self, lines=None):
-        super(Ospfv3Template, self).__init__(lines=lines, tmplt=self)
+    def __init__(self, lines=None) -> None:
+        super().__init__(lines=lines, tmplt=self)
 
     # fmt: off
     PARSERS = [
@@ -235,7 +234,7 @@ class Ospfv3Template(NetworkTemplate):
                     "safi": "{{ safi }}",
                 },
             },
-            'shared': True,
+            "shared": True,
         },
         {
             "name": "area.default_cost",
@@ -249,7 +248,7 @@ class Ospfv3Template(NetworkTemplate):
             "setval": "area {{ area_id }} default-cost {{ default_cost }}",
             "compval": "default_cost",
             "result": {
-                'address_family': {
+                "address_family": {
                     "areas": {
                         "{{ area_id }}": {
                             "area_id": "{{ area_id }}",
@@ -271,7 +270,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "area {{ area_id }} filter-list route-map {{ route_map }} {{ direction }}",
             "result": {
-                'address_family': {
+                "address_family": {
                     "areas": {
                         "{{ area_id }}": {
                             "area_id": "{{ area_id }}",

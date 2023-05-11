@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Cisco and/or its affiliates.
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -19,7 +18,6 @@ import re
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.telemetry.telemetry import (
     TelemetryArgs,
 )
@@ -37,18 +35,15 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.tele
 )
 
 
-class TelemetryFacts(object):
-    """The nxos telemetry fact class"""
+class TelemetryFacts:
+    """The nxos telemetry fact class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = TelemetryArgs.argument_spec
         spec = deepcopy(self.argument_spec)
         if subspec:
-            if options:
-                facts_argument_spec = spec[subspec][options]
-            else:
-                facts_argument_spec = spec[subspec]
+            facts_argument_spec = spec[subspec][options] if options else spec[subspec]
         else:
             facts_argument_spec = spec
 
@@ -60,7 +55,7 @@ class TelemetryFacts(object):
         :param ansible_facts: Facts dictionary
         :param data: previously collected conf
         :rtype: dictionary
-        :returns: facts
+        :returns: facts.
         """
         if connection:  # just for linting purposes, remove
             pass
@@ -85,10 +80,7 @@ class TelemetryFacts(object):
         ref.get_existing()
         device_cache = ref.cache_existing
 
-        if device_cache is None:
-            device_cache_lines = []
-        else:
-            device_cache_lines = device_cache.split("\n")
+        device_cache_lines = [] if device_cache is None else device_cache.split("\n")
 
         # Get Telemetry Destination Group Data
         cmd_ref["TMS_DESTGROUP"]["ref"] = []
@@ -127,7 +119,6 @@ class TelemetryFacts(object):
         objs = self.render_config(self.generated_spec, cmd_ref)
         facts = {"telemetry": {}}
         if objs:
-            # params = utils.validate_config(self.argument_spec, {'config': objs})
             facts["telemetry"] = objs
 
         ansible_facts["ansible_network_resources"].update(facts)
@@ -138,7 +129,7 @@ class TelemetryFacts(object):
     def render_config(self, spec, cmd_ref):
         """
         Render config as dictionary structure and delete keys
-          from spec for null values
+          from spec for null values.
 
         :param spec: The facts tree, generated from the argspec
         :param conf: The configuration
@@ -157,25 +148,25 @@ class TelemetryFacts(object):
         ]
 
         # Walk the argspec and cmd_ref objects and build out config dict.
-        for key in config.keys():
+        for key in config:
             for mo in managed_objects:
                 for cr in cmd_ref[mo]["ref"]:
                     cr_keys = cr_key_lookup(key, mo)
                     for cr_key in cr_keys:
                         if cr._ref.get(cr_key) and cr._ref[cr_key].get("existing"):
                             if isinstance(config[key], dict):
-                                for k in config[key].keys():
-                                    for existing_key in cr._ref[cr_key]["existing"].keys():
+                                for k in config[key]:
+                                    for existing_key in cr._ref[cr_key]["existing"]:
                                         config[key][k] = cr._ref[cr_key]["existing"][existing_key][
                                             k
                                         ]
                                 continue
                             if isinstance(config[key], list):
-                                for existing_key in cr._ref[cr_key]["existing"].keys():
+                                for existing_key in cr._ref[cr_key]["existing"]:
                                     data = get_instance_data(key, cr_key, cr, existing_key)
                                     config[key].append(data)
                                 continue
-                            for existing_key in cr._ref[cr_key]["existing"].keys():
+                            for existing_key in cr._ref[cr_key]["existing"]:
                                 config[key] = cr._ref[cr_key]["existing"][existing_key]
                         elif cr._ref.get(cr_key):
                             data = get_instance_data(key, cr_key, cr, None)

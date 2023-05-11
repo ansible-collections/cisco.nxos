@@ -1,5 +1,4 @@
 #
-# -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -8,7 +7,7 @@ The nxos_l3_interfaces class
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
-created
+created.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -27,7 +26,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_empties,
     to_list,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
@@ -36,9 +34,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.util
 
 
 class L3_interfaces(ConfigBase):
-    """
-    The nxos_l3_interfaces class
-    """
+    """The nxos_l3_interfaces class."""
 
     gather_subset = ["min"]
 
@@ -46,11 +42,11 @@ class L3_interfaces(ConfigBase):
 
     exclude_params = []
 
-    def __init__(self, module):
-        super(L3_interfaces, self).__init__(module)
+    def __init__(self, module) -> None:
+        super().__init__(module)
 
     def get_l3_interfaces_facts(self, data=None):
-        """Get the 'facts' (the current configuration)
+        """Get the 'facts' (the current configuration).
 
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
@@ -73,7 +69,7 @@ class L3_interfaces(ConfigBase):
         return self._connection.edit_config(commands)
 
     def execute_module(self):
-        """Execute the module
+        """Execute the module.
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -125,7 +121,7 @@ class L3_interfaces(ConfigBase):
 
     def set_config(self, existing_l3_interfaces_facts):
         """Collect the configuration from the args passed to the module,
-            collect the current configuration (as a dict from facts)
+            collect the current configuration (as a dict from facts).
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
@@ -143,7 +139,7 @@ class L3_interfaces(ConfigBase):
         return to_list(resp)
 
     def set_state(self, want, have):
-        """Select the appropriate function based on the state provided
+        """Select the appropriate function based on the state provided.
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary
@@ -154,7 +150,7 @@ class L3_interfaces(ConfigBase):
         state = self._module.params["state"]
         if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state),
+                msg=f"value of config parameter must not be empty for state {state}",
             )
 
         commands = []
@@ -243,7 +239,7 @@ class L3_interfaces(ConfigBase):
         return cmds
 
     def _state_merged(self, w, have):
-        """The command generator when state is merged
+        """The command generator when state is merged.
 
         :rtype: A list
         :returns: the commands necessary to merge the provided into
@@ -271,9 +267,8 @@ class L3_interfaces(ConfigBase):
         for i in have:
             i["tag"] = i.get("tag")
 
-        merged = True if state == "merged" else False
-        replaced = True if state == "replaced" else False
-        overridden = True if state == "overridden" else False
+        replaced = state == "replaced"
+        overridden = state == "overridden"
 
         # Create secondary and primary wants/haves
         sec_w = [i for i in want if i.get("secondary")]
@@ -298,9 +293,8 @@ class L3_interfaces(ConfigBase):
                 sec_to_rmv.append(i["address"])
 
         # Check if new primary is currently a secondary
-        if pri_w and [h for h in sec_h if h["address"] == pri_w["address"]]:
-            if not overridden:
-                sec_to_rmv.append(pri_w["address"])
+        if pri_w and [h for h in sec_h if h["address"] == pri_w["address"]] and not overridden:
+            sec_to_rmv.append(pri_w["address"])
 
         # Remove the changing secondaries
         cmds.extend(["no ip address %s secondary" % i for i in sec_to_rmv])
@@ -362,7 +356,7 @@ class L3_interfaces(ConfigBase):
         return cmds
 
     def _state_deleted(self, want, have):
-        """The command generator when state is deleted
+        """The command generator when state is deleted.
 
         :rtype: A list
         :returns: the commands necessary to remove the current configuration
@@ -390,28 +384,26 @@ class L3_interfaces(ConfigBase):
 
     def generate_delete_commands(self, obj):
         """Generate CLI commands to remove non-default settings.
-        obj: dict of attrs to remove
+        obj: dict of attrs to remove.
         """
         commands = []
         name = obj.get("name")
         if "dot1q" in obj:
             commands.append("no encapsulation dot1q")
-        if "redirects" in obj:
-            if not self.check_existing(name, "has_secondary") or re.match(
-                "N[35679]",
-                self.platform,
-            ):
-                # device auto-enables redirects when secondaries are removed;
-                # auto-enable may fail on legacy platforms so always do explicit enable
-                commands.append("ip redirects")
-        if "ipv6_redirects" in obj:
-            if not self.check_existing(name, "has_secondary") or re.match(
-                "N[35679]",
-                self.platform,
-            ):
-                # device auto-enables redirects when secondaries are removed;
-                # auto-enable may fail on legacy platforms so always do explicit enable
-                commands.append("ipv6 redirects")
+        if "redirects" in obj and (not self.check_existing(name, "has_secondary") or re.match(
+            "N[35679]",
+            self.platform,
+        )):
+            # device auto-enables redirects when secondaries are removed;
+            # auto-enable may fail on legacy platforms so always do explicit enable
+            commands.append("ip redirects")
+        if "ipv6_redirects" in obj and (not self.check_existing(name, "has_secondary") or re.match(
+            "N[35679]",
+            self.platform,
+        )):
+            # device auto-enables redirects when secondaries are removed;
+            # auto-enable may fail on legacy platforms so always do explicit enable
+            commands.append("ipv6 redirects")
         if "unreachables" in obj:
             commands.append("no ip unreachables")
         if "ipv4" in obj:
@@ -426,8 +418,8 @@ class L3_interfaces(ConfigBase):
         return commands
 
     def init_check_existing(self, have):
-        """Creates a class var dict for easier access to existing states"""
-        self.existing_facts = dict()
+        """Creates a class var dict for easier access to existing states."""
+        self.existing_facts = {}
         have_copy = deepcopy(have)
         for intf in have_copy:
             name = intf["name"]
@@ -460,11 +452,11 @@ class L3_interfaces(ConfigBase):
 
     def diff_list_of_dicts(self, w, h):
         diff = []
-        set_w = set(tuple(sorted(d.items())) for d in w) if w else set()
-        set_h = set(tuple(sorted(d.items())) for d in h) if h else set()
+        set_w = {tuple(sorted(d.items())) for d in w} if w else set()
+        set_h = {tuple(sorted(d.items())) for d in h} if h else set()
         difference = set_w.difference(set_h)
         for element in difference:
-            diff.append(dict((x, y) for x, y in element))
+            diff.append(dict(element))
         return diff
 
     def add_commands(self, diff, name=""):

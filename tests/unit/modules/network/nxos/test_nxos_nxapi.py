@@ -32,7 +32,7 @@ class TestNxosNxapiModule(TestNxosModule):
     module = nxos_nxapi
 
     def setUp(self):
-        super(TestNxosNxapiModule, self).setUp()
+        super().setUp()
 
         self.mock_run_commands = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_nxapi.run_commands",
@@ -57,7 +57,7 @@ class TestNxosNxapiModule(TestNxosModule):
         }
 
     def tearDown(self):
-        super(TestNxosNxapiModule, self).tearDown()
+        super().tearDown()
         self.mock_run_commands.stop()
         self.mock_load_config.stop()
         self.mock_get_capabilities.stop()
@@ -67,7 +67,7 @@ class TestNxosNxapiModule(TestNxosModule):
             module, commands = args
             module_name = self.module.__name__.rsplit(".", 1)[1]
 
-            output = list()
+            output = []
             for command in commands:
                 filename = str(command).split(" | ", 1)[0].replace(" ", "_")
                 output.append(load_fixture(module_name, filename, device))
@@ -78,22 +78,22 @@ class TestNxosNxapiModule(TestNxosModule):
 
     def test_nxos_nxapi_no_change(self):
         set_module_args(
-            dict(
-                http=True,
-                https=False,
-                http_port=80,
-                https_port=443,
-                sandbox=False,
-            ),
+            {
+                "http": True,
+                "https": False,
+                "http_port": 80,
+                "https_port": 443,
+                "sandbox": False,
+            },
         )
         self.execute_module_devices(changed=False, commands=[])
 
     def test_nxos_nxapi_disable(self):
-        set_module_args(dict(state="absent"))
+        set_module_args({"state": "absent"})
         self.execute_module_devices(changed=True, commands=["no feature nxapi"])
 
     def test_nxos_nxapi_no_http(self):
-        set_module_args(dict(https=True, http=False, https_port=8443))
+        set_module_args({"https": True, "http": False, "https_port": 8443})
         self.execute_module_devices(
             changed=True,
             commands=["no nxapi http", "nxapi https port 8443"],

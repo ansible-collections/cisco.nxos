@@ -186,7 +186,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_default_spec,
     to_list,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -234,7 +233,7 @@ def validate_roles(value, module):
 
 
 def map_obj_to_commands(updates, module):
-    commands = list()
+    commands = []
     update_password = module.params["update_password"]
 
     for update in updates:
@@ -244,10 +243,10 @@ def map_obj_to_commands(updates, module):
             return want.get(x) and (want.get(x) != have.get(x))
 
         def add(x):
-            return commands.append("username %s %s" % (want["name"], x))
+            return commands.append("username {} {}".format(want["name"], x))
 
         def remove(x):
-            return commands.append("no username %s %s" % (want["name"], x))
+            return commands.append("no username {} {}".format(want["name"], x))
 
         def configure_roles():
             if want["roles"]:
@@ -274,9 +273,8 @@ def map_obj_to_commands(updates, module):
             if not roles_configured:
                 commands.append("username %s" % want["name"])
 
-        if needs_update("configured_password"):
-            if update_password == "always" or not have:
-                add("password %s" % want["configured_password"])
+        if needs_update("configured_password") and (update_password == "always" or not have):
+            add("password %s" % want["configured_password"])
 
         if needs_update("sshkey"):
             add("sshkey %s" % want["sshkey"])
@@ -290,6 +288,7 @@ def map_obj_to_commands(updates, module):
 def parse_password(data):
     if not data.get("remote_login"):
         return "<PASSWORD>"
+    return None
 
 
 def parse_roles(data):
@@ -297,7 +296,7 @@ def parse_roles(data):
     if "TABLE_role" in data:
         configured_roles = data.get("TABLE_role")["ROW_role"]
 
-    roles = list()
+    roles = []
     if configured_roles:
         for item in to_list(configured_roles):
             roles.append(item["role"])
@@ -308,7 +307,7 @@ def map_config_to_obj(module):
     out = run_commands(module, [{"command": "show user-account", "output": "json"}])
     data = out[0]
 
-    objects = list()
+    objects = []
 
     for item in to_list(data["TABLE_template"]["ROW_template"]):
         objects.append(
@@ -342,13 +341,13 @@ def map_params_to_obj(module):
     aggregate = module.params["aggregate"]
     if not aggregate:
         if not module.params["name"] and module.params["purge"]:
-            return list()
+            return []
         elif not module.params["name"]:
             module.fail_json(msg="username is required")
         else:
             collection = [{"name": module.params["name"]}]
     else:
-        collection = list()
+        collection = []
         for item in aggregate:
             if not isinstance(item, dict):
                 collection.append({"name": item})
@@ -357,7 +356,7 @@ def map_params_to_obj(module):
             else:
                 collection.append(item)
 
-    objects = list()
+    objects = []
 
     for item in collection:
         get_value = partial(get_param_value, item=item, module=module)
@@ -383,7 +382,7 @@ def map_params_to_obj(module):
 
 
 def update_objects(want, have):
-    updates = list()
+    updates = []
     for entry in want:
         item = next((i for i in have if i["name"] == entry["name"]), None)
         if all((item is None, entry["state"] == "present")):
@@ -396,30 +395,30 @@ def update_objects(want, have):
 
 
 def main():
-    """main entry point for module execution"""
-    element_spec = dict(
-        name=dict(),
-        configured_password=dict(no_log=True),
-        update_password=dict(default="always", choices=["on_create", "always"]),
-        roles=dict(type="list", aliases=["role"], elements="str"),
-        sshkey=dict(no_log=False),
-        state=dict(default="present", choices=["present", "absent"]),
-    )
+    """Main entry point for module execution."""
+    element_spec = {
+        "name": {},
+        "configured_password": {"no_log": True},
+        "update_password": {"default": "always", "choices": ["on_create", "always"]},
+        "roles": {"type": "list", "aliases": ["role"], "elements": "str"},
+        "sshkey": {"no_log": False},
+        "state": {"default": "present", "choices": ["present", "absent"]},
+    }
 
     aggregate_spec = deepcopy(element_spec)
 
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
 
-    argument_spec = dict(
-        aggregate=dict(
-            type="list",
-            elements="dict",
-            options=aggregate_spec,
-            aliases=["collection", "users"],
-        ),
-        purge=dict(type="bool", default=False),
-    )
+    argument_spec = {
+        "aggregate": {
+            "type": "list",
+            "elements": "dict",
+            "options": aggregate_spec,
+            "aliases": ["collection", "users"],
+        },
+        "purge": {"type": "bool", "default": False},
+    }
 
     argument_spec.update(element_spec)
 

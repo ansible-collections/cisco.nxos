@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2021 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -17,7 +16,6 @@ based on the configuration.
 
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
 )
@@ -26,10 +24,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 )
 
 
-class Bgp_address_familyFacts(object):
-    """The nxos bgp_address_family facts class"""
+class Bgp_address_familyFacts:
+    """The nxos bgp_address_family facts class."""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module, subspec="config", options="options") -> None:
         self._module = module
         self.argument_spec = Bgp_address_familyArgs.argument_spec
 
@@ -40,7 +38,7 @@ class Bgp_address_familyFacts(object):
         return connection.get("show running-config | section '^router bgp'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Bgp_address_family network resource
+        """Populate the facts for Bgp_address_family network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -64,7 +62,7 @@ class Bgp_address_familyFacts(object):
             nbr = []
             if "address_family" in objs:
                 # remove neighbor AF entries
-                for k, v in iteritems(objs["address_family"]):
+                for k, _v in iteritems(objs["address_family"]):
                     if not k.startswith("nbr_"):
                         nbr.append(k)
                 for x in nbr:
@@ -107,7 +105,7 @@ class Bgp_address_familyFacts(object):
         """Flatten contexts in the BGP
             running-config for easier parsing.
         :param obj: dict
-        :returns: flattened running config
+        :returns: flattened running config.
         """
         data = data.split("\n")
         in_vrf_cxt = False
@@ -128,15 +126,14 @@ class Bgp_address_familyFacts(object):
                 # also has address-family lines
                 in_nbr_cxt = True
                 nbr = x
-            elif x.strip().startswith("address-family"):
-                if in_vrf_cxt or in_nbr_cxt:
-                    prepend = ""
+            elif x.strip().startswith("address-family") and (in_vrf_cxt or in_nbr_cxt):
+                prepend = ""
+                if in_vrf_cxt:
+                    prepend += cur_vrf["vrf"]
+                if in_nbr_cxt:
                     if in_vrf_cxt:
-                        prepend += cur_vrf["vrf"]
-                    if in_nbr_cxt:
-                        if in_vrf_cxt:
-                            nbr = " " + nbr.strip()
-                        prepend += nbr
-                    data[data.index(x)] = prepend + " " + x.strip()
+                        nbr = " " + nbr.strip()
+                    prepend += nbr
+                data[data.index(x)] = prepend + " " + x.strip()
 
         return "\n".join(data)

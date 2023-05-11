@@ -218,7 +218,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     CustomNetworkConfig,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
@@ -272,11 +271,11 @@ PARAM_TO_DEFAULT_KEYMAP = {
 
 def get_value(arg, config):
     command = PARAM_TO_COMMAND_KEYMAP[arg]
-    has_command = re.search(r"^\s+{0}$".format(command), config, re.M)
-    has_command_val = re.search(r"(?:\s+{0}\s*)(?P<value>.*)$".format(command), config, re.M)
+    has_command = re.search(fr"^\s+{command}$", config, re.M)
+    has_command_val = re.search(fr"(?:\s+{command}\s*)(?P<value>.*)$", config, re.M)
 
     if arg == "dynamic_capability":
-        has_no_command = re.search(r"\s+no\s{0}\s*$".format(command), config, re.M)
+        has_no_command = re.search(fr"\s+no\s{command}\s*$", config, re.M)
         value = True
         if has_no_command:
             value = False
@@ -331,12 +330,12 @@ def get_existing(module, args, warnings):
 
     if match_asn:
         existing_asn = match_asn.group("existing_asn")
-        parents = ["router bgp {0}".format(existing_asn)]
+        parents = [f"router bgp {existing_asn}"]
 
         if module.params["vrf"] != "default":
-            parents.append("vrf {0}".format(module.params["vrf"]))
+            parents.append("vrf {}".format(module.params["vrf"]))
 
-        parents.append("neighbor {0}".format(module.params["neighbor"]))
+        parents.append("neighbor {}".format(module.params["neighbor"]))
         config = netcfg.get_section(parents)
         if config:
             for arg in args:
@@ -362,7 +361,7 @@ def apply_key_map(key_map, table):
 
 
 def state_present(module, existing, proposed, candidate):
-    commands = list()
+    commands = []
     proposed_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, proposed)
     existing_commands = apply_key_map(PARAM_TO_COMMAND_KEYMAP, existing)
 
@@ -370,48 +369,44 @@ def state_present(module, existing, proposed, candidate):
         if value is True:
             commands.append(key)
         elif value is False:
-            commands.append("no {0}".format(key))
+            commands.append(f"no {key}")
         elif value == "default":
             if existing_commands.get(key):
                 if key == "password":
                     commands.append("no password")
                 else:
                     existing_value = existing_commands.get(key)
-                    commands.append("no {0} {1}".format(key, existing_value))
+                    commands.append(f"no {key} {existing_value}")
         else:
             if key == "log-neighbor-changes":
                 if value == "enable":
-                    commands.append("{0}".format(key))
+                    commands.append(f"{key}")
                 elif value == "disable":
-                    commands.append("{0} {1}".format(key, value))
-                elif value == "inherit":
-                    if existing_commands.get(key):
-                        commands.append("no {0}".format(key))
+                    commands.append(f"{key} {value}")
+                elif value == "inherit" and existing_commands.get(key):
+                    commands.append(f"no {key}")
             elif key == "password":
                 pwd_type = module.params["pwd_type"]
-                if pwd_type == "3des":
-                    pwd_type = 3
-                else:
-                    pwd_type = 7
-                command = "{0} {1} {2}".format(key, pwd_type, value)
+                pwd_type = 3 if pwd_type == "3des" else 7
+                command = f"{key} {pwd_type} {value}"
                 if command not in commands:
                     commands.append(command)
             elif key == "remove-private-as":
                 if value == "enable":
-                    command = "{0}".format(key)
+                    command = f"{key}"
                     commands.append(command)
                 elif value == "disable":
                     if existing_commands.get(key) != "disable":
-                        command = "no {0}".format(key)
+                        command = f"no {key}"
                         commands.append(command)
                 else:
-                    command = "{0} {1}".format(key, value)
+                    command = f"{key} {value}"
                     commands.append(command)
             elif key == "timers":
                 if proposed["timers_keepalive"] != PARAM_TO_DEFAULT_KEYMAP.get(
                     "timers_keepalive",
                 ) or proposed["timers_holdtime"] != PARAM_TO_DEFAULT_KEYMAP.get("timers_holdtime"):
-                    command = "timers {0} {1}".format(
+                    command = "timers {} {}".format(
                         proposed["timers_keepalive"],
                         proposed["timers_holdtime"],
                     )
@@ -423,29 +418,29 @@ def state_present(module, existing, proposed, candidate):
             elif key == "peer-type":
                 if value == "disable":
                     if existing_commands.get(key) != "disable":
-                        command = "no {0}".format(key)
+                        command = f"no {key}"
                         commands.append(command)
                 elif value == "fabric_external":
                     ptype = "fabric-external"
-                    command = "{0} {1}".format(key, ptype)
+                    command = f"{key} {ptype}"
                     commands.append(command)
                 elif value == "fabric_border_leaf":
                     ptype = "fabric-border-leaf"
-                    command = "{0} {1}".format(key, ptype)
+                    command = f"{key} {ptype}"
                     commands.append(command)
             else:
-                command = "{0} {1}".format(key, value)
+                command = f"{key} {value}"
                 commands.append(command)
 
     if commands:
-        parents = ["router bgp {0}".format(module.params["asn"])]
+        parents = ["router bgp {}".format(module.params["asn"])]
         if module.params["vrf"] != "default":
-            parents.append("vrf {0}".format(module.params["vrf"]))
+            parents.append("vrf {}".format(module.params["vrf"]))
 
-        parents.append("neighbor {0}".format(module.params["neighbor"]))
+        parents.append("neighbor {}".format(module.params["neighbor"]))
 
         # make sure that local-as is the last command in the list.
-        local_as_command = "local-as {0}".format(module.params["local_as"])
+        local_as_command = "local-as {}".format(module.params["local_as"])
         if local_as_command in commands:
             commands.remove(local_as_command)
             commands.append(local_as_command)
@@ -454,58 +449,58 @@ def state_present(module, existing, proposed, candidate):
 
 def state_absent(module, existing, proposed, candidate):
     commands = []
-    parents = ["router bgp {0}".format(module.params["asn"])]
+    parents = ["router bgp {}".format(module.params["asn"])]
     if module.params["vrf"] != "default":
-        parents.append("vrf {0}".format(module.params["vrf"]))
+        parents.append("vrf {}".format(module.params["vrf"]))
 
-    commands.append("no neighbor {0}".format(module.params["neighbor"]))
+    commands.append("no neighbor {}".format(module.params["neighbor"]))
     candidate.add(commands, parents=parents)
 
 
 def main():
-    argument_spec = dict(
-        asn=dict(required=True, type="str"),
-        vrf=dict(required=False, type="str", default="default"),
-        neighbor=dict(required=True, type="str"),
-        description=dict(required=False, type="str"),
-        bfd=dict(required=False, type="str", choices=["enable", "disable"]),
-        capability_negotiation=dict(required=False, type="bool"),
-        connected_check=dict(required=False, type="bool"),
-        dynamic_capability=dict(required=False, type="bool"),
-        ebgp_multihop=dict(required=False, type="str"),
-        local_as=dict(required=False, type="str"),
-        log_neighbor_changes=dict(
-            required=False,
-            type="str",
-            choices=["enable", "disable", "inherit"],
-        ),
-        low_memory_exempt=dict(required=False, type="bool"),
-        maximum_peers=dict(required=False, type="str"),
-        pwd=dict(required=False, type="str"),
-        pwd_type=dict(
-            required=False,
-            type="str",
-            choices=["3des", "cisco_type_7", "default"],
-        ),
-        remote_as=dict(required=False, type="str"),
-        remove_private_as=dict(
-            required=False,
-            type="str",
-            choices=["enable", "disable", "all", "replace-as"],
-        ),
-        shutdown=dict(required=False, type="bool"),
-        suppress_4_byte_as=dict(required=False, type="bool"),
-        timers_keepalive=dict(required=False, type="str"),
-        timers_holdtime=dict(required=False, type="str"),
-        transport_passive_only=dict(required=False, type="bool"),
-        update_source=dict(required=False, type="str"),
-        state=dict(choices=["present", "absent"], default="present", required=False),
-        peer_type=dict(
-            required=False,
-            type="str",
-            choices=["disable", "fabric_border_leaf", "fabric_external"],
-        ),
-    )
+    argument_spec = {
+        "asn": {"required": True, "type": "str"},
+        "vrf": {"required": False, "type": "str", "default": "default"},
+        "neighbor": {"required": True, "type": "str"},
+        "description": {"required": False, "type": "str"},
+        "bfd": {"required": False, "type": "str", "choices": ["enable", "disable"]},
+        "capability_negotiation": {"required": False, "type": "bool"},
+        "connected_check": {"required": False, "type": "bool"},
+        "dynamic_capability": {"required": False, "type": "bool"},
+        "ebgp_multihop": {"required": False, "type": "str"},
+        "local_as": {"required": False, "type": "str"},
+        "log_neighbor_changes": {
+            "required": False,
+            "type": "str",
+            "choices": ["enable", "disable", "inherit"],
+        },
+        "low_memory_exempt": {"required": False, "type": "bool"},
+        "maximum_peers": {"required": False, "type": "str"},
+        "pwd": {"required": False, "type": "str"},
+        "pwd_type": {
+            "required": False,
+            "type": "str",
+            "choices": ["3des", "cisco_type_7", "default"],
+        },
+        "remote_as": {"required": False, "type": "str"},
+        "remove_private_as": {
+            "required": False,
+            "type": "str",
+            "choices": ["enable", "disable", "all", "replace-as"],
+        },
+        "shutdown": {"required": False, "type": "bool"},
+        "suppress_4_byte_as": {"required": False, "type": "bool"},
+        "timers_keepalive": {"required": False, "type": "str"},
+        "timers_holdtime": {"required": False, "type": "str"},
+        "transport_passive_only": {"required": False, "type": "bool"},
+        "update_source": {"required": False, "type": "str"},
+        "state": {"choices": ["present", "absent"], "default": "present", "required": False},
+        "peer_type": {
+            "required": False,
+            "type": "str",
+            "choices": ["disable", "fabric_border_leaf", "fabric_external"],
+        },
+    }
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -516,8 +511,8 @@ def main():
         supports_check_mode=True,
     )
 
-    warnings = list()
-    result = dict(changed=False, warnings=warnings)
+    warnings = []
+    result = {"changed": False, "warnings": warnings}
 
     state = module.params["state"]
 
@@ -527,15 +522,14 @@ def main():
     args = PARAM_TO_COMMAND_KEYMAP.keys()
     existing = get_existing(module, args, warnings)
 
-    if existing.get("asn") and state == "present":
-        if existing["asn"] != module.params["asn"]:
-            module.fail_json(
-                msg="Another BGP ASN already exists.",
-                proposed_asn=module.params["asn"],
-                existing_asn=existing.get("asn"),
-            )
+    if existing.get("asn") and state == "present" and existing["asn"] != module.params["asn"]:
+        module.fail_json(
+            msg="Another BGP ASN already exists.",
+            proposed_asn=module.params["asn"],
+            existing_asn=existing.get("asn"),
+        )
 
-    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
+    proposed_args = {k: v for k, v in module.params.items() if v is not None and k in args}
     proposed = {}
     for key, value in proposed_args.items():
         if key not in ["asn", "vrf", "neighbor", "pwd_type"]:

@@ -35,7 +35,7 @@ class TestNxosVlansModule(TestNxosModule):
     module = nxos_vlans
 
     def setUp(self):
-        super(TestNxosVlansModule, self).setUp()
+        super().setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
@@ -68,7 +68,7 @@ class TestNxosVlansModule(TestNxosModule):
         self.get_platform = self.mock_get_platform.start()
 
     def tearDown(self):
-        super(TestNxosVlansModule, self).tearDown()
+        super().tearDown()
         self.mock_FACT_LEGACY_SUBSETS.stop()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
@@ -110,20 +110,20 @@ class TestNxosVlansModule(TestNxosModule):
         vlan 8
           shutdown
           name test-changeme-not
-          state suspend
+          state suspend.
         """
         self.prepare()
         self.get_platform.return_value = "N7K-Cxxx"
 
-        playbook = dict(
-            config=[
-                dict(vlan_id=4),
-                dict(vlan_id=5, mapped_vni=555, mode="ce"),
-                dict(vlan_id=7, mapped_vni=777, name="test-vlan7", enabled=False),
-                dict(vlan_id="8", state="active", name="test-changeme-not"),
+        playbook = {
+            "config": [
+                {"vlan_id": 4},
+                {"vlan_id": 5, "mapped_vni": 555, "mode": "ce"},
+                {"vlan_id": 7, "mapped_vni": 777, "name": "test-vlan7", "enabled": False},
+                {"vlan_id": "8", "state": "active", "name": "test-changeme-not"},
                 # vlan 3 is not present in playbook.
             ],
-        )
+        }
 
         merged = [
             # Update existing device states with any differences in the playbook.
@@ -212,25 +212,25 @@ class TestNxosVlansModule(TestNxosModule):
             "no vlan 5",
             "no vlan 8",
         ]
-        playbook = dict(state="deleted")
+        playbook = {"state": "deleted"}
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=deleted)
 
         for test_state in ["merged", "replaced", "overridden"]:
-            set_module_args(dict(state=test_state), ignore_provider_arg)
+            set_module_args({"state": test_state}, ignore_provider_arg)
             self.execute_module(failed=True)
 
     def test_3(self):
         # Test no facts returned
         self.prepare(test="_no_facts")
-        playbook = dict(state="deleted")
+        playbook = {"state": "deleted"}
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=False)
 
     def test_4(self):
         self.prepare()
         # Misc tests to hit codepaths highlighted by code coverage tool as missed.
-        playbook = dict(config=[dict(vlan_id=8, enabled=True)])
+        playbook = {"config": [{"vlan_id": 8, "enabled": True}]}
         replaced = [
             # Update existing device states with any differences in the playbook.
             "vlan 8",
@@ -244,40 +244,37 @@ class TestNxosVlansModule(TestNxosModule):
         self.execute_module(changed=True, commands=replaced)
 
     def test_5(self):
-        """
-        Idempotency test
-        """
-
+        """Idempotency test."""
         self.prepare()
-        playbook = dict(
-            config=[
-                dict(vlan_id=1, name="default", enabled=True),
-                dict(vlan_id=3, name="test-vlan3", enabled=True),
-                dict(vlan_id=4, enabled=True),
-                dict(
-                    vlan_id=5,
-                    name="test-changeme",
-                    mapped_vni=942,
-                    state="suspend",
-                    enabled=False,
-                ),
-                dict(
-                    vlan_id=8,
-                    name="test-changeme-not",
-                    state="suspend",
-                    enabled=False,
-                ),
+        playbook = {
+            "config": [
+                {"vlan_id": 1, "name": "default", "enabled": True},
+                {"vlan_id": 3, "name": "test-vlan3", "enabled": True},
+                {"vlan_id": 4, "enabled": True},
+                {
+                    "vlan_id": 5,
+                    "name": "test-changeme",
+                    "mapped_vni": 942,
+                    "state": "suspend",
+                    "enabled": False,
+                },
+                {
+                    "vlan_id": 8,
+                    "name": "test-changeme-not",
+                    "state": "suspend",
+                    "enabled": False,
+                },
             ],
-        )
+        }
 
         playbook["state"] = "merged"
         set_module_args(playbook, ignore_provider_arg)
-        r = self.execute_module(changed=False)
+        self.execute_module(changed=False)
 
         playbook["state"] = "overridden"
         set_module_args(playbook, ignore_provider_arg)
-        r = self.execute_module(changed=False)
+        self.execute_module(changed=False)
 
         playbook["state"] = "replaced"
         set_module_args(playbook, ignore_provider_arg)
-        r = self.execute_module(changed=False)
+        self.execute_module(changed=False)

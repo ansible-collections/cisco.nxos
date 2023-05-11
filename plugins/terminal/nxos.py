@@ -101,8 +101,7 @@ class TerminalModule(TerminalBase):
         except AnsibleConnectionFailure as e:
             prompt = self._get_prompt()
             raise AnsibleConnectionFailure(
-                "unable to elevate privilege to enable mode, at prompt [%s] with error: %s"
-                % (prompt, e.message),
+                f"unable to elevate privilege to enable mode, at prompt [{prompt}] with error: {e.message}",
             )
 
     def on_unbecome(self):
@@ -137,3 +136,4 @@ class TerminalModule(TerminalBase):
             if "network-admin" in roles:
                 return True
             return False
+        return None

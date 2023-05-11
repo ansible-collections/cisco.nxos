@@ -48,7 +48,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
     module = nxos_bgp_neighbor_address_family
 
     def setUp(self):
-        super(TestNxosBGPNeighborAddressFamilyModule, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -62,7 +62,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosBGPNeighborAddressFamilyModule, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
@@ -80,52 +80,52 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    advertise_map=dict(route_map="rmap1", exist_map="rmap2"),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "advertise_map": {"route_map": "rmap1", "exist_map": "rmap2"},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            advertise_map=dict(
-                                                route_map="rmap2",
-                                                exist_map="rmap3",
-                                            ),
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            advertise_map=dict(
-                                                route_map="rmap1",
-                                                non_exist_map="rmap7",
-                                            ),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "advertise_map": {
+                                                "route_map": "rmap2",
+                                                "exist_map": "rmap3",
+                                            },
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "advertise_map": {
+                                                "route_map": "rmap1",
+                                                "non_exist_map": "rmap7",
+                                            },
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -139,7 +139,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "advertise-map rmap1 non-exist-map rmap7",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_advertise_map_replaced(self):
         # test replaced for advertise_map
@@ -158,45 +158,45 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    advertise_map=dict(route_map="rmap1", exist_map="rmap3"),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "advertise_map": {"route_map": "rmap1", "exist_map": "rmap3"},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            advertise_map=dict(
-                                                route_map="rmap2",
-                                                exist_map="rmap3",
-                                            ),
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "advertise_map": {
+                                                "route_map": "rmap2",
+                                                "exist_map": "rmap3",
+                                            },
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -210,7 +210,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no advertise-map rmap1 non-exist-map rmap5",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_advertisement_interval_merged(self):
         # test merged for advertisement_interval
@@ -224,46 +224,46 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    advertisement_interval=350,
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "advertisement_interval": 350,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            advertisement_interval=300,
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            advertisement_interval=400,
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "advertisement_interval": 300,
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "advertisement_interval": 400,
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -277,7 +277,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "advertisement-interval 400",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_advertisement_interval_replaced(self):
         # test replaced for advertisement_interval
@@ -298,43 +298,43 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(afi="ipv4", safi="unicast"),
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    advertisement_interval=350,
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {"afi": "ipv4", "safi": "unicast"},
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "advertisement_interval": 350,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            advertisement_interval=300,
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "advertisement_interval": 300,
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -348,7 +348,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no advertisement-interval 400",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_allowas_in_merged(self):
         # test merged for allowas_in
@@ -364,46 +364,46 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    allowas_in=dict(max_occurences=8),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "allowas_in": {"max_occurences": 8},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            allowas_in=dict(max_occurences=5),
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            allowas_in=dict(max_occurences=3),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "allowas_in": {"max_occurences": 5},
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "allowas_in": {"max_occurences": 3},
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -417,7 +417,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "allowas-in 5",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_allowas_in_replaced(self):
         # test replaced for allowas_in
@@ -436,42 +436,42 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    allowas_in=dict(max_occurences=9),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "allowas_in": {"max_occurences": 9},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            allowas_in=dict(max_occurences=5),
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "allowas_in": {"max_occurences": 5},
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -485,7 +485,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no allowas-in 3",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_as_override_merged(self):
         # test merged for as_override
@@ -504,46 +504,46 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    as_override=True,
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "as_override": True,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            as_override=True,
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            as_override=False,
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "as_override": True,
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "as_override": False,
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -557,7 +557,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no as-override",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_as_override_replaced(self):
         # test replaced for as_override
@@ -578,36 +578,36 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[dict(afi="ipv4", safi="multicast")],
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [{"afi": "ipv4", "safi": "multicast"}],
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            as_override=True,
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "as_override": True,
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -621,7 +621,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no as-override",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_capability_merged(self):
         # test merged for capability
@@ -639,58 +639,58 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    capability=dict(
-                                        additional_paths=dict(receive="enable", send="enable"),
-                                    ),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "capability": {
+                                        "additional_paths": {"receive": "enable", "send": "enable"},
+                                    },
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            capability=dict(
-                                                additional_paths=dict(
-                                                    receive="disable",
-                                                    send="enable",
-                                                ),
-                                            ),
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            capability=dict(
-                                                additional_paths=dict(
-                                                    receive="enable",
-                                                    send="disable",
-                                                ),
-                                            ),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "capability": {
+                                                "additional_paths": {
+                                                    "receive": "disable",
+                                                    "send": "enable",
+                                                },
+                                            },
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "capability": {
+                                                "additional_paths": {
+                                                    "receive": "enable",
+                                                    "send": "disable",
+                                                },
+                                            },
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -709,7 +709,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "capability additional-paths send disable",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_capability_replaced(self):
         # test replaced for capability
@@ -731,47 +731,47 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    capability=dict(additional_paths=dict(send="enable")),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "capability": {"additional_paths": {"send": "enable"}},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            capability=dict(
-                                                additional_paths=dict(
-                                                    receive="disable",
-                                                    send="enable",
-                                                ),
-                                            ),
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "capability": {
+                                                "additional_paths": {
+                                                    "receive": "disable",
+                                                    "send": "enable",
+                                                },
+                                            },
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -786,7 +786,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no capability additional-paths send disable",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_originate_peer_as_merged(self):
         # test merged for default_originate, disable_peer_as_check
@@ -803,53 +803,53 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    default_originate=dict(set=True),
-                                ),
-                                dict(
-                                    afi="ipv4",
-                                    safi="unicast",
-                                    disable_peer_as_check=True,
-                                    default_originate=dict(route_map="rmap1"),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "default_originate": {"set": True},
+                                },
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "unicast",
+                                    "disable_peer_as_check": True,
+                                    "default_originate": {"route_map": "rmap1"},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            disable_peer_as_check=True,
-                                            default_originate=dict(set=True),
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            default_originate=dict(route_map="rmap2"),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "disable_peer_as_check": True,
+                                            "default_originate": {"set": True},
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "default_originate": {"route_map": "rmap2"},
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -866,7 +866,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "default-originate route-map rmap2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_originate_peer_as_merged(self):
         # test merged for default_originate, disable_peer_as_check
@@ -889,44 +889,44 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(afi="ipv4", safi="multicast"),
-                                dict(
-                                    afi="ipv4",
-                                    safi="unicast",
-                                    default_originate=dict(route_map="rmap1"),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {"afi": "ipv4", "safi": "multicast"},
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "unicast",
+                                    "default_originate": {"route_map": "rmap1"},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            disable_peer_as_check=True,
-                                            default_originate=dict(set=True),
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "disable_peer_as_check": True,
+                                            "default_originate": {"set": True},
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -942,7 +942,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no default-originate route-map rmap1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_filter_list_inherit_merged(self):
         # test merged for filter_list, inherit
@@ -961,58 +961,58 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    filter_list=dict(inbound="rmap3", outbound="rmap4"),
-                                    inherit=dict(template="template-2", sequence=200),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "filter_list": {"inbound": "rmap3", "outbound": "rmap4"},
+                                    "inherit": {"template": "template-2", "sequence": 200},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            filter_list=dict(
-                                                inbound="rmap1",
-                                                outbound="rmap2",
-                                            ),
-                                            inherit=dict(
-                                                template="template-1",
-                                                sequence=100,
-                                            ),
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            filter_list=dict(inbound="rmap2"),
-                                            inherit=dict(
-                                                template="template-1",
-                                                sequence=400,
-                                            ),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "filter_list": {
+                                                "inbound": "rmap1",
+                                                "outbound": "rmap2",
+                                            },
+                                            "inherit": {
+                                                "template": "template-1",
+                                                "sequence": 100,
+                                            },
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "filter_list": {"inbound": "rmap2"},
+                                            "inherit": {
+                                                "template": "template-1",
+                                                "sequence": 400,
+                                            },
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1029,7 +1029,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "inherit peer-policy template-1 400",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_filter_list_inherit_replaced(self):
         # test replaced for filter_list, inherit
@@ -1054,50 +1054,50 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    filter_list=dict(inbound="rmap3"),
-                                    inherit=dict(template="template-2", sequence=200),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "filter_list": {"inbound": "rmap3"},
+                                    "inherit": {"template": "template-2", "sequence": 200},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            filter_list=dict(
-                                                inbound="rmap1",
-                                                outbound="rmap2",
-                                            ),
-                                            inherit=dict(
-                                                template="template-1",
-                                                sequence=100,
-                                            ),
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "filter_list": {
+                                                "inbound": "rmap1",
+                                                "outbound": "rmap2",
+                                            },
+                                            "inherit": {
+                                                "template": "template-1",
+                                                "sequence": 100,
+                                            },
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1113,7 +1113,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no inherit peer-policy template-1 300",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_maximum_prefix_merged(self):
         # test merged for maximum_prefix
@@ -1133,93 +1133,93 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    maximum_prefix=dict(max_prefix_limit=20),
-                                ),
-                                dict(
-                                    afi="ipv4",
-                                    safi="unicast",
-                                    maximum_prefix=dict(
-                                        max_prefix_limit=25,
-                                        generate_warning_threshold=85,
-                                    ),
-                                ),
-                                dict(
-                                    afi="ipv6",
-                                    safi="multicast",
-                                    maximum_prefix=dict(
-                                        max_prefix_limit=28,
-                                        generate_warning_threshold=90,
-                                        warning_only=True,
-                                    ),
-                                ),
-                                dict(
-                                    afi="ipv6",
-                                    safi="unicast",
-                                    maximum_prefix=dict(
-                                        max_prefix_limit=30,
-                                        generate_warning_threshold=95,
-                                        restart_interval=1200,
-                                    ),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "maximum_prefix": {"max_prefix_limit": 20},
+                                },
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "unicast",
+                                    "maximum_prefix": {
+                                        "max_prefix_limit": 25,
+                                        "generate_warning_threshold": 85,
+                                    },
+                                },
+                                {
+                                    "afi": "ipv6",
+                                    "safi": "multicast",
+                                    "maximum_prefix": {
+                                        "max_prefix_limit": 28,
+                                        "generate_warning_threshold": 90,
+                                        "warning_only": True,
+                                    },
+                                },
+                                {
+                                    "afi": "ipv6",
+                                    "safi": "unicast",
+                                    "maximum_prefix": {
+                                        "max_prefix_limit": 30,
+                                        "generate_warning_threshold": 95,
+                                        "restart_interval": 1200,
+                                    },
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            maximum_prefix=dict(max_prefix_limit=28),
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            maximum_prefix=dict(
-                                                max_prefix_limit=12,
-                                                generate_warning_threshold=80,
-                                            ),
-                                        ),
-                                        dict(
-                                            afi="ipv6",
-                                            safi="multicast",
-                                            maximum_prefix=dict(
-                                                max_prefix_limit=12,
-                                                generate_warning_threshold=85,
-                                                warning_only=True,
-                                            ),
-                                        ),
-                                        dict(
-                                            afi="ipv6",
-                                            safi="unicast",
-                                            maximum_prefix=dict(
-                                                max_prefix_limit=12,
-                                                generate_warning_threshold=85,
-                                                restart_interval=1200,
-                                            ),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "maximum_prefix": {"max_prefix_limit": 28},
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "maximum_prefix": {
+                                                "max_prefix_limit": 12,
+                                                "generate_warning_threshold": 80,
+                                            },
+                                        },
+                                        {
+                                            "afi": "ipv6",
+                                            "safi": "multicast",
+                                            "maximum_prefix": {
+                                                "max_prefix_limit": 12,
+                                                "generate_warning_threshold": 85,
+                                                "warning_only": True,
+                                            },
+                                        },
+                                        {
+                                            "afi": "ipv6",
+                                            "safi": "unicast",
+                                            "maximum_prefix": {
+                                                "max_prefix_limit": 12,
+                                                "generate_warning_threshold": 85,
+                                                "restart_interval": 1200,
+                                            },
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1239,7 +1239,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "maximum-prefix 28",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_maximum_prefix_replaced(self):
         # test replaced for maximum_prefix
@@ -1264,52 +1264,52 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(afi="ipv4", safi="unicast"),
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    maximum_prefix=dict(max_prefix_limit=28),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {"afi": "ipv4", "safi": "unicast"},
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "maximum_prefix": {"max_prefix_limit": 28},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            maximum_prefix=dict(max_prefix_limit=28),
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            maximum_prefix=dict(
-                                                max_prefix_limit=12,
-                                                generate_warning_threshold=80,
-                                            ),
-                                        ),
-                                        dict(afi="ipv6", safi="multicast"),
-                                        dict(afi="ipv6", safi="unicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "maximum_prefix": {"max_prefix_limit": 28},
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "maximum_prefix": {
+                                                "max_prefix_limit": 12,
+                                                "generate_warning_threshold": 80,
+                                            },
+                                        },
+                                        {"afi": "ipv6", "safi": "multicast"},
+                                        {"afi": "ipv6", "safi": "unicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1329,7 +1329,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no maximum-prefix 12 85 restart 1200",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_next_hop_merged(self):
         # test merged for next_hop_self, next_hop_third_party
@@ -1346,57 +1346,57 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    next_hop_self=dict(set=True),
-                                ),
-                                dict(
-                                    afi="ipv4",
-                                    safi="unicast",
-                                    next_hop_self=dict(all_routes=True),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "next_hop_self": {"set": True},
+                                },
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "unicast",
+                                    "next_hop_self": {"all_routes": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            next_hop_self=dict(set=True),
-                                            next_hop_third_party=True,
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            next_hop_self=dict(all_routes=True),
-                                        ),
-                                        dict(
-                                            afi="ipv6",
-                                            safi="multicast",
-                                            next_hop_self=dict(all_routes=True),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "next_hop_self": {"set": True},
+                                            "next_hop_third_party": True,
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "next_hop_self": {"all_routes": True},
+                                        },
+                                        {
+                                            "afi": "ipv6",
+                                            "safi": "multicast",
+                                            "next_hop_self": {"all_routes": True},
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1414,7 +1414,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "next-hop-self all",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_next_hop_replaced(self):
         # test replaced for next_hop_self, next_hop_third_party
@@ -1436,47 +1436,47 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(afi="ipv4", safi="multicast"),
-                                dict(
-                                    afi="ipv4",
-                                    safi="unicast",
-                                    next_hop_self=dict(all_routes=True),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {"afi": "ipv4", "safi": "multicast"},
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "unicast",
+                                    "next_hop_self": {"all_routes": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            next_hop_third_party=True,
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            next_hop_self=dict(all_routes=True),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "next_hop_third_party": True,
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "next_hop_self": {"all_routes": True},
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1491,7 +1491,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "next-hop-third-party",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_prefix_list_merged(self):
         # test merged for prefix_list
@@ -1508,49 +1508,49 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    prefix_list=dict(inbound="rmap3", outbound="rmap4"),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "prefix_list": {"inbound": "rmap3", "outbound": "rmap4"},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            prefix_list=dict(
-                                                inbound="rmap1",
-                                                outbound="rmap2",
-                                            ),
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            prefix_list=dict(inbound="rmap2"),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "prefix_list": {
+                                                "inbound": "rmap1",
+                                                "outbound": "rmap2",
+                                            },
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "prefix_list": {"inbound": "rmap2"},
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1565,7 +1565,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "prefix-list rmap2 in",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_prefix_list_replaced(self):
         # test replaced for prefix_list
@@ -1587,45 +1587,45 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    prefix_list=dict(inbound="rmap3"),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "prefix_list": {"inbound": "rmap3"},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            prefix_list=dict(
-                                                inbound="rmap1",
-                                                outbound="rmap2",
-                                            ),
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "prefix_list": {
+                                                "inbound": "rmap1",
+                                                "outbound": "rmap2",
+                                            },
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1640,7 +1640,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no prefix-list rmap1 out",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_rewrite_evpn_route_map_merged(self):
         # test merged for rewrite_evpn_rt_asn, route_map
@@ -1659,52 +1659,52 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    route_map=dict(inbound="rmap3", outbound="rmap4"),
-                                    rewrite_evpn_rt_asn=True,
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "route_map": {"inbound": "rmap3", "outbound": "rmap4"},
+                                    "rewrite_evpn_rt_asn": True,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            route_map=dict(
-                                                inbound="rmap1",
-                                                outbound="rmap2",
-                                            ),
-                                            rewrite_evpn_rt_asn=True,
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            route_map=dict(inbound="rmap2"),
-                                            rewrite_evpn_rt_asn=True,
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "route_map": {
+                                                "inbound": "rmap1",
+                                                "outbound": "rmap2",
+                                            },
+                                            "rewrite_evpn_rt_asn": True,
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "route_map": {"inbound": "rmap2"},
+                                            "rewrite_evpn_rt_asn": True,
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1721,7 +1721,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "rewrite-evpn-rt-asn",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_rewrite_evpn_route_map_replaced(self):
         # test replaced for rewrite_evpn_rt_asn, route_map
@@ -1746,47 +1746,47 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    route_map=dict(inbound="rmap3"),
-                                    rewrite_evpn_rt_asn=True,
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "route_map": {"inbound": "rmap3"},
+                                    "rewrite_evpn_rt_asn": True,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            route_map=dict(
-                                                inbound="rmap1",
-                                                outbound="rmap2",
-                                            ),
-                                            rewrite_evpn_rt_asn=True,
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "route_map": {
+                                                "inbound": "rmap1",
+                                                "outbound": "rmap2",
+                                            },
+                                            "rewrite_evpn_rt_asn": True,
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1802,7 +1802,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no rewrite-evpn-rt-asn",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_route_reflector_client_send_community_merged(self):
         # test merged for route_reflector_client
@@ -1817,48 +1817,48 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    route_reflector_client=True,
-                                    send_community=dict(extended=True),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "route_reflector_client": True,
+                                    "send_community": {"extended": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            route_reflector_client=True,
-                                            send_community=dict(set=True),
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            send_community=dict(set=True),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "route_reflector_client": True,
+                                            "send_community": {"set": True},
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "send_community": {"set": True},
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1873,7 +1873,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "send-community",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_route_reflector_client_send_community_replaced(self):
         # test replaced for route_reflector_client
@@ -1894,43 +1894,43 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    send_community=dict(extended=True),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "send_community": {"extended": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            route_reflector_client=True,
-                                            send_community=dict(set=True),
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "route_reflector_client": True,
+                                            "send_community": {"set": True},
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -1944,7 +1944,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no send-community",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_soft_reconfiguration_soo_merged(self):
         # test merged for soft_reconfiguration_inbound, soo
@@ -1959,48 +1959,48 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    soft_reconfiguration_inbound=dict(set=True),
-                                    soo="73:43",
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "soft_reconfiguration_inbound": {"set": True},
+                                    "soo": "73:43",
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            soft_reconfiguration_inbound=dict(always=True),
-                                            soo="65:28",
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            soft_reconfiguration_inbound=dict(always=True),
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "soft_reconfiguration_inbound": {"always": True},
+                                            "soo": "65:28",
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "soft_reconfiguration_inbound": {"always": True},
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2015,7 +2015,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "soft-reconfiguration inbound always",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_soft_reconfiguration_soo_replaced(self):
         # test replaced for soft_reconfiguration_inbound, soo
@@ -2036,43 +2036,43 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    soft_reconfiguration_inbound=dict(set=True),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "soft_reconfiguration_inbound": {"set": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            soft_reconfiguration_inbound=dict(always=True),
-                                            soo="65:28",
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "soft_reconfiguration_inbound": {"always": True},
+                                            "soo": "65:28",
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2086,7 +2086,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no soft-reconfiguration inbound always",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_suppress_inactive_unsuppress_merged(self):
         # test merged for suppress_inactive, unsuppress_map, weight
@@ -2103,51 +2103,51 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    suppress_inactive=True,
-                                    unsuppress_map="rmap2",
-                                    weight=20,
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "suppress_inactive": True,
+                                    "unsuppress_map": "rmap2",
+                                    "weight": 20,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            suppress_inactive=True,
-                                            unsuppress_map="rmap1",
-                                            weight=25,
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            suppress_inactive=True,
-                                            unsuppress_map="rmap4",
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "suppress_inactive": True,
+                                            "unsuppress_map": "rmap1",
+                                            "weight": 25,
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "suppress_inactive": True,
+                                            "unsuppress_map": "rmap4",
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2166,7 +2166,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "unsuppress-map rmap4",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_suppress_inactive_unsuppress_replaced(self):
         # test replaced for suppress_inactive, unsuppress_map, weight
@@ -2191,38 +2191,38 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[dict(afi="ipv4", safi="multicast")],
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [{"afi": "ipv4", "safi": "multicast"}],
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            suppress_inactive=True,
-                                            unsuppress_map="rmap1",
-                                            weight=25,
-                                        ),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "suppress_inactive": True,
+                                            "unsuppress_map": "rmap1",
+                                            "weight": 25,
+                                        },
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2240,7 +2240,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no weight 10",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_deleted(self):
         # test deleted
@@ -2261,35 +2261,35 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(afi="ipv4", safi="multicast"),
-                                dict(afi="link-state"),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {"afi": "ipv4", "safi": "multicast"},
+                                {"afi": "link-state"},
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(afi="ipv4", safi="unicast"),
-                                        dict(afi="ipv4", safi="multicast"),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {"afi": "ipv4", "safi": "unicast"},
+                                        {"afi": "ipv4", "safi": "multicast"},
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="deleted",
-            ),
+                },
+                "state": "deleted",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2303,7 +2303,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no address-family ipv4 multicast",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_deleted_all(self):
         # test deleted all
@@ -2323,7 +2323,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv6 unicast
             """,
         )
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         commands = [
             "router bgp 65536",
             "neighbor 10.0.0.2",
@@ -2339,7 +2339,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no address-family ipv6 unicast",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_overridden(self):
         # test overridden
@@ -2360,35 +2360,35 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.3",
-                            address_family=[
-                                dict(afi="ipv4", safi="unicast"),
-                                dict(
-                                    afi="link-state",
-                                    route_reflector_client=True,
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.3",
+                            "address_family": [
+                                {"afi": "ipv4", "safi": "unicast"},
+                                {
+                                    "afi": "link-state",
+                                    "route_reflector_client": True,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[dict(afi="ipv4", safi="multicast")],
-                                ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [{"afi": "ipv4", "safi": "multicast"}],
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="overridden",
-            ),
+                },
+                "state": "overridden",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2406,7 +2406,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "no address-family ipv6 unicast",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_af_gathered(self):
         # test gathered
@@ -2421,38 +2421,38 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                   address-family ipv4 multicast
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
-        gathered = dict(
-            as_number="65536",
-            neighbors=[
-                dict(
-                    neighbor_address="10.0.0.3",
-                    address_family=[
-                        dict(afi="ipv4", safi="unicast"),
-                        dict(afi="link-state"),
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
+        gathered = {
+            "as_number": "65536",
+            "neighbors": [
+                {
+                    "neighbor_address": "10.0.0.3",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "unicast"},
+                        {"afi": "link-state"},
                     ],
-                ),
+                },
             ],
-            vrfs=[
-                dict(
-                    vrf="site-1",
-                    neighbors=[
-                        dict(
-                            neighbor_address="192.168.1.1",
-                            address_family=[dict(afi="ipv4", safi="multicast")],
-                        ),
+            "vrfs": [
+                {
+                    "vrf": "site-1",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.168.1.1",
+                            "address_family": [{"afi": "ipv4", "safi": "multicast"}],
+                        },
                     ],
-                ),
+                },
             ],
-        )
+        }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_bgp_nbr_af_parsed(self):
         # test parsed
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     router bgp 65536
                       neighbor 10.0.0.3
@@ -2463,84 +2463,84 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                           address-family ipv4 multicast
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
             ignore_provider_arg,
         )
-        parsed = dict(
-            as_number="65536",
-            neighbors=[
-                dict(
-                    neighbor_address="10.0.0.3",
-                    address_family=[
-                        dict(afi="ipv4", safi="unicast"),
-                        dict(afi="link-state"),
+        parsed = {
+            "as_number": "65536",
+            "neighbors": [
+                {
+                    "neighbor_address": "10.0.0.3",
+                    "address_family": [
+                        {"afi": "ipv4", "safi": "unicast"},
+                        {"afi": "link-state"},
                     ],
-                ),
+                },
             ],
-            vrfs=[
-                dict(
-                    vrf="site-1",
-                    neighbors=[
-                        dict(
-                            neighbor_address="192.168.1.1",
-                            address_family=[dict(afi="ipv4", safi="multicast")],
-                        ),
+            "vrfs": [
+                {
+                    "vrf": "site-1",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.168.1.1",
+                            "address_family": [{"afi": "ipv4", "safi": "multicast"}],
+                        },
                     ],
-                ),
+                },
             ],
-        )
+        }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed
 
     def test_nxos_bgp_nbr_af_rendered(self):
         # test rendered
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="ipv4",
-                                    safi="multicast",
-                                    suppress_inactive=True,
-                                    unsuppress_map="rmap2",
-                                    weight=20,
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "ipv4",
+                                    "safi": "multicast",
+                                    "suppress_inactive": True,
+                                    "unsuppress_map": "rmap2",
+                                    "weight": 20,
+                                },
                             ],
-                        ),
+                        },
                     ],
-                    vrfs=[
-                        dict(
-                            vrf="site-1",
-                            neighbors=[
-                                dict(
-                                    neighbor_address="192.168.1.1",
-                                    address_family=[
-                                        dict(
-                                            afi="ipv4",
-                                            safi="unicast",
-                                            suppress_inactive=True,
-                                            unsuppress_map="rmap1",
-                                            weight=25,
-                                        ),
-                                        dict(
-                                            afi="ipv4",
-                                            safi="multicast",
-                                            suppress_inactive=True,
-                                            unsuppress_map="rmap4",
-                                        ),
+                    "vrfs": [
+                        {
+                            "vrf": "site-1",
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "192.168.1.1",
+                                    "address_family": [
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "unicast",
+                                            "suppress_inactive": True,
+                                            "unsuppress_map": "rmap1",
+                                            "weight": 25,
+                                        },
+                                        {
+                                            "afi": "ipv4",
+                                            "safi": "multicast",
+                                            "suppress_inactive": True,
+                                            "unsuppress_map": "rmap4",
+                                        },
                                     ],
-                                ),
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="rendered",
-            ),
+                },
+                "state": "rendered",
+            },
             ignore_provider_arg,
         )
         rendered = [
@@ -2561,7 +2561,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "unsuppress-map rmap4",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(set(result["rendered"]), set(rendered))
+        assert set(result["rendered"]) == set(rendered)
 
     def test_nxos_bgp_nbr_af_gathered_empty(self):
         # test gathered
@@ -2569,10 +2569,10 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """\
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
-        gathered = dict()
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
+        gathered = {}
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_bgp_nbr_af_gathered_only_asn(self):
         # test gathered
@@ -2581,10 +2581,10 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             router bgp 65563
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
-        gathered = dict(as_number="65563")
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
+        gathered = {"as_number": "65563"}
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_bgp_nbr_af_no_cmd(self):
         # test merged for rewrite_evpn_rt_asn, route_map
@@ -2596,22 +2596,22 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[dict(afi="ipv4", safi="multicast")],
-                        ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [{"afi": "ipv4", "safi": "multicast"}],
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_bgp_af_send_community(self):
         # test merged for send_community
@@ -2627,44 +2627,44 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    as_number="65536",
-                    neighbors=[
-                        dict(
-                            neighbor_address="10.0.0.2",
-                            address_family=[
-                                dict(
-                                    afi="l2vpn",
-                                    safi="evpn",
-                                    send_community=dict(both=True),
-                                ),
+            {
+                "config": {
+                    "as_number": "65536",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.0.0.2",
+                            "address_family": [
+                                {
+                                    "afi": "l2vpn",
+                                    "safi": "evpn",
+                                    "send_community": {"both": True},
+                                },
                             ],
-                        ),
-                        dict(
-                            neighbor_address="10.0.0.3",
-                            address_family=[
-                                dict(
-                                    afi="l2vpn",
-                                    safi="evpn",
-                                    send_community=dict(both=True),
-                                ),
+                        },
+                        {
+                            "neighbor_address": "10.0.0.3",
+                            "address_family": [
+                                {
+                                    "afi": "l2vpn",
+                                    "safi": "evpn",
+                                    "send_community": {"both": True},
+                                },
                             ],
-                        ),
-                        dict(
-                            neighbor_address="10.0.0.4",
-                            address_family=[
-                                dict(
-                                    afi="l2vpn",
-                                    safi="evpn",
-                                    send_community=dict(set=True),
-                                ),
+                        },
+                        {
+                            "neighbor_address": "10.0.0.4",
+                            "address_family": [
+                                {
+                                    "afi": "l2vpn",
+                                    "safi": "evpn",
+                                    "send_community": {"set": True},
+                                },
                             ],
-                        ),
+                        },
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -2678,13 +2678,13 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
             "send-community",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_bgp_nbr_parsed_3K(self):
         # test parsed for neighbor remote-as 3K config
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     router bgp 65535
                       neighbor 192.168.20.2 remote-as 56789
@@ -2692,24 +2692,24 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
                           soft-reconfiguration inbound always
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
             ignore_provider_arg,
         )
-        parsed = dict(
-            as_number="65535",
-            neighbors=[
-                dict(
-                    neighbor_address="192.168.20.2",
-                    address_family=[
-                        dict(
-                            afi="ipv4",
-                            safi="unicast",
-                            soft_reconfiguration_inbound=dict(always=True),
-                        ),
+        parsed = {
+            "as_number": "65535",
+            "neighbors": [
+                {
+                    "neighbor_address": "192.168.20.2",
+                    "address_family": [
+                        {
+                            "afi": "ipv4",
+                            "safi": "unicast",
+                            "soft_reconfiguration_inbound": {"always": True},
+                        },
                     ],
-                ),
+                },
             ],
-        )
+        }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed

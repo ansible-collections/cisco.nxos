@@ -37,7 +37,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
     module = nxos_logging_global
 
     def setUp(self):
-        super(TestNxosLoggingGlobalModule, self).setUp()
+        super().setUp()
 
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
@@ -50,7 +50,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosLoggingGlobalModule, self).tearDown()
+        super().tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
@@ -61,18 +61,18 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    console=dict(severity="alert"),
-                    module=dict(severity="notification"),
-                    monitor=dict(severity="critical"),
-                    history=dict(severity="informational", size=4096),
-                    rate_limit="disabled",
-                    rfc_strict=True,
-                    origin_id=dict(string="nodeA"),
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "console": {"severity": "alert"},
+                    "module": {"severity": "notification"},
+                    "monitor": {"severity": "critical"},
+                    "history": {"severity": "informational", "size": 4096},
+                    "rate_limit": "disabled",
+                    "rfc_strict": True,
+                    "origin_id": {"string": "nodeA"},
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -86,7 +86,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging origin-id string nodeA",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_linear_merged_idempotent(self):
         # test merged for linear attributes (idempotent)
@@ -103,22 +103,22 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    console=dict(severity="alert"),
-                    module=dict(severity="notification"),
-                    monitor=dict(severity="critical"),
-                    history=dict(severity="informational", size=4096),
-                    rate_limit="disabled",
-                    rfc_strict=True,
-                    origin_id=dict(string="nodeA"),
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "console": {"severity": "alert"},
+                    "module": {"severity": "notification"},
+                    "monitor": {"severity": "critical"},
+                    "history": {"severity": "informational", "size": 4096},
+                    "rate_limit": "disabled",
+                    "rfc_strict": True,
+                    "origin_id": {"string": "nodeA"},
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_logging_global_linear_merged_2(self):
         # test merged for linear attributes - 2
@@ -133,16 +133,16 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    console=dict(state="disabled"),
-                    module=dict(state="enabled"),
-                    monitor=dict(state="disabled"),
-                    history=dict(severity="informational", size=4096),
-                    rate_limit="enabled",
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "console": {"state": "disabled"},
+                    "module": {"state": "enabled"},
+                    "monitor": {"state": "disabled"},
+                    "history": {"severity": "informational", "size": 4096},
+                    "rate_limit": "enabled",
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -152,7 +152,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging rate-limit",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_linear_replaced(self):
         # test replaced for linear attributes
@@ -169,14 +169,14 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    console=dict(severity="notification"),
-                    monitor=dict(severity="critical"),
-                    history=dict(size=4096),
-                ),
-                state="replaced",
-            ),
+            {
+                "config": {
+                    "console": {"severity": "notification"},
+                    "monitor": {"severity": "critical"},
+                    "history": {"size": 4096},
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -188,7 +188,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "no logging origin-id string nodeA",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_linear_replaced(self):
         # test replaced for linear attributes
@@ -204,14 +204,14 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    console=dict(severity="notification"),
-                    monitor=dict(severity="critical"),
-                    history=dict(size=4096),
-                ),
-                state="replaced",
-            ),
+            {
+                "config": {
+                    "console": {"severity": "notification"},
+                    "monitor": {"severity": "critical"},
+                    "history": {"size": 4096},
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -222,7 +222,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "no logging rfc-strict 5424",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_linear_merged_3(self):
         # test merged for linear attributes - 3
@@ -231,21 +231,21 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    origin_id=dict(hostname=True),
-                    ip=dict(
-                        access_list=dict(
-                            cache=dict(entries=16384, interval=200, threshold=80),
-                            detailed=True,
-                            include=dict(sgt=True),
-                        ),
-                    ),
-                    source_interface="Ethernet1/100",
-                    timestamp="milliseconds",
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "origin_id": {"hostname": True},
+                    "ip": {
+                        "access_list": {
+                            "cache": {"entries": 16384, "interval": 200, "threshold": 80},
+                            "detailed": True,
+                            "include": {"sgt": True},
+                        },
+                    },
+                    "source_interface": "Ethernet1/100",
+                    "timestamp": "milliseconds",
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -259,7 +259,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging timestamp milliseconds",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_linear_merged_3_idempotent(self):
         # test merged for linear attributes - 3 (idempotent)
@@ -276,25 +276,25 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    origin_id=dict(hostname=True),
-                    ip=dict(
-                        access_list=dict(
-                            cache=dict(entries=16384, interval=200, threshold=80),
-                            detailed=True,
-                            include=dict(sgt=True),
-                        ),
-                    ),
-                    source_interface="Ethernet1/100",
-                    timestamp="milliseconds",
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "origin_id": {"hostname": True},
+                    "ip": {
+                        "access_list": {
+                            "cache": {"entries": 16384, "interval": 200, "threshold": 80},
+                            "detailed": True,
+                            "include": {"sgt": True},
+                        },
+                    },
+                    "source_interface": "Ethernet1/100",
+                    "timestamp": "milliseconds",
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_logging_global_linear_replaced_3(self):
         # test replaced for linear attributes - 3
@@ -311,14 +311,14 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    origin_id=dict(ip="192.168.1.1"),
-                    ip=dict(access_list=dict(cache=dict(entries=16384, interval=210))),
-                    source_interface="Ethernet1/120",
-                ),
-                state="replaced",
-            ),
+            {
+                "config": {
+                    "origin_id": {"ip": "192.168.1.1"},
+                    "ip": {"access_list": {"cache": {"entries": 16384, "interval": 210}}},
+                    "source_interface": "Ethernet1/120",
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -332,7 +332,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "no logging timestamp milliseconds",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_complex_merged(self):
         # test merged for complex attributes
@@ -341,23 +341,23 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    logfile=dict(
-                        name="nodeA_log",
-                        size=4096,
-                        severity="critical",
-                        persistent_threshold=80,
-                    ),
-                    facilities=[
-                        dict(facility="auth", severity="alert"),
-                        dict(facility="ospfv3", severity="critical"),
-                        dict(facility="cron", severity="notification"),
-                        dict(facility="vlan_mgr", severity="notification"),
+            {
+                "config": {
+                    "logfile": {
+                        "name": "nodeA_log",
+                        "size": 4096,
+                        "severity": "critical",
+                        "persistent_threshold": 80,
+                    },
+                    "facilities": [
+                        {"facility": "auth", "severity": "alert"},
+                        {"facility": "ospfv3", "severity": "critical"},
+                        {"facility": "cron", "severity": "notification"},
+                        {"facility": "vlan_mgr", "severity": "notification"},
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -368,7 +368,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging level vlan_mgr 5",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_complex_merged_idempotent(self):
         # test merged for complex attributes (idempotent)
@@ -382,27 +382,27 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    logfile=dict(
-                        name="nodeA_log",
-                        size=4096,
-                        severity="critical",
-                        persistent_threshold=80,
-                    ),
-                    facilities=[
-                        dict(facility="auth", severity="alert"),
-                        dict(facility="ospfv3", severity="critical"),
-                        dict(facility="cron", severity="notification"),
-                        dict(facility="vlan_mgr", severity="notification"),
+            {
+                "config": {
+                    "logfile": {
+                        "name": "nodeA_log",
+                        "size": 4096,
+                        "severity": "critical",
+                        "persistent_threshold": 80,
+                    },
+                    "facilities": [
+                        {"facility": "auth", "severity": "alert"},
+                        {"facility": "ospfv3", "severity": "critical"},
+                        {"facility": "cron", "severity": "notification"},
+                        {"facility": "vlan_mgr", "severity": "notification"},
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_logging_global_complex_replaced(self):
         # test replaced for complex attributes
@@ -415,16 +415,16 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    facilities=[
-                        dict(facility="auth", severity="alert"),
-                        dict(facility="ospfv3", severity="critical"),
-                        dict(facility="ospf", severity="notification"),
+            {
+                "config": {
+                    "facilities": [
+                        {"facility": "auth", "severity": "alert"},
+                        {"facility": "ospfv3", "severity": "critical"},
+                        {"facility": "ospf", "severity": "notification"},
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
 
@@ -435,7 +435,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         ]
 
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_event_merged(self):
         # test merged for `event`
@@ -444,15 +444,15 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    event=dict(
-                        link_status=dict(enable=False, default=False),
-                        trunk_status=dict(enable=False, default=True),
-                    ),
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "event": {
+                        "link_status": {"enable": False, "default": False},
+                        "trunk_status": {"enable": False, "default": True},
+                    },
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -462,7 +462,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging event trunk-status default",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_event_merged(self):
         # test merged for `event`
@@ -475,19 +475,19 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    event=dict(
-                        link_status=dict(enable=False, default=False),
-                        trunk_status=dict(enable=False, default=True),
-                    ),
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "event": {
+                        "link_status": {"enable": False, "default": False},
+                        "trunk_status": {"enable": False, "default": True},
+                    },
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        assert result["commands"] == []
 
     def test_nxos_logging_global_event_replaced(self):
         # test replaced for `event`
@@ -500,15 +500,15 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    event=dict(
-                        link_status=dict(default=False),
-                        trunk_status=dict(enable=False),
-                    ),
-                ),
-                state="replaced",
-            ),
+            {
+                "config": {
+                    "event": {
+                        "link_status": {"default": False},
+                        "trunk_status": {"enable": False},
+                    },
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
 
@@ -517,12 +517,12 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "no logging event trunk-status default",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_gathered_empty(self):
-        set_module_args(dict(running_config="", state="gathered"), ignore_provider_arg)
+        set_module_args({"running_config": "", "state": "gathered"}, ignore_provider_arg)
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], {})
+        assert result["gathered"] == {}
 
     def test_nxos_logging_global_gathered(self):
         # test gathered
@@ -539,7 +539,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging origin-id string nodeA
             """,
         )
-        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        set_module_args({"state": "gathered"}, ignore_provider_arg)
         gathered = {
             "console": {"severity": "alert"},
             "module": {"severity": "notification"},
@@ -551,7 +551,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "facilities": [{"facility": "vlan_mgr", "severity": "notification"}],
         }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], gathered)
+        assert result["gathered"] == gathered
 
     def test_nxos_logging_global_parsed(self):
         # test parsed
@@ -567,7 +567,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging origin-id string nodeA
             """,
         )
-        set_module_args(dict(running_config=cfg, state="parsed"), ignore_provider_arg)
+        set_module_args({"running_config": cfg, "state": "parsed"}, ignore_provider_arg)
         parsed = {
             "console": {"severity": "alert"},
             "module": {"severity": "notification"},
@@ -578,7 +578,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "origin_id": {"string": "nodeA"},
         }
         result = self.execute_module(changed=False)
-        self.assertEqual(result["parsed"], parsed)
+        assert result["parsed"] == parsed
 
     def test_nxos_logging_global_hosts_merged(self):
         # test merged for `hosts`
@@ -587,23 +587,23 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    hosts=[
-                        dict(
-                            host="192.168.1.1",
-                            severity="alert",
-                            facility="auth",
-                            port=5891,
-                            use_vrf="default",
-                            secure=dict(trustpoint=dict(client_identity="test")),
-                        ),
-                        dict(host="192.168.1.2"),
-                        dict(host="192.168.1.3", severity="critical"),
+            {
+                "config": {
+                    "hosts": [
+                        {
+                            "host": "192.168.1.1",
+                            "severity": "alert",
+                            "facility": "auth",
+                            "port": 5891,
+                            "use_vrf": "default",
+                            "secure": {"trustpoint": {"client_identity": "test"}},
+                        },
+                        {"host": "192.168.1.2"},
+                        {"host": "192.168.1.3", "severity": "critical"},
                     ],
-                ),
-                state="merged",
-            ),
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -612,7 +612,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging server 192.168.1.3 2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_hosts_replaced(self):
         # test replaced for `hosts`
@@ -624,26 +624,26 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    hosts=[
-                        dict(
-                            host="192.168.1.1",
-                            severity="alert",
-                            facility="auth",
-                            port=5891,
-                            use_vrf="default",
-                            secure=dict(trustpoint=dict(client_identity="test")),
-                        ),
-                        dict(
-                            host="192.168.1.3",
-                            severity="debugging",
-                            use_vrf="management",
-                        ),
+            {
+                "config": {
+                    "hosts": [
+                        {
+                            "host": "192.168.1.1",
+                            "severity": "alert",
+                            "facility": "auth",
+                            "port": 5891,
+                            "use_vrf": "default",
+                            "secure": {"trustpoint": {"client_identity": "test"}},
+                        },
+                        {
+                            "host": "192.168.1.3",
+                            "severity": "debugging",
+                            "use_vrf": "management",
+                        },
                     ],
-                ),
-                state="replaced",
-            ),
+                },
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -653,7 +653,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging server 192.168.1.3 7 use-vrf management",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_linear_negated_merged(self):
         # test merged for negated linear attributes
@@ -665,19 +665,19 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(
-                    console=dict(severity="notification"),
-                    module=dict(state="enabled"),
-                    monitor=dict(severity="critical"),
-                ),
-                state="merged",
-            ),
+            {
+                "config": {
+                    "console": {"severity": "notification"},
+                    "module": {"state": "enabled"},
+                    "monitor": {"severity": "critical"},
+                },
+                "state": "merged",
+            },
             ignore_provider_arg,
         )
         commands = ["logging console 5", "logging module", "logging monitor 2"]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_deleted(self):
         # test deleted
@@ -693,7 +693,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             logging origin-id string nodeA
             """,
         )
-        set_module_args(dict(state="deleted"), ignore_provider_arg)
+        set_module_args({"state": "deleted"}, ignore_provider_arg)
         commands = [
             "logging console",
             "logging module",
@@ -705,7 +705,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "no logging origin-id string nodeA",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_event_replaced_2(self):
         # test replaced for `event` - 2
@@ -718,10 +718,10 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(event=dict(trunk_status=dict(enable=False, default=True))),
-                state="replaced",
-            ),
+            {
+                "config": {"event": {"trunk_status": {"enable": False, "default": True}}},
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -729,7 +729,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging event link-status default",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)
 
     def test_nxos_logging_global_event_replaced_2(self):
         # test replaced for `event` - 2
@@ -742,10 +742,10 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=dict(console=dict(severity="critical")),
-                state="replaced",
-            ),
+            {
+                "config": {"console": {"severity": "critical"}},
+                "state": "replaced",
+            },
             ignore_provider_arg,
         )
         commands = [
@@ -756,4 +756,4 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "logging console 2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(set(result["commands"]), set(commands))
+        assert set(result["commands"]) == set(commands)

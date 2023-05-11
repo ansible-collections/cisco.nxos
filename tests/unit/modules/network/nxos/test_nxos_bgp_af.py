@@ -32,7 +32,7 @@ class TestNxosBgpAfModule(TestNxosModule):
     module = nxos_bgp_af
 
     def setUp(self):
-        super(TestNxosBgpAfModule, self).setUp()
+        super().setUp()
 
         self.mock_load_config = patch(
             "ansible_collections.cisco.nxos.plugins.modules.nxos_bgp_af.load_config",
@@ -45,7 +45,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         self.get_config = self.mock_get_config.start()
 
     def tearDown(self):
-        super(TestNxosBgpAfModule, self).tearDown()
+        super().tearDown()
         self.mock_load_config.stop()
         self.mock_get_config.stop()
 
@@ -54,7 +54,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         self.load_config.return_value = None
 
     def test_nxos_bgp_af(self):
-        set_module_args(dict(asn=65535, afi="ipv4", safi="unicast"))
+        set_module_args({"asn": 65535, "afi": "ipv4", "safi": "unicast"})
         self.execute_module(
             changed=True,
             sort=False,
@@ -62,7 +62,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_vrf(self):
-        set_module_args(dict(asn=65535, vrf="test", afi="ipv4", safi="unicast"))
+        set_module_args({"asn": 65535, "vrf": "test", "afi": "ipv4", "safi": "unicast"})
         self.execute_module(
             changed=True,
             sort=False,
@@ -74,17 +74,17 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_vrf_exists(self):
-        set_module_args(dict(asn=65535, vrf="test2", afi="ipv4", safi="unicast"))
+        set_module_args({"asn": 65535, "vrf": "test2", "afi": "ipv4", "safi": "unicast"})
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_bgp_af_dampening_routemap(self):
         set_module_args(
-            dict(
-                asn=65535,
-                afi="ipv4",
-                safi="unicast",
-                dampening_routemap="route-map-a",
-            ),
+            {
+                "asn": 65535,
+                "afi": "ipv4",
+                "safi": "unicast",
+                "dampening_routemap": "route-map-a",
+            },
         )
         self.execute_module(
             changed=True,
@@ -97,15 +97,15 @@ class TestNxosBgpAfModule(TestNxosModule):
 
     def test_nxos_bgp_af_dampening_manual(self):
         set_module_args(
-            dict(
-                asn=65535,
-                afi="ipv4",
-                safi="unicast",
-                dampening_half_time=5,
-                dampening_suppress_time=2000,
-                dampening_reuse_time=1900,
-                dampening_max_suppress_time=10,
-            ),
+            {
+                "asn": 65535,
+                "afi": "ipv4",
+                "safi": "unicast",
+                "dampening_half_time": 5,
+                "dampening_suppress_time": 2000,
+                "dampening_reuse_time": 1900,
+                "dampening_max_suppress_time": 10,
+            },
         )
         self.execute_module(
             changed=True,
@@ -118,27 +118,22 @@ class TestNxosBgpAfModule(TestNxosModule):
 
     def test_nxos_bgp_af_dampening_mix(self):
         set_module_args(
-            dict(
-                asn=65535,
-                afi="ipv4",
-                safi="unicast",
-                dampening_routemap="route-map-a",
-                dampening_half_time=5,
-                dampening_suppress_time=2000,
-                dampening_reuse_time=1900,
-                dampening_max_suppress_time=10,
-            ),
+            {
+                "asn": 65535,
+                "afi": "ipv4",
+                "safi": "unicast",
+                "dampening_routemap": "route-map-a",
+                "dampening_half_time": 5,
+                "dampening_suppress_time": 2000,
+                "dampening_reuse_time": 1900,
+                "dampening_max_suppress_time": 10,
+            },
         )
         result = self.execute_module(failed=True)
-        self.assertEqual(
-            result["msg"],
-            "parameters are mutually exclusive: dampening_routemap|dampening_half_time, "
-            "dampening_routemap|dampening_suppress_time, dampening_routemap|dampening_reuse_time, "
-            "dampening_routemap|dampening_max_suppress_time",
-        )
+        assert result["msg"] == "parameters are mutually exclusive: dampening_routemap|dampening_half_time, dampening_routemap|dampening_suppress_time, dampening_routemap|dampening_reuse_time, dampening_routemap|dampening_max_suppress_time"
 
     def test_nxos_bgp_af_client(self):
-        set_module_args(dict(asn=65535, afi="ipv4", safi="unicast", client_to_client=False))
+        set_module_args({"asn": 65535, "afi": "ipv4", "safi": "unicast", "client_to_client": False})
         self.execute_module(
             changed=True,
             commands=[
@@ -149,7 +144,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_retain_route_target(self):
-        set_module_args(dict(asn=65535, afi="l2vpn", safi="evpn", retain_route_target="abc"))
+        set_module_args({"asn": 65535, "afi": "l2vpn", "safi": "evpn", "retain_route_target": "abc"})
         self.execute_module(
             changed=True,
             commands=[
@@ -160,7 +155,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_retain_route_target_all(self):
-        set_module_args(dict(asn=65535, afi="l2vpn", safi="evpn", retain_route_target="all"))
+        set_module_args({"asn": 65535, "afi": "l2vpn", "safi": "evpn", "retain_route_target": "all"})
         self.execute_module(
             changed=True,
             commands=[
@@ -171,5 +166,5 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_retain_route_target_exists(self):
-        set_module_args(dict(asn=65535, afi="l2vpn", safi="evpn", retain_route_target="xyz"))
+        set_module_args({"asn": 65535, "afi": "l2vpn", "safi": "evpn", "retain_route_target": "xyz"})
         self.execute_module(changed=False, commands=[])
