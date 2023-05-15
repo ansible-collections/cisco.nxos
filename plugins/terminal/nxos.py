@@ -28,7 +28,11 @@ from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
 from ansible.utils.display import Display
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
-
+from ansible.errors import (
+    AnsibleConnectionFailure,
+    AnsibleError,
+    AnsibleFileNotFound,
+)
 
 class TerminalModule(TerminalBase):
     terminal_stdout_re = [
@@ -76,7 +80,7 @@ class TerminalModule(TerminalBase):
         try:
             out = self._exec_cli_command("show privilege")
             out = to_text(out, errors="surrogate_then_replace").strip()
-        except:
+        except AnsibleError:
             # catch exception caused by NXOS 10.3+ no longer supporting "show privilege" command
             return
 
