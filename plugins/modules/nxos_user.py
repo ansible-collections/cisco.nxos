@@ -471,8 +471,13 @@ def main():
         module.fail_json(msg="cannot delete the `admin` account")
 
     # check if provided hashed password is infact a hash
+<<<<<<< HEAD
     if module.params['hashed_password'] is not None:
         if not re.match(r"^\$5\$......\$.*$", module.params['hashed_password']):
+=======
+    if "hashed_password" in module.params:
+        if not re.match(r"^\$5\$......\$.*$", module.params["hashed_password"]):
+>>>>>>> [pre-commit.ci] auto fixes from pre-commit.com hooks
             module.fail_json(msg="Provided hash is not valid")
 
     if commands:
