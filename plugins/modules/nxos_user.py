@@ -59,7 +59,7 @@ options:
         type: str
       hashed_password:
         description:
-        - The hashed password to be configured on the network device. The password needs to 
+        - The hashed password to be configured on the network device. The password needs to
           already be encrypted.
         type: str
       update_password:
@@ -108,7 +108,7 @@ options:
     type: str
   hashed_password:
     description:
-    - The hashed password to be configured on the network device. The password needs to 
+    - The hashed password to be configured on the network device. The password needs to
       already be encrypted.
     type: str
   update_password:
@@ -440,7 +440,7 @@ def main():
 
     argument_spec.update(element_spec)
 
-    mutually_exclusive = [("name", "aggregate"),("configured_password", "hashed_password")]
+    mutually_exclusive = [("name", "aggregate"), ("configured_password", "hashed_password")]
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -471,11 +471,9 @@ def main():
         module.fail_json(msg="cannot delete the `admin` account")
 
     # check if provided hashed password is infact a hash
-    if 'hashed_password' in module.params:
-        if not re.match(r"^\$5\$......\$.*$", module.params['hashed_password']):
+    if "hashed_password" in module.params:
+        if not re.match(r"^\$5\$......\$.*$", module.params["hashed_password"]):
             module.fail_json(msg="Provided hash is not valid")
-            
-        
 
     if commands:
         if not module.check_mode:
