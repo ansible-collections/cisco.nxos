@@ -471,8 +471,8 @@ def main():
         module.fail_json(msg="cannot delete the `admin` account")
 
     # check if provided hashed password is infact a hash
-    if module.params['hashed_password'] is not None:
-        if not re.match(r"^\$5\$......\$.*$", module.params['hashed_password']):
+    if module.params["hashed_password"] is not None:
+        if not re.match(r"^\$5\$......\$.*$", module.params["hashed_password"]):
             module.fail_json(msg="Provided hash is not valid")
 
     if commands:
