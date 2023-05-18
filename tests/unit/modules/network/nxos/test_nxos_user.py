@@ -121,5 +121,5 @@ class TestNxosUserModule(TestNxosModule):
 <<<<<<< HEAD
         )
 =======
-        )        
+        )
 >>>>>>> add unit test for hashed pw

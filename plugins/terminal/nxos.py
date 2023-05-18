@@ -24,15 +24,11 @@ __metaclass__ = type
 import json
 import re
 
-from ansible.errors import AnsibleConnectionFailure
+from ansible.errors import AnsibleConnectionFailure, AnsibleError, AnsibleFileNotFound
 from ansible.module_utils._text import to_bytes, to_text
 from ansible.utils.display import Display
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
-from ansible.errors import (
-    AnsibleConnectionFailure,
-    AnsibleError,
-    AnsibleFileNotFound,
-)
+
 
 class TerminalModule(TerminalBase):
     terminal_stdout_re = [
