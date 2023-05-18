@@ -27,7 +27,7 @@ import re
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
-
+from ansible.utils.display import Display
 
 class TerminalModule(TerminalBase):
     terminal_stdout_re = [
@@ -72,9 +72,16 @@ class TerminalModule(TerminalBase):
         if self._get_prompt().strip().endswith(b"enable#"):
             return
 
-        out = self._exec_cli_command("show privilege")
-        out = to_text(out, errors="surrogate_then_replace").strip()
-
+        try:
+            out = self._exec_cli_command("show privilege")
+            out = to_text(out, errors="surrogate_then_replace").strip()
+        except:
+            # catch exception caused by NXOS 10.3+ no longer supporting "show privilege" command
+            return
+ 
+        if "Invalid" in out:
+            return        
+        
         # if already at privilege level 15 return
         if "15" in out:
             return
