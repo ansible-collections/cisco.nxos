@@ -52,3 +52,5 @@
   cisco.nxos.nxos_config:
     lines:
       - "snmp-server user zuul network-admin auth md5 {{ zuul_snmp_passwd }} priv {{ zuul_snmp_passwd }} localizedkey"
+    match: none
+  ignore_errors: true
