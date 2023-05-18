@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "terminal - Fixes issue with NXOS 10.3+ not supporting 'show privilege' command"
