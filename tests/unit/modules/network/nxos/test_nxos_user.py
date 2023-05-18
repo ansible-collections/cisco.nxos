@@ -100,3 +100,13 @@ class TestNxosUserModule(TestNxosModule):
                 "username ansible-test-2 password ansible",
             ],
         )
+
+    def test_nxos_hashed_password(self):
+        set_module_args(dict(name="ansible", hashed_password="$5$JFHICC$u.zXRUgprAkkYLiEns8VrhsNEIOj7FzVrn67tuJdtKB"))
+        self.execute_module(
+            changed=True,
+            commands=[
+                "username ansible",
+                "username ansible password 5 $5$JFHICC$u.zXRUgprAkkYLiEns8VrhsNEIOj7FzVrn67tuJdtKB",
+            ],
+        )        
