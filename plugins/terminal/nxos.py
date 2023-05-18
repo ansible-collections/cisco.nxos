@@ -26,8 +26,9 @@ import re
 
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
-from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
 from ansible.utils.display import Display
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
+
 
 class TerminalModule(TerminalBase):
     terminal_stdout_re = [
@@ -78,10 +79,10 @@ class TerminalModule(TerminalBase):
         except:
             # catch exception caused by NXOS 10.3+ no longer supporting "show privilege" command
             return
- 
+
         if "Invalid" in out:
-            return        
-        
+            return
+
         # if already at privilege level 15 return
         if "15" in out:
             return
