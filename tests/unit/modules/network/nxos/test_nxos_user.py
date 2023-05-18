@@ -106,7 +106,7 @@ class TestNxosUserModule(TestNxosModule):
             dict(
                 name="ansible",
                 hashed_password="$5$JFHICC$u.zXRUgprAkkYLiEns8VrhsNEIOj7FzVrn67tuJdtKB",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
