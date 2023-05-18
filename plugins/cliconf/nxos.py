@@ -75,7 +75,6 @@ class Cliconf(CliconfBase):
     def save_module_context(self, module_key, module_context):
         self._module_context[module_key] = module_context
 
-
     def get_device_info(self):
         if not self._device_info:
             device_info = {}
@@ -152,12 +151,16 @@ class Cliconf(CliconfBase):
 
         if diff_match not in option_values["diff_match"]:
             raise ValueError(
-                "'match' value {} in invalid, valid values are {}".format(diff_match, ", ".join(option_values["diff_match"])),
+                "'match' value {} in invalid, valid values are {}".format(
+                    diff_match, ", ".join(option_values["diff_match"]),
+                ),
             )
 
         if diff_replace not in option_values["diff_replace"]:
             raise ValueError(
-                "'replace' value {} in invalid, valid values are {}".format(diff_replace, ", ".join(option_values["diff_replace"])),
+                "'replace' value {} in invalid, valid values are {}".format(
+                    diff_replace, ", ".join(option_values["diff_replace"]),
+                ),
             )
 
         # prepare candidate configuration
@@ -184,7 +187,9 @@ class Cliconf(CliconfBase):
         options_values = self.get_option_values()
         if format not in options_values["format"]:
             raise ValueError(
-                "'format' value {} is invalid. Valid values are {}".format(format, ",".join(options_values["format"])),
+                "'format' value {} is invalid. Valid values are {}".format(
+                    format, ",".join(options_values["format"]),
+                ),
             )
 
         lookup = {"running": "running-config", "startup": "startup-config"}
@@ -285,7 +290,6 @@ class Cliconf(CliconfBase):
 
                 with contextlib.suppress(ValueError):
                     out = json.loads(out)
-
 
                 responses.append(out)
         return responses
@@ -402,7 +406,9 @@ class Cliconf(CliconfBase):
         options_values = self.get_option_values()
         if output not in options_values["output"]:
             raise ValueError(
-                "'output' value {} is invalid. Valid values are {}".format(output, ",".join(options_values["output"])),
+                "'output' value {} is invalid. Valid values are {}".format(
+                    output, ",".join(options_values["output"]),
+                ),
             )
 
         if output in ["json", "json-pretty"] and not re.search(output_re, command):

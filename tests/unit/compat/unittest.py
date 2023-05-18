@@ -26,7 +26,6 @@ Compat module for Python2.7's unittest module
 """
 
 
-
 # Allow wildcard import because we really do want to import all of
 # unittests's symbols into this compat shim
 # pylint: disable=wildcard-import,unused-wildcard-import

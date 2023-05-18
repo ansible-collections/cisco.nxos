@@ -56,7 +56,12 @@ class TestNxosEvpnVniModule(TestNxosModule):
     def test_nxos_evpn_vni_present(self):
         set_module_args({"vni": "6000", "route_target_import": "5000:10", "state": "present"})
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["evpn", "vni 6000 l2", "route-target import 5000:10", "no route-target import auto"]
+        assert result["commands"] == [
+            "evpn",
+            "vni 6000 l2",
+            "route-target import 5000:10",
+            "no route-target import auto",
+        ]
 
     def test_nxos_evpn_vni_absent_not_existing(self):
         set_module_args({"vni": "12000", "state": "absent"})

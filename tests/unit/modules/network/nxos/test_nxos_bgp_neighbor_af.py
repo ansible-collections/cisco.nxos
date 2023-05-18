@@ -64,7 +64,12 @@ class TestNxosBgpNeighborAfModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["router bgp 65535", "neighbor 192.0.2.3", "address-family ipv4 unicast", "route-reflector-client"]
+        assert result["commands"] == [
+            "router bgp 65535",
+            "neighbor 192.0.2.3",
+            "address-family ipv4 unicast",
+            "route-reflector-client",
+        ]
 
     def test_nxos_bgp_neighbor_af_exists(self):
         set_module_args({"asn": 65535, "neighbor": "3.3.3.5", "afi": "ipv4", "safi": "unicast"})

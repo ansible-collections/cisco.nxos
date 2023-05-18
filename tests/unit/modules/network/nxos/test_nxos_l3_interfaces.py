@@ -116,7 +116,11 @@ class TestNxosL3InterfacesModule(TestNxosModule):
                 {"name": "Ethernet1/1", "ipv4": [{"address": "192.168.1.1/24"}]},
                 {"name": "Ethernet1/2"},
                 {"name": "port-channel355", "ipv6_redirects": False},
-                {"name": "port-channel336", "ipv6_redirects": False, "ipv6": [{"address": "10::5/128"}]},
+                {
+                    "name": "port-channel336",
+                    "ipv6_redirects": False,
+                    "ipv6": [{"address": "10::5/128"}],
+                },
                 # Eth1/3 not present! Thus overridden should set Eth1/3 to defaults;
                 # replaced should ignore Eth1/3.
             ],

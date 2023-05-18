@@ -126,7 +126,7 @@ PARAM_TO_COMMAND_KEYMAP = {
 
 def get_value(arg, config, module):
     command = PARAM_TO_COMMAND_KEYMAP.get(arg)
-    command_re = re.compile(fr"(?:{command}\s)(?P<value>.*)$", re.M)
+    command_re = re.compile(rf"(?:{command}\s)(?P<value>.*)$", re.M)
     value = ""
     if command in config:
         value = command_re.search(config).group("value")
@@ -137,7 +137,7 @@ def get_route_target_value(arg, config, module):
     splitted_config = config.splitlines()
     value_list = []
     command = PARAM_TO_COMMAND_KEYMAP.get(arg)
-    command_re = re.compile(fr"(?:{command}\s)(?P<value>.*)$", re.M)
+    command_re = re.compile(rf"(?:{command}\s)(?P<value>.*)$", re.M)
 
     for line in splitted_config:
         value = ""

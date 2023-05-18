@@ -325,7 +325,7 @@ DAMPENING_PARAMS = [
 
 def get_value(arg, config, module):
     command = PARAM_TO_COMMAND_KEYMAP[arg]
-    command_val_re = re.compile(fr"(?:{command}\s)(?P<value>.*)$", re.M)
+    command_val_re = re.compile(rf"(?:{command}\s)(?P<value>.*)$", re.M)
     has_command_val = command_val_re.search(config)
 
     if arg in ["networks", "redistribute", "inject_map"]:
@@ -389,7 +389,7 @@ def get_value(arg, config, module):
             value = has_tablemap.group("value")
 
     elif arg == "client_to_client":
-        no_command_re = re.compile(fr"^\s+no\s{command}\s*$", re.M)
+        no_command_re = re.compile(rf"^\s+no\s{command}\s*$", re.M)
         value = True
 
         if no_command_re.search(config):
@@ -406,7 +406,7 @@ def get_value(arg, config, module):
                     value = route_target.replace("route-map ", "")
 
     elif arg in BOOL_PARAMS:
-        command_re = re.compile(fr"^\s+{command}\s*$", re.M)
+        command_re = re.compile(rf"^\s+{command}\s*$", re.M)
         value = False
 
         if command_re.search(config):

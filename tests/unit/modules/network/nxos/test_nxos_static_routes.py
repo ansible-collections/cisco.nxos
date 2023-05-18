@@ -308,7 +308,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                 "config": [
                     {
                         "vrf": "test",
-                        "address_families": [{"afi": "ipv4", "routes": [{"dest": "192.0.2.96/28"}]}],
+                        "address_families": [
+                            {"afi": "ipv4", "routes": [{"dest": "192.0.2.96/28"}]},
+                        ],
                     },
                 ],
                 "state": "deleted",

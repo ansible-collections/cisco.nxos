@@ -160,7 +160,7 @@ def get_aaa_server_info(server_type, module):
     server_command = f"show {server_type}-server"
     request_command = f"show {server_type}-server directed-request"
     global_key_command = f"show run | sec {server_type}"
-    aaa_regex = fr".*{server_type}-server\skey\s\d\s+(?P<key>\S+).*"
+    aaa_regex = rf".*{server_type}-server\skey\s\d\s+(?P<key>\S+).*"
 
     server_body = execute_show_command(server_command, module)[0]
 

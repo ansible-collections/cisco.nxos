@@ -78,7 +78,7 @@ def get_existing(module, args):
 
     for arg in args:
         command = PARAM_TO_COMMAND_KEYMAP[arg]
-        has_command = re.findall(fr"(?:{command}\s)(?P<value>.*)$", config, re.M)
+        has_command = re.findall(rf"(?:{command}\s)(?P<value>.*)$", config, re.M)
         value = ""
         if has_command:
             value = has_command[0]

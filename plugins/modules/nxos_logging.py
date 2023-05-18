@@ -451,7 +451,7 @@ def parse_facility_link_status(line, facility, status):
     facility_link_status = None
 
     if facility is not None:
-        match = re.search(fr"logging level {facility} {status} (\S+)", line, re.M)
+        match = re.search(rf"logging level {facility} {status} (\S+)", line, re.M)
         if match:
             facility_link_status = status + "-" + match.group(1)
 
@@ -497,7 +497,7 @@ def parse_message(line):
 def parse_file_size(line, name, level):
     file_size = None
 
-    match = re.search(fr"logging logfile {name} {level} size (\S+)", line, re.M)
+    match = re.search(rf"logging logfile {name} {level} size (\S+)", line, re.M)
     if match:
         file_size = match.group(1)
         if file_size == "8192" or file_size == "4194304":
@@ -554,7 +554,7 @@ def parse_dest_level(line, dest, name):
 
     if dest and dest != "server":
         if dest == "logfile":
-            match = re.search(fr"logging logfile {name} (\S+)", line, re.M)
+            match = re.search(rf"logging logfile {name} (\S+)", line, re.M)
             if match:
                 dest_level = parse_match(match)
 
@@ -563,7 +563,7 @@ def parse_dest_level(line, dest, name):
             if match:
                 dest_level = parse_match(match)
         else:
-            match = re.search(fr"logging {dest} (\S+)", line, re.M)
+            match = re.search(rf"logging {dest} (\S+)", line, re.M)
             if match:
                 dest_level = parse_match(match)
 
@@ -579,7 +579,7 @@ def parse_facility_level(line, facility, dest):
             facility_level = match.group(1)
 
     elif facility is not None:
-        match = re.search(fr"logging level {facility} (\S+)", line, re.M)
+        match = re.search(rf"logging level {facility} (\S+)", line, re.M)
         if match:
             facility_level = match.group(1)
 

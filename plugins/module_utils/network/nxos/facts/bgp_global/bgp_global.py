@@ -123,5 +123,6 @@ class Bgp_globalFacts:
         neighbors = obj.get("neighbors", {})
         if neighbors:
             obj["neighbors"] = sorted(
-                neighbors.values(), key=lambda k, sk="neighbor_address": k[sk],
+                neighbors.values(),
+                key=lambda k, sk="neighbor_address": k[sk],
             )

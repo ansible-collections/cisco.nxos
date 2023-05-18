@@ -49,7 +49,6 @@ class HttpApi(HttpApiBase):
     def save_module_context(self, module_key, module_context):
         self._module_context[module_key] = module_context
 
-
     def send_request(self, data, **message_kwargs):
         output = None
         queue = []

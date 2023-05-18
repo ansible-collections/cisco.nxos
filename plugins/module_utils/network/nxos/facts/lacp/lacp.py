@@ -77,7 +77,7 @@ class LacpFacts:
         if a_match:
             address = a_match.group(1)
             config["system"]["mac"]["address"] = address
-            r_match = re.search(fr"lacp system-mac {address} role (\S+)", conf, re.M)
+            r_match = re.search(rf"lacp system-mac {address} role (\S+)", conf, re.M)
             if r_match:
                 config["system"]["mac"]["role"] = r_match.group(1)
 

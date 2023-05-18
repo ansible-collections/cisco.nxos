@@ -130,7 +130,10 @@ class TestNxosBgpAfModule(TestNxosModule):
             },
         )
         result = self.execute_module(failed=True)
-        assert result["msg"] == "parameters are mutually exclusive: dampening_routemap|dampening_half_time, dampening_routemap|dampening_suppress_time, dampening_routemap|dampening_reuse_time, dampening_routemap|dampening_max_suppress_time"
+        assert (
+            result["msg"]
+            == "parameters are mutually exclusive: dampening_routemap|dampening_half_time, dampening_routemap|dampening_suppress_time, dampening_routemap|dampening_reuse_time, dampening_routemap|dampening_max_suppress_time"
+        )
 
     def test_nxos_bgp_af_client(self):
         set_module_args({"asn": 65535, "afi": "ipv4", "safi": "unicast", "client_to_client": False})
@@ -144,7 +147,9 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_retain_route_target(self):
-        set_module_args({"asn": 65535, "afi": "l2vpn", "safi": "evpn", "retain_route_target": "abc"})
+        set_module_args(
+            {"asn": 65535, "afi": "l2vpn", "safi": "evpn", "retain_route_target": "abc"},
+        )
         self.execute_module(
             changed=True,
             commands=[
@@ -155,7 +160,9 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_retain_route_target_all(self):
-        set_module_args({"asn": 65535, "afi": "l2vpn", "safi": "evpn", "retain_route_target": "all"})
+        set_module_args(
+            {"asn": 65535, "afi": "l2vpn", "safi": "evpn", "retain_route_target": "all"},
+        )
         self.execute_module(
             changed=True,
             commands=[
@@ -166,5 +173,7 @@ class TestNxosBgpAfModule(TestNxosModule):
         )
 
     def test_nxos_bgp_af_retain_route_target_exists(self):
-        set_module_args({"asn": 65535, "afi": "l2vpn", "safi": "evpn", "retain_route_target": "xyz"})
+        set_module_args(
+            {"asn": 65535, "afi": "l2vpn", "safi": "evpn", "retain_route_target": "xyz"},
+        )
         self.execute_module(changed=False, commands=[])

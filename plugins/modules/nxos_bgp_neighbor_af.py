@@ -345,15 +345,15 @@ def get_value(arg, config, module):
         "soft_reconfiguration_in",
     ]
     command = PARAM_TO_COMMAND_KEYMAP[arg]
-    has_command = re.search(fr"^\s+{command}\s*", config, re.M)
-    has_command_val = re.search(fr"(?:{command}\s)(?P<value>.*)$", config, re.M)
+    has_command = re.search(rf"^\s+{command}\s*", config, re.M)
+    has_command_val = re.search(rf"(?:{command}\s)(?P<value>.*)$", config, re.M)
     value = ""
 
     if arg in custom:
         value = get_custom_value(arg, config, module)
 
     elif arg == "next_hop_third_party":
-        has_no_command = re.search(fr"^\s+no\s+{command}\s*$", config, re.M)
+        has_no_command = re.search(rf"^\s+no\s+{command}\s*$", config, re.M)
         value = False
         if not has_no_command:
             value = True

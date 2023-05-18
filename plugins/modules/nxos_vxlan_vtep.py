@@ -176,8 +176,8 @@ PARAM_TO_DEFAULT_KEYMAP = {
 
 def get_value(arg, config, module):
     if arg in BOOL_PARAMS:
-        REGEX = re.compile(fr"\s+{PARAM_TO_COMMAND_KEYMAP[arg]}\s*$", re.M)
-        NO_REGEX = re.compile(fr"\s+no\s{PARAM_TO_COMMAND_KEYMAP[arg]}\s*$", re.M)
+        REGEX = re.compile(rf"\s+{PARAM_TO_COMMAND_KEYMAP[arg]}\s*$", re.M)
+        NO_REGEX = re.compile(rf"\s+no\s{PARAM_TO_COMMAND_KEYMAP[arg]}\s*$", re.M)
         NO_SHUT_REGEX = re.compile(r"\s+no shutdown\s*$", re.M)
         value = False
         if arg == "shutdown":
@@ -204,12 +204,12 @@ def get_value(arg, config, module):
                 value = False
     else:
         REGEX = re.compile(
-            fr"(?:{PARAM_TO_COMMAND_KEYMAP[arg]}\s)(?P<value>.*)$",
+            rf"(?:{PARAM_TO_COMMAND_KEYMAP[arg]}\s)(?P<value>.*)$",
             re.M,
         )
         NO_DESC_REGEX = re.compile(r"\s+{}\s*$".format("no description"), re.M)
         SOURCE_INTF_REGEX = re.compile(
-            fr"(?:{PARAM_TO_COMMAND_KEYMAP[arg]}\s)(?P<value>\S+)$",
+            rf"(?:{PARAM_TO_COMMAND_KEYMAP[arg]}\s)(?P<value>\S+)$",
             re.M,
         )
         value = ""

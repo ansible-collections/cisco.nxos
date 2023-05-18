@@ -462,7 +462,7 @@ def map_params_to_obj(module):
 
 
 def get_value(arg, config, module):
-    extra_arg_regex = re.compile(fr"(?:{arg}\s)(?P<value>.*)$", re.M)
+    extra_arg_regex = re.compile(rf"(?:{arg}\s)(?P<value>.*)$", re.M)
     value = ""
     if arg in config:
         value = extra_arg_regex.search(config).group("value")
@@ -536,7 +536,9 @@ def check_declarative_intent_params(want, module, element_spec, result):
             if obj_in_have:
                 interfaces = obj_in_have.get("interfaces")
                 if interfaces is not None and i not in interfaces:
-                    module.fail_json(msg="Interface {} not configured on vrf {}".format(i, w["name"]))
+                    module.fail_json(
+                        msg="Interface {} not configured on vrf {}".format(i, w["name"]),
+                    )
 
 
 def vrf_error_check(module, commands, responses):

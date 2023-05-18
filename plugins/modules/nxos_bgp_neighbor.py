@@ -271,11 +271,11 @@ PARAM_TO_DEFAULT_KEYMAP = {
 
 def get_value(arg, config):
     command = PARAM_TO_COMMAND_KEYMAP[arg]
-    has_command = re.search(fr"^\s+{command}$", config, re.M)
-    has_command_val = re.search(fr"(?:\s+{command}\s*)(?P<value>.*)$", config, re.M)
+    has_command = re.search(rf"^\s+{command}$", config, re.M)
+    has_command_val = re.search(rf"(?:\s+{command}\s*)(?P<value>.*)$", config, re.M)
 
     if arg == "dynamic_capability":
-        has_no_command = re.search(fr"\s+no\s{command}\s*$", config, re.M)
+        has_no_command = re.search(rf"\s+no\s{command}\s*$", config, re.M)
         value = True
         if has_no_command:
             value = False

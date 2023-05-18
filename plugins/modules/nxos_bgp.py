@@ -395,7 +395,7 @@ def get_value(arg, config):
     command = PARAM_TO_COMMAND_KEYMAP.get(arg)
 
     if command.split()[0] == "event-history":
-        has_size = re.search(fr"^\s+{command} size\s(?P<value>.*)$", config, re.M)
+        has_size = re.search(rf"^\s+{command} size\s(?P<value>.*)$", config, re.M)
 
         value = False if command == "event-history detail" else "size_small"
 
@@ -403,20 +403,20 @@ def get_value(arg, config):
             value = "size_%s" % has_size.group("value")
 
     elif arg in ["enforce_first_as", "fast_external_fallover"]:
-        no_command_re = re.compile(fr"no\s+{command}\s*", re.M)
+        no_command_re = re.compile(rf"no\s+{command}\s*", re.M)
         value = True
 
         if no_command_re.search(config):
             value = False
 
     elif arg in BOOL_PARAMS:
-        has_command = re.search(fr"^\s+{command}\s*$", config, re.M)
+        has_command = re.search(rf"^\s+{command}\s*$", config, re.M)
         value = False
 
         if has_command:
             value = True
     else:
-        command_val_re = re.compile(fr"(?:{command}\s)(?P<value>.*)", re.M)
+        command_val_re = re.compile(rf"(?:{command}\s)(?P<value>.*)", re.M)
         value = ""
 
         has_command = command_val_re.search(config)

@@ -314,7 +314,10 @@ class TestNxosPrefixListsModule(TestNxosModule):
             ignore_provider_arg,
         )
         result = self.execute_module(failed=True)
-        assert result["msg"] == "Cannot update existing sequence 10 of prefix list plist1 with state merged. Please use state replaced or overridden."
+        assert (
+            result["msg"]
+            == "Cannot update existing sequence 10 of prefix list plist1 with state merged. Please use state replaced or overridden."
+        )
 
     def test_nxos_prefix_lists_replaced_update(self):
         # test existing sequence with replaced

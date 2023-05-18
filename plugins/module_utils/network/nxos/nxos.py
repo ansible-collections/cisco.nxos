@@ -123,8 +123,10 @@ class Cli:
                 if network_api == "cliconf" and out:
                     for index, resp in enumerate(out):
                         if (
-                            "Invalid command at" in resp or "Ambiguous command at" in resp
-                        ) and "json" in resp and commands[index]["output"] == "json":
+                            ("Invalid command at" in resp or "Ambiguous command at" in resp)
+                            and "json" in resp
+                            and commands[index]["output"] == "json"
+                        ):
                             commands[index]["output"] = "text"
                             out = connection.run_commands(commands, check_rc)
             return out
@@ -213,7 +215,6 @@ class Cli:
             connection.save_module_context(module_key, module_context)
         except ConnectionError as exc:
             self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
-
 
 
 class HttpApi:
@@ -384,7 +385,6 @@ class HttpApi:
             self._connection.save_module_context(module_key, module_context)
         except ConnectionError as exc:
             self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
-
 
 
 class NxosCmdRef:

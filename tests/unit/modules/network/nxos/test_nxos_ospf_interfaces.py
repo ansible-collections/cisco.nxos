@@ -618,7 +618,10 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         "address_family": [
                             {
                                 "afi": "ipv4",
-                                "authentication_key": {"encryption": 7, "key": "712090404011C031628"},
+                                "authentication_key": {
+                                    "encryption": 7,
+                                    "key": "712090404011C031628",
+                                },
                             },
                         ],
                     },
@@ -719,7 +722,11 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         "address_family": [
                             {
                                 "afi": "ipv4",
-                                "message_digest_key": {"key_id": 1, "encryption": 0, "key": "password"},
+                                "message_digest_key": {
+                                    "key_id": 1,
+                                    "encryption": 0,
+                                    "key": "password",
+                                },
                             },
                         ],
                     },
@@ -778,7 +785,11 @@ class TestNxosOspfInterfacesModule(TestNxosModule):
                         "address_family": [
                             {
                                 "afi": "ipv4",
-                                "message_digest_key": {"key_id": 1, "encryption": 0, "key": "password1"},
+                                "message_digest_key": {
+                                    "key_id": 1,
+                                    "encryption": 0,
+                                    "key": "password1",
+                                },
                             },
                         ],
                     },

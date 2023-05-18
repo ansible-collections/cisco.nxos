@@ -79,11 +79,13 @@ class Bgp_neighbor_address_familyFacts:
     def _post_parse(self, data):
         if "neighbors" in data:
             data["neighbors"] = sorted(
-                data["neighbors"].values(), key=lambda k, s="neighbor_address": k[s],
+                data["neighbors"].values(),
+                key=lambda k, s="neighbor_address": k[s],
             )
             for nbr in data["neighbors"]:
                 nbr["address_family"] = sorted(
-                    nbr["address_family"].values(), key=lambda k: (k["afi"], k.get("safi", "")),
+                    nbr["address_family"].values(),
+                    key=lambda k: (k["afi"], k.get("safi", "")),
                 )
         return data
 

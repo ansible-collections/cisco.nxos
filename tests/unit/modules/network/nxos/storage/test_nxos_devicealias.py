@@ -53,7 +53,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         set_module_args({"mode": "basic"}, True)
         self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["terminal dont-ask", "no device-alias mode enhanced", "device-alias commit", "no terminal dont-ask"]
+        assert result["commands"] == [
+            "terminal dont-ask",
+            "no device-alias mode enhanced",
+            "device-alias commit",
+            "no terminal dont-ask",
+        ]
 
     def test_da_mode_2(self):
         # Playbook mode is enhanced
@@ -104,7 +109,14 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
         self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["terminal dont-ask", "device-alias database", "device-alias name somename pwwn 10:00:00:00:89:a1:01:03", "device-alias name somename1 pwwn 10:00:00:00:89:a1:02:03", "device-alias commit", "no terminal dont-ask"]
+        assert result["commands"] == [
+            "terminal dont-ask",
+            "device-alias database",
+            "device-alias name somename pwwn 10:00:00:00:89:a1:01:03",
+            "device-alias name somename1 pwwn 10:00:00:00:89:a1:02:03",
+            "device-alias commit",
+            "no terminal dont-ask",
+        ]
 
     def test_da_add_2(self):
         # Playbook mode is enhanced , distrbute = true , some new da being added
@@ -172,7 +184,13 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
         self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["terminal dont-ask", "device-alias database", "no device-alias name tieHost-2", "device-alias commit", "no terminal dont-ask"]
+        assert result["commands"] == [
+            "terminal dont-ask",
+            "device-alias database",
+            "no device-alias name tieHost-2",
+            "device-alias commit",
+            "no terminal dont-ask",
+        ]
 
     def test_da_remove_2(self):
         # Playbook mode is enhanced , distrbute = true , some da being removed
@@ -272,7 +290,14 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         self.execute_show_cmd.return_value = load_fixture("nxos_devicealias", "shdastatus.cfg")
         self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["terminal dont-ask", "device-alias database", "device-alias rename test1_add test234", "device-alias rename tieHost-1 tieTarget-1", "device-alias commit", "no terminal dont-ask"]
+        assert result["commands"] == [
+            "terminal dont-ask",
+            "device-alias database",
+            "device-alias rename test1_add test234",
+            "device-alias rename tieHost-1 tieTarget-1",
+            "device-alias commit",
+            "no terminal dont-ask",
+        ]
 
     def test_da_rename_2(self):
         # rename : oldname not present
@@ -298,7 +323,13 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         )
         self.execute_show_cmd_1.return_value = load_fixture("nxos_devicealias", "shdadatabse.cfg")
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["device-alias distribute", "terminal dont-ask", "device-alias mode enhanced", "device-alias commit", "no terminal dont-ask"]
+        assert result["commands"] == [
+            "device-alias distribute",
+            "terminal dont-ask",
+            "device-alias mode enhanced",
+            "device-alias commit",
+            "no terminal dont-ask",
+        ]
 
     def test_da_add_bad(self):
         # Playbook mode is enhanced , distrbute = true , some new da being added

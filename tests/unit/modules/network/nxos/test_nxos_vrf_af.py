@@ -90,12 +90,20 @@ class TestNxosVrfafModule(TestNxosModule):
     ):
         set_module_args({"vrf": "vrf10", "afi": "ipv4", "route_target_both_auto_evpn": True})
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf10", "address-family ipv4 unicast", "route-target both auto evpn"]
+        assert result["commands"] == [
+            "vrf context vrf10",
+            "address-family ipv4 unicast",
+            "route-target both auto evpn",
+        ]
 
     def test_nxos_vrf_af_auto_evpn_route_target_absent_current_existing(self):
         set_module_args({"vrf": "vrf11", "afi": "ipv4", "route_target_both_auto_evpn": False})
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf11", "address-family ipv4 unicast", "no route-target both auto evpn"]
+        assert result["commands"] == [
+            "vrf context vrf11",
+            "address-family ipv4 unicast",
+            "no route-target both auto evpn",
+        ]
 
     def test_nxos_vrf_af_auto_evpn_route_target_absent_current_non_existing(
         self,
@@ -121,7 +129,11 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf1", "address-family ipv4 unicast", "route-target import 65000:1000"]
+        assert result["commands"] == [
+            "vrf context vrf1",
+            "address-family ipv4 unicast",
+            "route-target import 65000:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_default_direction_present_current_non_existing(
         self,
@@ -134,7 +146,12 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf1", "address-family ipv4 unicast", "route-target import 65000:1000", "route-target export 65000:1000"]
+        assert result["commands"] == [
+            "vrf context vrf1",
+            "address-family ipv4 unicast",
+            "route-target import 65000:1000",
+            "route-target export 65000:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_import_present_current_existing(self):
         set_module_args(
@@ -193,7 +210,13 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf1", "address-family ipv4 unicast", "route-target import 65000:1000", "route-target import 65001:1000", "route-target import 65002:1000"]
+        assert result["commands"] == [
+            "vrf context vrf1",
+            "address-family ipv4 unicast",
+            "route-target import 65000:1000",
+            "route-target import 65001:1000",
+            "route-target import 65002:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_import_present_current_existing(
         self,
@@ -256,7 +279,11 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf21", "address-family ipv4 unicast", "no route-target import 65000:1000"]
+        assert result["commands"] == [
+            "vrf context vrf21",
+            "address-family ipv4 unicast",
+            "no route-target import 65000:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_import_absent_current_non_existing(
         self,
@@ -314,7 +341,13 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf21", "address-family ipv4 unicast", "no route-target import 65000:1000", "no route-target import 65001:1000", "no route-target import 65002:1000"]
+        assert result["commands"] == [
+            "vrf context vrf21",
+            "address-family ipv4 unicast",
+            "no route-target import 65000:1000",
+            "no route-target import 65001:1000",
+            "no route-target import 65002:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_import_absent_current_mix(self):
         set_module_args(
@@ -351,7 +384,12 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf21", "address-family ipv4 unicast", "no route-target import 65002:1000", "route-target import 65003:1000"]
+        assert result["commands"] == [
+            "vrf context vrf21",
+            "address-family ipv4 unicast",
+            "no route-target import 65002:1000",
+            "route-target import 65003:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_export_present_current_non_existing(
         self,
@@ -370,7 +408,11 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf1", "address-family ipv4 unicast", "route-target export 65000:1000"]
+        assert result["commands"] == [
+            "vrf context vrf1",
+            "address-family ipv4 unicast",
+            "route-target export 65000:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_export_present_current_existing(self):
         set_module_args(
@@ -416,7 +458,13 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf1", "address-family ipv4 unicast", "route-target export 65000:1000", "route-target export 65001:1000", "route-target export 65002:1000"]
+        assert result["commands"] == [
+            "vrf context vrf1",
+            "address-family ipv4 unicast",
+            "route-target export 65000:1000",
+            "route-target export 65001:1000",
+            "route-target export 65002:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_export_present_current_existing(
         self,
@@ -479,7 +527,11 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf21", "address-family ipv4 unicast", "no route-target export 65000:1000"]
+        assert result["commands"] == [
+            "vrf context vrf21",
+            "address-family ipv4 unicast",
+            "no route-target export 65000:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_export_absent_current_non_existing(
         self,
@@ -537,7 +589,13 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf21", "address-family ipv4 unicast", "no route-target export 65000:1000", "no route-target export 65001:1000", "no route-target export 65002:1000"]
+        assert result["commands"] == [
+            "vrf context vrf21",
+            "address-family ipv4 unicast",
+            "no route-target export 65000:1000",
+            "no route-target export 65001:1000",
+            "no route-target export 65002:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_export_absent_current_mix(self):
         set_module_args(
@@ -574,7 +632,12 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf21", "address-family ipv4 unicast", "no route-target export 65002:1000", "route-target export 65003:1000"]
+        assert result["commands"] == [
+            "vrf context vrf21",
+            "address-family ipv4 unicast",
+            "no route-target export 65002:1000",
+            "route-target export 65003:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_both_present_current_non_existing(self):
         set_module_args(
@@ -591,7 +654,12 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf1", "address-family ipv4 unicast", "route-target import 65000:1000", "route-target export 65000:1000"]
+        assert result["commands"] == [
+            "vrf context vrf1",
+            "address-family ipv4 unicast",
+            "route-target import 65000:1000",
+            "route-target export 65000:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_both_present_current_existing(self):
         set_module_args(
@@ -637,7 +705,16 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf1", "address-family ipv4 unicast", "route-target import 65000:1000", "route-target export 65000:1000", "route-target import 65001:1000", "route-target export 65001:1000", "route-target import 65002:1000", "route-target export 65002:1000"]
+        assert result["commands"] == [
+            "vrf context vrf1",
+            "address-family ipv4 unicast",
+            "route-target import 65000:1000",
+            "route-target export 65000:1000",
+            "route-target import 65001:1000",
+            "route-target export 65001:1000",
+            "route-target import 65002:1000",
+            "route-target export 65002:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_both_present_current_existing(
         self,
@@ -700,7 +777,12 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf21", "address-family ipv4 unicast", "no route-target import 65000:1000", "no route-target export 65000:1000"]
+        assert result["commands"] == [
+            "vrf context vrf21",
+            "address-family ipv4 unicast",
+            "no route-target import 65000:1000",
+            "no route-target export 65000:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_both_absent_current_non_existing(
         self,
@@ -756,7 +838,16 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf21", "address-family ipv4 unicast", "no route-target import 65000:1000", "no route-target export 65000:1000", "no route-target import 65001:1000", "no route-target export 65001:1000", "no route-target import 65002:1000", "no route-target export 65002:1000"]
+        assert result["commands"] == [
+            "vrf context vrf21",
+            "address-family ipv4 unicast",
+            "no route-target import 65000:1000",
+            "no route-target export 65000:1000",
+            "no route-target import 65001:1000",
+            "no route-target export 65001:1000",
+            "no route-target import 65002:1000",
+            "no route-target export 65002:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_both_absent_current_mix(self):
         set_module_args(
@@ -793,7 +884,14 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf21", "address-family ipv4 unicast", "no route-target import 65002:1000", "no route-target export 65002:1000", "route-target import 65003:1000", "route-target export 65003:1000"]
+        assert result["commands"] == [
+            "vrf context vrf21",
+            "address-family ipv4 unicast",
+            "no route-target import 65002:1000",
+            "no route-target export 65002:1000",
+            "route-target import 65003:1000",
+            "route-target export 65003:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_both_current_only_import_or_export(
         self,
@@ -827,7 +925,14 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf31", "address-family ipv4 unicast", "route-target export 65000:1000", "route-target import 65001:1000", "no route-target import 65002:1000", "no route-target export 65003:1000"]
+        assert result["commands"] == [
+            "vrf context vrf31",
+            "address-family ipv4 unicast",
+            "route-target export 65000:1000",
+            "route-target import 65001:1000",
+            "no route-target import 65002:1000",
+            "no route-target export 65003:1000",
+        ]
 
     def test_nxos_vrf_af_route_target_multi_direction_current_only_import_or_export(
         self,
@@ -857,7 +962,13 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf31", "address-family ipv4 unicast", "route-target export 65000:1000", "route-target import 65001:1000", "no route-target export 65003:1000"]
+        assert result["commands"] == [
+            "vrf context vrf31",
+            "address-family ipv4 unicast",
+            "route-target export 65000:1000",
+            "route-target import 65001:1000",
+            "no route-target export 65003:1000",
+        ]
 
     def test_nxos_vrf_af_auto_evpn_route_target_and_manual_route_target(self):
         set_module_args(
@@ -875,7 +986,13 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context vrf1", "address-family ipv4 unicast", "route-target both auto evpn", "route-target import 65000:1000", "route-target export 65000:1000"]
+        assert result["commands"] == [
+            "vrf context vrf1",
+            "address-family ipv4 unicast",
+            "route-target both auto evpn",
+            "route-target import 65000:1000",
+            "route-target export 65000:1000",
+        ]
 
     def test_nxos_vrf_af_auto_evpn_route_target_and_manual_route_targets_with_absent_vrf(
         self,
@@ -908,4 +1025,8 @@ class TestNxosVrfafModule(TestNxosModule):
             },
         )
         result = self.execute_module(changed=True)
-        assert result["commands"] == ["vrf context v2000", "address-family ipv4 unicast", "route-target both auto"]
+        assert result["commands"] == [
+            "vrf context v2000",
+            "address-family ipv4 unicast",
+            "route-target both auto",
+        ]

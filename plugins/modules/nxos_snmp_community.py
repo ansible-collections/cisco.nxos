@@ -143,13 +143,13 @@ def get_snmp_community(module, name):
         return community_dict
 
     community_dict["group"] = None
-    group_re = fr"snmp-server community {community_name} group (\S+)"
+    group_re = rf"snmp-server community {community_name} group (\S+)"
     mo = re.search(group_re, data)
     if mo:
         community_dict["group"] = mo.group(1)
 
     community_dict["acl"] = None
-    acl_re = fr"snmp-server community {community_name} use-acl (\S+)"
+    acl_re = rf"snmp-server community {community_name} use-acl (\S+)"
     mo = re.search(acl_re, data)
     if mo:
         community_dict["acl"] = mo.group(1)

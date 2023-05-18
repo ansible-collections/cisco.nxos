@@ -516,9 +516,7 @@ class Acls(ConfigBase):
                                 ]  # case 1
 
                                 want_seq = [
-                                    item["sequence"]
-                                    for item in w_acl["aces"]
-                                    if "sequence" in item
+                                    item["sequence"] for item in w_acl["aces"] if "sequence" in item
                                 ]
 
                                 have_seq = [item["sequence"] for item in have_acl["aces"]]

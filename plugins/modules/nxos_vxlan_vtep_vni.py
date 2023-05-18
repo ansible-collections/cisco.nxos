@@ -146,10 +146,10 @@ PARAM_TO_COMMAND_KEYMAP = {
 
 def get_value(arg, config, module):
     command = PARAM_TO_COMMAND_KEYMAP[arg]
-    command_val_re = re.compile(fr"(?:{command}\s)(?P<value>.*)$", re.M)
+    command_val_re = re.compile(rf"(?:{command}\s)(?P<value>.*)$", re.M)
 
     if arg in BOOL_PARAMS:
-        command_re = re.compile(fr"\s+{command}\s*$", re.M)
+        command_re = re.compile(rf"\s+{command}\s*$", re.M)
         value = False
         if command_re.search(config):
             value = True
@@ -159,7 +159,7 @@ def get_value(arg, config, module):
         if has_command_val:
             value = has_command_val
     elif arg == "multisite_ingress_replication":
-        has_command = re.search(fr"^\s+{command}$", config, re.M)
+        has_command = re.search(rf"^\s+{command}$", config, re.M)
         has_command_val = command_val_re.search(config, re.M)
         value = "disable"
         if has_command:
@@ -348,7 +348,11 @@ def main():
         "peer_list": {"required": False, "type": "list", "elements": "str"},
         "suppress_arp": {"required": False, "type": "bool"},
         "suppress_arp_disable": {"required": False, "type": "bool"},
-        "ingress_replication": {"required": False, "type": "str", "choices": ["bgp", "static", "default"]},
+        "ingress_replication": {
+            "required": False,
+            "type": "str",
+            "choices": ["bgp", "static", "default"],
+        },
         "state": {"choices": ["present", "absent"], "default": "present", "required": False},
         "multisite_ingress_replication": {
             "required": False,

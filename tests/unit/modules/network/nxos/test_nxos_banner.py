@@ -66,14 +66,20 @@ class TestNxosBannerModule(TestNxosModule):
         err_rsp = ["Invalid command"]
         self.run_commands.return_value = err_rsp
         result = self.execute_module(failed=True, changed=True)
-        assert result["msg"] == "banner: exec may not be supported on this platform.  Possible values are : exec | motd"
+        assert (
+            result["msg"]
+            == "banner: exec may not be supported on this platform.  Possible values are : exec | motd"
+        )
 
     def test_nxos_banner_exec_fail_remove(self):
         set_module_args({"banner": "exec", "state": "absent"})
         err_rsp = ["Invalid command"]
         self.run_commands.return_value = err_rsp
         result = self.execute_module(failed=True, changed=True)
-        assert result["msg"] == "banner: exec may not be supported on this platform.  Possible values are : exec | motd"
+        assert (
+            result["msg"]
+            == "banner: exec may not be supported on this platform.  Possible values are : exec | motd"
+        )
 
     def test_nxos_banner_motd_create(self):
         set_module_args({"banner": "motd", "text": "test\nbanner\nstring"})

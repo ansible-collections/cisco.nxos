@@ -59,7 +59,8 @@ class Prefix_listsFacts:
             # pre-sort lists of dictionaries
             for item in objs:
                 item["prefix_lists"] = sorted(
-                    item["prefix_lists"].values(), key=lambda k: k["name"],
+                    item["prefix_lists"].values(),
+                    key=lambda k: k["name"],
                 )
                 for x in item["prefix_lists"]:
                     if "entries" in x:

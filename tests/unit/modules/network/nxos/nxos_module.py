@@ -57,7 +57,6 @@ def load_fixture(module_name, name, device=""):
     with contextlib.suppress(Exception):
         data = json.loads(data)
 
-
     fixture_data[path] = data
     return data
 

@@ -390,17 +390,23 @@ class L3_interfaces(ConfigBase):
         name = obj.get("name")
         if "dot1q" in obj:
             commands.append("no encapsulation dot1q")
-        if "redirects" in obj and (not self.check_existing(name, "has_secondary") or re.match(
-            "N[35679]",
-            self.platform,
-        )):
+        if "redirects" in obj and (
+            not self.check_existing(name, "has_secondary")
+            or re.match(
+                "N[35679]",
+                self.platform,
+            )
+        ):
             # device auto-enables redirects when secondaries are removed;
             # auto-enable may fail on legacy platforms so always do explicit enable
             commands.append("ip redirects")
-        if "ipv6_redirects" in obj and (not self.check_existing(name, "has_secondary") or re.match(
-            "N[35679]",
-            self.platform,
-        )):
+        if "ipv6_redirects" in obj and (
+            not self.check_existing(name, "has_secondary")
+            or re.match(
+                "N[35679]",
+                self.platform,
+            )
+        ):
             # device auto-enables redirects when secondaries are removed;
             # auto-enable may fail on legacy platforms so always do explicit enable
             commands.append("ipv6 redirects")

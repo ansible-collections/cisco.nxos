@@ -234,9 +234,7 @@ class Lag_interfaces(ConfigBase):
             delta = dict_diff(h_item, w_item)
             if delta:
                 if h_item and (
-                    "mode" in delta
-                    and delta["mode"] == "on"
-                    and "mode" not in h_item.keys()
+                    "mode" in delta and delta["mode"] == "on" and "mode" not in h_item.keys()
                 ):
                     # mode = on will not be displayed in running-config
                     continue

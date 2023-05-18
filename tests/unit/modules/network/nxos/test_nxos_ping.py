@@ -215,7 +215,9 @@ class TestNxosPingModule(TestNxosModule):
             },
         )
         result = self.execute_module()
-        assert result["commands"] == ["ping 172.28.128.7 count 10 source 192.168.1.1 vrf management packet-size 65468 df-bit"]
+        assert result["commands"] == [
+            "ping 172.28.128.7 count 10 source 192.168.1.1 vrf management packet-size 65468 df-bit",
+        ]
 
     def test_nxos_ping_failed_cant_bind(self):
         self.run_commands.return_value = [

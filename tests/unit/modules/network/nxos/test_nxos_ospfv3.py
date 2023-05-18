@@ -580,7 +580,11 @@ class TestNxosOspfv3Module(TestNxosModule):
                     "processes": [
                         {
                             "process_id": "100",
-                            "address_family": {"afi": "ipv6", "safi": "unicast", "maximum_paths": 27},
+                            "address_family": {
+                                "afi": "ipv6",
+                                "safi": "unicast",
+                                "maximum_paths": 27,
+                            },
                         },
                     ],
                 },
@@ -989,7 +993,9 @@ class TestNxosOspfv3Module(TestNxosModule):
                                         "no_summary": True,
                                         "no_redistribution": True,
                                         "route_map": "test-1",
-                                        "translate": {"type7": {"always": True, "supress_fa": True}},
+                                        "translate": {
+                                            "type7": {"always": True, "supress_fa": True},
+                                        },
                                     },
                                 },
                             ],
