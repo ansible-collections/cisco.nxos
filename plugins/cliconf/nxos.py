@@ -182,7 +182,7 @@ class Cliconf(CliconfBase):
         diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
         return diff
 
-    def get_config(self, source="running", format="text", flags=None):
+    def get_config(self, source="running", flags=None, format="text"):
         options_values = self.get_option_values()
         if format not in options_values["format"]:
             raise ValueError(
@@ -243,8 +243,8 @@ class Cliconf(CliconfBase):
         prompt=None,
         answer=None,
         sendonly=False,
-        output=None,
         newline=True,
+        output=None,
         check_all=False,
     ):
         if output:

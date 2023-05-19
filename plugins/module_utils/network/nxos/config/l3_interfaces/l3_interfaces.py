@@ -200,7 +200,6 @@ class L3_interfaces(ConfigBase):
             cmds.extend(self.generate_delete_commands(rmv))
         else:
             diff = want
-
         cmds.extend(self.add_commands(diff, name=name))
         cmds.extend(v4_cmds)
         cmds.extend(v6_cmds)
@@ -311,7 +310,7 @@ class L3_interfaces(ConfigBase):
             if diff:
                 addr = diff.get("address") or pri_w.get("address")
                 cmd = "ip address %s" % addr
-                tag = diff.get("tag")
+                tag = diff.get("tag") or pri_w.get("tag")
                 cmd += " tag %s" % tag if tag else ""
                 cmds.append(cmd)
 
