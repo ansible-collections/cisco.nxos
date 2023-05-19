@@ -57,6 +57,11 @@ options:
         - The password to be configured on the network device. The password needs to be
           provided in cleartext and it will be encrypted on the device.
         type: str
+      hashed_password:
+        description:
+        - The hashed password to be configured on the network device. The password needs to
+          already be encrypted.
+        type: str
       update_password:
         description:
         - Since passwords are encrypted in the device running config, this argument will
@@ -100,6 +105,11 @@ options:
     description:
     - The password to be configured on the network device. The password needs to be
       provided in cleartext and it will be encrypted on the device.
+    type: str
+  hashed_password:
+    description:
+    - The hashed password to be configured on the network device. The password needs to
+      already be encrypted.
     type: str
   update_password:
     description:
@@ -278,6 +288,10 @@ def map_obj_to_commands(updates, module):
             if update_password == "always" or not have:
                 add("password %s" % want["configured_password"])
 
+        if needs_update("hashed_password"):
+            if update_password == "always" or not have:
+                add("password 5 %s" % want["hashed_password"])
+
         if needs_update("sshkey"):
             add("sshkey %s" % want["sshkey"])
 
@@ -315,6 +329,7 @@ def map_config_to_obj(module):
             {
                 "name": item["usr_name"],
                 "configured_password": parse_password(item),
+                "hashed_password": parse_password(item),
                 "sshkey": item.get("sshkey_info"),
                 "roles": parse_roles(item),
                 "state": "present",
@@ -364,6 +379,7 @@ def map_params_to_obj(module):
         item.update(
             {
                 "configured_password": get_value("configured_password"),
+                "hashed_password": get_value("hashed_password"),
                 "sshkey": get_value("sshkey"),
                 "roles": get_value("roles"),
                 "state": get_value("state"),
@@ -400,6 +416,7 @@ def main():
     element_spec = dict(
         name=dict(),
         configured_password=dict(no_log=True),
+        hashed_password=dict(no_log=True),
         update_password=dict(default="always", choices=["on_create", "always"]),
         roles=dict(type="list", aliases=["role"], elements="str"),
         sshkey=dict(no_log=False),
@@ -423,7 +440,7 @@ def main():
 
     argument_spec.update(element_spec)
 
-    mutually_exclusive = [("name", "aggregate")]
+    mutually_exclusive = [("name", "aggregate"), ("configured_password", "hashed_password")]
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -452,6 +469,11 @@ def main():
     # a nice failure message
     if "no username admin" in commands:
         module.fail_json(msg="cannot delete the `admin` account")
+
+    # check if provided hashed password is infact a hash
+    if module.params["hashed_password"] is not None:
+        if not re.match(r"^\$5\$......\$.*$", module.params["hashed_password"]):
+            module.fail_json(msg="Provided hash is not valid")
 
     if commands:
         if not module.check_mode:
