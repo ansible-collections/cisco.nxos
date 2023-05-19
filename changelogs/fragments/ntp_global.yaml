@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "ntp_global - Fix incorrect handling of prefer option (https://github.com/ansible-collections/cisco.nxos/issues/670)."

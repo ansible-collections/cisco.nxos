@@ -226,7 +226,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "ntp peer {{ peer }}"
-                      "{{ ' prefer' if prefer is defined else ''}}"
+                      "{{ ' prefer' if prefer|d(False) else ''}}"
                       "{{ (' use-vrf ' + vrf) if vrf is defined else '' }}"
                       "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
@@ -258,7 +258,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "ntp server {{ server }}"
-                      "{{ ' prefer' if prefer is defined else ''}}"
+                      "{{ ' prefer' if prefer|d(False) else ''}}"
                       "{{ (' use-vrf ' + vrf) if vrf is defined else '' }}"
                       "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
