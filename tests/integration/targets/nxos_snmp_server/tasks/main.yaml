@@ -47,9 +47,3 @@
   ansible.builtin.include_tasks: nxapi.yaml
   tags:
     - nxapi
-
-- name: "Add back snmp-server user zuul"
-  cisco.nxos.nxos_config:
-    lines:
-      - "snmp-server user zuul network-admin auth md5 {{ zuul_snmp_passwd }} priv {{ zuul_snmp_passwd }} localizedkey"
-    match: none
