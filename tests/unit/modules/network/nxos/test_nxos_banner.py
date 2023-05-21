@@ -102,7 +102,7 @@ class TestNxosBannerModule(TestNxosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_nxos_banner_multiline_delimiter(self):
-        set_module_args(dict(banner="motd", text="this is my exec banner\nthat contains my email address email@address.com \nand it's a multiline string\n", multiline_delimiter="*"))
+        set_module_args(dict(banner="exec", text="this is my exec banner\nthat contains my email address email@address.com \nand it's a multiline string\n", multiline_delimiter="*"))
         commands = ["banner exec *\nthis is my exec banner\nthat contains my email address email@address.com \nand it's a multiline string\n\n*"]
         self.run_commands.return_value = commands
         self.execute_module(changed=True, commands=commands)
