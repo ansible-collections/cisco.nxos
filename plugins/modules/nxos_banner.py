@@ -47,7 +47,7 @@ options:
     type: str
   multiline_delimiter:
     description: Specify the delimiting character than will be used for configuration.
-    default: @
+    default: "@"
     type: str
   text:
     description:
