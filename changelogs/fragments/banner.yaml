@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "nxos_banner - Add support for a custom multiline delimiter"

@@ -272,7 +272,7 @@ class Interfaces(FactsBase):
             name = item["interface"]
 
             intf = dict()
-            if "type" in item:
+            if any(key.startswith("svi_") for key in item):
                 intf.update(self.transform_dict(item, self.INTERFACE_SVI_MAP))
             else:
                 intf.update(self.transform_dict(item, self.INTERFACE_MAP))
