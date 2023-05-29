@@ -1,5 +1,0 @@
----
-doc_changes:
-  - nxos_interfaces - Fixed module documentation and examples.
-  - nxos_l2_interfaces - Fixed module documentation and examples.
-  - nxos_l3_interfaces - Fixed module documentation and examples.

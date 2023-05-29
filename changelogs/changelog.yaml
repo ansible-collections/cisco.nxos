@@ -982,3 +982,31 @@ releases:
     fragments:
       - release_430.yaml
     release_date: "2023-04-05"
+  4.4.0:
+    changes:
+      bugfixes:
+        - l3_interfaces - Append tag when updating IP address with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/678).
+        - ntp_global - Fix incorrect handling of prefer option (https://github.com/ansible-collections/cisco.nxos/issues/670).
+        - nxos_banner - Add support for a custom multiline delimiter
+        - nxos_facts - Fix missing SVI facts (https://github.com/ansible-collections/cisco.nxos/issues/440).
+        - "terminal - attempt privilege escalation only when prompt does not end with #"
+      doc_changes:
+        - Fix docs of static-routes resource module.
+        - nxos_interfaces - Fixed module documentation and examples.
+        - nxos_l2_interfaces - Fixed module documentation and examples.
+        - nxos_l3_interfaces - Fixed module documentation and examples.
+      minor_changes:
+        - nxos_user - Add support for hashed passwords. (https://github.com/ansible-collections/cisco.nxos/issues/370).
+    fragments:
+      - banner.yaml
+      - downstream.yaml
+      - fix_docs_static_routes.yaml
+      - l3.yaml
+      - lint.yaml
+      - ntp_global.yaml
+      - ntp_user.yaml
+      - nxos_facts.yaml
+      - terminal.yaml
+      - tests.yaml
+      - update_inft_docs.yaml
+    release_date: "2023-05-29"
