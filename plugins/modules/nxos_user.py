@@ -225,6 +225,7 @@ BUILTIN_ROLES = [
     "priv-2",
     "priv-1",
     "priv-0",
+    "dev-ops",
 ]
 
 
