@@ -718,6 +718,8 @@ parsed:
     module argspec.
 """
 
+import debugpy
+
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.static_routes.static_routes import (
@@ -726,7 +728,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.st
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.static_routes.static_routes import (
     Static_routes,
 )
-import debugpy
+
 
 debugpy.listen(3004)
 debugpy.wait_for_client()
