@@ -726,6 +726,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.st
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.static_routes.static_routes import (
     Static_routes,
 )
+import debugpy
+
+debugpy.listen(3004)
+debugpy.wait_for_client()
 
 
 def main():
@@ -734,6 +738,7 @@ def main():
 
     :returns: the result form module invocation
     """
+
     module = AnsibleModule(
         argument_spec=Static_routesArgs.argument_spec,
         mutually_exclusive=[["config", "running_config"]],
