@@ -68,7 +68,7 @@ class Static_routesTemplate(NetworkTemplate):
             "{{ (' track ' + ip.track|string) if ip.track is defined else '' }}"
             "{{ (' ' + ip.admin_distance|string) if ip.admin_distance is defined else '' }}",
             "result": {
-                "{{ dest }}_{{ interface|d() }}_{{ namevrf|d() }}_ipv4": [
+                "{{ dest }}_{{ namevrf|d() }}_ipv4": [
                     {
                         "_vrf": "{{ namevrf }}",
                         "_afi": "ipv4",
@@ -109,7 +109,7 @@ class Static_routesTemplate(NetworkTemplate):
             "{{ (' track ' + ipv6.track|string) if ipv6.track is defined else '' }}"
             "{{ (' ' + ipv6.admin_distance|string) if ipv6.admin_distance is defined else '' }}",
             "result": {
-                "{{ dest }}_{{ interface|d() }}_{{ namevrf|d() }}_ipv6": [
+                "{{ dest }}_{{ namevrf|d() }}_ipv6": [
                     {
                         "_vrf": "{{ namevrf }}",
                         "_afi": "ipv4",
