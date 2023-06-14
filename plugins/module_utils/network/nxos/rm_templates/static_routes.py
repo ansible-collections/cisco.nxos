@@ -37,9 +37,9 @@ class Static_routesTemplate(NetworkTemplate):
             ),
             'setval': 'vrf context {{ namevrf }}',
             'result': {
-                '{{ namevrf }}': {
-                    'namevrf': '{{ namevrf }}',
-                },
+                # '{{ namevrf }}': {
+                #     'namevrf': '{{ namevrf }}',
+                # },
             },
             'shared': True,
         },
@@ -49,48 +49,7 @@ class Static_routesTemplate(NetworkTemplate):
                 r"""
                 (^|\s+)ip\sroute
                 (\s(?P<dest>\S+))
-                (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel)\d+))? # Are you sure of this man!
-                (\s(?P<forward_router_address>\S+))?
-                (\svrf\s(?P<dest_vrf>\S+))?
-                (\sname\s(?P<route_name>\S+))?
-                (\stag\s(?P<tag>\d+))?
-                (\strack\s(?P<track>\d+))?
-                (\s(?P<admin_distance>\d+))?
-                $""", re.VERBOSE,
-            ),
-            "setval": "ip route"
-            "{{ (' ' + ip.dest) if ip.dest is defined else '' }}"
-            "{{ (' ' + ip.interface) if ip.interface is defined else '' }}"
-            "{{ (' ' + ip.forward_router_address) if ip.forward_router_address is defined else '' }}"
-            "{{ (' vrf ' + ip.dest_vrf) if ip.dest_vrf is defined else '' }}"
-            "{{ (' name ' + ip.route_name) if ip.route_name is defined else '' }}"
-            "{{ (' tag ' + ip.tag|string) if ip.tag is defined else '' }}"
-            "{{ (' track ' + ip.track|string) if ip.track is defined else '' }}"
-            "{{ (' ' + ip.admin_distance|string) if ip.admin_distance is defined else '' }}",
-            "result": {
-                "{{ dest }}_{{ interface|d() }}_{{ namevrf|d() }}_ipv4": [
-                    {
-                        "_vrf": "{{ namevrf }}",
-                        "_afi": "ipv4",
-                        "_dest": "{{ dest }}",
-                        "interface": "{{ interface }}",
-                        "forward_router_address": "{{ forward_router_address }}",
-                        "admin_distance": "{{ admin_distance }}",
-                        "dest_vrf": "{{ dest_vrf }}",
-                        "tag": "{{ tag }}",
-                        "route_name": "{{ route_name }}",
-                        "track": "{{ track }}",
-                    },
-                ],
-            },
-        },
-        {
-            "name": "ipv4",
-            "getval": re.compile(
-                r"""
-                (^|\s+)ip\sroute
-                (\s(?P<dest>\S+))
-                (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel)\d+))? # Are you sure of this man!
+                (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel)\S+))?
                 (\s(?P<forward_router_address>\S+))?
                 (\svrf\s(?P<dest_vrf>\S+))?
                 (\sname\s(?P<route_name>\S+))?
@@ -129,9 +88,9 @@ class Static_routesTemplate(NetworkTemplate):
             "name": "ipv6",
             "getval": re.compile(
                 r"""
-                ^ipv6\sroute
+                (^|\s+)ipv6\sroute
                 (\s(?P<dest>\S+))
-                (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel)\d+))?
+                (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel)\S+))?
                 (\s(?P<forward_router_address>\S+))?
                 (\svrf\s(?P<dest_vrf>\S+))?
                 (\sname\s(?P<route_name>\S+))?

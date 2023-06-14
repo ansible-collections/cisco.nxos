@@ -120,16 +120,19 @@ class Static_routesFacts(object):
         :rtype: dictionary
         :returns: facts
         """
+        import q
+
         facts = {}
         objs = []
 
         if not data:
             data = self.get_static_routes_data(connection)
-
+        q(data)
         # parse native config using the Static_routes template
         static_routes_parser = Static_routesTemplate(lines=data.splitlines(), module=self._module)
         objs = static_routes_parser.parse()
 
+        q(objs)
         strout = self.process_static_routes(objs)
         objs = self.structure_static_routes(strout)
 
