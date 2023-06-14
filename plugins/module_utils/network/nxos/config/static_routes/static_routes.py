@@ -91,8 +91,7 @@ class Static_routes(ResourceModule):
             for k, want in wantd.items():
                 self._compare_top_level_keys(want=want, have=haved.pop(k, {}))
 
-            # if self.state in ["overridden", "deleted"]:
-            if (self.state == "deleted" and not wantd) or self.state == "overridden":
+            if (self.state == "deleted" and not wantd) or self.state in ["overridden", "replaced"]:
                 for k, have in haved.items():
                     self._compare_top_level_keys(want={}, have=have)
 
@@ -115,7 +114,7 @@ class Static_routes(ResourceModule):
             for _afi, routes in want.items():
                 self._compare(s_want=routes, s_have=have.pop(_afi, {}), afi=_afi)
 
-        if self.state in ["overridden", "deleted"]:
+        if self.state in ["overridden", "deleted", "replaced"]:
             for _afi, routes in have.items():
                 self._compare(s_want={}, s_have=routes, afi=_afi)
 
