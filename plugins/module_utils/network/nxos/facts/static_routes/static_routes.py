@@ -47,28 +47,25 @@ class Static_routesFacts(object):
             is_vrf = False
 
             for routes in obj:
-                _vrf = routes.pop("_vrf", None)
-                if _vrf:
+                grp_vrf = routes.pop("_vrf", None)
+                if grp_vrf:
                     is_vrf = True
                 _afi = routes.pop("_afi")
-                _topology = routes.pop("_topology", None)
-                _netmask = routes.pop("_netmask", None)
+
                 _routes["dest"] = routes.pop("_dest")
-                if _topology:
-                    _routes["topology"] = _topology
                 _nx_hop.append(routes)
 
             _routes["next_hops"].extend(_nx_hop)
 
             if is_vrf:
-                if strout.get(_vrf) and strout[_vrf].get(_afi):
-                    strout[_vrf][_afi].append(_routes)
+                if strout.get(grp_vrf) and strout[grp_vrf].get(_afi):
+                    strout[grp_vrf][_afi].append(_routes)
                 else:
-                    if strout.get(_vrf):
+                    if strout.get(grp_vrf):
                         _tma = {_afi: [_routes]}
-                        strout[_vrf].update(_tma)
+                        strout[grp_vrf].update(_tma)
                     else:
-                        _tm = {_vrf: {_afi: [_routes]}}
+                        _tm = {grp_vrf: {_afi: [_routes]}}
                         strout.update(_tm)
             else:
                 if strout.get(_afi):
@@ -120,19 +117,17 @@ class Static_routesFacts(object):
         :rtype: dictionary
         :returns: facts
         """
-        import q
 
         facts = {}
         objs = []
 
         if not data:
             data = self.get_static_routes_data(connection)
-        q(data)
+
         # parse native config using the Static_routes template
         static_routes_parser = Static_routesTemplate(lines=data.splitlines(), module=self._module)
         objs = static_routes_parser.parse()
 
-        q(objs)
         strout = self.process_static_routes(objs)
         objs = self.structure_static_routes(strout)
 
