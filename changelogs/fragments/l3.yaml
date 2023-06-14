@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "l3_interfaces - Append tag when updating IP address with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/678)."

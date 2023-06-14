@@ -5,6 +5,31 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v4.4.0
+======
+
+Minor Changes
+-------------
+
+- nxos_user - Add support for hashed passwords. (https://github.com/ansible-collections/cisco.nxos/issues/370).
+
+Bugfixes
+--------
+
+- l3_interfaces - Append tag when updating IP address with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/678).
+- ntp_global - Fix incorrect handling of prefer option (https://github.com/ansible-collections/cisco.nxos/issues/670).
+- nxos_banner - Add support for a custom multiline delimiter
+- nxos_facts - Fix missing SVI facts (https://github.com/ansible-collections/cisco.nxos/issues/440).
+- terminal - attempt privilege escalation only when prompt does not end with #
+
+Documentation Changes
+---------------------
+
+- Fix docs of static-routes resource module.
+- nxos_interfaces - Fixed module documentation and examples.
+- nxos_l2_interfaces - Fixed module documentation and examples.
+- nxos_l3_interfaces - Fixed module documentation and examples.
+
 v4.3.0
 ======
 

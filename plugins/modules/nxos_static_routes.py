@@ -138,6 +138,25 @@ EXAMPLES = """
   cisco.nxos.nxos_static_routes:
     state: deleted
 
+# Task Output
+# -----------
+# before:
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.0/24
+#             next_hops:
+#               - forward_router_address: 192.0.2.13
+#                 tag: 12
+#           - dest: 192.0.2.32/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.12
+#                 route_name: new_route
+# commands:
+# - configure terminal
+# - no ip route 192.0.2.0/24 192.0.2.13 tag 12
+# - no ip route 192.0.2.32/28 192.0.2.12 name new_route
+# after: []
 # After state:
 # ------------
 #
@@ -158,6 +177,56 @@ EXAMPLES = """
     config:
     - vrf: trial_vrf
     state: deleted
+
+# Task Output
+# -----------
+# before:
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.64/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.22
+#                 tag: 4
+#               - admin_distance: 1
+#                 forward_router_address: 192.0.2.23
+#                 route_name: merged_route
+#       - afi: ipv6
+#         routes:
+#           - dest: '2200:10::/36'
+#             next_hops:
+#               - admin_distance: 5
+#                 dest_vrf: dest
+#                 forward_router_address: '2048:ae12::1'
+#     vrf: trial_vrf
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.16/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.24
+#                 route_name: new_route
+#           - dest: 192.0.2.80/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.26
+#                 tag: 12
+# commands:
+# - vrf context trial_vrf
+# - no ip route 192.0.2.64/28 192.0.2.22 tag 4
+# - no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
+# - no ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
+# after:
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.16/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.24
+#                 route_name: new_route
+#           - dest: 192.0.2.80/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.26
+#                 tag: 12
 
 # After state:
 # -----------
@@ -184,20 +253,70 @@ EXAMPLES = """
       - afi: ipv4
     state: deleted
 
+# Task Output
+# -----------
+# before:
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.64/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.22
+#                 tag: 4
+#               - admin_distance: 1
+#                 forward_router_address: 192.0.2.23
+#                 route_name: merged_route
+#       - afi: ipv6
+#         routes:
+#           - dest: '2200:10::/36'
+#             next_hops:
+#               - admin_distance: 5
+#                 dest_vrf: dest
+#                 forward_router_address: '2048:ae12::1'
+#     vrf: trial_vrf
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.16/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.24
+#                 route_name: new_route
+#           - dest: 192.0.2.80/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.26
+#                 tag: 12
+# commands:
+# - vrf context trial_vrf
+# - no ip route 192.0.2.64/28 192.0.2.22 tag 4
+# - no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
+# after:
+#   - address_families:
+#       - afi: ipv6
+#         routes:
+#           - dest: '2200:10::/36'
+#             next_hops:
+#               - admin_distance: 5
+#                 dest_vrf: dest
+#                 forward_router_address: '2048:ae12::1'
+#     vrf: trial_vrf
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.16/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.24
+#                 route_name: new_route
+#           - dest: 192.0.2.80/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.26
+#                 tag: 12
+
 # After state:
 # -----------
 # ip route 192.0.2.16/28 192.0.2.24 name new_route
 # ip route 192.0.2.80/28 192.0.2.26 tag 12
 # vrf context trial_vrf
 # ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
-
-
-# Before state:
-# -----------
-# ip route 192.0.2.16/28 192.0.2.24 name new_route
-# vrf context trial_vrf
-# ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
-
 
 # Using merged
 
@@ -232,6 +351,40 @@ EXAMPLES = """
           - interface: eth1/3
             forward_router_address: 2001:db8::12
     state: merged
+
+# Task Output
+# -----------
+# before:[]
+# commands:
+# - vrf context trial_vrf
+# - ip route 192.0.2.64/24 192.0.2.22 tag 4 2
+# - configure terminal
+# - ip route 192.0.2.16/24 192.0.2.24 name new_route
+# - ipv6 route 2001:db8::/64 Ethernet1/3 2001:db8::12
+# after:
+#     - vrf: trial_vrf
+#       address_families:
+#       - afi: ipv4
+#         routes:
+#         - dest: 192.0.2.64/24
+#           next_hops:
+#           - forward_router_address: 192.0.2.22
+#             tag: 4
+#             admin_distance: 2
+#
+#     - address_families:
+#       - afi: ipv4
+#         routes:
+#         - dest: 192.0.2.16/24
+#           next_hops:
+#           - forward_router_address: 192.0.2.24
+#             route_name: new_route
+#       - afi: ipv6
+#         routes:
+#         - dest: 2001:db8::/64
+#           next_hops:
+#           - interface: eth1/3
+#             forward_router_address: 2
 
 # After state:
 # ------------
@@ -272,11 +425,61 @@ EXAMPLES = """
             interface: Ethernet1/2
     state: overridden
 
+# Task Output
+# -----------
+# before:
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.64/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.22
+#                 tag: 4
+#               - admin_distance: 1
+#                 forward_router_address: 192.0.2.23
+#                 route_name: merged_route
+#     vrf: trial_vrf
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.16/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.24
+#                 route_name: new_route
+#           - dest: 192.0.2.80/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.26
+#                 tag: 12
+# commands:
+# - configure terminal
+# - no ip route 192.0.2.16/28 192.0.2.24 name new_route
+# - no ip route 192.0.2.80/28 192.0.2.26 tag 12
+# - vrf context trial_vrf
+# - no ip route 192.0.2.64/28 192.0.2.22 tag 4
+# - no ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
+# - ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3
+# - ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name overridden_route2
+# after:
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.16/28
+#             next_hops:
+#               - admin_distance: 3
+#                 forward_router_address: 192.0.2.23
+#                 route_name: overridden_route1
+#               - dest_vrf: destinationVRF
+#                 forward_router_address: 192.0.2.45
+#                 interface: Ethernet1/2
+#                 route_name: overridden_route2
+#    vrf: trial_vrf
+
 # After state:
 # ------------
 #
-# ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3
-# ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2
+# vrf context trial_vrf
+#   ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3
+#   ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name overridden_route2
 
 
 # Using replaced:
@@ -306,6 +509,65 @@ EXAMPLES = """
             dest_vrf: destinationVRF
             interface: Ethernet1/2
     state: replaced
+
+# Task Output
+# -----------
+# before:
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.64/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.22
+#                 tag: 4
+#               - admin_distance: 1
+#                 forward_router_address: 192.0.2.23
+#                 route_name: merged_route
+#     vrf: trial_vrf
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.16/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.24
+#                 route_name: new_route
+#           - dest: 192.0.2.80/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.26
+#                 tag: 12
+# commands:
+# - configure terminal
+# - no ip route 192.0.2.16/28 192.0.2.24 name new_route
+# - ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3
+# - ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2
+# after:
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.64/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.22
+#                 tag: 4
+#               - admin_distance: 1
+#                 forward_router_address: 192.0.2.23
+#                 route_name: merged_route
+#     vrf: trial_vrf
+#   - address_families:
+#       - afi: ipv4
+#         routes:
+#           - dest: 192.0.2.16/28
+#             next_hops:
+#               - admin_distance: 3
+#                 forward_router_address: 192.0.2.23
+#                 route_name: replaced_route1
+#               - dest_vrf: destinationVRF
+#                 forward_router_address: 192.0.2.45
+#                 interface: Ethernet1/2
+#                 route_name: replaced_route2
+#           - dest: 192.0.2.80/28
+#             next_hops:
+#               - forward_router_address: 192.0.2.26
+#                 tag: 12
 
 # After state:
 # -----------

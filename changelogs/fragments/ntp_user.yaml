@@ -1,3 +1,0 @@
----
-minor_changes:
-  - "nxos_user - Add support for hashed passwords. (https://github.com/ansible-collections/cisco.nxos/issues/370)."

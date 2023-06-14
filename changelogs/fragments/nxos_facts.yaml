@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "nxos_facts - Fix missing SVI facts (https://github.com/ansible-collections/cisco.nxos/issues/440)."

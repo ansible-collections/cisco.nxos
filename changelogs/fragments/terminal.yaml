@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "terminal - attempt privilege escalation only when prompt does not end with #"
