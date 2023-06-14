@@ -19,6 +19,8 @@ created.
 """
 
 
+import q
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -30,7 +32,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fact
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.static_routes import (
     Static_routesTemplate,
 )
-import q
 
 
 class Static_routes(ResourceModule):
