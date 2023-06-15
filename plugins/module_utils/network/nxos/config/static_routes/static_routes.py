@@ -93,7 +93,6 @@ class Static_routes(ResourceModule):
                     self._compare_top_level_keys(want={}, have=have, vrf_name=k)
 
     def _compare_top_level_keys(self, want, have, vrf_name):
-
         begin = len(self.commands)
 
         # if state is deleted, empty out wantd and set haved to wantd

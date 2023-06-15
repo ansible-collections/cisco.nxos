@@ -15,6 +15,7 @@ from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
 
+
 ignore_provider_arg = True
 
 
