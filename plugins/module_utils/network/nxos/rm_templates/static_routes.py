@@ -59,14 +59,14 @@ class Static_routesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "ip route"
-            "{{ (' ' + ip.dest) if ip.dest is defined else '' }}"
-            "{{ (' ' + ip.interface) if ip.interface is defined else '' }}"
-            "{{ (' ' + ip.forward_router_address) if ip.forward_router_address is defined else '' }}"
-            "{{ (' vrf ' + ip.dest_vrf) if ip.dest_vrf is defined else '' }}"
-            "{{ (' name ' + ip.route_name) if ip.route_name is defined else '' }}"
-            "{{ (' tag ' + ip.tag|string) if ip.tag is defined else '' }}"
-            "{{ (' track ' + ip.track|string) if ip.track is defined else '' }}"
-            "{{ (' ' + ip.admin_distance|string) if ip.admin_distance is defined else '' }}",
+            "{{ (' ' + ipv4.dest) if ipv4.dest is defined else '' }}"
+            "{{ (' ' + ipv4.interface) if ipv4.interface is defined else '' }}"
+            "{{ (' ' + ipv4.forward_router_address) if ipv4.forward_router_address is defined else '' }}"
+            "{{ (' vrf ' + ipv4.dest_vrf) if ipv4.dest_vrf is defined else '' }}"
+            "{{ (' name ' + ipv4.route_name) if ipv4.route_name is defined else '' }}"
+            "{{ (' tag ' + ipv4.tag|string) if ipv4.tag is defined else '' }}"
+            "{{ (' track ' + ipv4.track|string) if ipv4.track is defined else '' }}"
+            "{{ (' ' + ipv4.admin_distance|string) if ipv4.admin_distance is defined else '' }}",
             "result": {
                 "{{ dest }}_{{ namevrf|d() }}_ipv4": [
                     {
@@ -112,7 +112,7 @@ class Static_routesTemplate(NetworkTemplate):
                 "{{ dest }}_{{ namevrf|d() }}_ipv6": [
                     {
                         "_vrf": "{{ namevrf }}",
-                        "_afi": "ipv4",
+                        "_afi": "ipv6",
                         "_dest": "{{ dest }}",
                         "interface": "{{ interface }}",
                         "forward_router_address": "{{ forward_router_address }}",

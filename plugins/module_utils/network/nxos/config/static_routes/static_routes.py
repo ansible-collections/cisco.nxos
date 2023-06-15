@@ -19,8 +19,6 @@ created.
 """
 
 
-import q
-
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -47,7 +45,6 @@ class Static_routes(ResourceModule):
             resource="static_routes",
             tmplt=Static_routesTemplate(),
         )
-        self.parsers = []
 
     def execute_module(self):
         """Execute the module
@@ -70,7 +67,7 @@ class Static_routes(ResourceModule):
         if delete_spcl and haved and self.state == "deleted":
             for pk, to_rem in delete_spcl.items():
                 if pk in ["ipv4", "ipv6"]:
-                    _afis = haved.get("_afis_")
+                    _afis = haved.get("0_afis_")
                     for k, v in _afis.get(pk, {}).items():
                         for each_dest in to_rem:
                             if k.split("_")[0] == each_dest:
@@ -89,13 +86,16 @@ class Static_routes(ResourceModule):
                 wantd = dict_merge(haved, wantd)
 
             for k, want in wantd.items():
-                self._compare_top_level_keys(want=want, have=haved.pop(k, {}))
+                self._compare_top_level_keys(want=want, have=haved.pop(k, {}), vrf_name=k)
 
-            if (self.state == "deleted" and not wantd) or self.state in ["overridden", "replaced"]:
+            if (self.state == "deleted" and not wantd) or self.state in ["overridden"]:
                 for k, have in haved.items():
-                    self._compare_top_level_keys(want={}, have=have)
+                    self._compare_top_level_keys(want={}, have=have, vrf_name=k)
 
-    def _compare_top_level_keys(self, want, have):
+    def _compare_top_level_keys(self, want, have, vrf_name):
+
+        begin = len(self.commands)
+
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted" and have:
             _have = {}
@@ -114,9 +114,19 @@ class Static_routes(ResourceModule):
             for _afi, routes in want.items():
                 self._compare(s_want=routes, s_have=have.pop(_afi, {}), afi=_afi)
 
-        if self.state in ["overridden", "deleted", "replaced"]:
+        if self.state in ["overridden", "deleted"]:
             for _afi, routes in have.items():
                 self._compare(s_want={}, s_have=routes, afi=_afi)
+
+        if len(self.commands) != begin:
+            if vrf_name == "0_afis_":
+                afi_cmds = []
+                for cmds in range(begin, len(self.commands)):
+                    self.commands.insert(0, self.commands.pop())
+                #     afi_cmds.append(self.commands.pop())
+                # self.commands = afi_cmds + self.commands
+            else:
+                self.commands.insert(begin, self._tmplt.render({"namevrf": vrf_name}, "vrf", False))
 
     def _compare(self, s_want, s_have, afi):
         for name, w_srs in s_want.items():
@@ -140,7 +150,7 @@ class Static_routes(ResourceModule):
                     for rts in adfs.get("routes", []):
                         _dest = rts.get("dest", "")
 
-                        #  below if specific to special deletes
+                        #  below if specific to special delete
                         if (
                             self.state == "deleted"
                             and operation == "want"
@@ -177,5 +187,5 @@ class Static_routes(ResourceModule):
 
                             _routes[_key] = dummy_sr
                     _srts[_afi] = _routes
-                _static_rts[_vrf if _vrf else "_afis_"] = _srts
+                _static_rts[_vrf if _vrf else "0_afis_"] = _srts
         return _static_rts, _delete_spc
