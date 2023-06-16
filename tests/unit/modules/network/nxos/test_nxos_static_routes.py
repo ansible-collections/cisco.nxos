@@ -94,8 +94,8 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                 "dest": "192.0.2.80/28",
                             },
                         ],
-                    }
-                ]
+                    },
+                ],
             },
             {
                 "vrf": "Test",
@@ -112,9 +112,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                 ],
                                 "dest": "192.0.2.48/28",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -126,9 +126,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                             {
                                 "next_hops": [{"forward_router_address": "192.168.255.1"}],
                                 "dest": "0.0.0.0/0",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -144,7 +144,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         "admin_distance": 11,
                                         "tag": 22323,
                                         "route_name": "wewew",
-                                    }
+                                    },
                                 ],
                                 "dest": "10.0.10.0/25",
                             },
@@ -169,7 +169,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     {
                                         "interface": "loopback22",
                                         "forward_router_address": "192.0.2.13",
-                                    }
+                                    },
                                 ],
                                 "dest": "192.0.2.48/28",
                             },
@@ -203,7 +203,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                 ],
                                 "dest": "2200:10::/36",
-                            }
+                            },
                         ],
                     },
                 ],
@@ -224,9 +224,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                 ],
                                 "dest": "192.0.2.64/28",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
         ]
@@ -268,13 +268,13 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "192.0.2.26", "tag": 12}
+                                            {"forward_router_address": "192.0.2.26", "tag": 12},
                                         ],
                                         "dest": "192.0.2.80/28",
                                     },
                                 ],
-                            }
-                        ]
+                            },
+                        ],
                     },
                     {
                         "vrf": "Test",
@@ -291,9 +291,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.48/28",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
@@ -305,9 +305,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     {
                                         "next_hops": [{"forward_router_address": "192.168.255.1"}],
                                         "dest": "0.0.0.0/0",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
@@ -323,7 +323,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                                 "admin_distance": 11,
                                                 "tag": 22323,
                                                 "route_name": "wewew",
-                                            }
+                                            },
                                         ],
                                         "dest": "10.0.10.0/25",
                                     },
@@ -348,7 +348,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                             {
                                                 "interface": "loopback22",
                                                 "forward_router_address": "192.0.2.13",
-                                            }
+                                            },
                                         ],
                                         "dest": "192.0.2.48/28",
                                     },
@@ -382,7 +382,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                             },
                                         ],
                                         "dest": "2200:10::/36",
-                                    }
+                                    },
                                 ],
                             },
                         ],
@@ -403,9 +403,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.64/28",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -487,13 +487,13 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "192.0.2.27", "tag": 13}
+                                            {"forward_router_address": "192.0.2.27", "tag": 13},
                                         ],
                                         "dest": "192.0.2.80/28",
                                     },
                                 ],
-                            }
-                        ]
+                            },
+                        ],
                     },
                     {
                         "vrf": "trial_vrf",
@@ -510,9 +510,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.0/28",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -582,13 +582,13 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "192.0.2.27", "tag": 13}
+                                            {"forward_router_address": "192.0.2.27", "tag": 13},
                                         ],
                                         "dest": "192.0.2.80/28",
                                     },
                                 ],
-                            }
-                        ]
+                            },
+                        ],
                     },
                     {
                         "vrf": "trial_vrf",
@@ -605,9 +605,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.0/28",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -815,13 +815,13 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "192.0.2.26", "tag": 12}
+                                            {"forward_router_address": "192.0.2.26", "tag": 12},
                                         ],
                                         "dest": "192.0.2.80/28",
                                     },
                                 ],
-                            }
-                        ]
+                            },
+                        ],
                     },
                     {
                         "vrf": "Test",
@@ -838,9 +838,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                             },
                                         ],
                                         "dest": "192.0.2.48/28",
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],
@@ -952,8 +952,8 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                 "dest": "192.0.2.80/28",
                             },
                         ],
-                    }
-                ]
+                    },
+                ],
             },
             {
                 "vrf": "Test",
@@ -967,9 +967,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     {"forward_router_address": "192.0.2.14", "admin_distance": 5},
                                 ],
                                 "dest": "192.0.2.48/28",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -981,9 +981,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                             {
                                 "next_hops": [{"forward_router_address": "192.168.255.1"}],
                                 "dest": "0.0.0.0/0",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -999,7 +999,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         "admin_distance": 11,
                                         "tag": 22323,
                                         "route_name": "wewew",
-                                    }
+                                    },
                                 ],
                                 "dest": "10.0.10.0/25",
                             },
@@ -1024,7 +1024,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     {
                                         "interface": "loopback22",
                                         "forward_router_address": "192.0.2.13",
-                                    }
+                                    },
                                 ],
                                 "dest": "192.0.2.48/28",
                             },
@@ -1058,7 +1058,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                 ],
                                 "dest": "2200:10::/36",
-                            }
+                            },
                         ],
                     },
                 ],
@@ -1079,9 +1079,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                 ],
                                 "dest": "192.0.2.64/28",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
         ]
@@ -1142,8 +1142,8 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                 "dest": "192.0.2.79/28",
                             },
                         ],
-                    }
-                ]
+                    },
+                ],
             },
             {
                 "vrf": "Test",
@@ -1157,9 +1157,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     {"forward_router_address": "192.0.2.14", "admin_distance": 5},
                                 ],
                                 "dest": "192.0.2.48/28",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -1171,9 +1171,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                             {
                                 "next_hops": [{"forward_router_address": "192.168.255.1"}],
                                 "dest": "0.0.0.0/0",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -1189,7 +1189,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         "admin_distance": 11,
                                         "tag": 22323,
                                         "route_name": "wewew",
-                                    }
+                                    },
                                 ],
                                 "dest": "10.0.10.0/25",
                             },
@@ -1214,7 +1214,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     {
                                         "interface": "loopback22",
                                         "forward_router_address": "192.0.2.13",
-                                    }
+                                    },
                                 ],
                                 "dest": "192.0.2.48/28",
                             },
@@ -1248,7 +1248,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                 ],
                                 "dest": "2200:10::/36",
-                            }
+                            },
                         ],
                     },
                 ],
@@ -1269,9 +1269,9 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                     },
                                 ],
                                 "dest": "192.0.2.64/28",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
         ]

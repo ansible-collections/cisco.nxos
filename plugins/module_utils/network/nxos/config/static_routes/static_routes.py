@@ -82,7 +82,8 @@ class Static_routes(ResourceModule):
                                     self.addcmd({ak: srts}, ak, True)
                     if len(self.commands) != sp_begin:
                         self.commands.insert(
-                            sp_begin, self._tmplt.render({"namevrf": pk}, "vrf", False)
+                            sp_begin,
+                            self._tmplt.render({"namevrf": pk}, "vrf", False),
                         )
 
         else:
