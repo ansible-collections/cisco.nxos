@@ -19,7 +19,9 @@ short_description: Static routes resource module
 description: This module configures and manages the attributes of static routes on
   Cisco NX-OS platforms.
 version_added: 1.0.0
-author: Adharsh Srivats Rangarajan (@adharshsrivatsr)
+author:
+  - Adharsh Srivats Rangarajan (@adharshsrivatsr)
+  - Sagar Paul (@KB-perByte)
 notes:
 - Tested against NX-OS 7.3.(0)D1(1) on VIRL
 - Unsupported for Cisco MDS
@@ -126,13 +128,15 @@ options:
 """
 
 EXAMPLES = """
-# Using deleted:
+# Using deleted - delete all
 
 # Before state:
 # -------------
 #
+# switch# show running-config | include '^ip(v6)* route'
 # ip route 192.0.2.32/28 192.0.2.12 name new_route
 # ip route 192.0.2.26/24 192.0.2.13 tag 12
+# switch# show running-config | section '^vrf context'
 
 - name: Delete all routes
   cisco.nxos.nxos_static_routes:
@@ -140,6 +144,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 #   - address_families:
 #       - afi: ipv4
@@ -153,20 +158,24 @@ EXAMPLES = """
 #               - forward_router_address: 192.0.2.12
 #                 route_name: new_route
 # commands:
-# - configure terminal
 # - no ip route 192.0.2.0/24 192.0.2.13 tag 12
 # - no ip route 192.0.2.32/28 192.0.2.12 name new_route
 # after: []
+
 # After state:
 # ------------
-#
+# switch# show running-config | include '^ip(v6)* route'
+# switch# show running-config | section '^vrf context'
 
+# Using deleted - vrf based
 
 # Before state:
 # ------------
 #
+# switch# show running-config | include '^ip(v6)* route'
 # ip route 192.0.2.16/28 192.0.2.24 name new_route
 # ip route 192.0.2.80/28 192.0.2.26 tag 12
+# switch# show running-config | section '^vrf context'
 # vrf context trial_vrf
 # ip route 192.0.2.64/28 192.0.2.22 tag 4
 # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -180,6 +189,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 #   - address_families:
 #       - afi: ipv4
@@ -230,16 +240,22 @@ EXAMPLES = """
 
 # After state:
 # -----------
+#
+# switch# show running-config | include '^ip(v6)* route'
 # ip route 192.0.2.16/28 192.0.2.24 name new_route
 # ip route 192.0.2.80/28 192.0.2.26 tag 12
+# switch# show running-config | section '^vrf context'
 # vrf context trial_vrf
 
+# Using deleted - afi based
 
 # Before state:
 # ------------
 #
+# switch# show running-config | include '^ip(v6)* route'
 # ip route 192.0.2.16/28 192.0.2.24 name new_route
 # ip route 192.0.2.80/28 192.0.2.26 tag 12
+# switch# show running-config | section '^vrf context'
 # vrf context trial_vrf
 # ip route 192.0.2.64/28 192.0.2.22 tag 4
 # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -255,6 +271,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 #   - address_families:
 #       - afi: ipv4
@@ -313,8 +330,11 @@ EXAMPLES = """
 
 # After state:
 # -----------
+#
+# switch# show running-config | include '^ip(v6)* route'
 # ip route 192.0.2.16/28 192.0.2.24 name new_route
 # ip route 192.0.2.80/28 192.0.2.26 tag 12
+# switch# show running-config | section '^vrf context'
 # vrf context trial_vrf
 # ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
 
@@ -322,7 +342,8 @@ EXAMPLES = """
 
 # Before state:
 # -------------
-#
+# switch# show running-config | include '^ip(v6)* route'
+# switch# show running-config | section '^vrf context'
 
 - name: Merge new static route configuration
   cisco.nxos.nxos_static_routes:
@@ -336,7 +357,6 @@ EXAMPLES = """
           - forward_router_address: 192.0.2.22
             tag: 4
             admin_distance: 2
-
     - address_families:
       - afi: ipv4
         routes:
@@ -354,11 +374,11 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:[]
 # commands:
 # - vrf context trial_vrf
 # - ip route 192.0.2.64/24 192.0.2.22 tag 4 2
-# - configure terminal
 # - ip route 192.0.2.16/24 192.0.2.24 name new_route
 # - ipv6 route 2001:db8::/64 Ethernet1/3 2001:db8::12
 # after:
@@ -371,7 +391,6 @@ EXAMPLES = """
 #           - forward_router_address: 192.0.2.22
 #             tag: 4
 #             admin_distance: 2
-#
 #     - address_families:
 #       - afi: ipv4
 #         routes:
@@ -389,24 +408,27 @@ EXAMPLES = """
 # After state:
 # ------------
 #
+# switch# show running-config | include '^ip(v6)* route'
 # ip route 192.0.2.16/24 192.0.2.24 name new_route
 # ipv6 route 2001:db8::/64 Ethernet1/3 2001:db8::12
+# switch# show running-config | section '^vrf context'
 # vrf context trial_vrf
 #   ip route 192.0.2.0/24 192.0.2.22 tag 4 2
 
-
-# Using overridden:
+# Using overridden
 
 # Before state:
 # -------------
 #
+# switch# show running-config | include '^ip(v6)* route'
 # ip route 192.0.2.16/28 192.0.2.24 name new_route
 # ip route 192.0.2.80/28 192.0.2.26 tag 12
+# switch# show running-config | section '^vrf context'
 # vrf context trial_vrf
 # ip route 192.0.2.64/28 192.0.2.22 tag 4
 # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
 
-- name: Overriden existing static route configuration with new configuration
+- name: Overridden existing static route configuration with new configuration
   cisco.nxos.nxos_static_routes:
     config:
     - vrf: trial_vrf
@@ -418,7 +440,6 @@ EXAMPLES = """
           - forward_router_address: 192.0.2.23
             route_name: overridden_route1
             admin_distance: 3
-
           - forward_router_address: 192.0.2.45
             route_name: overridden_route2
             dest_vrf: destinationVRF
@@ -427,6 +448,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 #   - address_families:
 #       - afi: ipv4
@@ -451,7 +473,6 @@ EXAMPLES = """
 #               - forward_router_address: 192.0.2.26
 #                 tag: 12
 # commands:
-# - configure terminal
 # - no ip route 192.0.2.16/28 192.0.2.24 name new_route
 # - no ip route 192.0.2.80/28 192.0.2.26 tag 12
 # - vrf context trial_vrf
@@ -477,17 +498,21 @@ EXAMPLES = """
 # After state:
 # ------------
 #
+# switch# show running-config | include '^ip(v6)* route'
+# switch# show running-config | section '^vrf context'
 # vrf context trial_vrf
 #   ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3
 #   ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name overridden_route2
 
-
-# Using replaced:
+# Using replaced
 
 # Before state:
 # ------------
+#
+# switch# show running-config | include '^ip(v6)* route'
 # ip route 192.0.2.16/28 192.0.2.24 name new_route
 # ip route 192.0.2.80/28 192.0.2.26 tag 12
+# switch# show running-config | section '^vrf context'
 # vrf context trial_vrf
 # ip route 192.0.2.64/28 192.0.2.22 tag 4
 # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -503,7 +528,6 @@ EXAMPLES = """
           - forward_router_address: 192.0.2.23
             route_name: replaced_route1
             admin_distance: 3
-
           - forward_router_address: 192.0.2.45
             route_name: replaced_route2
             dest_vrf: destinationVRF
@@ -512,6 +536,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 #   - address_families:
 #       - afi: ipv4
@@ -536,7 +561,6 @@ EXAMPLES = """
 #               - forward_router_address: 192.0.2.26
 #                 tag: 12
 # commands:
-# - configure terminal
 # - no ip route 192.0.2.16/28 192.0.2.24 name new_route
 # - ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3
 # - ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2
@@ -570,29 +594,37 @@ EXAMPLES = """
 #                 tag: 12
 
 # After state:
-# -----------
+# ------------
+#
+# switch# show running-config | include '^ip(v6)* route'
 # ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3
 # ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2
 # ip route 192.0.2.80/28 192.0.2.26 tag 12
+# switch# show running-config | section '^vrf context'
 # vrf context trial_vrf
 # ip route 192.0.2.64/28 192.0.2.22 tag 4
 # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
 
 
-# Using gathered:
+# Using gathered
 
 # Before state:
 # -------------
+#
+# switch# show running-config | include '^ip(v6)* route'
 # ipv6 route 2001:db8:12::/32  2001:db8::12
+# switch# show running-config | section '^vrf context'
 # vrf context Test
 #    ip route 192.0.2.48/28 192.0.2.13
 #    ip route 192.0.2.48/28 192.0.2.14 5
 
-- name: Gather the exisitng condiguration
+- name: Gather the existing configuration
   cisco.nxos.nxos_static_routes:
     state: gathered
 
-# returns:
+# Task Output
+# -----------
+#
 # gathered:
 #     - vrf: Test
 #       address_families:
@@ -613,7 +645,7 @@ EXAMPLES = """
 #                 - forward_router_address: 2001:db8::12
 
 
-# Using rendered:
+# Using rendered
 
 - name: Render required configuration to be pushed to the device
   cisco.nxos.nxos_static_routes:
@@ -624,7 +656,6 @@ EXAMPLES = """
         - dest: 192.0.2.48/28
           next_hops:
           - forward_router_address: 192.0.2.13
-
       - afi: ipv6
         routes:
         - dest: 2001:db8::/64
@@ -633,12 +664,13 @@ EXAMPLES = """
             forward_router_address: 2001:db8::12
     state: rendered
 
-# returns
+# Task Output
+# -----------
+#
 # rendered:
 #   vrf context default
 #   ip route 192.0.2.48/28 192.0.2.13
 #   ipv6 route 2001:db8::/64 Ethernet1/3 2001:db8::12
-
 
 # Using parsed
 
@@ -650,7 +682,9 @@ EXAMPLES = """
         ip route 192.0.2.48/28 192.0.2.13
         ip route 192.0.2.48/28 192.0.2.14 5
 
-# returns:
+# Task Output
+# -----------
+#
 # parsed:
 #     - vrf: Test
 #       address_families:
@@ -659,10 +693,8 @@ EXAMPLES = """
 #             - dest: 192.0.2.48/28
 #               next_hops:
 #                 - forward_router_address: 192.0.2.13
-#
 #                 - forward_router_address: 192.0.2.14
 #                   admin_distance: 5
-#
 #     - address_families:
 #         - afi: ipv6
 #           routes:
@@ -691,17 +723,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - ip route 192.0.2.16/28 192.0.2.24 name new_route
+    - vrf context trial_vrf
+    - ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - ip route 192.0.2.16/28 192.0.2.24 name new_route
+    - vrf context trial_vrf
+    - ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
