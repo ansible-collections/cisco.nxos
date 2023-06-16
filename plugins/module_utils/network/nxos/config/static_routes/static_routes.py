@@ -73,12 +73,17 @@ class Static_routes(ResourceModule):
                             if k.split("_")[0] == each_dest:
                                 self.addcmd({pk: v}, pk, True)
                 else:
+                    sp_begin = len(self.commands)
                     _vrfs = haved.get(pk)
                     for ak, v in _vrfs.items():
                         for k, srts in v.items():
                             for each_dest in to_rem.get(ak):
                                 if k.split("_")[0] == each_dest:
                                     self.addcmd({ak: srts}, ak, True)
+                    if len(self.commands) != sp_begin:
+                        self.commands.insert(
+                            sp_begin, self._tmplt.render({"namevrf": pk}, "vrf", False)
+                        )
 
         else:
             # if state is merged, merge want onto have and then compare
