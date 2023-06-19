@@ -13,7 +13,7 @@
     state: parsed
   register: result
 
-- name: assert parsed test
+- name: Assert parsed test
   ansible.builtin.assert:
     that:
       - "result.changed == false"
