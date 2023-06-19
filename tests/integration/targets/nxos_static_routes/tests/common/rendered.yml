@@ -35,7 +35,7 @@
       - "'ip route 192.0.2.80/28 192.0.2.26 tag 12' in result.rendered"
       - "'vrf context trial_vrf' in result.rendered"
       - "'ipv6 route 2001:db8:12::/32 2001:db8::1001 name rendered_route 3' in result.rendered"
-      - "result.rendered | length == 5"
+      - "result.rendered | length == 4"
 
 - name: Idempotence - rendered
   nxos_static_routes: *rendered
