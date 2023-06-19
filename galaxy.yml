@@ -13,4 +13,4 @@ issues: https://github.com/ansible-collections/cisco.nxos/issues
 tags: [cisco, nxos, networking, nxapi, netconf]
 # NOTE(pabelanger): We create 0.0.0 version key to keep ansible-galaxy
 # happy. We dynamically inject version info based on git information.
-version: 4.4.0
+version: 4.5.0-dev

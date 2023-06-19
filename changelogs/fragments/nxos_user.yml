@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - "nxos_user - Added dev-ops role to BUILTINS (https://github.com/ansible-collections/cisco.nxos/issues/690)"
