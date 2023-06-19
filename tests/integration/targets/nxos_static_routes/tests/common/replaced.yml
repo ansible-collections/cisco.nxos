@@ -23,7 +23,6 @@
                       - forward_router_address: 192.0.2.23
                         route_name: replaced_route1
                         admin_distance: 3
-
                       - forward_router_address: 192.0.2.45
                         route_name: replaced_route2
                         dest_vrf: destinationVRF

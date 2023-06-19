@@ -18,11 +18,9 @@
                     next_hops:
                       - forward_router_address: 192.0.2.22
                         tag: 4
-
                       - forward_router_address: 192.0.2.23
                         route_name: merged_route
                         admin_distance: 1
-
           - address_families:
               - afi: ipv4
                 routes:
@@ -30,7 +28,6 @@
                     next_hops:
                       - forward_router_address: 192.0.2.24
                         route_name: new_route
-
                   - dest: 192.0.2.80/28
                     next_hops:
                       - forward_router_address: 192.0.2.26

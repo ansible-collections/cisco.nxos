@@ -53,14 +53,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
             vrf context newvrf
-              ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11
+              ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11
               ip route 10.0.11.0/25 10.0.11.10 tag 22 11
               ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11
               ip route 192.0.2.48/28 loopback22 192.0.2.13
               ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
               ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11
               ipv6 route 2200:10::/36 port-channel22 2048:ae12::1
-              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22
+              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22
             vrf context trial_vrf
               ip route 192.0.2.64/28 192.0.2.22 tag 4
               ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -143,7 +143,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         "forward_router_address": "10.0.10.3",
                                         "admin_distance": 11,
                                         "tag": 22323,
-                                        "route_name": "wewew",
+                                        "route_name": "test_name",
                                     },
                                 ],
                                 "dest": "10.0.10.0/25",
@@ -199,7 +199,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         "interface": "Ethernet2/1",
                                         "forward_router_address": "2048:ae12::1",
                                         "admin_distance": 22,
-                                        "route_name": "iamname",
+                                        "route_name": "test_name2",
                                     },
                                 ],
                                 "dest": "2200:10::/36",
@@ -322,7 +322,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                                 "forward_router_address": "10.0.10.3",
                                                 "admin_distance": 11,
                                                 "tag": 22323,
-                                                "route_name": "wewew",
+                                                "route_name": "test_name",
                                             },
                                         ],
                                         "dest": "10.0.10.0/25",
@@ -378,7 +378,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                                 "interface": "Ethernet2/1",
                                                 "forward_router_address": "2048:ae12::1",
                                                 "admin_distance": 22,
-                                                "route_name": "iamname",
+                                                "route_name": "test_name2",
                                             },
                                         ],
                                         "dest": "2200:10::/36",
@@ -416,14 +416,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
             "ip route 192.0.2.80/28 192.0.2.26 tag 12",
             "ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2",
             "vrf context newvrf",
-            "ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11",
+            "ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11",
             "ip route 10.0.11.0/25 10.0.11.10 tag 22 11",
             "ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11",
             "ip route 192.0.2.48/28 loopback22 192.0.2.13",
             "ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5",
             "ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11",
             "ipv6 route 2200:10::/36 port-channel22 2048:ae12::1",
-            "ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22",
+            "ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22",
             "vrf context Test",
             "ip route 192.0.2.48/28 192.0.2.13",
             "ip route 192.0.2.48/28 192.0.2.14 5",
@@ -448,14 +448,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
             vrf context newvrf
-              ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11
+              ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11
               ip route 10.0.11.0/25 10.0.11.10 tag 22 11
               ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11
               ip route 192.0.2.48/28 loopback22 192.0.2.13
               ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
               ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11
               ipv6 route 2200:10::/36 port-channel22 2048:ae12::1
-              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22
+              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22
             vrf context trial_vrf
               ip route 192.0.2.64/28 192.0.2.22 tag 4
               ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -543,14 +543,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
             vrf context newvrf
-              ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11
+              ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11
               ip route 10.0.11.0/25 10.0.11.10 tag 22 11
               ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11
               ip route 192.0.2.48/28 loopback22 192.0.2.13
               ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
               ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11
               ipv6 route 2200:10::/36 port-channel22 2048:ae12::1
-              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22
+              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22
             vrf context trial_vrf
               ip route 192.0.2.64/28 192.0.2.22 tag 4
               ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -631,14 +631,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
             "vrf context management",
             "no ip route 0.0.0.0/0 192.168.255.1",
             "vrf context newvrf",
-            "no ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11",
+            "no ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11",
             "no ip route 10.0.11.0/25 10.0.11.10 tag 22 11",
             "no ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11",
             "no ip route 192.0.2.48/28 loopback22 192.0.2.13",
             "no ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5",
             "no ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11",
             "no ipv6 route 2200:10::/36 port-channel22 2048:ae12::1",
-            "no ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22",
+            "no ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -656,14 +656,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
             vrf context newvrf
-              ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11
+              ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11
               ip route 10.0.11.0/25 10.0.11.10 tag 22 11
               ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11
               ip route 192.0.2.48/28 loopback22 192.0.2.13
               ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
               ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11
               ipv6 route 2200:10::/36 port-channel22 2048:ae12::1
-              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22
+              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22
             vrf context trial_vrf
               ip route 192.0.2.64/28 192.0.2.22 tag 4
               ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -691,14 +691,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
             vrf context newvrf
-              ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11
+              ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11
               ip route 10.0.11.0/25 10.0.11.10 tag 22 11
               ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11
               ip route 192.0.2.48/28 loopback22 192.0.2.13
               ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
               ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11
               ipv6 route 2200:10::/36 port-channel22 2048:ae12::1
-              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22
+              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22
             vrf context trial_vrf
               ip route 192.0.2.64/28 192.0.2.22 tag 4
               ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -731,14 +731,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
             vrf context newvrf
-              ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11
+              ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11
               ip route 10.0.11.0/25 10.0.11.10 tag 22 11
               ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11
               ip route 192.0.2.48/28 loopback22 192.0.2.13
               ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
               ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11
               ipv6 route 2200:10::/36 port-channel22 2048:ae12::1
-              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22
+              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22
             vrf context trial_vrf
               ip route 192.0.2.64/28 192.0.2.22 tag 4
               ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -776,14 +776,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
             vrf context newvrf
-              ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11
+              ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11
               ip route 10.0.11.0/25 10.0.11.10 tag 22 11
               ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11
               ip route 192.0.2.48/28 loopback22 192.0.2.13
               ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
               ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11
               ipv6 route 2200:10::/36 port-channel22 2048:ae12::1
-              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22
+              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22
             vrf context trial_vrf
               ip route 192.0.2.64/28 192.0.2.22 tag 4
               ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -908,14 +908,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                       ip name-server 192.168.255.1
                       ip route 0.0.0.0/0 192.168.255.1
                     vrf context newvrf
-                      ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11
+                      ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11
                       ip route 10.0.11.0/25 10.0.11.10 tag 22 11
                       ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11
                       ip route 192.0.2.48/28 loopback22 192.0.2.13
                       ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
                       ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11
                       ipv6 route 2200:10::/36 port-channel22 2048:ae12::1
-                      ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22
+                      ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22
                     vrf context trial_vrf
                       ip route 192.0.2.64/28 192.0.2.22 tag 4
                       ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -998,7 +998,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         "forward_router_address": "10.0.10.3",
                                         "admin_distance": 11,
                                         "tag": 22323,
-                                        "route_name": "wewew",
+                                        "route_name": "test_name",
                                     },
                                 ],
                                 "dest": "10.0.10.0/25",
@@ -1054,7 +1054,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         "interface": "Ethernet2/1",
                                         "forward_router_address": "2048:ae12::1",
                                         "admin_distance": 22,
-                                        "route_name": "iamname",
+                                        "route_name": "test_name2",
                                     },
                                 ],
                                 "dest": "2200:10::/36",
@@ -1100,14 +1100,14 @@ class TestNxosStaticRoutesModule(TestNxosModule):
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
             vrf context newvrf
-              ip route 10.0.10.0/25 10.0.10.3 name wewew tag 22323 11
+              ip route 10.0.10.0/25 10.0.10.3 name test_name tag 22323 11
               ip route 10.0.11.0/25 10.0.11.10 tag 22 11
               ip route 10.0.11.0/25 10.0.11.12 vrf Test tag 22 11
               ip route 192.0.2.48/28 loopback22 192.0.2.13
               ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
               ipv6 route 2200:10::/36 mgmt0 2048:ae12::1 tag 22 11
               ipv6 route 2200:10::/36 port-channel22 2048:ae12::1
-              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name iamname 22
+              ipv6 route 2200:10::/36 Ethernet2/1 2048:ae12::1 name test_name2 22
             vrf context trial_vrf
               ip route 192.0.2.64/28 192.0.2.22 tag 4
               ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -1188,7 +1188,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         "forward_router_address": "10.0.10.3",
                                         "admin_distance": 11,
                                         "tag": 22323,
-                                        "route_name": "wewew",
+                                        "route_name": "test_name",
                                     },
                                 ],
                                 "dest": "10.0.10.0/25",
@@ -1244,7 +1244,7 @@ class TestNxosStaticRoutesModule(TestNxosModule):
                                         "interface": "Ethernet2/1",
                                         "forward_router_address": "2048:ae12::1",
                                         "admin_distance": 22,
-                                        "route_name": "iamname",
+                                        "route_name": "test_name2",
                                     },
                                 ],
                                 "dest": "2200:10::/36",
