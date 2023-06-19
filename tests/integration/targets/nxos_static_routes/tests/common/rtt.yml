@@ -5,6 +5,8 @@
 - block:
     - ansible.builtin.include_tasks: _remove_config.yaml
 
+    - ansible.builtin.include_tasks: _facts_mgmt_vrf.yaml
+
     - name: Apply the provided configuration(base config)
       cisco.nxos.nxos_static_routes:
         config:
@@ -49,7 +51,14 @@
                       - forward_router_address: 192.0.2.55
                         tag: 1
                         admin_distance: 1
-        state: replaced
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 0.0.0.0/0
+                    next_hops:
+                      - forward_router_address: "{{ var_forward_router_address[0] }}"
+            vrf: management
+        state: overridden
       register: result
 
     - name: Assert that changes are applied
@@ -59,12 +68,14 @@
           - "'no ip route 192.0.2.36/30 192.0.2.32 name test_route1 tag 14' in result.commands"
           - "'no ip route 192.0.2.36/30 192.0.2.48 name test_route2 2'"
           - "'ip route 192.0.2.44/30 192.0.2.55 tag 1 1' in result.commands"
-          - "result.commands | length == 3"
+          - "'vrf context trial_vrf' in result.commands"
+          - "'no ip route 192.0.2.32/30 192.0.2.105 vrf test_dest_vrf' in result.commands"
+          - "result.commands | length == 5"
 
     - name: Revert back to base configuration
       cisco.nxos.nxos_static_routes:
         config: "{{ ansible_facts['network_resources']['static_routes'] }}"
-        state: replaced
+        state: overridden
       register: revert
 
     - ansible.builtin.assert:

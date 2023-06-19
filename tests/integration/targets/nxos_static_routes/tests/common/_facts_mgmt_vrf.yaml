@@ -1,0 +1,9 @@
+---
+- name: Get management route entry
+  cisco.nxos.nxos_command:
+    commands: show running-config | section 'ip route 0.0.0.0'
+  register: result
+
+- name: Grep forward_router_address
+  ansible.builtin.set_fact:
+    var_forward_router_address: "{{ result['stdout'][0] | regex_search('ip route (\\S+) (\\S+)', '\\2') }}"
