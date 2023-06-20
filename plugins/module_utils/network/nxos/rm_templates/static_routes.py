@@ -36,11 +36,7 @@ class Static_routesTemplate(NetworkTemplate):
                 ''', re.VERBOSE,
             ),
             'setval': 'vrf context {{ namevrf }}',
-            'result': {
-                # '{{ namevrf }}': {
-                #     'namevrf': '{{ namevrf }}',
-                # },
-            },
+            'result': {},
             'shared': True,
         },
         {

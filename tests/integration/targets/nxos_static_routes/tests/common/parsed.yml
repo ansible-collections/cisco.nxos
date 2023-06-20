@@ -18,6 +18,3 @@
     that:
       - "result.changed == false"
       - "result.parsed == parsed"
-
-- ansible.builtin.assert:
-    that: "result.changed == false"
