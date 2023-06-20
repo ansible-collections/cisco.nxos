@@ -714,7 +714,7 @@ before:
 after:
   description: The resulting configuration after module execution.
   returned: when changed
-  type: dict
+  type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
