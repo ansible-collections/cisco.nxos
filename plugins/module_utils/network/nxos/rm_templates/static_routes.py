@@ -28,6 +28,7 @@ class Static_routesTemplate(NetworkTemplate):
 
     # fmt: off
     PARSERS = [
+        #  this parser shared the vrf context names with routes
         {
             'name': 'vrf',
             'getval': re.compile(
