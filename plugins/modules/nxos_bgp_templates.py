@@ -412,7 +412,6 @@ options:
     - replaced
     - overridden
     - deleted
-    - purged
     - parsed
     - gathered
     - rendered
@@ -420,7 +419,505 @@ options:
 """
 
 EXAMPLES = """
+# Using merged
 
+# Before state:
+# --------------
+#
+# nxos9k# show running-config | section "^router bgp"
+# nxos9k#
+
+- name: Merge the provided configuration with the existing running configuration
+  cisco.nxos.nxos_bgp_templates:
+    config:
+      as_number: 65536
+      neighbor:
+        - name: neighbor_tmplt_1
+          address_family:
+            - afi: ipv4
+              safi: unicast
+              advertise_map:
+                route_map: rmap1
+                non_exist_map: nemap1
+              advertisement_interval: 60
+              disable_peer_as_check: true
+          bmp_activate_server: 2
+          capability:
+            suppress_4_byte_as: true
+          description: Test_BGP_PEER_TEMPLATE_1
+          local_as: 65536
+          remote_as: 65001
+
+        - name: neighbor_tmplt_2
+          description: Test_BGP_PEER_TEMPLATE_2
+          address_family:
+            - afi: ipv4
+              safi: multicast
+              advertise_map:
+                route_map: rmap1
+                exist_map: emap1
+              as_override: true
+              filter_list:
+                inbound: flist1
+                outbound: flist2
+          inherit:
+            peer_session: psession1
+          timers:
+            holdtime: 100
+            keepalive: 45
+# Task Output
+# -----------
+# before: {}
+#
+# commands:
+#   - router bgp 65536
+#   - template peer neighbor_tmplt_1
+#   - bmp-activate-server 2
+#   - capability suppress 4-byte-as
+#   - description Test_BGP_PEER_TEMPLATE_1
+#   - local-as 65536
+#   - remote-as 65001
+#   - address-family ipv4 unicast
+#   - advertise-map rmap1 non-exist-map nemap1
+#   - advertisement-interval 60
+#   - disable-peer-as-check
+#   - template peer neighbor_tmplt_2
+#   - description Test_BGP_PEER_TEMPLATE_2
+#   - inherit peer-session psession1
+#   - timers 45 100
+#   - address-family ipv4 multicast
+#   - advertise-map rmap1 exist-map emap1
+#   - as-override
+#   - filter-list flist1 in
+#   - filter-list flist2 out
+#
+# after:
+#   as_number: "65536"
+#   neighbor:
+#     - name: neighbor_tmplt_1
+#       address_family:
+#         - afi: ipv4
+#           safi: unicast
+#           advertise_map:
+#             non_exist_map: nemap1
+#             route_map: rmap1
+#           advertisement_interval: 60
+#           disable_peer_as_check: true
+#       bmp_activate_server: 2
+#       capability:
+#         suppress_4_byte_as: true
+#       description: Test_BGP_PEER_TEMPLATE_1
+#       local_as: "65536"
+#       remote_as: "65001"
+#
+#     - name: neighbor_tmplt_2
+#       description: Test_BGP_PEER_TEMPLATE_2
+#       address_family:
+#         - afi: ipv4
+#           safi: multicast
+#           advertise_map:
+#             exist_map: emap1
+#             route_map: rmap1
+#           as_override: true
+#           filter_list:
+#             inbound: flist1
+#             outbound: flist2
+#       inherit:
+#         peer_session: psession1
+#       timers:
+#         holdtime: 100
+#         keepalive: 45
+
+# After state:
+# --------------
+#
+# nxos9k# show running-config | section "^router bgp"
+# router bgp 65536
+#   template peer neighbor_tmplt_1
+#     capability suppress 4-byte-as
+#     bmp-activate-server 2
+#     description Test_BGP_PEER_TEMPLATE_1
+#     local-as 65536
+#     remote-as 65001
+#     address-family ipv4 unicast
+#      advertise-map rmap1 non-exist-map nemap1
+#      advertisement-interval 60
+#      disable-peer-as-check
+#   template peer neighbor_tmplt_2
+#     description Test_BGP_PEER_TEMPLATE_2
+#     inherit peer-session psession1
+#     timers 45 100
+#     address-family ipv4 multicast
+#      advertise-map rmap1 exist-map emap1
+#      as-override
+#      filter-list flist1 in
+#      filter-list flist2 out
+
+# Using replaced
+
+# Before state:
+# --------------
+#
+# nxos9k# show running-config | section "^router bgp"
+# router bgp 65536
+#   template peer neighbor_tmplt_1
+#     capability suppress 4-byte-as
+#     description Test_BGP_PEER_TEMPLATE_1
+#     bmp-activate-server 2
+#     local-as 65536
+#     remote-as 65001
+#     address-family ipv4 unicast
+#      advertise-map rmap1 non-exist-map nemap1
+#      advertisement-interval 60
+#      disable-peer-as-check
+#   template peer neighbor_tmplt_2
+#     description Test_BGP_PEER_TEMPLATE_2
+#     inherit peer-session psession1
+#     timers 45 100
+#     address-family ipv4 multicast
+#      advertise-map rmap1 exist-map emap1
+#      as-override
+#      filter-list flist1 in
+#      filter-list flist2 out
+
+- name: Replace BGP templates configuration with provided configuration
+  cisco.nxos.nxos_bgp_templates:
+    config:
+      as_number: 65536
+      neighbor:
+        - name: neighbor_tmplt_1
+          address_family:
+            - afi: ipv4
+              safi: unicast
+              advertise_map:
+                route_map: rmap1
+                non_exist_map: nemap1
+              advertisement_interval: 60
+              disable_peer_as_check: true
+          inherit:
+            peer_session: psession1
+          description: Test_BGP_PEER_TEMPLATE_1
+          local_as: 65537
+    state: replaced
+
+# Task Output
+# -----------
+#
+# before:
+#   as_number: "65536"
+#   neighbor:
+#     - name: neighbor_tmplt_1
+#       address_family:
+#         - afi: ipv4
+#           safi: unicast
+#           advertise_map:
+#             non_exist_map: nemap1
+#             route_map: rmap1
+#           advertisement_interval: 60
+#           disable_peer_as_check: true
+#       bmp_activate_server: 2
+#       capability:
+#         suppress_4_byte_as: true
+#       description: Test_BGP_PEER_TEMPLATE_1
+#       local_as: "65536"
+#       remote_as: "65001"
+#
+#     - name: neighbor_tmplt_2
+#       description: Test_BGP_PEER_TEMPLATE_2
+#       address_family:
+#         - afi: ipv4
+#           safi: multicast
+#           advertise_map:
+#             exist_map: emap1
+#             route_map: rmap1
+#           as_override: true
+#           filter_list:
+#             inbound: flist1
+#             outbound: flist2
+#       inherit:
+#         peer_session: psession1
+#       timers:
+#         holdtime: 100
+#         keepalive: 45
+#
+# commands:
+#   - router bgp 65536
+#   - template peer neighbor_tmplt_1
+#   - no bmp-activate-server 2
+#   - no capability suppress 4-byte-as
+#   - inherit peer-session psession1
+#   - local-as 65537
+#   - no remote-as 65001
+#
+# after:
+#   as_number: "65536"
+#   neighbor:
+#     - name: neighbor_tmplt_1
+#       address_family:
+#         - afi: ipv4
+#           safi: unicast
+#           advertise_map:
+#             non_exist_map: nemap1
+#             route_map: rmap1
+#           advertisement_interval: 60
+#           disable_peer_as_check: true
+#       description: Test_BGP_PEER_TEMPLATE_1
+#       inherit:
+#         peer_session: psession1
+#       local_as: "65537"
+#
+#     - name: neighbor_tmplt_2
+#       description: Test_BGP_PEER_TEMPLATE_2
+#       address_family:
+#         - afi: ipv4
+#           safi: multicast
+#           advertise_map:
+#             exist_map: emap1
+#             route_map: rmap1
+#           as_override: true
+#           filter_list:
+#             inbound: flist1
+#             outbound: flist2
+#       inherit:
+#         peer_session: psession1
+#       timers:
+#         holdtime: 100
+#         keepalive: 45
+
+# After state:
+# --------------
+#
+# nxos9k# show running-config | section "^router bgp"
+# router bgp 65536
+#   template peer neighbor_tmplt_1
+#     inherit peer-session psession1
+#     description Test_BGP_PEER_TEMPLATE_1
+#     local-as 65537
+#     address-family ipv4 unicast
+#      advertise-map rmap1 non-exist-map nemap1
+#      advertisement-interval 60
+#      disable-peer-as-check
+#   template peer neighbor_tmplt_2
+#     description Test_BGP_PEER_TEMPLATE_2
+#     inherit peer-session psession1
+#     bmp-activate-server 2
+#     timers 45 100
+#     address-family ipv4 multicast
+#      advertise-map rmap1 exist-map emap1
+#      as-override
+#      filter-list flist1 in
+#      filter-list flist2 out
+
+# Using overridden
+#
+# Before state:
+# --------------
+#
+# nxos9k# show running-config | section "^router bgp"
+# router bgp 65536
+#   template peer neighbor_tmplt_1
+#     capability suppress 4-byte-as
+#     description Test_BGP_PEER_TEMPLATE_1
+#     bmp-activate-server 2
+#     local-as 65536
+#     remote-as 65001
+#     address-family ipv4 unicast
+#      advertise-map rmap1 non-exist-map nemap1
+#      advertisement-interval 60
+#      disable-peer-as-check
+#   template peer neighbor_tmplt_2
+#     description Test_BGP_PEER_TEMPLATE_2
+#     inherit peer-session psession1
+#     timers 45 100
+#     address-family ipv4 multicast
+#      advertise-map rmap1 exist-map emap1
+#      as-override
+#      filter-list flist1 in
+#      filter-list flist2 out
+
+- name: Override BGP templates configuration with provided configuration
+  cisco.nxos.nxos_bgp_templates:
+    config:
+      as_number: 65536
+      neighbor:
+        - name: neighbor_tmplt_1
+          address_family:
+            - afi: ipv4
+              safi: unicast
+              advertise_map:
+                route_map: rmap1
+                non_exist_map: nemap1
+              advertisement_interval: 60
+              disable_peer_as_check: true
+          inherit:
+            peer_session: psession1
+          description: Test_BGP_PEER_TEMPLATE_1
+          local_as: 65537
+    state: overridden
+
+# Task Output
+# -----------
+#
+# before:
+#   as_number: "65536"
+#   neighbor:
+#     - name: neighbor_tmplt_1
+#       address_family:
+#         - afi: ipv4
+#           safi: unicast
+#           advertise_map:
+#             non_exist_map: nemap1
+#             route_map: rmap1
+#           advertisement_interval: 60
+#           disable_peer_as_check: true
+#       bmp_activate_server: 2
+#       capability:
+#         suppress_4_byte_as: true
+#       description: Test_BGP_PEER_TEMPLATE_1
+#       local_as: "65536"
+#       remote_as: "65001"
+#
+#     - name: neighbor_tmplt_2
+#       description: Test_BGP_PEER_TEMPLATE_2
+#       address_family:
+#         - afi: ipv4
+#           safi: multicast
+#           advertise_map:
+#             exist_map: emap1
+#             route_map: rmap1
+#           as_override: true
+#           filter_list:
+#             inbound: flist1
+#             outbound: flist2
+#       inherit:
+#         peer_session: psession1
+#       timers:
+#         holdtime: 100
+#         keepalive: 45
+#
+# commands:
+#   - router bgp 65536
+#   - template peer neighbor_tmplt_1
+#   - no bmp-activate-server 2
+#   - no capability suppress 4-byte-as
+#   - inherit peer-session psession1
+#   - local-as 65537
+#   - no remote-as 65001
+#   - no template peer neighbor_tmplt_2
+#
+# after:
+#   as_number: "65536"
+#   neighbor:
+#     - name: neighbor_tmplt_1
+#       address_family:
+#         - afi: ipv4
+#           safi: unicast
+#           advertise_map:
+#             non_exist_map: nemap1
+#             route_map: rmap1
+#           advertisement_interval: 60
+#           disable_peer_as_check: true
+#       description: Test_BGP_PEER_TEMPLATE_1
+#       inherit:
+#         peer_session: psession1
+#       local_as: "65537"
+
+# After state:
+# --------------
+#
+# nxos9k# show running-config | section "^router bgp"
+# router bgp 65536
+#   template peer neighbor_tmplt_1
+#     inherit peer-session psession1
+#     description Test_BGP_PEER_TEMPLATE_1
+#     local-as 65537
+#     address-family ipv4 unicast
+#      advertise-map rmap1 non-exist-map nemap1
+#      advertisement-interval 60
+#      disable-peer-as-check
+
+# Using deleted
+
+# Before state:
+# --------------
+#
+# nxos9k# show running-config | section "^router bgp"
+# router bgp 65536
+#   template peer neighbor_tmplt_1
+#     capability suppress 4-byte-as
+#     description Test_BGP_PEER_TEMPLATE_1
+#     bmp-activate-server 2
+#     local-as 65536
+#     remote-as 65001
+#     address-family ipv4 unicast
+#      advertise-map rmap1 non-exist-map nemap1
+#      advertisement-interval 60
+#      disable-peer-as-check
+#   template peer neighbor_tmplt_2
+#     description Test_BGP_PEER_TEMPLATE_2
+#     inherit peer-session psession1
+#     timers 45 100
+#     address-family ipv4 multicast
+#      advertise-map rmap1 exist-map emap1
+#      as-override
+#      filter-list flist1 in
+#      filter-list flist2 out
+
+- name: Delete BGP configs handled by this module
+  cisco.nxos.nxos_bgp_templates:
+    state: deleted
+
+# Task Output
+# -----------
+#
+# before:
+#   as_number: "65536"
+#   neighbor:
+#     - name: neighbor_tmplt_1
+#       address_family:
+#         - afi: ipv4
+#           safi: unicast
+#           advertise_map:
+#             non_exist_map: nemap1
+#             route_map: rmap1
+#           advertisement_interval: 60
+#           disable_peer_as_check: true
+#       bmp_activate_server: 2
+#       capability:
+#         suppress_4_byte_as: true
+#       description: Test_BGP_PEER_TEMPLATE_1
+#       local_as: "65536"
+#       remote_as: "65001"
+#
+#     - name: neighbor_tmplt_2
+#       description: Test_BGP_PEER_TEMPLATE_2
+#       address_family:
+#         - afi: ipv4
+#           safi: multicast
+#           advertise_map:
+#             exist_map: emap1
+#             route_map: rmap1
+#           as_override: true
+#           filter_list:
+#             inbound: flist1
+#             outbound: flist2
+#       inherit:
+#         peer_session: psession1
+#       timers:
+#         holdtime: 100
+#         keepalive: 45
+#
+# commands:
+#   - router bgp 65536
+#   - no template peer neighbor_tmplt_1
+#   - no template peer neighbor_tmplt_2
+#
+# after: {}
+
+# After state:
+# -------------
+# nxos9k# show running-config | section "^router bgp"
+# nxos9k#
 """
 
 RETURN = """
@@ -443,17 +940,24 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - router bgp 65536
+    - template peer neighbor_tmplt_1
+    - no bmp-activate-server 2
+    - no capability suppress 4-byte-as
+    - inherit peer-session psession1
+    - local-as 65537
+    - no remote-as 65001
+    - no template peer neighbor_tmplt_2
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - router bgp 65536
+    - template peer neighbor_tmplt_1
+    - bmp-activate-server 2
+    - no capability suppress 4-byte-as
+    - no template peer neighbor_tmplt_2
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)

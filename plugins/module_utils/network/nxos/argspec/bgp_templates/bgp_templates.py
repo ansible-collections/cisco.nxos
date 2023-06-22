@@ -301,7 +301,6 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                 "replaced",
                 "overridden",
                 "deleted",
-                "purged",
                 "parsed",
                 "gathered",
                 "rendered",
