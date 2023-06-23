@@ -57,6 +57,7 @@ Name | Description
 [cisco.nxos.nxos_bgp_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_address_family_module.rst)|BGP Address Family resource module.
 [cisco.nxos.nxos_bgp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_global_module.rst)|BGP Global resource module.
 [cisco.nxos.nxos_bgp_neighbor_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_address_family_module.rst)|BGP Neighbor Address Family resource module.
+[cisco.nxos.nxos_bgp_templates](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_templates_module.rst)|BGP Templates resource module.
 [cisco.nxos.nxos_command](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_command_module.rst)|Run arbitrary command on Cisco NXOS devices
 [cisco.nxos.nxos_config](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_config_module.rst)|Manage Cisco NXOS configuration sections
 [cisco.nxos.nxos_devicealias](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_devicealias_module.rst)|Configuration of device alias for Cisco NXOS MDS Switches.
