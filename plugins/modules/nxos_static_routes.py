@@ -676,6 +676,7 @@ EXAMPLES = """
 
 - name: Parse the config to structured data
   cisco.nxos.nxos_static_routes:
+    state: parsed
     running_config: |
       ipv6 route 2002:db8:12::/32 2002:db8:12::1
       vrf context Test

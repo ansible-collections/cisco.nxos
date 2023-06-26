@@ -51,13 +51,7 @@
                       - forward_router_address: 192.0.2.55
                         tag: 1
                         admin_distance: 1
-          - address_families:
-              - afi: ipv4
-                routes:
-                  - dest: 0.0.0.0/0
-                    next_hops:
-                      - forward_router_address: "{{ var_forward_router_address[0] }}"
-            vrf: management
+          - "{{ var_vrf_mgmt }}"
         state: overridden
       register: result
 

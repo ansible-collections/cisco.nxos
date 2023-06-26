@@ -1,9 +1,15 @@
 ---
-- name: Get management route entry
+- name: Vrf confext management output
   cisco.nxos.nxos_command:
-    commands: show running-config | section 'ip route 0.0.0.0'
-  register: result
+    commands: show running-config | section 'vrf context management'
+  register: vrf_conf
 
-- name: Grep forward_router_address
+- name: Parse the config to structured data
+  cisco.nxos.nxos_static_routes:
+    state: parsed
+    running_config: "{{ vrf_conf['stdout'][0] }}"
+  register: vrf_mgmt
+
+- name: Setting booleans facts of management vrf
   ansible.builtin.set_fact:
-    var_forward_router_address: "{{ result['stdout'][0] | regex_search('ip route (\\S+) (\\S+)', '\\2') }}"
+    var_vrf_mgmt: "{{ vrf_mgmt['parsed'][0] }}"
