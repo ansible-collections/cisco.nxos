@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START nxos_bgp_templates parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided BGP templates configuration
+  register: result
+  cisco.nxos.nxos_bgp_templates:
+    running_config: "{{ lookup('file', './fixtures/parsed.cfg') }}"
+    state: parsed
+
+- name: Assert that configuration was correctly parsed
+  ansible.builtin.assert:
+    that:
+      - merged['after'] == result['parsed']

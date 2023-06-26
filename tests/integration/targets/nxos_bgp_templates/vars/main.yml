@@ -1,0 +1,142 @@
+---
+merged:
+  commands:
+    - router bgp 65536
+    - template peer neighbor_tmplt_2
+    - description Test_BGP_PEER_TEMPLATE_2
+    - inherit peer-session psession1
+    - timers 45 100
+    - address-family ipv4 multicast
+    - advertise-map rmap1 exist-map emap1
+    - as-override
+    - filter-list flist1 in
+    - filter-list flist2 out
+    - template peer neighbor_tmplt_1
+    - bmp-activate-server 2
+    - capability suppress 4-byte-as
+    - description Test_BGP_PEER_TEMPLATE_1
+    - local-as 65536
+    - remote-as 65001
+    - address-family ipv4 unicast
+    - advertise-map rmap1 non-exist-map nemap1
+    - advertisement-interval 60
+    - disable-peer-as-check
+
+  after:
+    as_number: "65536"
+    neighbor:
+      - name: neighbor_tmplt_1
+        address_family:
+          - afi: ipv4
+            safi: unicast
+            advertise_map:
+              non_exist_map: nemap1
+              route_map: rmap1
+            advertisement_interval: 60
+            disable_peer_as_check: true
+        bmp_activate_server: 2
+        capability:
+          suppress_4_byte_as: true
+        description: Test_BGP_PEER_TEMPLATE_1
+        local_as: "65536"
+        remote_as: "65001"
+
+      - name: neighbor_tmplt_2
+        description: Test_BGP_PEER_TEMPLATE_2
+        address_family:
+          - afi: ipv4
+            safi: multicast
+            advertise_map:
+              exist_map: emap1
+              route_map: rmap1
+            as_override: true
+            filter_list:
+              inbound: flist1
+              outbound: flist2
+        inherit:
+          peer_session: psession1
+        timers:
+          holdtime: 100
+          keepalive: 45
+
+replaced:
+  commands:
+    - router bgp 65536
+    - template peer neighbor_tmplt_1
+    - no bmp-activate-server 2
+    - no capability suppress 4-byte-as
+    - inherit peer-session psession1
+    - local-as 65537
+    - no remote-as 65001
+
+  after:
+    as_number: "65536"
+    neighbor:
+      - name: neighbor_tmplt_1
+        address_family:
+          - afi: ipv4
+            safi: unicast
+            advertise_map:
+              non_exist_map: nemap1
+              route_map: rmap1
+            advertisement_interval: 60
+            disable_peer_as_check: true
+        description: Test_BGP_PEER_TEMPLATE_1
+        inherit:
+          peer_session: psession1
+        local_as: "65537"
+
+      - name: neighbor_tmplt_2
+        description: Test_BGP_PEER_TEMPLATE_2
+        address_family:
+          - afi: ipv4
+            safi: multicast
+            advertise_map:
+              exist_map: emap1
+              route_map: rmap1
+            as_override: true
+            filter_list:
+              inbound: flist1
+              outbound: flist2
+        inherit:
+          peer_session: psession1
+        timers:
+          holdtime: 100
+          keepalive: 45
+
+overridden:
+  commands:
+    - router bgp 65536
+    - template peer neighbor_tmplt_1
+    - no bmp-activate-server 2
+    - no capability suppress 4-byte-as
+    - inherit peer-session psession1
+    - local-as 65537
+    - no remote-as 65001
+    - no template peer neighbor_tmplt_2
+
+  after:
+    as_number: "65536"
+    neighbor:
+      - name: neighbor_tmplt_1
+        address_family:
+          - afi: ipv4
+            safi: unicast
+            advertise_map:
+              non_exist_map: nemap1
+              route_map: rmap1
+            advertisement_interval: 60
+            disable_peer_as_check: true
+        description: Test_BGP_PEER_TEMPLATE_1
+        inherit:
+          peer_session: psession1
+        local_as: "65537"
+
+deleted:
+  commands:
+    - router bgp 65536
+    - no template peer neighbor_tmplt_1
+    - no template peer neighbor_tmplt_2
+
+  after:
+    as_number: "65536"
