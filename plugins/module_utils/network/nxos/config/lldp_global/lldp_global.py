@@ -138,7 +138,7 @@ class Lldp_global(ConfigBase):
             commands = self._state_deleted(have)
         elif state in ["merged", "rendered"]:
             commands = self._state_merged(want, have)
-        elif state == "replaced":
+        elif state in ["replaced", "overridden"]:
             commands = self._state_replaced(want, have)
         return commands
 

@@ -508,14 +508,16 @@ options:
       or a vrf context that is to be removed. Please use the
       M(cisco.nxos.nxos_bgp_af) or M(cisco.nxos.nxos_bgp_neighbor_af)
       modules for prior cleanup.
-    - States I(merged) and I(replaced) will result in a failure if BGP is already configured
+    - States C(merged) and C(replaced) will result in a failure if BGP is already configured
       with a different ASN than what is provided in the task. In such cases, please use
-      state I(purged) to remove the existing BGP process and proceed further.
+      state C(purged) to remove the existing BGP process and proceed further.
+    - States C(replaced) and C(overridden) have the same behaviour for this module.
     - Refer to examples for more details.
     type: str
     choices:
     - merged
     - replaced
+    - overridden
     - deleted
     - purged
     - parsed

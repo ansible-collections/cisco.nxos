@@ -1,0 +1,104 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_lacp overridden integration tests connection={{ ansible_connection }}
+
+- name: Enable 'feature lacp'
+  cisco.nxos.nxos_feature:
+    feature: lacp
+
+- name: Set a fact for 'mac1' and 'mac2'
+  ansible.builtin.set_fact:
+    mac1: lacp system-mac 00c1.4c00.bd20 role primary
+    mac2:
+      address: 00c1.4c00.bd15
+      role: secondary
+  when: platform is search('N9K') and imagetag is not search('I[2-6]')
+
+- block:
+    - name: Setup1
+      cisco.nxos.nxos_config:
+        lines: lacp system-priority 11
+
+    - name: Setup2
+      cisco.nxos.nxos_config:
+        lines: "{{ mac1|default(omit) }}"
+
+    - name: Gather lacp facts
+      cisco.nxos.nxos_facts: &id001
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: lacp
+
+    - name: Run overridden test
+      register: result
+      cisco.nxos.nxos_lacp: &id002
+        config:
+          system:
+            priority: 12
+            mac: "{{ mac2|default(omit) }}"
+        state: overridden
+
+    - ansible.builtin.assert:
+        that:
+          - ansible_facts.network_resources.lacp == result.before
+          - result.changed == true
+          - result.commands|length == 2
+          - "'no lacp system-priority' in result.commands"
+          - "'lacp system-priority 12' in result.commands"
+      when: platform is not search('N9K')
+
+    - ansible.builtin.assert:
+        that:
+          - ansible_facts.network_resources.lacp == result.before
+          - result.changed == true
+          - "'no lacp system-priority' in result.commands"
+          - "'no lacp system-mac' in result.commands"
+          - "'lacp system-priority 12' in result.commands"
+          - "'lacp system-mac 00c1.4c00.bd15 role secondary' in result.commands"
+          - result.commands|length == 4
+      when: platform is search('N9K') and imagetag is not search('I[2-6]')
+
+    - name: Gather lacp interfaces post facts
+      cisco.nxos.nxos_facts: *id001
+
+    - ansible.builtin.assert:
+        that:
+          - ansible_facts.network_resources.lacp == result.after
+      when: platform is search('N9K') and imagetag is not search('I[2-6]')
+
+    - name: Idempotence - overridden
+      register: result
+      cisco.nxos.nxos_lacp: *id002
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+
+    - name: Setup3
+      cisco.nxos.nxos_config:
+        lines: "{{ mac1|default(omit) }}"
+
+    - name: overridden
+      register: result
+      when: platform is search('N9K') and imagetag is not search('I[2-6]')
+      cisco.nxos.nxos_lacp:
+        config:
+          system:
+            priority: 1
+        state: overridden
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands|length == 3
+          - "'no lacp system-mac' in result.commands"
+          - "'no lacp system-priority' in result.commands"
+          - "'lacp system-priority 1' in result.commands"
+      when: platform is search('N9K') and imagetag is not search('I[2-6]')
+  always:
+    - name: Teardown
+      cisco.nxos.nxos_feature:
+        feature: lacp
+        state: disabled
