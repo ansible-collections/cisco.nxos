@@ -30,22 +30,6 @@ plugin_routing:
       redirect: cisco.nxos.nxos
     bfd_interfaces:
       redirect: cisco.nxos.nxos
-    nxos_bgp:
-      redirect: cisco.nxos.nxos
-    bgp:
-      redirect: cisco.nxos.nxos
-    nxos_bgp_af:
-      redirect: cisco.nxos.nxos
-    bgp_af:
-      redirect: cisco.nxos.nxos
-    nxos_bgp_neighbor:
-      redirect: cisco.nxos.nxos
-    bgp_neighbor:
-      redirect: cisco.nxos.nxos
-    nxos_bgp_neighbor_af:
-      redirect: cisco.nxos.nxos
-    bgp_neighbor_af:
-      redirect: cisco.nxos.nxos
     nxos_command:
       redirect: cisco.nxos.nxos
     command:
@@ -357,42 +341,6 @@ plugin_routing:
       redirect: cisco.nxos.nxos_bfd_global
     bfd_interfaces:
       redirect: cisco.nxos.nxos_bfd_interfaces
-    bgp:
-      redirect: cisco.nxos.nxos_bgp
-      deprecation:
-        removal_date: "2023-01-27"
-        warning_text: See the plugin documentation for more details
-    nxos_bgp:
-      deprecation:
-        removal_date: "2023-01-27"
-        warning_text: See the plugin documentation for more details
-    bgp_af:
-      redirect: cisco.nxos.nxos_bgp_af
-      deprecation:
-        removal_date: "2023-02-24"
-        warning_text: See the plugin documentation for more details
-    nxos_bgp_af:
-      deprecation:
-        removal_date: "2023-02-24"
-        warning_text: See the plugin documentation for more details
-    bgp_neighbor:
-      redirect: cisco.nxos.nxos_bgp_neighbor
-      deprecation:
-        removal_date: "2023-01-27"
-        warning_text: See the plugin documentation for more details
-    nxos_bgp_neighbor:
-      deprecation:
-        removal_date: "2023-01-27"
-        warning_text: See the plugin documentation for more details
-    bgp_neighbor_af:
-      redirect: cisco.nxos.nxos_bgp_neighbor_af
-      deprecation:
-        removal_date: "2023-02-24"
-        warning_text: See the plugin documentation for more details
-    nxos_bgp_neighbor_af:
-      deprecation:
-        removal_date: "2023-02-24"
-        warning_text: See the plugin documentation for more details
     command:
       redirect: cisco.nxos.nxos_command
     config:

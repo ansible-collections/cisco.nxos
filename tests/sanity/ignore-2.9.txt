@@ -1,14 +1,6 @@
 plugins/modules/nxos_logging.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
 plugins/modules/nxos_logging.py validate-modules:invalid-documentation # removed_at_date not
 plugins/action/nxos.py action-plugin-docs # base class for deprecated network platform modules using `connection: local`
-plugins/modules/nxos_bgp.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
-plugins/modules/nxos_bgp.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
-plugins/modules/nxos_bgp_neighbor.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
-plugins/modules/nxos_bgp_neighbor.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
-plugins/modules/nxos_bgp_af.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
-plugins/modules/nxos_bgp_af.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
-plugins/modules/nxos_bgp_neighbor_af.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
-plugins/modules/nxos_bgp_neighbor_af.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/modules/nxos_ntp.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
 plugins/modules/nxos_ntp.py validate-modules:invalid-documentation # removed_at_date not supported in `deprecated` dict
 plugins/modules/nxos_ntp_auth.py validate-modules:deprecation-mismatch # 2.9 expects METADATA
