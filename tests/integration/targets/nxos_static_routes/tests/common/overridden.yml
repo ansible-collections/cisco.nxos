@@ -6,8 +6,6 @@
 
 - ansible.builtin.include_tasks: _populate_config.yaml
 
-- ansible.builtin.include_tasks: _facts_mgmt_vrf.yaml
-
 - block:
     - name: Gather static_routes facts
       cisco.nxos.nxos_facts:

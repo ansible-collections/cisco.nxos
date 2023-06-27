@@ -5,8 +5,6 @@
 - block:
     - ansible.builtin.include_tasks: _remove_config.yaml
 
-    - ansible.builtin.include_tasks: _facts_mgmt_vrf.yaml
-
     - name: Apply the provided configuration(base config)
       cisco.nxos.nxos_static_routes:
         config:
