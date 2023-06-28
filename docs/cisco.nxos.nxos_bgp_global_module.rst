@@ -4544,6 +4544,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
+                                    <li>overridden</li>
                                     <li>deleted</li>
                                     <li>purged</li>
                                     <li>parsed</li>
@@ -4556,7 +4557,8 @@ Parameters
                         <div>State <em>purged</em> removes all the BGP configurations from the target device. Use caution with this state.</div>
                         <div>State <em>deleted</em> only removes BGP attributes that this modules manages and does not negate the BGP process completely. Thereby, preserving address-family related configurations under BGP context.</div>
                         <div>Running states <em>deleted</em> and <em>replaced</em> will result in an error if there are address-family configuration lines present under a neighbor, or a vrf context that is to be removed. Please use the <span class='module'>cisco.nxos.nxos_bgp_af</span> or <span class='module'>cisco.nxos.nxos_bgp_neighbor_af</span> modules for prior cleanup.</div>
-                        <div>States <em>merged</em> and <em>replaced</em> will result in a failure if BGP is already configured with a different ASN than what is provided in the task. In such cases, please use state <em>purged</em> to remove the existing BGP process and proceed further.</div>
+                        <div>States <code>merged</code> and <code>replaced</code> will result in a failure if BGP is already configured with a different ASN than what is provided in the task. In such cases, please use state <code>purged</code> to remove the existing BGP process and proceed further.</div>
+                        <div>States <code>replaced</code> and <code>overridden</code> have the same behaviour for this module.</div>
                         <div>Refer to examples for more details.</div>
                 </td>
             </tr>

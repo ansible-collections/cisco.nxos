@@ -85,10 +85,12 @@ options:
   state:
     description:
     - The state of the configuration after module completion.
+    - States C(replaced) and C(overridden) have the same behaviour for this module.
     type: str
     choices:
     - merged
     - replaced
+    - overridden
     - deleted
     - gathered
     - rendered
