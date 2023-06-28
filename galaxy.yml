@@ -1,7 +1,7 @@
 authors:
   - Ansible Network Community (ansible-network)
 dependencies:
-  "ansible.netcommon": ">=2.6.1"
+  ansible.netcommon: '>=2.6.1'
 license_file: LICENSE
 name: nxos
 namespace: cisco
@@ -9,7 +9,10 @@ description: Ansible Network Collection for Cisco NXOS devices.
 readme: README.md
 repository: https://github.com/ansible-collections/cisco.nxos
 issues: https://github.com/ansible-collections/cisco.nxos/issues
-tags: [cisco, nxos, networking, nxapi, netconf]
-# NOTE(pabelanger): We create 0.0.0 version key to keep ansible-galaxy
-# happy. We dynamically inject version info based on git information.
-version: 5.0.0
+tags:
+  - cisco
+  - nxos
+  - networking
+  - nxapi
+  - netconf
+version: 2.0.1

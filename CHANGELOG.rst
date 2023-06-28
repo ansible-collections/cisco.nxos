@@ -449,6 +449,34 @@ Bugfixes
 - Allow integer values to be set for dscp key (https://github.com/ansible-collections/cisco.nxos/issues/253).
 - Do not fail when parsing non rule entries in access-list config (https://github.com/ansible-collections/cisco.nxos/issues/262).
 
+v2.0.1
+======
+
+Major Changes
+-------------
+
+- This release removes four of the previously deprecated modules from this collection. Refer to **Removed Features** section for details.
+
+Minor Changes
+-------------
+
+- Add nxos_bgp_templates module.
+- nxos_user - Added dev-ops role to BUILTINS (https://github.com/ansible-collections/cisco.nxos/issues/690)
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- The nxos_bgp module has been removed with this release.
+- The nxos_bgp_af module has been removed with this release.
+- The nxos_bgp_neighbor module has been removed with this release.
+- The nxos_bgp_neighbor_af module has been removed with this release.
+
+Bugfixes
+--------
+
+- nxos_static_routes - Prevent action states to generate terminal configuration command.
+- nxos_static_routes - Update the delete operation of static routes to be similar to other platforms. (https://github.com/ansible-collections/cisco.nxos/issues/666)
+
 v2.0.0
 ======
 
