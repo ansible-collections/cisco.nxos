@@ -1,4 +1,19 @@
 ---
+- name: Fetch vrf confext management output
+  cisco.nxos.nxos_command:
+    commands: show running-config | section 'vrf context management'
+  register: vrf_conf
+
+- name: Parse the config to structured data
+  cisco.nxos.nxos_static_routes:
+    state: parsed
+    running_config: "{{ vrf_conf['stdout'][0] }}"
+  register: vrf_mgmt
+
+- name: Setting booleans facts of management vrf
+  ansible.builtin.set_fact:
+    var_vrf_mgmt: "{{ vrf_mgmt['parsed'][0] }}"
+
 - name: Include the CLI tasks
   ansible.builtin.include_tasks: cli.yaml
   tags:

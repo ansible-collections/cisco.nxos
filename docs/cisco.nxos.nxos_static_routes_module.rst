@@ -348,7 +348,7 @@ Notes
 -----
 
 .. note::
-   - Tested against NX-OS 7.3.(0)D1(1) on VIRL
+   - Tested against Nexus 9300v running NX-OS 9.3.6 on CML.
    - Unsupported for Cisco MDS
    - When a route is configured for a non-existent VRF, the VRF is created and the route is added to it.
    - When deleting routes for a VRF, all routes inside the VRF are deleted, but the VRF is not deleted.
@@ -360,13 +360,15 @@ Examples
 
 .. code-block:: yaml
 
-    # Using deleted:
+    # Using deleted - delete all
 
     # Before state:
     # -------------
     #
+    # switch# show running-config | include '^ip(v6)* route'
     # ip route 192.0.2.32/28 192.0.2.12 name new_route
     # ip route 192.0.2.26/24 192.0.2.13 tag 12
+    # switch# show running-config | section '^vrf context'
 
     - name: Delete all routes
       cisco.nxos.nxos_static_routes:
@@ -374,6 +376,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     #   - address_families:
     #       - afi: ipv4
@@ -387,20 +390,24 @@ Examples
     #               - forward_router_address: 192.0.2.12
     #                 route_name: new_route
     # commands:
-    # - configure terminal
     # - no ip route 192.0.2.0/24 192.0.2.13 tag 12
     # - no ip route 192.0.2.32/28 192.0.2.12 name new_route
     # after: []
+
     # After state:
     # ------------
-    #
+    # switch# show running-config | include '^ip(v6)* route'
+    # switch# show running-config | section '^vrf context'
 
+    # Using deleted - vrf based
 
     # Before state:
     # ------------
     #
+    # switch# show running-config | include '^ip(v6)* route'
     # ip route 192.0.2.16/28 192.0.2.24 name new_route
     # ip route 192.0.2.80/28 192.0.2.26 tag 12
+    # switch# show running-config | section '^vrf context'
     # vrf context trial_vrf
     # ip route 192.0.2.64/28 192.0.2.22 tag 4
     # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -414,6 +421,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     #   - address_families:
     #       - afi: ipv4
@@ -464,16 +472,22 @@ Examples
 
     # After state:
     # -----------
+    #
+    # switch# show running-config | include '^ip(v6)* route'
     # ip route 192.0.2.16/28 192.0.2.24 name new_route
     # ip route 192.0.2.80/28 192.0.2.26 tag 12
+    # switch# show running-config | section '^vrf context'
     # vrf context trial_vrf
 
+    # Using deleted - afi based
 
     # Before state:
     # ------------
     #
+    # switch# show running-config | include '^ip(v6)* route'
     # ip route 192.0.2.16/28 192.0.2.24 name new_route
     # ip route 192.0.2.80/28 192.0.2.26 tag 12
+    # switch# show running-config | section '^vrf context'
     # vrf context trial_vrf
     # ip route 192.0.2.64/28 192.0.2.22 tag 4
     # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -489,6 +503,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     #   - address_families:
     #       - afi: ipv4
@@ -547,8 +562,11 @@ Examples
 
     # After state:
     # -----------
+    #
+    # switch# show running-config | include '^ip(v6)* route'
     # ip route 192.0.2.16/28 192.0.2.24 name new_route
     # ip route 192.0.2.80/28 192.0.2.26 tag 12
+    # switch# show running-config | section '^vrf context'
     # vrf context trial_vrf
     # ipv6 route 2200:10::/36 2048:ae12::1 vrf dest 5
 
@@ -556,7 +574,8 @@ Examples
 
     # Before state:
     # -------------
-    #
+    # switch# show running-config | include '^ip(v6)* route'
+    # switch# show running-config | section '^vrf context'
 
     - name: Merge new static route configuration
       cisco.nxos.nxos_static_routes:
@@ -570,7 +589,6 @@ Examples
               - forward_router_address: 192.0.2.22
                 tag: 4
                 admin_distance: 2
-
         - address_families:
           - afi: ipv4
             routes:
@@ -588,11 +606,11 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:[]
     # commands:
     # - vrf context trial_vrf
     # - ip route 192.0.2.64/24 192.0.2.22 tag 4 2
-    # - configure terminal
     # - ip route 192.0.2.16/24 192.0.2.24 name new_route
     # - ipv6 route 2001:db8::/64 Ethernet1/3 2001:db8::12
     # after:
@@ -605,7 +623,6 @@ Examples
     #           - forward_router_address: 192.0.2.22
     #             tag: 4
     #             admin_distance: 2
-    #
     #     - address_families:
     #       - afi: ipv4
     #         routes:
@@ -623,24 +640,27 @@ Examples
     # After state:
     # ------------
     #
+    # switch# show running-config | include '^ip(v6)* route'
     # ip route 192.0.2.16/24 192.0.2.24 name new_route
     # ipv6 route 2001:db8::/64 Ethernet1/3 2001:db8::12
+    # switch# show running-config | section '^vrf context'
     # vrf context trial_vrf
     #   ip route 192.0.2.0/24 192.0.2.22 tag 4 2
 
-
-    # Using overridden:
+    # Using overridden
 
     # Before state:
     # -------------
     #
+    # switch# show running-config | include '^ip(v6)* route'
     # ip route 192.0.2.16/28 192.0.2.24 name new_route
     # ip route 192.0.2.80/28 192.0.2.26 tag 12
+    # switch# show running-config | section '^vrf context'
     # vrf context trial_vrf
     # ip route 192.0.2.64/28 192.0.2.22 tag 4
     # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
 
-    - name: Overriden existing static route configuration with new configuration
+    - name: Overridden existing static route configuration with new configuration
       cisco.nxos.nxos_static_routes:
         config:
         - vrf: trial_vrf
@@ -652,7 +672,6 @@ Examples
               - forward_router_address: 192.0.2.23
                 route_name: overridden_route1
                 admin_distance: 3
-
               - forward_router_address: 192.0.2.45
                 route_name: overridden_route2
                 dest_vrf: destinationVRF
@@ -661,6 +680,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     #   - address_families:
     #       - afi: ipv4
@@ -685,7 +705,6 @@ Examples
     #               - forward_router_address: 192.0.2.26
     #                 tag: 12
     # commands:
-    # - configure terminal
     # - no ip route 192.0.2.16/28 192.0.2.24 name new_route
     # - no ip route 192.0.2.80/28 192.0.2.26 tag 12
     # - vrf context trial_vrf
@@ -711,17 +730,21 @@ Examples
     # After state:
     # ------------
     #
+    # switch# show running-config | include '^ip(v6)* route'
+    # switch# show running-config | section '^vrf context'
     # vrf context trial_vrf
     #   ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3
     #   ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name overridden_route2
 
-
-    # Using replaced:
+    # Using replaced
 
     # Before state:
     # ------------
+    #
+    # switch# show running-config | include '^ip(v6)* route'
     # ip route 192.0.2.16/28 192.0.2.24 name new_route
     # ip route 192.0.2.80/28 192.0.2.26 tag 12
+    # switch# show running-config | section '^vrf context'
     # vrf context trial_vrf
     # ip route 192.0.2.64/28 192.0.2.22 tag 4
     # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
@@ -737,7 +760,6 @@ Examples
               - forward_router_address: 192.0.2.23
                 route_name: replaced_route1
                 admin_distance: 3
-
               - forward_router_address: 192.0.2.45
                 route_name: replaced_route2
                 dest_vrf: destinationVRF
@@ -746,6 +768,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     #   - address_families:
     #       - afi: ipv4
@@ -770,7 +793,6 @@ Examples
     #               - forward_router_address: 192.0.2.26
     #                 tag: 12
     # commands:
-    # - configure terminal
     # - no ip route 192.0.2.16/28 192.0.2.24 name new_route
     # - ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3
     # - ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2
@@ -804,29 +826,37 @@ Examples
     #                 tag: 12
 
     # After state:
-    # -----------
+    # ------------
+    #
+    # switch# show running-config | include '^ip(v6)* route'
     # ip route 192.0.2.16/28 192.0.2.23 name replaced_route1 3
     # ip route 192.0.2.16/28 Ethernet1/2 192.0.2.45 vrf destinationVRF name replaced_route2
     # ip route 192.0.2.80/28 192.0.2.26 tag 12
+    # switch# show running-config | section '^vrf context'
     # vrf context trial_vrf
     # ip route 192.0.2.64/28 192.0.2.22 tag 4
     # ip route 192.0.2.64/28 192.0.2.23 name merged_route 1
 
 
-    # Using gathered:
+    # Using gathered
 
     # Before state:
     # -------------
+    #
+    # switch# show running-config | include '^ip(v6)* route'
     # ipv6 route 2001:db8:12::/32  2001:db8::12
+    # switch# show running-config | section '^vrf context'
     # vrf context Test
     #    ip route 192.0.2.48/28 192.0.2.13
     #    ip route 192.0.2.48/28 192.0.2.14 5
 
-    - name: Gather the exisitng condiguration
+    - name: Gather the existing configuration
       cisco.nxos.nxos_static_routes:
         state: gathered
 
-    # returns:
+    # Task Output
+    # -----------
+    #
     # gathered:
     #     - vrf: Test
     #       address_families:
@@ -847,7 +877,7 @@ Examples
     #                 - forward_router_address: 2001:db8::12
 
 
-    # Using rendered:
+    # Using rendered
 
     - name: Render required configuration to be pushed to the device
       cisco.nxos.nxos_static_routes:
@@ -858,7 +888,6 @@ Examples
             - dest: 192.0.2.48/28
               next_hops:
               - forward_router_address: 192.0.2.13
-
           - afi: ipv6
             routes:
             - dest: 2001:db8::/64
@@ -867,24 +896,28 @@ Examples
                 forward_router_address: 2001:db8::12
         state: rendered
 
-    # returns
+    # Task Output
+    # -----------
+    #
     # rendered:
     #   vrf context default
     #   ip route 192.0.2.48/28 192.0.2.13
     #   ipv6 route 2001:db8::/64 Ethernet1/3 2001:db8::12
 
-
     # Using parsed
 
     - name: Parse the config to structured data
       cisco.nxos.nxos_static_routes:
+        state: parsed
         running_config: |
           ipv6 route 2002:db8:12::/32 2002:db8:12::1
           vrf context Test
             ip route 192.0.2.48/28 192.0.2.13
             ip route 192.0.2.48/28 192.0.2.14 5
 
-    # returns:
+    # Task Output
+    # -----------
+    #
     # parsed:
     #     - vrf: Test
     #       address_families:
@@ -893,10 +926,8 @@ Examples
     #             - dest: 192.0.2.48/28
     #               next_hops:
     #                 - forward_router_address: 192.0.2.13
-    #
     #                 - forward_router_address: 192.0.2.14
     #                   admin_distance: 5
-    #
     #     - address_families:
     #         - afi: ipv6
     #           routes:
@@ -929,11 +960,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 </td>
                 <td>when changed</td>
                 <td>
-                            <div>The resulting configuration model invocation.</div>
+                            <div>The resulting configuration after module execution.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format
-     of the parameters above.</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
                 </td>
             </tr>
             <tr>
@@ -945,13 +975,12 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
-                            <div>The configuration prior to the model invocation.</div>
+                            <div>The configuration prior to the module execution.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format
-     of the parameters above.</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
                 </td>
             </tr>
             <tr>
@@ -963,12 +992,63 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip route 192.0.2.48/28 192.0.2.12 Ethernet1/2 name sample_route&#x27;, &#x27;ipv6 route 2001:db8:3000::/36 2001:db8:200:2::2&#x27;, &#x27;vrf context test&#x27;, &#x27;ip route 192.0.2.48/28 192.0.2.121&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip route 192.0.2.16/28 192.0.2.24 name new_route&#x27;, &#x27;vrf context trial_vrf&#x27;, &#x27;ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip route 192.0.2.16/28 192.0.2.24 name new_route&#x27;, &#x27;vrf context trial_vrf&#x27;, &#x27;ip route 192.0.2.16/28 192.0.2.23 name overridden_route1 3&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -983,3 +1063,4 @@ Authors
 ~~~~~~~
 
 - Adharsh Srivats Rangarajan (@adharshsrivatsr)
+- Sagar Paul (@KB-perByte)
