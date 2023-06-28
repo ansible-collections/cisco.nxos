@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: "Start nxos_static_routes parsed tests connection={{ ansible_connection }}"
 
-- name: Parsed
+- name: Parsed test
   cisco.nxos.nxos_static_routes: &parsed
     running_config: |
       ip route 192.0.2.16/28 192.0.2.24 name new_route
@@ -13,14 +13,8 @@
     state: parsed
   register: result
 
-- ansible.builtin.assert:
+- name: Assert parsed test
+  ansible.builtin.assert:
     that:
       - "result.changed == false"
       - "result.parsed == parsed"
-
-- name: Idempotence - parsed
-  cisco.nxos.nxos_static_routes: *parsed
-  register: result
-
-- ansible.builtin.assert:
-    that: "result.changed == false"

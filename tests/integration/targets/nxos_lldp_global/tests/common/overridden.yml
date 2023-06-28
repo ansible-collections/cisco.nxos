@@ -1,0 +1,92 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_lldp_global overridden integration tests connection = {{ansible_connection}}
+
+- block:
+    - name: Set a fact for 'port_id' and 'tlv_power_mgmt'
+      ansible.builtin.set_fact:
+        port_id: 1
+        tlv_power_mgmt:
+          power_management: false
+      when: platform is not search('N[567]K') and imagetag is not search("I[2345]")
+
+    - name: Feature off to cleanup lldp
+      cisco.nxos.nxos_feature: &id002
+        feature: lldp
+        state: disabled
+
+    - name: Enable lldp feature
+      cisco.nxos.nxos_feature:
+        feature: lldp
+        state: enabled
+
+    - name: Setup
+      cisco.nxos.nxos_config:
+        lines:
+          - "lldp holdtime 125"
+          - "lldp tlv-select system-name"
+          - "no lldp tlv-select port-vlan"
+
+    - name: Setup2
+      when: port_id is defined
+      cisco.nxos.nxos_config:
+        lines:
+          - "lldp portid-subtype 1"
+          - "no lldp tlv-select power-management"
+
+    - name: Run overridden tests
+      register: result
+      cisco.nxos.nxos_lldp_global: &id001
+        config:
+          holdtime: 125
+          timer: 35
+          tlv_select:
+            system:
+              name: false
+              description: false
+            port:
+              vlan: false
+            dcbxp: false
+        state: overridden
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'lldp timer 35' in result.commands"
+          - "'no lldp tlv-select system-name' in result.commands"
+          - "'no lldp tlv-select system-description' in result.commands"
+          - "'no lldp tlv-select dcbxp' in result.commands"
+
+    - ansible.builtin.assert:
+        that:
+          - "'no lldp portid-subtype 1' in result.commands"
+      when: port_id is defined
+
+    - ansible.builtin.assert:
+        that:
+          - "'lldp tlv-select power-management' in result.commands"
+      when: tlv_power_mgmt is defined
+
+    - name: Gather lldp_global post facts
+      cisco.nxos.nxos_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources: lldp_global
+
+    - ansible.builtin.assert:
+        that:
+          - ansible_facts.network_resources.lldp_global == result.after
+
+    - name: Idempotence - overridden
+      register: result
+      cisco.nxos.nxos_lldp_global: *id001
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands|length == 0
+  always:
+    - name: Teardown
+      cisco.nxos.nxos_feature: *id002
+  when: platform is not search('N35')
