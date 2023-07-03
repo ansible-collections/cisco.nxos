@@ -1,8 +1,0 @@
----
-removed_features:
-  - The nxos_bgp module has been removed with this release.
-  - The nxos_bgp_af module has been removed with this release.
-  - The nxos_bgp_neighbor module has been removed with this release.
-  - The nxos_bgp_neighbor_af module has been removed with this release.
-major_changes:
-  - This release removes four of the previously deprecated modules from this collection. Refer to **Removed Features** section for details.

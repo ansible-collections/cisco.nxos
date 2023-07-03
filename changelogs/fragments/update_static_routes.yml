@@ -1,5 +1,0 @@
----
-bugfixes:
-  - nxos_static_routes - Update the delete operation of static routes to be similar to other platforms.
-    (https://github.com/ansible-collections/cisco.nxos/issues/666)
-  - nxos_static_routes - Prevent action states to generate terminal configuration command.
