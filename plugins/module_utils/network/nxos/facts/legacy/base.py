@@ -179,7 +179,7 @@ class Hardware(FactsBase):
                     data.get("fivesec_intr_percent", 0),
                 ),
                 "one_minute": int(data.get("onemin_percent", 0)),
-            }
+            },
         }
 
     def parse_filesystems(self, data):
