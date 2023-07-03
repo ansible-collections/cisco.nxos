@@ -32,7 +32,7 @@ ignore_provider_arg = True
 
 
 class TestNxosPingModule(TestNxosModule):
-    """Class used for Unit Tests agains ios_ping module"""
+    """Class used for Unit Tests against nxos_ping module"""
 
     module = nxos_ping
 
