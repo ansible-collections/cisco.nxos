@@ -1033,4 +1033,4 @@ releases:
       - overridden.yaml
       - templates.yaml
       - update_static_routes.yml
-    release_date: "2023-07-03"
+    release_date: "2023-07-05"
