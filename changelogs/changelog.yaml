@@ -470,12 +470,12 @@ releases:
         - Deprecated nxos_bgp_neighbor_af in favour of nxos_bgp_neighbor_address_family
           resource module.
       major_changes:
-        - Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode`
-          and `ansible_network_import_modules`.
         - "Please refer to
           ansible.netcommon
           `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_
           for more details."
+        - Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode`
+          and `ansible_network_import_modules`.
       minor_changes:
         - Add bfd option for neighbors (https://github.com/ansible-collections/cisco.nxos/issues/241).
         - Add hello_interval_ms option in nxos_pim_interface module to support sub-second
@@ -721,9 +721,9 @@ releases:
         - "`nxos_ntp_global` - In some cases, there is an extra whitespace in the source-interface
           line. This patch accounts for this behaviour in config (https://github.com/ansible-collections/cisco.nxos/issues/399)."
       release_summary:
-        "The v2.8.1 of the cisco.nxos collection is not available on
+        The v2.8.1 of the cisco.nxos collection is not available on
         Ansible Automation Hub. Please download and use v2.8.2 which also contains
-        an additional bug fix."
+        an additional bug fix.
     fragments:
       - ignore.yaml
       - nxos_ntp.yaml
@@ -888,7 +888,8 @@ releases:
           or netconf.
         - "This release drops support for `connection: local` and provider dictionary."
       removed_features:
-        - This release removes the following deprecated plugins that have reached their end-of-life.
+        - This release removes the following deprecated plugins that have reached their
+          end-of-life.
         - nxos_acl
         - nxos_acl_interface
         - nxos_interface
@@ -924,8 +925,7 @@ releases:
       bugfixes:
         - "`nxos_acls` - Fix how IPv6 prefixes are converted to hosts (https://github.com/ansible-collections/cisco.nxos/issues/623)."
         - "`nxos_file_copy` - stop prepending redundant bootflash: to remote file names"
-        - nxos_acls - Detect duplicate ACE error message from CLI and fail
-          (https://github.com/ansible-collections/cisco.nxos/issues/611).
+        - nxos_acls - Detect duplicate ACE error message from CLI and fail (https://github.com/ansible-collections/cisco.nxos/issues/611).
         - nxos_command - Run & evaluate commands at least once even when retries is
           set to 0 (https://github.com/ansible-collections/cisco.nxos/issues/607).
       minor_changes:
@@ -989,7 +989,8 @@ releases:
         - ntp_global - Fix incorrect handling of prefer option (https://github.com/ansible-collections/cisco.nxos/issues/670).
         - nxos_banner - Add support for a custom multiline delimiter
         - nxos_facts - Fix missing SVI facts (https://github.com/ansible-collections/cisco.nxos/issues/440).
-        - "terminal - attempt privilege escalation only when prompt does not end with #"
+        - "terminal - attempt privilege escalation only when prompt does not end with
+          #"
       doc_changes:
         - Fix docs of static-routes resource module.
         - nxos_interfaces - Fixed module documentation and examples.
@@ -1013,12 +1014,13 @@ releases:
   5.0.0:
     changes:
       bugfixes:
-        - "nxos_static_routes - Prevent action states to generate terminal configuration command."
-        - "nxos_static_routes - Update the delete operation of static routes to be similar
-          to other platforms. (https://github.com/ansible-collections/cisco.nxos/issues/666)"
+        - nxos_static_routes - Prevent action states to generate terminal configuration
+          command.
+        - nxos_static_routes - Update the delete operation of static routes to be similar
+          to other platforms. (https://github.com/ansible-collections/cisco.nxos/issues/666)
       major_changes:
-        - This release removes four of the previously deprecated modules from this collection.
         - Refer to **Removed Features** section for details.
+        - This release removes four of the previously deprecated modules from this collection.
       minor_changes:
         - Add nxos_bgp_templates module.
         - nxos_user - Added dev-ops role to BUILTINS (https://github.com/ansible-collections/cisco.nxos/issues/690)
