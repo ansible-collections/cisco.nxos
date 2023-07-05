@@ -1034,3 +1034,10 @@ releases:
       - templates.yaml
       - update_static_routes.yml
     release_date: "2023-07-05"
+  5.1.0:
+    changes:
+      minor_changes:
+        - nxos_facts - add cpu utilization data to facts.
+    fragments:
+      - cpu_utilization.yml
+    release_date: "2023-07-05"
