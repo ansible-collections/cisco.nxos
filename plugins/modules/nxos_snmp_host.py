@@ -264,21 +264,27 @@ def remove_snmp_host(host, udp, existing):
         existing["version"] = "3"
         command = "no snmp-server host {0} {snmp_type} version \
                     {version} {v3} {community} udp-port {1}".format(
-            host, udp, **existing
+            host,
+            udp,
+            **existing,
         )
 
     elif existing["version"] == "v2c":
         existing["version"] = "2c"
         command = "no snmp-server host {0} {snmp_type} version \
                     {version} {community} udp-port {1}".format(
-            host, udp, **existing
+            host,
+            udp,
+            **existing,
         )
 
     elif existing["version"] == "v1":
         existing["version"] = "1"
         command = "no snmp-server host {0} {snmp_type} version \
                     {version} {community} udp-port {1}".format(
-            host, udp, **existing
+            host,
+            udp,
+            **existing,
         )
 
     if command:
