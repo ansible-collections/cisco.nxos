@@ -11,7 +11,8 @@ v5.0.0
 Major Changes
 -------------
 
-- This release removes four of the previously deprecated modules from this collection. Refer to **Removed Features** section for details.
+- Refer to **Removed Features** section for details.
+- This release removes four of the previously deprecated modules from this collection.
 
 Minor Changes
 -------------
@@ -464,6 +465,7 @@ Minor Changes
 -------------
 
 - Add support for state purged in nxos_interfaces.
+- nxos_facts - add cpu utilization data to facts.
 
 Security Fixes
 --------------
