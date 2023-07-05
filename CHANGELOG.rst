@@ -11,7 +11,8 @@ v5.0.0
 Major Changes
 -------------
 
-- This release removes four of the previously deprecated modules from this collection. Refer to **Removed Features** section for details.
+- Refer to **Removed Features** section for details.
+- This release removes four of the previously deprecated modules from this collection.
 
 Minor Changes
 -------------
@@ -476,6 +477,9 @@ Bugfixes
 - Allow commands to be properly generated with Jinja2 2.10.3 (workaround for https://github.com/pallets/jinja/issues/710).
 - Allow integer values to be set for dscp key (https://github.com/ansible-collections/cisco.nxos/issues/253).
 - Do not fail when parsing non rule entries in access-list config (https://github.com/ansible-collections/cisco.nxos/issues/262).
+
+v2.0.1
+======
 
 v2.0.0
 ======
