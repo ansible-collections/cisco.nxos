@@ -5,6 +5,14 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v5.1.0
+======
+
+Minor Changes
+-------------
+
+- nxos_facts - add cpu utilization data to facts.
+
 v5.0.0
 ======
 
