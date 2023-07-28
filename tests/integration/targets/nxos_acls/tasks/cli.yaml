@@ -22,7 +22,7 @@
   ansible.builtin.set_fact:
     test_items: "{{ test_cases.files | map(attribute='path') | list }}"
 
-- name: Run test cases (connection=ansible.netcommon.network_cli)
+- name: Run test cases with connection network_cli
   ansible.builtin.include_tasks: "{{ test_case_to_run }}"
   with_items: "{{ test_items }}"
   loop_control:
