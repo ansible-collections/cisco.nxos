@@ -9,11 +9,11 @@ __metaclass__ = type
 
 import pytest
 
-from ansible_collections.cisco.nxos.plugins.modules.storage import nxos_vsan
+from ansible_collections.cisco.nxos.plugins.modules import nxos_vsan
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
-from ..nxos_module import TestNxosModule, load_fixture, set_module_args
+from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosVsanModule(TestNxosModule):
@@ -21,7 +21,7 @@ class TestNxosVsanModule(TestNxosModule):
 
     def setUp(self):
         super(TestNxosVsanModule, self).setUp()
-        module_path = "ansible_collections.cisco.nxos.plugins.modules.storage.nxos_vsan."
+        module_path = "ansible_collections.cisco.nxos.plugins.modules.nxos_vsan."
 
         self.mock_run_commands = patch(module_path + "run_commands")
         self.run_commands = self.mock_run_commands.start()
