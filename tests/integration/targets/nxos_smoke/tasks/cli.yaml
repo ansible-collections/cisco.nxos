@@ -28,14 +28,13 @@
       transport: cli
       authorize: true
 
-- name: Run test cases (connection=network_cli)
+- name: Run test cases with connection network_cli
   ansible.builtin.include_tasks: "{{ test_case_to_run }}"
   with_items: "{{ test_items }}"
   loop_control:
     loop_var: test_case_to_run
   vars:
     ansible_connection: network_cli
-    connection: "{{ cli }}"
 
 # Temporarily disabling connection=local tests for CI issues
 # - name: run test cases (connection=local)
@@ -47,9 +46,8 @@
 #   loop_control:
 #     loop_var: test_case_to_run
 
-- name: Run test cases (connection=network_cli)
+- name: Run test cases with connection network_cli
   ansible.builtin.include_tasks: "{{ role_path }}/tests/common/caching.yaml"
   vars:
     ansible_connection: ansible.netcommon.network_cli
     ansible_network_single_user_mode: true
-    connection: "{{ cli }}"
