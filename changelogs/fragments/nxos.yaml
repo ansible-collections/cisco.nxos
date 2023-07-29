@@ -1,0 +1,3 @@
+---
+trivial:
+  - Drop storage sub-directory and move MDS modules to top-level.
