@@ -105,7 +105,9 @@ class TestNxosAclsModule(TestNxosModule):
                                         source=dict(prefix="2002:1:1:1::/64"),
                                         sequence=30,
                                         protocol="icmp",
-                                        protocol_options=dict(icmp=dict(echo_request=True)),
+                                        protocol_options=dict(
+                                            icmp=dict(echo_request=True),
+                                        ),
                                     ),
                                 ],
                             ),
@@ -421,7 +423,11 @@ class TestNxosAclsModule(TestNxosModule):
             "10 permit sctp any any",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands), result["rendered"])
+        self.assertEqual(
+            sorted(result["rendered"]),
+            sorted(commands),
+            result["rendered"],
+        )
 
     def test_nxos_acls_parsed(self):
         set_module_args(
@@ -631,6 +637,7 @@ class TestNxosAclsModule(TestNxosModule):
             """\
               ip access-list TEST_RESEQUENCE
                 10 permit ip 10.0.0.0/24 any
+                11 permit tcp 1.1.1.1/32 range 7111 9111 192.168.0.0/24 established
                 20 deny tcp any eq ftp-data any eq domain
                 25 permit icmp any any echo-reply
                 27 permit icmp any any port-unreachable
@@ -738,6 +745,19 @@ class TestNxosAclsModule(TestNxosModule):
                                 "protocol": "ip",
                                 "source": {"prefix": "10.0.0.0/24"},
                                 "destination": {"any": True},
+                            },
+                            {
+                                "sequence": 11,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "protocol_options": {"tcp": {"established": True}},
+                                "source": {
+                                    "host": "1.1.1.1",
+                                    "port_protocol": {
+                                        "range": {"end": "9111", "start": "7111"},
+                                    },
+                                },
+                                "destination": {"prefix": "192.168.0.0/24"},
                             },
                             {
                                 "sequence": 20,
