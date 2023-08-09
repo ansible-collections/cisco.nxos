@@ -134,11 +134,13 @@ options:
                 type: bool
   state:
     description:
-    - The state of the configuration after module completion
+    - The state of the configuration after module completion.
+    - States C(replaced) and C(overridden) have the same behaviour for this module.
     type: str
     choices:
     - merged
     - replaced
+    - overridden
     - deleted
     - gathered
     - rendered
@@ -229,8 +231,8 @@ EXAMPLES = """
       port_id: 1
       reinit: 5
       tlv_select:
-        dcbxp: yes
-        power_management: yes
+        dcbxp: true
+        power_management: true
     state: rendered
 
 # Task Output (redacted)

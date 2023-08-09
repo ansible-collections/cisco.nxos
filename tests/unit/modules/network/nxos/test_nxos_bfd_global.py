@@ -27,7 +27,6 @@ __metaclass__ = type
 import pytest
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    NxosCmdRef,
     nxosCmdRef_import_check,
 )
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bfd_global
@@ -41,7 +40,6 @@ msg = nxosCmdRef_import_check()
 
 @pytest.mark.skipif(len(msg), reason=msg)
 class TestNxosBfdGlobalModule(TestNxosModule):
-
     module = nxos_bfd_global
 
     def setUp(self):

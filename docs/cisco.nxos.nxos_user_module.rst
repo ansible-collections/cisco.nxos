@@ -70,6 +70,22 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>hashed_password</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The hashed password to be configured on the network device. The password needs to already be encrypted.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -170,6 +186,21 @@ Parameters
                 </td>
                 <td>
                         <div>The password to be configured on the network device. The password needs to be provided in cleartext and it will be encrypted on the device.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>hashed_password</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The hashed password to be configured on the network device. The password needs to already be encrypted.</div>
                 </td>
             </tr>
             <tr>
@@ -304,7 +335,7 @@ Examples
 
     - name: remove all users except admin
       cisco.nxos.nxos_user:
-        purge: yes
+        purge: true
 
     - name: set multiple users role
       cisco.nxos.nxos_user:

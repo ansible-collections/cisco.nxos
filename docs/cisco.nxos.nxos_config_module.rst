@@ -414,7 +414,7 @@ Examples
 
     - name: configurable backup path
       cisco.nxos.nxos_config:
-        backup: yes
+        backup: true
         backup_options:
           filename: backup.cfg
           dir_path: /home/user

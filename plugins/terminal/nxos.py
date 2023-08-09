@@ -30,7 +30,6 @@ from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base im
 
 
 class TerminalModule(TerminalBase):
-
     terminal_stdout_re = [
         re.compile(
             rb"[\r\n](?!\s*<)?(\x1b\S+)*[a-zA-Z_0-9]{1}[a-zA-Z0-9-_.]*[>|#](?:\s*)(\x1b\S+)*$",
@@ -64,12 +63,13 @@ class TerminalModule(TerminalBase):
             re.I,
         ),
         re.compile(rb"No corresponding (.+) configured", re.I),
+        re.compile(rb"(.+)please specify sequence number", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
 
     def on_become(self, passwd=None):
-        if self._get_prompt().strip().endswith(b"enable#"):
+        if self._get_prompt().strip().endswith(b"#"):
             return
 
         out = self._exec_cli_command("show privilege")

@@ -13,6 +13,8 @@
             host-reachability protocol bgp
             advertise virtual-rmac
             source-interface loopback1
+          interface Ethernet1/799
+            switchport mode dot1q-tunnel
           interface Ethernet1/800
             switchport access vlan 18
             switchport trunk allowed vlan 210

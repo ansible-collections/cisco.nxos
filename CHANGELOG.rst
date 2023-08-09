@@ -5,6 +5,112 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v5.1.0
+======
+
+Minor Changes
+-------------
+
+- nxos_facts - add cpu utilization data to facts.
+
+v5.0.0
+======
+
+Major Changes
+-------------
+
+- Refer to **Removed Features** section for details.
+- This release removes four of the previously deprecated modules from this collection.
+
+Minor Changes
+-------------
+
+- Add nxos_bgp_templates module.
+- nxos_user - Added dev-ops role to BUILTINS (https://github.com/ansible-collections/cisco.nxos/issues/690)
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- The nxos_bgp module has been removed with this release.
+- The nxos_bgp_af module has been removed with this release.
+- The nxos_bgp_neighbor module has been removed with this release.
+- The nxos_bgp_neighbor_af module has been removed with this release.
+
+Bugfixes
+--------
+
+- nxos_static_routes - Prevent action states to generate terminal configuration command.
+- nxos_static_routes - Update the delete operation of static routes to be similar to other platforms. (https://github.com/ansible-collections/cisco.nxos/issues/666)
+
+v4.4.0
+======
+
+Minor Changes
+-------------
+
+- nxos_user - Add support for hashed passwords. (https://github.com/ansible-collections/cisco.nxos/issues/370).
+
+Bugfixes
+--------
+
+- l3_interfaces - Append tag when updating IP address with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/678).
+- ntp_global - Fix incorrect handling of prefer option (https://github.com/ansible-collections/cisco.nxos/issues/670).
+- nxos_banner - Add support for a custom multiline delimiter
+- nxos_facts - Fix missing SVI facts (https://github.com/ansible-collections/cisco.nxos/issues/440).
+- terminal - attempt privilege escalation only when prompt does not end with #
+
+Documentation Changes
+---------------------
+
+- Fix docs of static-routes resource module.
+- nxos_interfaces - Fixed module documentation and examples.
+- nxos_l2_interfaces - Fixed module documentation and examples.
+- nxos_l3_interfaces - Fixed module documentation and examples.
+
+v4.3.0
+======
+
+Release Summary
+---------------
+
+Re-releasing v4.2.0 of this collection since the previously build failed to upload in Automation Hub.
+
+v4.2.0
+======
+
+Minor Changes
+-------------
+
+- `nxos_route_maps` - add support for 'set ip next-hop <>' command in route-maps
+- `nxos_vxlan_vtep` - add support for 'advertise virtual-rmac' command under nve interface
+
+Bugfixes
+--------
+
+- `bgp` - Fix parsing remote-as for Nexus 3K (https://github.com/ansible-collections/cisco.nxos/issues/653).
+- `facts` - Attempt to execute json output commands with | json-pretty first and fall back to | json if unsupported. This is a temporary workaround until https://github.com/ansible/pylibssh/issues/208 is fixed.
+- `interfaces` - Correctly enable/disable VLAN interfaces (https://github.com/ansible-collections/cisco.nxos/issues/539).
+- `route_maps` - resolve route-map description parameter idempotency
+- `snmp_server` - fix community option to produce proper configuration with ipv4acl and ipv6acl.
+
+v4.1.0
+======
+
+Minor Changes
+-------------
+
+- `nxos_acls` - Support ICMPv6 option. Please refer to module doc for all new options (https://github.com/ansible-collections/cisco.nxos/issues/624).
+- `nxos_facts` - Update facts gathering logic to ensure that `gather_network_resources: all` does not fail for NX-OS on MDS switches.
+- `nxos_l2_interfaces` - Add new mode dot1q-tunnel (https://github.com/ansible-collections/cisco.nxos/issues/600).
+
+Bugfixes
+--------
+
+- `nxos_acls` - Fix how IPv6 prefixes are converted to hosts (https://github.com/ansible-collections/cisco.nxos/issues/623).
+- `nxos_file_copy` - stop prepending redundant bootflash: to remote file names
+- nxos_acls - Detect duplicate ACE error message from CLI and fail (https://github.com/ansible-collections/cisco.nxos/issues/611).
+- nxos_command - Run & evaluate commands at least once even when retries is set to 0 (https://github.com/ansible-collections/cisco.nxos/issues/607).
+
 v4.0.1
 ======
 
@@ -386,8 +492,8 @@ v2.0.0
 Major Changes
 -------------
 
-- Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode` and `ansible_network_import_modules`.
 - Please refer to ansible.netcommon `changelog <https://github.com/ansible-collections/ansible.netcommon/blob/main/changelogs/CHANGELOG.rst#ansible-netcommon-collection-release-notes>`_ for more details.
+- Requires ansible.netcommon v2.0.0+ to support `ansible_network_single_user_mode` and `ansible_network_import_modules`.
 
 Minor Changes
 -------------

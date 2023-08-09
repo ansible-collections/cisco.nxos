@@ -23,10 +23,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common i
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lag_interfaces.lag_interfaces import (
     Lag_interfacesArgs,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    get_interface_type,
-    normalize_interface,
-)
 
 
 class Lag_interfacesFacts(object):

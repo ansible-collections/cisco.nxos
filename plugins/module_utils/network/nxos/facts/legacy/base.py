@@ -38,8 +38,24 @@ class FactsBase(object):
 
     def run(self, command, output="text"):
         command_string = command
+        if output == "json":
+            # Not all devices support | json-pretty but is a workaround for
+            # libssh issue https://github.com/ansible/pylibssh/issues/208
+            output = "json-pretty"
+
+        resp = []
         command = {"command": command, "output": output}
-        resp = run_commands(self.module, [command], check_rc="retry_json")
+        try:
+            resp = run_commands(self.module, [command], check_rc="retry_json")
+        except Exception:
+            if output == "json-pretty":
+                # reattempt with | json
+                resp = run_commands(
+                    self.module,
+                    [{"command": command, "output": "json"}],
+                    check_rc="retry_json",
+                )
+
         try:
             return resp[0]
         except IndexError:
@@ -146,6 +162,26 @@ class Hardware(FactsBase):
                 self.facts["memtotal_mb"] = self.parse_memtotal_mb(data)
                 self.facts["memfree_mb"] = self.parse_memfree_mb(data)
 
+        data = None
+        data = self.run("show processes cpu | json")
+
+        if data:
+            self.facts["cpu_utilization"] = self.parse_cpu_utilization(data)
+
+    def parse_cpu_utilization(self, data):
+        return {
+            "core": {
+                "five_minutes": int(data.get("fivemin_percent", 0)),
+                "five_seconds": int(
+                    data.get("fivesec_percent", 0),
+                ),
+                "five_seconds_interrupt": int(
+                    data.get("fivesec_intr_percent", 0),
+                ),
+                "one_minute": int(data.get("onemin_percent", 0)),
+            },
+        }
+
     def parse_filesystems(self, data):
         return re.findall(r"^Usage for (\S+)//", data, re.M)
 
@@ -163,7 +199,6 @@ class Hardware(FactsBase):
 
 
 class Interfaces(FactsBase):
-
     INTERFACE_MAP = frozenset(
         [
             ("state", "state"),
@@ -257,7 +292,7 @@ class Interfaces(FactsBase):
             name = item["interface"]
 
             intf = dict()
-            if "type" in item:
+            if any(key.startswith("svi_") for key in item):
                 intf.update(self.transform_dict(item, self.INTERFACE_SVI_MAP))
             else:
                 intf.update(self.transform_dict(item, self.INTERFACE_MAP))

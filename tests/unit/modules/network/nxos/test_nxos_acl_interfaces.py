@@ -9,14 +9,13 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_acl_interfaces
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import MagicMock, patch
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
 
-from .nxos_module import TestNxosModule, load_fixture
+from .nxos_module import TestNxosModule
 
 
 class TestNxosAclInterfacesModule(TestNxosModule):
-
     module = nxos_acl_interfaces
 
     def setUp(self):

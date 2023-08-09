@@ -17,8 +17,6 @@ __metaclass__ = type
 
 import re
 
-from copy import deepcopy
-
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
@@ -93,11 +91,11 @@ class Acls(ConfigBase):
         else:
             existing_acls_facts = self.get_acls_facts()
             commands.extend(self.set_config(existing_acls_facts))
+            result["before"] = existing_acls_facts
             if commands and state in action_states:
                 if not self._module.check_mode:
                     self._connection.edit_config(commands)
                 result["changed"] = True
-                result["before"] = existing_acls_facts
                 result["commands"] = commands
 
             changed_acls_facts = self.get_acls_facts()
@@ -616,7 +614,10 @@ class Acls(ConfigBase):
         else:
             command += w_ace["grant"] + " "
             if "protocol" in ace_keys:
-                command += w_ace["protocol"] + " "
+                if w_ace["protocol"] == "icmpv6":
+                    command += "icmp" + " "
+                else:
+                    command += w_ace["protocol"] + " "
                 src = self.get_address(w_ace["source"], w_ace["protocol"])
                 dest = self.get_address(w_ace["destination"], w_ace["protocol"])
                 command += src + dest
@@ -626,7 +627,8 @@ class Acls(ConfigBase):
                         self._module.fail_json(msg="protocol and protocol_options mismatch")
                     flags = ""
                     for k in w_ace["protocol_options"][pro].keys():
-                        k = re.sub("_", "-", k)
+                        if k not in ["telemetry_queue", "telemetry_path"]:
+                            k = re.sub("_", "-", k)
                         flags += k + " "
                     command += flags
                 if "dscp" in ace_keys:

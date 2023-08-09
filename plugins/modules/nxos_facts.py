@@ -28,8 +28,8 @@ extends_documentation_fragment:
 short_description: Gets facts about NX-OS switches
 description:
 - Collects facts from Cisco Nexus devices running the NX-OS operating system.  Fact
-  collection is supported over both Cli and Nxapi transports.  This module prepends
-  all of the base network fact keys with C(ansible_net_<fact>).  The facts module
+  collection is supported over both C(network_cli) and C(httpapi). This module prepends
+  all of the base network fact keys with C(ansible_net_<fact>). The facts module
   will always collect a base set of facts from the device and can enable or disable
   collection of additional facts.
 version_added: 1.0.0
@@ -42,7 +42,7 @@ notes:
 options:
   gather_subset:
     description:
-    - When supplied, this argument will restrict the facts collected to a given subset.  Possible
+    - When supplied, this argument will gather operational facts only for the given subset. Possible
       values for this argument include C(all), C(hardware), C(config), C(legacy), C(interfaces), and C(min).  Can
       specify a list of values to include a larger subset.  Values can also be used
       with an initial C(!) to specify that a specific subset should not be collected.
@@ -52,19 +52,20 @@ options:
     elements: str
   gather_network_resources:
     description:
-    - When supplied, this argument will restrict the facts collected to a given subset.
-      Possible values for this argument include all and the resources like interfaces,
-      vlans etc. Can specify a list of values to include a larger subset. Values can
+    - When supplied, this argument will gather configuration facts only for the given subset.
+      Can specify a list of values to include a larger subset. Values can
       also be used with an initial C(!) to specify that a specific subset should
-      not be collected. Valid subsets are C(all), C(bfd_interfaces), C(lag_interfaces),
+      not be collected.
+    - Valid subsets are C(all), C(bfd_interfaces), C(lag_interfaces),
       C(telemetry), C(vlans), C(lacp), C(lacp_interfaces), C(interfaces), C(l3_interfaces),
       C(l2_interfaces), C(lldp_global), C(acls), C(acl_interfaces), C(ospfv2), C(ospfv3), C(ospf_interfaces),
-      C(bgp_global), C(bgp_address_family), C(route_maps), C(prefix_lists), C(logging_global), C(ntp_global), C(snmp_server).
+      C(bgp_global), C(bgp_address_family), C(route_maps), C(prefix_lists), C(logging_global), C(ntp_global),
+      C(snmp_server), C(hostname).
     required: false
     type: list
     elements: str
   available_network_resources:
-    description: When 'True' a list of network resources for which resource modules are available will be provided.
+    description: When set to C(true) a list of network resources for which resource modules are available will be provided.
     type: bool
     default: false
 """
@@ -213,14 +214,28 @@ vlan_list:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.connection import Connection
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.facts.facts import (
     FactsArgs,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    FACT_RESOURCE_SUBSETS,
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+
+
+def get_chassis_type(connection):
+    """Return facts resource subsets based on
+    chassis model.
+    """
+    target_type = "nexus"
+
+    device_info = connection.get_device_info()
+    model = device_info.get("network_os_model", "")
+    platform = device_info.get("network_os_platform", "")
+
+    if platform.startswith("DS-") and "MDS" in model:
+        target_type = "mds"
+
+    return target_type
 
 
 def main():
@@ -232,13 +247,16 @@ def main():
     argument_spec = FactsArgs.argument_spec
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    connection = Connection(module._socket_path)
+    facts = Facts(module, chassis_type=get_chassis_type(connection))
 
     warnings = []
 
     ansible_facts = {}
     if module.params.get("available_network_resources"):
-        ansible_facts["available_network_resources"] = sorted(FACT_RESOURCE_SUBSETS.keys())
-    result = Facts(module).get_facts()
+        ansible_facts["available_network_resources"] = sorted(facts.get_resource_subsets().keys())
+
+    result = facts.get_facts()
     additional_facts, additional_warnings = result
     ansible_facts.update(additional_facts)
     warnings.extend(additional_warnings)

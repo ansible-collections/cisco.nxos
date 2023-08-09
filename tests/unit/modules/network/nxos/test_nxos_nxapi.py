@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosNxapiModule(TestNxosModule):
-
     module = nxos_nxapi
 
     def setUp(self):

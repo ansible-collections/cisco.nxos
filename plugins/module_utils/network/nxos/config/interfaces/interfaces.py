@@ -35,7 +35,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
-    remove_rsvd_interfaces,
     search_obj_in_list,
 )
 
@@ -84,7 +83,7 @@ class Interfaces(ConfigBase):
 
     def edit_config(self, commands):
         """Wrapper method for `_connection.edit_config()`
-        This method exists solely to allow the unit test framework to mock device connection calls.
+        This method exists solely to allow the unit test framework to mcdock device connection calls.
         """
         return self._connection.edit_config(commands)
 

@@ -34,7 +34,6 @@ __metaclass__ = type
 
 import json
 import re
-import sys
 
 from copy import deepcopy
 
@@ -60,14 +59,6 @@ try:
 except ImportError:
     HAS_YAML = False
 
-try:
-    if sys.version_info[:2] < (2, 7):
-        from ordereddict import OrderedDict
-    else:
-        from collections import OrderedDict
-    HAS_ORDEREDDICT = True
-except ImportError:
-    HAS_ORDEREDDICT = False
 
 _DEVICE_CONNECTION = None
 
@@ -862,14 +853,8 @@ class NxosCmdRef:
 def nxosCmdRef_import_check():
     """Return import error messages or empty string"""
     msg = ""
-    if PY2:
-        if not HAS_ORDEREDDICT and sys.version_info[:2] < (2, 7):
-            msg += "Mandatory python library 'ordereddict' is not present, try 'pip install ordereddict'\n"
-        if not HAS_YAML:
-            msg += "Mandatory python library 'yaml' is not present, try 'pip install yaml'\n"
-    elif PY3:
-        if not HAS_YAML:
-            msg += "Mandatory python library 'PyYAML' is not present, try 'pip install PyYAML'\n"
+    if not HAS_YAML:
+        msg += "Mandatory python library 'PyYAML' is not present, try 'pip install PyYAML'\n"
     return msg
 
 
@@ -1024,6 +1009,8 @@ def default_intf_enabled(name="", sysdefs=None, mode=None):
 
     if re.search("port-channel|loopback", name):
         default = True
+    elif re.search("Vlan", name):
+        default = False
     else:
         if mode is None:
             # intf 'switchport' cli is not present so use the user-system-default

@@ -24,21 +24,16 @@ __metaclass__ = type
 
 from textwrap import dedent
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bfd_interfaces.bfd_interfaces import (
-    Bfd_interfaces,
-)
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bfd_interfaces
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from .nxos_module import TestNxosModule, set_module_args
 
 
 ignore_provider_arg = True
 
 
 class TestNxosBfdInterfacesModule(TestNxosModule):
-
     module = nxos_bfd_interfaces
 
     def setUp(self):

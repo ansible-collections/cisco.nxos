@@ -26,16 +26,14 @@ from textwrap import dedent
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_ospfv2
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from .nxos_module import TestNxosModule, set_module_args
 
 
 ignore_provider_arg = True
 
 
 class TestNxosOspfv2Module(TestNxosModule):
-
     module = nxos_ospfv2
 
     def setUp(self):

@@ -23,7 +23,6 @@ from copy import deepcopy
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     parse_conf_arg,
-    parse_conf_cmd_arg,
 )
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vlans.vlans import (

@@ -22,20 +22,17 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from textwrap import dedent
-
 from ansible_collections.cisco.nxos.plugins.modules import nxos_ping
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from .nxos_module import TestNxosModule, set_module_args
 
 
 ignore_provider_arg = True
 
 
 class TestNxosPingModule(TestNxosModule):
-    """Class used for Unit Tests agains ios_ping module"""
+    """Class used for Unit Tests against nxos_ping module"""
 
     module = nxos_ping
 

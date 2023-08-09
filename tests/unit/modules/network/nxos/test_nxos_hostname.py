@@ -19,8 +19,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-from typing import Sequence
-
 
 __metaclass__ = type
 
@@ -36,7 +34,6 @@ ignore_provider_arg = True
 
 
 class TestNxosHostnameModule(TestNxosModule):
-
     module = nxos_hostname
 
     def setUp(self):

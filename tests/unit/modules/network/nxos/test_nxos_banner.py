@@ -27,7 +27,6 @@ from .nxos_module import TestNxosModule, set_module_args
 
 
 class TestNxosBannerModule(TestNxosModule):
-
     module = nxos_banner
 
     def setUp(self):
@@ -99,5 +98,19 @@ class TestNxosBannerModule(TestNxosModule):
     def test_nxos_banner_with_preserved_spaces(self):
         set_module_args(dict(banner="motd", text="  foo \n"))
         commands = ["banner motd @\n  foo \n\n@"]
+        self.run_commands.return_value = commands
+        self.execute_module(changed=True, commands=commands)
+
+    def test_nxos_banner_multiline_delimiter(self):
+        set_module_args(
+            dict(
+                banner="exec",
+                text="this is my exec banner\nthat contains my email address email@address.com \nand it's a multiline string\n",
+                multiline_delimiter="*",
+            ),
+        )
+        commands = [
+            "banner exec *\nthis is my exec banner\nthat contains my email address email@address.com \nand it's a multiline string\n\n*",
+        ]
         self.run_commands.return_value = commands
         self.execute_module(changed=True, commands=commands)

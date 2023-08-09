@@ -29,16 +29,14 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_
 )
 from ansible_collections.cisco.nxos.plugins.modules import nxos_l3_interfaces
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import PropertyMock, patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from .nxos_module import TestNxosModule, set_module_args
 
 
 ignore_provider_arg = True
 
 
 class TestNxosL3InterfacesModule(TestNxosModule):
-
     module = nxos_l3_interfaces
 
     def setUp(self):
@@ -1023,3 +1021,26 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         set_module_args(playbook, ignore_provider_arg)
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered_facts)
+
+    def test_replaced_tag(self):
+        existing = dedent(
+            """\
+          interface Vlan10
+            ip address 192.168.1.10/24 tag 20
+        """,
+        )
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
+        playbook = dict(
+            config=[
+                dict(
+                    name="Vlan10",
+                    ipv4=[{"address": "192.168.1.11/24", "tag": 20}],
+                ),
+            ],
+            state="replaced",
+        )
+
+        commands = ["interface Vlan10", "ip address 192.168.1.11/24 tag 20"]
+        playbook["state"] = "replaced"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=commands)

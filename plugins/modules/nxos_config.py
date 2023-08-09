@@ -125,7 +125,7 @@ options:
       playbook root directory or role root directory, if playbook is part of an ansible
       role. If the directory does not exist, it is created.
     type: bool
-    default: no
+    default: false
   running_config:
     description:
     - The module, by default, will connect to the remote device and retrieve the current
@@ -146,7 +146,7 @@ options:
       the running-config is append with the all keyword.  When the value is set to
       false, the command is issued without the all keyword
     type: bool
-    default: no
+    default: false
   save_when:
     description:
     - When changes are made to the device running-configuration, the changes are not
@@ -280,7 +280,7 @@ EXAMPLES = """
 
 - name: configurable backup path
   cisco.nxos.nxos_config:
-    backup: yes
+    backup: true
     backup_options:
       filename: backup.cfg
       dir_path: /home/user
@@ -543,6 +543,8 @@ def main():
             base_config = NetworkConfig(indent=2, contents=contents, ignore_lines=diff_ignore_lines)
 
             if running_config.sha1 != base_config.sha1:
+                before = ""
+                after = ""
                 if module.params["diff_against"] == "intended":
                     before = running_config
                     after = base_config

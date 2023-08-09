@@ -142,7 +142,7 @@ options:
     description:
     - Purge VRFs not defined in the I(aggregate) parameter.
     type: bool
-    default: no
+    default: false
   state:
     description:
     - Manages desired state of the resource.
@@ -182,7 +182,7 @@ EXAMPLES = """
     - {name: ntc1, description: purge test1}
     - {name: ntc2, description: purge test2}
     state: present
-    purge: yes
+    purge: true
 
 - name: Delete VRFs exist on switch
   cisco.nxos.nxos_vrf:
@@ -521,7 +521,6 @@ def map_config_to_obj(want, element_spec, module):
 
 
 def check_declarative_intent_params(want, module, element_spec, result):
-
     have = None
     is_delay = False
 

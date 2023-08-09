@@ -56,10 +56,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     dumps,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
-from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base import (
-    CliconfBase,
-    enable_mode,
-)
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base import CliconfBase
 
 
 class Cliconf(CliconfBase):
@@ -185,7 +182,7 @@ class Cliconf(CliconfBase):
         diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
         return diff
 
-    def get_config(self, source="running", format="text", flags=None):
+    def get_config(self, source="running", flags=None, format="text"):
         options_values = self.get_option_values()
         if format not in options_values["format"]:
             raise ValueError(
@@ -246,8 +243,8 @@ class Cliconf(CliconfBase):
         prompt=None,
         answer=None,
         sendonly=False,
-        output=None,
         newline=True,
+        output=None,
         check_all=False,
     ):
         if output:
@@ -317,7 +314,7 @@ class Cliconf(CliconfBase):
             "format": ["text", "json"],
             "diff_match": ["line", "strict", "exact", "none"],
             "diff_replace": ["line", "block", "config"],
-            "output": ["text", "json"],
+            "output": ["text", "json", "json-pretty"],
         }
 
     def get_capabilities(self):
@@ -405,6 +402,7 @@ class Cliconf(CliconfBase):
                 out = self._connection.get_prompt()
 
     def _get_command_with_output(self, command, output):
+        output_re = r".+\|\s*json(?:-pretty)?$"
         options_values = self.get_option_values()
         if output not in options_values["output"]:
             raise ValueError(
@@ -412,15 +410,15 @@ class Cliconf(CliconfBase):
                 % (output, ",".join(options_values["output"])),
             )
 
-        if output == "json" and not command.endswith("| json"):
+        if output in ["json", "json-pretty"] and not re.search(output_re, command):
             device_info = self.get_device_info()
             model = device_info.get("network_os_model", "")
             platform = device_info.get("network_os_platform", "")
             if platform.startswith("DS-") and "MDS" in model:
                 cmd = "%s | json native" % command
             else:
-                cmd = "%s | json" % command
-        elif output == "text" and command.endswith("| json"):
+                cmd = "%s | %s" % (command, output)
+        elif output == "text" and re.search(output_re, command):
             cmd = command.rsplit("|", 1)[0]
         else:
             cmd = command

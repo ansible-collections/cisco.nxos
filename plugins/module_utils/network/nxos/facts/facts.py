@@ -34,6 +34,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_neighbor_address_family.bgp_neighbor_address_family import (
     Bgp_neighbor_address_familyFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_templates.bgp_templates import (
+    Bgp_templatesFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname import (
     HostnameFacts,
 )
@@ -115,7 +118,7 @@ FACT_LEGACY_SUBSETS = dict(
     config=Config,
     features=Features,
 )
-FACT_RESOURCE_SUBSETS = dict(
+NX_FACT_RESOURCE_SUBSETS = dict(
     bfd_interfaces=Bfd_interfacesFacts,
     hsrp_interfaces=Hsrp_interfacesFacts,
     lag_interfaces=Lag_interfacesFacts,
@@ -143,6 +146,12 @@ FACT_RESOURCE_SUBSETS = dict(
     ntp_global=Ntp_globalFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
+    bgp_templates=Bgp_templatesFacts,
+)
+MDS_FACT_RESOURCE_SUBSETS = dict(
+    logging_global=Logging_globalFacts,
+    ntp_global=Ntp_globalFacts,
+    snmp_server=Snmp_serverFacts,
 )
 
 
@@ -150,10 +159,19 @@ class Facts(FactsBase):
     """The fact class for nxos"""
 
     VALID_LEGACY_GATHER_SUBSETS = frozenset(FACT_LEGACY_SUBSETS.keys())
-    VALID_RESOURCE_SUBSETS = frozenset(FACT_RESOURCE_SUBSETS.keys())
 
-    def __init__(self, module):
+    def __init__(self, module, chassis_type="nexus"):
         super(Facts, self).__init__(module)
+        self.chassis_type = chassis_type
+
+    def get_resource_subsets(self):
+        """Return facts resource subsets based on
+        target device model.
+        """
+        facts_resource_subsets = NX_FACT_RESOURCE_SUBSETS
+        if self.chassis_type == "mds":
+            facts_resource_subsets = MDS_FACT_RESOURCE_SUBSETS
+        return facts_resource_subsets
 
     def get_facts(self, legacy_facts_type=None, resource_facts_type=None, data=None):
         """Collect the facts for nxos
@@ -163,8 +181,10 @@ class Facts(FactsBase):
         :rtype: dict
         :return: the facts gathered
         """
-        if self.VALID_RESOURCE_SUBSETS:
-            self.get_network_resources_facts(FACT_RESOURCE_SUBSETS, resource_facts_type, data)
+        VALID_RESOURCE_SUBSETS = self.get_resource_subsets()
+
+        if frozenset(VALID_RESOURCE_SUBSETS.keys()):
+            self.get_network_resources_facts(VALID_RESOURCE_SUBSETS, resource_facts_type, data)
 
         if self.VALID_LEGACY_GATHER_SUBSETS:
             self.get_network_legacy_facts(FACT_LEGACY_SUBSETS, legacy_facts_type)

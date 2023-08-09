@@ -414,6 +414,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
+                                    <li>overridden</li>
                                     <li>deleted</li>
                                     <li>gathered</li>
                                     <li>rendered</li>
@@ -421,7 +422,8 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>The state of the configuration after module completion</div>
+                        <div>The state of the configuration after module completion.</div>
+                        <div>States <code>replaced</code> and <code>overridden</code> have the same behaviour for this module.</div>
                 </td>
             </tr>
     </table>
@@ -525,8 +527,8 @@ Examples
           port_id: 1
           reinit: 5
           tlv_select:
-            dcbxp: yes
-            power_management: yes
+            dcbxp: true
+            power_management: true
         state: rendered
 
     # Task Output (redacted)

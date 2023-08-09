@@ -29,7 +29,6 @@ from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosIPInterfaceModule(TestNxosModule):
-
     module = nxos_pim_interface
 
     def setUp(self):
@@ -64,7 +63,7 @@ class TestNxosIPInterfaceModule(TestNxosModule):
             output = list()
 
             for command in commands:
-                if type(command) == dict:
+                if type(command) is dict:
                     command = command["command"]
                 filename = str(command).split(" | ", 1)[0].replace(" ", "_").replace("/", "_")
                 output.append(load_fixture(module_name, filename))
@@ -123,7 +122,6 @@ class TestNxosIPInterfaceModule(TestNxosModule):
 
 
 class TestNxosPimInterfaceBfdModule(TestNxosModule):
-
     module = nxos_pim_interface
 
     def setUp(self):

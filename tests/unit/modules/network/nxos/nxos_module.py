@@ -89,7 +89,6 @@ class TestNxosModule(ModuleTestCase):
         return retvals
 
     def execute_module(self, failed=False, changed=False, commands=None, sort=True, device=""):
-
         self.load_fixtures(commands, device=device)
 
         if failed:
