@@ -125,18 +125,20 @@ class AclsFacts(object):
                     ace = re.sub(port_pro.group(1), "", ace, 1)
                     ace = re.sub(port_pro.group(2), "", ace, 1)
                 else:
-                    limit = re.search(r"(range) (\w*) (\w*)", ace)
+                    limit = re.search(r"range\s(?P<rstart>\w+)\s(?P<rend>\w+)", ace)
                     if limit:
+                        rstart = limit.groupdict()["rstart"]
+                        rend = limit.groupdict()["rend"]
                         port_protocol.update(
                             {
                                 "range": {
-                                    "start": limit.group(2),
-                                    "end": limit.group(3),
+                                    "start": rstart,
+                                    "end": rend,
                                 },
                             },
                         )
-                        ace = re.sub(limit.group(2), "", ace, 1)
-                        ace = re.sub(limit.group(3), "", ace, 1)
+                        range_substring = "range %s %s" % (rstart, rend)
+                        ace = re.sub(range_substring, "", ace, 1)
                 if port_protocol:
                     ret_dict.update({"port_protocol": port_protocol})
         return ace, ret_dict
@@ -250,7 +252,9 @@ class AclsFacts(object):
                 acl = acl.split("\n")
                 acl = [a.strip() for a in acl]
                 acl = list(filter(None, acl))
-                acls["name"] = re.match(r"(ip)?(v6)?\s?access-list (.*)", acl[0]).group(3)
+                acls["name"] = re.match(r"(ip)?(v6)?\s?access-list (.*)", acl[0]).group(
+                    3,
+                )
                 acls["aces"] = []
                 for ace in list(filter(None, acl[1:])):
                     if re.search(r"^ip(.*)access-list.*", ace):
