@@ -383,8 +383,8 @@ EXAMPLES = """
               id: 101
               route_map: rmap-eigrp-1
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before: {}
 #
 #  commands:
@@ -437,7 +437,7 @@ EXAMPLES = """
 #            route_map: rmap-eigrp-1
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   address-family ipv4 multicast
@@ -497,8 +497,8 @@ EXAMPLES = """
           vrf: site-1
     state: replaced
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    address_family:
@@ -577,7 +577,7 @@ EXAMPLES = """
 #            route_map: rmap-eigrp-1
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   address-family ipv4 multicast
@@ -629,8 +629,8 @@ EXAMPLES = """
           vrf: site-1
     state: overridden
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    address_family:
@@ -698,7 +698,7 @@ EXAMPLES = """
 
 #
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   address-family ipv4 multicast
@@ -739,8 +739,8 @@ EXAMPLES = """
           safi: multicast
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    address_family:
@@ -795,7 +795,7 @@ EXAMPLES = """
 #            summary_only: True
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   vrf site-1
@@ -826,8 +826,8 @@ EXAMPLES = """
   cisco.nxos.nxos_bgp_address_family:
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    address_family:
@@ -873,7 +873,7 @@ EXAMPLES = """
 #    as_number: "65536"
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 # Nexus9000v#
@@ -917,8 +917,8 @@ EXAMPLES = """
               route_map: rmap-eigrp-1
     state: rendered
 
-# Task Output (redacted)
-# -----------------------
+# Task Output:
+# ------------
 # rendered:
 # - router bgp 65536
 # - address-family ipv4 multicast
@@ -957,8 +957,8 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  parsed:
 #    as_number: "65536"
 #    address_family:
@@ -992,6 +992,52 @@ EXAMPLES = """
 #          - id: "101"
 #            protocol: eigrp
 #            route_map: rmap-eigrp-1
+"""
+RETURN = """
+before:
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+after:
+  description: The resulting configuration after module execution.
+  returned: when changed
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: list
+  sample:
+    - router bgp 65536
+    - address-family ipv4 multicast
+    - nexthop route-map rmap2
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - router bgp 65536
+    - address-family ipv4 multicast
+    - nexthop route-map rmap2
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule
