@@ -50,13 +50,12 @@ class Fc_interfaces(ResourceModule):
             resource="fc_interfaces",
             tmplt=Fc_interfacesTemplate(),
         )
-        self.parsers = ["description", "speed",
-                        "mode", "trunk_mode", "analytics"]
+        self.parsers = ["description", "speed", "mode", "trunk_mode", "analytics"]
         # self.parsers = ["description", "speed",
         #                 "mode", "trunk_mode", "analytics_scsi", "analytics_nvme"]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -67,11 +66,11 @@ class Fc_interfaces(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+        wantd = {entry["name"]: entry for entry in self.want}
+        haved = {entry["name"]: entry for entry in self.have}
 
         for each in wantd, haved:
             self.normalize_interface_names(each)
@@ -82,8 +81,7 @@ class Fc_interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state in ["deleted", "purged"]:
-            haved = {k: v for k, v in iteritems(
-                haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -95,7 +93,7 @@ class Fc_interfaces(ResourceModule):
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
-    def _calculate_ana_config(self, want_ana, have_ana):
+    def _calculate_ana_config_old(self, want_ana, have_ana):
         if want_ana == have_ana:
             return []
         # want "" have scsi  - no analytics type fc-scsi
@@ -136,11 +134,78 @@ class Fc_interfaces(ResourceModule):
         if want_ana == "fc-all":
             return ["analytics type fc-all"]
 
+    def _calculate_ana_config(self, want_ana, have_ana):
+        if have_ana == want_ana:
+            return []
+        elif have_ana == "":
+            if want_ana:
+                return [f"analytics type {want_ana}"]
+        elif have_ana == "fc-scsi":
+            if want_ana == "":
+                return ["no analytics type fc-scsi"]
+            elif want_ana == "fc-scsi":
+                return []
+            elif want_ana == "fc-nvme":
+                return ["no analytics type fc-scsi", "analytics type fc-nvme"]
+            elif want_ana == "fc-all":
+                return ["analytics type fc-nvme"]
+        elif have_ana == "fc-nvme":
+            if want_ana == "":
+                return ["no analytics type fc-nvme"]
+            elif want_ana == "fc-scsi":
+                return ["no analytics type fc-nvme", "analytics type fc-scsi"]
+            elif want_ana == "fc-nvme":
+                return []
+            elif want_ana == "fc-all":
+                return ["analytics type fc-scsi"]
+        elif have_ana == "fc-all":
+            if want_ana == "":
+                return ["no analytics type fc-all"]
+            elif want_ana == "fc-scsi":
+                return ["no analytics type fc-nvme"]
+            elif want_ana == "fc-nvme":
+                return ["no analytics type fc-scsi"]
+            elif want_ana == "fc-all":
+                return []
+
+    # def _calculate_ana_config(self, want_ana, have_ana):
+    #     if have_ana == want_ana:
+    #         return []
+    #     elif have_ana == "":
+    #         if want_ana:
+    #             return [f"analytics type {want_ana}"]
+    #     elif have_ana == "fc-scsi":
+    #         if want_ana == "":
+    #     		return ["no analytics type fc-scsi"]
+    #         elif want_ana == "fc-scsi":
+    #     		return []
+    #     	elif want_ana == "fc-nvme":
+    #     		return ["no analytics type fc-scsi","analytics type fc-nvme"]
+    #     	elif want_ana == "fc-all":
+    #     		return ["analytics type fc-nvme"]
+    #     elif have_ana == "fc-nvme":
+    #     	if want_ana == "":
+    #     		return ["no analytics type fc-nvme"]
+    #     	elif want_ana == "fc-scsi":
+    #     		return ["no analytics type fc-nvme","analytics type fc-scsi"]
+    #     	elif want_ana == "fc-nvme":
+    #     		return []
+    #     	elif want_ana == "fc-all":
+    #     		return ["analytics type fc-scsi"]
+    #     elif have_ana == "fc-all":
+    #     	if want_ana == "":
+    #     		return ["no analytics type fc-all"]
+    #     	elif want_ana == "fc-scsi":
+    #     		return ["no analytics type fc-nvme"]
+    #     	elif want_ana == "fc-nvme":
+    #     		return ["no analytics type fc-scsi"]
+    #     	elif want_ana == "fc-all":
+
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Fc_interfaces network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Fc_interfaces network resource.
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
@@ -155,8 +220,7 @@ class Fc_interfaces(ResourceModule):
                     # negates if no shutdown
                     self.addcmd(have, "enabled", False)
 
-        c = self._calculate_ana_config(
-            want.get("analytics", ""), have.get("analytics", ""))
+        c = self._calculate_ana_config(want.get("analytics", ""), have.get("analytics", ""))
         new_cmds = []
         for eachc in self.commands:
             if "analytics" in eachc:
@@ -166,12 +230,11 @@ class Fc_interfaces(ResourceModule):
 
         self.commands = new_cmds + c
         # import q
-#         q(want)
-#         q(have)
-#         q(self.commands)
+        #         q(want)
+        #         q(have)
+        #         q(self.commands)
         if len(self.commands) != begin:
-            self.commands.insert(begin, self._tmplt.render(
-                want or have, "interface", False))
+            self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
 
     def purge(self, have):
         """Handle operation for purged state"""

@@ -26,11 +26,13 @@ __metaclass__ = type
 """
 The arg spec for the nxos_fc_interfaces module
 """
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
+    allowed_speed_values,
+)
 
 
 class Fc_interfacesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_fc_interfaces module
-    """
+    """The arg spec for the nxos_fc_interfaces module"""
 
     argument_spec = {
         "running_config": {"type": "str"},
@@ -42,16 +44,7 @@ class Fc_interfacesArgs(object):  # pylint: disable=R0903
                 "description": {"type": "str"},
                 "enabled": {"type": "bool"},
                 "speed": {
-                    "choices": [
-                        "auto",
-                        "1000",
-                        "2000",
-                        "4000",
-                        "8000",
-                        "16000",
-                        "32000",
-                        "64000",
-                    ],
+                    "choices": allowed_speed_values,
                     "type": "str",
                 },
                 "mode": {

@@ -18,7 +18,7 @@
 # Make coding more python3-ish
 
 from __future__ import absolute_import, division, print_function
-
+import re
 
 __metaclass__ = type
 
@@ -31,6 +31,533 @@ from .nxos_module import TestNxosModule, set_module_args
 
 
 ignore_provider_arg = True
+
+sh_run = """
+interface fc1/1
+    no out-of-service force
+    switchport speed auto
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    switchport description This is a long line of description for port fc18/1 which is of 254 characters to test with ansible This is a long line of description for port fc18/1 which is of 254 characters to test with ansible A B C D E F G H I J K L M N O P Q R S T U V W X Y Z BYE
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+
+interface fc1/2
+    no out-of-service force
+    switchport speed 1000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode E
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode off
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no errdisable detect cause link-down
+    no errdisable detect cause trustsec-violation
+    no errdisable detect cause bit-errors
+    no errdisable detect cause signal-loss
+    no errdisable detect cause sync-loss
+    no errdisable detect cause link-reset
+    no errdisable detect cause credit-loss
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+
+interface fc1/3
+    no out-of-service force
+    switchport speed 2000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode F
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+    
+interface fc18/1
+    no out-of-service force
+    switchport speed 4000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode Fx
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode auto
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+
+interface fc18/2
+    no out-of-service force
+    switchport speed 8000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode NP
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+interface fc18/3
+    no out-of-service force
+    switchport speed 10000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode SD
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+
+interface fc18/4
+    no out-of-service force
+    switchport speed 16000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+interface fc18/5
+    no out-of-service force
+    switchport speed 32000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+
+interface fc18/6
+    no out-of-service force
+    switchport speed 64000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+interface fc18/7
+    no out-of-service force
+    switchport speed auto max 2000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+
+interface fc18/8
+    no out-of-service force
+    switchport speed auto max 4000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    no switchport description
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+interface fc18/9
+    no out-of-service force
+    switchport speed auto max 8000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    switchport description sample description
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+
+interface fc18/10
+    no out-of-service force
+    analytics type fc-nvme
+    switchport speed auto max 16000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    switchport description $
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    shutdown
+interface fc18/11
+    no out-of-service force
+    analytics type fc-scsi
+    switchport speed auto max 32000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    switchport description a
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    shutdown
+
+interface fc18/12
+    no out-of-service force
+    analytics type fc-scsi
+    analytics type fc-nvme
+    switchport speed auto max 64000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    switchport description 1
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
+    """
+
+gath_val = [
+    {
+        "name": "fc1/1",
+        "speed": "auto",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": True,
+        "description": "This is a long line of description for port fc18/1 which is of 254 characters to test with ansible This is a long line of description for port fc18/1 which is of 254 characters to test with ansible A B C D E F G H I J K L M N O P Q R S T U V W X Y Z BYE",
+    },
+    {
+        "name": "fc1/2",
+        "speed": "1000",
+        "mode": "E",
+        "trunk_mode": "off",
+        "enabled": True,
+    },
+    {
+        "name": "fc1/3",
+        "speed": "2000",
+        "mode": "F",
+        "trunk_mode": "on",
+        "enabled": True,
+    },
+    {
+        "name": "fc18/1",
+        "speed": "4000",
+        "mode": "Fx",
+        "trunk_mode": "auto",
+        "enabled": True,
+    },
+    {
+        "name": "fc18/2",
+        "speed": "8000",
+        "mode": "NP",
+        "trunk_mode": "on",
+        "enabled": True,
+    },
+    {
+        "name": "fc18/3",
+        "speed": "10000",
+        "mode": "SD",
+        "trunk_mode": "on",
+        "enabled": True,
+    },
+    {
+        "name": "fc18/4",
+        "speed": "16000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": True,
+    },
+    {
+        "name": "fc18/5",
+        "speed": "32000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": True,
+    },
+    {
+        "name": "fc18/6",
+        "speed": "64000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": True,
+    },
+    {
+        "name": "fc18/7",
+        "speed": "auto max 2000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": True,
+    },
+    {
+        "name": "fc18/8",
+        "speed": "auto max 4000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": True,
+    },
+    {
+        "name": "fc18/9",
+        "speed": "auto max 8000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": True,
+        "description": "sample description",
+    },
+    {
+        "name": "fc18/10",
+        "speed": "auto max 16000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": False,
+        "description": "$",
+        "analytics": "fc-nvme",
+    },
+    {
+        "name": "fc18/11",
+        "speed": "auto max 32000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": False,
+        "description": "a",
+        "analytics": "fc-scsi",
+    },
+    {
+        "name": "fc18/12",
+        "speed": "auto max 64000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": True,
+        "description": "1",
+        "analytics": "fc-all",
+    },
+]
 
 
 class TestNxosFcInterfacesModule(TestNxosModule):
@@ -54,162 +581,140 @@ class TestNxosFcInterfacesModule(TestNxosModule):
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fc_interfaces.fc_interfaces.Fc_interfacesFacts.get_interfaces_data",
         )
         self.get_config = self.mock_get_config.start()
+        self.get_config.return_value = dedent(sh_run)
+        self.maxDiff = None
 
     def tearDown(self):
         super(TestNxosFcInterfacesModule, self).tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
 
-    def test_nxos_1(self):
-        # test gathered for empty config
-        self.get_config.return_value = dedent(
-            """\
-            """,
+    def test_fc_interfaces_gathered(self):
+        # test gathered for config
+        set_module_args(dict(state="gathered"), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gath_val)
+
+    def test_fc_interfaces_idempotency(self):
+        args = dict(
+            config=gath_val,
+            state="merged",
         )
-        a = {
-            "state": "replaced",
-            "config": [
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_fc_interfaces_analytics_all_to_scsi(self):
+        args = dict(
+            config=[
                 {
-                    "analytics": "fc-scsi",
-                    "name": "fc18/43",
-                    "trunk_mode": False,
-                    "speed": 8000,
-                    "description": "configured by ansible script",
-                    "enabled": True,
+                    "name": "fc18/12",
+                    "speed": "auto max 64000",
                     "mode": "auto",
-                },
-                {
-                    "analytics": "fc-nvme",
+                    "trunk_mode": "on",
                     "enabled": True,
-                    "name": "fc18/45",
-                    "description": "configured by ansible script to test second one",
+                    "description": "1",
+                    "analytics": "fc-scsi",
                 },
             ],
-        }
-        set_module_args(a, ignore_provider_arg)
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface fc18/12", "no analytics type fc-nvme"])
 
+    def test_fc_interfaces_analytics_all_to_nvme(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/12",
+                    "speed": "auto max 64000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": True,
+                    "description": "1",
+                    "analytics": "fc-nvme",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface fc18/12", "no analytics type fc-scsi"])
+
+    def test_fc_interfaces_analytics_all_to_none_checkthis(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/12",
+                    "speed": "auto max 64000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": True,
+                    "description": "1",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=False)
-        self.assertEqual(result["gathered"], [])
+        self.assertEqual(result["commands"], [])
 
-    # def test_nxos_fc_interfaces_one(self):
-    #     # test merged for linear attributes
-    #     self.get_config.return_value = """
-    #         interface fcip8
+    def test_fc_interfaces_analytics_scsi_to_nvme(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/11",
+                    "speed": "auto max 32000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": False,
+                    "description": "a",
+                    "analytics": "fc-nvme",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/11", "no analytics type fc-scsi", "analytics type fc-nvme"],
+        )
 
+    # def test_fc_interfaces_analytics_scsi_to_all(self):
+    #     args = dict(
+    #         config=[
+    #             {
+    #                 "name": "fc18/11",
+    #                 "speed": "auto max 32000",
+    #                 "mode": "auto",
+    #                 "trunk_mode": "on",
+    #                 "enabled": False,
+    #                 "description": "a",
+    #                 "analytics": "fc-all",
+    #             },
+    #         ],
+    #         state="merged",
+    #     )
+    #     set_module_args(args, ignore_provider_arg)
+    #     result = self.execute_module(changed=True)
+    #     self.assertEqual(result["commands"], ["interface fc18/11", "analytics type fc-nvme"])
 
-# 		use-profile 8
-# 		peer-info ipaddr 1.1.1.32
-#         tcp-connections 5
-#         switchport mode E
-#         spanning-tree port-priority 128
-#         spanning-tree cost auto
-#         spanning-tree link-type auto
-#         no spanning-tree bpduguard
-#         no spanning-tree bpdufilter
-#         no switchport description
-#         switchport vl-credit default
-#         switchport trunk mode on
-#         link-state-trap
-#         switchport fec
-#         switchport fec tts
-#         no shutdown
-
-#         interface fc1/1
-#         no out-of-service force
-#         switchport speed auto max 64000
-#         no transceiver-frequency ethernet
-#         switchport rate-mode default
-#         switchport fcrxbbcredit default
-#         switchport mode auto
-#         no switchport description
-#         switchport vl-credit default
-#         switchport trunk mode on
-#         no switchport beacon
-#         switchport fcbbscn
-#         link-state-trap
-#         switchport fcrxbufsize 2112
-#         no port-license
-#         no errdisable detect cause link-down
-#         no errdisable detect cause trustsec-violation
-#         no errdisable detect cause bit-errors
-#         no errdisable detect cause signal-loss
-#         no errdisable detect cause sync-loss
-#         no errdisable detect cause link-reset
-#         no errdisable detect cause credit-loss
-#         no switchport owner
-#         switchport encap default
-#         switchport fcrxbbcredit performance-buffers default
-#         no switchport ignore bit-errors
-#         no switchport ignore interrupt-thresholds
-#         switchport fill-pattern ARBFF speed 8000
-#         switchport logical-type auto
-#         switchport max-npiv-limit 0
-#         switchport trunk-max-npiv-limit 0
-#         no switchport link-diag
-#         no shutdown
-
-#         interface fc1/2
-#         no out-of-service force
-#         switchport speed auto max 64000
-#         no transceiver-frequency ethernet
-#         switchport rate-mode default
-#         switchport fcrxbbcredit default
-#         switchport mode auto
-#         no switchport description
-#         switchport vl-credit default
-#         switchport trunk mode on
-#         no switchport beacon
-#         switchport fcbbscn
-#         link-state-trap
-#         switchport fcrxbufsize 2112
-#         no port-license
-#         no errdisable detect cause link-down
-#         no errdisable detect cause trustsec-violation
-#         no errdisable detect cause bit-errors
-#         no errdisable detect cause signal-loss
-#         no errdisable detect cause sync-loss
-#         no errdisable detect cause link-reset
-#         no errdisable detect cause credit-loss
-#         no switchport owner
-#         switchport encap default
-#         switchport fcrxbbcredit performance-buffers default
-#         no switchport ignore bit-errors
-#         no switchport ignore interrupt-thresholds
-#         switchport fill-pattern ARBFF speed 8000
-#         switchport logical-type auto
-#         switchport max-npiv-limit 0
-#         switchport trunk-max-npiv-limit 0
-#         no switchport link-diag
-#         no shutdown
-#     """
-#     set_module_args(
-#         dict(
-#             config=[
-#                 {
-#                     "name": "fc1/1",
-#                     "description": "configured by ansible script",
-#                 },
-#             ],
-#             state="merged",
-#         ),
-#         ignore_provider_arg,
-#     )
-#     commands = [
-#         "route-map rmap1 permit 10",
-#         "description rmap1-permit-10",
-#         "continue 30",
-#         "route-map rmap1 deny 40",
-#         "description rmap1-deny-40",
-#         "set as-path prepend last-as 10",
-#         "set as-path tag",
-#         "set comm-list comm1 delete",
-#         "set dampening 10 20 30 80",
-#         "set extcomm-list extcomm1 delete",
-#         "set forwarding-address",
-#         "route-map rmap2 permit 10",
-#         "set interface null0",
-#         "set tag 10",
-#         "set weight 40",
-#     ]
-#     result = self.execute_module(changed=True)
-#     self.assertEqual(set(result["commands"]), set(commands))
+    # def test_fc_interfaces_analytics_scsi_to_none_checkthis(self):
+    #     args = dict(
+    #         config=[
+    #             {
+    #                 "name": "fc18/11",
+    #                 "speed": "auto max 32000",
+    #                 "mode": "auto",
+    #                 "trunk_mode": "on",
+    #                 "enabled": False,
+    #                 "description": "a",
+    #             },
+    #         ],
+    #         state="merged",
+    #     )
+    #     set_module_args(args, ignore_provider_arg)
+    #     result = self.execute_module(changed=False)
+    #     self.assertEqual(result["commands"], [])

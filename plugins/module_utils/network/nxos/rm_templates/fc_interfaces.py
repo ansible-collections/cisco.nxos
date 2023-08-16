@@ -19,12 +19,29 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+allowed_speed_values = [
+    "auto",
+    "1000",
+    "2000",
+    "4000",
+    "8000",
+    "10000",
+    "16000",
+    "32000",
+    "64000",
+    "auto max 2000",
+    "auto max 4000",
+    "auto max 8000",
+    "auto max 16000",
+    "auto max 32000",
+    "auto max 64000",
+]
+allowed_values_pattern = "|".join(re.escape(val) for val in allowed_speed_values)
+
 
 class Fc_interfacesTemplate(NetworkTemplate):
-
     def __init__(self, lines=None, module=None):
-        super(Fc_interfacesTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module)
+        super(Fc_interfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [
@@ -75,10 +92,7 @@ class Fc_interfacesTemplate(NetworkTemplate):
         {
             "name": "speed",
             "getval": re.compile(
-                r"""
-                \s+switchport\s+speed\s+(?P<speed>\S+)
-                $""", re.VERBOSE,
-            ),
+                rf"""\s+switchport\s+speed\s+(?P<speed>{allowed_values_pattern})$""", re.VERBOSE,),
             "setval": "switchport speed {{ speed|string }}",
             "result": {
                 "{{ name }}": {

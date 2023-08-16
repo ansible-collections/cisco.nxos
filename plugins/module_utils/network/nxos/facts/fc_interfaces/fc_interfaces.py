@@ -30,8 +30,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.fc
 
 
 class Fc_interfacesFacts(object):
-    """ The nxos fc_interfaces facts class
-    """
+    """The nxos fc_interfaces facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
@@ -41,7 +40,7 @@ class Fc_interfacesFacts(object):
         return connection.get("show running-config interface all")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Fc_interfaces network resource
+        """Populate the facts for Fc_interfaces network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -57,8 +56,7 @@ class Fc_interfacesFacts(object):
             data = self.get_interfaces_data(connection)
 
         # parse native config using the Fc_interfaces template
-        fc_interfaces_parser = Fc_interfacesTemplate(
-            lines=data.splitlines(), module=self._module)
+        fc_interfaces_parser = Fc_interfacesTemplate(lines=data.splitlines(), module=self._module)
 
         # objs = sorted(list(fc_interfaces_parser.parse().values()),
         #               key=lambda k, sk="name": k[sk],)
@@ -93,18 +91,18 @@ class Fc_interfacesFacts(object):
             modified_objs.append(parsed_data)
 
         sorted_dict = sorted(modified_objs, key=operator.itemgetter("m", "p"))
-        objs = [{key: value for key, value in eachdict.items()
-                 if key not in ["m", "p"]}
-                for eachdict in sorted_dict]
+        objs = [
+            {key: value for key, value in eachdict.items() if key not in ["m", "p"]}
+            for eachdict in sorted_dict
+        ]
 
         ansible_facts["ansible_network_resources"].pop("fc_interfaces", None)
 
         params = utils.remove_empties(
-            fc_interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True)
+            fc_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
         )
 
-        facts["fc_interfaces"] = params["config"]
+        facts["fc_interfaces"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
