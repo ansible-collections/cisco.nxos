@@ -2233,8 +2233,8 @@ Examples
               timers:
                 holdtime: 100
                 keepalive: 45
-    # Task Output
-    # -----------
+    # Task Output:
+    # ------------
     # before: {}
     #
     # commands:
@@ -2324,7 +2324,7 @@ Examples
     # Using replaced
 
     # Before state:
-    # --------------
+    # -------------
     #
     # nxos9k# show running-config | section "^router bgp"
     # router bgp 65536
@@ -2368,8 +2368,8 @@ Examples
               local_as: 65537
         state: replaced
 
-    # Task Output
-    # -----------
+    # Task output:
+    # ------------
     #
     # before:
     #   as_number: "65536"
@@ -2453,7 +2453,7 @@ Examples
     #         keepalive: 45
 
     # After state:
-    # --------------
+    # ------------
     #
     # nxos9k# show running-config | section "^router bgp"
     # router bgp 65536
@@ -2479,7 +2479,7 @@ Examples
     # Using overridden
     #
     # Before state:
-    # --------------
+    # -------------
     #
     # nxos9k# show running-config | section "^router bgp"
     # router bgp 65536
@@ -2523,8 +2523,8 @@ Examples
               local_as: 65537
         state: overridden
 
-    # Task Output
-    # -----------
+    # Task output:
+    # ------------
     #
     # before:
     #   as_number: "65536"
@@ -2591,7 +2591,7 @@ Examples
     #       local_as: "65537"
 
     # After state:
-    # --------------
+    # ------------
     #
     # nxos9k# show running-config | section "^router bgp"
     # router bgp 65536
@@ -2635,8 +2635,8 @@ Examples
       cisco.nxos.nxos_bgp_templates:
         state: deleted
 
-    # Task Output
-    # -----------
+    # Task output:
+    # ------------
     #
     # before:
     #   as_number: "65536"
@@ -2758,7 +2758,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>gathered</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">list</span>
+                      <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>when <em>state</em> is <code>gathered</code></td>
@@ -2775,7 +2775,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>parsed</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">list</span>
+                      <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>when <em>state</em> is <code>parsed</code></td>

@@ -465,8 +465,8 @@ EXAMPLES = """
           timers:
             holdtime: 100
             keepalive: 45
-# Task Output
-# -----------
+# Task Output:
+# ------------
 # before: {}
 #
 # commands:
@@ -556,7 +556,7 @@ EXAMPLES = """
 # Using replaced
 
 # Before state:
-# --------------
+# -------------
 #
 # nxos9k# show running-config | section "^router bgp"
 # router bgp 65536
@@ -600,8 +600,8 @@ EXAMPLES = """
           local_as: 65537
     state: replaced
 
-# Task Output
-# -----------
+# Task output:
+# ------------
 #
 # before:
 #   as_number: "65536"
@@ -685,7 +685,7 @@ EXAMPLES = """
 #         keepalive: 45
 
 # After state:
-# --------------
+# ------------
 #
 # nxos9k# show running-config | section "^router bgp"
 # router bgp 65536
@@ -711,7 +711,7 @@ EXAMPLES = """
 # Using overridden
 #
 # Before state:
-# --------------
+# -------------
 #
 # nxos9k# show running-config | section "^router bgp"
 # router bgp 65536
@@ -755,8 +755,8 @@ EXAMPLES = """
           local_as: 65537
     state: overridden
 
-# Task Output
-# -----------
+# Task output:
+# ------------
 #
 # before:
 #   as_number: "65536"
@@ -823,7 +823,7 @@ EXAMPLES = """
 #       local_as: "65537"
 
 # After state:
-# --------------
+# ------------
 #
 # nxos9k# show running-config | section "^router bgp"
 # router bgp 65536
@@ -867,8 +867,8 @@ EXAMPLES = """
   cisco.nxos.nxos_bgp_templates:
     state: deleted
 
-# Task Output
-# -----------
+# Task output:
+# ------------
 #
 # before:
 #   as_number: "65536"
@@ -961,14 +961,14 @@ rendered:
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
-  type: list
+  type: dict
   sample: >
     This output will always be in the same format as the
     module argspec.
 parsed:
   description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
   returned: when I(state) is C(parsed)
-  type: list
+  type: dict
   sample: >
     This output will always be in the same format as the
     module argspec.

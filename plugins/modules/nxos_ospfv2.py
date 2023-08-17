@@ -1070,8 +1070,8 @@ EXAMPLES = """
             unit: Gbps
     state: merged
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before: {}
 #
 # commands:
@@ -1236,8 +1236,8 @@ EXAMPLES = """
               no_summary: true
     state: replaced
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1396,8 +1396,8 @@ EXAMPLES = """
         shutdown: true
     state: overridden
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1514,8 +1514,8 @@ EXAMPLES = """
       - process_id: 102
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1610,8 +1610,8 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1730,8 +1730,8 @@ EXAMPLES = """
             unit: Gbps
     state: rendered
 
-# Task Output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # rendered:
 #  - router ospf 100
 #  - router-id 203.0.113.20
@@ -1794,8 +1794,8 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'ospfv2.cfg') }}"
     state: parsed
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # parsed:
 #   processes:
 #   - process_id: "100"
@@ -1869,8 +1869,8 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     state: gathered
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  gathered:
 #    processes:
 #      - process_id: "102"
@@ -1944,6 +1944,28 @@ commands:
     - "vrf zone2"
     - "auto-cost reference-bandwidth 45 Gbps"
     - "capability vrf-lite evpn"
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - "router ospf 102"
+    - "router-id 198.54.100.1"
+    - "router ospf 100"
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 
