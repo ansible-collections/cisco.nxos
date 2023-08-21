@@ -36,6 +36,16 @@ allowed_speed_values = [
     "auto max 32000",
     "auto max 64000",
 ]
+
+allowed_port_modes = [
+    "auto",
+    "E",
+    "F",
+    "Fx",
+    "NP",
+    "SD",
+]
+
 allowed_values_pattern = "|".join(re.escape(val) for val in allowed_speed_values)
 
 
@@ -68,6 +78,7 @@ class Fc_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "switchport description {{ description }}",
+            "remval": "switchport description",
             "result": {
                 "{{ name }}": {
                     "description": "{{ description }}",
@@ -118,7 +129,6 @@ class Fc_interfacesTemplate(NetworkTemplate):
             "name": "trunk_mode",
             "getval": re.compile(
                 r"""
-                (?P<negate>\s+no)?
                 \s+switchport\s+trunk\s+mode\s+(?P<trunk_mode>\S+)
                 $""", re.VERBOSE,
             ),
@@ -141,7 +151,7 @@ class Fc_interfacesTemplate(NetworkTemplate):
             "setval": "analytics type {{ analytics_scsi|string }}",
             "result": {
                 "{{ name }}": {
-                    "analytics_scsi": "{{ analytics_scsi }}",  # list
+                    "analytics_scsi": "{{ analytics_scsi }}",
                 },
             },
         },
@@ -149,48 +159,17 @@ class Fc_interfacesTemplate(NetworkTemplate):
             "name": "analytics_nvme",
             "getval": re.compile(
                 r"""
+                (?P<negate>\s+no)?
                 \s+analytics\s+type\s+(?P<analytics_nvme>fc-nvme)
                 $""", re.VERBOSE,
             ),
             "setval": "analytics type {{ analytics_nvme|string }}",
             "result": {
                 "{{ name }}": {
-                    "analytics_nvme": "{{ analytics_nvme }}",  # list
+                    "analytics_nvme": "{{ analytics_nvme }}",
                 },
             },
         },
-
-
-        # {
-        #     "name": "analytics_scsi",
-        #     "getval": re.compile(
-        #         r"""
-        #         (?P<negate>\sno)?
-        #         \s+analytics\s+type\s+(?P<analytics>fc-scsi)
-        #         $""", re.VERBOSE,
-        #     ),
-        #     "setval": "analytics type fc-scsi",
-        #     "result": {
-        #         "{{ name }}": {
-        #             "analytics_scsi": "{{ 'scsi' if analytics_scsi is defined and negate is not defined }}",
-        #         },
-        #     },
-        # },
-        # {
-        #     "name": "analytics_nvme",
-        #     "getval": re.compile(
-        #         r"""
-        #         (?P<negate>\sno)?
-        #         \s+analytics\s+type\s+(?P<analytics>fc-nvme)
-        #         $""", re.VERBOSE,
-        #     ),
-        #     "setval": "analytics type fc-nvme",
-        #     "result": {
-        #         "{{ name }}": {
-        #             "analytics_nvme": "{{ True if fc-nvme is defined and negate is not defined else False }}",
-        #         },
-        #     },
-        # },
 
         {
             "name": "analytics",

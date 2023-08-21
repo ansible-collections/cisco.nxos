@@ -27,6 +27,11 @@ from textwrap import dedent
 from ansible_collections.cisco.nxos.plugins.modules import nxos_fc_interfaces
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
+    allowed_speed_values,
+    allowed_port_modes,
+)
+
 from .nxos_module import TestNxosModule, set_module_args
 
 
@@ -561,12 +566,6 @@ gath_val = [
 
 
 class TestNxosFcInterfacesModule(TestNxosModule):
-    # Testing strategy
-    # ------------------
-    # (a) The unit tests cover `merged` and `replaced` for every attribute.
-    #     Since `overridden` is essentially `replaced` but at a larger
-    #     scale, these indirectly cover `overridden` as well.
-
     module = nxos_fc_interfaces
 
     def setUp(self):
@@ -589,13 +588,19 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         self.get_resource_connection.stop()
         self.get_config.stop()
 
-    def test_fc_interfaces_gathered(self):
+    def test_gathered(self):
         # test gathered for config
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gath_val)
 
-    def test_fc_interfaces_idempotency(self):
+    def test_parsed(self):
+        # test parsed for config
+        set_module_args(dict(state="parsed", running_config=sh_run), ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], gath_val)
+
+    def test_idempotency(self):
         args = dict(
             config=gath_val,
             state="merged",
@@ -604,7 +609,7 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
-    def test_fc_interfaces_analytics_all_to_scsi(self):
+    def test_analytics_all_to_scsi(self):
         args = dict(
             config=[
                 {
@@ -623,7 +628,7 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["interface fc18/12", "no analytics type fc-nvme"])
 
-    def test_fc_interfaces_analytics_all_to_nvme(self):
+    def test_analytics_all_to_nvme(self):
         args = dict(
             config=[
                 {
@@ -642,7 +647,7 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["interface fc18/12", "no analytics type fc-scsi"])
 
-    def test_fc_interfaces_analytics_all_to_none_checkthis(self):
+    def test_analytics_all_to_none_checkthis(self):
         args = dict(
             config=[
                 {
@@ -660,7 +665,7 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
-    def test_fc_interfaces_analytics_scsi_to_nvme(self):
+    def test_analytics_scsi_to_nvme(self):
         args = dict(
             config=[
                 {
@@ -682,39 +687,386 @@ class TestNxosFcInterfacesModule(TestNxosModule):
             ["interface fc18/11", "no analytics type fc-scsi", "analytics type fc-nvme"],
         )
 
-    # def test_fc_interfaces_analytics_scsi_to_all(self):
-    #     args = dict(
-    #         config=[
-    #             {
-    #                 "name": "fc18/11",
-    #                 "speed": "auto max 32000",
-    #                 "mode": "auto",
-    #                 "trunk_mode": "on",
-    #                 "enabled": False,
-    #                 "description": "a",
-    #                 "analytics": "fc-all",
-    #             },
-    #         ],
-    #         state="merged",
-    #     )
-    #     set_module_args(args, ignore_provider_arg)
-    #     result = self.execute_module(changed=True)
-    #     self.assertEqual(result["commands"], ["interface fc18/11", "analytics type fc-nvme"])
+    def test_analytics_scsi_to_all(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/11",
+                    "speed": "auto max 32000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": False,
+                    "description": "a",
+                    "analytics": "fc-all",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface fc18/11", "analytics type fc-nvme"])
 
-    # def test_fc_interfaces_analytics_scsi_to_none_checkthis(self):
-    #     args = dict(
-    #         config=[
-    #             {
-    #                 "name": "fc18/11",
-    #                 "speed": "auto max 32000",
-    #                 "mode": "auto",
-    #                 "trunk_mode": "on",
-    #                 "enabled": False,
-    #                 "description": "a",
-    #             },
-    #         ],
-    #         state="merged",
-    #     )
-    #     set_module_args(args, ignore_provider_arg)
-    #     result = self.execute_module(changed=False)
-    #     self.assertEqual(result["commands"], [])
+    def test_analytics_scsi_to_none_checkthis(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/11",
+                    "speed": "auto max 32000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": False,
+                    "description": "a",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_analytics_nvme_to_scsi(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/10",
+                    "analytics": "fc-scsi",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/10", "no analytics type fc-nvme", "analytics type fc-scsi"],
+        )
+
+    def test_analytics_nvme_to_all(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/10",
+                    "analytics": "fc-all",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface fc18/10", "analytics type fc-scsi"])
+
+    def test_analytics_nvme_to_none_checkthis(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/10",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_description_change_from_one_to_another(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/9",
+                    "description": "changed from sample description to new description",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc18/9",
+                "switchport description changed from sample description to new description",
+            ],
+        )
+
+    def test_description_change_from_none_to_new(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/8",
+                    "description": "new sample description",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc18/8",
+                "switchport description new sample description",
+            ],
+        )
+
+    def test_shut_to_noshut(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/10",
+                    "enabled": True,
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc18/10",
+                "no shutdown",
+            ],
+        )
+
+    def test_noshut_to_shut(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/6",
+                    "enabled": False,
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/6", "shutdown"],
+        )
+
+    def test_trunkmode_auto_to_off(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/1",
+                    "trunk_mode": "off",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/1", "switchport trunk mode off"],
+        )
+
+    def test_trunkmode_auto_to_on(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/1",
+                    "trunk_mode": "on",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/1", "switchport trunk mode on"],
+        )
+
+    def test_trunkmode_on_to_off(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/1",
+                    "trunk_mode": "off",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc1/1", "switchport trunk mode off"],
+        )
+
+    def test_trunkmode_on_to_auto(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/1",
+                    "trunk_mode": "auto",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc1/1", "switchport trunk mode auto"],
+        )
+
+    def test_trunkmode_off_to_on(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/2",
+                    "trunk_mode": "on",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc1/2", "switchport trunk mode on"],
+        )
+
+    def test_trunkmode_off_to_auto(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/2",
+                    "trunk_mode": "auto",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc1/2", "switchport trunk mode auto"],
+        )
+
+    def test_speed_combinations(self):
+        port_speed = "auto"
+        port_name = "fc1/1"
+        for each_speed in allowed_speed_values:
+            args = dict(
+                config=[
+                    {
+                        "name": port_name,
+                        "speed": each_speed,
+                    },
+                ],
+                state="merged",
+            )
+            if each_speed == port_speed:
+                changed = False
+                cmds = []
+            else:
+                changed = True
+                cmds = [f"interface {port_name}", f"switchport speed {each_speed}"]
+
+            set_module_args(args, ignore_provider_arg)
+            result = self.execute_module(changed=changed)
+            self.assertEqual(
+                result["commands"],
+                cmds,
+            )
+
+    def test_port_mode_combinations(self):
+        port_mode = "auto"
+        port_name = "fc1/1"
+        for each_mode in allowed_port_modes:
+            args = dict(
+                config=[
+                    {
+                        "name": port_name,
+                        "mode": each_mode,
+                    },
+                ],
+                state="merged",
+            )
+            if each_mode == port_mode:
+                changed = False
+                cmds = []
+            else:
+                changed = True
+                cmds = [f"interface {port_name}", f"switchport mode {each_mode}"]
+
+            set_module_args(args, ignore_provider_arg)
+            result = self.execute_module(changed=changed)
+            self.assertEqual(
+                result["commands"],
+                cmds,
+            )
+
+    def test_deleted_1(self):
+        # before- trunk mode on
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/2",
+                },
+            ],
+            state="deleted",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc1/2",
+                "no switchport speed 1000",
+                "no switchport mode E",
+                "switchport trunk mode on",
+                "shutdown",
+            ],
+        )
+
+    def test_deleted_2(self):
+        # before- trunk mode off
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/3",
+                },
+            ],
+            state="deleted",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc1/3",
+                "no switchport speed 2000",
+                "no switchport mode F",
+                "switchport trunk mode on",
+                "shutdown",
+            ],
+        )
+
+    def test_deleted_3(self):
+        # before- port shut and with description and analytics config
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/10",
+                },
+            ],
+            state="deleted",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc18/10",
+                "no switchport description",
+                "no switchport speed auto max 16000",
+                "no switchport mode auto",
+                "switchport trunk mode on",
+                "no analytics type fc-nvme",
+            ],
+        )

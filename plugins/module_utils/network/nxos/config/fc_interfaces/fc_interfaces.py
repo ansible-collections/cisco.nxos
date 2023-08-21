@@ -17,6 +17,12 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+
+# def append_to_file(value):
+#     with open("output.txt", "a") as file:
+#         file.write(str(value) + "\n")
+
+
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
@@ -69,6 +75,13 @@ class Fc_interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
+
+        # def search_n_replace(modified_list, search_for, replace_with):
+        #     modified_list = [
+        #         replace_with if item.startswith(search_for) else item for item in self.commands
+        #     ]
+        #     return modified_list
+
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
 
@@ -93,48 +106,19 @@ class Fc_interfaces(ResourceModule):
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
-    def _calculate_ana_config_old(self, want_ana, have_ana):
-        if want_ana == have_ana:
-            return []
-        # want "" have scsi  - no analytics type fc-scsi
-        # want "" have nvme  - no analytics type fc-nvme
-        # want "" have all   - no analytics type fc-all
-        if want_ana == "" and have_ana == "fc-scsi":
-            return ["no analytics type fc-scsi"]
-        if want_ana == "" and have_ana == "fc-nvme":
-            return ["no analytics type fc-nvme"]
-        if want_ana == "" and have_ana == "fc-all":
-            return ["no analytics type fc-all"]
-
-        # want scsi have ""   - analytics type fc-scsi
-        # want scsi have all  - no analytics type fc-nvme
-        # want scsi have nvme - no analytics type fc-nvme ; analytics type
-        # fc-scsi
-        if want_ana == "fc-scsi" and have_ana == "":
-            return ["analytics type fc-all"]
-        if want_ana == "fc-scsi" and have_ana == "fc-all":
-            return ["no analytics type fc-nvme"]
-        if want_ana == "fc-scsi" and have_ana == "fc-nvme":
-            return ["no analytics type fc-nvme", "analytics type fc-scsi"]
-
-        # want nvme have ""    - analytics type fc-nvme
-        # want nvme have all   - no analytics type fc-scsi
-        # want nvme have scsi  - no analytics type fc-scsi ; analytics type
-        # fc-nvme
-        if want_ana == "fc-nvme" and have_ana == "":
-            return ["analytics type fc-nvme"]
-        if want_ana == "fc-nvme" and have_ana == "fc-all":
-            return ["no analytics type fc-scsi"]
-        if want_ana == "fc-nvme" and have_ana == "fc-scsi":
-            return ["no analytics type fc-scsi", "analytics type fc-nvme"]
-
-        # want all have ""    - analytics type fc-all
-        # want all have scsi  - analytics type fc-all
-        # want all have nvme  - analytics type fc-all
-        if want_ana == "fc-all":
-            return ["analytics type fc-all"]
+        if self.state in ["deleted", "purged"]:
+            modified_list = [
+                "switchport trunk mode on" if item.startswith("no switchport trunk mode") else item
+                for item in self.commands
+            ]
+            self.commands = modified_list
 
     def _calculate_ana_config(self, want_ana, have_ana):
+        # append_to_file("want_ana")
+        # append_to_file(want_ana)
+        # append_to_file("have_ana")
+        # append_to_file(have_ana)
+
         if have_ana == want_ana:
             return []
         elif have_ana == "":
@@ -168,45 +152,17 @@ class Fc_interfaces(ResourceModule):
             elif want_ana == "fc-all":
                 return []
 
-    # def _calculate_ana_config(self, want_ana, have_ana):
-    #     if have_ana == want_ana:
-    #         return []
-    #     elif have_ana == "":
-    #         if want_ana:
-    #             return [f"analytics type {want_ana}"]
-    #     elif have_ana == "fc-scsi":
-    #         if want_ana == "":
-    #     		return ["no analytics type fc-scsi"]
-    #         elif want_ana == "fc-scsi":
-    #     		return []
-    #     	elif want_ana == "fc-nvme":
-    #     		return ["no analytics type fc-scsi","analytics type fc-nvme"]
-    #     	elif want_ana == "fc-all":
-    #     		return ["analytics type fc-nvme"]
-    #     elif have_ana == "fc-nvme":
-    #     	if want_ana == "":
-    #     		return ["no analytics type fc-nvme"]
-    #     	elif want_ana == "fc-scsi":
-    #     		return ["no analytics type fc-nvme","analytics type fc-scsi"]
-    #     	elif want_ana == "fc-nvme":
-    #     		return []
-    #     	elif want_ana == "fc-all":
-    #     		return ["analytics type fc-scsi"]
-    #     elif have_ana == "fc-all":
-    #     	if want_ana == "":
-    #     		return ["no analytics type fc-all"]
-    #     	elif want_ana == "fc-scsi":
-    #     		return ["no analytics type fc-nvme"]
-    #     	elif want_ana == "fc-nvme":
-    #     		return ["no analytics type fc-scsi"]
-    #     	elif want_ana == "fc-all":
-
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
         populates the list of commands to be run by comparing
         the `want` and `have` data with the `parsers` defined
         for the Fc_interfaces network resource.
         """
+        # append_to_file("want")
+        # append_to_file(want)
+        # append_to_file("have")
+        # append_to_file(have)
+
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
         if want.get("enabled") != have.get("enabled"):
@@ -220,19 +176,16 @@ class Fc_interfaces(ResourceModule):
                     # negates if no shutdown
                     self.addcmd(have, "enabled", False)
 
-        c = self._calculate_ana_config(want.get("analytics", ""), have.get("analytics", ""))
-        new_cmds = []
-        for eachc in self.commands:
-            if "analytics" in eachc:
-                continue
-            else:
-                new_cmds.append(eachc)
+        ana_cmds = self._calculate_ana_config(want.get("analytics", ""), have.get("analytics", ""))
 
-        self.commands = new_cmds + c
-        # import q
-        #         q(want)
-        #         q(have)
-        #         q(self.commands)
+        if ana_cmds:
+            new_cmds = []
+            for eachc in self.commands:
+                if "analytics" in eachc:
+                    continue
+                else:
+                    new_cmds.append(eachc)
+            self.commands = new_cmds + ana_cmds
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
 

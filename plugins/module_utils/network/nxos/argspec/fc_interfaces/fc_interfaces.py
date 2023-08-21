@@ -28,6 +28,7 @@ The arg spec for the nxos_fc_interfaces module
 """
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
     allowed_speed_values,
+    allowed_port_modes,
 )
 
 
@@ -48,7 +49,7 @@ class Fc_interfacesArgs(object):  # pylint: disable=R0903
                     "type": "str",
                 },
                 "mode": {
-                    "choices": ["auto", "E", "F", "Fx", "NP", "SD"],
+                    "choices": allowed_port_modes,
                     "type": "str",
                 },
                 "trunk_mode": {"choices": ["auto", "on", "off"], "type": "str"},
