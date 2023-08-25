@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 allowed_speed_values = [
     "auto",
@@ -103,7 +106,8 @@ class Fc_interfacesTemplate(NetworkTemplate):
         {
             "name": "speed",
             "getval": re.compile(
-                rf"""\s+switchport\s+speed\s+(?P<speed>{allowed_values_pattern})$""", re.VERBOSE,),
+                rf"""\s+switchport\s+speed\s+(?P<speed>{allowed_values_pattern})$""", re.VERBOSE,
+            ),
             "setval": "switchport speed {{ speed|string }}",
             "result": {
                 "{{ name }}": {

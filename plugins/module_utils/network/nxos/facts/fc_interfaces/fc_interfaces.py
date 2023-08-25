@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -18,14 +19,13 @@ import operator
 import re
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.fc_interfaces.fc_interfaces import (
+    Fc_interfacesArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
     Fc_interfacesTemplate,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.fc_interfaces.fc_interfaces import (
-    Fc_interfacesArgs,
 )
 
 
@@ -95,7 +95,7 @@ class Fc_interfacesFacts(object):
         ansible_facts["ansible_network_resources"].pop("fc_interfaces", None)
 
         params = utils.remove_empties(
-            fc_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            fc_interfaces_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["fc_interfaces"] = params.get("config", [])

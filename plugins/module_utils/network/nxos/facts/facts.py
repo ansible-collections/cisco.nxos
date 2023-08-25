@@ -16,9 +16,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.f
     FactsBase,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fc_interfaces.fc_interfaces import (
-    Fc_interfacesFacts,
-)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.acl_interfaces.acl_interfaces import (
     Acl_interfacesFacts,
 )
@@ -39,6 +36,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_templates.bgp_templates import (
     Bgp_templatesFacts,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fc_interfaces.fc_interfaces import (
+    Fc_interfacesFacts,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname import (
     HostnameFacts,
@@ -152,7 +152,7 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     bgp_templates=Bgp_templatesFacts,
 )
 MDS_FACT_RESOURCE_SUBSETS = dict(
-    fc_interfaces=Fc_interfacesFacts, 
+    fc_interfaces=Fc_interfacesFacts,
     logging_global=Logging_globalFacts,
     ntp_global=Ntp_globalFacts,
     snmp_server=Snmp_serverFacts,

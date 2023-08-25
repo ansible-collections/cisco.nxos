@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -27,8 +28,8 @@ __metaclass__ = type
 The arg spec for the nxos_fc_interfaces module
 """
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
-    allowed_speed_values,
     allowed_port_modes,
+    allowed_speed_values,
 )
 
 

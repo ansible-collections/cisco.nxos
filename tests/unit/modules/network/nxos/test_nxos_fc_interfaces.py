@@ -24,19 +24,20 @@
 
 
 from __future__ import absolute_import, division, print_function
+
 import re
+
 
 __metaclass__ = type
 
 from textwrap import dedent
 
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
+    allowed_port_modes,
+    allowed_speed_values,
+)
 from ansible_collections.cisco.nxos.plugins.modules import nxos_fc_interfaces
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
-    allowed_speed_values,
-    allowed_port_modes,
-)
 
 from .nxos_module import TestNxosModule, set_module_args
 
@@ -155,7 +156,7 @@ interface fc1/3
     switchport trunk-max-npiv-limit 0
     no switchport link-diag
     no shutdown
-    
+
 interface fc18/1
     no out-of-service force
     switchport speed 4000
@@ -1628,7 +1629,7 @@ class TestNxosFcInterfacesModule(TestNxosModule):
             + [
                 "interface fc18/11",
                 "analytics type fc-all",
-            ]
+            ],
             # + [
             #     "interface fc18/12",
             #     # "no analytics type fc-all",
