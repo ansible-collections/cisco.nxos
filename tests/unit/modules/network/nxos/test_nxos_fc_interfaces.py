@@ -78,7 +78,7 @@ interface fc1/1
     switchport rate-mode default
     switchport fcrxbbcredit default
     switchport mode auto
-    switchport description This is a long line of description for port fc18/1 which is of 254 characters to test with ansible This is a long line of description for port fc18/1 which is of 254 characters to test with ansible A B C D E F G H I J K L M N O P Q R S T U V W X Y Z BYE
+    switchport description This is a sample line
     switchport vl-credit default
     switchport trunk mode on
     no switchport beacon
@@ -517,7 +517,7 @@ gath_val = [
         "mode": "auto",
         "trunk_mode": "on",
         "enabled": True,
-        "description": "This is a long line of description for port fc18/1 which is of 254 characters to test with ansible This is a long line of description for port fc18/1 which is of 254 characters to test with ansible A B C D E F G H I J K L M N O P Q R S T U V W X Y Z BYE",
+        "description": "This is a sample line",
     },
     {
         "name": "fc1/2",

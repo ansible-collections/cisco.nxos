@@ -182,7 +182,7 @@ class Fc_interfacesTemplate(NetworkTemplate):
                 \s+analytics\s+type\s+(?P<analytics>\S+)
                 $""", re.VERBOSE,
             ),
-            #"setval": "analytics type {{ analytics|string }}",
+            # "setval": "analytics type {{ analytics|string }}",
             "setval": "",
             "result": {
                 "{{ name }}": {
