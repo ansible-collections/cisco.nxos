@@ -69,7 +69,6 @@ class Fc_interfacesArgs(object):  # pylint: disable=R0903
                 "gathered",
                 "rendered",
                 "parsed",
-                "purged",
             ],
             "default": "merged",
         },

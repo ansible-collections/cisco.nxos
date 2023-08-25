@@ -17,6 +17,12 @@
 
 # Make coding more python3-ish
 
+
+# remove purge
+# add non fc interfaces to the sh run
+# check else statements in config file
+
+
 from __future__ import absolute_import, division, print_function
 import re
 
@@ -38,6 +44,32 @@ from .nxos_module import TestNxosModule, set_module_args
 ignore_provider_arg = True
 
 sh_run = """
+interface mgmt0
+  ip address 10.126.94.175 255.255.255.0
+  no switchport description
+  switchport speed auto
+  switchport duplex auto
+  snmp trap link-status
+  no shutdown
+  lldp transmit
+  lldp receive
+  cdp enable
+  spanning-tree port-priority 128
+  spanning-tree cost auto
+  spanning-tree link-type auto
+  no spanning-tree bpduguard
+  no spanning-tree bpdufilter
+
+interface vsan1
+  no shutdown
+  ip address 111.111.111.175 255.255.255.0
+  spanning-tree port-priority 128
+  spanning-tree cost auto
+  spanning-tree link-type auto
+  no spanning-tree bpduguard
+  no spanning-tree bpdufilter
+
+
 interface fc1/1
     no out-of-service force
     switchport speed auto
@@ -446,6 +478,35 @@ interface fc18/12
     switchport trunk-max-npiv-limit 0
     no switchport link-diag
     no shutdown
+
+interface fc18/13
+    no out-of-service force
+    analytics type fc-scsi
+    analytics type fc-nvme
+    switchport speed auto max 64000
+    no transceiver-frequency ethernet
+    switchport rate-mode default
+    switchport fcrxbbcredit default
+    switchport mode auto
+    switchport description 1
+    switchport vl-credit default
+    switchport trunk mode on
+    no switchport beacon
+    switchport fcbbscn
+    link-state-trap
+    switchport fcrxbufsize 2112
+    no port-license
+    no switchport owner
+    switchport encap default
+    switchport fcrxbbcredit performance-buffers default
+    no switchport ignore bit-errors
+    no switchport ignore interrupt-thresholds
+    switchport fill-pattern ARBFF speed 8000
+    switchport logical-type auto
+    switchport max-npiv-limit 0
+    switchport trunk-max-npiv-limit 0
+    no switchport link-diag
+    no shutdown
     """
 
 gath_val = [
@@ -562,6 +623,15 @@ gath_val = [
         "description": "1",
         "analytics": "fc-all",
     },
+    {
+        "name": "fc18/13",
+        "speed": "auto max 64000",
+        "mode": "auto",
+        "trunk_mode": "on",
+        "enabled": True,
+        "description": "1",
+        "analytics": "fc-all",
+    },
 ]
 
 
@@ -587,6 +657,44 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         super(TestNxosFcInterfacesModule, self).tearDown()
         self.get_resource_connection.stop()
         self.get_config.stop()
+
+    def test_analytics_no_to_all_3_types(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/1",
+                    "analytics": "fc-scsi",
+                    "mode": "E",
+                },
+                {
+                    "name": "fc1/2",
+                    "analytics": "fc-nvme",
+                },
+                {
+                    "name": "fc1/3",
+                    "analytics": "fc-all",
+                },
+                {
+                    "name": "fc18/12",
+                    "analytics": "fc-scsi",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc1/1",
+                "switchport mode E",
+                "analytics type fc-scsi",
+                "interface fc1/2",
+                "analytics type fc-nvme",
+                "interface fc1/3",
+                "analytics type fc-all",
+            ],
+        )
 
     def test_gathered(self):
         # test gathered for config
@@ -625,8 +733,33 @@ class TestNxosFcInterfacesModule(TestNxosModule):
             state="merged",
         )
         set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["commands"],
+            [],
+        )
+
+    def test_analytics_all_to_scsi_replaced(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/12",
+                    "speed": "auto max 64000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": True,
+                    "description": "1",
+                    "analytics": "fc-scsi",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["interface fc18/12", "no analytics type fc-nvme"])
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/12", "no analytics type fc-all", "analytics type fc-scsi"],
+        )
 
     def test_analytics_all_to_nvme(self):
         args = dict(
@@ -644,8 +777,33 @@ class TestNxosFcInterfacesModule(TestNxosModule):
             state="merged",
         )
         set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["commands"],
+            [],
+        )
+
+    def test_analytics_all_to_nvme_replaced(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/12",
+                    "speed": "auto max 64000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": True,
+                    "description": "1",
+                    "analytics": "fc-nvme",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["interface fc18/12", "no analytics type fc-scsi"])
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/12", "no analytics type fc-all", "analytics type fc-nvme"],
+        )
 
     def test_analytics_all_to_none_checkthis(self):
         args = dict(
@@ -664,6 +822,25 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+    def test_analytics_all_to_none_desc_change(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/12",
+                    "speed": "auto max 64000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": True,
+                    "description": "2",
+                    "analytics": "fc-all",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface fc18/12", "switchport description 2"])
 
     def test_analytics_scsi_to_nvme(self):
         args = dict(
@@ -684,7 +861,29 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
-            ["interface fc18/11", "no analytics type fc-scsi", "analytics type fc-nvme"],
+            ["interface fc18/11", "analytics type fc-nvme"],
+        )
+
+    def test_analytics_scsi_to_nvme_replaced(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/11",
+                    "speed": "auto max 32000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": False,
+                    "description": "a",
+                    "analytics": "fc-nvme",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/11", "no analytics type fc-all", "analytics type fc-nvme"],
         )
 
     def test_analytics_scsi_to_all(self):
@@ -704,7 +903,29 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         )
         set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["interface fc18/11", "analytics type fc-nvme"])
+        self.assertEqual(result["commands"], ["interface fc18/11", "analytics type fc-all"])
+
+    def test_analytics_scsi_to_all_replaced(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/11",
+                    "speed": "auto max 32000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": False,
+                    "description": "a",
+                    "analytics": "fc-all",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/11", "analytics type fc-all"],
+        )
 
     def test_analytics_scsi_to_none_checkthis(self):
         args = dict(
@@ -738,7 +959,33 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(
             result["commands"],
-            ["interface fc18/10", "no analytics type fc-nvme", "analytics type fc-scsi"],
+            ["interface fc18/10", "analytics type fc-scsi"],
+        )
+
+    def test_analytics_nvme_to_scsi_replaced(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/10",
+                    "analytics": "fc-scsi",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc18/10",
+                "no switchport description",
+                "no switchport speed auto max 16000",
+                "no switchport mode auto",
+                "switchport trunk mode on",
+                "shutdown",
+                "no analytics type fc-all",
+                "analytics type fc-scsi",
+            ],
         )
 
     def test_analytics_nvme_to_all(self):
@@ -753,7 +1000,152 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         )
         set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["interface fc18/10", "analytics type fc-scsi"])
+        self.assertEqual(
+            result["commands"],
+            ["interface fc18/10", "analytics type fc-all"],
+        )
+
+    def test_analytics_nvme_to_all_replaced(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/10",
+                    "analytics": "fc-all",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc18/10",
+                "no switchport description",
+                "no switchport speed auto max 16000",
+                "no switchport mode auto",
+                "switchport trunk mode on",
+                "shutdown",
+                "analytics type fc-all",
+            ],
+        )
+
+    def test_analytics_none_to_scsi(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/1",
+                    "analytics": "fc-scsi",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface fc1/1", "analytics type fc-scsi"])
+
+    def test_analytics_none_to_scsi_replaced(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/1",
+                    "analytics": "fc-scsi",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc1/1",
+                "no switchport description",
+                "no switchport speed auto",
+                "no switchport mode auto",
+                "switchport trunk mode on",
+                "shutdown",
+                "analytics type fc-scsi",
+            ],
+        )
+
+    def test_analytics_none_to_nvme(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/1",
+                    "analytics": "fc-nvme",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface fc1/1", "analytics type fc-nvme"])
+
+    def test_analytics_none_to_nvme_replaced(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/1",
+                    "analytics": "fc-nvme",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc1/1",
+                "no switchport description",
+                "no switchport speed auto",
+                "no switchport mode auto",
+                "switchport trunk mode on",
+                "shutdown",
+                "analytics type fc-nvme",
+            ],
+        )
+
+    def test_analytics_none_to_all(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/1",
+                    "analytics": "fc-all",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface fc1/1", "analytics type fc-all"])
+
+    def test_analytics_none_to_all_replaced(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/1",
+                    "analytics": "fc-all",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc1/1",
+                "no switchport description",
+                "no switchport speed auto",
+                "no switchport mode auto",
+                "switchport trunk mode on",
+                "shutdown",
+                "analytics type fc-all",
+            ],
+        )
 
     def test_analytics_nvme_to_none_checkthis(self):
         args = dict(
@@ -1067,6 +1459,178 @@ class TestNxosFcInterfacesModule(TestNxosModule):
                 "no switchport speed auto max 16000",
                 "no switchport mode auto",
                 "switchport trunk mode on",
-                "no analytics type fc-nvme",
+                "no analytics type fc-all",
             ],
+        )
+
+    def test_replaced_move_to_def(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/10",
+                },
+            ],
+            state="replaced",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc18/10",
+                "no switchport description",
+                "no switchport speed auto max 16000",
+                "no switchport mode auto",
+                "switchport trunk mode on",
+                "shutdown",
+                "no analytics type fc-all",
+            ],
+        )
+
+    def test_deleted_combined(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc1/2",
+                },
+                {
+                    "name": "fc1/3",
+                },
+                {
+                    "name": "fc18/10",
+                },
+            ],
+            state="deleted",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc1/2",
+                "no switchport speed 1000",
+                "no switchport mode E",
+                "switchport trunk mode on",
+                "shutdown",
+                "interface fc1/3",
+                "no switchport speed 2000",
+                "no switchport mode F",
+                "switchport trunk mode on",
+                "shutdown",
+                "interface fc18/10",
+                "no switchport description",
+                "no switchport speed auto max 16000",
+                "no switchport mode auto",
+                "switchport trunk mode on",
+                "no analytics type fc-all",
+            ],
+        )
+
+    def test_most_of_them_combined(self):
+        args = dict(
+            config=[
+                {
+                    "name": "fc18/13",
+                    "speed": "auto max 64000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": True,
+                    "description": "1",
+                    "analytics": "fc-all",
+                },
+                {
+                    "name": "fc18/12",
+                    "speed": "auto max 64000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": True,
+                    "description": "1",
+                    "analytics": "fc-scsi",
+                },
+                {
+                    "name": "fc18/11",
+                    "speed": "auto max 32000",
+                    "mode": "auto",
+                    "trunk_mode": "on",
+                    "enabled": False,
+                    "description": "a",
+                    "analytics": "fc-all",
+                },
+                {
+                    "name": "fc18/10",
+                    "analytics": "fc-scsi",
+                    "enabled": True,
+                },
+                {
+                    "name": "fc18/9",
+                    "description": "changed from sample description to new description",
+                },
+                {
+                    "name": "fc18/8",
+                    "description": "new sample description",
+                },
+                {
+                    "name": "fc18/6",
+                    "enabled": False,
+                },
+                {
+                    "name": "fc18/1",
+                    "trunk_mode": "off",
+                },
+                {
+                    "name": "fc1/1",
+                    "trunk_mode": "auto",
+                    "analytics": "fc-all",
+                },
+                {
+                    "name": "fc1/2",
+                    "trunk_mode": "on",
+                },
+            ],
+            state="merged",
+        )
+        set_module_args(args, ignore_provider_arg)
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface fc1/1",
+                "switchport trunk mode auto",
+                "analytics type fc-all",
+            ]
+            + [
+                "interface fc1/2",
+                "switchport trunk mode on",
+            ]
+            + [
+                "interface fc18/1",
+                "switchport trunk mode off",
+            ]
+            + [
+                "interface fc18/6",
+                "shutdown",
+            ]
+            + [
+                "interface fc18/8",
+                "switchport description new sample description",
+            ]
+            + [
+                "interface fc18/9",
+                "switchport description changed from sample description to new description",
+            ]
+            + [
+                "interface fc18/10",
+                "no shutdown",
+                # "no analytics type fc-all",
+                "analytics type fc-scsi",
+            ]
+            + [
+                "interface fc18/11",
+                "analytics type fc-all",
+            ]
+            # + [
+            #     "interface fc18/12",
+            #     # "no analytics type fc-all",
+            #     "analytics type fc-scsi",
+            # ],
         )

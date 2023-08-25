@@ -63,6 +63,12 @@ options:
           - 16000
           - 32000
           - 64000
+          - auto max 2000
+          - auto max 4000
+          - auto max 8000
+          - auto max 16000
+          - auto max 32000
+          - auto max 64000
         type: str
       mode:
         description:
@@ -99,12 +105,12 @@ options:
       - merged
       - replaced
       - overridden
+      - deleted
       - gathered
       - rendered
       - parsed
     default: merged
 """
-
 EXAMPLES = """
 
 """

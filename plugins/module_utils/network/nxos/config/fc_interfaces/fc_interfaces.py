@@ -18,13 +18,6 @@ created.
 """
 
 
-# def append_to_file(value):
-#     with open("output.txt", "a") as file:
-#         file.write(str(value) + "\n")
-
-
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -57,8 +50,6 @@ class Fc_interfaces(ResourceModule):
             tmplt=Fc_interfacesTemplate(),
         )
         self.parsers = ["description", "speed", "mode", "trunk_mode", "analytics"]
-        # self.parsers = ["description", "speed",
-        #                 "mode", "trunk_mode", "analytics_scsi", "analytics_nvme"]
 
     def execute_module(self):
         """Execute the module
@@ -76,12 +67,6 @@ class Fc_interfaces(ResourceModule):
         want, have and desired state.
         """
 
-        # def search_n_replace(modified_list, search_for, replace_with):
-        #     modified_list = [
-        #         replace_with if item.startswith(search_for) else item for item in self.commands
-        #     ]
-        #     return modified_list
-
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
 
@@ -93,7 +78,7 @@ class Fc_interfaces(ResourceModule):
             wantd = dict_merge(haved, wantd)
 
         # if state is deleted, empty out wantd and set haved to wantd
-        if self.state in ["deleted", "purged"]:
+        if self.state == "deleted":
             haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
@@ -106,51 +91,82 @@ class Fc_interfaces(ResourceModule):
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
-        if self.state in ["deleted", "purged"]:
-            modified_list = [
-                "switchport trunk mode on" if item.startswith("no switchport trunk mode") else item
-                for item in self.commands
-            ]
-            self.commands = modified_list
+        modified_list = [
+            "switchport trunk mode on" if item.startswith("no switchport trunk mode") else item
+            for item in self.commands
+        ]
+        self.commands = modified_list
 
     def _calculate_ana_config(self, want_ana, have_ana):
-        # append_to_file("want_ana")
-        # append_to_file(want_ana)
-        # append_to_file("have_ana")
-        # append_to_file(have_ana)
+        """
+        get the cmds based on want_ana and have_ana and the state
 
-        if have_ana == want_ana:
+        Args:
+            want_ana (str): analytics type which you want
+            have_ana (str): analytics type which you have
+
+        +----------+----------+---------+
+        |            MERGED             |
+        |----------+----------+---------+
+        | want_ana | have_ana | outcome |
+        +----------+----------+---------+
+        | ""       | *        | no op   |
+        | fc-scsi  | *        | fc-scsi |
+        | fc-scsi  | fc-all   | no op   |
+        | fc-nvme  | *        | fc-nvme |
+        | fc-nvme  | fc-all   | no op   |
+        +----------+----------+---------+
+
+
+        +----------+----------+-----------+
+        |            DELETED              |
+        |----------+----------+-----------+
+        | want_ana | have_ana | outcome   |
+        +----------+----------+-----------+
+        | *        | fc-scsi  | no fc-all |
+        | *        | fc-nvme  | no fc-all |
+        | *        | fc-all   | no fc-all |
+        | *        | ""       | no op     |
+        +----------+----------+-----------+
+
+
+        +----------+----------+---------------------+
+        |            REPLACED/OVERRIDEN             |
+        |----------+----------+---------------------+
+        | want_ana | have_ana | outcome             |
+        +----------+----------+---------------------+
+        | ""       | *        | no fc-all           |
+        | fc-scsi  | ""       | fc-scsi             |
+        | fc-nvme  | ""       | fc-nvme             |
+        | fc-all   | ""       | fc-all              |
+        | fc-scsi  | *        | no fc-all ; fc-scsi |
+        | fc-nvme  | *        | no fc-all ; fc-nvme |
+        | fc-all   | *        | fc-all              |
+        +----------+----------+---------------------+
+
+
+        """
+
+        if want_ana == have_ana:
             return []
-        elif have_ana == "":
+        val = []
+        if self.state in ["overridden", "replaced"]:
+            if want_ana == "":
+                val = ["no analytics type fc-all"]
+            elif want_ana == "fc-all":
+                val = ["analytics type fc-all"]
+            elif have_ana == "":
+                val = [f"analytics type {want_ana}"]
+            else:
+                val = ["no analytics type fc-all", f"analytics type {want_ana}"]
+        elif self.state in ["deleted"]:
+            if have_ana:
+                val = ["no analytics type fc-all"]
+        elif self.state in ["merged"]:
             if want_ana:
-                return [f"analytics type {want_ana}"]
-        elif have_ana == "fc-scsi":
-            if want_ana == "":
-                return ["no analytics type fc-scsi"]
-            elif want_ana == "fc-scsi":
-                return []
-            elif want_ana == "fc-nvme":
-                return ["no analytics type fc-scsi", "analytics type fc-nvme"]
-            elif want_ana == "fc-all":
-                return ["analytics type fc-nvme"]
-        elif have_ana == "fc-nvme":
-            if want_ana == "":
-                return ["no analytics type fc-nvme"]
-            elif want_ana == "fc-scsi":
-                return ["no analytics type fc-nvme", "analytics type fc-scsi"]
-            elif want_ana == "fc-nvme":
-                return []
-            elif want_ana == "fc-all":
-                return ["analytics type fc-scsi"]
-        elif have_ana == "fc-all":
-            if want_ana == "":
-                return ["no analytics type fc-all"]
-            elif want_ana == "fc-scsi":
-                return ["no analytics type fc-nvme"]
-            elif want_ana == "fc-nvme":
-                return ["no analytics type fc-scsi"]
-            elif want_ana == "fc-all":
-                return []
+                if have_ana != "fc-all":
+                    val = [f"analytics type {want_ana}"]
+        return val
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -158,10 +174,6 @@ class Fc_interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Fc_interfaces network resource.
         """
-        # append_to_file("want")
-        # append_to_file(want)
-        # append_to_file("have")
-        # append_to_file(have)
 
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
@@ -178,20 +190,10 @@ class Fc_interfaces(ResourceModule):
 
         ana_cmds = self._calculate_ana_config(want.get("analytics", ""), have.get("analytics", ""))
 
-        if ana_cmds:
-            new_cmds = []
-            for eachc in self.commands:
-                if "analytics" in eachc:
-                    continue
-                else:
-                    new_cmds.append(eachc)
-            self.commands = new_cmds + ana_cmds
+        self.commands.extend(ana_cmds)
+
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
-
-    def purge(self, have):
-        """Handle operation for purged state"""
-        self.commands.append(self._tmplt.render(have, "interface", True))
 
     def normalize_interface_names(self, param):
         if param:
