@@ -871,8 +871,8 @@ EXAMPLES = """
             unit: Gbps
     state: merged
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before: {}
 #
 # commands:
@@ -967,7 +967,7 @@ EXAMPLES = """
 # Using replaced
 
 # Before state:
-# ------------
+# -------------
 # nxos-9k-rdo# sh running-config | section "^router ospfv3"
 # router ospfv3 100
 #   router-id 203.0.113.20
@@ -1021,8 +1021,8 @@ EXAMPLES = """
               no_summary: True
     state: replaced
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1133,7 +1133,7 @@ EXAMPLES = """
 # Using overridden
 
 # Before state:
-# ------------
+# -------------
 # nxos-9k-rdo# sh running-config | section "^router ospfv3"
 # router ospfv3 100
 #   router-id 203.0.113.20
@@ -1165,8 +1165,8 @@ EXAMPLES = """
         shutdown: true
     state: overridden
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1253,7 +1253,7 @@ EXAMPLES = """
 # Using deleted to delete a single OSPF process
 
 # Before state:
-# ------------
+# -------------
 # nxos-9k-rdo# sh running-config | section "^router ospf .*"
 # router ospfv3 100
 #   router-id 203.0.113.20
@@ -1281,8 +1281,8 @@ EXAMPLES = """
       - process_id: 102
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1346,7 +1346,7 @@ EXAMPLES = """
 # Using deleted all OSPFv3 processes from the device
 
 # Before state:
-# ------------
+# -------------
 # nxos-9k-rdo# sh running-config | section "^router ospfv3"
 # router ospfv3 100
 #   router-id 203.0.113.20
@@ -1371,8 +1371,8 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1481,8 +1481,8 @@ EXAMPLES = """
             unit: Gbps
     state: rendered
 
-# Task Output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # rendered:
 #  - router ospfv3 100
 #  - router-id 203.0.113.20
@@ -1528,8 +1528,8 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'ospfv2.cfg') }}"
     state: parsed
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # parsed:
 #   processes:
 #   - process_id: "100"
@@ -1579,8 +1579,8 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     state: gathered
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  gathered:
 #    processes:
 #    - process_id: "100"
@@ -1663,6 +1663,28 @@ commands:
     - "router-id 192.0.100.2"
     - "vrf zone2"
     - "auto-cost reference-bandwidth 45 Gbps"
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - "router ospfv3 102"
+    - "router-id 198.54.100.1"
+    - "router ospfv3 100"
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule

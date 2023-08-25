@@ -772,3 +772,49 @@ class TestNxosInterfacesModule(TestNxosModule):
         playbook["state"] = "merged"
         set_module_args(playbook, ignore_provider_arg)
         self.execute_module(changed=True, commands=merged)
+
+    def test_mode_mtu(self):
+        # test mode change with MTU
+        sysdefs = dedent(
+            """\
+          !
+          ! Interfaces default to L3 !!
+          !
+          no system default switchport
+        """,
+        )
+        intf = dedent(
+            """\
+          interface Ethernet1/28
+            description Auto_Cable_Testing
+            mtu 9216
+        """,
+        )
+        self.get_resource_connection_facts.return_value = {self.SHOW_RUN_INTF: intf}
+        self.get_system_defaults.return_value = sysdefs
+
+        playbook = dict(
+            config=[
+                dict(
+                    name="Ethernet1/28",
+                    description="Ansible Port Turn Up1",
+                    mode="layer2",
+                    mtu="9216",
+                    speed="1000",
+                    duplex="full",
+                    enabled=True,
+                ),
+            ],
+        )
+        replaced = [
+            "interface Ethernet1/28",
+            "description Ansible Port Turn Up1",
+            "switchport",
+            "mtu 9216",
+            "speed 1000",
+            "duplex full",
+            "no shutdown",
+        ]
+        playbook["state"] = "replaced"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=replaced)

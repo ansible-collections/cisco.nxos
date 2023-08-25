@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "interfaces - Re-apply existing non-default MTU when changing mode to L2 (https://github.com/ansible-collections/cisco.nxos/issues/730)."
