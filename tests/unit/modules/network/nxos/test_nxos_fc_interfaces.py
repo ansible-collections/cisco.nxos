@@ -651,6 +651,7 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         )
         self.get_config = self.mock_get_config.start()
         self.get_config.return_value = dedent(sh_run)
+
         self.maxDiff = None
 
     def tearDown(self):

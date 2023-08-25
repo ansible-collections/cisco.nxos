@@ -44,7 +44,7 @@ class Fc_interfaces(ResourceModule):
     def __init__(self, module):
         super(Fc_interfaces, self).__init__(
             empty_fact_val={},
-            facts_module=Facts(module),
+            facts_module=Facts(module, chassis_type="mds"),
             module=module,
             resource="fc_interfaces",
             tmplt=Fc_interfacesTemplate(),

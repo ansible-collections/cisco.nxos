@@ -150,9 +150,9 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
     bgp_templates=Bgp_templatesFacts,
-    fc_interfaces=Fc_interfacesFacts,
 )
 MDS_FACT_RESOURCE_SUBSETS = dict(
+    fc_interfaces=Fc_interfacesFacts, 
     logging_global=Logging_globalFacts,
     ntp_global=Ntp_globalFacts,
     snmp_server=Snmp_serverFacts,
