@@ -58,14 +58,10 @@ class Fc_interfacesFacts(object):
         # parse native config using the Fc_interfaces template
         fc_interfaces_parser = Fc_interfacesTemplate(lines=data.splitlines(), module=self._module)
 
-        # objs = sorted(list(fc_interfaces_parser.parse().values()),
-        #               key=lambda k, sk="name": k[sk],)
         objs = list(fc_interfaces_parser.parse().values())
-        # import q
-        # q(objs)
 
         # - populate only fc interfaces
-        # - populate "analytics" key based on if "analytics_nvme" or "analytics_scsi" keys are present or not
+        # - populate "analytics" value based on the presence or absense of "analytics_nvme" or "analytics_scsi" keys
         # - dummy key "m" and "p" is added for sorting, which is removed after sorting
         modified_objs = []
         # match only fc interface
