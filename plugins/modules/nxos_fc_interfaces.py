@@ -56,48 +56,48 @@ options:
         description:
           - Interface link speed.
         choices:
-          - auto
-          - 1000
-          - 2000
-          - 4000
-          - 8000
-          - 10000
-          - 16000
-          - 32000
-          - 64000
-          - auto max 2000
-          - auto max 4000
-          - auto max 8000
-          - auto max 16000
-          - auto max 32000
-          - auto max 64000
+          - 'auto'
+          - '1000'
+          - '2000'
+          - '4000'
+          - '8000'
+          - '10000'
+          - '16000'
+          - '32000'
+          - '64000'
+          - 'auto max 2000'
+          - 'auto max 4000'
+          - 'auto max 8000'
+          - 'auto max 16000'
+          - 'auto max 32000'
+          - 'auto max 64000'
         type: str
       mode:
         description:
           - Port mode of the fc interface
         choices:
-          - auto
-          - E
-          - F
-          - Fx
-          - NP
-          - SD
+          - 'auto'
+          - 'E'
+          - 'F'
+          - 'Fx'
+          - 'NP'
+          - 'SD'
         type: str
       trunk_mode:
         description:
           - Trunk mode of the fc interface
         choices:
-          - auto
-          - on
-          - off
+          - 'auto'
+          - 'on'
+          - 'off'
         type: str
       analytics:
         description:
           - Analytics type on the fc interface
         choices:
-          - fc-scsi
-          - fc-nvme
-          - fc-all
+          - 'fc-scsi'
+          - 'fc-nvme'
+          - 'fc-all'
         type: str
   state:
     description:

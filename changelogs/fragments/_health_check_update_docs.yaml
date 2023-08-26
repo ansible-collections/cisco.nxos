@@ -1,3 +1,9 @@
 ---
-minor_changes:
-  - Added new module fc_interfaces
+doc_changes:
+  - Update examples for ospfv2 resource modules using yaml callback plugin.
+  - Update examples for ospfv3 resource modules using yaml callback plugin.
+  - Update examples for ospf_interfaces resource modules using yaml callback plugin.
+  - Update examples for bgp_global resource modules using yaml callback plugin.
+  - Update examples for bgp_address_family resource modules using yaml callback plugin.
+  - Update examples for bgp_templates resource modules using yaml callback plugin.
+  - Update examples for bgp_neighbor_address_family resource modules using yaml callback plugin.
