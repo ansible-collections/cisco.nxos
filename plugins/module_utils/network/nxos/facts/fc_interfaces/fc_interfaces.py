@@ -8,7 +8,6 @@ from __future__ import absolute_import, division, print_function
 import operator
 import re
 
-
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.fc_interfaces.fc_interfaces import (
