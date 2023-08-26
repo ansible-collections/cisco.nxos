@@ -5,6 +5,19 @@
 
 from __future__ import absolute_import, division, print_function
 
+import operator
+import re
+
+
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.fc_interfaces.fc_interfaces import (
+    Fc_interfacesArgs,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
+    Fc_interfacesTemplate,
+)
+
 
 __metaclass__ = type
 
@@ -14,19 +27,6 @@ It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
-
-import operator
-import re
-
-from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
-
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.fc_interfaces.fc_interfaces import (
-    Fc_interfacesArgs,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
-    Fc_interfacesTemplate,
-)
 
 
 class Fc_interfacesFacts(object):
