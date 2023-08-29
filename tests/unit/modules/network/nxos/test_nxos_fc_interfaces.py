@@ -421,7 +421,7 @@ interface fc18/10
     switchport trunk-max-npiv-limit 0
     no switchport link-diag
     shutdown
-    
+
 interface fc18/11
     no out-of-service force
     analytics type fc-scsi
