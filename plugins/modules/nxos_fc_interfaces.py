@@ -114,6 +114,296 @@ options:
     default: merged
 """
 EXAMPLES = """
+# Using merged
+
+# Before state:
+# -------------
+#
+# switch# show running-config interface all
+# interface fc18/10
+#     analytics type fc-nvme
+#     switchport speed auto max 16000
+#     switchport mode auto
+#     switchport description $
+#     switchport trunk mode on
+#     shutdown
+
+- name: Merge provided configuration with device configuration
+  cisco.nxos.nxos_fc_interfaces:
+    config:
+    - name: fc18/10
+      analytics: fc-scsi
+    state: merged
+
+# Task Output
+# -----------
+#
+# before:
+# - name: fc18/10
+#   speed: auto max 16000
+#   mode: auto
+#   trunk_mode: on
+#   enabled: False
+#   description: $
+#   analytics: fc-nvme
+# commands:
+# - interface fc18/10
+# - analytics type fc-scsi
+# after:
+# - name: fc18/10
+#   speed: auto max 16000
+#   mode: auto
+#   trunk_mode: on
+#   enabled: False
+#   description: $
+#   analytics: fc-all
+
+# After state:
+# ------------
+#
+# switch# show running-config interface all
+# interface fc18/10
+#     analytics type fc-scsi
+#     analytics type fc-nvme
+#     switchport speed auto max 16000
+#     switchport mode auto
+#     switchport description $
+#     switchport trunk mode on
+#     shutdown
+
+# Using replaced
+
+# Before state:
+# -------------
+#
+# switch# show running-config interface all
+# interface fc18/12
+#     analytics type fc-scsi
+#     analytics type fc-nvme
+#     switchport speed auto max 64000
+#     switchport mode auto
+#     switchport description 1
+#     switchport trunk mode on
+#     no shutdown
+
+- name: Replaces device configuration of listed interfaces with provided configuration
+  cisco.nxos.nxos_fc_interfaces:
+    config:
+    - name: fc18/12
+      speed: auto max 64000
+      mode: auto
+      trunk_mode: on
+      enabled: True
+      description: 1
+      analytics: fc-scsi
+    state: replaced
+
+# Task Output
+# -----------
+#
+# before:
+# - name: fc18/12
+#   speed: auto max 64000
+#   mode: auto
+#   trunk_mode: on
+#   enabled: True
+#   description: 1
+#   analytics: fc-all
+# commands:
+# - interface fc18/12
+# - no analytics type fc-all
+# - analytics type fc-scsi
+# after:
+# - name: fc18/12
+#   speed: auto max 64000
+#   mode: auto
+#   trunk_mode: on
+#   enabled: True
+#   description: 1
+#   analytics: fc-scsi
+
+# After state:
+# ------------
+#
+# switch# show running-config interface all
+# interface fc18/12
+#     analytics type fc-scsi
+#     switchport speed auto max 64000
+#     switchport mode auto
+#     switchport description 1
+#     switchport trunk mode on
+#     no shutdown
+
+
+# Using deleted
+
+# Before state:
+# -------------
+#
+# switch# show running-config interface all
+# interface fc1/2
+#     switchport speed 1000
+#     switchport mode E
+#     no switchport description
+#     switchport trunk mode off
+#     no shutdown
+
+- name: Delete or return interface parameters to default settings
+  cisco.nxos.nxos_fc_interfaces:
+    config:
+    - name: fc1/2
+    state: deleted
+
+# Task Output
+# -----------
+#
+# before:
+# - name: fc1/2
+#   speed: 1000
+#   mode: E
+#   trunk_mode: off
+#   enabled: True
+# commands:
+# - interface fc1/2
+# - no switchport speed 1000
+# - no switchport mode E
+# - switchport trunk mode on
+# - shutdown
+# after:
+# - name: fc1/2
+#   speed: auto
+#   mode: auto
+#   trunk_mode: on
+#   enabled: False
+
+# After state:
+# ------------
+#
+# switch# show running-config interface all
+# interface fc1/2
+#     switchport speed auto
+#     switchport mode auto
+#     no switchport description
+#     switchport trunk mode on
+#     shutdown
+
+# Using rendered
+
+- name: Use rendered state to convert task input to device specific commands
+  cisco.nxos.nxos_fc_interfaces:
+    config:
+    - name: fc1/1
+      speed: auto
+      mode: auto
+      trunk_mode: on
+      enabled: True
+      description: This is a sample line
+    - name: fc1/2
+      speed: 1000
+      mode: E
+      trunk_mode: off
+      enabled: True
+      state: rendered
+
+# Task Output
+# -----------
+#
+# rendered:
+# interface fc1/1
+#     switchport speed auto
+#     switchport mode auto
+#     switchport description This is a sample line
+#     switchport trunk mode on
+#     no shutdown
+#
+# interface fc1/2
+#     switchport speed 1000
+#     switchport mode E
+#     no switchport description
+#     switchport trunk mode off
+#     no shutdown
+
+# Using parsed
+
+# parsed.cfg
+# ------------
+#
+# interface fc1/1
+#     switchport speed auto
+#     switchport mode auto
+#     switchport description This is a sample line
+#     switchport trunk mode on
+#     no shutdown
+#
+# interface fc1/2
+#     switchport speed 1000
+#     switchport mode E
+#     no switchport description
+#     switchport trunk mode off
+#     no shutdown
+
+- name: Use parsed state to convert externally supplied config to structured format
+  cisco.nxos.nxos_fc_interfaces:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task output
+# -----------
+#
+#  parsed:
+# - name: fc1/1
+#   speed: auto
+#   mode: auto
+#   trunk_mode: on
+#   enabled: True
+#   description: This is a sample line
+# - name: fc1/2
+#   speed: 1000
+#   mode: E
+#   trunk_mode: off
+#   enabled: True
+
+# Using gathered
+
+# Before state:
+# -------------
+#
+# switch# show running-config | section interface
+# interface fc1/1
+#     switchport speed auto
+#     switchport mode auto
+#     switchport description This is a sample line
+#     switchport trunk mode on
+#     no shutdown
+#
+# interface fc1/2
+#     switchport speed 1000
+#     switchport mode E
+#     no switchport description
+#     switchport trunk mode off
+#     no shutdown
+#
+- name: Gather interfaces facts from the device using nxos_fc_interfaces
+  cisco.nxos.nxos_fc_interfaces:
+    state: gathered
+#
+# Task output
+# -----------
+#
+# - name: fc1/1
+#   speed: auto
+#   mode: auto
+#   trunk_mode: on
+#   enabled: True
+#   description: This is a sample line
+# - name: fc1/2
+#   speed: 1000
+#   mode: E
+#   trunk_mode: off
+#   enabled: True
+
+
+
 
 """
 
