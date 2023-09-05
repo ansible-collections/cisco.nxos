@@ -287,6 +287,105 @@ EXAMPLES = """
 #     switchport trunk mode on
 #     shutdown
 
+# Using overridden
+
+# Before state:
+# -------------
+#
+# switch# show running-config interface all
+# interface fc18/12
+#     analytics type fc-scsi
+#     analytics type fc-nvme
+#     switchport speed auto max 64000
+#     switchport mode auto
+#     switchport description 1
+#     switchport trunk mode on
+#     no shutdown
+# interface fc18/13
+#     analytics type fc-scsi
+#     analytics type fc-nvme
+#     switchport speed auto max 64000
+#     switchport mode auto
+#     switchport description 1
+#     switchport trunk mode on
+#     no shutdown
+
+- name: Replaces device configuration of listed interfaces with provided configuration
+  cisco.nxos.nxos_fc_interfaces:
+    config:
+    - name: fc18/12
+      speed: auto max 64000
+      mode: auto
+      trunk_mode: on
+      enabled: True
+      description: 1
+      analytics: fc-scsi
+    state: overridden
+
+# Task Output
+# -----------
+#
+# before:
+# - name: fc18/12
+#   speed: auto max 64000
+#   mode: auto
+#   trunk_mode: on
+#   enabled: True
+#   description: 1
+#   analytics: fc-all
+# - name: fc18/13
+#   speed: auto max 64000
+#   mode: auto
+#   trunk_mode: on
+#   enabled: True
+#   description: 1
+#   analytics: fc-all
+# commands:
+# - interface fc18/12
+#   no analytics type fc-all
+#   analytics type fc-scsi
+# - interface fc18/13
+#   no switchport description
+#   no switchport speed auto max 64000
+#   no switchport mode auto
+#   switchport trunk mode on
+#   shutdown
+# after:
+# - name: fc18/12
+#   speed: auto max 64000
+#   mode: auto
+#   trunk_mode: on
+#   enabled: True
+#   description: 1
+#   analytics: fc-scsi
+# - name: fc18/13
+#   speed: auto max 64000
+#   mode: auto
+#   trunk_mode: on
+#   enabled: False
+
+# After state:
+# ------------
+#
+# switch# show running-config interface all
+# interface fc18/12
+#     analytics type fc-scsi
+#     switchport speed auto max 64000
+#     switchport mode auto
+#     switchport description 1
+#     switchport trunk mode on
+#     no shutdown
+# interface fc18/13
+#     switchport mode auto
+#     switchport trunk mode on
+#     shutdown
+
+
+
+
+
+
+
 # Using rendered
 
 - name: Use rendered state to convert task input to device specific commands
