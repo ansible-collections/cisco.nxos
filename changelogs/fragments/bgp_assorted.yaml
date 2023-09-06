@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - "bgp_global - support remote-as as a route-map (https://github.com/ansible-collections/cisco.nxos/issues/741)."
+  - "bgp_neighbor_address_family - support rewrite-rt-asn for ipv4 mvpn (https://github.com/ansible-collections/cisco.nxos/issues/741)."

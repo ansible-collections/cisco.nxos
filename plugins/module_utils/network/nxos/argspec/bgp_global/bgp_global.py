@@ -235,6 +235,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                             ],
                         },
                         "remote_as": {"type": "str"},
+                        "remote_as_route_map": {"type": "str"},
                         "remove_private_as": {
                             "type": "dict",
                             "options": {
