@@ -811,6 +811,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
+                (\sremote-as\sroute-map\s\S+)?
                 \sdescription\s(?P<description>\S+)
                 $""", re.VERBOSE,
             ),
