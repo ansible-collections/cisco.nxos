@@ -62,7 +62,7 @@ options:
               safi:
                 description: Sub Address Family indicator.
                 type: str
-                choices: ["unicast", "multicast", "mvpn"]
+                choices: ["unicast", "multicast", "mvpn", "evpn"]
               advertise_map:
                 description: Specify route-map for conditional advertisement.
                 type: dict
@@ -191,6 +191,10 @@ options:
               route_reflector_client:
                 description: Configure a neighbor as Route reflector client.
                 type: bool
+              send_community:
+                description: Send Community attribute to this neighbor.
+                type: str
+                choices: ["standard", "extended", "both"]
               soft_reconfiguration_inbound:
                 description: Soft reconfiguration.
                 type: dict
