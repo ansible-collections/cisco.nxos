@@ -189,7 +189,7 @@ options:
                 type: bool
               rewrite_rt_asn:
                 description: Auto generate RTs for EBGP neighbor.
-                type: str
+                type: bool
               route_map:
                 description: Apply route-map to neighbor.
                 type: dict
