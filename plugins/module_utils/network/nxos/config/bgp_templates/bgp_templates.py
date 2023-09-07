@@ -17,7 +17,6 @@ is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
 created.
 """
-
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
@@ -92,6 +91,8 @@ class Bgp_templates(ResourceModule):
             "prefix_list.outbound",
             "route_map.inbound",
             "route_map.outbound",
+            "send_community_standard",
+            "send_community_extended",
             "route_reflector_client",
             "soft_reconfiguration_inbound",
             "soo",
@@ -190,6 +191,16 @@ class Bgp_templates(ResourceModule):
             self.commands.append(self._tmplt.render(hentry, "address_family", True))
 
     def _af_compare(self, want, have):
+        # "unpack" send_community
+        for item in [want, have]:
+            send_comm_val = item.get("send_community", "")
+            if send_comm_val:
+                if send_comm_val == "both":
+                    item["send_community_extended"] = True
+                    item["send_community_standard"] = True
+                else:
+                    key = "send_community_%s" % send_comm_val
+                    item[key] = True
         self.compare(parsers=self.af_parsers, want=want, have=have)
 
     def _list_to_dict(self, data):

@@ -906,10 +906,34 @@ Parameters
                                     <li>unicast</li>
                                     <li>multicast</li>
                                     <li>mvpn</li>
+                                    <li>evpn</li>
                         </ul>
                 </td>
                 <td>
                         <div>Sub Address Family indicator.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>send_community</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>standard</li>
+                                    <li>extended</li>
+                                    <li>both</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Send Community attribute to this neighbor.</div>
                 </td>
             </tr>
             <tr>
