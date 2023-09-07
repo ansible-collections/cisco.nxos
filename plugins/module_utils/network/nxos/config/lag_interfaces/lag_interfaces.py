@@ -238,6 +238,7 @@ class Lag_interfaces(ConfigBase):
             delta = dict_diff(h_item, w_item)
             if delta:
                 if h_item:
+                    delta["exists"] = True
                     if (
                         "mode" in delta.keys()
                         and delta["mode"] == "on"
@@ -270,19 +271,27 @@ class Lag_interfaces(ConfigBase):
         commands = []
         name = name.strip("port-channel")
         for d in diff:
-            commands.append("interface" + " " + d["member"])
-            cmd = ""
+            sub_cmd = ""
+            final_cmd = ""
+            member_exists = d.get("exists", False)
             group_cmd = "channel-group {0}".format(name)
-            if d.get("force"):
-                cmd = group_cmd + " force "
+
+            # force does not appear in config
+            # will only be applied for a net new member
+            if d.get("force") and not member_exists:
+                sub_cmd += " force"
             if "mode" in d:
-                if cmd:
-                    cmd = cmd + " mode " + d["mode"]
-                else:
-                    cmd = group_cmd + " mode " + d["mode"]
-            if not cmd:
-                cmd = group_cmd
-            commands.append(cmd)
+                sub_cmd += " mode %s" % d["mode"]
+
+            if sub_cmd:
+                final_cmd = group_cmd + sub_cmd
+            elif not member_exists:
+                final_cmd = group_cmd
+
+            if final_cmd:
+                commands.append("interface" + " " + d["member"])
+                commands.append(final_cmd)
+
         return commands
 
     def set_commands(self, w, have):

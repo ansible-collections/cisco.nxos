@@ -37,7 +37,8 @@
               - member: "{{ test_int1 }}"
 
               - member: "{{ test_int2 }}"
-                mode: true
+                mode: on
+                force: true
         state: merged
 
     - ansible.builtin.assert:

@@ -92,7 +92,7 @@
         that:
           - "result.changed ==  True"
           - "'interface Ethernet1/9' in result.commands"
-          - "'channel-group 20 force  mode active' in result.commands"
+          - "'channel-group 20 force mode active' in result.commands"
 
   always:
     - name: Teardown
