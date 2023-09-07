@@ -18,7 +18,7 @@ DOCUMENTATION = """
 module: nxos_fc_interfaces
 short_description: Fc Interfaces resource module
 description: This module manages the interface attributes of NX-OS fc interfaces.
-version_added: 6.0.0
+version_added: 5.2.0
 author: Suhas Bharadwaj (@srbharadwaj)
 notes:
   - Tested against NXOS 9.3(2) on Cisco MDS Switches

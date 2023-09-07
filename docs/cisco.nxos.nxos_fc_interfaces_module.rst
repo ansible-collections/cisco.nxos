@@ -8,7 +8,7 @@ cisco.nxos.nxos_fc_interfaces
 **Fc Interfaces resource module**
 
 
-Version added: 6.0.0
+Version added: 5.2.0
 
 .. contents::
    :local:
