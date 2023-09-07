@@ -58,7 +58,7 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                 },
                                 "safi": {
                                     "type": "str",
-                                    "choices": ["unicast", "multicast", "mvpn"],
+                                    "choices": ["unicast", "multicast", "mvpn", "evpn"],
                                 },
                                 "advertise_map": {
                                     "type": "dict",
@@ -157,6 +157,10 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "route_reflector_client": {"type": "bool"},
+                                "send_community": {
+                                    "type": "str",
+                                    "choices": ["standard", "extended", "both"],
+                                },
                                 "soft_reconfiguration_inbound": {
                                     "type": "dict",
                                     "options": {
