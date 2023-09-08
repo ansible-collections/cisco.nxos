@@ -617,6 +617,32 @@ class Bgp_neighbor_address_familyTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "rewrite_rt_asn",
+            "getval": re.compile(
+                r"""
+                (?P<rewrite_rt_asn>rewrite-rt-asn)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "rewrite-rt-asn",
+            "result": {
+                "vrfs": {
+                    "{{ 'vrf_' + vrf|d() }}": {
+                        "vrf": "{{ vrf }}",
+                        "neighbors": {
+                            "{{ neighbor }}": {
+                                "address_family": {
+                                    '{{ afi + "_" + safi|d() }}': {
+                                        "rewrite_rt_asn": "{{ not not rewrite_rt_asn }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
             "name": "route_map.inbound",
             "getval": re.compile(
                 r"""

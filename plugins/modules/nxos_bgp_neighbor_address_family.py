@@ -187,6 +187,9 @@ options:
               rewrite_evpn_rt_asn:
                 description: Auto generate RTs for EBGP neighbor.
                 type: bool
+              rewrite_rt_asn:
+                description: Auto generate RTs for EBGP neighbor.
+                type: bool
               route_map:
                 description: Apply route-map to neighbor.
                 type: dict

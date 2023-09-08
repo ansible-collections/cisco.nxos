@@ -89,6 +89,11 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             remote_as="65537",
                             password=dict(encryption=7, key="12090404011C03162E"),
                         ),
+                        dict(
+                            neighbor_address="2001:4000:4000:fff1::/64",
+                            remote_as_route_map="rmap1",
+                            description="TEST_NBR",
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -106,6 +111,11 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         encryption=3,
                                         key="13D4D3549493D2877B1DC116EE27A6BE",
                                     ),
+                                ),
+                                dict(
+                                    neighbor_address="2001:4000:5000:fff1::/64",
+                                    remote_as_route_map="rmap2",
+                                    description="TEST_NBR_2",
                                 ),
                             ],
                         ),
@@ -134,6 +144,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "neighbor 198.51.100.21",
             "remote-as 65537",
             "password 7 12090404011C03162E",
+            "neighbor 2001:4000:4000:fff1::/64 remote-as route-map rmap1",
+            "description TEST_NBR",
             "vrf site-1",
             "local-as 200",
             "log-neighbor-changes",
@@ -143,6 +155,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "description site-1-nbr-1",
             "password 3 13D4D3549493D2877B1DC116EE27A6BE",
             "timers 5 15",
+            "neighbor 2001:4000:5000:fff1::/64 remote-as route-map rmap2",
+            "description TEST_NBR_2",
             "vrf site-2",
             "local-as 300",
             "log-neighbor-changes",
@@ -308,6 +322,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
               neighbor 198.51.100.21
                 remote-as 65537
                 password 7 12090404011C03162E
+              neighbor 2001:4000:4000:fff1::/64 remote-as route-map rmap1
+                description TEST_NBR
               vrf site-1
                 local-as 200
                 log-neighbor-changes
@@ -343,6 +359,11 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
                             password=dict(encryption=7, key="12090404011C03162E"),
+                        ),
+                        dict(
+                            neighbor_address="2001:4000:4000:fff1::/64",
+                            remote_as_route_map="rmap1",
+                            description="TEST_NBR",
                         ),
                     ],
                     vrfs=[
