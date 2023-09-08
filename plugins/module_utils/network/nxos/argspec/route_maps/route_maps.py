@@ -323,6 +323,21 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "extcomm_list": {"type": "str"},
+                                "extcommunity": {
+                                    "type": "dict",
+                                    "options": {
+                                        "rt": {
+                                            "type": "dict",
+                                            "options": {
+                                                "additive": {"type": "bool"},
+                                                "extcommunity_numbers": {
+                                                    "type": "list",
+                                                    "elements": "str",
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
                                 "forwarding_address": {"type": "bool"},
                                 "null_interface": {"type": "str"},
                                 "ip": {

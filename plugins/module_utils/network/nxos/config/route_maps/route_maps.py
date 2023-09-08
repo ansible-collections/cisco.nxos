@@ -159,6 +159,7 @@ class Route_maps(ResourceModule):
             begin = len(self.commands)
 
             self._compare_lists(wentry, hentry)
+            self._compare_extcomm(wentry, hentry)
             self.compare(parsers=self.linear_parsers, want=wentry, have=hentry)
 
             if len(self.commands) != begin:
@@ -172,6 +173,22 @@ class Route_maps(ResourceModule):
         # remove superfluos entries from have
         for _hk, hentry in iteritems(have):
             self.commands.append(self._tmplt.render(hentry, "route_map", True))
+
+    def _compare_extcomm(self, want, have):
+        hentry = get_from_dict(data_dict=have, keypath="set.extcommunity.rt") or {}
+        wentry = get_from_dict(data_dict=want, keypath="set.extcommunity.rt") or {}
+
+        h_nums = set(hentry.get("extcommunity_numbers", []))
+        w_nums = set(wentry.get("extcommunity_numbers", []))
+
+        print(wentry)
+
+        if h_nums != w_nums or wentry.get("additive") != hentry.get("additive"):
+            if self.state not in ["merged", "rendered"]:
+                # need to explicitly remove existing entry to correctly apply new one
+                self.commands.append(self._tmplt.render(hentry, "set.extcommunity.rt", negate=True))
+            # default CLI behaviour is to 'merge' with existing entry
+            self.commands.append(self._tmplt.render(wentry, "set.extcommunity.rt", negate=False))
 
     def _compare_lists(self, want, have):
         for x in self.complex_parsers:

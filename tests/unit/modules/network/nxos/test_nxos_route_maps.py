@@ -1415,3 +1415,81 @@ class TestNxosRouteMapsModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_extcomm_rt(self):
+        # test for extcommunity.rt
+        self.get_config.return_value = dedent(
+            """\
+            route-map test-1 permit 10
+              set extcommunity rt additive
+            route-map test-2 permit 11
+              set extcommunity rt 65000:516590 65000:516591 65000:516592 additive
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="test-1",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(
+                                    extcommunity=dict(
+                                        rt=dict(
+                                            extcommunity_numbers=[
+                                                "65000:516586",
+                                            ],
+                                            additive=True,
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "route-map test-1 permit 10",
+            "set extcommunity rt 65000:516586 additive",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="test-2",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=11,
+                                set=dict(
+                                    extcommunity=dict(
+                                        rt=dict(
+                                            extcommunity_numbers=[
+                                                "65000:516590",
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "route-map test-2 permit 11",
+            "no set extcommunity rt 65000:516590 65000:516591 65000:516592 additive",
+            "set extcommunity rt 65000:516590",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
