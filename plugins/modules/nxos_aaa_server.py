@@ -232,7 +232,6 @@ def default_aaa_server(existing, params, server_type):
     if deadtime is not None and existing.get("deadtime") != PARAM_TO_DEFAULT_KEYMAP["deadtime"]:
         cmds.append("no {0}-server deadtime 1".format(server_type))
 
-  
     if (
         server_timeout is not None
         and existing.get("server_timeout") != PARAM_TO_DEFAULT_KEYMAP["server_timeout"]
