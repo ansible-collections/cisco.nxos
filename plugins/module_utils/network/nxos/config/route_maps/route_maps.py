@@ -181,8 +181,6 @@ class Route_maps(ResourceModule):
         h_nums = set(hentry.get("extcommunity_numbers", []))
         w_nums = set(wentry.get("extcommunity_numbers", []))
 
-        print(wentry)
-
         if h_nums != w_nums or wentry.get("additive") != hentry.get("additive"):
             if self.state not in ["merged", "rendered"]:
                 # need to explicitly remove existing entry to correctly apply new one
