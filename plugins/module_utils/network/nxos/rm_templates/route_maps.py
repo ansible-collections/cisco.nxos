@@ -22,6 +22,17 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def _tmplt_set_extcomm_rt(data):
+    cmd = "set extcommunity rt"
+    extcomm_numbers = " ".join(data.get("extcommunity_numbers", []))
+    if extcomm_numbers:
+        cmd += " " + extcomm_numbers
+    if data.get("additive"):
+        cmd += " additive"
+
+    return cmd
+
+
 def _tmplt_match_ip_multicast(data):
     cmd = "match ip multicast"
     multicast = data["match"]["ip"]["multicast"]
@@ -1013,6 +1024,34 @@ class Route_mapsTemplate(NetworkTemplate):
                         "{{ sequence }}": {
                             "set": {
                                 "extcomm_list": "{{ extcomm_list }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "set.extcommunity.rt",
+            "getval": re.compile(
+                r"""
+                \s+set\sextcommunity\srt
+                (?P<extcommunity_numbers>(\s\S+:\S+)*)?
+                (\s(?P<additive>additive))?
+                \s*$""", re.VERBOSE,
+            ),
+            "setval": _tmplt_set_extcomm_rt,
+            "result": {
+                "{{ route_map }}": {
+                    "entries": {
+                        "{{ sequence }}": {
+                            "set": {
+                                "extcommunity": {
+                                    "rt": {
+                                        "additive": "{{ not not additive }}",
+                                        "extcommunity_numbers":
+                                            "{{ extcommunity_numbers.strip().split(' ') if extcommunity_numbers|d('') else None }}",
+                                    },
+                                },
                             },
                         },
                     },
