@@ -3,6 +3,7 @@
 # Cisco NX-OS Collection
 [![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.nxos) <!--[![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/vyos)](https://codecov.io/gh/ansible-collections/cisco.nxos)-->
 [![Codecov](https://codecov.io/gh/ansible-collections/cisco.nxos/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/cisco.nxos)
+[![CI](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml)
 
 The Ansible Cisco NX-OS collection includes a variety of Ansible content to help automate the management of Cisco NX-OS network appliances.
 
@@ -53,19 +54,17 @@ Name | Description
 [cisco.nxos.nxos_banner](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_banner_module.rst)|Manage multiline banners on Cisco NXOS devices
 [cisco.nxos.nxos_bfd_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bfd_global_module.rst)|Bidirectional Forwarding Detection (BFD) global-level configuration
 [cisco.nxos.nxos_bfd_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bfd_interfaces_module.rst)|BFD interfaces resource module
-[cisco.nxos.nxos_bgp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_module.rst)|(deprecated, removed after 2023-01-27) Manages BGP configuration.
 [cisco.nxos.nxos_bgp_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_address_family_module.rst)|BGP Address Family resource module.
-[cisco.nxos.nxos_bgp_af](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_af_module.rst)|(deprecated, removed after 2023-02-24) Manages BGP Address-family configuration.
 [cisco.nxos.nxos_bgp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_global_module.rst)|BGP Global resource module.
-[cisco.nxos.nxos_bgp_neighbor](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_module.rst)|(deprecated, removed after 2023-01-27) Manages BGP neighbors configurations.
 [cisco.nxos.nxos_bgp_neighbor_address_family](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_address_family_module.rst)|BGP Neighbor Address Family resource module.
-[cisco.nxos.nxos_bgp_neighbor_af](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_neighbor_af_module.rst)|(deprecated, removed after 2023-02-24) Manages BGP address-family's neighbors configuration.
+[cisco.nxos.nxos_bgp_templates](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_bgp_templates_module.rst)|BGP Templates resource module.
 [cisco.nxos.nxos_command](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_command_module.rst)|Run arbitrary command on Cisco NXOS devices
 [cisco.nxos.nxos_config](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_config_module.rst)|Manage Cisco NXOS configuration sections
 [cisco.nxos.nxos_devicealias](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_devicealias_module.rst)|Configuration of device alias for Cisco NXOS MDS Switches.
 [cisco.nxos.nxos_evpn_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_evpn_global_module.rst)|Handles the EVPN control plane for VXLAN.
 [cisco.nxos.nxos_evpn_vni](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_evpn_vni_module.rst)|Manages Cisco EVPN VXLAN Network Identifier (VNI).
 [cisco.nxos.nxos_facts](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_facts_module.rst)|Gets facts about NX-OS switches
+[cisco.nxos.nxos_fc_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_fc_interfaces_module.rst)|Fc Interfaces resource module
 [cisco.nxos.nxos_feature](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_feature_module.rst)|Manage features in NX-OS switches.
 [cisco.nxos.nxos_file_copy](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_file_copy_module.rst)|Copy a file to a remote NXOS device.
 [cisco.nxos.nxos_gir](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_gir_module.rst)|Trigger a graceful removal or insertion (GIR) of the switch.

@@ -29,7 +29,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 class Bgp_globalFacts(object):
     """The nxos bgp_global facts class"""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = Bgp_globalArgs.argument_spec
 

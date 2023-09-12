@@ -187,6 +187,9 @@ options:
               rewrite_evpn_rt_asn:
                 description: Auto generate RTs for EBGP neighbor.
                 type: bool
+              rewrite_rt_asn:
+                description: Auto generate RTs for EBGP neighbor.
+                type: bool
               route_map:
                 description: Apply route-map to neighbor.
                 type: dict
@@ -316,8 +319,8 @@ EXAMPLES = """
                   send_community:
                     set: True
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before: {}
 #
 #  commands:
@@ -385,7 +388,7 @@ EXAMPLES = """
 #                safi: unicast
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   neighbor 192.0.2.32
@@ -472,8 +475,8 @@ EXAMPLES = """
                     set: True
     state: replaced
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    neighbors:
@@ -564,7 +567,7 @@ EXAMPLES = """
 #                safi: unicast
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   neighbor 192.0.2.32
@@ -631,8 +634,8 @@ EXAMPLES = """
                     set: True
     state: overridden
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    neighbors:
@@ -710,7 +713,7 @@ EXAMPLES = """
 #                  set: True
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   neighbor 192.0.2.32
@@ -766,8 +769,8 @@ EXAMPLES = """
                   safi: unicast
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    neighbors:
@@ -850,7 +853,7 @@ EXAMPLES = """
 #                  set: True
 #
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   neighbor 192.0.2.32
@@ -899,8 +902,8 @@ EXAMPLES = """
   cisco.nxos.nxos_bgp_neighbor_address_family:
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    neighbors:
@@ -961,7 +964,7 @@ EXAMPLES = """
 #    as_number: "65536"
 #
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   neighbor 192.0.2.32
@@ -1018,8 +1021,8 @@ EXAMPLES = """
                     set: True
     state: rendered
 
-# Task Output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  rendered:
 #    - router bgp 65536
 #    - neighbor 192.0.2.32
@@ -1073,8 +1076,8 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  parsed:
 #    as_number: "65536"
 #    neighbors:
@@ -1116,6 +1119,52 @@ EXAMPLES = """
 #                  set: True
 #              - afi: ipv6
 #                safi: unicast
+"""
+RETURN = """
+before:
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+after:
+  description: The resulting configuration after module execution.
+  returned: when changed
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: list
+  sample:
+    - router bgp 65536
+    - neighbor 192.0.2.32
+    - address-family ipv4 unicast
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - router bgp 65536
+    - neighbor 192.0.2.32
+    - address-family ipv4 unicast
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule

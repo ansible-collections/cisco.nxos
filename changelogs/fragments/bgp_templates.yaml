@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - "bgp_templates - Add support for send_community (https://github.com/ansible-collections/cisco.nxos/issues/740)."
+  - "bgp_templates - Add support for safi evpn (https://github.com/ansible-collections/cisco.nxos/issues/739)."

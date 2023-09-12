@@ -3615,8 +3615,8 @@ Examples
                 unit: Gbps
         state: merged
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before: {}
     #
     # commands:
@@ -3711,7 +3711,7 @@ Examples
     # Using replaced
 
     # Before state:
-    # ------------
+    # -------------
     # nxos-9k-rdo# sh running-config | section "^router ospfv3"
     # router ospfv3 100
     #   router-id 203.0.113.20
@@ -3765,8 +3765,8 @@ Examples
                   no_summary: True
         state: replaced
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -3877,7 +3877,7 @@ Examples
     # Using overridden
 
     # Before state:
-    # ------------
+    # -------------
     # nxos-9k-rdo# sh running-config | section "^router ospfv3"
     # router ospfv3 100
     #   router-id 203.0.113.20
@@ -3909,8 +3909,8 @@ Examples
             shutdown: true
         state: overridden
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -3997,7 +3997,7 @@ Examples
     # Using deleted to delete a single OSPF process
 
     # Before state:
-    # ------------
+    # -------------
     # nxos-9k-rdo# sh running-config | section "^router ospf .*"
     # router ospfv3 100
     #   router-id 203.0.113.20
@@ -4025,8 +4025,8 @@ Examples
           - process_id: 102
         state: deleted
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -4090,7 +4090,7 @@ Examples
     # Using deleted all OSPFv3 processes from the device
 
     # Before state:
-    # ------------
+    # -------------
     # nxos-9k-rdo# sh running-config | section "^router ospfv3"
     # router ospfv3 100
     #   router-id 203.0.113.20
@@ -4115,8 +4115,8 @@ Examples
       cisco.nxos.nxos_ospfv3:
         state: deleted
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -4225,8 +4225,8 @@ Examples
                 unit: Gbps
         state: rendered
 
-    # Task Output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     # rendered:
     #  - router ospfv3 100
     #  - router-id 203.0.113.20
@@ -4272,8 +4272,8 @@ Examples
         running_config: "{{ lookup('file', 'ospfv2.cfg') }}"
         state: parsed
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     # parsed:
     #   processes:
     #   - process_id: "100"
@@ -4323,8 +4323,8 @@ Examples
       cisco.nxos.nxos_ospfv3:
         state: gathered
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     #  gathered:
     #    processes:
     #    - process_id: "100"
@@ -4437,6 +4437,57 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
                         <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospfv3 102&#x27;, &#x27;router-id 198.54.100.1&#x27;, &#x27;router ospfv3 100&#x27;, &#x27;router-id 192.0.100.1&#x27;, &#x27;address-family ipv6 unicast&#x27;, &#x27;redistribute eigrp 120 route-map rmap_1&#x27;, &#x27;redistribute direct route-map ospf-direct-connect&#x27;, &#x27;area 0.0.0.100 filter-list route-map rmap_1 in&#x27;, &#x27;area 0.0.0.100 filter-list route-map rmap_2 out&#x27;, &#x27;area 0.0.0.100 range 2001:db2::/32 not-advertise&#x27;, &#x27;area 0.0.0.100 range 2001:db3::/32 cost 120&#x27;, &#x27;vrf zone1&#x27;, &#x27;router-id 192.0.100.2&#x27;, &#x27;vrf zone2&#x27;, &#x27;auto-cost reference-bandwidth 45 Gbps&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospfv3 102&#x27;, &#x27;router-id 198.54.100.1&#x27;, &#x27;router ospfv3 100&#x27;]</div>
                 </td>
             </tr>
     </table>

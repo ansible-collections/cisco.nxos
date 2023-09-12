@@ -89,6 +89,11 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             remote_as="65537",
                             password=dict(encryption=7, key="12090404011C03162E"),
                         ),
+                        dict(
+                            neighbor_address="2001:4000:4000:fff1::/64",
+                            remote_as_route_map="rmap1",
+                            description="TEST_NBR",
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -106,6 +111,11 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         encryption=3,
                                         key="13D4D3549493D2877B1DC116EE27A6BE",
                                     ),
+                                ),
+                                dict(
+                                    neighbor_address="2001:4000:5000:fff1::/64",
+                                    remote_as_route_map="rmap2",
+                                    description="TEST_NBR_2",
                                 ),
                             ],
                         ),
@@ -134,6 +144,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "neighbor 198.51.100.21",
             "remote-as 65537",
             "password 7 12090404011C03162E",
+            "neighbor 2001:4000:4000:fff1::/64 remote-as route-map rmap1",
+            "description TEST_NBR",
             "vrf site-1",
             "local-as 200",
             "log-neighbor-changes",
@@ -143,6 +155,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "description site-1-nbr-1",
             "password 3 13D4D3549493D2877B1DC116EE27A6BE",
             "timers 5 15",
+            "neighbor 2001:4000:5000:fff1::/64 remote-as route-map rmap2",
+            "description TEST_NBR_2",
             "vrf site-2",
             "local-as 300",
             "log-neighbor-changes",
@@ -308,6 +322,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
               neighbor 198.51.100.21
                 remote-as 65537
                 password 7 12090404011C03162E
+              neighbor 2001:4000:4000:fff1::/64 remote-as route-map rmap1
+                description TEST_NBR
               vrf site-1
                 local-as 200
                 log-neighbor-changes
@@ -343,6 +359,11 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
                             password=dict(encryption=7, key="12090404011C03162E"),
+                        ),
+                        dict(
+                            neighbor_address="2001:4000:4000:fff1::/64",
+                            remote_as_route_map="rmap1",
+                            description="TEST_NBR",
                         ),
                     ],
                     vrfs=[
@@ -448,6 +469,93 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                     ],
                 ),
                 state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "router-id 198.51.100.212",
+            "neighbor 198.51.100.20",
+            "no shutdown",
+            "no neighbor 198.51.100.21",
+            "vrf site-1",
+            "neighbor 192.0.2.10",
+            "affinity-group 190",
+            "no vrf site-2",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_global_overridden(self):
+        run_cfg = dedent(
+            """\
+            router bgp 65536
+              log-neighbor-changes
+              maxas-limit 20
+              router-id 198.51.100.2
+              neighbor 198.51.100.20
+                remote-as 65537
+                affinity-group 161
+                description NBR-1
+                shutdown
+                low-memory exempt
+              neighbor 198.51.100.21
+                remote-as 65537
+                password 7 12090404011C03162E
+              vrf site-1
+                local-as 200
+                log-neighbor-changes
+                neighbor 192.0.2.10
+                  affinity-group 170
+                  remote-as 65538
+                  description site-1-nbr-1
+                  password 3 13D4D3549493D2877B1DC116EE27A6BE
+              vrf site-2
+                local-as 300
+                log-neighbor-changes
+                neighbor-down fib-accelerate
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        self.cfg_get_config.return_value = run_cfg
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    router_id="198.51.100.212",
+                    log_neighbor_changes=True,
+                    maxas_limit=20,
+                    neighbors=[
+                        dict(
+                            neighbor_address="198.51.100.20",
+                            neighbor_affinity_group=dict(group_id=161),
+                            remote_as="65537",
+                            description="NBR-1",
+                            low_memory=dict(exempt=True),
+                        ),
+                    ],
+                    vrfs=[
+                        dict(
+                            vrf="site-1",
+                            local_as="200",
+                            log_neighbor_changes=True,
+                            neighbors=[
+                                dict(
+                                    neighbor_address="192.0.2.10",
+                                    neighbor_affinity_group=dict(group_id=190),
+                                    remote_as="65538",
+                                    description="site-1-nbr-1",
+                                    password=dict(
+                                        encryption=3,
+                                        key="13D4D3549493D2877B1DC116EE27A6BE",
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="overridden",
             ),
             ignore_provider_arg,
         )

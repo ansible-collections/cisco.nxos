@@ -26,10 +26,11 @@
 
     - name: Configure BGP defaults
       register: result
-      cisco.nxos.nxos_bgp:
-        asn: 65535
-        router_id: 192.0.2.1
-        state: present
+      cisco.nxos.nxos_bgp_global:
+        config:
+          as_number: 65535
+          router_id: 192.0.2.1
+        state: merged
 
     - ansible.builtin.assert:
         that:

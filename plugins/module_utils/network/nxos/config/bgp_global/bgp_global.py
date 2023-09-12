@@ -234,7 +234,7 @@ class Bgp_global(ResourceModule):
             self.compare(parsers=nbr_parsers, want=entry, have=have_nbr)
             self._compare_path_attribute(entry, have_nbr)
 
-            if len(self.commands) != begin:
+            if len(self.commands) != begin or (entry and not have_nbr):
                 self.commands.insert(begin, self._tmplt.render(entry, "neighbor_address", False))
 
         # cleanup remaining neighbors

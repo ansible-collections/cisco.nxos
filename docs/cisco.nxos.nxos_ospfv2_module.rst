@@ -4484,8 +4484,8 @@ Examples
                 unit: Gbps
         state: merged
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before: {}
     #
     # commands:
@@ -4650,8 +4650,8 @@ Examples
                   no_summary: true
         state: replaced
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -4810,8 +4810,8 @@ Examples
             shutdown: true
         state: overridden
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -4928,8 +4928,8 @@ Examples
           - process_id: 102
         state: deleted
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -5024,8 +5024,8 @@ Examples
       cisco.nxos.nxos_ospfv2:
         state: deleted
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -5144,8 +5144,8 @@ Examples
                 unit: Gbps
         state: rendered
 
-    # Task Output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     # rendered:
     #  - router ospf 100
     #  - router-id 203.0.113.20
@@ -5208,8 +5208,8 @@ Examples
         running_config: "{{ lookup('file', 'ospfv2.cfg') }}"
         state: parsed
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     # parsed:
     #   processes:
     #   - process_id: "100"
@@ -5283,8 +5283,8 @@ Examples
       cisco.nxos.nxos_ospfv2:
         state: gathered
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     #  gathered:
     #    processes:
     #      - process_id: "102"
@@ -5385,6 +5385,57 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
                         <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospf 102&#x27;, &#x27;router-id 198.54.100.1&#x27;, &#x27;router ospf 100&#x27;, &#x27;router-id 192.0.100.1&#x27;, &#x27;redistribute eigrp 120 route-map rmap_1&#x27;, &#x27;redistribute direct route-map ospf-direct-connect&#x27;, &#x27;area 0.0.0.100 filter-list route-map rmap_1 in&#x27;, &#x27;area 0.0.0.100 filter-list route-map rmap_2 out&#x27;, &#x27;area 0.0.0.100 range 192.0.2.0/24 not-advertise&#x27;, &#x27;area 0.0.0.100 range 192.0.3.0/24 cost 120&#x27;, &#x27;vrf zone1&#x27;, &#x27;router-id 192.0.100.2&#x27;, &#x27;summary-address 10.0.0.0/24 tag 121&#x27;, &#x27;summary-address 11.0.0.0/24&#x27;, &#x27;redistribute static route-map zone1-direct-connect&#x27;, &#x27;vrf zone2&#x27;, &#x27;auto-cost reference-bandwidth 45 Gbps&#x27;, &#x27;capability vrf-lite evpn&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospf 102&#x27;, &#x27;router-id 198.54.100.1&#x27;, &#x27;router ospf 100&#x27;]</div>
                 </td>
             </tr>
     </table>

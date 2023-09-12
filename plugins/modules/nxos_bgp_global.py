@@ -357,6 +357,9 @@ options:
           remote_as:
             description: Specify Autonomous System Number of the neighbor.
             type: str
+          remote_as_route_map:
+            description: Route-map to match prefix peer AS number.
+            type: str
           remove_private_as:
             description: Remove private AS number from outbound updates.
             type: dict
@@ -508,14 +511,16 @@ options:
       or a vrf context that is to be removed. Please use the
       M(cisco.nxos.nxos_bgp_af) or M(cisco.nxos.nxos_bgp_neighbor_af)
       modules for prior cleanup.
-    - States I(merged) and I(replaced) will result in a failure if BGP is already configured
+    - States C(merged) and C(replaced) will result in a failure if BGP is already configured
       with a different ASN than what is provided in the task. In such cases, please use
-      state I(purged) to remove the existing BGP process and proceed further.
+      state C(purged) to remove the existing BGP process and proceed further.
+    - States C(replaced) and C(overridden) have the same behaviour for this module.
     - Refer to examples for more details.
     type: str
     choices:
     - merged
     - replaced
+    - overridden
     - deleted
     - purged
     - parsed
@@ -593,8 +598,8 @@ EXAMPLES = """
           neighbor_down:
             fib_accelerate: True
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before: {}
 #
 # commands:
@@ -699,7 +704,7 @@ EXAMPLES = """
 
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65563
 #   router-id 192.168.1.1
@@ -823,8 +828,8 @@ EXAMPLES = """
             fib_accelerate: True
     state: replaced
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: '65563'
 #    bestpath:
@@ -937,7 +942,7 @@ EXAMPLES = """
 #      vrf: site-2
 #
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65563
 #   router-id 192.168.1.1
@@ -1018,8 +1023,8 @@ EXAMPLES = """
   cisco.nxos.nxos_bgp_global:
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 
 # before:
 #    as_number: '65563'
@@ -1101,7 +1106,7 @@ EXAMPLES = """
 #    as_number: '65563'
 #
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65563
 #   address-family ipv4 unicast
@@ -1171,8 +1176,8 @@ EXAMPLES = """
   cisco.nxos.nxos_bgp_global:
     state: purged
 
-# Task output
-# -------------
+# Task output:
+# ------------
 
 # before:
 #    as_number: '65563'
@@ -1240,7 +1245,7 @@ EXAMPLES = """
 #  after: {}
 #
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # Nexus9000v#
 
@@ -1308,8 +1313,8 @@ EXAMPLES = """
           neighbor_down:
             fib_accelerate: True
 
-# Task Output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # rendered:
 #   - router bgp 65563
 #   - bestpath as-path multipath-relax
@@ -1398,8 +1403,8 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  parsed:
 #    as_number: '65563'
 #    bestpath:
@@ -1491,8 +1496,8 @@ EXAMPLES = """
   cisco.nxos.nxos_bgp_global:
     state: gathered
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  gathered:
 #    as_number: '65563'
 #    bestpath:
@@ -1565,8 +1570,8 @@ EXAMPLES = """
             key: 12090404011C03162E
     state: replaced
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # fatal: [Nexus9000v]: FAILED! => changed=false
 #    msg: Neighbor 203.0.113.2 has address-family configurations.
 #         Please use the nxos_bgp_neighbor_af module to remove those first.
@@ -1613,8 +1618,8 @@ EXAMPLES = """
             fib_accelerate: True
     state: replaced
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # fatal: [Nexus9000v]: FAILED! => changed=false
 #    msg: VRF site-1 has address-family configurations.
 #         Please use the nxos_bgp_af module to remove those first.
@@ -1656,6 +1661,28 @@ commands:
     - remote-as 65562
     - description site-1-nbr-1
     - password 3 13D4D3549493D2877B1DC116EE27A6BE
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - router bgp 65563
+    - maxas-limit 20
+    - router-id 192.168.1.1
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule

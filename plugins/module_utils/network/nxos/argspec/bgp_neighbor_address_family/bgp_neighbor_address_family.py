@@ -158,6 +158,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "rewrite_evpn_rt_asn": {"type": "bool"},
+                                "rewrite_rt_asn": {"type": "bool"},
                                 "route_map": {
                                     "type": "dict",
                                     "options": {
@@ -325,6 +326,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                         "rewrite_evpn_rt_asn": {"type": "bool"},
+                                        "rewrite_rt_asn": {"type": "bool"},
                                         "route_map": {
                                             "type": "dict",
                                             "options": {

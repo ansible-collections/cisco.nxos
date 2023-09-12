@@ -1021,3 +1021,26 @@ class TestNxosL3InterfacesModule(TestNxosModule):
         set_module_args(playbook, ignore_provider_arg)
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered_facts)
+
+    def test_replaced_tag(self):
+        existing = dedent(
+            """\
+          interface Vlan10
+            ip address 192.168.1.10/24 tag 20
+        """,
+        )
+        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
+        playbook = dict(
+            config=[
+                dict(
+                    name="Vlan10",
+                    ipv4=[{"address": "192.168.1.11/24", "tag": 20}],
+                ),
+            ],
+            state="replaced",
+        )
+
+        commands = ["interface Vlan10", "ip address 192.168.1.11/24 tag 20"]
+        playbook["state"] = "replaced"
+        set_module_args(playbook, ignore_provider_arg)
+        self.execute_module(changed=True, commands=commands)

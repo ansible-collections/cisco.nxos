@@ -5,6 +5,68 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v5.1.0
+======
+
+Minor Changes
+-------------
+
+- nxos_facts - add cpu utilization data to facts.
+
+v5.0.0
+======
+
+Major Changes
+-------------
+
+- Refer to **Removed Features** section for details.
+- This release removes four of the previously deprecated modules from this collection.
+
+Minor Changes
+-------------
+
+- Add nxos_bgp_templates module.
+- nxos_user - Added dev-ops role to BUILTINS (https://github.com/ansible-collections/cisco.nxos/issues/690)
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- The nxos_bgp module has been removed with this release.
+- The nxos_bgp_af module has been removed with this release.
+- The nxos_bgp_neighbor module has been removed with this release.
+- The nxos_bgp_neighbor_af module has been removed with this release.
+
+Bugfixes
+--------
+
+- nxos_static_routes - Prevent action states to generate terminal configuration command.
+- nxos_static_routes - Update the delete operation of static routes to be similar to other platforms. (https://github.com/ansible-collections/cisco.nxos/issues/666)
+
+v4.4.0
+======
+
+Minor Changes
+-------------
+
+- nxos_user - Add support for hashed passwords. (https://github.com/ansible-collections/cisco.nxos/issues/370).
+
+Bugfixes
+--------
+
+- l3_interfaces - Append tag when updating IP address with state replaced (https://github.com/ansible-collections/cisco.nxos/issues/678).
+- ntp_global - Fix incorrect handling of prefer option (https://github.com/ansible-collections/cisco.nxos/issues/670).
+- nxos_banner - Add support for a custom multiline delimiter
+- nxos_facts - Fix missing SVI facts (https://github.com/ansible-collections/cisco.nxos/issues/440).
+- terminal - attempt privilege escalation only when prompt does not end with #
+
+Documentation Changes
+---------------------
+
+- Fix docs of static-routes resource module.
+- nxos_interfaces - Fixed module documentation and examples.
+- nxos_l2_interfaces - Fixed module documentation and examples.
+- nxos_l3_interfaces - Fixed module documentation and examples.
+
 v4.3.0
 ======
 
