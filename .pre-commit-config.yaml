@@ -5,6 +5,11 @@ repos:
     hooks:
       - id: update-docs
 
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v6.19.0
+    hooks:
+      - id: ansible-lint
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

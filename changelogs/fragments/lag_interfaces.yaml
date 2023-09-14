@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "lag_interfaces - Allow force option to be idempotent (https://github.com/ansible-collections/cisco.nxos/issues/742)."

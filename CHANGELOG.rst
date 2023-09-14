@@ -5,6 +5,43 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v5.2.0
+======
+
+Minor Changes
+-------------
+
+- Added new module fc_interfaces
+- bgp_global - support remote-as as a route-map (https://github.com/ansible-collections/cisco.nxos/issues/741).
+- bgp_neighbor_address_family - support rewrite-rt-asn for ipv4 mvpn (https://github.com/ansible-collections/cisco.nxos/issues/741).
+- bgp_templates - Add support for safi evpn (https://github.com/ansible-collections/cisco.nxos/issues/739).
+- bgp_templates - Add support for send_community (https://github.com/ansible-collections/cisco.nxos/issues/740).
+- route_maps - support extcommunity rt option (https://github.com/ansible-collections/cisco.nxos/issues/743).
+
+Bugfixes
+--------
+
+- acls - Fix parsing error when ACE has a source port range (https://github.com/ansible-collections/cisco.nxos/issues/713).
+- interfaces - Re-apply existing non-default MTU when changing mode to L2 (https://github.com/ansible-collections/cisco.nxos/issues/730).
+- lag_interfaces - Allow force option to be idempotent (https://github.com/ansible-collections/cisco.nxos/issues/742).
+- snmp_server - fix host delete when authentication options are present (https://github.com/ansible-collections/cisco.nxos/issues/439).
+
+Documentation Changes
+---------------------
+
+- Update examples for bgp_address_family resource modules using yaml callback plugin.
+- Update examples for bgp_global resource modules using yaml callback plugin.
+- Update examples for bgp_neighbor_address_family resource modules using yaml callback plugin.
+- Update examples for bgp_templates resource modules using yaml callback plugin.
+- Update examples for ospf_interfaces resource modules using yaml callback plugin.
+- Update examples for ospfv2 resource modules using yaml callback plugin.
+- Update examples for ospfv3 resource modules using yaml callback plugin.
+
+New Modules
+-----------
+
+- nxos_fc_interfaces - Fc Interfaces resource module
+
 v5.1.0
 ======
 
