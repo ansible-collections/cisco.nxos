@@ -5,6 +5,14 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v5.2.0
+======
+
+New Modules
+-----------
+
+- nxos_fc_interfaces - Fc Interfaces resource module
+
 v5.1.0
 ======
 

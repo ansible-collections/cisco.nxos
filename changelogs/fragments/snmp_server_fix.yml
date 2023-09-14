@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "snmp_server - fix host delete when authentication options are present."
