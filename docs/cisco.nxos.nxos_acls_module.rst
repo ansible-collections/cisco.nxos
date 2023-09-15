@@ -3365,7 +3365,7 @@ Examples
                       any: true
                     protocol: eigrp
                   - remark: Example for overridden state
-          state: overridden
+        state: overridden
 
     # Task Output
     # -----------
