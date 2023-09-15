@@ -46,7 +46,7 @@ class AclsFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_device_data(self, connection):
-        data = connection.get("show running-config | section 'ip(v6)* access-list'")
+        data = connection.get("show running-config | section '^ip(v6)* access-list'")
         if data == "{}":
             return ""
         return data
