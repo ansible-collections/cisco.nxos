@@ -47,6 +47,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>1</li>
                                     <li>2</li>
+                                    <li>3</li>
                         </ul>
                 </td>
                 <td>
