@@ -14,8 +14,6 @@ on:  # yamllint disable-line rule:truthy
 
 
 jobs:
-  ansible-lint:
-    uses: ansible-network/github_actions/.github/workflows/ansible-lint.yml@main
   changelog:
     uses: ansible-network/github_actions/.github/workflows/changelog.yml@main
     if: github.event_name == 'pull_request'
