@@ -125,7 +125,7 @@ class AclsFacts(object):
                     ace = re.sub(port_pro.group(1), "", ace, 1)
                     ace = re.sub(port_pro.group(2), "", ace, 1)
                 else:
-                    limit = re.search(r"range\s(?P<rstart>\w+)\s(?P<rend>\w+)", ace)
+                    limit = re.search(r"range\s(?P<rstart>\S+)\s(?P<rend>\S+)", ace)
                     if limit:
                         rstart = limit.groupdict()["rstart"]
                         rend = limit.groupdict()["rend"]
