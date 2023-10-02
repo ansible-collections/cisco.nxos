@@ -5,6 +5,14 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v5.3.0
+======
+
+Bugfixes
+--------
+
+- [acls] fix ACE parsing error with named source/dest port range (https://github.com/ansible-collections/cisco.nxos/pull/764)
+
 v5.2.0
 ======
 

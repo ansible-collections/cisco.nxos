@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "nxos_acls - fix parsing of ACE with named source/dest port range (https://github.com/ansible-collections/cisco.nxos/issues/763)."
