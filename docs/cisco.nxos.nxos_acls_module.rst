@@ -4069,7 +4069,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The provided configuration in the task rendered in device-native format (offline).</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet1&#x27;, &#x27;description Interface description&#x27;, &#x27;shutdown&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip access-list ACL1v4&#x27;, &#x27;10 permit ip any any precedence critical log&#x27;, &#x27;20 deny tcp any lt smtp host 192.0.2.64 ack fin&#x27;]</div>
                 </td>
             </tr>
     </table>

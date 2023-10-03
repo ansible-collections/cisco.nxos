@@ -1378,9 +1378,9 @@ rendered:
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - interface GigabitEthernet1
-    - description Interface description
-    - shutdown
+    - ip access-list ACL1v4
+    - 10 permit ip any any precedence critical log
+    - 20 deny tcp any lt smtp host 192.0.2.64 ack fin
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
