@@ -5,6 +5,20 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v5.2.1
+======
+
+Bugfixes
+--------
+
+- nxos_acls - fix parsing of ACE with named source/dest port range (https://github.com/ansible-collections/cisco.nxos/issues/763).
+- vtp_version - allow VTP version 3 to be configured (https://github.com/ansible-collections/cisco.nxos/issues/704).
+
+Documentation Changes
+---------------------
+
+- nxos_acls - update examples and use YAML output in them for better readibility.
+
 v5.2.0
 ======
 
