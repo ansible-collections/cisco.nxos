@@ -417,7 +417,6 @@ def main():
     required_if = [
         ("match", "strict", ["lines"]),
         ("match", "exact", ["lines"]),
-        ("replace", "block", ["lines"]),
         ("replace", "config", ["replace_src"]),
         ("diff_against", "intended", ["intended_config"]),
     ]
