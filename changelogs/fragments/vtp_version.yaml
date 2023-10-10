@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "vtp_version - allow VTP version 3 to be configured (https://github.com/ansible-collections/cisco.nxos/issues/704)."
