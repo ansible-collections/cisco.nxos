@@ -180,6 +180,48 @@ class TestNxosConfigModule(TestNxosModule):
         ]
 
         self.assertEqual(config, result["commands"], result["commands"])
+    
+
+    def test_nxos_replace_block_src(self):
+        src = load_fixture("nxos_config", "candidate.cfg")
+        args = dict(src=src, replace="block")
+        self.conn.get_diff = MagicMock(
+            return_value=self.cliconf_obj.get_diff(src, self.running_config),
+        )
+        set_module_args(args)
+
+        result = self.execute_module(changed=True)
+        config = [
+            "hostname switch01",
+            "interface Ethernet1",
+            "description test interface",
+            "no shutdown",
+            "ip routing",
+        ]
+
+        self.assertEqual(sorted(config), sorted(result["commands"]), result["commands"])
+    
+    def test_iosxr_replace_block_lines(self):
+        lines = ["ip address 1.2.3.4/5", "no shutdown"]
+        parents = ["interface Ethernet10"]
+        args = dict(lines=lines, parents=parents, replace="block")
+        self.conn.get_diff = MagicMock(
+            return_value=self.cliconf_obj.get_diff(
+                "\n".join(parents + lines),
+                self.running_config,
+                path=parents,
+            ),
+        )
+        set_module_args(args)
+
+        result = self.execute_module(changed=True)
+        config = [
+            "interface Ethernet10",
+            "ip address 1.2.3.4/5",
+            "no shutdown",
+        ]
+
+        self.assertEqual(config, result["commands"], result["commands"])
 
     def test_nxos_config_src_and_lines_fails(self):
         args = dict(src="foo", lines="foo")
@@ -198,11 +240,6 @@ class TestNxosConfigModule(TestNxosModule):
 
     def test_nxos_config_match_strict_requires_lines(self):
         args = dict(match="strict")
-        set_module_args(args)
-        result = self.execute_module(failed=True)
-
-    def test_nxos_config_replace_block_requires_lines(self):
-        args = dict(replace="block")
         set_module_args(args)
         result = self.execute_module(failed=True)
 
