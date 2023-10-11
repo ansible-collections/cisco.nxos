@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "config - Support src option with replace and block (https://github.com/ansible-collections/cisco.nxos/issues/89)."

@@ -201,7 +201,7 @@ class TestNxosConfigModule(TestNxosModule):
 
         self.assertEqual(sorted(config), sorted(result["commands"]), result["commands"])
     
-    def test_iosxr_replace_block_lines(self):
+    def test_nxos_replace_block_lines(self):
         lines = ["ip address 1.2.3.4/5", "no shutdown"]
         parents = ["interface Ethernet10"]
         args = dict(lines=lines, parents=parents, replace="block")
@@ -240,6 +240,11 @@ class TestNxosConfigModule(TestNxosModule):
 
     def test_nxos_config_match_strict_requires_lines(self):
         args = dict(match="strict")
+        set_module_args(args)
+        result = self.execute_module(failed=True)
+    
+    def test_nxos_config_replace_block_requires_lines_or_src(self):
+        args = dict(replace="block")
         set_module_args(args)
         result = self.execute_module(failed=True)
 
