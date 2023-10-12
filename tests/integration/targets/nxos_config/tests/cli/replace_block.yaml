@@ -18,7 +18,7 @@
       - result.changed == true
 
 - name: "Populate acl configuration with replace block and src options"
-  iosxr_config:
+  cisco.nxos.nxos_config:
     src: basic/acl_config.j2
     before: "no ip access-list test"
     replace: block
