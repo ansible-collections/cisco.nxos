@@ -1,0 +1,28 @@
+---
+- ansible.builtin.debug: msg="START cli/replace_block.yaml on connection={{ ansible_connection }}"
+     
+- name: "Populate nxos acls configuration with replace block and lines options"
+  cisco.nxos.nxos_config:
+    lines:
+      - 10 permit ip 192.0.2.1/32 any log
+      - 20 permit ip 192.0.2.2/32 any log
+      - 30 permit ip 192.0.2.3/32 any log
+      - 40 permit ip 192.0.2.4/32 any log
+      - 50 permit ip 192.0.2.5/32 any log
+    parents: "ip access-list test"
+    before: no ip access-list test
+    replace: block
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+
+- name: "Populate acl configuration with replace block and src options"
+  iosxr_config:
+    src: basic/acl_config.j2
+    before: "no ip access-list test"
+    replace: block
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
