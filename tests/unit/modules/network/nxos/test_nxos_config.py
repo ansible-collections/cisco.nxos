@@ -180,7 +180,6 @@ class TestNxosConfigModule(TestNxosModule):
         ]
 
         self.assertEqual(config, result["commands"], result["commands"])
-    
 
     def test_nxos_replace_block_src(self):
         src = load_fixture("nxos_config", "candidate.cfg")
@@ -200,7 +199,7 @@ class TestNxosConfigModule(TestNxosModule):
         ]
 
         self.assertEqual(sorted(config), sorted(result["commands"]), result["commands"])
-    
+
     def test_nxos_replace_block_lines(self):
         lines = ["ip address 1.2.3.4/5", "no shutdown"]
         parents = ["interface Ethernet10"]
@@ -242,7 +241,7 @@ class TestNxosConfigModule(TestNxosModule):
         args = dict(match="strict")
         set_module_args(args)
         result = self.execute_module(failed=True)
-    
+
     def test_nxos_config_replace_block_requires_lines_or_src(self):
         args = dict(replace="block")
         set_module_args(args)
