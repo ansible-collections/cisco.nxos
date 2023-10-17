@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "acls - Fix parsing error when ACE has a source port range (https://github.com/ansible-collections/cisco.nxos/issues/713)."

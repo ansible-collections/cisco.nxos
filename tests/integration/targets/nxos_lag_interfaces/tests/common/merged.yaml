@@ -35,9 +35,9 @@
           - name: port-channel10
             members:
               - member: "{{ test_int1 }}"
-
               - member: "{{ test_int2 }}"
-                mode: true
+                mode: on # noqa yaml[truthy]
+                force: true
         state: merged
 
     - ansible.builtin.assert:

@@ -2713,3 +2713,64 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
+
+    def test_nxos_bgp_nbr_af_rewrite_rt_asn(self):
+        # test merged for rewrite_rt_asn
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65536
+              neighbor 192.168.1.1
+              vrf site-1
+                neighbor 10.0.0.100
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    neighbors=[
+                        dict(
+                            neighbor_address="192.168.1.1",
+                            address_family=[
+                                dict(
+                                    afi="ipv4",
+                                    safi="mvpn",
+                                    rewrite_rt_asn=True,
+                                ),
+                            ],
+                        ),
+                    ],
+                    vrfs=[
+                        dict(
+                            vrf="site-1",
+                            neighbors=[
+                                dict(
+                                    neighbor_address="10.0.0.100",
+                                    address_family=[
+                                        dict(
+                                            afi="ipv4",
+                                            safi="mvpn",
+                                            rewrite_rt_asn=True,
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "neighbor 192.168.1.1",
+            "address-family ipv4 mvpn",
+            "rewrite-rt-asn",
+            "vrf site-1",
+            "neighbor 10.0.0.100",
+            "address-family ipv4 mvpn",
+            "rewrite-rt-asn",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))

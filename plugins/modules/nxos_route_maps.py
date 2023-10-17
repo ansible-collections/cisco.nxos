@@ -312,6 +312,23 @@ options:
               extcomm_list:
                 description: Set BGP extcommunity list (for deletion).
                 type: str
+              extcommunity:
+                description: Set BGP extcommunity attribute.
+                type: dict
+                suboptions:
+                  rt:
+                    description: Route-Target.
+                    type: dict
+                    suboptions:
+                      additive:
+                        description: Add to existing rt extcommunity.
+                        type: bool
+                      extcommunity_numbers:
+                        description:
+                          - Extcommunity number.
+                          - "Supported formats are ASN2:NN, ASN4:NN, IPV4:NN."
+                        type: list
+                        elements: str
               forwarding_address:
                 description: Set the forwarding address.
                 type: bool

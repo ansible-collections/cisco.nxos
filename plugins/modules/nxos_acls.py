@@ -507,46 +507,89 @@ EXAMPLES = """
 
 # Before state:
 # -------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 
-- name: Merge new ACLs configuration
+- name: Merge provided ACLs configuration with device configuration
   cisco.nxos.nxos_acls:
-    config:
-    - afi: ipv4
-      acls:
-      - name: ACL1v4
-        aces:
-        - grant: deny
-          destination:
-            address: 192.0.2.64
-            wildcard_bits: 0.0.0.255
-          source:
-            any: true
-            port_protocol:
-              lt: 55
-          protocol: tcp
-          protocol_options:
-            tcp:
-              ack: true
-              fin: true
-          sequence: 50
-
-    - afi: ipv6
-      acls:
-      - name: ACL1v6
-        aces:
-        - grant: permit
-          sequence: 10
-          source:
-            any: true
-          destination:
-            prefix: 2001:db8:12::/32
-          protocol: sctp
     state: merged
+    config:
+      - afi: ipv4
+        acls:
+          - name: ACL1v4
+            aces:
+              - grant: deny
+                destination:
+                  address: 192.0.2.64
+                  wildcard_bits: 0.0.0.255
+                source:
+                  any: true
+                  port_protocol:
+                    lt: 55
+                protocol: tcp
+                protocol_options:
+                  tcp:
+                    ack: true
+                    fin: true
+                sequence: 50
+
+      - afi: ipv6
+        acls:
+          - name: ACL1v6
+            aces:
+            - grant: permit
+              sequence: 10
+              source:
+                any: true
+              destination:
+                prefix: 2001:db8:12::/32
+              protocol: sctp
+
+# Task Output
+# -----------
+# before: []
+#
+# commands:
+# - ip access-list ACL1v4
+# - 50 deny tcp any lt 55 192.0.2.64 0.0.0.255 ack fin
+# - ipv6 access-list ACL1v6
+# - 10 permit sctp any 2001:db8:12::/32
+#
+# after:
+#  - acls:
+#    - aces:
+#      - destination:
+#          prefix: 2001:db8:12::/32
+#        grant: permit
+#        protocol: sctp
+#        sequence: 10
+#        source:
+#          any: true
+#      name: ACL1v6
+#    afi: ipv6
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.2.64
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#            fin: true
+#        sequence: 50
+#        source:
+#          any: true
+#          port_protocol:
+#            lt: '55'
+#      name: ACL1v4
+#    afi: ipv4
+
 
 # After state:
 # ------------
 #
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ip access-list ACL1v4
 #  50 deny tcp any lt 55 192.0.2.64 0.0.0.255 ack fin
 # ipv6 access-list ACL1v6
@@ -556,94 +599,269 @@ EXAMPLES = """
 
 # Before state:
 # ----------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ip access-list ACL1v4
 #   10 permit ip any any
 #   20 deny udp any any
 # ip access-list ACL2v4
 #   10 permit ahp 192.0.2.0 0.0.0.255 any
-# ip access-list ACL1v6
+# ipv6 access-list ACL1v6
 #   10 permit sctp any any
 #   20 remark IPv6 ACL
-# ip access-list ACL2v6
+# ipv6 access-list ACL2v6
 #  10 deny ipv6 any 2001:db8:3000::/36
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
 - name: Replace existing ACL configuration with provided configuration
   cisco.nxos.nxos_acls:
     config:
-    - afi: ipv4
-    - afi: ipv6
-      acls:
-      - name: ACL1v6
-        aces:
-        - sequence: 20
-          grant: permit
-          source:
-            any: true
-          destination:
-            any: true
-          protocol: pip
+      - afi: ipv4
+      - afi: ipv6
+        acls:
+          - name: ACL1v6
+            aces:
+              - sequence: 20
+                grant: permit
+                source:
+                  any: true
+                destination:
+                  any: true
+                protocol: pim
 
-        - remark: Replaced ACE
-
-      - name: ACL2v6
+              - remark: Replaced ACE
+          - name: ACL2v6
     state: replaced
+
+# Task Output
+# -----------
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: sctp
+#        sequence: 10
+#        source:
+#          any: true
+#      - remark: IPv6 ACL
+#        sequence: 20
+#      name: ACL1v6
+#    - aces:
+#      - destination:
+#          prefix: 2001:db8:3000::/36
+#        grant: deny
+#        protocol: ipv6
+#        sequence: 10
+#        source:
+#          any: true
+#      - destination:
+#          host: 2001:db8:2000:ab::2
+#        grant: permit
+#        protocol: tcp
+#        sequence: 20
+#        source:
+#          host: 2001:db8:2000:2::2
+#      name: ACL2v6
+#    afi: ipv6
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ip
+#        sequence: 10
+#        source:
+#          any: true
+#      - destination:
+#          any: true
+#        grant: deny
+#        protocol: udp
+#        sequence: 20
+#        source:
+#          any: true
+#      name: ACL1v4
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ahp
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#      name: ACL2v4
+#    afi: ipv4
+#
+# commands:
+#  - no ip access-list ACL1v4
+#  - no ip access-list ACL2v4
+#  - ipv6 access-list ACL1v6
+#  - no 10 permit sctp any any
+#  - no 20 remark IPv6 ACL
+#  - remark Replaced ACE
+#  - 20 permit pim any any
+#  - ipv6 access-list ACL2v6
+#  - no 10 deny ipv6 any 2001:db8:3000::/36
+#  - no 20 permit tcp host 2001:db8:2000:2::2 host 2001:db8:2000:ab::2
+#
+# after:
+#  - acls:
+#    - aces:
+#      - remark: Replaced ACE
+#        sequence: 10
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: pim
+#        sequence: 20
+#        source:
+#          any: true
+#      name: ACL1v6
+#    - name: ACL2v6
+#    afi: ipv6
 
 # After state:
 # ---------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ipv6 access-list ACL1v6
-#   20 permit pip any any
-#   30 remark Replaced ACE
+#   10 remark Replaced ACE
+#   20 permit pim any any
 # ipv6 access-list ACL2v6
 
 # Using overridden
 
 # Before state:
 # ----------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ip access-list ACL1v4
 #   10 permit ip any any
 #   20 deny udp any any
 # ip access-list ACL2v4
 #   10 permit ahp 192.0.2.0 0.0.0.255 any
-# ip access-list ACL1v6
+# ipv6 access-list ACL1v6
 #   10 permit sctp any any
 #   20 remark IPv6 ACL
-# ip access-list ACL2v6
+# ipv6 access-list ACL2v6
 #  10 deny ipv6 any 2001:db8:3000::/36
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
 - name: Override existing configuration with provided configuration
   cisco.nxos.nxos_acls:
     config:
-    - afi: ipv4
-      acls:
-      - name: NewACL
-        aces:
-        - grant: deny
-          source:
-            address: 192.0.2.0
-            wildcard_bits: 0.0.255.255
-          destination:
-            any: true
-          protocol: eigrp
-        - remark: Example for overridden state
+      - afi: ipv4
+        acls:
+          - name: NewACL
+            aces:
+              - grant: deny
+                source:
+                  address: 192.0.2.0
+                  wildcard_bits: 0.0.255.255
+                destination:
+                  any: true
+                protocol: eigrp
+              - remark: Example for overridden state
     state: overridden
+
+# Task Output
+# -----------
+#
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: sctp
+#        sequence: 10
+#        source:
+#          any: true
+#      - remark: IPv6 ACL
+#        sequence: 20
+#      name: ACL1v6
+#    - aces:
+#      - destination:
+#          prefix: 2001:db8:3000::/36
+#        grant: deny
+#        protocol: ipv6
+#        sequence: 10
+#        source:
+#          any: true
+#     - destination:
+#          host: 2001:db8:2000:ab::2
+#        grant: permit
+#        protocol: tcp
+#        sequence: 20
+#        source:
+#          host: 2001:db8:2000:2::2
+#      name: ACL2v6
+#    afi: ipv6
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ip
+#        sequence: 10
+#        source:
+#          any: true
+#      - destination:
+#          any: true
+#        grant: deny
+#        protocol: udp
+#        sequence: 20
+#        source:
+#          any: true
+#      name: ACL1v4
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ahp
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#      name: ACL2v4
+#    afi: ipv4
+#
+# commands:
+#  - no ipv6 access-list ACL1v6
+#  - no ipv6 access-list ACL2v6
+#  - no ip access-list ACL1v4
+#  - no ip access-list ACL2v4
+#  - ip access-list NewACL
+#  - deny eigrp 192.0.2.0 0.0.255.255 any
+#  - remark Example for overridden state
+#
+# after:
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: deny
+#        protocol: eigrp
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.255.255
+#      - remark: Example for overridden state
+#        sequence: 20
+#      name: NewACL
+#    afi: ipv4
 
 # After state:
 # ------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ip access-list NewACL
 #   10 deny eigrp 192.0.2.0 0.0.255.255 any
 #   20 remark Example for overridden state
 
-# Using deleted:
+# Using deleted - delete all
 #
 # Before state:
 # -------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ip access-list ACL1v4
 #   10 permit ip any any
 #   20 deny udp any any
@@ -658,17 +876,89 @@ EXAMPLES = """
 
 - name: Delete all ACLs
   cisco.nxos.nxos_acls:
-    config:
     state: deleted
+
+# Task Output
+# -----------
+#
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: sctp
+#        sequence: 10
+#        source:
+#          any: true
+#      - remark: IPv6 ACL
+#        sequence: 20
+#      name: ACL1v6
+#    - aces:
+#      - destination:
+#          prefix: 2001:db8:3000::/36
+#        grant: deny
+#        protocol: ipv6
+#        sequence: 10
+#        source:
+#          any: true
+#     - destination:
+#          host: 2001:db8:2000:ab::2
+#        grant: permit
+#        protocol: tcp
+#        sequence: 20
+#        source:
+#          host: 2001:db8:2000:2::2
+#      name: ACL2v6
+#    afi: ipv6
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ip
+#        sequence: 10
+#        source:
+#          any: true
+#      - destination:
+#          any: true
+#        grant: deny
+#        protocol: udp
+#        sequence: 20
+#        source:
+#          any: true
+#      name: ACL1v4
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ahp
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#      name: ACL2v4
+#    afi: ipv4
+#
+# commands:
+#  - no ip access-list ACL1v4
+#  - no ip access-list ACL2v4
+#  - no ipv6 access-list ACL1v6
+#  - no ipv6 access-list ACL2v6
+#
+# after: []
+
 
 # After state:
 # -----------
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 #
 
+# Using deleted - delete AFI
 
 # Before state:
 # -------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ip access-list ACL1v4
 #   10 permit ip any any
 #   20 deny udp any any
@@ -687,9 +977,106 @@ EXAMPLES = """
     - afi: ipv4
     state: deleted
 
+# Task Output
+# -----------
+#
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: sctp
+#        sequence: 10
+#        source:
+#          any: true
+#      - remark: IPv6 ACL
+#        sequence: 20
+#      name: ACL1v6
+#    - aces:
+#      - destination:
+#          prefix: 2001:db8:3000::/36
+#        grant: deny
+#        protocol: ipv6
+#        sequence: 10
+#        source:
+#          any: true
+#     - destination:
+#          host: 2001:db8:2000:ab::2
+#        grant: permit
+#        protocol: tcp
+#        sequence: 20
+#        source:
+#          host: 2001:db8:2000:2::2
+#      name: ACL2v6
+#    afi: ipv6
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ip
+#        sequence: 10
+#        source:
+#          any: true
+#      - destination:
+#          any: true
+#        grant: deny
+#        protocol: udp
+#        sequence: 20
+#        source:
+#          any: true
+#      name: ACL1v4
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ahp
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#      name: ACL2v4
+#    afi: ipv4
+#
+# commands:
+#  - no ip access-list ACL1v4
+#  - no ip access-list ACL2v4
+#
+# after:
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: sctp
+#        sequence: 10
+#        source:
+#          any: true
+#      - remark: IPv6 ACL
+#        sequence: 20
+#      name: ACL1v6
+#    - aces:
+#      - destination:
+#          prefix: 2001:db8:3000::/36
+#        grant: deny
+#        protocol: ipv6
+#        sequence: 10
+#        source:
+#          any: true
+#     - destination:
+#          host: 2001:db8:2000:ab::2
+#        grant: permit
+#        protocol: tcp
+#        sequence: 20
+#        source:
+#          host: 2001:db8:2000:2::2
+#      name: ACL2v6
+#    afi: ipv6
+
 # After state:
 # ------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ip access-list ACL1v6
 #   10 permit sctp any any
 #   20 remark IPv6 ACL
@@ -697,11 +1084,11 @@ EXAMPLES = """
 #  10 deny ipv6 any 2001:db8:3000::/36
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
-
+# Using deleted - delete ACLs
 
 # Before state:
 # -------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ip access-list ACL1v4
 #   10 permit ip any any
 #   20 deny udp any any
@@ -716,18 +1103,106 @@ EXAMPLES = """
 
 - name: Delete specific ACLs
   cisco.nxos.nxos_acls:
-    config:
-    - afi: ipv4
-      acls:
-      - name: ACL1v4
-      - name: ACL2v4
-    - afi: ipv6
-      acls:
-      - name: ACL1v6
     state: deleted
+    config:
+      - afi: ipv4
+        acls:
+          - name: ACL1v4
+          - name: ACL2v4
+      - afi: ipv6
+        acls:
+          - name: ACL1v6
+
+# Task Output
+# -----------
+#
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: sctp
+#        sequence: 10
+#        source:
+#          any: true
+#      - remark: IPv6 ACL
+#        sequence: 20
+#      name: ACL1v6
+#    - aces:
+#      - destination:
+#          prefix: 2001:db8:3000::/36
+#        grant: deny
+#        protocol: ipv6
+#        sequence: 10
+#        source:
+#          any: true
+#     - destination:
+#          host: 2001:db8:2000:ab::2
+#        grant: permit
+#        protocol: tcp
+#        sequence: 20
+#        source:
+#          host: 2001:db8:2000:2::2
+#      name: ACL2v6
+#    afi: ipv6
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ip
+#        sequence: 10
+#        source:
+#          any: true
+#      - destination:
+#          any: true
+#        grant: deny
+#        protocol: udp
+#        sequence: 20
+#        source:
+#          any: true
+#      name: ACL1v4
+#    - aces:
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: ahp
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#      name: ACL2v4
+#    afi: ipv4
+#
+# commands:
+#  - no ip access-list ACL1v4
+#  - no ip access-list ACL2v4
+#  - no ipv6 access-list ACL1v6
+#
+# after:
+#  - acls:
+#    - aces:
+#      - destination:
+#          prefix: 2001:db8:3000::/36
+#        grant: deny
+#        protocol: ipv6
+#        sequence: 10
+#        source:
+#          any: true
+#      - destination:
+#          host: 2001:db8:2000:ab::2
+#        grant: permit
+#        protocol: tcp
+#        sequence: 20
+#        source:
+#          host: 2001:db8:2000:2::2
+#      name: ACL2v6
+#    afi: ipv6
 
 # After state:
 # ------------
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ipv6 access-list ACL2v6
 #  10 deny ipv6 any 2001:db8:3000::/36
 #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
@@ -743,7 +1218,9 @@ EXAMPLES = """
         10 permit sctp any any
     state: parsed
 
-# returns:
+# Task Output
+# ------------
+#
 # parsed:
 # - afi: ipv4
 #   acls:
@@ -781,7 +1258,7 @@ EXAMPLES = """
 
 # Before state:
 # ------------
-#
+# nxos-9k# show running-config | section '^ip(v6)* access-list'
 # ip access-list ACL1v4
 #  50 deny tcp any lt 55 192.0.2.64 0.0.0.255 ack fin
 # ipv6 access-list ACL1v6
@@ -791,7 +1268,9 @@ EXAMPLES = """
   cisco.nxos.nxos_acls:
     state: gathered
 
-# returns:
+# Task Output
+# -----------
+#
 # gathered:
 # - afi: ipv4
 #   acls:
@@ -862,7 +1341,9 @@ EXAMPLES = """
           protocol: sctp
     state: rendered
 
-# returns:
+# Task Output
+# -----------
+#
 # rendered:
 #  ip access-list ACL1v4
 #   50 deny tcp any lt 55 192.0.2.64 0.0.0.255 ack fin
@@ -888,7 +1369,32 @@ commands:
   description: The set of commands pushed to the remote device.
   returned: always
   type: list
-  sample: ['ip access-list ACL1v4', '10 permit ip any any precedence critical log', '20 deny tcp any lt smtp host 192.0.2.64 ack fin']
+  sample:
+    - ip access-list ACL1v4
+    - 10 permit ip any any precedence critical log
+    - 20 deny tcp any lt smtp host 192.0.2.64 ack fin
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - ip access-list ACL1v4
+    - 10 permit ip any any precedence critical log
+    - 20 deny tcp any lt smtp host 192.0.2.64 ack fin
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule

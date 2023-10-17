@@ -74,6 +74,17 @@ class Bgp_templatesFacts(object):
                     if "address_family" in x:
                         x["address_family"] = list(x["address_family"].values())
 
+        for nbr in objs.get("neighbor", []):
+            for af in nbr.get("address_family", []):
+                std = af.pop("send_community_std", False)
+                ext = af.pop("send_community_ext", False)
+                if std and ext:
+                    af["send_community"] = "both"
+                elif std:
+                    af["send_community"] = "standard"
+                elif ext:
+                    af["send_community"] = "extended"
+
         ansible_facts["ansible_network_resources"].pop("bgp_templates", None)
 
         params = utils.remove_empties(

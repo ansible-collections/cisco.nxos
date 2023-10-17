@@ -1054,6 +1054,48 @@ class Bgp_templatesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "send_community_standard",
+            "getval": re.compile(
+                r"""
+                (?P<send_community_std>send-community)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "send-community",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "send_community_std": "{{ not not send_community_std }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "send_community_extended",
+            "getval": re.compile(
+                r"""
+                (?P<send_community_ext>send-community\sextended)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "send-community extended",
+            "result": {
+                "neighbor": {
+                    "{{ name }}": {
+                        "address_family": {
+                            '{{ afi + "_" + safi|d() }}': {
+                                "send_community_ext": "{{ not not send_community_ext }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
             "name": "soft_reconfiguration_inbound",
             "getval": re.compile(
                 r"""

@@ -357,6 +357,9 @@ options:
           remote_as:
             description: Specify Autonomous System Number of the neighbor.
             type: str
+          remote_as_route_map:
+            description: Route-map to match prefix peer AS number.
+            type: str
           remove_private_as:
             description: Remove private AS number from outbound updates.
             type: dict

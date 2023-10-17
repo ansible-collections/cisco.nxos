@@ -46,7 +46,7 @@ class AclsFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_device_data(self, connection):
-        data = connection.get("show running-config | section 'ip(v6)* access-list'")
+        data = connection.get("show running-config | section '^ip(v6)* access-list'")
         if data == "{}":
             return ""
         return data
@@ -125,7 +125,7 @@ class AclsFacts(object):
                     ace = re.sub(port_pro.group(1), "", ace, 1)
                     ace = re.sub(port_pro.group(2), "", ace, 1)
                 else:
-                    limit = re.search(r"range\s(?P<rstart>\w+)\s(?P<rend>\w+)", ace)
+                    limit = re.search(r"range\s(?P<rstart>\S+)\s(?P<rend>\S+)", ace)
                     if limit:
                         rstart = limit.groupdict()["rstart"]
                         rend = limit.groupdict()["rend"]

@@ -140,6 +140,13 @@ class TestNxosBgpTemplatesModule(TestNxosModule):
                                     set=True,
                                 ),
                             ),
+                            address_family=[
+                                dict(
+                                    afi="l2vpn",
+                                    safi="evpn",
+                                    send_community="both",
+                                ),
+                            ],
                         ),
                     ],
                 ),
@@ -179,6 +186,9 @@ class TestNxosBgpTemplatesModule(TestNxosModule):
             "update-source Ethernet1/1",
             "template peer tmplt_3",
             "bfd multihop",
+            "address-family l2vpn evpn",
+            "send-community",
+            "send-community extended",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
@@ -799,3 +809,57 @@ class TestNxosBgpTemplatesModule(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
+
+    def test_nxos_bgp_templates_send_comm(self):
+        self.get_config.return_value = dedent(
+            """\
+            router bgp 65536
+            template peer tmplt_1
+              address-family ipv4 unicast
+                send-community
+                send-community extended
+            template peer tmplt_2
+              address-family l2vpn evpn
+                send-community extended
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    neighbor=[
+                        dict(
+                            name="tmplt_1",
+                            address_family=[
+                                dict(
+                                    afi="ipv4",
+                                    safi="unicast",
+                                    send_community="both",
+                                ),
+                            ],
+                        ),
+                        dict(
+                            name="tmplt_2",
+                            address_family=[
+                                dict(
+                                    afi="l2vpn",
+                                    safi="evpn",
+                                    send_community="standard",
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "template peer tmplt_2",
+            "address-family l2vpn evpn",
+            "no send-community extended",
+            "send-community",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))

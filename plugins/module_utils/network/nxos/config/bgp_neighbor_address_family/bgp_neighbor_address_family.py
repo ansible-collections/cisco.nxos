@@ -65,6 +65,7 @@ class Bgp_neighbor_address_family(ResourceModule):
             "prefix_list.inbound",
             "prefix_list.outbound",
             "rewrite_evpn_rt_asn",
+            "rewrite_rt_asn",
             "route_map.inbound",
             "route_map.outbound",
             "route_reflector_client",
