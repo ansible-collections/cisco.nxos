@@ -33,4 +33,4 @@
 - ansible.builtin.assert:
     that:
       - result2.changed == true
-      - result1.updates == result2.updates
+      - result1.commands == result2.commands
