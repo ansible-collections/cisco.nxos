@@ -15,6 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
+from ansible.module_utils._text import to_text
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
@@ -71,7 +72,7 @@ class Bgp_globalFacts(object):
 
         # transform vrfs into a list
         if vrfs:
-            obj["vrfs"] = sorted(list(obj["vrfs"].values()), key=lambda k, sk="vrf": k[sk])
+            obj["vrfs"] = sorted(list(obj["vrfs"].values()), key=lambda k, to_text(sk="vrf": k[sk]))
             for vrf in obj["vrfs"]:
                 self._post_parse(vrf)
 
