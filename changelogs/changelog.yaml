@@ -1002,3 +1002,15 @@ releases:
         name: nxos_fc_interfaces
         namespace: ""
     release_date: "2023-09-14"
+  5.2.1:
+    changes:
+      bugfixes:
+        - nxos_acls - fix parsing of ACE with named source/dest port range (https://github.com/ansible-collections/cisco.nxos/issues/763).
+        - vtp_version - allow VTP version 3 to be configured (https://github.com/ansible-collections/cisco.nxos/issues/704).
+      doc_changes:
+        - nxos_acls - update examples and use YAML output in them for better readibility.
+    fragments:
+      - acls.yaml
+      - fix_763.yaml
+      - vtp_version.yaml
+    release_date: "2023-10-03"

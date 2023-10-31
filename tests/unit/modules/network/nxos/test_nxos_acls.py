@@ -873,3 +873,90 @@ class TestNxosAclsModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
+
+    def test_nxos_acls_ranges(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+              ip access-list acl1
+                10 permit tcp any any range ftp-data ftp
+                20 permit tcp any range ftp-data ftp any range telnet time
+                30 permit tcp any range ftp-data ftp any
+            """,
+        )
+        set_module_args(
+            dict(
+                state="gathered",
+            ),
+        )
+
+        gathered = [
+            {
+                "acls": [
+                    {
+                        "name": "acl1",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "source": {
+                                    "any": True,
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "port_protocol": {
+                                        "range": {
+                                            "start": "ftp-data",
+                                            "end": "ftp",
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "source": {
+                                    "any": True,
+                                    "port_protocol": {
+                                        "range": {
+                                            "start": "ftp-data",
+                                            "end": "ftp",
+                                        },
+                                    },
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "port_protocol": {
+                                        "range": {
+                                            "start": "telnet",
+                                            "end": "time",
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                "sequence": 30,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "source": {
+                                    "any": True,
+                                    "port_protocol": {
+                                        "range": {
+                                            "start": "ftp-data",
+                                            "end": "ftp",
+                                        },
+                                    },
+                                },
+                                "destination": {
+                                    "any": True,
+                                },
+                            },
+                        ],
+                    },
+                ],
+                "afi": "ipv4",
+            },
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered)
