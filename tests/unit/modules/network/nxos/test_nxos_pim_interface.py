@@ -63,7 +63,7 @@ class TestNxosIPInterfaceModule(TestNxosModule):
             output = list()
 
             for command in commands:
-                if type(command) is dict:
+                if isinstance(command, dict):
                     command = command["command"]
                 filename = str(command).split(" | ", 1)[0].replace(" ", "_").replace("/", "_")
                 output.append(load_fixture(module_name, filename))
