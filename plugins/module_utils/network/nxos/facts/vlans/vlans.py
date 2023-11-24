@@ -166,7 +166,7 @@ class VlansFacts(object):
             #   "vlanshowinfo-vlanmode": "ce-vlan"}}
             mtuinfo = structured["TABLE_mtuinfo"]["ROW_mtuinfo"]
 
-        if type(vlanbrief) is not list:
+        if isinstance(vlanbrief, list):
             # vlanbrief is not a list when only one vlan is found.
             vlanbrief = [vlanbrief]
             mtuinfo = [mtuinfo]
