@@ -1022,4 +1022,4 @@ releases:
     fragments:
       - fix_config_module.yaml
       - trivial.yaml
-    release_date: '2023-11-29'
+    release_date: "2023-11-29"
