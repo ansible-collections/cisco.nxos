@@ -290,7 +290,7 @@ EXAMPLES = """
           facility: local6
           use_vrf: default
       origin_id:
-        hostname: True
+        hostname: true
 
 # Task output
 # -------------
@@ -576,7 +576,7 @@ EXAMPLES = """
           facility: local6
           use_vrf: default
       origin_id:
-        hostname: True
+        hostname: true
 
 # Task Output (redacted)
 # -----------------------
@@ -724,7 +724,7 @@ def main():
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],
-        supports_check_mode=True,
+        supports_check_mode=true,
     )
 
     result = Logging_global(module).execute_module()

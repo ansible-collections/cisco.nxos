@@ -87,32 +87,31 @@ EXAMPLES = """
 - name: run multiple commands on remote nodes
   cisco.nxos.nxos_command:
     commands:
-    - show version
-    - show interfaces
+      - show version
+      - show interfaces
 
 - name: run multiple commands and evaluate the output
   cisco.nxos.nxos_command:
     commands:
-    - show version
-    - show interfaces
+      - show version
+      - show interfaces
     wait_for:
-    - result[0] contains Cisco
-    - result[1] contains loopback0
+      - result[0] contains Cisco
+      - result[1] contains loopback0
 
 - name: run commands and specify the output format
   cisco.nxos.nxos_command:
     commands:
-    - command: show version
-      output: json
+      - command: show version
+        output: json
 
 - name: run commands that require answering a prompt
   cisco.nxos.nxos_command:
     commands:
-    - configure terminal
-    - command: no feature npv
-      prompt: Do you want to continue
-      answer: y
-
+      - configure terminal
+      - command: no feature npv
+        prompt: Do you want to continue
+        answer: y
 """
 
 RETURN = """
@@ -145,7 +144,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     transform_commands,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    run_commands,
+)
 
 
 def parse_commands(module, warnings):

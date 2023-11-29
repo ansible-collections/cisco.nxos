@@ -51,7 +51,7 @@ options:
           neighbor_address:
             description: IP/IPv6 address of the neighbor.
             type: str
-            required: True
+            required: true
           address_family:
             description: BGP Neighbor Address Family related configurations.
             type: list
@@ -61,7 +61,7 @@ options:
                 description: Address Family indicator.
                 type: str
                 choices: ["ipv4", "ipv6", "link-state", "vpnv4", "vpnv6", "l2vpn"]
-                required: True
+                required: true
               safi:
                 description: Sub Address Family indicator.
                 type: str
@@ -73,7 +73,7 @@ options:
                   route_map:
                     description: Route-map name.
                     type: str
-                    required: True
+                    required: true
                   exist_map:
                     description: Condition route-map to advertise only when prefix in condition exists.
                     type: str
@@ -307,9 +307,9 @@ EXAMPLES = """
               address_family:
                 - afi: ipv4
                   safi: unicast
-                  suppress_inactive: True
+                  suppress_inactive: true
                   next_hop_self:
-                    set: True
+                    set: true
             - neighbor_address: 203.0.113.2
               address_family:
                 - afi: ipv6
@@ -317,7 +317,7 @@ EXAMPLES = """
                 - afi: ipv4
                   safi: multicast
                   send_community:
-                    set: True
+                    set: true
 
 # Task output:
 # ------------
@@ -383,7 +383,7 @@ EXAMPLES = """
 #              - afi: ipv4
 #                safi: multicast
 #                send_community:
-#                  set: True
+#                  set: true
 #              - afi: ipv6
 #                safi: unicast
 
@@ -472,7 +472,7 @@ EXAMPLES = """
                 - afi: ipv4
                   safi: multicast
                   send_community:
-                    set: True
+                    set: true
     state: replaced
 
 # Task output:
@@ -515,7 +515,7 @@ EXAMPLES = """
 #              - afi: ipv4
 #                safi: multicast
 #                send_community:
-#                  set: True
+#                  set: true
 #              - afi: ipv6
 #                safi: unicast
 #
@@ -562,7 +562,7 @@ EXAMPLES = """
 #              - afi: ipv4
 #                safi: multicast
 #                send_community:
-#                  set: True
+#                  set: true
 #              - afi: ipv6
 #                safi: unicast
 
@@ -629,9 +629,9 @@ EXAMPLES = """
               address_family:
                 - afi: ipv4
                   safi: unicast
-                  suppress_inactive: True
+                  suppress_inactive: true
                   next_hop_self:
-                    set: True
+                    set: true
     state: overridden
 
 # Task output:
@@ -674,7 +674,7 @@ EXAMPLES = """
 #              - afi: ipv4
 #                safi: multicast
 #                send_community:
-#                  set: True
+#                  set: true
 #              - afi: ipv6
 #                safi: unicast
 #
@@ -708,9 +708,9 @@ EXAMPLES = """
 #            address_family:
 #              - afi: ipv4
 #                safi: unicast
-#                suppress_inactive: True
+#                suppress_inactive: true
 #                next_hop_self:
-#                  set: True
+#                  set: true
 
 # After state:
 # ------------
@@ -809,7 +809,7 @@ EXAMPLES = """
 #              - afi: ipv4
 #                safi: multicast
 #                send_community:
-#                  set: True
+#                  set: true
 #              - afi: ipv6
 #                safi: unicast
 #
@@ -850,7 +850,7 @@ EXAMPLES = """
 #              - afi: ipv4
 #                safi: multicast
 #                send_community:
-#                  set: True
+#                  set: true
 #
 # After state:
 # ------------
@@ -942,7 +942,7 @@ EXAMPLES = """
 #              - afi: ipv4
 #                safi: multicast
 #                send_community:
-#                  set: True
+#                  set: true
 #              - afi: ipv6
 #                safi: unicast
 #
@@ -1008,9 +1008,9 @@ EXAMPLES = """
               address_family:
                 - afi: ipv4
                   safi: unicast
-                  suppress_inactive: True
+                  suppress_inactive: true
                   next_hop_self:
-                    set: True
+                    set: true
             - neighbor_address: 203.0.113.2
               address_family:
                 - afi: ipv6
@@ -1018,7 +1018,7 @@ EXAMPLES = """
                 - afi: ipv4
                   safi: multicast
                   send_community:
-                    set: True
+                    set: true
     state: rendered
 
 # Task output:
@@ -1116,7 +1116,7 @@ EXAMPLES = """
 #              - afi: ipv4
 #                safi: multicast
 #                send_community:
-#                  set: True
+#                  set: true
 #              - afi: ipv6
 #                safi: unicast
 """
@@ -1193,7 +1193,7 @@ def main():
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],
-        supports_check_mode=True,
+        supports_check_mode=true,
     )
 
     result = Bgp_neighbor_address_family(module).execute_module()

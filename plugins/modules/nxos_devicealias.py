@@ -70,23 +70,21 @@ EXAMPLES = """
 - name: Test that device alias module works
   cisco.nxos.nxos_devicealias:
     da:
-    - name: test1_add
-      pwwn: 56:2:22:11:22:88:11:67
-    - name: test2_add
-      pwwn: 65:22:22:11:22:22:11:d
-    - name: dev1
-      remove: true
-    - name: dev2
-      remove: true
+      - name: test1_add
+        pwwn: 56:2:22:11:22:88:11:67
+      - name: test2_add
+        pwwn: 65:22:22:11:22:22:11:d
+      - name: dev1
+        remove: true
+      - name: dev2
+        remove: true
     distribute: true
     mode: enhanced
     rename:
-    - new_name: bcd
-      old_name: abc
-    - new_name: bcd1
-      old_name: abc1
-
-
+      - new_name: bcd
+        old_name: abc
+      - new_name: bcd1
+        old_name: abc1
 """
 
 RETURN = """
@@ -179,11 +177,15 @@ class showDeviceAliasDatabase(object):
         return name in self.da_dict.keys()
 
     def isPwwnInDaDatabase(self, pwwn):
-        newpwwn = ":".join(["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")])
+        newpwwn = ":".join(
+            ["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")]
+        )
         return newpwwn in self.da_dict.values()
 
     def isNamePwwnPresentInDatabase(self, name, pwwn):
-        newpwwn = ":".join(["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")])
+        newpwwn = ":".join(
+            ["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")]
+        )
         if name in self.da_dict.keys():
             if newpwwn == self.da_dict[name]:
                 return True
@@ -196,7 +198,9 @@ class showDeviceAliasDatabase(object):
             return None
 
     def getNameByPwwn(self, pwwn):
-        newpwwn = ":".join(["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")])
+        newpwwn = ":".join(
+            ["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")]
+        )
         for n, p in self.da_dict.items():
             if p == newpwwn:
                 return n
@@ -331,7 +335,9 @@ def main():
     d = shDAStausObj.getDistribute()
     m = shDAStausObj.getMode()
     if shDAStausObj.isLocked():
-        module.fail_json(msg="device-alias has acquired lock on the switch. Hence cannot procced.")
+        module.fail_json(
+            msg="device-alias has acquired lock on the switch. Hence cannot procced."
+        )
 
     # Step 1: Process distribute
     commands = []
@@ -342,7 +348,9 @@ def main():
                 # but switch distribute is disabled(false), so set it to
                 # true(enabled)
                 commands.append("device-alias distribute")
-                messages.append("device-alias distribute changed from disabled to enabled")
+                messages.append(
+                    "device-alias distribute changed from disabled to enabled"
+                )
             else:
                 messages.append(
                     "device-alias distribute remains unchanged. current distribution mode is enabled",
@@ -353,7 +361,9 @@ def main():
                 # but switch distribute is enabled(true), so set it to
                 # false(disabled)
                 commands.append("no device-alias distribute")
-                messages.append("device-alias distribute changed from enabled to disabled")
+                messages.append(
+                    "device-alias distribute changed from enabled to disabled"
+                )
             else:
                 messages.append(
                     "device-alias distribute remains unchanged. current distribution mode is disabled",
@@ -379,7 +389,9 @@ def main():
                 commands.append("no device-alias mode enhanced")
                 messages.append("device-alias mode changed from enhanced to basic")
             else:
-                messages.append("device-alias mode remains unchanged. current mode is basic")
+                messages.append(
+                    "device-alias mode remains unchanged. current mode is basic"
+                )
 
         else:
             # playbook has mode as enhanced
@@ -388,7 +400,9 @@ def main():
                 commands.append("device-alias mode enhanced")
                 messages.append("device-alias mode changed from basic to enhanced")
             else:
-                messages.append("device-alias mode remains unchanged. current mode is enhanced")
+                messages.append(
+                    "device-alias mode remains unchanged. current mode is enhanced"
+                )
 
     if commands:
         if distribute:
@@ -468,7 +482,9 @@ def main():
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
-                    commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                    commands = (
+                        ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                    )
 
         cmds = flatten_list(commands)
         if cmds:
@@ -481,11 +497,13 @@ def main():
                 load_config(module, cmds)
                 if len(da_remove_list) != 0:
                     messages.append(
-                        "the required device-alias were removed. " + ",".join(da_remove_list),
+                        "the required device-alias were removed. "
+                        + ",".join(da_remove_list),
                     )
                 if len(da_add_list) != 0:
                     messages.append(
-                        "the required device-alias were added. " + ",".join(da_add_list),
+                        "the required device-alias were added. "
+                        + ",".join(da_add_list),
                     )
 
     # Step 5: Process rename
@@ -521,7 +539,9 @@ def main():
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
-                    commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                    commands = (
+                        ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
+                    )
         cmds = flatten_list(commands)
         if cmds:
             commands_to_execute = commands_to_execute + cmds

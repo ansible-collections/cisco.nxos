@@ -225,41 +225,41 @@ EXAMPLES = """
       source_interface: Ethernet1/1
       vrf: management
       destination_groups:
-      - id: 2
-        destination:
-          ip: 192.168.0.2
-          port: 50001
-          protocol: gRPC
-          encoding: GPB
-      - id: 55
-        destination:
-          ip: 192.168.0.55
-          port: 60001
-          protocol: gRPC
-          encoding: GPB
+        - id: 2
+          destination:
+            ip: 192.168.0.2
+            port: 50001
+            protocol: gRPC
+            encoding: GPB
+        - id: 55
+          destination:
+            ip: 192.168.0.55
+            port: 60001
+            protocol: gRPC
+            encoding: GPB
       sensor_groups:
-      - id: 1
-        data_source: NX-API
-        path:
-          name: '"show lldp neighbors detail"'
-          depth: 0
-      - id: 55
-        data_source: DME
-        path:
-          name: sys/ch
-          depth: unbounded
-          filter_condition: ne(eqptFt.operSt,"ok")
+        - id: 1
+          data_source: NX-API
+          path:
+            name: '"show lldp neighbors detail"'
+            depth: 0
+        - id: 55
+          data_source: DME
+          path:
+            name: sys/ch
+            depth: unbounded
+            filter_condition: ne(eqptFt.operSt,"ok")
       subscriptions:
-      - id: 5
-        destination_group: 55
-        sensor_group:
-          id: 1
-          sample_interval: 1000
-      - id: 6
-        destination_group: 2
-        sensor_group:
-          id: 55
-          sample_interval: 2000
+        - id: 5
+          destination_group: 55
+          sensor_group:
+            id: 1
+            sample_interval: 1000
+        - id: 6
+          destination_group: 2
+          sensor_group:
+            id: 55
+            sample_interval: 2000
     state: merged
 
 
@@ -277,18 +277,16 @@ EXAMPLES = """
       source_interface: Ethernet1/1
       vrf: management
       destination_groups:
-      - id: 2
-        destination:
-          ip: 192.168.0.2
-          port: 50001
-          protocol: gRPC
-          encoding: GPB
+        - id: 2
+          destination:
+            ip: 192.168.0.2
+            port: 50001
+            protocol: gRPC
+            encoding: GPB
       subscriptions:
-      - id: 5
-        destination_group: 55
+        - id: 5
+          destination_group: 55
     state: replaced
-
-
 """
 RETURN = """
 before:

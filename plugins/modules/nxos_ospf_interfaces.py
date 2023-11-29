@@ -41,7 +41,7 @@ options:
         description:
         - Name/Identifier of the interface.
         type: str
-        required: True
+        required: true
       address_family:
         description:
         - OSPF settings on the interfaces in address-family context.
@@ -53,7 +53,7 @@ options:
             - Address Family Identifier (AFI) for OSPF settings on the interfaces.
             type: str
             choices: ['ipv4', 'ipv6']
-            required: True
+            required: true
           processes:
             description:
             - Interfaces configuration for an OSPF process.
@@ -64,7 +64,7 @@ options:
                 description:
                 - OSPF process tag.
                 type: str
-                required: True
+                required: true
               area:
                 description:
                 - Area associated with interface.
@@ -74,7 +74,7 @@ options:
                     description:
                     - Area ID in IP address format.
                     type: str
-                    required: True
+                    required: true
                   secondaries:
                     description:
                     - Do not include secondary IPv4/IPv6 addresses.
@@ -129,7 +129,7 @@ options:
                 - Valid values are Cisco type 7 ENCRYPTED password, 3DES ENCRYPTED password
                   and UNENCRYPTED (cleartext) password based on the value of encryption key.
                 type: str
-                required: True
+                required: true
           message_digest_key:
             description:
             - Message digest authentication password (key) settings.
@@ -139,7 +139,7 @@ options:
                 description:
                 - Key ID.
                 type: int
-                required: True
+                required: true
               encryption:
                 description:
                 - 0 Specifies an UNENCRYPTED ospf password (key) will follow.
@@ -152,7 +152,7 @@ options:
                 - Valid values are Cisco type 7 ENCRYPTED password, 3DES ENCRYPTED password
                   and UNENCRYPTED (cleartext) password based on the value of encryption key.
                 type: str
-                required: True
+                required: true
           cost:
             description:
             - Cost associated with interface.
@@ -236,46 +236,46 @@ EXAMPLES = """
     config:
       - name: Ethernet1/1
         address_family:
-        - afi: ipv4
-          processes:
-          - process_id: "100"
-            area:
-              area_id: 1.1.1.1
-              secondaries: False
-          multi_areas:
-          - 11.11.11.11
-        - afi: ipv6
-          processes:
-          - process_id: "200"
-            area:
-              area_id: 2.2.2.2
+          - afi: ipv4
+            processes:
+              - process_id: '100'
+                area:
+                  area_id: 1.1.1.1
+                  secondaries: false
             multi_areas:
-            - 21.0.0.0
-          - process_id: "300"
+              - 11.11.11.11
+          - afi: ipv6
+            processes:
+              - process_id: '200'
+                area:
+                  area_id: 2.2.2.2
+                multi_areas:
+                  - 21.0.0.0
+              - process_id: '300'
+                multi_areas:
+                  - 50.50.50.50
             multi_areas:
-            - 50.50.50.50
-          multi_areas:
-          - 16.10.10.10
+              - 16.10.10.10
       - name: Ethernet1/2
         address_family:
-        - afi: ipv4
-          authentication:
-            enable: True
-            key_chain: test-1
-          message_digest_key:
-            key_id: 10
-            encryption: 3
-            key: abc01d272be25d29
-          cost: 100
-        - afi: ipv6
-          network: broadcast
-          shutdown: True
+          - afi: ipv4
+            authentication:
+              enable: true
+              key_chain: test-1
+            message_digest_key:
+              key_id: 10
+              encryption: 3
+              key: abc01d272be25d29
+            cost: 100
+          - afi: ipv6
+            network: broadcast
+            shutdown: true
       - name: Ethernet1/3
         address_family:
-        - afi: ipv4
-          authentication_key:
-            encryption: 7
-            key: 12090404011C03162E
+          - afi: ipv4
+            authentication_key:
+              encryption: 7
+              key: 12090404011C03162E
     state: merged
 
 # Task output:
@@ -399,17 +399,17 @@ EXAMPLES = """
 - name: Replace OSPF configurations of listed interfaces with provided configurations
   cisco.nxos.nxos_ospf_interfaces:
     config:
-    - name: Ethernet1/1
-      address_family:
-      - afi: ipv4
-        processes:
-        - process_id: "100"
-          area:
-            area_id: 1.1.1.1
-            secondaries: False
-        multi_areas:
-        - 11.11.11.12
-    - name: Ethernet1/3
+      - name: Ethernet1/1
+        address_family:
+          - afi: ipv4
+            processes:
+              - process_id: "100"
+                area:
+                  area_id: 1.1.1.1
+                  secondaries: false
+            multi_areas:
+              - 11.11.11.12
+      - name: Ethernet1/3
     state: replaced
 
 # Task output:
@@ -543,16 +543,16 @@ EXAMPLES = """
 - name: Override all OSPF interfaces configuration with provided configuration
   cisco.nxos.nxos_ospf_interfaces:
     config:
-    - name: Ethernet1/1
-      address_family:
-      - afi: ipv4
-        processes:
-        - process_id: "100"
-          area:
-            area_id: 1.1.1.1
-            secondaries: False
-        multi_areas:
-        - 11.11.11.12
+      - name: Ethernet1/1
+        address_family:
+          - afi: ipv4
+            processes:
+              - process_id: "100"
+                area:
+                  area_id: 1.1.1.1
+                  secondaries: false
+            multi_areas:
+              - 11.11.11.12
     state: overridden
 
 # Task output:
@@ -861,52 +861,55 @@ EXAMPLES = """
 
 # Using rendered
 
-- name: Render platform specific configuration lines with state rendered (without connecting to the device)
+- name: >-
+    Render platform specific configuration lines with state rendered (without
+    connecting to the device)
   cisco.nxos.nxos_ospf_interfaces:
     config:
       - name: Ethernet1/1
         address_family:
-        - afi: ipv4
-          processes:
-          - process_id: "100"
-            area:
-              area_id: 1.1.1.1
-              secondaries: False
-          multi_areas:
-          - 11.11.11.11
-        - afi: ipv6
-          processes:
-          - process_id: "200"
-            area:
-              area_id: 2.2.2.2
+          - afi: ipv4
+            processes:
+              - process_id: '100'
+                area:
+                  area_id: 1.1.1.1
+                  secondaries: false
             multi_areas:
-            - 21.0.0.0
-          - process_id: "300"
+              - 11.11.11.11
+          - afi: ipv6
+            processes:
+              - process_id: '200'
+                area:
+                  area_id: 2.2.2.2
+                multi_areas:
+                  - 21.0.0.0
+              - process_id: '300'
+                multi_areas:
+                  - 50.50.50.50
             multi_areas:
-            - 50.50.50.50
-          multi_areas:
-          - 16.10.10.10
+              - 16.10.10.10
       - name: Ethernet1/2
         address_family:
-        - afi: ipv4
-          authentication:
-            enable: True
-            key_chain: test-1
-          message_digest_key:
-            key_id: 10
-            encryption: 3
-            key: abc01d272be25d29
-          cost: 100
-        - afi: ipv6
-          network: broadcast
-          shutdown: True
+          - afi: ipv4
+            authentication:
+              enable: true
+              key_chain: test-1
+            message_digest_key:
+              key_id: 10
+              encryption: 3
+              key: abc01d272be25d29
+            cost: 100
+          - afi: ipv6
+            network: broadcast
+            shutdown: true
       - name: Ethernet1/3
         address_family:
-        - afi: ipv4
-          authentication_key:
-            encryption: 7
-            key: 12090404011C03162E
+          - afi: ipv4
+            authentication_key:
+              encryption: 7
+              key: 12090404011C03162E
     state: rendered
+
 
 # Task Output:
 # ------------
@@ -1129,7 +1132,7 @@ def main():
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],
-        supports_check_mode=True,
+        supports_check_mode=true,
     )
 
     result = Ospf_interfaces(module).execute_module()

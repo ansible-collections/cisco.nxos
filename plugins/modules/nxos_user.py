@@ -170,8 +170,8 @@ EXAMPLES = """
 - name: set multiple users role
   cisco.nxos.nxos_user:
     aggregate:
-    - name: netop
-    - name: netend
+      - name: netop
+      - name: netend
     role: network-operator
   state: present
 """
