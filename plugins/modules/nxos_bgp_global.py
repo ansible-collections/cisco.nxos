@@ -1710,7 +1710,7 @@ def main():
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],
-        supports_check_mode=true,
+        supports_check_mode=True,
     )
 
     result = Bgp_global(module).execute_module()

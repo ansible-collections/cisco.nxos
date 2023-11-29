@@ -1132,7 +1132,7 @@ def main():
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],
-        supports_check_mode=true,
+        supports_check_mode=True,
     )
 
     result = Ospf_interfaces(module).execute_module()
