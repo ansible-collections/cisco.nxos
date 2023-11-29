@@ -4630,16 +4630,16 @@ Examples
           router_id: 192.168.1.1
           bestpath:
             as_path:
-              multipath_relax: True
-            compare_neighborid: True
-            cost_community_ignore: True
+              multipath_relax: true
+            compare_neighborid: true
+            cost_community_ignore: true
           confederation:
             identifier: 42
             peers:
               - 65020
               - 65030
               - 65040
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           maxas_limit: 20
           neighbors:
             - neighbor_address: 192.168.1.100
@@ -4649,19 +4649,19 @@ Examples
               remote_as: 65563
               description: NBR-1
               low_memory:
-                exempt: True
+                exempt: true
             - neighbor_address: 192.168.1.101
               remote_as: 65563
               password:
                 encryption: 7
                 key: 12090404011C03162E
           neighbor_down:
-            fib_accelerate: True
+            fib_accelerate: true
           vrfs:
             - vrf: site-1
               allocate_index: 5000
               local_as: 200
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 198.51.100.1
                   description: site-1-nbr-1
@@ -4674,7 +4674,7 @@ Examples
                   description: site-1-nbr-2
             - vrf: site-2
               local_as: 300
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 203.0.113.2
                   description: site-2-nbr-1
@@ -4683,7 +4683,7 @@ Examples
                     key: AF92F4C16A0A0EC5BDF56CF58BC030F6
                   remote_as: 65568
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
 
     # Task output:
     # ------------
@@ -4882,8 +4882,8 @@ Examples
           as_number: 65563
           router_id: 192.168.1.1
           bestpath:
-            compare_neighborid: True
-            cost_community_ignore: True
+            compare_neighborid: true
+            cost_community_ignore: true
           confederation:
             identifier: 42
             peers:
@@ -4899,20 +4899,20 @@ Examples
               remote_as: 65563
               description: NBR-1
               low_memory:
-                exempt: True
+                exempt: true
           neighbor_down:
-            fib_accelerate: True
+            fib_accelerate: true
           vrfs:
             - vrf: site-2
               local_as: 300
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 203.0.113.2
                   password:
                     encryption: 7
                     key: 12090404011C03162E
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
         state: replaced
 
     # Task output:
@@ -5345,16 +5345,16 @@ Examples
           router_id: 192.168.1.1
           bestpath:
             as_path:
-              multipath_relax: True
-            compare_neighborid: True
-            cost_community_ignore: True
+              multipath_relax: true
+            compare_neighborid: true
+            cost_community_ignore: true
           confederation:
             identifier: 42
             peers:
               - 65020
               - 65030
               - 65040
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           maxas_limit: 20
           neighbors:
             - neighbor_address: 192.168.1.100
@@ -5364,19 +5364,19 @@ Examples
               remote_as: 65563
               description: NBR-1
               low_memory:
-                exempt: True
+                exempt: true
             - neighbor_address: 192.168.1.101
               remote_as: 65563
               password:
                 encryption: 7
                 key: 12090404011C03162E
           neighbor_down:
-            fib_accelerate: True
+            fib_accelerate: true
           vrfs:
             - vrf: site-1
               allocate_index: 5000
               local_as: 200
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 198.51.100.1
                   description: site-1-nbr-1
@@ -5389,7 +5389,7 @@ Examples
                   description: site-1-nbr-2
             - vrf: site-2
               local_as: 300
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 203.0.113.2
                   description: site-1-nbr-1
@@ -5398,7 +5398,7 @@ Examples
                     key: AF92F4C16A0A0EC5BDF56CF58BC030F6
                   remote_as: 65568
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
 
     # Task output:
     # ------------
@@ -5648,7 +5648,7 @@ Examples
           as_number: 65536
           router_id: 198.51.100.2
           maxas_limit: 20
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           neighbors:
             - neighbor_address: 192.0.2.1
               remote_as: 65537
@@ -5692,7 +5692,7 @@ Examples
           as_number: 65536
           router_id: 198.51.100.2
           maxas_limit: 20
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           neighbors:
             - neighbor_address: 192.0.2.1
               remote_as: 65537
@@ -5702,7 +5702,7 @@ Examples
           vrfs:
             - vrf: site-2
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
         state: replaced
 
     # Task output:

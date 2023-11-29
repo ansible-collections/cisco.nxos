@@ -239,21 +239,28 @@ def main():
         if module.params["route_targets"] is not None:
             for rt in module.params["route_targets"]:
                 if rt.get("direction") == "both" or not rt.get("direction"):
-                    platform = get_capabilities(module)["device_info"][
-                        "network_os_platform"
-                    ]
+                    platform = get_capabilities(module)["device_info"]["network_os_platform"]
                     if platform.startswith("N9K") and rt.get("rt") == "auto":
                         rt_commands = match_current_rt(rt, "both", current, rt_commands)
                     else:
                         rt_commands = match_current_rt(
-                            rt, "import", current, rt_commands
+                            rt,
+                            "import",
+                            current,
+                            rt_commands,
                         )
                         rt_commands = match_current_rt(
-                            rt, "export", current, rt_commands
+                            rt,
+                            "export",
+                            current,
+                            rt_commands,
                         )
                 else:
                     rt_commands = match_current_rt(
-                        rt, rt.get("direction"), current, rt_commands
+                        rt,
+                        rt.get("direction"),
+                        current,
+                        rt_commands,
                     )
 
         if rt_commands:

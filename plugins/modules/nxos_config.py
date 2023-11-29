@@ -330,9 +330,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
@@ -410,7 +408,8 @@ def main():
         backup=dict(type="bool", default=False),
         backup_options=dict(type="dict", options=backup_spec),
         save_when=dict(
-            choices=["always", "never", "modified", "changed"], default="never"
+            choices=["always", "never", "modified", "changed"],
+            default="never",
         ),
         diff_against=dict(choices=["running", "startup", "intended"]),
         diff_ignore_lines=dict(type="list", elements="str"),
@@ -449,9 +448,7 @@ def main():
         if module.params["replace"] != "config":
             module.fail_json(msg="replace: config is required with replace_src")
 
-    if module.params["backup"] or (
-        module._diff and module.params["diff_against"] == "running"
-    ):
+    if module.params["backup"] or (module._diff and module.params["diff_against"] == "running"):
         contents = get_config(module, flags=flags)
         config = NetworkConfig(indent=2, contents=contents)
         if module.params["backup"]:
@@ -509,14 +506,19 @@ def main():
         save_config(module, result)
     elif module.params["save_when"] == "modified":
         output = execute_show_commands(
-            module, ["show running-config", "show startup-config"]
+            module,
+            ["show running-config", "show startup-config"],
         )
 
         running_config = NetworkConfig(
-            indent=2, contents=output[0], ignore_lines=diff_ignore_lines
+            indent=2,
+            contents=output[0],
+            ignore_lines=diff_ignore_lines,
         )
         startup_config = NetworkConfig(
-            indent=2, contents=output[1], ignore_lines=diff_ignore_lines
+            indent=2,
+            contents=output[1],
+            ignore_lines=diff_ignore_lines,
         )
 
         if running_config.sha1 != startup_config.sha1:
@@ -533,13 +535,15 @@ def main():
 
         # recreate the object in order to process diff_ignore_lines
         running_config = NetworkConfig(
-            indent=2, contents=contents, ignore_lines=diff_ignore_lines
+            indent=2,
+            contents=contents,
+            ignore_lines=diff_ignore_lines,
         )
 
         if module.params["diff_against"] == "running":
             if module.check_mode:
                 module.warn(
-                    "unable to perform diff against running-config due to check mode"
+                    "unable to perform diff against running-config due to check mode",
                 )
                 contents = None
             else:
@@ -557,7 +561,9 @@ def main():
 
         if contents is not None:
             base_config = NetworkConfig(
-                indent=2, contents=contents, ignore_lines=diff_ignore_lines
+                indent=2,
+                contents=contents,
+                ignore_lines=diff_ignore_lines,
             )
 
             if running_config.sha1 != base_config.sha1:

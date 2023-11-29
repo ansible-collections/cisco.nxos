@@ -178,13 +178,13 @@ class showDeviceAliasDatabase(object):
 
     def isPwwnInDaDatabase(self, pwwn):
         newpwwn = ":".join(
-            ["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")]
+            ["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")],
         )
         return newpwwn in self.da_dict.values()
 
     def isNamePwwnPresentInDatabase(self, name, pwwn):
         newpwwn = ":".join(
-            ["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")]
+            ["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")],
         )
         if name in self.da_dict.keys():
             if newpwwn == self.da_dict[name]:
@@ -199,7 +199,7 @@ class showDeviceAliasDatabase(object):
 
     def getNameByPwwn(self, pwwn):
         newpwwn = ":".join(
-            ["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")]
+            ["0" + str(ep) if len(ep) == 1 else ep for ep in pwwn.split(":")],
         )
         for n, p in self.da_dict.items():
             if p == newpwwn:
@@ -336,7 +336,7 @@ def main():
     m = shDAStausObj.getMode()
     if shDAStausObj.isLocked():
         module.fail_json(
-            msg="device-alias has acquired lock on the switch. Hence cannot procced."
+            msg="device-alias has acquired lock on the switch. Hence cannot procced.",
         )
 
     # Step 1: Process distribute
@@ -349,7 +349,7 @@ def main():
                 # true(enabled)
                 commands.append("device-alias distribute")
                 messages.append(
-                    "device-alias distribute changed from disabled to enabled"
+                    "device-alias distribute changed from disabled to enabled",
                 )
             else:
                 messages.append(
@@ -362,7 +362,7 @@ def main():
                 # false(disabled)
                 commands.append("no device-alias distribute")
                 messages.append(
-                    "device-alias distribute changed from enabled to disabled"
+                    "device-alias distribute changed from enabled to disabled",
                 )
             else:
                 messages.append(
@@ -390,7 +390,7 @@ def main():
                 messages.append("device-alias mode changed from enhanced to basic")
             else:
                 messages.append(
-                    "device-alias mode remains unchanged. current mode is basic"
+                    "device-alias mode remains unchanged. current mode is basic",
                 )
 
         else:
@@ -401,7 +401,7 @@ def main():
                 messages.append("device-alias mode changed from basic to enhanced")
             else:
                 messages.append(
-                    "device-alias mode remains unchanged. current mode is enhanced"
+                    "device-alias mode remains unchanged. current mode is enhanced",
                 )
 
     if commands:
@@ -482,9 +482,7 @@ def main():
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
-                    commands = (
-                        ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
-                    )
+                    commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
 
         cmds = flatten_list(commands)
         if cmds:
@@ -497,13 +495,11 @@ def main():
                 load_config(module, cmds)
                 if len(da_remove_list) != 0:
                     messages.append(
-                        "the required device-alias were removed. "
-                        + ",".join(da_remove_list),
+                        "the required device-alias were removed. " + ",".join(da_remove_list),
                     )
                 if len(da_add_list) != 0:
                     messages.append(
-                        "the required device-alias were added. "
-                        + ",".join(da_add_list),
+                        "the required device-alias were added. " + ",".join(da_add_list),
                     )
 
     # Step 5: Process rename
@@ -539,9 +535,7 @@ def main():
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
-                    commands = (
-                        ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
-                    )
+                    commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
         cmds = flatten_list(commands)
         if cmds:
             commands_to_execute = commands_to_execute + cmds

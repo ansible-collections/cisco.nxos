@@ -3570,49 +3570,49 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 100
-            router_id: 203.0.113.20
-          - process_id: 102
-            router_id: 198.51.100.1
-            address_family:
-              afi: ipv6
-              safi: unicast
-              areas:
-              - area_id: 0.0.0.100
-                filter_list:
-                - route_map: rmap_1
-                  direction: in
-                - route_map: rmap_2
-                  direction: out
-                ranges:
-                - prefix: 2001:db2::/32
-                  not_advertise: true
-                - prefix: 2001:db3::/32
-                  cost: 120
-              redistribute:
-              - protocol: eigrp
-                id: 120
-                route_map: rmap_1
-              - protocol: direct
-                route_map: ospf102-direct-connect
-            vrfs:
-            - vrf: zone1
-              router_id: 198.51.100.129
-              areas:
-              - area_id: 0.0.0.102
-                nssa:
-                  default_information_originate: true
-                  no_summary: true
-              - area_id: 0.0.0.103
-                nssa:
-                  no_summary: true
-                  translate:
-                    type7:
-                      always: true
-            - vrf: zone2
-              auto_cost:
-                reference_bandwidth: 45
-                unit: Gbps
+            - process_id: 100
+              router_id: 203.0.113.20
+            - process_id: 102
+              router_id: 198.51.100.1
+              address_family:
+                afi: ipv6
+                safi: unicast
+                areas:
+                  - area_id: 0.0.0.100
+                    filter_list:
+                      - route_map: rmap_1
+                        direction: in
+                      - route_map: rmap_2
+                        direction: out
+                    ranges:
+                      - prefix: '2001:db2::/32'
+                        not_advertise: true
+                      - prefix: '2001:db3::/32'
+                        cost: 120
+                redistribute:
+                  - protocol: eigrp
+                    id: 120
+                    route_map: rmap_1
+                  - protocol: direct
+                    route_map: ospf102-direct-connect
+              vrfs:
+                - vrf: zone1
+                  router_id: 198.51.100.129
+                  areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
+                    - area_id: 0.0.0.103
+                      nssa:
+                        no_summary: true
+                        translate:
+                          type7:
+                            always: true
+                - vrf: zone2
+                  auto_cost:
+                    reference_bandwidth: 45
+                    unit: Gbps
         state: merged
 
     # Task output:
@@ -3736,33 +3736,33 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 102
-            router_id: 198.51.100.1
-            address_family:
-              afi: ipv6
-              safi: unicast
-              areas:
-              - area_id: 0.0.0.100
-                filter_list:
-                - route_map: rmap_8
-                  direction: in
-                ranges:
-                - not_advertise: true
-                  prefix: 2001:db2::/32
-              redistribute:
-              - protocol: eigrp
-                id: 130
-                route_map: rmap_1
-              - protocol: direct
-                route_map: ospf102-direct-connect
-            vrfs:
-            - vrf: zone1
-              router_id: 198.51.100.129
-              areas:
-              - area_id: 0.0.0.102
-                nssa:
-                  default_information_originate: True
-                  no_summary: True
+            - process_id: 102
+              router_id: 198.51.100.1
+              address_family:
+                afi: ipv6
+                safi: unicast
+                areas:
+                  - area_id: 0.0.0.100
+                    filter_list:
+                      - route_map: rmap_8
+                        direction: in
+                    ranges:
+                      - not_advertise: true
+                        prefix: 2001:db2::/32
+                redistribute:
+                  - protocol: eigrp
+                    id: 130
+                    route_map: rmap_1
+                  - protocol: direct
+                    route_map: ospf102-direct-connect
+              vrfs:
+                - vrf: zone1
+                  router_id: 198.51.100.129
+                  areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
         state: replaced
 
     # Task output:
@@ -3902,11 +3902,11 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 104
-            router_id: 203.0.113.20
-          - process_id: 102
-            router_id: 198.51.100.1
-            shutdown: true
+            - process_id: 104
+              router_id: 203.0.113.20
+            - process_id: 102
+              router_id: 198.51.100.1
+              shutdown: true
         state: overridden
 
     # Task output:
@@ -4022,7 +4022,7 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 102
+            - process_id: 102
         state: deleted
 
     # Task output:
@@ -4074,7 +4074,7 @@ Examples
     #        vrf: zone2
     #
     # commands:
-    #  - no router ospfv3 102
+    #   - no router ospfv3 102
     #
     # after:
     #   processes:
@@ -4180,49 +4180,49 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 100
-            router_id: 203.0.113.20
-          - process_id: 102
-            router_id: 198.51.100.1
-            address_family:
-              afi: ipv6
-              safi: unicast
-              areas:
-              - area_id: 0.0.0.100
-                filter_list:
-                - route_map: rmap_1
-                  direction: in
-                - route_map: rmap_2
-                  direction: out
-                ranges:
-                - prefix: 2001:db2::/32
-                  not_advertise: true
-                - prefix: 2001:db3::/32
-                  cost: 120
-              redistribute:
-              - protocol: eigrp
-                id: 120
-                route_map: rmap_1
-              - protocol: direct
-                route_map: ospf102-direct-connect
-            vrfs:
-            - vrf: zone1
-              router_id: 198.51.100.129
-              areas:
-              - area_id: 0.0.0.102
-                nssa:
-                  default_information_originate: true
-                  no_summary: true
-              - area_id: 0.0.0.103
-                nssa:
-                  no_summary: true
-                  translate:
-                    type7:
-                      always: true
-            - vrf: zone2
-              auto_cost:
-                reference_bandwidth: 45
-                unit: Gbps
+            - process_id: 100
+              router_id: 203.0.113.20
+            - process_id: 102
+              router_id: 198.51.100.1
+              address_family:
+                afi: ipv6
+                safi: unicast
+                areas:
+                  - area_id: 0.0.0.100
+                    filter_list:
+                      - route_map: rmap_1
+                        direction: in
+                      - route_map: rmap_2
+                        direction: out
+                    ranges:
+                      - prefix: 2001:db2::/32
+                        not_advertise: true
+                      - prefix: 2001:db3::/32
+                        cost: 120
+                redistribute:
+                  - protocol: eigrp
+                    id: 120
+                    route_map: rmap_1
+                  - protocol: direct
+                    route_map: ospf102-direct-connect
+              vrfs:
+                - vrf: zone1
+                  router_id: 198.51.100.129
+                  areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
+                    - area_id: 0.0.0.103
+                      nssa:
+                        no_summary: true
+                        translate:
+                          type7:
+                            always: true
+                - vrf: zone2
+                  auto_cost:
+                    reference_bandwidth: 45
+                    unit: Gbps
         state: rendered
 
     # Task output:
@@ -4315,7 +4315,7 @@ Examples
     #         router_id: 192.0.100.2
     #   - process_id: "102"
     #     router_id: 198.54.100.1
-    #     shutdown: True
+    #     shutdown: true
 
     # Using gathered
 

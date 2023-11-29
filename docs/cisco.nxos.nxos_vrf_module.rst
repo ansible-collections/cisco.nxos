@@ -400,48 +400,48 @@ Examples
         name: ntc
         description: testing
         state: present
-
     - name: Aggregate definition of VRFs
       cisco.nxos.nxos_vrf:
         aggregate:
-        - {name: test1, description: Testing, admin_state: down}
-        - {name: test2, interfaces: Ethernet1/2}
-
+          - name: test1
+            description: Testing
+            admin_state: down
+          - name: test2
+            interfaces: Ethernet1/2
     - name: Aggregate definitions of VRFs with Purge
       cisco.nxos.nxos_vrf:
         aggregate:
-        - {name: ntc1, description: purge test1}
-        - {name: ntc2, description: purge test2}
+          - name: ntc1
+            description: purge test1
+          - name: ntc2
+            description: purge test2
         state: present
         purge: true
-
     - name: Delete VRFs exist on switch
       cisco.nxos.nxos_vrf:
         aggregate:
-        - {name: ntc1}
-        - {name: ntc2}
+          - name: ntc1
+          - name: ntc2
         state: absent
-
     - name: Assign interfaces to VRF declaratively
       cisco.nxos.nxos_vrf:
         name: test1
         interfaces:
-        - Ethernet2/3
-        - Ethernet2/5
-
+          - Ethernet2/3
+          - Ethernet2/5
     - name: Check interfaces assigned to VRF
       cisco.nxos.nxos_vrf:
         name: test1
         associated_interfaces:
-        - Ethernet2/3
-        - Ethernet2/5
-
-    - name: Ensure VRF is tagged with interface Ethernet2/5 only (Removes from Ethernet2/3)
+          - Ethernet2/3
+          - Ethernet2/5
+    - name: >-
+        Ensure VRF is tagged with interface Ethernet2/5 only (Removes from
+        Ethernet2/3)
       cisco.nxos.nxos_vrf:
         name: test1
         interfaces:
-        - Ethernet2/5
-
+          - Ethernet2/5
     - name: Delete VRF
       cisco.nxos.nxos_vrf:
         name: ntc

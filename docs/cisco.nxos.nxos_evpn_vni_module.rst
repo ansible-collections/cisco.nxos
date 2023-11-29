@@ -162,8 +162,8 @@ Examples
         vni: 6000
         route_distinguisher: 60:10
         route_target_import:
-        - 5000:10
-        - 4100:100
+          - "5000:10"
+          - "4100:100"
         route_target_export: auto
         route_target_both: default
 

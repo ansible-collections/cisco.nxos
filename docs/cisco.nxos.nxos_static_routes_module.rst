@@ -416,7 +416,7 @@ Examples
     - name: Delete routes based on VRF
       cisco.nxos.nxos_static_routes:
         config:
-        - vrf: trial_vrf
+          - vrf: trial_vrf
         state: deleted
 
     # Task Output
@@ -496,9 +496,9 @@ Examples
     - name: Delete routes based on AFI in a VRF
       cisco.nxos.nxos_static_routes:
         config:
-        - vrf: trial_vrf
-          address_families:
-          - afi: ipv4
+          - vrf: trial_vrf
+            address_families:
+              - afi: ipv4
         state: deleted
 
     # Task Output
@@ -580,28 +580,28 @@ Examples
     - name: Merge new static route configuration
       cisco.nxos.nxos_static_routes:
         config:
-        - vrf: trial_vrf
-          address_families:
-          - afi: ipv4
-            routes:
-            - dest: 192.0.2.64/24
-              next_hops:
-              - forward_router_address: 192.0.2.22
-                tag: 4
-                admin_distance: 2
-        - address_families:
-          - afi: ipv4
-            routes:
-            - dest: 192.0.2.16/24
-              next_hops:
-              - forward_router_address: 192.0.2.24
-                route_name: new_route
-          - afi: ipv6
-            routes:
-            - dest: 2001:db8::/64
-              next_hops:
-              - interface: eth1/3
-                forward_router_address: 2001:db8::12
+          - vrf: trial_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.64/24
+                    next_hops:
+                      - forward_router_address: 192.0.2.22
+                        tag: 4
+                        admin_distance: 2
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/24
+                    next_hops:
+                      - forward_router_address: 192.0.2.24
+                        route_name: new_route
+              - afi: ipv6
+                routes:
+                  - dest: '2001:db8::/64'
+                    next_hops:
+                      - interface: eth1/3
+                        forward_router_address: '2001:db8::12'
         state: merged
 
     # Task Output
@@ -663,19 +663,19 @@ Examples
     - name: Overridden existing static route configuration with new configuration
       cisco.nxos.nxos_static_routes:
         config:
-        - vrf: trial_vrf
-          address_families:
-          - afi: ipv4
-            routes:
-            - dest: 192.0.2.16/28
-              next_hops:
-              - forward_router_address: 192.0.2.23
-                route_name: overridden_route1
-                admin_distance: 3
-              - forward_router_address: 192.0.2.45
-                route_name: overridden_route2
-                dest_vrf: destinationVRF
-                interface: Ethernet1/2
+          - vrf: trial_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.23
+                        route_name: overridden_route1
+                        admin_distance: 3
+                      - forward_router_address: 192.0.2.45
+                        route_name: overridden_route2
+                        dest_vrf: destinationVRF
+                        interface: Ethernet1/2
         state: overridden
 
     # Task Output
@@ -752,18 +752,18 @@ Examples
     - name: Replaced the existing static configuration of a prefix with new configuration
       cisco.nxos.nxos_static_routes:
         config:
-        - address_families:
-          - afi: ipv4
-            routes:
-            - dest: 192.0.2.16/28
-              next_hops:
-              - forward_router_address: 192.0.2.23
-                route_name: replaced_route1
-                admin_distance: 3
-              - forward_router_address: 192.0.2.45
-                route_name: replaced_route2
-                dest_vrf: destinationVRF
-                interface: Ethernet1/2
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.16/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.23
+                        route_name: replaced_route1
+                        admin_distance: 3
+                      - forward_router_address: 192.0.2.45
+                        route_name: replaced_route2
+                        dest_vrf: destinationVRF
+                        interface: Ethernet1/2
         state: replaced
 
     # Task Output
@@ -882,18 +882,18 @@ Examples
     - name: Render required configuration to be pushed to the device
       cisco.nxos.nxos_static_routes:
         config:
-        - address_families:
-          - afi: ipv4
-            routes:
-            - dest: 192.0.2.48/28
-              next_hops:
-              - forward_router_address: 192.0.2.13
-          - afi: ipv6
-            routes:
-            - dest: 2001:db8::/64
-              next_hops:
-              - interface: eth1/3
-                forward_router_address: 2001:db8::12
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.48/28
+                    next_hops:
+                      - forward_router_address: 192.0.2.13
+              - afi: ipv6
+                routes:
+                  - dest: 2001:db8::/64
+                    next_hops:
+                      - interface: eth1/3
+                        forward_router_address: 2001:db8::12
         state: rendered
 
     # Task Output

@@ -216,7 +216,7 @@ def state_present(module, existing, proposed):
                     continue
                 if existing:
                     if target not in existing.get(
-                        key.replace("-", "_").replace(" ", "_")
+                        key.replace("-", "_").replace(" ", "_"),
                     ):
                         commands.append("{0} {1}".format(key, target))
                 else:
@@ -265,9 +265,7 @@ def main():
     state = module.params["state"]
     args = PARAM_TO_COMMAND_KEYMAP.keys()
     existing = get_existing(module, args)
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
     commands = []
     parents = []
 

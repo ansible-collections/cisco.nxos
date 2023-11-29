@@ -203,7 +203,9 @@ def get_aaa_host_info(module, server_type, address):
                 aaa_host_info["acct_port"] = match.group(3)
                 aaa_host_info["host_timeout"] = match.group(4)
             elif "tacacs" in body:
-                pattern = r"\S+ host \S+(?:\s+key 7\s+(\S+))?(?:\s+port (\d+))?(?:\s+timeout (\d+))?"
+                pattern = (
+                    r"\S+ host \S+(?:\s+key 7\s+(\S+))?(?:\s+port (\d+))?(?:\s+timeout (\d+))?"
+                )
                 match = re.search(pattern, body)
                 aaa_host_info["key"] = match.group(1)
                 if aaa_host_info["key"]:
@@ -313,7 +315,7 @@ def main():
 
     if (auth_port or acct_port) and server_type != "radius":
         module.fail_json(
-            msg="auth_port and acct_port can only be used" "when server_type=radius"
+            msg="auth_port and acct_port can only be used" "when server_type=radius",
         )
 
     existing = get_aaa_host_info(module, server_type, address)

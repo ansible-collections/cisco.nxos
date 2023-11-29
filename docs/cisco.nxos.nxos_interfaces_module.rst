@@ -294,12 +294,12 @@ Examples
     - name: Merge provided configuration with device configuration
       cisco.nxos.nxos_interfaces:
         config:
-        - name: Ethernet1/1
-          description: Configured by Ansible
-          enabled: true
-        - name: Ethernet1/2
-          description: Configured by Ansible Network
-          enabled: false
+          - name: Ethernet1/1
+            description: Configured by Ansible
+            enabled: true
+          - name: Ethernet1/2
+            description: Configured by Ansible Network
+            enabled: false
         state: merged
 
     # Task Output
@@ -358,14 +358,14 @@ Examples
     - name: Replaces device configuration of listed interfaces with provided configuration
       cisco.nxos.nxos_interfaces:
         config:
-        - name: Ethernet1/1
-          description: Configured by Ansible
-          enabled: true
-          mtu: 9000
-        - name: Ethernet1/2
-          description: Configured by Ansible Network
-          enabled: false
-          mode: layer2
+          - name: Ethernet1/1
+            description: Configured by Ansible
+            enabled: true
+            mtu: 9000
+          - name: Ethernet1/2
+            description: Configured by Ansible Network
+            enabled: false
+            mode: layer2
         state: replaced
 
     # Task Output
@@ -426,13 +426,13 @@ Examples
     - name: Override device configuration of all interfaces with provided configuration
       cisco.nxos.nxos_interfaces:
         config:
-        - name: Ethernet1/1
-          enabled: true
-        - name: Ethernet1/2
-          description: Configured by Ansible Network
-          enabled: false
-        - description: mgmt interface
-          name: mgmt0
+          - name: Ethernet1/1
+            enabled: true
+          - name: Ethernet1/2
+            description: Configured by Ansible Network
+            enabled: false
+          - description: mgmt interface
+            name: mgmt0
         state: overridden
 
     # Task Output
@@ -490,7 +490,7 @@ Examples
     - name: Delete or return interface parameters to default settings
       cisco.nxos.nxos_interfaces:
         config:
-        - name: Ethernet1/2
+          - name: Ethernet1/2
         state: deleted
 
     # Task Output
@@ -529,14 +529,14 @@ Examples
     - name: Use rendered state to convert task input to device specific commands
       cisco.nxos.nxos_interfaces:
         config:
-        - name: Ethernet1/1
-          description: outbound-intf
-          mode: layer3
-          speed: 100
-        - name: Ethernet1/2
-          mode: layer2
-          enabled: true
-          duplex: full
+          - name: Ethernet1/1
+            description: outbound-intf
+            mode: layer3
+            speed: 100
+          - name: Ethernet1/2
+            mode: layer2
+            enabled: true
+            duplex: full
         state: rendered
 
     # Task Output

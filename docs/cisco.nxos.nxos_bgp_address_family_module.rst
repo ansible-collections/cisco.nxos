@@ -1674,11 +1674,11 @@ Examples
               safi: unicast
               vrf: site-1
               default_information:
-                originate: True
+                originate: true
               aggregate_address:
                 - prefix: 203.0.113.0/24
-                  as_set: True
-                  summary_only: True
+                  as_set: true
+                  summary_only: true
             - afi: ipv6
               safi: multicast
               vrf: site-1
@@ -1727,11 +1727,11 @@ Examples
     #        safi: unicast
     #        vrf: site-1
     #        default_information:
-    #          originate: True
+    #          originate: true
     #        aggregate_address:
     #          - prefix: 203.0.113.0/24
-    #            as_set: True
-    #            summary_only: True
+    #            as_set: true
+    #            summary_only: true
     #      - afi: ipv6
     #        safi: multicast
     #        vrf: site-1
@@ -1797,8 +1797,8 @@ Examples
                   non_critical_delay: 180
               aggregate_address:
                 - prefix: 203.0.113.0/24
-                  as_set: True
-                  summary_only: True
+                  as_set: true
+                  summary_only: true
             - afi: ipv4
               safi: unicast
               vrf: site-1
@@ -1824,11 +1824,11 @@ Examples
     #        safi: unicast
     #        vrf: site-1
     #        default_information:
-    #          originate: True
+    #          originate: true
     #        aggregate_address:
     #          - prefix: 203.0.113.0/24
-    #            as_set: True
-    #            summary_only: True
+    #            as_set: true
+    #            summary_only: true
     #      - afi: ipv6
     #        safi: multicast
     #        vrf: site-1
@@ -1865,8 +1865,8 @@ Examples
     #            non_critical_delay: 180
     #        aggregate_address:
     #          - prefix: 203.0.113.0/24
-    #            as_set: True
-    #            summary_only: True
+    #            as_set: true
+    #            summary_only: true
     #
     #      - afi: ipv4
     #        safi: unicast
@@ -1929,8 +1929,8 @@ Examples
                   route_map: rmap1
               aggregate_address:
                 - prefix: 203.0.113.0/24
-                  as_set: True
-                  summary_only: True
+                  as_set: true
+                  summary_only: true
             - afi: ipv4
               safi: unicast
               vrf: site-1
@@ -1956,11 +1956,11 @@ Examples
     #        safi: unicast
     #        vrf: site-1
     #        default_information:
-    #          originate: True
+    #          originate: true
     #        aggregate_address:
     #          - prefix: 203.0.113.0/24
-    #            as_set: True
-    #            summary_only: True
+    #            as_set: true
+    #            summary_only: true
     #      - afi: ipv6
     #        safi: multicast
     #        vrf: site-1
@@ -1997,8 +1997,8 @@ Examples
     #            route_map: rmap1
     #        aggregate_address:
     #          - prefix: 203.0.113.0/24
-    #            as_set: True
-    #            summary_only: True
+    #            as_set: true
+    #            summary_only: true
     #      - afi: ipv4
     #        safi: unicast
     #        vrf: site-1
@@ -2066,11 +2066,11 @@ Examples
     #        safi: unicast
     #        vrf: site-1
     #        default_information:
-    #          originate: True
+    #          originate: true
     #        aggregate_address:
     #          - prefix: 203.0.113.0/24
-    #            as_set: True
-    #            summary_only: True
+    #            as_set: true
+    #            summary_only: true
     #      - afi: ipv6
     #        safi: multicast
     #        vrf: site-1
@@ -2095,11 +2095,11 @@ Examples
     #        safi: unicast
     #        vrf: site-1
     #        default_information:
-    #          originate: True
+    #          originate: true
     #        aggregate_address:
     #          - prefix: 203.0.113.0/24
-    #            as_set: True
-    #            summary_only: True
+    #            as_set: true
+    #            summary_only: true
 
     # After state:
     # ------------
@@ -2153,11 +2153,11 @@ Examples
     #        safi: unicast
     #        vrf: site-1
     #        default_information:
-    #          originate: True
+    #          originate: true
     #        aggregate_address:
     #          - prefix: 203.0.113.0/24
-    #            as_set: True
-    #            summary_only: True
+    #            as_set: true
+    #            summary_only: true
     #      - afi: ipv6
     #        safi: multicast
     #        vrf: site-1
@@ -2207,11 +2207,11 @@ Examples
               safi: unicast
               vrf: site-1
               default_information:
-                originate: True
+                originate: true
               aggregate_address:
                 - prefix: 203.0.113.0/24
-                  as_set: True
-                  summary_only: True
+                  as_set: true
+                  summary_only: true
             - afi: ipv6
               safi: multicast
               vrf: site-1
@@ -2284,11 +2284,11 @@ Examples
     #        safi: unicast
     #        vrf: site-1
     #        default_information:
-    #          originate: True
+    #          originate: true
     #        aggregate_address:
     #          - prefix: 203.0.113.0/24
-    #            as_set: True
-    #            summary_only: True
+    #            as_set: true
+    #            summary_only: true
     #      - afi: ipv6
     #        safi: multicast
     #        vrf: site-1

@@ -376,7 +376,7 @@ def map_obj_to_commands(updates, module):
 
                     elif set(interfaces) != set(obj_in_have["interfaces"]):
                         missing_interfaces = list(
-                            set(interfaces) - set(obj_in_have["interfaces"])
+                            set(interfaces) - set(obj_in_have["interfaces"]),
                         )
                         for i in missing_interfaces:
                             commands.append("vrf context {0}".format(name))
@@ -544,7 +544,7 @@ def check_declarative_intent_params(want, module, element_spec, result):
                 interfaces = obj_in_have.get("interfaces")
                 if interfaces is not None and i not in interfaces:
                     module.fail_json(
-                        msg="Interface %s not configured on vrf %s" % (i, w["name"])
+                        msg="Interface %s not configured on vrf %s" % (i, w["name"]),
                     )
 
 
