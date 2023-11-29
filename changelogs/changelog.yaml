@@ -1014,3 +1014,12 @@ releases:
       - fix_763.yaml
       - vtp_version.yaml
     release_date: "2023-10-03"
+  5.3.0:
+    changes:
+      minor_changes:
+        - nxos_config - Relax restrictions on I(src) parameter so it can be used more
+          like I(lines). (https://github.com/ansible-collections/cisco.nxos/issues/89).
+    fragments:
+      - fix_config_module.yaml
+      - trivial.yaml
+    release_date: "2023-11-29"
