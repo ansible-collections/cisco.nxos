@@ -146,7 +146,6 @@ EXAMPLES = """
 # -----------------------
 # parsed:
 #   hostname: NXOSv-9k
-
 """
 
 RETURN = """

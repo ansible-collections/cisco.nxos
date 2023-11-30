@@ -151,8 +151,8 @@ Examples
     - name: Configure hsrp attributes on interfaces
       cisco.nxos.nxos_hsrp_interfaces:
         config:
-        - name: Ethernet1/1
-        - name: Ethernet1/2
+          - name: Ethernet1/1
+          - name: Ethernet1/2
         operation: deleted
 
 
@@ -161,10 +161,10 @@ Examples
     - name: Configure hsrp attributes on interfaces
       cisco.nxos.nxos_hsrp_interfaces:
         config:
-        - name: Ethernet1/1
-          bfd: enable
-        - name: Ethernet1/2
-          bfd: disable
+          - name: Ethernet1/1
+            bfd: enable
+          - name: Ethernet1/2
+            bfd: disable
         operation: merged
 
 
@@ -173,10 +173,10 @@ Examples
     - name: Configure hsrp attributes on interfaces
       cisco.nxos.nxos_hsrp_interfaces:
         config:
-        - name: Ethernet1/1
-          bfd: enable
-        - name: Ethernet1/2
-          bfd: disable
+          - name: Ethernet1/1
+            bfd: enable
+          - name: Ethernet1/2
+            bfd: disable
         operation: overridden
 
 
@@ -185,10 +185,10 @@ Examples
     - name: Configure hsrp attributes on interfaces
       cisco.nxos.nxos_hsrp_interfaces:
         config:
-        - name: Ethernet1/1
-          bfd: enable
-        - name: Ethernet1/2
-          bfd: disable
+          - name: Ethernet1/1
+            bfd: enable
+          - name: Ethernet1/2
+            bfd: disable
         operation: replaced
 
     # Using rendered
@@ -196,10 +196,10 @@ Examples
     - name: Use rendered state to convert task input to device specific commands
       cisco.nxos.nxos_hsrp_interfaces:
         config:
-        - name: Ethernet1/800
-          bfd: enable
-        - name: Ethernet1/801
-          bfd: enable
+          - name: Ethernet1/800
+            bfd: enable
+          - name: Ethernet1/801
+            bfd: enable
         state: rendered
 
     # Task Output (redacted)

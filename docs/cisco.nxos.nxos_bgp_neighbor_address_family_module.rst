@@ -2632,9 +2632,9 @@ Examples
                   address_family:
                     - afi: ipv4
                       safi: unicast
-                      suppress_inactive: True
+                      suppress_inactive: true
                       next_hop_self:
-                        set: True
+                        set: true
                 - neighbor_address: 203.0.113.2
                   address_family:
                     - afi: ipv6
@@ -2642,7 +2642,7 @@ Examples
                     - afi: ipv4
                       safi: multicast
                       send_community:
-                        set: True
+                        set: true
 
     # Task output:
     # ------------
@@ -2708,7 +2708,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
 
@@ -2797,7 +2797,7 @@ Examples
                     - afi: ipv4
                       safi: multicast
                       send_community:
-                        set: True
+                        set: true
         state: replaced
 
     # Task output:
@@ -2840,7 +2840,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
     #
@@ -2887,7 +2887,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
 
@@ -2954,9 +2954,9 @@ Examples
                   address_family:
                     - afi: ipv4
                       safi: unicast
-                      suppress_inactive: True
+                      suppress_inactive: true
                       next_hop_self:
-                        set: True
+                        set: true
         state: overridden
 
     # Task output:
@@ -2999,7 +2999,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
     #
@@ -3033,9 +3033,9 @@ Examples
     #            address_family:
     #              - afi: ipv4
     #                safi: unicast
-    #                suppress_inactive: True
+    #                suppress_inactive: true
     #                next_hop_self:
-    #                  set: True
+    #                  set: true
 
     # After state:
     # ------------
@@ -3134,7 +3134,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
     #
@@ -3175,7 +3175,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #
     # After state:
     # ------------
@@ -3267,7 +3267,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
     #
@@ -3333,9 +3333,9 @@ Examples
                   address_family:
                     - afi: ipv4
                       safi: unicast
-                      suppress_inactive: True
+                      suppress_inactive: true
                       next_hop_self:
-                        set: True
+                        set: true
                 - neighbor_address: 203.0.113.2
                   address_family:
                     - afi: ipv6
@@ -3343,7 +3343,7 @@ Examples
                     - afi: ipv4
                       safi: multicast
                       send_community:
-                        set: True
+                        set: true
         state: rendered
 
     # Task output:
@@ -3441,7 +3441,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
 

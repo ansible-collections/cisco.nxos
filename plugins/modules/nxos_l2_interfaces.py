@@ -130,13 +130,13 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.nxos.nxos_l2_interfaces:
     config:
-    - name: Ethernet1/1
-      trunk:
-        native_vlan: 10
-        allowed_vlans: 2,4,15
-    - name: Ethernet1/2
-      access:
-        vlan: 30
+      - name: Ethernet1/1
+        trunk:
+          native_vlan: 10
+          allowed_vlans: 2,4,15
+      - name: Ethernet1/2
+        access:
+          vlan: 30
     state: merged
 
 # Task Output
@@ -195,10 +195,10 @@ EXAMPLES = """
 - name: Replace device configuration of specified L2 interfaces with provided configuration.
   cisco.nxos.nxos_l2_interfaces:
     config:
-    - name: Ethernet1/1
-      trunk:
-        native_vlan: 20
-        allowed_vlans: 5-10, 15
+      - name: Ethernet1/1
+        trunk:
+          native_vlan: 20
+          allowed_vlans: 5-10, 15
     state: replaced
 
 # Task Output
@@ -261,9 +261,9 @@ EXAMPLES = """
 - name: Override device configuration with provided configuration.
   cisco.nxos.nxos_l2_interfaces:
     config:
-    - name: Ethernet1/2
-      access:
-        vlan: 30
+      - name: Ethernet1/2
+        access:
+          vlan: 30
     state: overridden
 
 # Task Output
@@ -320,8 +320,8 @@ EXAMPLES = """
     itself).
   cisco.nxos.nxos_l2_interfaces:
     config:
-    - name: Ethernet1/1
-    - name: Ethernet1/2
+      - name: Ethernet1/1
+      - name: Ethernet1/2
     state: deleted
 
 # Task Output
@@ -362,17 +362,17 @@ EXAMPLES = """
 - name: Render platform specific configuration lines (without connecting to the device)
   cisco.nxos.nxos_l2_interfaces:
     config:
-    - name: Ethernet1/1
-      trunk:
-        native_vlan: 10
-        allowed_vlans: 2,4,15
-    - name: Ethernet1/2
-      access:
-        vlan: 30
-    - name: Ethernet1/3
-      trunk:
-        native_vlan: 20
-        allowed_vlans: 5-10, 15
+      - name: Ethernet1/1
+        trunk:
+          native_vlan: 10
+          allowed_vlans: 2,4,15
+      - name: Ethernet1/2
+        access:
+          vlan: 30
+      - name: Ethernet1/3
+        trunk:
+          native_vlan: 20
+          allowed_vlans: 5-10, 15
     state: rendered
 
 # Task Output

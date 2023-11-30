@@ -95,9 +95,10 @@ EXAMPLES = """
   nxos_command:
     commands: [show version | json]
   register: output
+
 - assert:
     that:
-    - output['stdout'][0]['kickstart_ver_str'] == '7.0(3)I6(1)'
+      - output['stdout'][0]['kickstart_ver_str'] == '7.0(3)I6(1)'
 """
 
 RETURN = """
@@ -390,7 +391,9 @@ def build_install_cmd_set(issu, image, kick, type, force=True):
     if kick is None:
         commands.append("%s nxos %s %s" % (rootcmd, image, issu_cmd))
     else:
-        commands.append("%s %s system %s kickstart %s" % (rootcmd, issu_cmd, image, kick))
+        commands.append(
+            "%s %s system %s kickstart %s" % (rootcmd, issu_cmd, image, kick),
+        )
 
     return commands
 

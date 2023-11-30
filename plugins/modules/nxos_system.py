@@ -98,14 +98,14 @@ EXAMPLES = """
 - name: configure name servers
   cisco.nxos.nxos_system:
     name_servers:
-    - 8.8.8.8
-    - 8.8.4.4
+      - 8.8.8.8
+      - 8.8.4.4
 
 - name: configure name servers with VRF support
   cisco.nxos.nxos_system:
     name_servers:
-    - {server: 8.8.8.8, vrf: mgmt}
-    - {server: 8.8.4.4, vrf: mgmt}
+      - {server: 8.8.8.8, vrf: mgmt}
+      - {server: 8.8.4.4, vrf: mgmt}
 """
 
 RETURN = """

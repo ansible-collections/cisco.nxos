@@ -784,46 +784,46 @@ Examples
         config:
           - name: Ethernet1/1
             address_family:
-            - afi: ipv4
-              processes:
-              - process_id: "100"
-                area:
-                  area_id: 1.1.1.1
-                  secondaries: False
-              multi_areas:
-              - 11.11.11.11
-            - afi: ipv6
-              processes:
-              - process_id: "200"
-                area:
-                  area_id: 2.2.2.2
+              - afi: ipv4
+                processes:
+                  - process_id: '100'
+                    area:
+                      area_id: 1.1.1.1
+                      secondaries: false
                 multi_areas:
-                - 21.0.0.0
-              - process_id: "300"
+                  - 11.11.11.11
+              - afi: ipv6
+                processes:
+                  - process_id: '200'
+                    area:
+                      area_id: 2.2.2.2
+                    multi_areas:
+                      - 21.0.0.0
+                  - process_id: '300'
+                    multi_areas:
+                      - 50.50.50.50
                 multi_areas:
-                - 50.50.50.50
-              multi_areas:
-              - 16.10.10.10
+                  - 16.10.10.10
           - name: Ethernet1/2
             address_family:
-            - afi: ipv4
-              authentication:
-                enable: True
-                key_chain: test-1
-              message_digest_key:
-                key_id: 10
-                encryption: 3
-                key: abc01d272be25d29
-              cost: 100
-            - afi: ipv6
-              network: broadcast
-              shutdown: True
+              - afi: ipv4
+                authentication:
+                  enable: true
+                  key_chain: test-1
+                message_digest_key:
+                  key_id: 10
+                  encryption: 3
+                  key: abc01d272be25d29
+                cost: 100
+              - afi: ipv6
+                network: broadcast
+                shutdown: true
           - name: Ethernet1/3
             address_family:
-            - afi: ipv4
-              authentication_key:
-                encryption: 7
-                key: 12090404011C03162E
+              - afi: ipv4
+                authentication_key:
+                  encryption: 7
+                  key: 12090404011C03162E
         state: merged
 
     # Task output:
@@ -947,17 +947,17 @@ Examples
     - name: Replace OSPF configurations of listed interfaces with provided configurations
       cisco.nxos.nxos_ospf_interfaces:
         config:
-        - name: Ethernet1/1
-          address_family:
-          - afi: ipv4
-            processes:
-            - process_id: "100"
-              area:
-                area_id: 1.1.1.1
-                secondaries: False
-            multi_areas:
-            - 11.11.11.12
-        - name: Ethernet1/3
+          - name: Ethernet1/1
+            address_family:
+              - afi: ipv4
+                processes:
+                  - process_id: "100"
+                    area:
+                      area_id: 1.1.1.1
+                      secondaries: false
+                multi_areas:
+                  - 11.11.11.12
+          - name: Ethernet1/3
         state: replaced
 
     # Task output:
@@ -1091,16 +1091,16 @@ Examples
     - name: Override all OSPF interfaces configuration with provided configuration
       cisco.nxos.nxos_ospf_interfaces:
         config:
-        - name: Ethernet1/1
-          address_family:
-          - afi: ipv4
-            processes:
-            - process_id: "100"
-              area:
-                area_id: 1.1.1.1
-                secondaries: False
-            multi_areas:
-            - 11.11.11.12
+          - name: Ethernet1/1
+            address_family:
+              - afi: ipv4
+                processes:
+                  - process_id: "100"
+                    area:
+                      area_id: 1.1.1.1
+                      secondaries: false
+                multi_areas:
+                  - 11.11.11.12
         state: overridden
 
     # Task output:
@@ -1409,52 +1409,55 @@ Examples
 
     # Using rendered
 
-    - name: Render platform specific configuration lines with state rendered (without connecting to the device)
+    - name: >-
+        Render platform specific configuration lines with state rendered (without
+        connecting to the device)
       cisco.nxos.nxos_ospf_interfaces:
         config:
           - name: Ethernet1/1
             address_family:
-            - afi: ipv4
-              processes:
-              - process_id: "100"
-                area:
-                  area_id: 1.1.1.1
-                  secondaries: False
-              multi_areas:
-              - 11.11.11.11
-            - afi: ipv6
-              processes:
-              - process_id: "200"
-                area:
-                  area_id: 2.2.2.2
+              - afi: ipv4
+                processes:
+                  - process_id: '100'
+                    area:
+                      area_id: 1.1.1.1
+                      secondaries: false
                 multi_areas:
-                - 21.0.0.0
-              - process_id: "300"
+                  - 11.11.11.11
+              - afi: ipv6
+                processes:
+                  - process_id: '200'
+                    area:
+                      area_id: 2.2.2.2
+                    multi_areas:
+                      - 21.0.0.0
+                  - process_id: '300'
+                    multi_areas:
+                      - 50.50.50.50
                 multi_areas:
-                - 50.50.50.50
-              multi_areas:
-              - 16.10.10.10
+                  - 16.10.10.10
           - name: Ethernet1/2
             address_family:
-            - afi: ipv4
-              authentication:
-                enable: True
-                key_chain: test-1
-              message_digest_key:
-                key_id: 10
-                encryption: 3
-                key: abc01d272be25d29
-              cost: 100
-            - afi: ipv6
-              network: broadcast
-              shutdown: True
+              - afi: ipv4
+                authentication:
+                  enable: true
+                  key_chain: test-1
+                message_digest_key:
+                  key_id: 10
+                  encryption: 3
+                  key: abc01d272be25d29
+                cost: 100
+              - afi: ipv6
+                network: broadcast
+                shutdown: true
           - name: Ethernet1/3
             address_family:
-            - afi: ipv4
-              authentication_key:
-                encryption: 7
-                key: 12090404011C03162E
+              - afi: ipv4
+                authentication_key:
+                  encryption: 7
+                  key: 12090404011C03162E
         state: rendered
+
 
     # Task Output:
     # ------------

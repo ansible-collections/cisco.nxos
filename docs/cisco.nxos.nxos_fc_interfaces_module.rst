@@ -103,7 +103,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Administrative state of the interface. Set the value to <code>true</code> to administratively enable the interface or <code>false</code> to disable it</div>
+                        <div>Administrative state of the interface. Set the value to <code>true</code> to administratively enable the interface or <code>true</code> to disable it</div>
                 </td>
             </tr>
             <tr>
@@ -277,8 +277,8 @@ Examples
     - name: Merge provided configuration with device configuration
       cisco.nxos.nxos_fc_interfaces:
         config:
-        - name: fc18/10
-          analytics: fc-scsi
+          - name: fc18/10
+            analytics: fc-scsi
         state: merged
 
     # Task Output
@@ -289,7 +289,7 @@ Examples
     #   speed: auto max 16000
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: False
+    #   enabled: true
     #   description: $
     #   analytics: fc-nvme
     # commands:
@@ -300,7 +300,7 @@ Examples
     #   speed: auto max 16000
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: False
+    #   enabled: true
     #   description: $
     #   analytics: fc-all
 
@@ -335,13 +335,13 @@ Examples
     - name: Replaces device configuration of listed interfaces with provided configuration
       cisco.nxos.nxos_fc_interfaces:
         config:
-        - name: fc18/12
-          speed: auto max 64000
-          mode: auto
-          trunk_mode: on
-          enabled: True
-          description: 1
-          analytics: fc-scsi
+          - name: fc18/12
+            speed: auto max 64000
+            mode: auto
+            trunk_mode: "on"
+            enabled: true
+            description: 1
+            analytics: fc-scsi
         state: replaced
 
     # Task Output
@@ -352,7 +352,7 @@ Examples
     #   speed: auto max 64000
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: True
+    #   enabled: true
     #   description: 1
     #   analytics: fc-all
     # commands:
@@ -364,7 +364,7 @@ Examples
     #   speed: auto max 64000
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: True
+    #   enabled: true
     #   description: 1
     #   analytics: fc-scsi
 
@@ -397,7 +397,7 @@ Examples
     - name: Delete or return interface parameters to default settings
       cisco.nxos.nxos_fc_interfaces:
         config:
-        - name: fc1/2
+          - name: fc1/2
         state: deleted
 
     # Task Output
@@ -408,7 +408,7 @@ Examples
     #   speed: 1000
     #   mode: E
     #   trunk_mode: off
-    #   enabled: True
+    #   enabled: true
     # commands:
     # - interface fc1/2
     # - no switchport speed 1000
@@ -420,7 +420,7 @@ Examples
     #   speed: auto
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: False
+    #   enabled: true
 
     # After state:
     # ------------
@@ -459,13 +459,13 @@ Examples
     - name: Replaces device configuration of listed interfaces with provided configuration
       cisco.nxos.nxos_fc_interfaces:
         config:
-        - name: fc18/12
-          speed: auto max 64000
-          mode: auto
-          trunk_mode: on
-          enabled: True
-          description: 1
-          analytics: fc-scsi
+          - name: fc18/12
+            speed: auto max 64000
+            mode: auto
+            trunk_mode: "on"
+            enabled: true
+            description: 1
+            analytics: fc-scsi
         state: overridden
 
     # Task Output
@@ -476,14 +476,14 @@ Examples
     #   speed: auto max 64000
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: True
+    #   enabled: true
     #   description: 1
     #   analytics: fc-all
     # - name: fc18/13
     #   speed: auto max 64000
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: True
+    #   enabled: true
     #   description: 1
     #   analytics: fc-all
     # commands:
@@ -501,14 +501,14 @@ Examples
     #   speed: auto max 64000
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: True
+    #   enabled: true
     #   description: 1
     #   analytics: fc-scsi
     # - name: fc18/13
     #   speed: auto max 64000
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: False
+    #   enabled: true
 
     # After state:
     # ------------
@@ -526,29 +526,23 @@ Examples
     #     switchport trunk mode on
     #     shutdown
 
-
-
-
-
-
-
     # Using rendered
 
     - name: Use rendered state to convert task input to device specific commands
       cisco.nxos.nxos_fc_interfaces:
         config:
-        - name: fc1/1
-          speed: auto
-          mode: auto
-          trunk_mode: on
-          enabled: True
-          description: This is a sample line
-        - name: fc1/2
-          speed: 1000
-          mode: E
-          trunk_mode: off
-          enabled: True
-          state: rendered
+          - name: fc1/1
+            speed: auto
+            mode: auto
+            trunk_mode: "on"
+            enabled: true
+            description: This is a sample line
+          - name: fc1/2
+            speed: 1000
+            mode: E
+            trunk_mode: "off"
+            enabled: true
+            state: rendered
 
     # Task Output
     # -----------
@@ -600,13 +594,13 @@ Examples
     #   speed: auto
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: True
+    #   enabled: true
     #   description: This is a sample line
     # - name: fc1/2
     #   speed: 1000
     #   mode: E
     #   trunk_mode: off
-    #   enabled: True
+    #   enabled: true
 
     # Using gathered
 
@@ -639,13 +633,13 @@ Examples
     #   speed: auto
     #   mode: auto
     #   trunk_mode: on
-    #   enabled: True
+    #   enabled: true
     #   description: This is a sample line
     # - name: fc1/2
     #   speed: 1000
     #   mode: E
     #   trunk_mode: off
-    #   enabled: True
+    #   enabled: true
 
 
 

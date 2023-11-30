@@ -3676,18 +3676,18 @@ Examples
           location: serverroom-1
           traps:
             aaa:
-              server_state_change: True
+              server_state_change: true
             system:
-              clock_change_notification: True
+              clock_change_notification: true
           hosts:
             - host: 192.0.2.1
-              traps: True
+              traps: true
               version: '1'
               community: public
             - host: 192.0.2.1
               source_interface: Ethernet1/1
             - host: 192.0.2.2
-              informs: True
+              informs: true
               version: '3'
               auth: NMS
           users:
@@ -3697,16 +3697,16 @@ Examples
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
               - user: snmp_user_2
                 group: network-operator
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
                   priv:
                     privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-                    aes_128: True
+                    aes_128: true
             use_acls:
               - user: snmp_user_1
                 ipv4: acl1
@@ -3725,7 +3725,7 @@ Examples
     #         authentication:
     #           algorithm: md5
     #           password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #           localized_key: True
+    #           localized_key: true
     #           priv:
     #             privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -3757,9 +3757,9 @@ Examples
     #    location: serverroom-1
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #      system:
-    #        clock_change_notification: True
+    #        clock_change_notification: true
     #    hosts:
     #      - host: 192.0.2.1
     #        traps: true
@@ -3780,7 +3780,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -3789,7 +3789,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0x5632724fb8ac3699296af26281e1d0f1"
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - authentication:
     #            algorithm: md5
@@ -3863,16 +3863,16 @@ Examples
           location: serverroom-2
           traps:
             aaa:
-              server_state_change: True
+              server_state_change: true
           hosts:
             - host: 192.0.2.1
-              traps: True
+              traps: true
               version: '1'
               community: public
             - host: 192.0.2.1
               source_interface: Ethernet1/1
             - host: 192.0.3.2
-              informs: True
+              informs: true
               version: '3'
               auth: NMS
           users:
@@ -3882,7 +3882,7 @@ Examples
                 authentication:
                   algorithm: md5
                   password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-                  localized_key: True
+                  localized_key: true
                   priv:
                     privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
 
@@ -3891,17 +3891,17 @@ Examples
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
 
               - user: snmp_user_2
                 group: network-operator
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
                   priv:
                     privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-                    aes_128: True
+                    aes_128: true
             use_acls:
               - user: snmp_user_1
                 ipv4: acl1
@@ -3922,9 +3922,9 @@ Examples
     #    location: serverroom-1
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #      system:
-    #        clock_change_notification: True
+    #        clock_change_notification: true
     #    hosts:
     #      - host: 192.0.2.1
     #        traps: true
@@ -3945,7 +3945,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -3954,7 +3954,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0x5632724fb8ac3699296af26281e1d0f1"
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - authentication:
     #            algorithm: md5
@@ -3996,16 +3996,16 @@ Examples
     #    location: serverroom-2
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #    hosts:
     #      - host: 192.0.2.1
-    #        traps: True
+    #        traps: true
     #        version: '1'
     #        community: public
     #      - host: 192.0.2.1
     #        source_interface: Ethernet1/1
     #      - host: 192.0.3.2
-    #        informs: True
+    #        informs: true
     #        version: '3'
     #        auth: NMS
     #    users:
@@ -4015,7 +4015,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -4024,17 +4024,17 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: '0x5632724fb8ac3699296af26281e1d0f1'
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - user: snmp_user_2
     #          group: network-operator
     #          authentication:
     #            algorithm: md5
     #            password: '0x5632724fb8ac3699296af26281e1d0f1'
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-    #              aes_128: True
+    #              aes_128: true
     #
     #      use_acls:
     #        - user: snmp_user_1
@@ -4100,9 +4100,9 @@ Examples
     #    location: serverroom-1
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #      system:
-    #        clock_change_notification: True
+    #        clock_change_notification: true
     #    hosts:
     #      - host: 192.0.2.1
     #        traps: true
@@ -4123,7 +4123,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -4132,7 +4132,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0x5632724fb8ac3699296af26281e1d0f1"
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - authentication:
     #            algorithm: md5
@@ -4177,7 +4177,7 @@ Examples
     #         authentication:
     #           algorithm: md5
     #           password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #           localized_key: True
+    #           localized_key: true
     #           priv:
     #             privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
 
@@ -4203,18 +4203,18 @@ Examples
           location: serverroom-1
           traps:
             aaa:
-              server_state_change: True
+              server_state_change: true
             system:
-              clock_change_notification: True
+              clock_change_notification: true
           hosts:
             - host: 192.0.2.1
-              traps: True
+              traps: true
               version: '1'
               community: public
             - host: 192.0.2.1
               source_interface: Ethernet1/1
             - host: 192.0.2.2
-              informs: True
+              informs: true
               version: '3'
               auth: NMS
           users:
@@ -4224,16 +4224,16 @@ Examples
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
               - user: snmp_user_2
                 group: network-operator
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
                   priv:
                     privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-                    aes_128: True
+                    aes_128: true
             use_acls:
               - user: snmp_user_1
                 ipv4: acl1
@@ -4300,9 +4300,9 @@ Examples
     #    location: serverroom-1
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #      system:
-    #        clock_change_notification: True
+    #        clock_change_notification: true
     #    hosts:
     #      - host: 192.0.2.1
     #        traps: true
@@ -4323,7 +4323,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0x5632724fb8ac3699296af26281e1d0f1"
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - authentication:
     #            algorithm: md5

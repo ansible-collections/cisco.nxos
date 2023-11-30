@@ -50,7 +50,7 @@ options:
       enabled:
         description:
           - Administrative state of the interface. Set the value to C(true) to
-            administratively enable the interface or C(false) to disable it
+            administratively enable the interface or C(true) to disable it
         type: bool
       speed:
         description:
@@ -131,8 +131,8 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.nxos.nxos_fc_interfaces:
     config:
-    - name: fc18/10
-      analytics: fc-scsi
+      - name: fc18/10
+        analytics: fc-scsi
     state: merged
 
 # Task Output
@@ -143,7 +143,7 @@ EXAMPLES = """
 #   speed: auto max 16000
 #   mode: auto
 #   trunk_mode: on
-#   enabled: False
+#   enabled: true
 #   description: $
 #   analytics: fc-nvme
 # commands:
@@ -154,7 +154,7 @@ EXAMPLES = """
 #   speed: auto max 16000
 #   mode: auto
 #   trunk_mode: on
-#   enabled: False
+#   enabled: true
 #   description: $
 #   analytics: fc-all
 
@@ -189,13 +189,13 @@ EXAMPLES = """
 - name: Replaces device configuration of listed interfaces with provided configuration
   cisco.nxos.nxos_fc_interfaces:
     config:
-    - name: fc18/12
-      speed: auto max 64000
-      mode: auto
-      trunk_mode: on
-      enabled: True
-      description: 1
-      analytics: fc-scsi
+      - name: fc18/12
+        speed: auto max 64000
+        mode: auto
+        trunk_mode: "on"
+        enabled: true
+        description: 1
+        analytics: fc-scsi
     state: replaced
 
 # Task Output
@@ -206,7 +206,7 @@ EXAMPLES = """
 #   speed: auto max 64000
 #   mode: auto
 #   trunk_mode: on
-#   enabled: True
+#   enabled: true
 #   description: 1
 #   analytics: fc-all
 # commands:
@@ -218,7 +218,7 @@ EXAMPLES = """
 #   speed: auto max 64000
 #   mode: auto
 #   trunk_mode: on
-#   enabled: True
+#   enabled: true
 #   description: 1
 #   analytics: fc-scsi
 
@@ -251,7 +251,7 @@ EXAMPLES = """
 - name: Delete or return interface parameters to default settings
   cisco.nxos.nxos_fc_interfaces:
     config:
-    - name: fc1/2
+      - name: fc1/2
     state: deleted
 
 # Task Output
@@ -262,7 +262,7 @@ EXAMPLES = """
 #   speed: 1000
 #   mode: E
 #   trunk_mode: off
-#   enabled: True
+#   enabled: true
 # commands:
 # - interface fc1/2
 # - no switchport speed 1000
@@ -274,7 +274,7 @@ EXAMPLES = """
 #   speed: auto
 #   mode: auto
 #   trunk_mode: on
-#   enabled: False
+#   enabled: true
 
 # After state:
 # ------------
@@ -313,13 +313,13 @@ EXAMPLES = """
 - name: Replaces device configuration of listed interfaces with provided configuration
   cisco.nxos.nxos_fc_interfaces:
     config:
-    - name: fc18/12
-      speed: auto max 64000
-      mode: auto
-      trunk_mode: on
-      enabled: True
-      description: 1
-      analytics: fc-scsi
+      - name: fc18/12
+        speed: auto max 64000
+        mode: auto
+        trunk_mode: "on"
+        enabled: true
+        description: 1
+        analytics: fc-scsi
     state: overridden
 
 # Task Output
@@ -330,14 +330,14 @@ EXAMPLES = """
 #   speed: auto max 64000
 #   mode: auto
 #   trunk_mode: on
-#   enabled: True
+#   enabled: true
 #   description: 1
 #   analytics: fc-all
 # - name: fc18/13
 #   speed: auto max 64000
 #   mode: auto
 #   trunk_mode: on
-#   enabled: True
+#   enabled: true
 #   description: 1
 #   analytics: fc-all
 # commands:
@@ -355,14 +355,14 @@ EXAMPLES = """
 #   speed: auto max 64000
 #   mode: auto
 #   trunk_mode: on
-#   enabled: True
+#   enabled: true
 #   description: 1
 #   analytics: fc-scsi
 # - name: fc18/13
 #   speed: auto max 64000
 #   mode: auto
 #   trunk_mode: on
-#   enabled: False
+#   enabled: true
 
 # After state:
 # ------------
@@ -380,29 +380,23 @@ EXAMPLES = """
 #     switchport trunk mode on
 #     shutdown
 
-
-
-
-
-
-
 # Using rendered
 
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_fc_interfaces:
     config:
-    - name: fc1/1
-      speed: auto
-      mode: auto
-      trunk_mode: on
-      enabled: True
-      description: This is a sample line
-    - name: fc1/2
-      speed: 1000
-      mode: E
-      trunk_mode: off
-      enabled: True
-      state: rendered
+      - name: fc1/1
+        speed: auto
+        mode: auto
+        trunk_mode: "on"
+        enabled: true
+        description: This is a sample line
+      - name: fc1/2
+        speed: 1000
+        mode: E
+        trunk_mode: "off"
+        enabled: true
+        state: rendered
 
 # Task Output
 # -----------
@@ -454,13 +448,13 @@ EXAMPLES = """
 #   speed: auto
 #   mode: auto
 #   trunk_mode: on
-#   enabled: True
+#   enabled: true
 #   description: This is a sample line
 # - name: fc1/2
 #   speed: 1000
 #   mode: E
 #   trunk_mode: off
-#   enabled: True
+#   enabled: true
 
 # Using gathered
 
@@ -493,17 +487,13 @@ EXAMPLES = """
 #   speed: auto
 #   mode: auto
 #   trunk_mode: on
-#   enabled: True
+#   enabled: true
 #   description: This is a sample line
 # - name: fc1/2
 #   speed: 1000
 #   mode: E
 #   trunk_mode: off
-#   enabled: True
-
-
-
-
+#   enabled: true
 """
 
 RETURN = """

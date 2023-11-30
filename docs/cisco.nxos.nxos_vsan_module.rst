@@ -160,25 +160,25 @@ Examples
     - name: Test that vsan module works
       cisco.nxos.nxos_vsan:
         vsan:
-        - id: 922
-          interface:
-          - fc1/1
-          - fc1/2
-          - port-channel 1
-          name: vsan-SAN-A
-          remove: false
-          suspend: false
-        - id: 923
-          interface:
-          - fc1/11
-          - fc1/21
-          - port-channel 2
-          name: vsan-SAN-B
-          remove: false
-          suspend: true
-        - id: 1923
-          name: vsan-SAN-Old
-          remove: true
+          - id: 922
+            interface:
+              - fc1/1
+              - fc1/2
+              - port-channel 1
+            name: vsan-SAN-A
+            remove: false
+            suspend: false
+          - id: 923
+            interface:
+              - fc1/11
+              - fc1/21
+              - port-channel 2
+            name: vsan-SAN-B
+            remove: false
+            suspend: true
+          - id: 1923
+            name: vsan-SAN-Old
+            remove: true
 
 
 

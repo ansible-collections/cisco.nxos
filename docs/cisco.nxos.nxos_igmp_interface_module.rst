@@ -342,8 +342,8 @@ Examples
         interface: ethernet1/32
         startup_query_interval: 30
         oif_ps:
-        - {prefix: 238.2.2.6}
-        - {source: 192.168.0.1, prefix: 238.2.2.5}
+          - {prefix: 238.2.2.6}
+          - {source: 192.168.0.1, prefix: 238.2.2.5}
         state: present
 
 

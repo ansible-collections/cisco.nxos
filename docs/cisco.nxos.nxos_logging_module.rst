@@ -404,9 +404,9 @@ Examples
     - name: Configure logging using aggregate
       cisco.nxos.nxos_logging:
         aggregate:
-        - {dest: console, dest_level: 2}
-        - {dest: logfile, dest_level: 2, name: testfile}
-        - {facility: daemon, facility_level: 0}
+          - {dest: console, dest_level: 2}
+          - {dest: logfile, dest_level: 2, name: testfile}
+          - {facility: daemon, facility_level: 0}
         state: present
 
 

@@ -536,13 +536,13 @@ EXAMPLES = """
         acls:
           - name: ACL1v6
             aces:
-            - grant: permit
-              sequence: 10
-              source:
-                any: true
-              destination:
-                prefix: 2001:db8:12::/32
-              protocol: sctp
+              - grant: permit
+                sequence: 10
+                source:
+                  any: true
+                destination:
+                  prefix: 2001:db8:12::/32
+                protocol: sctp
 
 # Task Output
 # -----------
@@ -974,7 +974,7 @@ EXAMPLES = """
 - name: Delete all ACLs in given AFI
   cisco.nxos.nxos_acls:
     config:
-    - afi: ipv4
+      - afi: ipv4
     state: deleted
 
 # Task Output
@@ -1309,37 +1309,37 @@ EXAMPLES = """
 - name: Render required configuration to be pushed to the device
   cisco.nxos.nxos_acls:
     config:
-    - afi: ipv4
-      acls:
-      - name: ACL1v4
-        aces:
-        - grant: deny
-          destination:
-            address: 192.0.2.64
-            wildcard_bits: 0.0.0.255
-          source:
-            any: true
-            port_protocol:
-              lt: 55
-          protocol: tcp
-          protocol_options:
-            tcp:
-              ack: true
-              fin: true
-          sequence: 50
-
-    - afi: ipv6
-      acls:
-      - name: ACL1v6
-        aces:
-        - grant: permit
-          sequence: 10
-          source:
-            any: true
-          destination:
-            prefix: 2001:db8:12::/32
-          protocol: sctp
+      - afi: ipv4
+        acls:
+          - name: ACL1v4
+            aces:
+              - grant: deny
+                destination:
+                  address: 192.0.2.64
+                  wildcard_bits: 0.0.0.255
+                source:
+                  any: true
+                  port_protocol:
+                    lt: 55
+                protocol: tcp
+                protocol_options:
+                  tcp:
+                    ack: true
+                    fin: true
+                sequence: 50
+      - afi: ipv6
+        acls:
+          - name: ACL1v6
+            aces:
+              - grant: permit
+                sequence: 10
+                source:
+                  any: true
+                destination:
+                  prefix: '2001:db8:12::/32'
+                protocol: sctp
     state: rendered
+
 
 # Task Output
 # -----------

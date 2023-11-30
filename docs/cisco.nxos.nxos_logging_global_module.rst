@@ -1226,7 +1226,7 @@ Examples
               facility: local6
               use_vrf: default
           origin_id:
-            hostname: True
+            hostname: true
 
     # Task output
     # -------------
@@ -1512,7 +1512,7 @@ Examples
               facility: local6
               use_vrf: default
           origin_id:
-            hostname: True
+            hostname: true
 
     # Task Output (redacted)
     # -----------------------
