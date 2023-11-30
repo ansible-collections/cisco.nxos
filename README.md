@@ -1,7 +1,5 @@
-
-
 # Cisco NX-OS Collection
-[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.nxos) <!--[![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/vyos)](https://codecov.io/gh/ansible-collections/cisco.nxos)-->
+[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.nxos)
 [![Codecov](https://codecov.io/gh/ansible-collections/cisco.nxos/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/cisco.nxos)
 [![CI](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml)
 
