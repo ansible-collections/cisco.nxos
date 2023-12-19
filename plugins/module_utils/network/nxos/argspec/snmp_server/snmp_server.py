@@ -41,15 +41,27 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                     "options": {"cache_timeout": {"type": "int"}},
                 },
                 "communities": {
-                    "type": "list",
-                    "elements": "dict",
+                    "type": "dict",
                     "options": {
-                        "name": {"type": "str", "aliases": ["community"]},
-                        "group": {"type": "str"},
-                        "ro": {"type": "bool"},
-                        "rw": {"type": "bool"},
-                        "use_ipv4acl": {"type": "str"},
-                        "use_ipv6acl": {"type": "str"},
+                        "groups": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {
+                                "name": {"type": "str", "aliases": ["community"]},
+                                "group": {"type": "str"},
+                                "ro": {"type": "bool"},
+                                "rw": {"type": "bool"},
+                            }
+                        },
+                        "use_acls": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {
+                                "name": {"type": "str", "aliases": ["community"]},
+                                "use_ipv4acl": {"type": "str"},
+                                "use_ipv6acl": {"type": "str"},
+                            },
+                        },
                     },
                 },
                 "contact": {"type": "str"},

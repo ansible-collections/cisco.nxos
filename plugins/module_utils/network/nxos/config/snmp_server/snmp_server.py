@@ -202,7 +202,7 @@ class Snmp_server(ResourceModule):
         """
         Compare list of dictionaries
         """
-        for x in ["users.auth", "users.use_acls", "hosts", "communities"]:
+        for x in ["users.auth", "users.use_acls", "hosts", "communities.groups", "communities.use_acls"]:
             wantx = get_from_dict(want, x) or {}
             havex = get_from_dict(have, x) or {}
             for wkey, wentry in iteritems(wantx):
@@ -230,7 +230,13 @@ class Snmp_server(ResourceModule):
 
         tmp = deepcopy(data)
         if "communities" in tmp:
-            tmp["communities"] = {_build_key(entry): entry for entry in tmp["communities"]}
+            if "groups" in tmp["communities"]:
+                tmp["communities"]["groups"] = {_build_key(entry): entry for entry in tmp["communities"]["groups"]}
+            if "use_acls" in tmp["communities"]:
+                #tmp["communities"]["use_acls"] = {_build_key(entry): entry for entry in tmp["communities"]["use_acls"]}
+                tmp["communities"]["use_acls"] = {
+                    entry["name"]: entry for entry in tmp["communities"]["use_acls"]
+                }
         if "users" in tmp:
             if "auth" in tmp["users"]:
                 tmp["users"]["auth"] = {_build_key(entry): entry for entry in tmp["users"]["auth"]}

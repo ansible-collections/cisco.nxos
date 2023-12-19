@@ -98,32 +98,54 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "communities",
+            "name": "communities.groups",
             "getval": re.compile(
                 r"""
                 ^snmp-server
                 \scommunity\s(?P<community>\S+)
                 (\sgroup\s(?P<group>\S+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "snmp-server community "
+                      "{{ name }}"
+                      "{{ (' group ' + group) if group is defined else '' }}",
+            "result": {
+                "communities": {
+                    "groups": [
+                        {
+                            "name": "{{ community }}",
+                            "group": "{{ group }}",
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "communities.use_acls",
+            "getval": re.compile(
+                r"""
+                ^snmp-server
+                \scommunity\s(?P<community>\S+)
                 (\suse-ipv4acl\s(?P<use_ipv4acl>\S+))?
                 (\suse-ipv6acl\s(?P<use_ipv6acl>\S+))?
                 $""", re.VERBOSE,
             ),
             "setval": "snmp-server community "
                       "{{ name }}"
-                      "{{ (' group ' + group) if group is defined else '' }}"
                       "{{ (' use-ipv4acl ' + use_ipv4acl) if use_ipv4acl is defined else '' }}"
                       "{{ (' use-ipv6acl ' + use_ipv6acl) if use_ipv6acl is defined else '' }}"
                       "{{ ' ro' if ro|d(False) else ''}}"
                       "{{ ' rw' if rw|d(False) else ''}}",
             "result": {
-                "communities": [
-                    {
-                        "name": "{{ community }}",
-                        "group": "{{ group }}",
-                        "use_ipv4acl": "{{ use_ipv4acl }}",
-                        "use_ipv6acl": "{{ use_ipv6acl }}",
-                    },
-                ],
+                "communities": {
+                    "use_acls": [
+                        {
+                            "name": "{{ community }}",
+                            "use_ipv4acl": "{{ use_ipv4acl }}",
+                            "use_ipv6acl": "{{ use_ipv6acl }}",
+                        },
+                    ]
+                },
             },
         },
         {
