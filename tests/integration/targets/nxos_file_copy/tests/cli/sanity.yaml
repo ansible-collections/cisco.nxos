@@ -132,11 +132,11 @@
           - result.changed == true
           - "'copy scp:' in result.copy_cmd"
           - "'bootflash:' in result.file_system"
-          - "'bootflash:dir1/dir2/dir3/{{ test_destination_file }}_copy' in result.local_file"
-          - "'/{{ test_destination_file }}' in result.remote_file"
+          - "'bootflash:dir1/dir2/dir3/test_destination_file_copy' in result.local_file"
+          - "'/test_destination_file' in result.remote_file"
 
           - "'Received: File copied/pulled to nxos device from remote scp server.' in result.transfer_status"
-          - "'{{ mgmt0_ip }}' in result.remote_scp_server"
+          - mgmt0_ip in result.remote_scp_server
 
     - ansible.builtin.pause:
         seconds: 60
@@ -169,11 +169,11 @@
           - result.changed == true
           - "'copy sftp:' in result.copy_cmd"
           - "'bootflash:' in result.file_system"
-          - "'bootflash:dir1/dir2/dir3/{{ test_destination_file }}_another_copy' in result.local_file"
-          - "'/bootflash/{{ test_destination_file }}' in result.remote_file"
+          - "'bootflash:dir1/dir2/dir3/test_destination_file_another_copy' in result.local_file"
+          - "'/bootflash/test_destination_file' in result.remote_file"
 
           - "'Received: File copied/pulled to nxos device from remote scp server.' in result.transfer_status"
-          - "'{{ mgmt0_ip }}' in result.remote_scp_server"
+          - mgmt0_ip in result.remote_scp_server
 
   always:
     - name: Remove file
