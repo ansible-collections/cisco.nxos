@@ -51,7 +51,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "group": {"type": "str"},
                                 "ro": {"type": "bool"},
                                 "rw": {"type": "bool"},
-                            }
+                            },
                         },
                         "use_acls": {
                             "type": "list",

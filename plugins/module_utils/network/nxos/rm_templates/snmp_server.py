@@ -144,7 +144,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                             "use_ipv4acl": "{{ use_ipv4acl }}",
                             "use_ipv6acl": "{{ use_ipv6acl }}",
                         },
-                    ]
+                    ],
                 },
             },
         },
