@@ -255,7 +255,9 @@ class Snmp_server(ResourceModule):
                 }
         if "hosts" in tmp:
             if "sources" in tmp["hosts"]:
-                tmp["hosts"]["sources"] = {_build_key(entry): entry for entry in tmp["hosts"]["sources"]}
+                tmp["hosts"]["sources"] = {
+                    _build_key(entry): entry for entry in tmp["hosts"]["sources"]
+                }
             if "use_vrfs" in tmp["hosts"]:
                 tmp["hosts"]["use_vrfs"] = {
                     entry["host"]: entry for entry in tmp["hosts"]["use_vrfs"]
