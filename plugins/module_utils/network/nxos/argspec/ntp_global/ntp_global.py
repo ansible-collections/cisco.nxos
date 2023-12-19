@@ -31,109 +31,113 @@ The arg spec for the nxos_ntp_global module
 class Ntp_globalArgs(object):  # pylint: disable=R0903
     """The arg spec for the nxos_ntp_global module"""
 
-    argument_spec = {
-        "running_config": {"type": "str"},
-        "config": {
-            "type": "dict",
-            "options": {
-                "access_group": {
-                    "type": "dict",
-                    "options": {
-                        "match_all": {"type": "bool"},
-                        "peer": {
-                            "type": "list",
-                            "elements": "dict",
-                            "options": {"access_list": {"type": "str"}},
-                        },
-                        "query_only": {
-                            "type": "list",
-                            "elements": "dict",
-                            "options": {"access_list": {"type": "str"}},
-                        },
-                        "serve": {
-                            "type": "list",
-                            "elements": "dict",
-                            "options": {"access_list": {"type": "str"}},
-                        },
-                        "serve_only": {
-                            "type": "list",
-                            "elements": "dict",
-                            "options": {"access_list": {"type": "str"}},
+    def __init__(self, redact_sensitive=True):
+        self.redact_sensitive = redact_sensitive
+
+    def get_argument_spec(self):
+        return {
+            "running_config": {"type": "str"},
+            "config": {
+                "type": "dict",
+                "options": {
+                    "access_group": {
+                        "type": "dict",
+                        "options": {
+                            "match_all": {"type": "bool"},
+                            "peer": {
+                                "type": "list",
+                                "elements": "dict",
+                                "options": {"access_list": {"type": "str"}},
+                            },
+                            "query_only": {
+                                "type": "list",
+                                "elements": "dict",
+                                "options": {"access_list": {"type": "str"}},
+                            },
+                            "serve": {
+                                "type": "list",
+                                "elements": "dict",
+                                "options": {"access_list": {"type": "str"}},
+                            },
+                            "serve_only": {
+                                "type": "list",
+                                "elements": "dict",
+                                "options": {"access_list": {"type": "str"}},
+                            },
                         },
                     },
-                },
-                "allow": {
-                    "type": "dict",
-                    "options": {
-                        "control": {
-                            "type": "dict",
-                            "options": {"rate_limit": {"type": "int"}},
+                    "allow": {
+                        "type": "dict",
+                        "options": {
+                            "control": {
+                                "type": "dict",
+                                "options": {"rate_limit": {"type": "int"}},
+                            },
+                            "private": {"type": "bool"},
                         },
-                        "private": {"type": "bool"},
                     },
-                },
-                "authenticate": {"type": "bool"},
-                "authentication_keys": {
-                    "type": "list",
-                    "elements": "dict",
-                    "no_log": False,
-                    "options": {
-                        "id": {"type": "int"},
-                        "key": {"type": "str", "no_log": True},
-                        "encryption": {"type": "int"},
+                    "authenticate": {"type": "bool"},
+                    "authentication_keys": {
+                        "type": "list",
+                        "elements": "dict",
+                        "no_log": False,
+                        "options": {
+                            "id": {"type": "int"},
+                            "key": {"type": "str", "no_log": self.redact_sensitive},
+                            "encryption": {"type": "int"},
+                        },
                     },
-                },
-                "logging": {"type": "bool"},
-                "master": {
-                    "type": "dict",
-                    "options": {"stratum": {"type": "int"}},
-                },
-                "passive": {"type": "bool"},
-                "peers": {
-                    "type": "list",
-                    "elements": "dict",
-                    "options": {
-                        "peer": {"type": "str"},
-                        "key_id": {"type": "int"},
-                        "maxpoll": {"type": "int"},
-                        "minpoll": {"type": "int"},
-                        "prefer": {"type": "bool"},
-                        "vrf": {"type": "str", "aliases": ["use_vrf"]},
+                    "logging": {"type": "bool"},
+                    "master": {
+                        "type": "dict",
+                        "options": {"stratum": {"type": "int"}},
                     },
-                },
-                "servers": {
-                    "type": "list",
-                    "elements": "dict",
-                    "options": {
-                        "server": {"type": "str"},
-                        "key_id": {"type": "int"},
-                        "maxpoll": {"type": "int"},
-                        "minpoll": {"type": "int"},
-                        "prefer": {"type": "bool"},
-                        "vrf": {"type": "str", "aliases": ["use_vrf"]},
+                    "passive": {"type": "bool"},
+                    "peers": {
+                        "type": "list",
+                        "elements": "dict",
+                        "options": {
+                            "peer": {"type": "str"},
+                            "key_id": {"type": "int"},
+                            "maxpoll": {"type": "int"},
+                            "minpoll": {"type": "int"},
+                            "prefer": {"type": "bool"},
+                            "vrf": {"type": "str", "aliases": ["use_vrf"]},
+                        },
                     },
-                },
-                "source": {"type": "str"},
-                "source_interface": {"type": "str"},
-                "trusted_keys": {
-                    "type": "list",
-                    "elements": "dict",
-                    "no_log": False,
-                    "options": {"key_id": {"type": "int"}},
+                    "servers": {
+                        "type": "list",
+                        "elements": "dict",
+                        "options": {
+                            "server": {"type": "str"},
+                            "key_id": {"type": "int"},
+                            "maxpoll": {"type": "int"},
+                            "minpoll": {"type": "int"},
+                            "prefer": {"type": "bool"},
+                            "vrf": {"type": "str", "aliases": ["use_vrf"]},
+                        },
+                    },
+                    "source": {"type": "str"},
+                    "source_interface": {"type": "str"},
+                    "trusted_keys": {
+                        "type": "list",
+                        "elements": "dict",
+                        "no_log": False,
+                        "options": {"key_id": {"type": "int"}},
+                    },
                 },
             },
-        },
-        "state": {
-            "type": "str",
-            "choices": [
-                "merged",
-                "replaced",
-                "overridden",
-                "deleted",
-                "parsed",
-                "gathered",
-                "rendered",
-            ],
-            "default": "merged",
-        },
-    }  # pylint: disable=C0301
+            "state": {
+                "type": "str",
+                "choices": [
+                    "merged",
+                    "replaced",
+                    "overridden",
+                    "deleted",
+                    "parsed",
+                    "gathered",
+                    "rendered",
+                ],
+                "default": "merged",
+            },
+        }  # pylint: disable=C0301
