@@ -26,6 +26,14 @@ Minor Changes
 
 - nxos_config - Relax restrictions on I(src) parameter so it can be used more like I(lines). (https://github.com/ansible-collections/cisco.nxos/issues/89).
 
+v5.2.2
+======
+
+Bugfixes
+--------
+
+- nxos_user - fix Salt (6->8 as supported by Cisco NX-OS) chars
+
 v5.2.1
 ======
 
