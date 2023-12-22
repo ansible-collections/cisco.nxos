@@ -1017,7 +1017,7 @@ releases:
   5.2.2:
     changes:
       bugfixes:
-        - nxos_user - fix Salt (6->8 as supported by Cisco NX-OS) chars 
+        - nxos_user - fix Salt (6->8 as supported by Cisco NX-OS) chars
     release_date: "2023-12-22"
   5.3.0:
     changes:
