@@ -7,6 +7,10 @@ Cisco Nxos Collection Release Notes
 
 v5.2.2
 ======
+
+Bugfixes
+--------
+
 - nxos_user - fix Salt (6->8 as supported by Cisco NX-OS) chars
 
 =======
