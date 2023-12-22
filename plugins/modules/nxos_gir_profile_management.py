@@ -65,8 +65,8 @@ EXAMPLES = """
 - cisco.nxos.nxos_gir_profile_management:
     mode: maintenance
     commands:
-    - router eigrp 11
-    - isolate
+      - router eigrp 11
+      - isolate
 
 # Remove the maintenance-mode profile
 - cisco.nxos.nxos_gir_profile_management:

@@ -51,25 +51,25 @@ EXAMPLES = """
 - name: Test that vsan module works
   cisco.nxos.nxos_vsan:
     vsan:
-    - id: 922
-      interface:
-      - fc1/1
-      - fc1/2
-      - port-channel 1
-      name: vsan-SAN-A
-      remove: false
-      suspend: false
-    - id: 923
-      interface:
-      - fc1/11
-      - fc1/21
-      - port-channel 2
-      name: vsan-SAN-B
-      remove: false
-      suspend: true
-    - id: 1923
-      name: vsan-SAN-Old
-      remove: true
+      - id: 922
+        interface:
+          - fc1/1
+          - fc1/2
+          - port-channel 1
+        name: vsan-SAN-A
+        remove: false
+        suspend: false
+      - id: 923
+        interface:
+          - fc1/11
+          - fc1/21
+          - port-channel 2
+        name: vsan-SAN-B
+        remove: false
+        suspend: true
+      - id: 1923
+        name: vsan-SAN-Old
+        remove: true
 """
 
 RETURN = """
@@ -198,7 +198,9 @@ def main():
         interface=dict(type="list", elements="str"),
     )
 
-    argument_spec = dict(vsan=dict(type="list", elements="dict", options=vsan_element_spec))
+    argument_spec = dict(
+        vsan=dict(type="list", elements="dict", options=vsan_element_spec),
+    )
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
     warnings = list()
@@ -238,7 +240,9 @@ def main():
         if vsanremove:
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
-                messages.append(str(vsanid) + " is a reserved vsan, hence cannot be removed")
+                messages.append(
+                    str(vsanid) + " is a reserved vsan, hence cannot be removed",
+                )
                 continue
             if vsanid == sw_vsanid:
                 commands.append("no vsan " + str(vsanid))
@@ -270,7 +274,9 @@ def main():
         if vsanname is not None:
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
-                messages.append(str(vsanid) + " is a reserved vsan, and cannot be renamed")
+                messages.append(
+                    str(vsanid) + " is a reserved vsan, and cannot be renamed",
+                )
             else:
                 if vsanname == sw_vsanname:
                     messages.append(
@@ -282,12 +288,16 @@ def main():
                     )
                 else:
                     commands.append("vsan " + str(vsanid) + " name " + vsanname)
-                    messages.append("setting vsan name to " + vsanname + " for vsan " + str(vsanid))
+                    messages.append(
+                        "setting vsan name to " + vsanname + " for vsan " + str(vsanid),
+                    )
 
         if vsansuspend:
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
-                messages.append(str(vsanid) + " is a reserved vsan, and cannot be suspended")
+                messages.append(
+                    str(vsanid) + " is a reserved vsan, and cannot be suspended",
+                )
             else:
                 if sw_vsanstate == "suspended":
                     messages.append(
@@ -322,7 +332,9 @@ def main():
                         + " interface list",
                     )
                 else:
-                    commands.append("vsan " + str(vsanid) + " interface " + each_interface_name)
+                    commands.append(
+                        "vsan " + str(vsanid) + " interface " + each_interface_name,
+                    )
                     messages.append(
                         "adding interface " + each_interface_name + " to vsan " + str(vsanid),
                     )

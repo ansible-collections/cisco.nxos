@@ -228,10 +228,10 @@ Examples
     - name: Merge provided configuration with device configuration.
       cisco.nxos.nxos_vlans:
         config:
-        - vlan_id: 5
-          name: test-vlan5
-        - vlan_id: 10
-          enabled: false
+          - vlan_id: 5
+            name: test-vlan5
+          - vlan_id: 10
+            enabled: false
         state: merged
 
     # After state:
@@ -258,11 +258,11 @@ Examples
     - name: Replace device configuration of specified vlan with provided configuration.
       cisco.nxos.nxos_vlans:
         config:
-        - vlan_id: 5
-          name: test-vlan
-          enabled: false
-        - vlan_id: 10
-          enabled: false
+          - vlan_id: 5
+            name: test-vlan
+            enabled: false
+          - vlan_id: 10
+            enabled: false
         state: replaced
 
     # After state:
@@ -293,10 +293,10 @@ Examples
     - name: Override device configuration of all vlans with provided configuration.
       cisco.nxos.nxos_vlans:
         config:
-        - vlan_id: 5
-          name: test-vlan
-        - vlan_id: 10
-          state: active
+          - vlan_id: 5
+            name: test-vlan
+          - vlan_id: 10
+            state: active
         state: overridden
 
     # After state:
@@ -321,8 +321,8 @@ Examples
     - name: Delete vlans.
       cisco.nxos.nxos_vlans:
         config:
-        - vlan_id: 5
-        - vlan_id: 10
+          - vlan_id: 5
+          - vlan_id: 10
         state: deleted
 
     # After state:
@@ -334,13 +334,13 @@ Examples
     - name: Use rendered state to convert task input to device specific commands
       cisco.nxos.nxos_vlans:
         config:
-        - vlan_id: 5
-          name: vlan5
-          mapped_vni: 100
+          - vlan_id: 5
+            name: vlan5
+            mapped_vni: 100
 
-        - vlan_id: 6
-          name: vlan6
-          state: suspend
+          - vlan_id: 6
+            name: vlan6
+            state: suspend
         state: rendered
 
     # Task Output (redacted)

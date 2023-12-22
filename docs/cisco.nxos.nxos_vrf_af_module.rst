@@ -210,55 +210,50 @@ Examples
         afi: ipv4
         route_target_both_auto_evpn: true
         state: present
-
     - cisco.nxos.nxos_vrf_af:
         vrf: ntc
         afi: ipv4
         route_targets:
-        - rt: 65000:1000
-          direction: import
-        - rt: 65001:1000
-          direction: import
-
+          - rt: '65000:1000'
+            direction: import
+          - rt: '65001:1000'
+            direction: import
     - cisco.nxos.nxos_vrf_af:
         vrf: ntc
         afi: ipv4
         route_targets:
-        - rt: 65000:1000
-          direction: import
-        - rt: 65001:1000
-          state: absent
-
+          - rt: '65000:1000'
+            direction: import
+          - rt: '65001:1000'
+            state: absent
     - cisco.nxos.nxos_vrf_af:
         vrf: ntc
         afi: ipv4
         route_targets:
-        - rt: 65000:1000
-          direction: export
-        - rt: 65001:1000
-          direction: export
-
+          - rt: '65000:1000'
+            direction: export
+          - rt: '65001:1000'
+            direction: export
     - cisco.nxos.nxos_vrf_af:
         vrf: ntc
         afi: ipv4
         route_targets:
-        - rt: 65000:1000
-          direction: export
-          state: absent
-
+          - rt: '65000:1000'
+            direction: export
+            state: absent
     - cisco.nxos.nxos_vrf_af:
         vrf: ntc
         afi: ipv4
         route_targets:
-        - rt: 65000:1000
-          direction: both
-          state: present
-        - rt: 65001:1000
-          direction: import
-          state: present
-        - rt: 65002:1000
-          direction: both
-          state: absent
+          - rt: '65000:1000'
+            direction: both
+            state: present
+          - rt: '65001:1000'
+            direction: import
+            state: present
+          - rt: '65002:1000'
+            direction: both
+            state: absent
 
 
 

@@ -380,21 +380,21 @@ Examples
 
     - cisco.nxos.nxos_config:
         lines:
-        - 10 permit ip 192.0.2.1/32 any log
-        - 20 permit ip 192.0.2.2/32 any log
-        - 30 permit ip 192.0.2.3/32 any log
-        - 40 permit ip 192.0.2.4/32 any log
-        - 50 permit ip 192.0.2.5/32 any log
+          - 10 permit ip 192.0.2.1/32 any log
+          - 20 permit ip 192.0.2.2/32 any log
+          - 30 permit ip 192.0.2.3/32 any log
+          - 40 permit ip 192.0.2.4/32 any log
+          - 50 permit ip 192.0.2.5/32 any log
         parents: ip access-list test
         before: no ip access-list test
         match: exact
 
     - cisco.nxos.nxos_config:
         lines:
-        - 10 permit ip 192.0.2.1/32 any log
-        - 20 permit ip 192.0.2.2/32 any log
-        - 30 permit ip 192.0.2.3/32 any log
-        - 40 permit ip 192.0.2.4/32 any log
+          - 10 permit ip 192.0.2.1/32 any log
+          - 20 permit ip 192.0.2.2/32 any log
+          - 30 permit ip 192.0.2.3/32 any log
+          - 40 permit ip 192.0.2.4/32 any log
         parents: ip access-list test
         before: no ip access-list test
         replace: block
@@ -408,7 +408,7 @@ Examples
       cisco.nxos.nxos_config:
         lines:
           # - shut
-        - shutdown
+          - shutdown
         # parents: int eth1/1
         parents: interface Ethernet1/1
 

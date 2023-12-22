@@ -2957,44 +2957,44 @@ Examples
 
           - route_map: rmap3
             entries:
-            - sequence: 10
-              description: "*** first stanza ***"
-              action: permit
-              set:
-                ip:
-                  next_hop:
-                    verify_availability:
-                    - address: 3.3.3.3
-                      track: 1
-                    - address: 4.4.4.4
-                      track: 3
+              - sequence: 10
+                description: "*** first stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      verify_availability:
+                        - address: 3.3.3.3
+                          track: 1
+                        - address: 4.4.4.4
+                          track: 3
 
-            - sequence: 20
-              description: "*** second stanza ***"
-              action: permit
-              set:
-                ip:
-                  next_hop:
-                    address: 6.6.6.6 2.2.2.2
-                    load_share: true
-                    drop_on_fail: true
+              - sequence: 20
+                description: "*** second stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      address: 6.6.6.6 2.2.2.2
+                      load_share: true
+                      drop_on_fail: true
 
-            - sequence: 30
-              description: "*** third stanza ***"
-              action: permit
-              set:
-                ip:
-                  next_hop:
-                    peer_address: true
+              - sequence: 30
+                description: "*** third stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      peer_address: true
 
-            - sequence: 40
-              description: "*** fourth stanza ***"
-              action: permit
-              set:
-                ip:
-                  next_hop:
-                    unchanged: true
-                    redist_unchanged: true
+              - sequence: 40
+                description: "*** fourth stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      unchanged: true
+                      redist_unchanged: true
         state: merged
 
     # Task output
@@ -3259,35 +3259,35 @@ Examples
                         - AllowPrefix1
                 set:
                   community:
-                    local_as: True
+                    local_as: true
 
           - route_map: rmap3
             entries:
-            - sequence: 10
-              description: "*** first stanza ***"
-              action: permit
-              set:
-                ip:
-                  next_hop:
-                    verify_availability:
-                    - address: 3.3.3.3
-                      track: 1
-            - sequence: 20
-              description: "*** second stanza ***"
-              action: permit
-              set:
-                ip:
-                  next_hop:
-                    peer_address: true
-            - sequence: 30
-              description: "*** third stanza ***"
-              action: permit
-              set:
-                ip:
-                  next_hop:
-                    address: 6.6.6.6 2.2.2.2
-                    load_share: true
-                    drop_on_fail: true
+              - sequence: 10
+                description: "*** first stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      verify_availability:
+                        - address: 3.3.3.3
+                          track: 1
+              - sequence: 20
+                description: "*** second stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      peer_address: true
+              - sequence: 30
+                description: "*** third stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      address: 6.6.6.6 2.2.2.2
+                      load_share: true
+                      drop_on_fail: true
         state: replaced
 
     # Task output
@@ -3446,7 +3446,7 @@ Examples
     #                  - AllowPrefix1
     #          set:
     #            community:
-    #              local_as: True
+    #              local_as: true
     #
     #    - route_map: rmap2
     #      entries:
@@ -3594,7 +3594,7 @@ Examples
                         - AllowPrefix1
                 set:
                   community:
-                    local_as: True
+                    local_as: true
         state: overridden
 
     # Task output
@@ -3705,7 +3705,7 @@ Examples
     #            - AllowPrefix1
     #      set:
     #        community:
-    #          local_as: True
+    #          local_as: true
     #
     # After state:
     # ------------

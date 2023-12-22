@@ -89,8 +89,8 @@ EXAMPLES = """
     vni: 6000
     route_distinguisher: 60:10
     route_target_import:
-    - 5000:10
-    - 4100:100
+      - "5000:10"
+      - "4100:100"
     route_target_export: auto
     route_target_both: default
 """
@@ -215,7 +215,9 @@ def state_present(module, existing, proposed):
                 if target == "default":
                     continue
                 if existing:
-                    if target not in existing.get(key.replace("-", "_").replace(" ", "_")):
+                    if target not in existing.get(
+                        key.replace("-", "_").replace(" ", "_"),
+                    ):
                         commands.append("{0} {1}".format(key, target))
                 else:
                     commands.append("{0} {1}".format(key, target))

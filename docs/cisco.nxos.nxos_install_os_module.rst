@@ -132,9 +132,10 @@ Examples
       nxos_command:
         commands: [show version | json]
       register: output
+
     - assert:
         that:
-        - output['stdout'][0]['kickstart_ver_str'] == '7.0(3)I6(1)'
+          - output['stdout'][0]['kickstart_ver_str'] == '7.0(3)I6(1)'
 
 
 

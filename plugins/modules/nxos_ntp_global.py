@@ -241,7 +241,7 @@ EXAMPLES = """
           - access_list: PeerAcl1
         serve:
           - access_list: ServeAcl1
-      authenticate: True
+      authenticate: true
       authentication_keys:
         - id: 1001
           key: vagwwtKfkv
@@ -249,7 +249,7 @@ EXAMPLES = """
         - id: 1002
           key: vagwwtKfkvgthz
           encryption: 7
-      logging: True
+      logging: true
       master:
         stratum: 2
       peers:
@@ -260,7 +260,7 @@ EXAMPLES = """
           vrf: default
         - peer: 192.0.2.2
           key_id: 2
-          prefer: True
+          prefer: true
           vrf: siteA
       servers:
         - server: 198.51.100.1
@@ -293,7 +293,7 @@ EXAMPLES = """
 #        - access_list: PeerAcl1
 #      serve:
 #       - access_list: ServeAcl1
-#    authenticate: True
+#    authenticate: true
 #    authentication_keys:
 #      - id: 1001
 #        key: vagwwtKfkv
@@ -301,7 +301,7 @@ EXAMPLES = """
 #      - id: 1002
 #        key: vagwwtKfkvgthz
 #        encryption: 7
-#    logging: True
+#    logging: true
 #    master:
 #     stratum: 2
 #    peers:
@@ -312,7 +312,7 @@ EXAMPLES = """
 #        vrf: default
 #      - peer: 192.0.2.2
 #        key_id: 2
-#        prefer: True
+#        prefer: true
 #        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1
@@ -362,7 +362,7 @@ EXAMPLES = """
           - access_list: PeerAcl2
         serve:
           - access_list: ServeAcl2
-      logging: True
+      logging: true
       master:
         stratum: 2
       peers:
@@ -373,7 +373,7 @@ EXAMPLES = """
           vrf: default
         - peer: 192.0.2.5
           key_id: 2
-          prefer: True
+          prefer: true
           vrf: siteA
       servers:
         - server: 198.51.100.1
@@ -389,7 +389,7 @@ EXAMPLES = """
 #        - access_list: PeerAcl1
 #      serve:
 #       - access_list: ServeAcl1
-#    authenticate: True
+#    authenticate: true
 #    authentication_keys:
 #      - id: 1001
 #        key: vagwwtKfkv
@@ -397,7 +397,7 @@ EXAMPLES = """
 #      - id: 1002
 #        key: vagwwtKfkvgthz
 #        encryption: 7
-#    logging: True
+#    logging: true
 #    master:
 #     stratum: 2
 #    peers:
@@ -408,7 +408,7 @@ EXAMPLES = """
 #        vrf: default
 #      - peer: 192.0.2.2
 #        key_id: 2
-#        prefer: True
+#        prefer: true
 #        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1
@@ -436,7 +436,7 @@ EXAMPLES = """
 #        - access_list: PeerAcl2
 #      serve:
 #        - access_list: ServeAcl2
-#    logging: True
+#    logging: true
 #    master:
 #      stratum: 2
 #    peers:
@@ -447,7 +447,7 @@ EXAMPLES = """
 #        vrf: default
 #      - peer: 192.0.2.5
 #        key_id: 2
-#        prefer: True
+#        prefer: true
 #        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1
@@ -483,7 +483,7 @@ EXAMPLES = """
 #        - access_list: PeerAcl1
 #      serve:
 #       - access_list: ServeAcl1
-#    authenticate: True
+#    authenticate: true
 #    authentication_keys:
 #      - id: 1001
 #        key: vagwwtKfkv
@@ -491,7 +491,7 @@ EXAMPLES = """
 #      - id: 1002
 #        key: vagwwtKfkvgthz
 #        encryption: 7
-#    logging: True
+#    logging: true
 #    master:
 #     stratum: 2
 #    peers:
@@ -502,7 +502,7 @@ EXAMPLES = """
 #        vrf: default
 #      - peer: 192.0.2.2
 #        key_id: 2
-#        prefer: True
+#        prefer: true
 #        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1
@@ -542,7 +542,7 @@ EXAMPLES = """
           - access_list: PeerAcl1
         serve:
           - access_list: ServeAcl1
-      authenticate: True
+      authenticate: true
       authentication_keys:
         - id: 1001
           key: vagwwtKfkv
@@ -550,7 +550,7 @@ EXAMPLES = """
         - id: 1002
           key: vagwwtKfkvgthz
           encryption: 7
-      logging: True
+      logging: true
       master:
         stratum: 2
       peers:
@@ -561,7 +561,7 @@ EXAMPLES = """
           vrf: default
         - peer: 192.0.2.2
           key_id: 2
-          prefer: True
+          prefer: true
           vrf: siteA
       servers:
         - server: 198.51.100.1
@@ -616,7 +616,7 @@ EXAMPLES = """
 #        - access_list: PeerAcl1
 #      serve:
 #       - access_list: ServeAcl1
-#    authenticate: True
+#    authenticate: true
 #    authentication_keys:
 #      - id: 1001
 #        key: vagwwtKfkv
@@ -624,7 +624,7 @@ EXAMPLES = """
 #      - id: 1002
 #        key: vagwwtKfkvgthz
 #        encryption: 7
-#    logging: True
+#    logging: true
 #    master:
 #     stratum: 2
 #    peers:
@@ -635,7 +635,7 @@ EXAMPLES = """
 #        vrf: default
 #      - peer: 192.0.2.2
 #        key_id: 2
-#        prefer: True
+#        prefer: true
 #        vrf: siteA
 #    servers:
 #      - server: 198.51.100.1

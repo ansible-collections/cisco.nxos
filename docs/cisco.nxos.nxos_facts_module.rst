@@ -113,11 +113,11 @@ Examples
     - name: Gather only the config and default facts
       cisco.nxos.nxos_facts:
         gather_subset:
-        - config
+          - config
     - name: Do not gather hardware facts
       cisco.nxos.nxos_facts:
         gather_subset:
-        - '!hardware'
+          - '!hardware'
     - name: Gather legacy and resource facts
       cisco.nxos.nxos_facts:
         gather_subset: all
@@ -125,10 +125,10 @@ Examples
     - name: Gather only the interfaces resource facts and no legacy facts
       cisco.nxos.nxos_facts:
         gather_subset:
-        - '!all'
-        - '!min'
+          - '!all'
+          - '!min'
         gather_network_resources:
-        - interfaces
+          - interfaces
     - name: Gather interfaces resource and minimal legacy facts
       cisco.nxos.nxos_facts:
         gather_subset: min

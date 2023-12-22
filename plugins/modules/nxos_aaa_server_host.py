@@ -114,7 +114,6 @@ EXAMPLES = """
     tacacs_port: 89
     host_timeout: 10
     address: 5.6.7.8
-
 """
 
 RETURN = """
@@ -315,7 +314,9 @@ def main():
         module.fail_json(msg="tacacs_port can only be used with server_type=tacacs")
 
     if (auth_port or acct_port) and server_type != "radius":
-        module.fail_json(msg="auth_port and acct_port can only be used" "when server_type=radius")
+        module.fail_json(
+            msg="auth_port and acct_port can only be used" "when server_type=radius",
+        )
 
     existing = get_aaa_host_info(module, server_type, address)
     end_state = existing

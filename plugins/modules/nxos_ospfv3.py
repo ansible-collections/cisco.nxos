@@ -87,7 +87,7 @@ options:
                     description:
                     - The Area ID in IP Address format.
                     type: str
-                    required: True
+                    required: true
                   default_cost:
                     description:
                     - Specify the default cost.
@@ -102,13 +102,13 @@ options:
                         description:
                         - The Route-map name.
                         type: str
-                        required: True
+                        required: true
                       direction:
                         description:
                         - The direction to apply the route map.
                         type: str
                         choices: [in, out]
-                        required: True
+                        required: true
                   ranges:
                     description:
                     - Configure an address range for the area.
@@ -119,7 +119,7 @@ options:
                         description:
                         - IP in Prefix format (x.x.x.x/len)
                         type: str
-                        required: True
+                        required: true
                       cost:
                         description:
                         - Cost to use for the range.
@@ -169,7 +169,7 @@ options:
                     - The name of the protocol.
                     type: str
                     choices: [bgp, direct, eigrp, isis, lisp, ospfv3, rip, static]
-                    required: True
+                    required: true
                   id:
                     description:
                     - The identifier for the protocol specified.
@@ -178,7 +178,7 @@ options:
                     description:
                     - The route map policy to constrain redistribution.
                     type: str
-                    required: True
+                    required: true
               summary_address:
                 description:
                 - Configure route summarization for redistribution.
@@ -189,7 +189,7 @@ options:
                     description:
                     - IPv6 prefix format 'xxxx:xxxx/ml', 'xxxx:xxxx::/ml' or 'xxxx::xx/128'
                     type: str
-                    required: True
+                    required: true
                   not_advertise:
                     description:
                     - Suppress advertising the specified summary.
@@ -208,7 +208,7 @@ options:
                     description:
                     - The Route Map name.
                     type: str
-                    required: True
+                    required: true
                   filter:
                     description:
                     - Block the OSPF routes from being sent to RIB.
@@ -250,7 +250,7 @@ options:
                 description:
                 - The Area ID in IP Address format.
                 type: str
-                required: True
+                required: true
               nssa:
                 description:
                 - NSSA settings for the area.
@@ -320,12 +320,12 @@ options:
                 description:
                 - Reference bandwidth used to assign OSPF cost.
                 type: int
-                required: True
+                required: true
               unit:
                 description:
                 - Specify in which unit the reference bandwidth is specified.
                 type: str
-                required: True
+                required: true
                 choices: [Gbps, Mbps]
           flush_routes:
             description:
@@ -378,7 +378,7 @@ options:
                 description:
                 - Set the maximum number of non self-generated LSAs.
                 type: int
-                required: True
+                required: true
               threshold:
                 description:
                 - Threshold value (%) at which to generate a warning message.
@@ -477,7 +477,7 @@ options:
             description:
             - The OSPF process tag.
             type: str
-            required: True
+            required: true
           router_id:
             description:
             - Set OSPF process router-id.
@@ -537,7 +537,7 @@ options:
                     description:
                     - The Area ID in IP Address format.
                     type: str
-                    required: True
+                    required: true
                   nssa:
                     description:
                     - NSSA settings for the area.
@@ -607,12 +607,12 @@ options:
                     description:
                     - Reference bandwidth used to assign OSPF cost.
                     type: int
-                    required: True
+                    required: true
                   unit:
                     description:
                     - Specify in which unit the reference bandwidth is specified.
                     type: str
-                    required: True
+                    required: true
                     choices: [Gbps, Mbps]
               graceful_restart:
                 description:
@@ -657,7 +657,7 @@ options:
                     description:
                     - Set the maximum number of non self-generated LSAs.
                     type: int
-                    required: True
+                    required: true
                   threshold:
                     description:
                     - Threshold value (%) at which to generate a warning message.
@@ -799,7 +799,7 @@ options:
                 description:
                 - Name/Identifier of the VRF.
                 type: str
-                required: True
+                required: true
   state:
     description:
     - The state the configuration should be left in.
@@ -826,49 +826,49 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 100
-        router_id: 203.0.113.20
-      - process_id: 102
-        router_id: 198.51.100.1
-        address_family:
-          afi: ipv6
-          safi: unicast
-          areas:
-          - area_id: 0.0.0.100
-            filter_list:
-            - route_map: rmap_1
-              direction: in
-            - route_map: rmap_2
-              direction: out
-            ranges:
-            - prefix: 2001:db2::/32
-              not_advertise: true
-            - prefix: 2001:db3::/32
-              cost: 120
-          redistribute:
-          - protocol: eigrp
-            id: 120
-            route_map: rmap_1
-          - protocol: direct
-            route_map: ospf102-direct-connect
-        vrfs:
-        - vrf: zone1
-          router_id: 198.51.100.129
-          areas:
-          - area_id: 0.0.0.102
-            nssa:
-              default_information_originate: true
-              no_summary: true
-          - area_id: 0.0.0.103
-            nssa:
-              no_summary: true
-              translate:
-                type7:
-                  always: true
-        - vrf: zone2
-          auto_cost:
-            reference_bandwidth: 45
-            unit: Gbps
+        - process_id: 100
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
+          address_family:
+            afi: ipv6
+            safi: unicast
+            areas:
+              - area_id: 0.0.0.100
+                filter_list:
+                  - route_map: rmap_1
+                    direction: in
+                  - route_map: rmap_2
+                    direction: out
+                ranges:
+                  - prefix: '2001:db2::/32'
+                    not_advertise: true
+                  - prefix: '2001:db3::/32'
+                    cost: 120
+            redistribute:
+              - protocol: eigrp
+                id: 120
+                route_map: rmap_1
+              - protocol: direct
+                route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: true
+                    no_summary: true
+                - area_id: 0.0.0.103
+                  nssa:
+                    no_summary: true
+                    translate:
+                      type7:
+                        always: true
+            - vrf: zone2
+              auto_cost:
+                reference_bandwidth: 45
+                unit: Gbps
     state: merged
 
 # Task output:
@@ -992,33 +992,33 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 102
-        router_id: 198.51.100.1
-        address_family:
-          afi: ipv6
-          safi: unicast
-          areas:
-          - area_id: 0.0.0.100
-            filter_list:
-            - route_map: rmap_8
-              direction: in
-            ranges:
-            - not_advertise: true
-              prefix: 2001:db2::/32
-          redistribute:
-          - protocol: eigrp
-            id: 130
-            route_map: rmap_1
-          - protocol: direct
-            route_map: ospf102-direct-connect
-        vrfs:
-        - vrf: zone1
-          router_id: 198.51.100.129
-          areas:
-          - area_id: 0.0.0.102
-            nssa:
-              default_information_originate: True
-              no_summary: True
+        - process_id: 102
+          router_id: 198.51.100.1
+          address_family:
+            afi: ipv6
+            safi: unicast
+            areas:
+              - area_id: 0.0.0.100
+                filter_list:
+                  - route_map: rmap_8
+                    direction: in
+                ranges:
+                  - not_advertise: true
+                    prefix: 2001:db2::/32
+            redistribute:
+              - protocol: eigrp
+                id: 130
+                route_map: rmap_1
+              - protocol: direct
+                route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: true
+                    no_summary: true
     state: replaced
 
 # Task output:
@@ -1158,11 +1158,11 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 104
-        router_id: 203.0.113.20
-      - process_id: 102
-        router_id: 198.51.100.1
-        shutdown: true
+        - process_id: 104
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
+          shutdown: true
     state: overridden
 
 # Task output:
@@ -1278,7 +1278,7 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 102
+        - process_id: 102
     state: deleted
 
 # Task output:
@@ -1330,7 +1330,7 @@ EXAMPLES = """
 #        vrf: zone2
 #
 # commands:
-#  - no router ospfv3 102
+#   - no router ospfv3 102
 #
 # after:
 #   processes:
@@ -1436,49 +1436,49 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 100
-        router_id: 203.0.113.20
-      - process_id: 102
-        router_id: 198.51.100.1
-        address_family:
-          afi: ipv6
-          safi: unicast
-          areas:
-          - area_id: 0.0.0.100
-            filter_list:
-            - route_map: rmap_1
-              direction: in
-            - route_map: rmap_2
-              direction: out
-            ranges:
-            - prefix: 2001:db2::/32
-              not_advertise: true
-            - prefix: 2001:db3::/32
-              cost: 120
-          redistribute:
-          - protocol: eigrp
-            id: 120
-            route_map: rmap_1
-          - protocol: direct
-            route_map: ospf102-direct-connect
-        vrfs:
-        - vrf: zone1
-          router_id: 198.51.100.129
-          areas:
-          - area_id: 0.0.0.102
-            nssa:
-              default_information_originate: true
-              no_summary: true
-          - area_id: 0.0.0.103
-            nssa:
-              no_summary: true
-              translate:
-                type7:
-                  always: true
-        - vrf: zone2
-          auto_cost:
-            reference_bandwidth: 45
-            unit: Gbps
+        - process_id: 100
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
+          address_family:
+            afi: ipv6
+            safi: unicast
+            areas:
+              - area_id: 0.0.0.100
+                filter_list:
+                  - route_map: rmap_1
+                    direction: in
+                  - route_map: rmap_2
+                    direction: out
+                ranges:
+                  - prefix: 2001:db2::/32
+                    not_advertise: true
+                  - prefix: 2001:db3::/32
+                    cost: 120
+            redistribute:
+              - protocol: eigrp
+                id: 120
+                route_map: rmap_1
+              - protocol: direct
+                route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: true
+                    no_summary: true
+                - area_id: 0.0.0.103
+                  nssa:
+                    no_summary: true
+                    translate:
+                      type7:
+                        always: true
+            - vrf: zone2
+              auto_cost:
+                reference_bandwidth: 45
+                unit: Gbps
     state: rendered
 
 # Task output:
@@ -1571,7 +1571,7 @@ EXAMPLES = """
 #         router_id: 192.0.100.2
 #   - process_id: "102"
 #     router_id: 198.54.100.1
-#     shutdown: True
+#     shutdown: true
 
 # Using gathered
 

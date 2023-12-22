@@ -154,8 +154,8 @@ EXAMPLES = """
     interface: ethernet1/32
     startup_query_interval: 30
     oif_ps:
-    - {prefix: 238.2.2.6}
-    - {source: 192.168.0.1, prefix: 238.2.2.5}
+      - {prefix: 238.2.2.6}
+      - {source: 192.168.0.1, prefix: 238.2.2.5}
     state: present
 """
 RETURN = """
@@ -385,7 +385,9 @@ def config_igmp_interface(delta, existing, existing_oif_prefix_source):
                     if "source" in each.keys():
                         src = each["source"]
                     if src:
-                        commands.append("no " + CMDS.get("oif_prefix_source").format(pf, src))
+                        commands.append(
+                            "no " + CMDS.get("oif_prefix_source").format(pf, src),
+                        )
                     else:
                         commands.append("no " + CMDS.get("oif_prefix").format(pf))
         elif key == "oif_routemap":
@@ -450,7 +452,11 @@ def config_default_igmp_interface(existing, delta):
     proposed = get_igmp_interface_defaults()
     delta = dict(set(proposed.items()).difference(existing.items()))
     if delta:
-        command = config_igmp_interface(delta, existing, existing_oif_prefix_source=None)
+        command = config_igmp_interface(
+            delta,
+            existing,
+            existing_oif_prefix_source=None,
+        )
 
         if command:
             for each in command:
@@ -463,7 +469,9 @@ def config_remove_oif(existing, existing_oif_prefix_source):
     commands = []
     command = None
     if existing.get("oif_routemap"):
-        commands.append("no ip igmp static-oif route-map {0}".format(existing.get("oif_routemap")))
+        commands.append(
+            "no ip igmp static-oif route-map {0}".format(existing.get("oif_routemap")),
+        )
     elif existing_oif_prefix_source:
         for each in existing_oif_prefix_source:
             if each.get("prefix") and each.get("source"):

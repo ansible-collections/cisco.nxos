@@ -1014,3 +1014,25 @@ releases:
       - fix_763.yaml
       - vtp_version.yaml
     release_date: "2023-10-03"
+  5.3.0:
+    changes:
+      minor_changes:
+        - nxos_config - Relax restrictions on I(src) parameter so it can be used more
+          like I(lines). (https://github.com/ansible-collections/cisco.nxos/issues/89).
+    fragments:
+      - fix_config_module.yaml
+      - trivial.yaml
+    release_date: "2023-11-29"
+  6.0.0:
+    changes:
+      major_changes:
+        - Bumping `requires_ansible` to `>=2.14.0`, since previous ansible-core versions
+          are EoL now.
+      release_summary:
+        Starting from this release, the minimum `ansible-core` version
+        this collection requires is `2.14.0`. The last known version compatible with
+        ansible-core<2.14 is `v5.3.0`.
+    fragments:
+      - prep_300.yaml
+      - trivial_lint.yaml
+    release_date: "2023-11-30"

@@ -111,12 +111,12 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.nxos.nxos_lldp_interfaces:
     config:
-    - name: Ethernet1/4
-      receive: false
-      transmit: true
-      tlv_set:
-        management_address: 192.168.122.64
-      vlan: 12
+      - name: Ethernet1/4
+        receive: false
+        transmit: true
+        tlv_set:
+          management_address: 192.168.122.64
+        vlan: 12
     state: merged
 
 # After state:
@@ -143,10 +143,10 @@ EXAMPLES = """
 - name: Replace LLDP configuration on interfaces with given configuration
   cisco.nxos.nxos_lldp_interfaces:
     config:
-    - name: Ethernet1/4
-      transmit: false
-      tlv_set:
-        vlan: 2
+      - name: Ethernet1/4
+        transmit: false
+        tlv_set:
+          vlan: 2
     state: replaced
 
 
@@ -176,10 +176,10 @@ EXAMPLES = """
 - name: Override LLDP configuration on all interfaces with given configuration
   cisco.nxos.nxos_lldp_interfaces:
     config:
-    - name: Ethernet1/7
-      receive: false
-      tlv_set:
-        vlan: 12
+      - name: Ethernet1/7
+        receive: false
+        tlv_set:
+          vlan: 12
     state: overridden
 
 
@@ -209,8 +209,6 @@ EXAMPLES = """
 # After state:
 # ------------
 #
-
-
 """
 RETURN = """
 before:

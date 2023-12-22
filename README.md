@@ -1,7 +1,5 @@
-
-
 # Cisco NX-OS Collection
-[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.nxos) <!--[![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/vyos)](https://codecov.io/gh/ansible-collections/cisco.nxos)-->
+[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.nxos)
 [![Codecov](https://codecov.io/gh/ansible-collections/cisco.nxos/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/cisco.nxos)
 [![CI](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml)
 
@@ -15,7 +13,7 @@ The modules with full support for Cisco MDS are tested against NX-OS 8.4(1) on M
 <!--start requires_ansible-->
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.9.10**.
+This collection has been tested against following Ansible versions: **>=2.14.0**.
 
 For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
 fully qualified collection name (for example, `cisco.ios.ios`).

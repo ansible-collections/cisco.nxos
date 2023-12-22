@@ -9,6 +9,28 @@ v5.2.2
 ======
 - nxos_user - fix Salt (6->8 as supported by Cisco NX-OS) chars
 
+=======
+v6.0.0
+======
+
+Release Summary
+---------------
+
+Starting from this release, the minimum `ansible-core` version this collection requires is `2.14.0`. The last known version compatible with ansible-core<2.14 is `v5.3.0`.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.14.0`, since previous ansible-core versions are EoL now.
+
+v5.3.0
+======
+
+Minor Changes
+-------------
+
+- nxos_config - Relax restrictions on I(src) parameter so it can be used more like I(lines). (https://github.com/ansible-collections/cisco.nxos/issues/89).
+
 v5.2.1
 ======
 

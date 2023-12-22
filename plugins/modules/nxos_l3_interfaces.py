@@ -159,19 +159,19 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration.
   cisco.nxos.nxos_l3_interfaces:
     config:
-    - name: Ethernet1/6
-      ipv4:
-      - address: 192.168.1.1/24
-        tag: 5
-      - address: 10.1.1.1/24
-        secondary: true
-        tag: 10
-      ipv6:
-      - address: fd5d:12c9:2201:2::1/64
-        tag: 6
-    - name: Ethernet1/7.42
-      redirects: false
-      unreachables: false
+      - name: Ethernet1/6
+        ipv4:
+          - address: 192.168.1.1/24
+            tag: 5
+          - address: 10.1.1.1/24
+            secondary: true
+            tag: 10
+        ipv6:
+          - address: fd5d:12c9:2201:2::1/64
+            tag: 6
+      - name: Ethernet1/7.42
+        redirects: false
+        unreachables: false
     state: merged
 
 # Task Output
@@ -258,9 +258,9 @@ EXAMPLES = """
 - name: Replace device configuration of specified L3 interfaces with provided configuration.
   cisco.nxos.nxos_l3_interfaces:
     config:
-    - name: Ethernet1/6
-      ipv4:
-        - address: 192.168.22.3/24
+      - name: Ethernet1/6
+        ipv4:
+          - address: 192.168.22.3/24
     state: replaced
 
 # Task Output
@@ -352,12 +352,12 @@ EXAMPLES = """
 - name: Override device configuration with provided configuration.
   cisco.nxos.nxos_l3_interfaces:
     config:
-    - ipv4:
-      - address: dhcp
-      name: mgmt0
-    - name: Ethernet1/6
-      ipv4:
-      - address: 192.168.22.3/24
+      - ipv4:
+          - address: dhcp
+        name: mgmt0
+      - name: Ethernet1/6
+        ipv4:
+          - address: 192.168.22.3/24
     state: overridden
 
 # Task Output
@@ -446,8 +446,8 @@ EXAMPLES = """
     itself).
   cisco.nxos.nxos_l3_interfaces:
     config:
-    - name: Ethernet1/6
-    - name: Ethernet1/2
+      - name: Ethernet1/6
+      - name: Ethernet1/2
     state: deleted
 
 # Task Output
@@ -497,17 +497,17 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_l3_interfaces:
     config:
-    - name: Ethernet1/800
-      ipv4:
-      - address: 192.168.1.100/24
-        tag: 5
-      - address: 10.1.1.1/24
-        secondary: true
-        tag: 10
-    - name: Ethernet1/800
-      ipv6:
-      - address: fd5d:12c9:2201:2::1/64
-        tag: 6
+      - name: Ethernet1/800
+        ipv4:
+          - address: 192.168.1.100/24
+            tag: 5
+          - address: 10.1.1.1/24
+            secondary: true
+            tag: 10
+      - name: Ethernet1/800
+        ipv6:
+          - address: fd5d:12c9:2201:2::1/64
+            tag: 6
     state: rendered
 
 # Task Output

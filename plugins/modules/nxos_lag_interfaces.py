@@ -113,9 +113,9 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration.
   cisco.nxos.nxos_lag_interfaces:
     config:
-    - name: port-channel99
-      members:
-      - member: Ethernet1/4
+      - name: port-channel99
+        members:
+          - member: Ethernet1/4
     state: merged
 
 # After state:
@@ -137,9 +137,9 @@ EXAMPLES = """
     with provided configuration.
   cisco.nxos.nxos_lag_interfaces:
     config:
-    - name: port-channel10
-      members:
-      - member: Ethernet1/4
+      - name: port-channel10
+        members:
+          - member: Ethernet1/4
     state: replaced
 
 # After state:
@@ -163,10 +163,10 @@ EXAMPLES = """
     device with provided configuration.
   cisco.nxos.nxos_lag_interfaces:
     config:
-    - name: port-channel20
-      members:
-      - member: Ethernet1/6
-        force: true
+      - name: port-channel20
+        members:
+          - member: Ethernet1/6
+            force: true
     state: overridden
 
 # After state:
@@ -189,7 +189,7 @@ EXAMPLES = """
     itself).
   cisco.nxos.nxos_lag_interfaces:
     config:
-    - port-channel: port-channel99
+      - port-channel: port-channel99
     state: deleted
 
 - name: Delete LAG attributes of all the interfaces
@@ -207,15 +207,15 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_lag_interfaces:
     config:
-    - name: port-channel10
-      members:
-      - member: Ethernet1/800
-        mode: active
-      - member: Ethernet1/801
-    - name: port-channel11
-      members:
-      - member: Ethernet1/802
-        mode: passive
+      - name: port-channel10
+        members:
+          - member: Ethernet1/800
+            mode: active
+          - member: Ethernet1/801
+      - name: port-channel11
+        members:
+          - member: Ethernet1/802
+            mode: passive
     state: rendered
 
 # Task Output (redacted)
