@@ -1036,8 +1036,3 @@ releases:
       - prep_300.yaml
       - trivial_lint.yaml
     release_date: "2023-11-30"
-  6.0.1:
-    changes:
-      bugfixes:
-        - nxos_user - fix Salt (6->8 as supported by Cisco NX-OS) chars
-    release_date: "2023-12-22"
