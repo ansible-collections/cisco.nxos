@@ -21,7 +21,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible import constants as C
 from ansible.module_utils.connection import Connection
 from ansible.utils.display import Display
 from ansible_collections.ansible.netcommon.plugins.action.network import (
@@ -48,7 +47,7 @@ class ActionModule(ActionNetworkModule):
         ):
             return {
                 "failed": True,
-                "msg": "Connection httpapi is not valid for '%s' module." % (module_name),
+                "msg": f"Connection httpapi is not valid for {module_name} module.",
             }
 
         if module_name == "nxos_file_copy":
@@ -58,34 +57,43 @@ class ActionModule(ActionNetworkModule):
             if persistent_connection != "network_cli":
                 return {
                     "failed": True,
-                    "msg": "Connection type must be fully qualified name for network_cli connection type, got %s"
+                    "msg": (
+                        f"Connection type must be fully qualified name for"
+                        f"network_cli connection type, got {self._play_context.connection}"
+                    )
                     % self._play_context.connection,
                 }
 
             conn = Connection(self._connection.socket_path)
+            persistent_command_timeout = conn.get_option("persistent_command_timeout")
             file_pull = self._task.args.get("file_pull", False)
-            file_pull_timeout = self._task.args.get("file_pull_timeout", 300)
+            file_pull_timeout = self._task.args.get("file_pull_timeout")
             connect_ssh_port = self._task.args.get("connect_ssh_port", 22)
 
             if file_pull:
-                conn.set_option("persistent_command_timeout", file_pull_timeout)
+                # if file_pull_timeout is explicitly set, use that
+                if file_pull_timeout:
+                    conn.set_option("persistent_command_timeout", file_pull_timeout)
+                # if file_pull_timeout is not set and command_timeout < 300s, bump to 300s.
+                elif persistent_command_timeout < 300:
+                    conn.set_option("persistent_command_timeout", 300)
                 conn.set_option("port", connect_ssh_port)
 
         if module_name == "nxos_install_os":
             connection = self._connection
-            if connection.transport == "local":
-                persistent_command_timeout = C.PERSISTENT_COMMAND_TIMEOUT
-                persistent_connect_timeout = C.PERSISTENT_CONNECT_TIMEOUT
-            else:
-                persistent_command_timeout = connection.get_option("persistent_command_timeout")
-                persistent_connect_timeout = connection.get_option("persistent_connect_timeout")
+            persistent_command_timeout = connection.get_option(
+                "persistent_command_timeout",
+            )
+            persistent_connect_timeout = connection.get_option(
+                "persistent_connect_timeout",
+            )
 
             display.vvvv(
-                "PERSISTENT_COMMAND_TIMEOUT is %s" % str(persistent_command_timeout),
+                f"PERSISTENT_COMMAND_TIMEOUT is {persistent_command_timeout}",
                 self._play_context.remote_addr,
             )
             display.vvvv(
-                "PERSISTENT_CONNECT_TIMEOUT is %s" % str(persistent_connect_timeout),
+                f"PERSISTENT_CONNECT_TIMEOUT is %s {persistent_connect_timeout}",
                 self._play_context.remote_addr,
             )
             if persistent_command_timeout < 600 or persistent_connect_timeout < 600:
@@ -102,18 +110,19 @@ class ActionModule(ActionNetworkModule):
         if persistent_connection in ("network_cli", "httpapi"):
             if module_name == "nxos_gir":
                 conn = Connection(self._connection.socket_path)
-                persistent_command_timeout = conn.get_option("persistent_command_timeout")
+                persistent_command_timeout = conn.get_option(
+                    "persistent_command_timeout",
+                )
                 gir_timeout = 200
                 if persistent_command_timeout < gir_timeout:
                     conn.set_option("persistent_command_timeout", gir_timeout)
-                    msg = "timeout value extended to %ss for nxos_gir" % gir_timeout
+                    msg = f"timeout value extended to %ss for nxos_gir {gir_timeout}"
                     display.warning(msg)
 
         else:
             return {
                 "failed": True,
-                "msg": "Connection type %s is not valid for this module"
-                % self._play_context.connection,
+                "msg": f"Connection type {self._play_context.connection} is not valid for this module",
             }
 
         result = super(ActionModule, self).run(task_vars=task_vars)

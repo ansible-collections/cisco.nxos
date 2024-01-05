@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "nxos_file_copy - fix setting file_pull_timeout/persistent_command_timeout value."
