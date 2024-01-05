@@ -58,7 +58,7 @@ class ActionModule(ActionNetworkModule):
                 return {
                     "failed": True,
                     "msg": (
-                        f"Connection type must be fully qualified name for"
+                        f"Connection type must be fully qualified name for "
                         f"network_cli connection type, got {self._play_context.connection}"
                     )
                     % self._play_context.connection,
