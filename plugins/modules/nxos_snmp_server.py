@@ -17,22 +17,28 @@ DOCUMENTATION = """
 module: nxos_snmp_server
 short_description: SNMP Server resource module.
 description:
-- This module manages SNMP server configuration on devices running Cisco NX-OS.
+  - >-
+    This module manages SNMP server configuration on devices running Cisco
+    NX-OS.
 version_added: 2.8.0
 notes:
-- Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
-- This module works with connection C(network_cli) and C(httpapi).
-- Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
+  - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
+  - This module works with connection C(network_cli) and C(httpapi).
+  - Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:
     description:
-    - This option is used only with state I(parsed).
-    - The value of this option should be the output received from the NX-OS device
-      by executing the command B(show running-config | section '^snmp-server').
-    - The state I(parsed) reads the configuration from C(running_config) option and
-      transforms it into Ansible structured data as per the resource module's argspec
-      and the value is then returned in the I(parsed) key within the result.
+      - This option is used only with state I(parsed).
+      - >-
+        The value of this option should be the output received from the NX-OS
+        device by executing the command B(show running-config | section
+        '^snmp-server').
+      - >-
+        The state I(parsed) reads the configuration from C(running_config)
+        option and transforms it into Ansible structured data as per the
+        resource module's argspec and the value is then returned in the
+        I(parsed) key within the result.
     type: str
   config:
     description: A dict of SNMP server configuration
@@ -53,7 +59,8 @@ options:
           name:
             description: SNMP community string (Max Size 32).
             type: str
-            aliases: ["community"]
+            aliases:
+              - community
           group:
             description: Group to which the community belongs.
             type: str
@@ -65,12 +72,12 @@ options:
             type: bool
           use_ipv4acl:
             description:
-              - Specify IPv4 ACL, the ACL name specified must be IPv4 ACL.
+              - 'Specify IPv4 ACL, the ACL name specified must be IPv4 ACL.'
               - This option is unsupported on MDS switches.
             type: str
           use_ipv6acl:
             description:
-              - Specify IPv6 ACL, the ACL name specified after must be IPv6 ACL.
+              - 'Specify IPv6 ACL, the ACL name specified after must be IPv6 ACL.'
               - This option is unsupported on MDS switches.
             type: str
       contact:
@@ -186,7 +193,7 @@ options:
                 description: Merge failure notification.
                 type: bool
               state_change_notif:
-                description:  State change notification.
+                description: State change notification.
                 type: bool
           config:
             description: Config traps.
@@ -309,7 +316,9 @@ options:
                 description: Cisco extended link state up notification.
                 type: bool
               cisco_xcvr_mon_status_chg:
-                description: Cisco interface transceiver monitor status change notification.
+                description: >-
+                  Cisco interface transceiver monitor status change
+                  notification.
                 type: bool
               cmn_mac_move_notification:
                 description:
@@ -502,8 +511,11 @@ options:
                 type: bool
               notifs:
                 description:
-                  - Enable vtpConfigRevNumberError vtpConfigDigestEnable vtpConfigRevNumberError vtpConfigDigestError
-                    vtpServerDisabled vtpVersionOneDeviceDetected vlanTrunkPortDynamicStatusChange vtpLocalModeChanged
+                  - >-
+                    Enable vtpConfigRevNumberError vtpConfigDigestEnable
+                    vtpConfigRevNumberError vtpConfigDigestError
+                    vtpServerDisabled vtpVersionOneDeviceDetected
+                    vlanTrunkPortDynamicStatusChange vtpLocalModeChanged
                     vtpVersionInUseChanged notification.
                 type: bool
               vlancreate:
@@ -527,7 +539,9 @@ options:
       hosts:
         description:
           - Specify hosts to receive SNMP notifications.
-          - SNMP hosts config lines that appear separately in running-config must be added as individual dictionaries.
+          - >-
+            SNMP hosts config lines that appear separately in running-config
+            must be added as individual dictionaries.
         type: list
         elements: dict
         suboptions:
@@ -539,27 +553,36 @@ options:
             type: str
           filter_vrf:
             description:
-              - Filters notifications to the notification host receiver based on the configured VRF.
+              - >-
+                Filters notifications to the notification host receiver based on
+                the configured VRF.
               - This option is unsupported on MDS switches.
             type: str
           informs:
             description: Send Inform messages to this host.
             type: bool
           source_interface:
-            description: Source interface to be used for sending out SNMP notifications to this host.
+            description: >-
+              Source interface to be used for sending out SNMP notifications to
+              this host.
             type: str
           traps:
             description: Send Traps messages to this host.
             type: bool
           use_vrf:
             description:
-              - Configures SNMP to use the selected VRF to communicate with the host receiver.
+              - >-
+                Configures SNMP to use the selected VRF to communicate with the
+                host receiver.
               - This option is unsupported on MDS switches.
             type: str
           version:
             description: SNMP version to use for notification messages.
             type: str
-            choices: ["1", "2c", "3"]
+            choices:
+              - '1'
+              - 2c
+              - '3'
           auth:
             description: Use the SNMPv3 authNoPriv Security Level.
             type: str
@@ -603,10 +626,14 @@ options:
         type: dict
         suboptions:
           informs:
-            description: SNMP Inform notifications for which this source interface needs to be used.
+            description: >-
+              SNMP Inform notifications for which this source interface needs to
+              be used.
             type: str
           traps:
-            description: SNMP Trap notifications for which this source interface needs to be used.
+            description: >-
+              SNMP Trap notifications for which this source interface needs to
+              be used.
             type: str
       system_shutdown:
         description: Configure snmp-server for reload(2).
@@ -645,22 +672,33 @@ options:
                   algorithm:
                     description: Select algorithm for authentication.
                     type: str
-                    choices: ["md5", "sha", "sha-256"]
+                    choices:
+                      - md5
+                      - sha
+                      - sha-256
                   password:
                     description:
                       - Authentication password for user (Max Size 127).
-                      - If this value is localized, it has to be enclosed in quotes in the task.
+                      - >-
+                        If this value is localized, it has to be enclosed in
+                        quotes in the task.
                     type: str
                   engine_id:
                     description:
-                      - EngineID for configuring notif target user (for V3 informs).
+                      - >-
+                        EngineID for configuring notif target user (for V3
+                        informs).
                       - This value needs to be enclosed in quotes in the task.
                     type: str
                   localized_key:
-                    description: Specifies whether the passwords are in localized key format.
+                    description: >-
+                      Specifies whether the passwords are in localized key
+                      format.
                     type: bool
                   localizedv2_key:
-                    description: Specifies whether the passwords are in localized V2 key format.
+                    description: >-
+                      Specifies whether the passwords are in localized V2 key
+                      format.
                     type: bool
                   priv:
                     description: Encryption parameters for the user.
@@ -669,7 +707,9 @@ options:
                       privacy_password:
                         description:
                           - Privacy password for user (Max Size 130).
-                          - If this value is localized, it has to be enclosed in quotes in the task.
+                          - >-
+                            If this value is localized, it has to be enclosed in
+                            quotes in the task.
                         type: str
                       aes_128:
                         description: Use 128-bit AES algorithm for privacy.
@@ -683,25 +723,31 @@ options:
                 description: Name of the user (Max Size 28).
                 type: str
               ipv4:
-                description: Specify IPv4 ACL, the ACL name specified after must be IPv4 ACL.
+                description: >-
+                  Specify IPv4 ACL, the ACL name specified after must be IPv4
+                  ACL.
                 type: str
               ipv6:
-                description: Specify IPv6 ACL, the ACL name specified after must be IPv6 ACL.
+                description: >-
+                  Specify IPv6 ACL, the ACL name specified after must be IPv6
+                  ACL.
                 type: str
   state:
     description:
-    - The state the configuration should be left in.
-    - The states C(replaced) and C(overridden) have identical behaviour for this module.
-    - Please refer to examples for more details.
+      - The state the configuration should be left in.
+      - >-
+        The states C(replaced) and C(overridden) have identical behaviour for
+        this module.
+      - Please refer to examples for more details.
     type: str
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - parsed
-    - gathered
-    - rendered
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - parsed
+      - gathered
+      - rendered
     default: merged
 """
 
