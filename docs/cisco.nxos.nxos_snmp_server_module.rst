@@ -3074,7 +3074,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Upgrade traps.</div>
+                        <div>Upgrade the traps.</div>
                 </td>
             </tr>
                                 <tr>
