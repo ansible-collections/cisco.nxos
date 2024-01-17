@@ -72,12 +72,12 @@ options:
             type: bool
           use_ipv4acl:
             description:
-              - 'Specify IPv4 ACL, the ACL name specified must be IPv4 ACL.'
+              - "Specify IPv4 ACL, the ACL name specified must be IPv4 ACL."
               - This option is unsupported on MDS switches.
             type: str
           use_ipv6acl:
             description:
-              - 'Specify IPv6 ACL, the ACL name specified after must be IPv6 ACL.'
+              - "Specify IPv6 ACL, the ACL name specified after must be IPv6 ACL."
               - This option is unsupported on MDS switches.
             type: str
       contact:
@@ -580,9 +580,9 @@ options:
             description: SNMP version to use for notification messages.
             type: str
             choices:
-              - '1'
+              - "1"
               - 2c
-              - '3'
+              - "3"
           auth:
             description: Use the SNMPv3 authNoPriv Security Level.
             type: str
@@ -756,6 +756,7 @@ EXAMPLES = """
 
 # Before state:
 # -------------
+#
 # nxos-9k-rdo# show running-config | section "^snmp-server"
 # snmp-server user admin network-admin auth md5 0xcbde46b02c46e0bcd3ac5af6a8b13da9 priv 0xcbde46b02c46e0bcd3ac5af6a8b13da9 localizedkey
 
@@ -779,13 +780,13 @@ EXAMPLES = """
       hosts:
         - host: 192.0.2.1
           traps: true
-          version: '1'
+          version: "1"
           community: public
         - host: 192.0.2.1
           source_interface: Ethernet1/1
         - host: 192.0.2.2
           informs: true
-          version: '3'
+          version: "3"
           auth: NMS
       users:
         auth:
@@ -793,16 +794,16 @@ EXAMPLES = """
             group: network-operator
             authentication:
               algorithm: md5
-              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              password: "0x5632724fb8ac3699296af26281e1d0f1"
               localized_key: true
           - user: snmp_user_2
             group: network-operator
             authentication:
               algorithm: md5
-              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              password: "0x5632724fb8ac3699296af26281e1d0f1"
               localized_key: true
               priv:
-                privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
+                privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
                 aes_128: true
         use_acls:
           - user: snmp_user_1
@@ -812,8 +813,9 @@ EXAMPLES = """
             ipv4: acl3
             ipv6: acl4
 
-# Task output
-# -------------
+# Task Output
+# -----------
+#
 # before:
 #   users:
 #     auth:
@@ -825,7 +827,6 @@ EXAMPLES = """
 #           localized_key: true
 #           priv:
 #             privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-#
 # commands:
 #   - snmp-server contact nxosswitchadmin@localhost
 #   - snmp-server location serverroom-1
@@ -841,7 +842,6 @@ EXAMPLES = """
 #   - snmp-server community public group network-operator
 #   - snmp-server enable traps aaa server-state-change
 #   - snmp-server enable traps system Clock-change-notification
-#
 # after:
 #   aaa_user:
 #      cache_timeout: 36000
@@ -908,6 +908,7 @@ EXAMPLES = """
 
 # After state:
 # ------------
+#
 # nxos-9k-rdo# show running-config | section "^snmp-server"
 # snmp-server contact nxosswitchadmin@localhost
 # snmp-server location serverroom-1
@@ -928,7 +929,8 @@ EXAMPLES = """
 # Using replaced
 
 # Before state:
-# ------------
+# -------------
+#
 # nxos-9k-rdo# show running-config | section "^snmp-server"
 # snmp-server contact nxosswitchadmin@localhost
 # snmp-server location serverroom-1
@@ -964,13 +966,13 @@ EXAMPLES = """
       hosts:
         - host: 192.0.2.1
           traps: true
-          version: '1'
+          version: "1"
           community: public
         - host: 192.0.2.1
           source_interface: Ethernet1/1
         - host: 192.0.3.2
           informs: true
-          version: '3'
+          version: "3"
           auth: NMS
       users:
         auth:
@@ -982,22 +984,20 @@ EXAMPLES = """
               localized_key: true
               priv:
                 privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-
           - user: snmp_user_1
             group: network-operator
             authentication:
               algorithm: md5
-              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              password: "0x5632724fb8ac3699296af26281e1d0f1"
               localized_key: true
-
           - user: snmp_user_2
             group: network-operator
             authentication:
               algorithm: md5
-              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              password: "0x5632724fb8ac3699296af26281e1d0f1"
               localized_key: true
               priv:
-                privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
+                privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
                 aes_128: true
         use_acls:
           - user: snmp_user_1
@@ -1005,8 +1005,10 @@ EXAMPLES = """
             ipv6: acl2
     state: replaced
 
-# Task output
-# -------------
+
+# Task Output
+# -----------
+#
 # before:
 #   aaa_user:
 #      cache_timeout: 36000
@@ -1027,10 +1029,8 @@ EXAMPLES = """
 #        traps: true
 #        version: "1"
 #        community: public
-#
 #      - host: 192.0.2.1
 #        source_interface: Ethernet1/1
-#
 #      - host: 192.0.2.2
 #        informs: true
 #        version: "3"
@@ -1045,14 +1045,12 @@ EXAMPLES = """
 #            localized_key: true
 #            priv:
 #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-#
 #        - user: snmp_user_1
 #          group: network-operator
 #          authentication:
 #            algorithm: md5
 #            password: "0x5632724fb8ac3699296af26281e1d0f1"
 #            localized_key: true
-#
 #        - authentication:
 #            algorithm: md5
 #            localized_key: true
@@ -1062,7 +1060,6 @@ EXAMPLES = """
 #              privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
 #          group: network-operator
 #          user: snmp_user_2
-#
 #      use_acls:
 #        - user: snmp_user_1
 #          ipv4: acl1
@@ -1070,7 +1067,6 @@ EXAMPLES = """
 #        - user: snmp_user_2
 #          ipv4: acl3
 #          ipv6: acl4
-#
 # commands:
 #   - snmp-server contact nxosswitchadmin2@localhost
 #   - no snmp-server enable traps system Clock-change-notification
@@ -1080,7 +1076,6 @@ EXAMPLES = """
 #   - snmp-server host 192.0.3.2 informs version 3 auth NMS
 #   - no snmp-server community private group network-admin
 #   - snmp-server community secret group network-operator
-#
 # after:
 #   aaa_user:
 #      cache_timeout: 36000
@@ -1115,14 +1110,12 @@ EXAMPLES = """
 #            localized_key: true
 #            priv:
 #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-#
 #        - user: snmp_user_1
 #          group: network-operator
 #          authentication:
 #            algorithm: md5
 #            password: '0x5632724fb8ac3699296af26281e1d0f1'
 #            localized_key: true
-#
 #        - user: snmp_user_2
 #          group: network-operator
 #          authentication:
@@ -1132,15 +1125,14 @@ EXAMPLES = """
 #            priv:
 #              privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
 #              aes_128: true
-#
 #      use_acls:
 #        - user: snmp_user_1
 #          ipv4: acl1
 #          ipv6: acl2
-#
 
 # After state:
 # ------------
+#
 # nxos-9k-rdo# show running-config | section "^snmp-server"
 # snmp-server contact nxosswitchadmin2@localhost
 # snmp-server location serverroom-2
@@ -1162,6 +1154,7 @@ EXAMPLES = """
 
 # Before state:
 # ------------
+#
 # nxos-9k-rdo# show running-config | section "^snmp-server"
 # snmp-server contact nxosswitchadmin@localhost
 # snmp-server location serverroom-1
@@ -1183,8 +1176,9 @@ EXAMPLES = """
   cisco.nxos.nxos_snmp_server:
     state: deleted
 
-# Task output
-# -------------
+# Task Output
+# -----------
+#
 # before:
 #   aaa_user:
 #      cache_timeout: 36000
@@ -1205,10 +1199,8 @@ EXAMPLES = """
 #        traps: true
 #        version: "1"
 #        community: public
-#
 #      - host: 192.0.2.1
 #        source_interface: Ethernet1/1
-#
 #      - host: 192.0.2.2
 #        informs: true
 #        version: "3"
@@ -1223,14 +1215,12 @@ EXAMPLES = """
 #            localized_key: true
 #            priv:
 #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-#
 #        - user: snmp_user_1
 #          group: network-operator
 #          authentication:
 #            algorithm: md5
 #            password: "0x5632724fb8ac3699296af26281e1d0f1"
 #            localized_key: true
-#
 #        - authentication:
 #            algorithm: md5
 #            localized_key: true
@@ -1240,7 +1230,6 @@ EXAMPLES = """
 #              privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
 #          group: network-operator
 #          user: snmp_user_2
-#
 #      use_acls:
 #        - user: snmp_user_1
 #          ipv4: acl1
@@ -1248,7 +1237,6 @@ EXAMPLES = """
 #        - user: snmp_user_2
 #          ipv4: acl3
 #          ipv6: acl4
-#
 # commands:
 #   - no snmp-server contact nxosswitchadmin@localhost
 #   - no snmp-server location serverroom-1
@@ -1265,7 +1253,6 @@ EXAMPLES = """
 #   - no snmp-server community public group network-operator
 #   - no snmp-server enable traps aaa server-state-change
 #   - no snmp-server enable traps system Clock-change-notification
-#
 # after:
 #   users:
 #     auth:
@@ -1280,11 +1267,12 @@ EXAMPLES = """
 
 # After state:
 # ------------
+#
 # nxos-9k-rdo# show running-config | section "^snmp-server"
 # snmp-server user admin network-admin auth md5 0xcbde46b02c46e0bcd3ac5af6a8b13da9 priv 0xcbde46b02c46e0bcd3ac5af6a8b13da9 localizedkey
 
 # Using rendered
-# ---------------
+# --------------
 
 - name: Render platform specific configuration lines with state rendered (without connecting to the device)
   cisco.nxos.nxos_snmp_server:
@@ -1306,13 +1294,13 @@ EXAMPLES = """
       hosts:
         - host: 192.0.2.1
           traps: true
-          version: '1'
+          version: "1"
           community: public
         - host: 192.0.2.1
           source_interface: Ethernet1/1
         - host: 192.0.2.2
           informs: true
-          version: '3'
+          version: "3"
           auth: NMS
       users:
         auth:
@@ -1320,16 +1308,16 @@ EXAMPLES = """
             group: network-operator
             authentication:
               algorithm: md5
-              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              password: "0x5632724fb8ac3699296af26281e1d0f1"
               localized_key: true
           - user: snmp_user_2
             group: network-operator
             authentication:
               algorithm: md5
-              password: '0x5632724fb8ac3699296af26281e1d0f1'
+              password: "0x5632724fb8ac3699296af26281e1d0f1"
               localized_key: true
               priv:
-                privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
+                privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
                 aes_128: true
         use_acls:
           - user: snmp_user_1
@@ -1342,7 +1330,7 @@ EXAMPLES = """
 
 
 # Task Output (redacted)
-# -----------------------
+# ----------------------
 #  rendered:
 #    - snmp-server contact nxosswitchadmin@localhost
 #    - snmp-server location serverroom-1
@@ -1363,6 +1351,7 @@ EXAMPLES = """
 
 # parsed.cfg
 # ------------
+#
 # snmp-server contact nxosswitchadmin@localhost
 # snmp-server location serverroom-1
 # snmp-server aaa-user cache-timeout 36000
@@ -1405,10 +1394,8 @@ EXAMPLES = """
 #        traps: true
 #        version: "1"
 #        community: public
-#
 #      - host: 192.0.2.1
 #        source_interface: Ethernet1/1
-#
 #      - host: 192.0.2.2
 #        informs: true
 #        version: "3"
@@ -1421,7 +1408,6 @@ EXAMPLES = """
 #            algorithm: md5
 #            password: "0x5632724fb8ac3699296af26281e1d0f1"
 #            localized_key: true
-#
 #        - authentication:
 #            algorithm: md5
 #            localized_key: true
@@ -1431,7 +1417,6 @@ EXAMPLES = """
 #              privacy_password: "0x5632724fb8ac3699296af26281e1d0f1"
 #          group: network-operator
 #          user: snmp_user_2
-#
 #      use_acls:
 #        - user: snmp_user_1
 #          ipv4: acl1
@@ -1462,17 +1447,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - snmp-server location serverroom-1
+    - snmp-server aaa-user cache-timeout 36000
+    - snmp-server host 192.0.2.1 source-interface Ethernet1/1
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - snmp-server location serverroom-1
+    - snmp-server aaa-user cache-timeout 36000
+    - snmp-server host 192.0.2.1 source-interface Ethernet1/1
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
