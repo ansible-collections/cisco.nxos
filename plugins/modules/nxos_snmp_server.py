@@ -486,7 +486,7 @@ options:
                 description: Clock-change-notification traps.
                 type: bool
           upgrade:
-            description: Upgrade traps.
+            description: Upgrade the traps.
             type: dict
             suboptions:
               enable:
