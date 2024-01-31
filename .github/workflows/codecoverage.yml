@@ -1,10 +1,9 @@
 ---
-name: Code Coverage
+name: "Code coverage"
 
 on:  # yamllint disable-line rule:truthy
-  push:
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   codecoverage:
