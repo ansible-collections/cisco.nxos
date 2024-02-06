@@ -1047,3 +1047,11 @@ releases:
       - file_copy.yaml
       - module_defaults.yaml
     release_date: "2024-01-30"
+  6.0.2:
+    changes:
+      bugfixes:
+        - nxos_interfaces - Correctly enable L3 interfaces on supported N3K platforms
+          (https://github.com/ansible-collections/cisco.nxos/issues/749).
+    fragments:
+      - fix_749.yaml
+    release_date: "2024-02-06"
