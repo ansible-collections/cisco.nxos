@@ -16,7 +16,7 @@
     delete_last_user_allowed: false
   when: platform is search('N5K|N6K|N9K-F')
 
-- name: Remove snmp user
+- name: Remove SNMP user
   ignore_errors: true
   when: platform is not search('N5K|N6K|N9K-F')
   cisco.nxos.nxos_snmp_user: &id006
@@ -34,7 +34,7 @@
     seconds: 5
 
 - block:
-    - name: Create snmp user
+    - name: Create SNMP user
       register: result
       cisco.nxos.nxos_snmp_user:
         user: ntc
@@ -102,7 +102,7 @@
         - assert: *id004
       when: delete_last_user_allowed
   always:
-    - name: Delete snmp user
+    - name: Delete SNMP user
       when: platform is not search('N5K|N6K|N9K-F')
       cisco.nxos.nxos_snmp_user: *id006
 

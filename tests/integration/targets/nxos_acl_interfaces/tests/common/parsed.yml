@@ -3,7 +3,7 @@
     msg: Start nxos_acl_interfaces parsed integration tests connection={{ansible_connection}}"
 
 - block:
-    - name: Gather acl interfaces facts
+    - name: Gather ACL interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
           - "!all"

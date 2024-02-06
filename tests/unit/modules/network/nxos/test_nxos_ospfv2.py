@@ -19,36 +19,33 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
-from ansible_collections.cisco.nxos.plugins.modules import nxos_ospfv2
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from ansible_collections.cisco.nxos.plugins.modules import nxos_ospfv2
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
+from .nxos_module import TestNxosModule, set_module_args
+
 
 ignore_provider_arg = True
 
 
 class TestNxosOspfv2Module(TestNxosModule):
-
     module = nxos_ospfv2
 
     def setUp(self):
         super(TestNxosOspfv2Module, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv2.ospfv2.Ospfv2Facts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ospfv2.ospfv2.Ospfv2Facts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -85,12 +82,8 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.100",
                                     filter_list=[
-                                        dict(
-                                            route_map="rmap_1", direction="in"
-                                        ),
-                                        dict(
-                                            route_map="rmap_2", direction="out"
-                                        ),
+                                        dict(route_map="rmap_1", direction="in"),
+                                        dict(route_map="rmap_2", direction="out"),
                                     ],
                                     ranges=[
                                         dict(prefix="198.51.100.64/27"),
@@ -103,7 +96,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 ),
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -140,7 +133,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -168,12 +161,8 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.100",
                                     filter_list=[
-                                        dict(
-                                            route_map="rmap_1", direction="in"
-                                        ),
-                                        dict(
-                                            route_map="rmap_2", direction="out"
-                                        ),
+                                        dict(route_map="rmap_1", direction="in"),
+                                        dict(route_map="rmap_2", direction="out"),
                                     ],
                                     ranges=[
                                         dict(prefix="198.51.100.64/27"),
@@ -186,7 +175,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 ),
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),
@@ -209,7 +198,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -223,16 +212,16 @@ class TestNxosOspfv2Module(TestNxosModule):
                                     protocol="eigrp",
                                     id="100",
                                     route_map="rmap_2",
-                                )
+                                ),
                             ],
                             areas=[
                                 dict(
                                     area_id="0.0.0.101",
                                     stub=dict(no_summary=True),
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="merged",
             ),
@@ -262,7 +251,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -275,10 +264,10 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.101",
                                     stub=dict(no_summary=True),
-                                )
+                                ),
                             ],
-                        )
-                    ]
+                        ),
+                    ],
                 ),
                 state="replaced",
             ),
@@ -307,7 +296,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -335,12 +324,8 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.100",
                                     filter_list=[
-                                        dict(
-                                            route_map="rmap_1", direction="in"
-                                        ),
-                                        dict(
-                                            route_map="rmap_2", direction="out"
-                                        ),
+                                        dict(route_map="rmap_1", direction="in"),
+                                        dict(route_map="rmap_2", direction="out"),
                                     ],
                                     ranges=[
                                         dict(prefix="198.51.100.64/27"),
@@ -353,7 +338,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 ),
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 state="replaced",
             ),
@@ -376,15 +361,11 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
-                config=dict(
-                    processes=[
-                        dict(process_id="300", router_id="203.0.113.20")
-                    ]
-                ),
+                config=dict(processes=[dict(process_id="300", router_id="203.0.113.20")]),
                 state="overridden",
             ),
             ignore_provider_arg,
@@ -412,7 +393,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.100 range 198.51.100.64/27
               area 0.0.0.100 range 198.51.100.96/27
               area 0.0.0.101 authentication message-digest
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -440,12 +421,8 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 dict(
                                     area_id="0.0.0.100",
                                     filter_list=[
-                                        dict(
-                                            route_map="rmap_1", direction="in"
-                                        ),
-                                        dict(
-                                            route_map="rmap_2", direction="out"
-                                        ),
+                                        dict(route_map="rmap_1", direction="in"),
+                                        dict(route_map="rmap_2", direction="out"),
                                     ],
                                     ranges=[
                                         dict(prefix="198.51.100.64/27"),
@@ -458,7 +435,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                                 ),
                             ],
                         ),
-                    ]
+                    ],
                 ),
                 state="overridden",
             ),
@@ -483,13 +460,11 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.101 authentication message-digest
             router ospf 300
               router-id 192.0.168.102
-            """
+            """,
         )
         set_module_args(
             dict(
-                config=dict(
-                    processes=[dict(process_id="100"), dict(process_id="300")]
-                ),
+                config=dict(processes=[dict(process_id="100"), dict(process_id="300")]),
                 state="deleted",
             ),
             ignore_provider_arg,
@@ -515,13 +490,11 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.101 authentication message-digest
             router ospf 300
               router-id 192.0.168.102
-            """
+            """,
         )
         set_module_args(
             dict(
-                config=dict(
-                    processes=[dict(process_id="400"), dict(process_id="500")]
-                ),
+                config=dict(processes=[dict(process_id="400"), dict(process_id="500")]),
                 state="deleted",
             ),
             ignore_provider_arg,
@@ -546,7 +519,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               area 0.0.0.101 authentication message-digest
             router ospf 300
               router-id 192.0.168.102
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
 
@@ -566,7 +539,7 @@ class TestNxosOspfv2Module(TestNxosModule):
               router-id 203.0.113.20
             router ospf TEST-1
               router-id 198.51.100.1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -575,7 +548,7 @@ class TestNxosOspfv2Module(TestNxosModule):
                         dict(process_id="100", router_id="203.0.113.20"),
                         dict(process_id="TEST-1", router_id="198.51.100.1"),
                         dict(process_id="TEST-2", router_id="198.52.200.1"),
-                    ]
+                    ],
                 ),
                 state="merged",
             ),

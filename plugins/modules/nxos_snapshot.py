@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -91,7 +92,7 @@ options:
     description:
     - Specify to locally store a new created snapshot, to be used when C(action=create).
     type: bool
-    default: no
+    default: false
   path:
     description:
     - Specify the path of the file where new created snapshot or snapshots comparison
@@ -148,12 +149,10 @@ import os
 import re
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
 )
 
 
@@ -199,8 +198,9 @@ def action_create(module, existing_snapshots):
     if exist is False:
         commands.append(
             "snapshot create {0} {1}".format(
-                module.params["snapshot_name"], module.params["description"]
-            )
+                module.params["snapshot_name"],
+                module.params["description"],
+            ),
         )
 
     return commands
@@ -253,7 +253,7 @@ def action_add(module, existing_snapshots):
                     module.params["row_id"],
                     module.params["element_key1"],
                     module.params["element_key2"],
-                )
+                ),
             )
         else:
             commands.append(
@@ -262,7 +262,7 @@ def action_add(module, existing_snapshots):
                     module.params["show_command"],
                     module.params["row_id"],
                     module.params["element_key1"],
-                )
+                ),
             )
 
     return commands
@@ -270,7 +270,8 @@ def action_add(module, existing_snapshots):
 
 def action_compare(module, existing_snapshots):
     command = "show snapshot compare {0} {1}".format(
-        module.params["snapshot1"], module.params["snapshot2"]
+        module.params["snapshot1"],
+        module.params["snapshot2"],
     )
 
     if module.params["compare_option"]:
@@ -289,9 +290,7 @@ def action_delete(module, existing_snapshots):
             exist = True
 
     if exist:
-        commands.append(
-            "snapshot delete {0}".format(module.params["snapshot_name"])
-        )
+        commands.append("snapshot delete {0}".format(module.params["snapshot_name"]))
 
     return commands
 
@@ -345,8 +344,6 @@ def main():
         path=dict(type="str", default="./"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
     required_if = [
         (
             "action",
@@ -372,11 +369,7 @@ def main():
     comparison_results_file = module.params["comparison_results_file"]
 
     if not os.path.isdir(module.params["path"]):
-        module.fail_json(
-            msg="{0} is not a valid directory name.".format(
-                module.params["path"]
-            )
-        )
+        module.fail_json(msg="{0} is not a valid directory name.".format(module.params["path"]))
 
     existing_snapshots = invoke("get_existing", module)
     action_results = invoke("action_%s" % action, module, existing_snapshots)
@@ -391,9 +384,7 @@ def main():
                 snapshot1 = module.params["snapshot1"]
                 snapshot2 = module.params["snapshot2"]
                 compare_option = module.params["compare_option"]
-                command = "show snapshot compare {0} {1}".format(
-                    snapshot1, snapshot2
-                )
+                command = "show snapshot compare {0} {1}".format(snapshot1, snapshot2)
                 if compare_option:
                     command += " {0}".format(compare_option)
                 content = execute_show_command(command, module)[0]
@@ -410,14 +401,10 @@ def main():
                 and module.params["path"]
                 and module.params["save_snapshot_locally"]
             ):
-                command = "show snapshot dump {0} | json".format(
-                    module.params["snapshot_name"]
-                )
+                command = "show snapshot dump {0} | json".format(module.params["snapshot_name"])
                 content = execute_show_command(command, module)[0]
                 if content:
-                    write_on_file(
-                        str(content), module.params["snapshot_name"], module
-                    )
+                    write_on_file(str(content), module.params["snapshot_name"], module)
 
     module.exit_json(**result)
 

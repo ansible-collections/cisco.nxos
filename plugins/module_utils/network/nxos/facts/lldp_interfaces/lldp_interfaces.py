@@ -11,14 +11,15 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lldp_interfaces.lldp_interfaces import (
     Lldp_interfacesArgs,
 )
@@ -82,9 +83,7 @@ class Lldp_interfacesFacts(object):
         facts = {}
         if objs:
             facts["lldp_interfaces"] = []
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             for cfg in params["config"]:
                 facts["lldp_interfaces"].append(utils.remove_empties(cfg))
 
@@ -121,7 +120,8 @@ class Lldp_interfacesFacts(object):
             config["transmit"] = False
         if "management-address" in conf:
             config["tlv_set"]["management_address"] = re.search(
-                r"management-address (\S*)", conf
+                r"management-address (\S*)",
+                conf,
             ).group(1)
         if "vlan" in conf:
             config["tlv_set"]["vlan"] = re.search(r"vlan (\S*)", conf).group(1)

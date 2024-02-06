@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -123,14 +124,13 @@ commands:
 
 
 import re
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def execute_show_command(command, module):
@@ -202,11 +202,7 @@ def get_snmp_host(host, udp, module):
 
                 vrf_filt = each.get("TABLE_vrf_filters")
                 if vrf_filt:
-                    vrf_filter = (
-                        vrf_filt["ROW_vrf_filters"]["vrf_filter"]
-                        .split(":")[1]
-                        .split(",")
-                    )
+                    vrf_filter = vrf_filt["ROW_vrf_filters"]["vrf_filter"].split(":")[1].split(",")
                     filters = [vrf.strip() for vrf in vrf_filter]
                     host_resource["vrf_filter"] = filters
 
@@ -223,18 +219,14 @@ def get_snmp_host(host, udp, module):
                     resource_table = [resource_table]
 
                 for each in resource_table:
-                    key = (
-                        str(each["address"]) + "_" + str(each["port"]).strip()
-                    )
+                    key = str(each["address"]) + "_" + str(each["port"]).strip()
                     src = each.get("src_intf")
                     host_resource = apply_key_map(host_map_5k, each)
 
                     if src:
                         host_resource["src_intf"] = src
                         if re.search(r"interface:", src):
-                            host_resource["src_intf"] = src.split(":")[
-                                1
-                            ].strip()
+                            host_resource["src_intf"] = src.split(":")[1].strip()
 
                     vrf = each.get("use_vrf_name")
                     if vrf:
@@ -242,9 +234,7 @@ def get_snmp_host(host, udp, module):
 
                     vrf_filt = each.get("TABLE_filter_vrf")
                     if vrf_filt:
-                        vrf_filter = vrf_filt["ROW_filter_vrf"][
-                            "filter_vrf_name"
-                        ].split(",")
+                        vrf_filter = vrf_filt["ROW_filter_vrf"]["filter_vrf_name"].split(",")
                         filters = [vrf.strip() for vrf in vrf_filter]
                         host_resource["vrf_filter"] = filters
 
@@ -258,7 +248,7 @@ def get_snmp_host(host, udp, module):
 
         if find:
             fix_find = {}
-            for (key, value) in find.items():
+            for key, value in find.items():
                 if isinstance(value, str):
                     fix_find[key] = value.strip()
                 else:
@@ -274,21 +264,27 @@ def remove_snmp_host(host, udp, existing):
         existing["version"] = "3"
         command = "no snmp-server host {0} {snmp_type} version \
                     {version} {v3} {community} udp-port {1}".format(
-            host, udp, **existing
+            host,
+            udp,
+            **existing,
         )
 
     elif existing["version"] == "v2c":
         existing["version"] = "2c"
         command = "no snmp-server host {0} {snmp_type} version \
                     {version} {community} udp-port {1}".format(
-            host, udp, **existing
+            host,
+            udp,
+            **existing,
         )
 
     elif existing["version"] == "v1":
         existing["version"] = "1"
         command = "no snmp-server host {0} {snmp_type} version \
                     {version} {community} udp-port {1}".format(
-            host, udp, **existing
+            host,
+            udp,
+            **existing,
         )
 
     if command:
@@ -302,8 +298,10 @@ def remove_vrf(host, udp, proposed, existing):
         commands.append(
             "no snmp-server host {0} use-vrf \
                     {1} udp-port {2}".format(
-                host, proposed.get("vrf"), udp
-            )
+                host,
+                proposed.get("vrf"),
+                udp,
+            ),
         )
     return commands
 
@@ -315,8 +313,10 @@ def remove_filter(host, udp, proposed, existing):
             commands.append(
                 "no snmp-server host {0} filter-vrf \
                     {1} udp-port {2}".format(
-                    host, proposed.get("vrf_filter"), udp
-                )
+                    host,
+                    proposed.get("vrf_filter"),
+                    udp,
+                ),
             )
     return commands
 
@@ -327,8 +327,10 @@ def remove_src(host, udp, proposed, existing):
         commands.append(
             "no snmp-server host {0} source-interface \
                     {1} udp-port {2}".format(
-                host, proposed.get("src_intf"), udp
-            )
+                host,
+                proposed.get("src_intf"),
+                udp,
+            ),
         )
     return commands
 
@@ -405,11 +407,7 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
     results = {"changed": False, "commands": [], "warnings": warnings}
@@ -447,10 +445,7 @@ def main():
         module.fail_json(msg="inform requires snmp v2c or v3")
 
     if (version == "v1" or version == "v2c") and v3:
-        module.fail_json(
-            msg='param: "v3" should not be used when '
-            "using version v1 or v2c"
-        )
+        module.fail_json(msg='param: "v3" should not be used when ' "using version v1 or v2c")
 
     if not any([vrf_filter, vrf, src_intf]):
         if not all([snmp_type, version, community, udp]):
@@ -458,13 +453,13 @@ def main():
                 msg="when not configuring options like "
                 "vrf_filter, vrf, and src_intf,"
                 "the following params are required: "
-                "type, version, community"
+                "type, version, community",
             )
 
     if version == "v3" and v3 is None:
         module.fail_json(
             msg="when using version=v3, the param v3 "
-            "(options: auth, noauth, priv) is also required"
+            "(options: auth, noauth, priv) is also required",
         )
 
     # existing returns the list of vrfs configured for a given host
@@ -499,9 +494,7 @@ def main():
             if proposed.get("vrf"):
                 commands.append(remove_vrf(snmp_host, udp, proposed, existing))
             if proposed.get("vrf_filter"):
-                commands.append(
-                    remove_filter(snmp_host, udp, proposed, existing)
-                )
+                commands.append(remove_filter(snmp_host, udp, proposed, existing))
 
     elif state == "present":
         delta = dict(set(proposed.items()).difference(existing.items()))

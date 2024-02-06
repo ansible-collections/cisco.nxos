@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -100,14 +101,12 @@ commands:
 
 import re
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def execute_show_command(command, module, text=False):
@@ -253,9 +252,7 @@ def get_non_structured_snmp_user(body_text):
         return resource
     resource["user"] = m.group("user")
     resource["auth"] = m.group("auth")
-    resource["encrypt"] = (
-        "aes-128" if "aes" in str(m.group("priv")) else "none"
-    )
+    resource["encrypt"] = "aes-128" if "aes" in str(m.group("priv")) else "none"
 
     resource["group"] = [m.group("group")]
     more_groups = re.findall(r"^\s+([\w\d-]+)\s*$", output, re.M)
@@ -314,8 +311,6 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
     module = AnsibleModule(
         argument_spec=argument_spec,
         required_together=[["authentication", "pwd"], ["encrypt", "privacy"]],
@@ -336,8 +331,7 @@ def main():
     if privacy and encrypt:
         if not pwd and authentication:
             module.fail_json(
-                msg="pwd and authentication must be provided "
-                "when using privacy and encrypt"
+                msg="pwd and authentication must be provided " "when using privacy and encrypt",
             )
 
     if group and group not in get_snmp_groups(module):

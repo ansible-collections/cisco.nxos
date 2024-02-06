@@ -28,6 +28,7 @@ The module file for nxos_hsrp_interfaces
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -87,8 +88,8 @@ EXAMPLES = """
 - name: Configure hsrp attributes on interfaces
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-    - name: Ethernet1/1
-    - name: Ethernet1/2
+      - name: Ethernet1/1
+      - name: Ethernet1/2
     operation: deleted
 
 
@@ -97,10 +98,10 @@ EXAMPLES = """
 - name: Configure hsrp attributes on interfaces
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-    - name: Ethernet1/1
-      bfd: enable
-    - name: Ethernet1/2
-      bfd: disable
+      - name: Ethernet1/1
+        bfd: enable
+      - name: Ethernet1/2
+        bfd: disable
     operation: merged
 
 
@@ -109,10 +110,10 @@ EXAMPLES = """
 - name: Configure hsrp attributes on interfaces
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-    - name: Ethernet1/1
-      bfd: enable
-    - name: Ethernet1/2
-      bfd: disable
+      - name: Ethernet1/1
+        bfd: enable
+      - name: Ethernet1/2
+        bfd: disable
     operation: overridden
 
 
@@ -121,10 +122,10 @@ EXAMPLES = """
 - name: Configure hsrp attributes on interfaces
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-    - name: Ethernet1/1
-      bfd: enable
-    - name: Ethernet1/2
-      bfd: disable
+      - name: Ethernet1/1
+        bfd: enable
+      - name: Ethernet1/2
+        bfd: disable
     operation: replaced
 
 # Using rendered
@@ -132,10 +133,10 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_hsrp_interfaces:
     config:
-    - name: Ethernet1/800
-      bfd: enable
-    - name: Ethernet1/801
-      bfd: enable
+      - name: Ethernet1/800
+        bfd: enable
+      - name: Ethernet1/801
+        bfd: enable
     state: rendered
 
 # Task Output (redacted)
@@ -198,7 +199,6 @@ EXAMPLES = """
 #     bfd: enable
 #   - name: Ethernet1/2
 #     bfd: enable
-
 """
 RETURN = """
 before:
@@ -224,6 +224,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfacesArgs,
 )

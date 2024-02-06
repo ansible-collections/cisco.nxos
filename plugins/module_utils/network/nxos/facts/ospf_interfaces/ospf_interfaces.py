@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -14,17 +15,13 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from copy import deepcopy
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospf_interfaces.ospf_interfaces import (
+    Ospf_interfacesArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospf_interfaces import (
     Ospf_interfacesTemplate,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospf_interfaces.ospf_interfaces import (
-    Ospf_interfacesArgs,
 )
 
 
@@ -59,7 +56,8 @@ class Ospf_interfacesFacts(object):
 
         # parse native config using the Ospf_interfaces template
         ospf_interfaces_parser = Ospf_interfacesTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = list(ospf_interfaces_parser.parse().values())
         if objs:
@@ -71,14 +69,12 @@ class Ospf_interfacesFacts(object):
                             af["processes"] = list(af["processes"].values())
                         if af.get("multi_areas"):
                             af["multi_areas"].sort()
-                    item["address_family"] = sorted(
-                        item["address_family"], key=lambda i: i["afi"]
-                    )
+                    item["address_family"] = sorted(item["address_family"], key=lambda i: i["afi"])
 
             objs = sorted(
                 objs,
                 key=lambda i: [
-                    int(k) if k.isdigit() else k for k in i["name"].split("/")
+                    int(k) if k.isdigit() else k for k in i["name"].replace(".", "/").split("/")
                 ],
             )
 
@@ -86,8 +82,10 @@ class Ospf_interfacesFacts(object):
 
         params = utils.remove_empties(
             ospf_interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["ospf_interfaces"] = params.get("config", [])

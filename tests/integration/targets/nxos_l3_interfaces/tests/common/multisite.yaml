@@ -10,14 +10,14 @@
 
 - ansible.builtin.include_tasks: _remove_config.yaml
 
-- name: Enable feature nv overlay - multisite
+- name: Enable 'feature nv overlay' - multisite
   cisco.nxos.nxos_config:
     commands:
       - no feature nv overlay
       - feature nv overlay
     match: none
 
-- name: Enable nv overlay evpn - multisite
+- name: Enable NV overlay EVPN - multisite
   when: platform is search('N9K')
   ignore_errors: true
   cisco.nxos.nxos_config:
@@ -239,7 +239,7 @@
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - name: Store reserved interface ip config
+    - name: Store reserved interface IP configuration
       ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         overriden_config:
@@ -335,7 +335,7 @@
     - ansible.builtin.include_tasks: _remove_config.yaml
 
     # Interfaces used in the task don't actually exist on the appliance
-    - name: Use parsed state to convert externally supplied config to structured format
+    - name: Use parsed state to convert externally supplied configuration to structured format
       register: result
       cisco.nxos.nxos_l3_interfaces:
         running_config: |
@@ -358,7 +358,7 @@
 
   when: multiout is not search("Invalid command")
 
-- name: Disable nv overlay evpn
+- name: Disable NV overlay EVPN
   when: platform is search('N9K')
   ignore_errors: true
   cisco.nxos.nxos_config:
@@ -366,7 +366,7 @@
       - no nv overlay evpn
     match: none
 
-- name: Disable feature nv overlay
+- name: Disable 'feature nv overlay'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: nve

@@ -19,27 +19,28 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vxlan_vtep
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosVxlanVtepVniModule(TestNxosModule):
-
     module = nxos_vxlan_vtep
 
     def setUp(self):
         super(TestNxosVxlanVtepVniModule, self).setUp()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_vxlan_vtep.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -49,15 +50,11 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
         self.mock_load_config.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.get_config.return_value = load_fixture(
-            "nxos_vxlan_vtep", "config.cfg"
-        )
+        self.get_config.return_value = load_fixture("nxos_vxlan_vtep", "config.cfg")
         self.load_config.return_value = None
 
     def test_nxos_vxlan_vtep(self):
-        set_module_args(
-            dict(interface="nve1", description="simple description")
-        )
+        set_module_args(dict(interface="nve1", description="simple description"))
         self.execute_module(
             changed=True,
             commands=[
@@ -84,7 +81,7 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
             dict(
                 interface="nve1",
                 multisite_border_gateway_interface="Loopback10",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -100,6 +97,22 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
             dict(
                 interface="nve1",
                 multisite_border_gateway_interface="Loopback1",
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
+
+    def test_nxos_vxlan_vtep_advertise_virtual_rmac(self):
+        set_module_args(
+            dict(
+                interface="nve1",
+                advertise_virtual_rmac="true",
+            ),
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "interface nve1",
+                "terminal dont-ask",
+                "advertise virtual-rmac",
+            ],
+        )

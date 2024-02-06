@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -77,7 +78,7 @@ options:
 
 EXAMPLES = """
 - name: Install OS on N9k
-  check_mode: no
+  check_mode: false
   cisco.nxos.nxos_install_os:
     system_image_file: nxos.7.0.3.I6.1.bin
     issu: desired
@@ -93,11 +94,11 @@ EXAMPLES = """
 - name: Check installed OS for newly installed version
   nxos_command:
     commands: [show version | json]
-    provider: '{{ connection }}'
   register: output
+
 - assert:
     that:
-    - output['stdout'][0]['kickstart_ver_str'] == '7.0(3)I6(1)'
+      - output['stdout'][0]['kickstart_ver_str'] == '7.0(3)I6(1)'
 """
 
 RETURN = """
@@ -122,15 +123,15 @@ install_state:
 
 
 import re
+
 from time import sleep
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 # Output options are 'text' or 'json'
@@ -391,7 +392,7 @@ def build_install_cmd_set(issu, image, kick, type, force=True):
         commands.append("%s nxos %s %s" % (rootcmd, image, issu_cmd))
     else:
         commands.append(
-            "%s %s system %s kickstart %s" % (rootcmd, issu_cmd, image, kick)
+            "%s %s system %s kickstart %s" % (rootcmd, issu_cmd, image, kick),
         )
 
     return commands
@@ -430,10 +431,7 @@ def check_mode_legacy(module, issu, image, kick=None):
     if target_image["error"]:
         data["error"] = True
         data["raw"] = target_image["raw"]
-    if (
-        current["kickstart_ver_str"] != target_image["version"]
-        and not data["error"]
-    ):
+    if current["kickstart_ver_str"] != target_image["version"] and not data["error"]:
         data["upgrade_needed"] = True
         data["disruptive"] = True
         upgrade_msg = "Switch upgraded: system: %s" % tsver
@@ -446,10 +444,7 @@ def check_mode_legacy(module, issu, image, kick=None):
         if target_kick["error"]:
             data["error"] = True
             data["raw"] = target_kick["raw"]
-        if (
-            current["kickstart_ver_str"] != target_kick["version"]
-            and not data["error"]
-        ):
+        if current["kickstart_ver_str"] != target_kick["version"] and not data["error"]:
             data["upgrade_needed"] = True
             data["disruptive"] = True
             upgrade_msg = upgrade_msg + " kickstart: %s" % tkver
@@ -539,9 +534,7 @@ def do_install_all(module, issu, image, kick=None):
         if upgrade["invalid_command"] and "force" in commands[1]:
             # Not all platforms support the 'force' keyword.  Check for this
             # condition and re-try without the 'force' keyword if needed.
-            commands = build_install_cmd_set(
-                issu, image, kick, "install", False
-            )
+            commands = build_install_cmd_set(issu, image, kick, "install", False)
             upgrade = check_install_in_progress(module, commands, opts)
         upgrade["upgrade_cmd"] = commands
 
@@ -573,11 +566,7 @@ def main():
         issu=dict(choices=["required", "desired", "no", "yes"], default="no"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 

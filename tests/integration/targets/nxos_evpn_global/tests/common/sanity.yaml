@@ -8,20 +8,20 @@
     lines: no nv overlay evpn
     match: none
 
-- name: Disable feature nv overlay
+- name: Disable 'feature nv overlay'
   ignore_errors: true
   cisco.nxos.nxos_feature: &id006
     feature: nv overlay
     state: disabled
 
 - block:
-    - name: Enable feature nv overlay
+    - name: Enable 'feature nv overlay'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: nv overlay
         state: enabled
 
-    - name: Enable nv overlay evpn
+    - name: Enable NV overlay EVPN
       register: result
       cisco.nxos.nxos_evpn_global: &id001
         nv_overlay_evpn: true
@@ -30,7 +30,7 @@
         that:
           - result.changed == true
 
-    - name: Check idempotence - enable nv overlay evpn
+    - name: Check idempotence - enable NV overlay EVPN
       register: result
       cisco.nxos.nxos_evpn_global: *id001
 
@@ -38,14 +38,14 @@
         that:
           - result.changed == false
 
-    - name: Disable nv overlay evpn
+    - name: Disable NV overlay EVPN
       register: result
       cisco.nxos.nxos_evpn_global: &id003
         nv_overlay_evpn: false
 
     - ansible.builtin.assert: *id002
 
-    - name: Check dempotence - disable nv overlay evpn
+    - name: Check dempotence - disable NV overlay EVPN
       register: result
       cisco.nxos.nxos_evpn_global: *id003
 
@@ -55,11 +55,11 @@
     - ansible.builtin.debug:
         msg: connection={{ ansible_connection }} nxos_evpn_global sanity test - FALURE ENCOUNTERED
   always:
-    - name: Cleanup - disable nv overlay evpn
+    - name: Cleanup - disable NV overlay EVPN
       ignore_errors: true
       cisco.nxos.nxos_config: *id005
 
-    - name: Cleanup - disable feature nv overlay
+    - name: Cleanup - disable 'feature nv overlay'
       ignore_errors: true
       cisco.nxos.nxos_feature: *id006
 

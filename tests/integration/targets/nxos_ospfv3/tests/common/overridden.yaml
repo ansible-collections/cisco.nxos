@@ -34,7 +34,7 @@
         that:
           - "{{ overridden['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
 
-    - name: Override all ospf configuration with provided configuration (idempotent)
+    - name: Override all OSPF configuration with provided configuration (idempotent)
       register: result
       cisco.nxos.nxos_ospfv3: *id001
 

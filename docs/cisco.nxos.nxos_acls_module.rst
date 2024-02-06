@@ -1650,6 +1650,770 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>icmpv6</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>ICMPv6 protocol options.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>beyond_scope</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Destination beyond scope.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>destination_unreachable</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Destination address is unreachable.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>echo_reply</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Echo reply.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>echo_request</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Echo request (ping).</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>fragments</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Check non-initial fragments.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>header</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Parameter header problem.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>hop_limit</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Hop limit exceeded in transit.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mld_query</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Multicast Listener Discovery Query.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mld_reduction</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Multicast Listener Discovery Reduction.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mld_report</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Multicast Listener Discovery Report.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mldv2</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Multicast Listener Discovery Protocol.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>nd_na</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Neighbor discovery neighbor advertisements.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>nd_ns</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Neighbor discovery neighbor solicitations.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>next_header</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Parameter next header problems.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>no_admin</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Administration prohibited destination.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>no_route</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>No route to destination.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>packet_too_big</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Packet too big.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>parameter_option</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Parameter option problems.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>parameter_problem</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>All parameter problems.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port_unreachable</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Port unreachable.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>reassembly_timeout</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Reassembly timeout.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>renum_command</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Router renumbering command.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>renum_result</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Router renumbering result.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>renum_seq_number</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Router renumbering sequence number reset.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>router_advertisement</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Neighbor discovery router advertisements.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>router_renumbering</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>All router renumbering.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>router_solicitation</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Neighbor discovery router solicitations.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>telemetry_path</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>IPT enabled.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>telemetry_queue</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Flow of interest for BDC/HDC.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>time_exceeded</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>All time exceeded.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>unreachable</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>All unreachable.</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>igmp</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -2347,46 +3111,89 @@ Examples
 
     # Before state:
     # -------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
 
-    - name: Merge new ACLs configuration
+    - name: Merge provided ACLs configuration with device configuration
       cisco.nxos.nxos_acls:
-        config:
-        - afi: ipv4
-          acls:
-          - name: ACL1v4
-            aces:
-            - grant: deny
-              destination:
-                address: 192.0.2.64
-                wildcard_bits: 0.0.0.255
-              source:
-                any: true
-                port_protocol:
-                  lt: 55
-              protocol: tcp
-              protocol_options:
-                tcp:
-                  ack: true
-                  fin: true
-              sequence: 50
-
-        - afi: ipv6
-          acls:
-          - name: ACL1v6
-            aces:
-            - grant: permit
-              sequence: 10
-              source:
-                any: true
-              destination:
-                prefix: 2001:db8:12::/32
-              protocol: sctp
         state: merged
+        config:
+          - afi: ipv4
+            acls:
+              - name: ACL1v4
+                aces:
+                  - grant: deny
+                    destination:
+                      address: 192.0.2.64
+                      wildcard_bits: 0.0.0.255
+                    source:
+                      any: true
+                      port_protocol:
+                        lt: 55
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                        fin: true
+                    sequence: 50
+
+          - afi: ipv6
+            acls:
+              - name: ACL1v6
+                aces:
+                  - grant: permit
+                    sequence: 10
+                    source:
+                      any: true
+                    destination:
+                      prefix: 2001:db8:12::/32
+                    protocol: sctp
+
+    # Task Output
+    # -----------
+    # before: []
+    #
+    # commands:
+    # - ip access-list ACL1v4
+    # - 50 deny tcp any lt 55 192.0.2.64 0.0.0.255 ack fin
+    # - ipv6 access-list ACL1v6
+    # - 10 permit sctp any 2001:db8:12::/32
+    #
+    # after:
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          prefix: 2001:db8:12::/32
+    #        grant: permit
+    #        protocol: sctp
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      name: ACL1v6
+    #    afi: ipv6
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          address: 192.0.2.64
+    #          wildcard_bits: 0.0.0.255
+    #        grant: deny
+    #        protocol: tcp
+    #        protocol_options:
+    #          tcp:
+    #            ack: true
+    #            fin: true
+    #        sequence: 50
+    #        source:
+    #          any: true
+    #          port_protocol:
+    #            lt: '55'
+    #      name: ACL1v4
+    #    afi: ipv4
+
 
     # After state:
     # ------------
     #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ip access-list ACL1v4
     #  50 deny tcp any lt 55 192.0.2.64 0.0.0.255 ack fin
     # ipv6 access-list ACL1v6
@@ -2396,94 +3203,269 @@ Examples
 
     # Before state:
     # ----------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ip access-list ACL1v4
     #   10 permit ip any any
     #   20 deny udp any any
     # ip access-list ACL2v4
     #   10 permit ahp 192.0.2.0 0.0.0.255 any
-    # ip access-list ACL1v6
+    # ipv6 access-list ACL1v6
     #   10 permit sctp any any
     #   20 remark IPv6 ACL
-    # ip access-list ACL2v6
+    # ipv6 access-list ACL2v6
     #  10 deny ipv6 any 2001:db8:3000::/36
     #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
     - name: Replace existing ACL configuration with provided configuration
       cisco.nxos.nxos_acls:
         config:
-        - afi: ipv4
-        - afi: ipv6
-          acls:
-          - name: ACL1v6
-            aces:
-            - sequence: 20
-              grant: permit
-              source:
-                any: true
-              destination:
-                any: true
-              protocol: pip
+          - afi: ipv4
+          - afi: ipv6
+            acls:
+              - name: ACL1v6
+                aces:
+                  - sequence: 20
+                    grant: permit
+                    source:
+                      any: true
+                    destination:
+                      any: true
+                    protocol: pim
 
-            - remark: Replaced ACE
-
-          - name: ACL2v6
+                  - remark: Replaced ACE
+              - name: ACL2v6
         state: replaced
+
+    # Task Output
+    # -----------
+    # before:
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: sctp
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - remark: IPv6 ACL
+    #        sequence: 20
+    #      name: ACL1v6
+    #    - aces:
+    #      - destination:
+    #          prefix: 2001:db8:3000::/36
+    #        grant: deny
+    #        protocol: ipv6
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - destination:
+    #          host: 2001:db8:2000:ab::2
+    #        grant: permit
+    #        protocol: tcp
+    #        sequence: 20
+    #        source:
+    #          host: 2001:db8:2000:2::2
+    #      name: ACL2v6
+    #    afi: ipv6
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ip
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - destination:
+    #          any: true
+    #        grant: deny
+    #        protocol: udp
+    #        sequence: 20
+    #        source:
+    #          any: true
+    #      name: ACL1v4
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ahp
+    #        sequence: 10
+    #        source:
+    #          address: 192.0.2.0
+    #          wildcard_bits: 0.0.0.255
+    #      name: ACL2v4
+    #    afi: ipv4
+    #
+    # commands:
+    #  - no ip access-list ACL1v4
+    #  - no ip access-list ACL2v4
+    #  - ipv6 access-list ACL1v6
+    #  - no 10 permit sctp any any
+    #  - no 20 remark IPv6 ACL
+    #  - remark Replaced ACE
+    #  - 20 permit pim any any
+    #  - ipv6 access-list ACL2v6
+    #  - no 10 deny ipv6 any 2001:db8:3000::/36
+    #  - no 20 permit tcp host 2001:db8:2000:2::2 host 2001:db8:2000:ab::2
+    #
+    # after:
+    #  - acls:
+    #    - aces:
+    #      - remark: Replaced ACE
+    #        sequence: 10
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: pim
+    #        sequence: 20
+    #        source:
+    #          any: true
+    #      name: ACL1v6
+    #    - name: ACL2v6
+    #    afi: ipv6
 
     # After state:
     # ---------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ipv6 access-list ACL1v6
-    #   20 permit pip any any
-    #   30 remark Replaced ACE
+    #   10 remark Replaced ACE
+    #   20 permit pim any any
     # ipv6 access-list ACL2v6
 
     # Using overridden
 
     # Before state:
     # ----------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ip access-list ACL1v4
     #   10 permit ip any any
     #   20 deny udp any any
     # ip access-list ACL2v4
     #   10 permit ahp 192.0.2.0 0.0.0.255 any
-    # ip access-list ACL1v6
+    # ipv6 access-list ACL1v6
     #   10 permit sctp any any
     #   20 remark IPv6 ACL
-    # ip access-list ACL2v6
+    # ipv6 access-list ACL2v6
     #  10 deny ipv6 any 2001:db8:3000::/36
     #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
     - name: Override existing configuration with provided configuration
       cisco.nxos.nxos_acls:
         config:
-        - afi: ipv4
-          acls:
-          - name: NewACL
-            aces:
-            - grant: deny
-              source:
-                address: 192.0.2.0
-                wildcard_bits: 0.0.255.255
-              destination:
-                any: true
-              protocol: eigrp
-            - remark: Example for overridden state
+          - afi: ipv4
+            acls:
+              - name: NewACL
+                aces:
+                  - grant: deny
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.255.255
+                    destination:
+                      any: true
+                    protocol: eigrp
+                  - remark: Example for overridden state
         state: overridden
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: sctp
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - remark: IPv6 ACL
+    #        sequence: 20
+    #      name: ACL1v6
+    #    - aces:
+    #      - destination:
+    #          prefix: 2001:db8:3000::/36
+    #        grant: deny
+    #        protocol: ipv6
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #     - destination:
+    #          host: 2001:db8:2000:ab::2
+    #        grant: permit
+    #        protocol: tcp
+    #        sequence: 20
+    #        source:
+    #          host: 2001:db8:2000:2::2
+    #      name: ACL2v6
+    #    afi: ipv6
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ip
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - destination:
+    #          any: true
+    #        grant: deny
+    #        protocol: udp
+    #        sequence: 20
+    #        source:
+    #          any: true
+    #      name: ACL1v4
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ahp
+    #        sequence: 10
+    #        source:
+    #          address: 192.0.2.0
+    #          wildcard_bits: 0.0.0.255
+    #      name: ACL2v4
+    #    afi: ipv4
+    #
+    # commands:
+    #  - no ipv6 access-list ACL1v6
+    #  - no ipv6 access-list ACL2v6
+    #  - no ip access-list ACL1v4
+    #  - no ip access-list ACL2v4
+    #  - ip access-list NewACL
+    #  - deny eigrp 192.0.2.0 0.0.255.255 any
+    #  - remark Example for overridden state
+    #
+    # after:
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: deny
+    #        protocol: eigrp
+    #        sequence: 10
+    #        source:
+    #          address: 192.0.2.0
+    #          wildcard_bits: 0.0.255.255
+    #      - remark: Example for overridden state
+    #        sequence: 20
+    #      name: NewACL
+    #    afi: ipv4
 
     # After state:
     # ------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ip access-list NewACL
     #   10 deny eigrp 192.0.2.0 0.0.255.255 any
     #   20 remark Example for overridden state
 
-    # Using deleted:
+    # Using deleted - delete all
     #
     # Before state:
     # -------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ip access-list ACL1v4
     #   10 permit ip any any
     #   20 deny udp any any
@@ -2498,17 +3480,89 @@ Examples
 
     - name: Delete all ACLs
       cisco.nxos.nxos_acls:
-        config:
         state: deleted
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: sctp
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - remark: IPv6 ACL
+    #        sequence: 20
+    #      name: ACL1v6
+    #    - aces:
+    #      - destination:
+    #          prefix: 2001:db8:3000::/36
+    #        grant: deny
+    #        protocol: ipv6
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #     - destination:
+    #          host: 2001:db8:2000:ab::2
+    #        grant: permit
+    #        protocol: tcp
+    #        sequence: 20
+    #        source:
+    #          host: 2001:db8:2000:2::2
+    #      name: ACL2v6
+    #    afi: ipv6
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ip
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - destination:
+    #          any: true
+    #        grant: deny
+    #        protocol: udp
+    #        sequence: 20
+    #        source:
+    #          any: true
+    #      name: ACL1v4
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ahp
+    #        sequence: 10
+    #        source:
+    #          address: 192.0.2.0
+    #          wildcard_bits: 0.0.0.255
+    #      name: ACL2v4
+    #    afi: ipv4
+    #
+    # commands:
+    #  - no ip access-list ACL1v4
+    #  - no ip access-list ACL2v4
+    #  - no ipv6 access-list ACL1v6
+    #  - no ipv6 access-list ACL2v6
+    #
+    # after: []
+
 
     # After state:
     # -----------
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     #
 
+    # Using deleted - delete AFI
 
     # Before state:
     # -------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ip access-list ACL1v4
     #   10 permit ip any any
     #   20 deny udp any any
@@ -2524,12 +3578,109 @@ Examples
     - name: Delete all ACLs in given AFI
       cisco.nxos.nxos_acls:
         config:
-        - afi: ipv4
+          - afi: ipv4
         state: deleted
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: sctp
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - remark: IPv6 ACL
+    #        sequence: 20
+    #      name: ACL1v6
+    #    - aces:
+    #      - destination:
+    #          prefix: 2001:db8:3000::/36
+    #        grant: deny
+    #        protocol: ipv6
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #     - destination:
+    #          host: 2001:db8:2000:ab::2
+    #        grant: permit
+    #        protocol: tcp
+    #        sequence: 20
+    #        source:
+    #          host: 2001:db8:2000:2::2
+    #      name: ACL2v6
+    #    afi: ipv6
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ip
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - destination:
+    #          any: true
+    #        grant: deny
+    #        protocol: udp
+    #        sequence: 20
+    #        source:
+    #          any: true
+    #      name: ACL1v4
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ahp
+    #        sequence: 10
+    #        source:
+    #          address: 192.0.2.0
+    #          wildcard_bits: 0.0.0.255
+    #      name: ACL2v4
+    #    afi: ipv4
+    #
+    # commands:
+    #  - no ip access-list ACL1v4
+    #  - no ip access-list ACL2v4
+    #
+    # after:
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: sctp
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - remark: IPv6 ACL
+    #        sequence: 20
+    #      name: ACL1v6
+    #    - aces:
+    #      - destination:
+    #          prefix: 2001:db8:3000::/36
+    #        grant: deny
+    #        protocol: ipv6
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #     - destination:
+    #          host: 2001:db8:2000:ab::2
+    #        grant: permit
+    #        protocol: tcp
+    #        sequence: 20
+    #        source:
+    #          host: 2001:db8:2000:2::2
+    #      name: ACL2v6
+    #    afi: ipv6
 
     # After state:
     # ------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ip access-list ACL1v6
     #   10 permit sctp any any
     #   20 remark IPv6 ACL
@@ -2537,11 +3688,11 @@ Examples
     #  10 deny ipv6 any 2001:db8:3000::/36
     #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
 
-
+    # Using deleted - delete ACLs
 
     # Before state:
     # -------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ip access-list ACL1v4
     #   10 permit ip any any
     #   20 deny udp any any
@@ -2556,18 +3707,106 @@ Examples
 
     - name: Delete specific ACLs
       cisco.nxos.nxos_acls:
-        config:
-        - afi: ipv4
-          acls:
-          - name: ACL1v4
-          - name: ACL2v4
-        - afi: ipv6
-          acls:
-          - name: ACL1v6
         state: deleted
+        config:
+          - afi: ipv4
+            acls:
+              - name: ACL1v4
+              - name: ACL2v4
+          - afi: ipv6
+            acls:
+              - name: ACL1v6
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: sctp
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - remark: IPv6 ACL
+    #        sequence: 20
+    #      name: ACL1v6
+    #    - aces:
+    #      - destination:
+    #          prefix: 2001:db8:3000::/36
+    #        grant: deny
+    #        protocol: ipv6
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #     - destination:
+    #          host: 2001:db8:2000:ab::2
+    #        grant: permit
+    #        protocol: tcp
+    #        sequence: 20
+    #        source:
+    #          host: 2001:db8:2000:2::2
+    #      name: ACL2v6
+    #    afi: ipv6
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ip
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - destination:
+    #          any: true
+    #        grant: deny
+    #        protocol: udp
+    #        sequence: 20
+    #        source:
+    #          any: true
+    #      name: ACL1v4
+    #    - aces:
+    #      - destination:
+    #          any: true
+    #        grant: permit
+    #        protocol: ahp
+    #        sequence: 10
+    #        source:
+    #          address: 192.0.2.0
+    #          wildcard_bits: 0.0.0.255
+    #      name: ACL2v4
+    #    afi: ipv4
+    #
+    # commands:
+    #  - no ip access-list ACL1v4
+    #  - no ip access-list ACL2v4
+    #  - no ipv6 access-list ACL1v6
+    #
+    # after:
+    #  - acls:
+    #    - aces:
+    #      - destination:
+    #          prefix: 2001:db8:3000::/36
+    #        grant: deny
+    #        protocol: ipv6
+    #        sequence: 10
+    #        source:
+    #          any: true
+    #      - destination:
+    #          host: 2001:db8:2000:ab::2
+    #        grant: permit
+    #        protocol: tcp
+    #        sequence: 20
+    #        source:
+    #          host: 2001:db8:2000:2::2
+    #      name: ACL2v6
+    #    afi: ipv6
 
     # After state:
     # ------------
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ipv6 access-list ACL2v6
     #  10 deny ipv6 any 2001:db8:3000::/36
     #  20 permit tcp 2001:db8:2000:2::2/128 2001:db8:2000:ab::2/128
@@ -2583,7 +3822,9 @@ Examples
             10 permit sctp any any
         state: parsed
 
-    # returns:
+    # Task Output
+    # ------------
+    #
     # parsed:
     # - afi: ipv4
     #   acls:
@@ -2621,7 +3862,7 @@ Examples
 
     # Before state:
     # ------------
-    #
+    # nxos-9k# show running-config | section '^ip(v6)* access-list'
     # ip access-list ACL1v4
     #  50 deny tcp any lt 55 192.0.2.64 0.0.0.255 ack fin
     # ipv6 access-list ACL1v6
@@ -2631,7 +3872,9 @@ Examples
       cisco.nxos.nxos_acls:
         state: gathered
 
-    # returns:
+    # Task Output
+    # -----------
+    #
     # gathered:
     # - afi: ipv4
     #   acls:
@@ -2670,39 +3913,41 @@ Examples
     - name: Render required configuration to be pushed to the device
       cisco.nxos.nxos_acls:
         config:
-        - afi: ipv4
-          acls:
-          - name: ACL1v4
-            aces:
-            - grant: deny
-              destination:
-                address: 192.0.2.64
-                wildcard_bits: 0.0.0.255
-              source:
-                any: true
-                port_protocol:
-                  lt: 55
-              protocol: tcp
-              protocol_options:
-                tcp:
-                  ack: true
-                  fin: true
-              sequence: 50
-
-        - afi: ipv6
-          acls:
-          - name: ACL1v6
-            aces:
-            - grant: permit
-              sequence: 10
-              source:
-                any: true
-              destination:
-                prefix: 2001:db8:12::/32
-              protocol: sctp
+          - afi: ipv4
+            acls:
+              - name: ACL1v4
+                aces:
+                  - grant: deny
+                    destination:
+                      address: 192.0.2.64
+                      wildcard_bits: 0.0.0.255
+                    source:
+                      any: true
+                      port_protocol:
+                        lt: 55
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                        fin: true
+                    sequence: 50
+          - afi: ipv6
+            acls:
+              - name: ACL1v6
+                aces:
+                  - grant: permit
+                    sequence: 10
+                    source:
+                      any: true
+                    destination:
+                      prefix: '2001:db8:12::/32'
+                    protocol: sctp
         state: rendered
 
-    # returns:
+
+    # Task Output
+    # -----------
+    #
     # rendered:
     #  ip access-list ACL1v4
     #   50 deny tcp any lt 55 192.0.2.64 0.0.0.255 ack fin
@@ -2771,6 +4016,57 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 <td>always</td>
                 <td>
                             <div>The set of commands pushed to the remote device.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip access-list ACL1v4&#x27;, &#x27;10 permit ip any any precedence critical log&#x27;, &#x27;20 deny tcp any lt smtp host 192.0.2.64 ack fin&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
                         <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip access-list ACL1v4&#x27;, &#x27;10 permit ip any any precedence critical log&#x27;, &#x27;20 deny tcp any lt smtp host 192.0.2.64 ack fin&#x27;]</div>

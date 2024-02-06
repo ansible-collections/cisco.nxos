@@ -1,23 +1,24 @@
 ---
-- name: Enable ospfv3 feature
+- name: Enable 'feature ospfv3'
   cisco.nxos.nxos_feature:
     feature: ospfv3
   vars:
     ansible_connection: ansible.netcommon.network_cli
 
-- block:
-    - name: Include the cli tasks
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli.yaml
 
-    - name: Include the nx-api tasks
+    - name: Include the NX-API tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
 
   always:
-    - name: Disable ospfv3 feature
+    - name: Disable 'feature ospfv3'
       cisco.nxos.nxos_feature:
         feature: ospfv3
         state: disabled

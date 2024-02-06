@@ -12,41 +12,33 @@ created
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.cmdref.telemetry.telemetry import (
-    TMS_GLOBAL,
     TMS_DESTGROUP,
+    TMS_GLOBAL,
     TMS_SENSORGROUP,
     TMS_SUBSCRIPTION,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.telemetry.telemetry import (
-    normalize_data,
-    remove_duplicate_context,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.telemetry.telemetry import (
-    valiate_input,
-    get_setval_path,
-    massage_data,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import NxosCmdRef
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.telemetry.telemetry import (
     get_module_params_subsection,
+    get_setval_path,
+    massage_data,
+    normalize_data,
     remove_duplicate_commands,
+    remove_duplicate_context,
+    valiate_input,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    NxosCmdRef,
 )
 
 
@@ -68,7 +60,9 @@ class Telemetry(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
         telemetry_facts = facts["ansible_network_resources"].get("telemetry")
         if not telemetry_facts:
@@ -89,24 +83,18 @@ class Telemetry(ConfigBase):
 
         state = self._module.params["state"]
         if "overridden" in state:
-            self._module.fail_json(
-                msg="State <overridden> is invalid for this module."
-            )
+            self._module.fail_json(msg="State <overridden> is invalid for this module.")
         # When state is 'deleted', the module_params should not contain data
         # under the 'config' key
         if "deleted" in state and self._module.params.get("config"):
-            self._module.fail_json(
-                msg="Remove config key from playbook when state is <deleted>"
-            )
+            self._module.fail_json(msg="Remove config key from playbook when state is <deleted>")
 
         if self._module.params["config"] is None:
             self._module.params["config"] = {}
         # Normalize interface name.
         int = self._module.params["config"].get("source_interface")
         if int:
-            self._module.params["config"][
-                "source_interface"
-            ] = normalize_interface(int)
+            self._module.params["config"]["source_interface"] = normalize_interface(int)
 
         if self.state in self.ACTION_STATES:
             existing_telemetry_facts = self.get_telemetry_facts()
@@ -181,12 +169,8 @@ class Telemetry(ConfigBase):
 
         # Build Telemetry Global NxosCmdRef Object
         cmd_ref["TMS_GLOBAL"]["ref"] = []
-        self._module.params["config"] = get_module_params_subsection(
-            ALL_MP, "TMS_GLOBAL"
-        )
-        cmd_ref["TMS_GLOBAL"]["ref"].append(
-            NxosCmdRef(self._module, TMS_GLOBAL)
-        )
+        self._module.params["config"] = get_module_params_subsection(ALL_MP, "TMS_GLOBAL")
+        cmd_ref["TMS_GLOBAL"]["ref"].append(NxosCmdRef(self._module, TMS_GLOBAL))
         ref = cmd_ref["TMS_GLOBAL"]["ref"][0]
         ref.set_context()
         ref.get_existing()
@@ -204,25 +188,19 @@ class Telemetry(ConfigBase):
                     saved_ids.append(playvals["id"])
                     resource_key = td["cmd"].format(playvals["id"])
                     # Only build the NxosCmdRef object for the td['name'] module parameters.
-                    self._module.params[
-                        "config"
-                    ] = get_module_params_subsection(
-                        ALL_MP, td["type"], playvals["id"]
+                    self._module.params["config"] = get_module_params_subsection(
+                        ALL_MP,
+                        td["type"],
+                        playvals["id"],
                     )
-                    cmd_ref[td["type"]]["ref"].append(
-                        NxosCmdRef(self._module, td["obj"])
-                    )
+                    cmd_ref[td["type"]]["ref"].append(NxosCmdRef(self._module, td["obj"]))
                     ref = cmd_ref[td["type"]]["ref"][-1]
                     ref.set_context([resource_key])
-                    if td["type"] == "TMS_SENSORGROUP" and get_setval_path(
-                        self._module
-                    ):
+                    if td["type"] == "TMS_SENSORGROUP" and get_setval_path(self._module):
                         # Sensor group path setting can contain optional values.
                         # Call get_setval_path helper function to process any
                         # optional setval keys.
-                        ref._ref["path"]["setval"] = get_setval_path(
-                            self._module
-                        )
+                        ref._ref["path"]["setval"] = get_setval_path(self._module)
                     ref.get_existing(device_cache)
                     ref.get_playvals()
                     if td["type"] == "TMS_DESTGROUP":
@@ -276,9 +254,7 @@ class Telemetry(ConfigBase):
         ref["tms_global"] = NxosCmdRef([], TMS_GLOBAL, ref_only=True)
         ref["tms_destgroup"] = NxosCmdRef([], TMS_DESTGROUP, ref_only=True)
         ref["tms_sensorgroup"] = NxosCmdRef([], TMS_SENSORGROUP, ref_only=True)
-        ref["tms_subscription"] = NxosCmdRef(
-            [], TMS_SUBSCRIPTION, ref_only=True
-        )
+        ref["tms_subscription"] = NxosCmdRef([], TMS_SUBSCRIPTION, ref_only=True)
 
         # Order matters for state replaced.
         # First remove all subscriptions, followed by sensor-groups and destination-groups.
@@ -377,28 +353,20 @@ class Telemetry(ConfigBase):
                 have_resources = massaged_have.get("destination_groups")
             if resource == "TMS_SENSORGROUP":
                 name = "sensor-group"
-                global_ctx = ref["tms_sensorgroup"]._ref["_template"][
-                    "context"
-                ]
+                global_ctx = ref["tms_sensorgroup"]._ref["_template"]["context"]
                 setval = {}
-                setval["data_source"] = ref["tms_sensorgroup"]._ref[
-                    "data_source"
-                ]["setval"]
+                setval["data_source"] = ref["tms_sensorgroup"]._ref["data_source"]["setval"]
                 setval["path"] = ref["tms_sensorgroup"]._ref["path"]["setval"]
                 want_resources = massaged_want.get("sensor_groups")
                 have_resources = massaged_have.get("sensor_groups")
             if resource == "TMS_SUBSCRIPTION":
                 name = "subscription"
-                global_ctx = ref["tms_subscription"]._ref["_template"][
-                    "context"
-                ]
+                global_ctx = ref["tms_subscription"]._ref["_template"]["context"]
                 setval = {}
-                setval["destination_group"] = ref["tms_subscription"]._ref[
-                    "destination_group"
-                ]["setval"]
-                setval["sensor_group"] = ref["tms_subscription"]._ref[
-                    "sensor_group"
-                ]["setval"]
+                setval["destination_group"] = ref["tms_subscription"]._ref["destination_group"][
+                    "setval"
+                ]
+                setval["sensor_group"] = ref["tms_subscription"]._ref["sensor_group"]["setval"]
                 want_resources = massaged_want.get("subscriptions")
                 have_resources = massaged_have.get("subscriptions")
 
@@ -427,17 +395,11 @@ class Telemetry(ConfigBase):
                                 cmd = {}
                                 if item.get("data_source"):
                                     cmd["data_source"] = [
-                                        setval["data_source"].format(
-                                            item["data_source"]
-                                        )
+                                        setval["data_source"].format(item["data_source"]),
                                     ]
                                 if item.get("path"):
-                                    setval["path"] = get_setval_path(
-                                        item.get("path")
-                                    )
-                                    cmd["path"] = [
-                                        setval["path"].format(**item["path"])
-                                    ]
+                                    setval["path"] = get_setval_path(item.get("path"))
+                                    cmd["path"] = [setval["path"].format(**item["path"])]
                                 add[resource].extend(global_ctx)
                                 if property_ctx[0] not in add[resource]:
                                     add[resource].extend(property_ctx)
@@ -450,22 +412,18 @@ class Telemetry(ConfigBase):
                                 if item.get("destination_group"):
                                     cmd["destination_group"] = [
                                         setval["destination_group"].format(
-                                            item["destination_group"]
-                                        )
+                                            item["destination_group"],
+                                        ),
                                     ]
                                 if item.get("sensor_group"):
                                     cmd["sensor_group"] = [
-                                        setval["sensor_group"].format(
-                                            **item["sensor_group"]
-                                        )
+                                        setval["sensor_group"].format(**item["sensor_group"]),
                                     ]
                                 add[resource].extend(global_ctx)
                                 if property_ctx[0] not in add[resource]:
                                     add[resource].extend(property_ctx)
                                 if cmd.get("destination_group"):
-                                    add[resource].extend(
-                                        cmd["destination_group"]
-                                    )
+                                    add[resource].extend(cmd["destination_group"])
                                 if cmd.get("sensor_group"):
                                     add[resource].extend(cmd["sensor_group"])
 
@@ -478,9 +436,7 @@ class Telemetry(ConfigBase):
                                 if item is None:
                                     continue
                                 # item wanted but does not exist so add it
-                                property_ctx = [
-                                    "{0} {1}".format(name, want_key)
-                                ]
+                                property_ctx = ["{0} {1}".format(name, want_key)]
                                 if resource == "TMS_DESTGROUP":
                                     cmd = [setval.format(**item[cmd_property])]
                                     add[resource].extend(global_ctx)
@@ -491,26 +447,16 @@ class Telemetry(ConfigBase):
                                     cmd = {}
                                     if item.get("data_source"):
                                         cmd["data_source"] = [
-                                            setval["data_source"].format(
-                                                item["data_source"]
-                                            )
+                                            setval["data_source"].format(item["data_source"]),
                                         ]
                                     if item.get("path"):
-                                        setval["path"] = get_setval_path(
-                                            item.get("path")
-                                        )
-                                        cmd["path"] = [
-                                            setval["path"].format(
-                                                **item["path"]
-                                            )
-                                        ]
+                                        setval["path"] = get_setval_path(item.get("path"))
+                                        cmd["path"] = [setval["path"].format(**item["path"])]
                                     add[resource].extend(global_ctx)
                                     if property_ctx[0] not in add[resource]:
                                         add[resource].extend(property_ctx)
                                     if cmd.get("data_source"):
-                                        add[resource].extend(
-                                            cmd["data_source"]
-                                        )
+                                        add[resource].extend(cmd["data_source"])
                                     if cmd.get("path"):
                                         add[resource].extend(cmd["path"])
                                 if resource == "TMS_SUBSCRIPTION":
@@ -518,26 +464,20 @@ class Telemetry(ConfigBase):
                                     if item.get("destination_group"):
                                         cmd["destination_group"] = [
                                             setval["destination_group"].format(
-                                                item["destination_group"]
-                                            )
+                                                item["destination_group"],
+                                            ),
                                         ]
                                     if item.get("sensor_group"):
                                         cmd["sensor_group"] = [
-                                            setval["sensor_group"].format(
-                                                **item["sensor_group"]
-                                            )
+                                            setval["sensor_group"].format(**item["sensor_group"]),
                                         ]
                                     add[resource].extend(global_ctx)
                                     if property_ctx[0] not in add[resource]:
                                         add[resource].extend(property_ctx)
                                     if cmd.get("destination_group"):
-                                        add[resource].extend(
-                                            cmd["destination_group"]
-                                        )
+                                        add[resource].extend(cmd["destination_group"])
                                     if cmd.get("sensor_group"):
-                                        add[resource].extend(
-                                            cmd["sensor_group"]
-                                        )
+                                        add[resource].extend(cmd["sensor_group"])
 
                 # process haves:
                 for have_key in have_resources.keys():
@@ -555,14 +495,9 @@ class Telemetry(ConfigBase):
                                 if item is None:
                                     continue
                                 # have item not wanted so remove it
-                                property_ctx = [
-                                    "{0} {1}".format(name, have_key)
-                                ]
+                                property_ctx = ["{0} {1}".format(name, have_key)]
                                 if resource == "TMS_DESTGROUP":
-                                    cmd = [
-                                        "no "
-                                        + setval.format(**item[cmd_property])
-                                    ]
+                                    cmd = ["no " + setval.format(**item[cmd_property])]
                                     delete[resource].extend(global_ctx)
                                     if property_ctx[0] not in delete[resource]:
                                         delete[resource].extend(property_ctx)
@@ -572,27 +507,18 @@ class Telemetry(ConfigBase):
                                     if item.get("data_source"):
                                         cmd["data_source"] = [
                                             "no "
-                                            + setval["data_source"].format(
-                                                item["data_source"]
-                                            )
+                                            + setval["data_source"].format(item["data_source"]),
                                         ]
                                     if item.get("path"):
-                                        setval["path"] = get_setval_path(
-                                            item.get("path")
-                                        )
+                                        setval["path"] = get_setval_path(item.get("path"))
                                         cmd["path"] = [
-                                            "no "
-                                            + setval["path"].format(
-                                                **item["path"]
-                                            )
+                                            "no " + setval["path"].format(**item["path"]),
                                         ]
                                     delete[resource].extend(global_ctx)
                                     if property_ctx[0] not in delete[resource]:
                                         delete[resource].extend(property_ctx)
                                     if cmd.get("data_source"):
-                                        delete[resource].extend(
-                                            cmd["data_source"]
-                                        )
+                                        delete[resource].extend(cmd["data_source"])
                                     if cmd.get("path"):
                                         delete[resource].extend(cmd["path"])
                                 if resource == "TMS_SUBSCRIPTION":
@@ -600,28 +526,22 @@ class Telemetry(ConfigBase):
                                     if item.get("destination_group"):
                                         cmd["destination_group"] = [
                                             "no "
-                                            + setval[
-                                                "destination_group"
-                                            ].format(item["destination_group"])
+                                            + setval["destination_group"].format(
+                                                item["destination_group"],
+                                            ),
                                         ]
                                     if item.get("sensor_group"):
                                         cmd["sensor_group"] = [
                                             "no "
-                                            + setval["sensor_group"].format(
-                                                **item["sensor_group"]
-                                            )
+                                            + setval["sensor_group"].format(**item["sensor_group"]),
                                         ]
                                     delete[resource].extend(global_ctx)
                                     if property_ctx[0] not in delete[resource]:
                                         delete[resource].extend(property_ctx)
                                     if cmd.get("destination_group"):
-                                        delete[resource].extend(
-                                            cmd["destination_group"]
-                                        )
+                                        delete[resource].extend(cmd["destination_group"])
                                     if cmd.get("sensor_group"):
-                                        delete[resource].extend(
-                                            cmd["sensor_group"]
-                                        )
+                                        delete[resource].extend(cmd["sensor_group"])
 
             add[resource] = remove_duplicate_context(add[resource])
             delete[resource] = remove_duplicate_context(delete[resource])

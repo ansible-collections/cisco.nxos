@@ -18,18 +18,21 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from os import path
+
 
 try:
     from unittest.mock import MagicMock
 except ImportError:
     from mock import MagicMock
 
-from ansible_collections.cisco.nxos.tests.unit.compat import unittest
-from ansible_collections.cisco.nxos.plugins.cliconf import nxos
 from ansible.module_utils._text import to_bytes, to_text
+
+from ansible_collections.cisco.nxos.plugins.cliconf import nxos
+from ansible_collections.cisco.nxos.tests.unit.compat import unittest
 
 
 class TestPluginCLIConfNXOS(unittest.TestCase):
@@ -58,7 +61,7 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
                     value = kwargs.get("command")
 
                 fixture_path = path.abspath(
-                    b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" ")))
+                    b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" "))),
                 )
                 with open(fixture_path, "rb") as file_desc:
                     return to_text(file_desc.read())
@@ -109,17 +112,13 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
     def test_get_command_with_output_nxos(self):
         """Test _get_command_with_output for nxos"""
         self._prepare()
-        cmd = self._cliconf._get_command_with_output(
-            command="show version", output="json"
-        )
+        cmd = self._cliconf._get_command_with_output(command="show version", output="json")
 
         self.assertEqual(cmd, "show version | json")
 
     def test_get_command_with_output_mds(self):
         """Test _get_command_with_output for mds"""
         self._prepare(platform="mds")
-        cmd = self._cliconf._get_command_with_output(
-            command="show version", output="json"
-        )
+        cmd = self._cliconf._get_command_with_output(command="show version", output="json")
 
         self.assertEqual(cmd, "show version | json native")

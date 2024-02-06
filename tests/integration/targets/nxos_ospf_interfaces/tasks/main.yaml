@@ -1,5 +1,5 @@
 ---
-- name: Enable ospf v2 and v3 features
+- name: Enable OSPF v2 and v3 features
   cisco.nxos.nxos_config:
     lines:
       - feature ospf
@@ -7,19 +7,20 @@
   vars:
     ansible_connection: ansible.netcommon.network_cli
 
-- block:
-    - name: Include the cli tasks
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli.yaml
 
-    - name: Include the nx-api tasks
+    - name: Include the NX-API tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi
 
   always:
-    - name: Disable ospf v2 and v3 features
+    - name: Disable OSPF v2 and v3 features
       cisco.nxos.nxos_config:
         lines:
           - feature ospf

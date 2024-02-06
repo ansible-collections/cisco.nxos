@@ -13,26 +13,26 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_diff,
-    to_list,
     remove_empties,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
     normalize_interface,
     search_obj_in_list,
-    vlan_range_to_list,
     vlan_list_to_range,
+    vlan_range_to_list,
 )
 
 
@@ -57,11 +57,11 @@ class L2_interfaces(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
-        l2_interfaces_facts = facts["ansible_network_resources"].get(
-            "l2_interfaces"
-        )
+        l2_interfaces_facts = facts["ansible_network_resources"].get("l2_interfaces")
         if not l2_interfaces_facts:
             return []
         return l2_interfaces_facts
@@ -102,11 +102,9 @@ class L2_interfaces(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
-            result["parsed"] = self.get_l2_interfaces_facts(
-                data=running_config
-            )
+            result["parsed"] = self.get_l2_interfaces_facts(data=running_config)
 
         if self.state in self.ACTION_STATES:
             result["before"] = existing_l2_interfaces_facts
@@ -161,14 +159,9 @@ class L2_interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    state
-                )
+                msg="value of config parameter must not be empty for state {0}".format(state),
             )
 
         commands = list()
@@ -181,9 +174,7 @@ class L2_interfaces(ConfigBase):
                 if state in ["merged", "rendered"]:
                     commands.extend(self._state_merged(flatten_dict(w), have))
                 elif state == "replaced":
-                    commands.extend(
-                        self._state_replaced(flatten_dict(w), have)
-                    )
+                    commands.extend(self._state_replaced(flatten_dict(w), have))
         return commands
 
     def _state_replaced(self, w, have):
@@ -227,9 +218,7 @@ class L2_interfaces(ConfigBase):
         commands = []
         for h in have:
             h = flatten_dict(h)
-            obj_in_want = flatten_dict(
-                search_obj_in_list(h["name"], want, "name")
-            )
+            obj_in_want = flatten_dict(search_obj_in_list(h["name"], want, "name"))
             if h == obj_in_want:
                 continue
             for w in want:
@@ -264,9 +253,7 @@ class L2_interfaces(ConfigBase):
         commands = []
         if want:
             for w in want:
-                obj_in_have = flatten_dict(
-                    search_obj_in_list(w["name"], have, "name")
-                )
+                obj_in_have = flatten_dict(search_obj_in_list(w["name"], have, "name"))
                 commands.extend(self.del_attribs(obj_in_have))
         else:
             if not have:
@@ -312,13 +299,9 @@ class L2_interfaces(ConfigBase):
             commands.append(cmd + "access vlan " + str(d["vlan"]))
         if "allowed_vlans" in d:
             if vlan_exists:
-                commands.append(
-                    cmd + "trunk allowed vlan add " + str(d["allowed_vlans"])
-                )
+                commands.append(cmd + "trunk allowed vlan add " + str(d["allowed_vlans"]))
             else:
-                commands.append(
-                    cmd + "trunk allowed vlan " + str(d["allowed_vlans"])
-                )
+                commands.append(cmd + "trunk allowed vlan " + str(d["allowed_vlans"]))
         if "native_vlan" in d:
             commands.append(cmd + "trunk native vlan " + str(d["native_vlan"]))
         if commands:
@@ -347,9 +330,7 @@ class L2_interfaces(ConfigBase):
                         if w_vlans in have_vlans:
                             vlan_tobe_added.pop(vlan_tobe_added.index(w_vlans))
                     if vlan_tobe_added:
-                        diff.update(
-                            {"allowed_vlans": ",".join(vlan_tobe_added)}
-                        )
+                        diff.update({"allowed_vlans": ",".join(vlan_tobe_added)})
                         if have_vlans:
                             commands = self.add_commands(diff, True)
                         else:

@@ -32,7 +32,7 @@
     state: absent
   with_items: "{{backup_files.files|default([])}}"
 
-- name: Take config backup
+- name: Take configuration backup
   become: "{{ can_become }}"
   register: result
   ansible.netcommon.cli_config:

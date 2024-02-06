@@ -22,6 +22,11 @@
     prepare_nxos_tests_task: false
     titanium: false
 
+- name: Reload golden config
+  cisco.nxos.nxos_command:
+    commands: configure replace bootflash:///golden_config non-interactive
+  when: reload_nxos_config | default(False) | bool
+
 - name: Run the prepare steps if requested
   ansible.builtin.include_tasks: prepare.yml
   when: prepare_nxos_tests_task | default(False) | bool

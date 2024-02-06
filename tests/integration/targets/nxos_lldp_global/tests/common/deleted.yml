@@ -13,7 +13,7 @@
         feature: lldp
         state: disabled
 
-    - name: Enable lldp feature
+    - name: Enable 'feature lldp'
       cisco.nxos.nxos_feature:
         feature: lldp
         state: enabled

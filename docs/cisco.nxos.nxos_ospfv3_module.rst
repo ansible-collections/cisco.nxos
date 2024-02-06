@@ -3570,53 +3570,53 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 100
-            router_id: 203.0.113.20
-          - process_id: 102
-            router_id: 198.51.100.1
-            address_family:
-              afi: ipv6
-              safi: unicast
-              areas:
-              - area_id: 0.0.0.100
-                filter_list:
-                - route_map: rmap_1
-                  direction: in
-                - route_map: rmap_2
-                  direction: out
-                ranges:
-                - prefix: 2001:db2::/32
-                  not_advertise: true
-                - prefix: 2001:db3::/32
-                  cost: 120
-              redistribute:
-              - protocol: eigrp
-                id: 120
-                route_map: rmap_1
-              - protocol: direct
-                route_map: ospf102-direct-connect
-            vrfs:
-            - vrf: zone1
-              router_id: 198.51.100.129
-              areas:
-              - area_id: 0.0.0.102
-                nssa:
-                  default_information_originate: true
-                  no_summary: true
-              - area_id: 0.0.0.103
-                nssa:
-                  no_summary: true
-                  translate:
-                    type7:
-                      always: true
-            - vrf: zone2
-              auto_cost:
-                reference_bandwidth: 45
-                unit: Gbps
+            - process_id: 100
+              router_id: 203.0.113.20
+            - process_id: 102
+              router_id: 198.51.100.1
+              address_family:
+                afi: ipv6
+                safi: unicast
+                areas:
+                  - area_id: 0.0.0.100
+                    filter_list:
+                      - route_map: rmap_1
+                        direction: in
+                      - route_map: rmap_2
+                        direction: out
+                    ranges:
+                      - prefix: '2001:db2::/32'
+                        not_advertise: true
+                      - prefix: '2001:db3::/32'
+                        cost: 120
+                redistribute:
+                  - protocol: eigrp
+                    id: 120
+                    route_map: rmap_1
+                  - protocol: direct
+                    route_map: ospf102-direct-connect
+              vrfs:
+                - vrf: zone1
+                  router_id: 198.51.100.129
+                  areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
+                    - area_id: 0.0.0.103
+                      nssa:
+                        no_summary: true
+                        translate:
+                          type7:
+                            always: true
+                - vrf: zone2
+                  auto_cost:
+                    reference_bandwidth: 45
+                    unit: Gbps
         state: merged
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before: {}
     #
     # commands:
@@ -3711,7 +3711,7 @@ Examples
     # Using replaced
 
     # Before state:
-    # ------------
+    # -------------
     # nxos-9k-rdo# sh running-config | section "^router ospfv3"
     # router ospfv3 100
     #   router-id 203.0.113.20
@@ -3736,37 +3736,37 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 102
-            router_id: 198.51.100.1
-            address_family:
-              afi: ipv6
-              safi: unicast
-              areas:
-              - area_id: 0.0.0.100
-                filter_list:
-                - route_map: rmap_8
-                  direction: in
-                ranges:
-                - not_advertise: true
-                  prefix: 2001:db2::/32
-              redistribute:
-              - protocol: eigrp
-                id: 130
-                route_map: rmap_1
-              - protocol: direct
-                route_map: ospf102-direct-connect
-            vrfs:
-            - vrf: zone1
-              router_id: 198.51.100.129
-              areas:
-              - area_id: 0.0.0.102
-                nssa:
-                  default_information_originate: True
-                  no_summary: True
+            - process_id: 102
+              router_id: 198.51.100.1
+              address_family:
+                afi: ipv6
+                safi: unicast
+                areas:
+                  - area_id: 0.0.0.100
+                    filter_list:
+                      - route_map: rmap_8
+                        direction: in
+                    ranges:
+                      - not_advertise: true
+                        prefix: 2001:db2::/32
+                redistribute:
+                  - protocol: eigrp
+                    id: 130
+                    route_map: rmap_1
+                  - protocol: direct
+                    route_map: ospf102-direct-connect
+              vrfs:
+                - vrf: zone1
+                  router_id: 198.51.100.129
+                  areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
         state: replaced
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -3877,7 +3877,7 @@ Examples
     # Using overridden
 
     # Before state:
-    # ------------
+    # -------------
     # nxos-9k-rdo# sh running-config | section "^router ospfv3"
     # router ospfv3 100
     #   router-id 203.0.113.20
@@ -3902,15 +3902,15 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 104
-            router_id: 203.0.113.20
-          - process_id: 102
-            router_id: 198.51.100.1
-            shutdown: true
+            - process_id: 104
+              router_id: 203.0.113.20
+            - process_id: 102
+              router_id: 198.51.100.1
+              shutdown: true
         state: overridden
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -3997,7 +3997,7 @@ Examples
     # Using deleted to delete a single OSPF process
 
     # Before state:
-    # ------------
+    # -------------
     # nxos-9k-rdo# sh running-config | section "^router ospf .*"
     # router ospfv3 100
     #   router-id 203.0.113.20
@@ -4022,11 +4022,11 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 102
+            - process_id: 102
         state: deleted
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -4074,7 +4074,7 @@ Examples
     #        vrf: zone2
     #
     # commands:
-    #  - no router ospfv3 102
+    #   - no router ospfv3 102
     #
     # after:
     #   processes:
@@ -4090,7 +4090,7 @@ Examples
     # Using deleted all OSPFv3 processes from the device
 
     # Before state:
-    # ------------
+    # -------------
     # nxos-9k-rdo# sh running-config | section "^router ospfv3"
     # router ospfv3 100
     #   router-id 203.0.113.20
@@ -4115,8 +4115,8 @@ Examples
       cisco.nxos.nxos_ospfv3:
         state: deleted
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before:
     #    processes:
     #    - process_id: "100"
@@ -4180,53 +4180,53 @@ Examples
       cisco.nxos.nxos_ospfv3:
         config:
           processes:
-          - process_id: 100
-            router_id: 203.0.113.20
-          - process_id: 102
-            router_id: 198.51.100.1
-            address_family:
-              afi: ipv6
-              safi: unicast
-              areas:
-              - area_id: 0.0.0.100
-                filter_list:
-                - route_map: rmap_1
-                  direction: in
-                - route_map: rmap_2
-                  direction: out
-                ranges:
-                - prefix: 2001:db2::/32
-                  not_advertise: true
-                - prefix: 2001:db3::/32
-                  cost: 120
-              redistribute:
-              - protocol: eigrp
-                id: 120
-                route_map: rmap_1
-              - protocol: direct
-                route_map: ospf102-direct-connect
-            vrfs:
-            - vrf: zone1
-              router_id: 198.51.100.129
-              areas:
-              - area_id: 0.0.0.102
-                nssa:
-                  default_information_originate: true
-                  no_summary: true
-              - area_id: 0.0.0.103
-                nssa:
-                  no_summary: true
-                  translate:
-                    type7:
-                      always: true
-            - vrf: zone2
-              auto_cost:
-                reference_bandwidth: 45
-                unit: Gbps
+            - process_id: 100
+              router_id: 203.0.113.20
+            - process_id: 102
+              router_id: 198.51.100.1
+              address_family:
+                afi: ipv6
+                safi: unicast
+                areas:
+                  - area_id: 0.0.0.100
+                    filter_list:
+                      - route_map: rmap_1
+                        direction: in
+                      - route_map: rmap_2
+                        direction: out
+                    ranges:
+                      - prefix: 2001:db2::/32
+                        not_advertise: true
+                      - prefix: 2001:db3::/32
+                        cost: 120
+                redistribute:
+                  - protocol: eigrp
+                    id: 120
+                    route_map: rmap_1
+                  - protocol: direct
+                    route_map: ospf102-direct-connect
+              vrfs:
+                - vrf: zone1
+                  router_id: 198.51.100.129
+                  areas:
+                    - area_id: 0.0.0.102
+                      nssa:
+                        default_information_originate: true
+                        no_summary: true
+                    - area_id: 0.0.0.103
+                      nssa:
+                        no_summary: true
+                        translate:
+                          type7:
+                            always: true
+                - vrf: zone2
+                  auto_cost:
+                    reference_bandwidth: 45
+                    unit: Gbps
         state: rendered
 
-    # Task Output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     # rendered:
     #  - router ospfv3 100
     #  - router-id 203.0.113.20
@@ -4272,8 +4272,8 @@ Examples
         running_config: "{{ lookup('file', 'ospfv2.cfg') }}"
         state: parsed
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     # parsed:
     #   processes:
     #   - process_id: "100"
@@ -4315,7 +4315,7 @@ Examples
     #         router_id: 192.0.100.2
     #   - process_id: "102"
     #     router_id: 198.54.100.1
-    #     shutdown: True
+    #     shutdown: true
 
     # Using gathered
 
@@ -4323,8 +4323,8 @@ Examples
       cisco.nxos.nxos_ospfv3:
         state: gathered
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     #  gathered:
     #    processes:
     #    - process_id: "100"
@@ -4437,6 +4437,57 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
                         <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospfv3 102&#x27;, &#x27;router-id 198.54.100.1&#x27;, &#x27;router ospfv3 100&#x27;, &#x27;router-id 192.0.100.1&#x27;, &#x27;address-family ipv6 unicast&#x27;, &#x27;redistribute eigrp 120 route-map rmap_1&#x27;, &#x27;redistribute direct route-map ospf-direct-connect&#x27;, &#x27;area 0.0.0.100 filter-list route-map rmap_1 in&#x27;, &#x27;area 0.0.0.100 filter-list route-map rmap_2 out&#x27;, &#x27;area 0.0.0.100 range 2001:db2::/32 not-advertise&#x27;, &#x27;area 0.0.0.100 range 2001:db3::/32 cost 120&#x27;, &#x27;vrf zone1&#x27;, &#x27;router-id 192.0.100.2&#x27;, &#x27;vrf zone2&#x27;, &#x27;auto-cost reference-bandwidth 45 Gbps&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospfv3 102&#x27;, &#x27;router-id 198.54.100.1&#x27;, &#x27;router ospfv3 100&#x27;]</div>
                 </td>
             </tr>
     </table>

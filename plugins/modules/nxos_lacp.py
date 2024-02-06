@@ -28,6 +28,7 @@ The module file for nxos_lacp
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -84,10 +85,12 @@ options:
   state:
     description:
     - The state of the configuration after module completion.
+    - States C(replaced) and C(overridden) have the same behaviour for this module.
     type: str
     choices:
     - merged
     - replaced
+    - overridden
     - deleted
     - gathered
     - rendered
@@ -239,12 +242,11 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp.lacp import (
     LacpArgs,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.lacp.lacp import (
-    Lacp,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.lacp.lacp import Lacp
 
 
 def main():

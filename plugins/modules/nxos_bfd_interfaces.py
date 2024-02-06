@@ -28,6 +28,7 @@ The module file for nxos_bfd_interfaces
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -103,12 +104,12 @@ EXAMPLES = """
 - name: Configure interfaces
   cisco.nxos.nxos_bfd_interfaces:
     config:
-    - name: Ethernet1/1
-      bfd: enable
-      echo: enable
-    - name: Ethernet1/2
-      bfd: disable
-      echo: disable
+      - name: Ethernet1/1
+        bfd: enable
+        echo: enable
+      - name: Ethernet1/2
+        bfd: disable
+        echo: disable
     state: merged
 
 
@@ -117,12 +118,12 @@ EXAMPLES = """
 - name: Configure interfaces
   cisco.nxos.nxos_bfd_interfaces:
     config:
-    - name: Ethernet1/1
-      bfd: enable
-      echo: enable
-    - name: Ethernet1/2
-      bfd: disable
-      echo: disable
+      - name: Ethernet1/1
+        bfd: enable
+        echo: enable
+      - name: Ethernet1/2
+        bfd: disable
+        echo: disable
     state: overridden
 
 
@@ -131,12 +132,12 @@ EXAMPLES = """
 - name: Configure interfaces
   cisco.nxos.nxos_bfd_interfaces:
     config:
-    - name: Ethernet1/1
-      bfd: enable
-      echo: enable
-    - name: Ethernet1/2
-      bfd: disable
-      echo: disable
+      - name: Ethernet1/1
+        bfd: enable
+        echo: enable
+      - name: Ethernet1/2
+        bfd: disable
+        echo: disable
     state: replaced
 
 # Using rendered
@@ -144,12 +145,12 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_bfd_interfaces:
     config:
-    - name: Ethernet1/800
-      bfd: enable
-      echo: enable
-    - name: Ethernet1/801
-      bfd: disable
-      echo: disable
+      - name: Ethernet1/800
+        bfd: enable
+        echo: enable
+      - name: Ethernet1/801
+        bfd: disable
+        echo: disable
     state: rendered
 
 # Task Output (redacted)
@@ -262,6 +263,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bfd_interfaces.bfd_interfaces import (
     Bfd_interfacesArgs,
 )

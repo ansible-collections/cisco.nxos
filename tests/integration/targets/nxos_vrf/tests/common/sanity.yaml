@@ -30,22 +30,21 @@
     vnid: default
   when: platform is not match("N35|N7K|N3L")
 
-- name: Enable feature bgp
+- name: Enable 'feature bgp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: bgp
     state: enabled
 
-- name: "Setup: enable nv overlay evpn"
+- name: "Setup: enable NV overlay EVPN"
   ignore_errors: true
   when: platform is match("N5K|N6K")
   cisco.nxos.nxos_config:
     commands:
       - nv overlay evpn
-    provider: "{{ connection }}"
 
 - block:
-    - name: Ensure ntc vrf exists on switch
+    - name: Ensure NTC VRF exists on switch
       register: result
       cisco.nxos.nxos_vrf: &id001
         vrf: ntc
@@ -61,7 +60,7 @@
         that:
           - result.changed == true
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vrf: *id001
 
@@ -72,7 +71,7 @@
     - ansible.builtin.pause:
         seconds: 30
 
-    - name: Remove config
+    - name: Remove configuration
       register: result
       cisco.nxos.nxos_vrf: &id003
         vrf: ntc
@@ -83,13 +82,13 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vrf: *id003
 
     - ansible.builtin.assert: *id004
 
-    - name: Ensure ntc vrf does not exist on switch
+    - name: Ensure NTC VRF does not exist on switch
       register: result
       cisco.nxos.nxos_vrf: &id005
         vrf: ntc
@@ -106,15 +105,14 @@
 
     - ansible.builtin.assert: *id004
   always:
-    - name: "Setup: disable nv overlay evpn"
+    - name: "Setup: disable NV overlay EVPN"
       ignore_errors: true
       when: platform is match("N5K|N6K")
       cisco.nxos.nxos_config:
         commands:
           - no nv overlay evpn
-        provider: "{{ connection }}"
 
-    - name: Disable feature bgp
+    - name: Disable 'feature bgp'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: bgp

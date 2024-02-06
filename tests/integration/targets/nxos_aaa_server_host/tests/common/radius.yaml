@@ -85,7 +85,7 @@
         host_timeout: 25
         auth_port: default
         acct_port: 2084
-        encrypt_type: 00
+        encrypt_type: 0
         key: hello
         state: present
 

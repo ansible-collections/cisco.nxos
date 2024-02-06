@@ -7,6 +7,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -18,17 +19,17 @@ created.
 """
 
 from copy import deepcopy
+
 from ansible.module_utils.six import iteritems
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
+    ResourceModule,
+)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
     get_from_dict,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
-    ResourceModule,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.snmp_server import (
     Snmp_serverTemplate,
 )
@@ -229,14 +230,10 @@ class Snmp_server(ResourceModule):
 
         tmp = deepcopy(data)
         if "communities" in tmp:
-            tmp["communities"] = {
-                _build_key(entry): entry for entry in tmp["communities"]
-            }
+            tmp["communities"] = {_build_key(entry): entry for entry in tmp["communities"]}
         if "users" in tmp:
             if "auth" in tmp["users"]:
-                tmp["users"]["auth"] = {
-                    _build_key(entry): entry for entry in tmp["users"]["auth"]
-                }
+                tmp["users"]["auth"] = {_build_key(entry): entry for entry in tmp["users"]["auth"]}
             if "use_acls" in tmp["users"]:
                 tmp["users"]["use_acls"] = {
                     entry["user"]: entry for entry in tmp["users"]["use_acls"]

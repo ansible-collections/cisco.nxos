@@ -191,6 +191,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify IPv4 ACL, the ACL name specified must be IPv4 ACL.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -208,6 +209,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify IPv6 ACL, the ACL name specified after must be IPv6 ACL.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -309,6 +311,7 @@ Parameters
                 </td>
                 <td>
                         <div>VRF associated with the SNMP context.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -326,6 +329,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configure port counter configuration.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -401,6 +405,7 @@ Parameters
                 </td>
                 <td>
                         <div>Silently drop unknown v3 user packets.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -460,6 +465,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configure a local SNMPv3 engineID.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -567,6 +573,7 @@ Parameters
                 </td>
                 <td>
                         <div>Filters notifications to the notification host receiver based on the configured VRF.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -694,6 +701,7 @@ Parameters
                 </td>
                 <td>
                         <div>Configures SNMP to use the selected VRF to communicate with the host receiver.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -874,6 +882,7 @@ Parameters
                 </td>
                 <td>
                         <div>Source interface to be used for sending out SNMP notifications.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -987,6 +996,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable tcp-session.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -1123,6 +1133,7 @@ Parameters
                 </td>
                 <td>
                         <div>Bridge traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -1229,6 +1240,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable callhome traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1313,6 +1325,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable cfs traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1419,6 +1432,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable config traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -1741,6 +1755,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable feature-control traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1825,6 +1840,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable generic traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -1887,6 +1903,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable license traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2015,6 +2032,7 @@ Parameters
                 </td>
                 <td>
                         <div>Err-disable state notification.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2103,6 +2121,7 @@ Parameters
                 </td>
                 <td>
                         <div>Mac addr move trap.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2147,6 +2166,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable link traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2253,6 +2273,7 @@ Parameters
                 </td>
                 <td>
                         <div>MMode traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -2439,6 +2460,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable rf traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2501,6 +2523,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable rmon traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2651,6 +2674,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable snmp traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -2691,6 +2715,7 @@ Parameters
                 </td>
                 <td>
                         <div>Port-Storm-Control-Event.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2713,6 +2738,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable storm-control traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2753,6 +2779,7 @@ Parameters
                 </td>
                 <td>
                         <div>Stpx traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -2881,6 +2908,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable syslog traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -2965,6 +2993,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable sysmgr traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -3027,6 +3056,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable system traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
 
@@ -3067,6 +3097,7 @@ Parameters
                 </td>
                 <td>
                         <div>Enable upgrade traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -3129,6 +3160,7 @@ Parameters
                 </td>
                 <td>
                         <div>VTP traps.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -3290,6 +3322,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>md5</li>
                                     <li>sha</li>
+                                    <li>sha-256</li>
                         </ul>
                 </td>
                 <td>
@@ -3337,6 +3370,29 @@ Parameters
                 </td>
                 <td>
                         <div>Specifies whether the passwords are in localized key format.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>localizedv2_key</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Specifies whether the passwords are in localized V2 key format.</div>
                 </td>
             </tr>
             <tr>
@@ -3588,8 +3644,9 @@ Notes
 -----
 
 .. note::
-   - Tested against NX-OS 9.3.6.
+   - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
    - This module works with connection ``network_cli`` and ``httpapi``.
+   - Tested against Cisco MDS NX-OS 9.2(2) with connection ``network_cli``.
 
 
 
@@ -3619,18 +3676,18 @@ Examples
           location: serverroom-1
           traps:
             aaa:
-              server_state_change: True
+              server_state_change: true
             system:
-              clock_change_notification: True
+              clock_change_notification: true
           hosts:
             - host: 192.0.2.1
-              traps: True
+              traps: true
               version: '1'
               community: public
             - host: 192.0.2.1
               source_interface: Ethernet1/1
             - host: 192.0.2.2
-              informs: True
+              informs: true
               version: '3'
               auth: NMS
           users:
@@ -3640,16 +3697,16 @@ Examples
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
               - user: snmp_user_2
                 group: network-operator
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
                   priv:
                     privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-                    aes_128: True
+                    aes_128: true
             use_acls:
               - user: snmp_user_1
                 ipv4: acl1
@@ -3668,7 +3725,7 @@ Examples
     #         authentication:
     #           algorithm: md5
     #           password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #           localized_key: True
+    #           localized_key: true
     #           priv:
     #             privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -3700,9 +3757,9 @@ Examples
     #    location: serverroom-1
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #      system:
-    #        clock_change_notification: True
+    #        clock_change_notification: true
     #    hosts:
     #      - host: 192.0.2.1
     #        traps: true
@@ -3723,7 +3780,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -3732,7 +3789,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0x5632724fb8ac3699296af26281e1d0f1"
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - authentication:
     #            algorithm: md5
@@ -3806,16 +3863,16 @@ Examples
           location: serverroom-2
           traps:
             aaa:
-              server_state_change: True
+              server_state_change: true
           hosts:
             - host: 192.0.2.1
-              traps: True
+              traps: true
               version: '1'
               community: public
             - host: 192.0.2.1
               source_interface: Ethernet1/1
             - host: 192.0.3.2
-              informs: True
+              informs: true
               version: '3'
               auth: NMS
           users:
@@ -3825,7 +3882,7 @@ Examples
                 authentication:
                   algorithm: md5
                   password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-                  localized_key: True
+                  localized_key: true
                   priv:
                     privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
 
@@ -3834,17 +3891,17 @@ Examples
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
 
               - user: snmp_user_2
                 group: network-operator
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
                   priv:
                     privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-                    aes_128: True
+                    aes_128: true
             use_acls:
               - user: snmp_user_1
                 ipv4: acl1
@@ -3865,9 +3922,9 @@ Examples
     #    location: serverroom-1
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #      system:
-    #        clock_change_notification: True
+    #        clock_change_notification: true
     #    hosts:
     #      - host: 192.0.2.1
     #        traps: true
@@ -3888,7 +3945,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -3897,7 +3954,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0x5632724fb8ac3699296af26281e1d0f1"
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - authentication:
     #            algorithm: md5
@@ -3939,16 +3996,16 @@ Examples
     #    location: serverroom-2
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #    hosts:
     #      - host: 192.0.2.1
-    #        traps: True
+    #        traps: true
     #        version: '1'
     #        community: public
     #      - host: 192.0.2.1
     #        source_interface: Ethernet1/1
     #      - host: 192.0.3.2
-    #        informs: True
+    #        informs: true
     #        version: '3'
     #        auth: NMS
     #    users:
@@ -3958,7 +4015,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -3967,17 +4024,17 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: '0x5632724fb8ac3699296af26281e1d0f1'
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - user: snmp_user_2
     #          group: network-operator
     #          authentication:
     #            algorithm: md5
     #            password: '0x5632724fb8ac3699296af26281e1d0f1'
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-    #              aes_128: True
+    #              aes_128: true
     #
     #      use_acls:
     #        - user: snmp_user_1
@@ -4043,9 +4100,9 @@ Examples
     #    location: serverroom-1
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #      system:
-    #        clock_change_notification: True
+    #        clock_change_notification: true
     #    hosts:
     #      - host: 192.0.2.1
     #        traps: true
@@ -4066,7 +4123,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #            localized_key: True
+    #            localized_key: true
     #            priv:
     #              privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
     #
@@ -4075,7 +4132,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0x5632724fb8ac3699296af26281e1d0f1"
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - authentication:
     #            algorithm: md5
@@ -4120,7 +4177,7 @@ Examples
     #         authentication:
     #           algorithm: md5
     #           password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
-    #           localized_key: True
+    #           localized_key: true
     #           priv:
     #             privacy_password: "0xcbde46b02c46e0bcd3ac5af6a8b13da9"
 
@@ -4146,18 +4203,18 @@ Examples
           location: serverroom-1
           traps:
             aaa:
-              server_state_change: True
+              server_state_change: true
             system:
-              clock_change_notification: True
+              clock_change_notification: true
           hosts:
             - host: 192.0.2.1
-              traps: True
+              traps: true
               version: '1'
               community: public
             - host: 192.0.2.1
               source_interface: Ethernet1/1
             - host: 192.0.2.2
-              informs: True
+              informs: true
               version: '3'
               auth: NMS
           users:
@@ -4167,16 +4224,16 @@ Examples
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
               - user: snmp_user_2
                 group: network-operator
                 authentication:
                   algorithm: md5
                   password: '0x5632724fb8ac3699296af26281e1d0f1'
-                  localized_key: True
+                  localized_key: true
                   priv:
                     privacy_password: '0x5632724fb8ac3699296af26281e1d0f1'
-                    aes_128: True
+                    aes_128: true
             use_acls:
               - user: snmp_user_1
                 ipv4: acl1
@@ -4243,9 +4300,9 @@ Examples
     #    location: serverroom-1
     #    traps:
     #      aaa:
-    #        server_state_change: True
+    #        server_state_change: true
     #      system:
-    #        clock_change_notification: True
+    #        clock_change_notification: true
     #    hosts:
     #      - host: 192.0.2.1
     #        traps: true
@@ -4266,7 +4323,7 @@ Examples
     #          authentication:
     #            algorithm: md5
     #            password: "0x5632724fb8ac3699296af26281e1d0f1"
-    #            localized_key: True
+    #            localized_key: true
     #
     #        - authentication:
     #            algorithm: md5

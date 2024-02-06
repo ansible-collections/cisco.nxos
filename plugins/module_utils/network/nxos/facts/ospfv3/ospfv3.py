@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -13,17 +14,15 @@ It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
-from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
+    Ospfv3Args,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospfv3 import (
     Ospfv3Template,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
-    Ospfv3Args,
 )
 
 
@@ -76,7 +75,7 @@ class Ospfv3Facts(object):
                 if "address_family" in entry:
                     if "areas" in entry["address_family"]:
                         entry["address_family"]["areas"] = list(
-                            entry["address_family"]["areas"].values()
+                            entry["address_family"]["areas"].values(),
                         )
 
                 ipv6["processes"].append(entry)

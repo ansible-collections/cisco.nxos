@@ -1888,6 +1888,91 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>extcommunity</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set BGP extcommunity attribute.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>rt</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Route-Target.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>additive</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Add to existing rt extcommunity.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>extcommunity_numbers</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Extcommunity number.</div>
+                        <div>Supported formats are ASN2:NN, ASN4:NN, IPV4:NN.</div>
+                </td>
+            </tr>
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>forwarding_address</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1961,6 +2046,333 @@ Parameters
                         <div>Name of prefix list (Max Size 63).</div>
                 </td>
             </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>next_hop</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set next-hop IP address (for policy-based routing)</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set space-separated list of next-hop IP addresses. Address ordering is important. Also don`t use unnecessary spaces.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>drop_on_fail</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Drop packets instead of using default routing when the configured next hop becomes unreachable</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>force_order</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable next-hop ordering as specified in the address parameter.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>load_share</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable traffic load balancing across a maximum of 32 next-hop addresses</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>peer_address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>BGP prefix next hop is set to the local address of the peer.</div>
+                        <div>If no next hop is set in the route map, the next hop is set to the one stored in the path.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>redist_unchanged</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set for next-hop address conservation for non-local generated routes.</div>
+                        <div>Used with redistribute command. Available to maintain BGP routing compliant with RFC 4271 on Nexus OS.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>unchanged</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set for next-hop address conservation in eBGP outgoing updates</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>verify_availability</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set next-hop ip address tracking with IP SLA</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set one next-hop address</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>drop_on_fail</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Drop packets instead of using default routing when the configured next hop becomes unreachable</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>force_order</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable next-hop ordering as specified in the address parameter.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>load_share</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable traffic load balancing across a maximum of 32 next-hop addresses</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>track</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Set track number</div>
+                </td>
+            </tr>
+
 
             <tr>
                     <td class="elbow-placeholder"></td>
@@ -2542,6 +2954,47 @@ Examples
                       group_range:
                         first: 239.0.0.1
                         last: 239.255.255.255
+
+          - route_map: rmap3
+            entries:
+              - sequence: 10
+                description: "*** first stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      verify_availability:
+                        - address: 3.3.3.3
+                          track: 1
+                        - address: 4.4.4.4
+                          track: 3
+
+              - sequence: 20
+                description: "*** second stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      address: 6.6.6.6 2.2.2.2
+                      load_share: true
+                      drop_on_fail: true
+
+              - sequence: 30
+                description: "*** third stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      peer_address: true
+
+              - sequence: 40
+                description: "*** fourth stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      unchanged: true
+                      redist_unchanged: true
         state: merged
 
     # Task output
@@ -2571,6 +3024,20 @@ Examples
     #    - "match route-type level-1 level-2"
     #    - "match tag 2"
     #    - "description rmap2-40-deny"
+    #    - "route-map rmap3 permit 10"
+    #    - "description *** first stanza ***"
+    #    - "set ip next-hop verify-availability 3.3.3.3 track 1"
+    #    - "set ip next-hop verify-availability 4.4.4.4 track 3"
+    #    - "route-map rmap3 permit 20"
+    #    - "description *** second stanza ***"
+    #    - "set ip next-hop 6.6.6.6 2.2.2.2 load-share  drop-on-fail"
+    #    - "route-map rmap3 permit 30"
+    #    - "description *** third stanza ***"
+    #    - "set ip next-hop peer-address"
+    #    - "route-map rmap3 permit 40"
+    #    - "description *** fourth stanza ***"
+    #    - "set ip next-hop unchanged"
+    #    - "set ip next-hop redist-unchanged"
     #
     #  after:
     #   - route_map: rmap1
@@ -2648,6 +3115,47 @@ Examples
     #         tags:
     #         - 2
     #       sequence: 40
+    #
+    #   - route_map: rmap3
+    #     entries:
+    #     - sequence: 10
+    #       description: "*** first stanza ***"
+    #       action: permit
+    #       set:
+    #         ip:
+    #           next_hop:
+    #             verify_availability:
+    #             - address: 3.3.3.3
+    #               track: 1
+    #             - address: 4.4.4.4
+    #               track: 3
+    #
+    #     - sequence: 20
+    #       description: "*** second stanza ***"
+    #       action: permit
+    #       set:
+    #         ip:
+    #           next_hop:
+    #             address: 6.6.6.6 2.2.2.2
+    #             load_share: true
+    #             drop_on_fail: true
+    #
+    #     - sequence: 30
+    #       description: "*** third stanza ***"
+    #       action: permit
+    #       set:
+    #         ip:
+    #           next_hop:
+    #             peer_address: true
+    #
+    #     - sequence: 40
+    #       description: "*** fourth stanza ***"
+    #       action: permit
+    #       set:
+    #         ip:
+    #           next_hop:
+    #             unchanged: true
+    #             redist_unchanged: true
 
     # After state:
     # ------------
@@ -2674,7 +3182,21 @@ Examples
     #   match route-type level-1 level-2
     #   match tag 2
     #   description rmap2-40-deny
-
+    # route-map rmap3 permit 10
+    #   description *** first stanza ***
+    #   set ip next-hop verify-availability 3.3.3.3 track 1
+    #   set ip next-hop verify-availability 4.4.4.4 track 3
+    # route-map rmap3 permit 20
+    #   description *** second stanza ***
+    #   set ip next-hop 6.6.6.6 2.2.2.2 load-share  drop-on-fail
+    # route-map rmap3 permit 30
+    #   description *** third stanza ***
+    #   set ip next-hop peer-address
+    # route-map rmap3 permit 40
+    #   description *** fourth stanza ***
+    #   set ip next-hop unchanged
+    #   set ip next-hop redist-unchanged
+    #
     # Using replaced
     # (for the listed route-map(s), sequences that are in running-config but not in the task are negated)
 
@@ -2703,7 +3225,21 @@ Examples
     #   match route-type level-1 level-2
     #   match tag 2
     #   description rmap2-40-deny
-
+    # route-map rmap3 permit 10
+    #   description *** first stanza ***
+    #   set ip next-hop verify-availability 3.3.3.3 track 1
+    #   set ip next-hop verify-availability 4.4.4.4 track 3
+    # route-map rmap3 permit 20
+    #   description *** second stanza ***
+    #   set ip next-hop 6.6.6.6 2.2.2.2 load-share  drop-on-fail
+    # route-map rmap3 permit 30
+    #   description *** third stanza ***
+    #   set ip next-hop peer-address
+    # route-map rmap3 permit 40
+    #   description *** fourth stanza ***
+    #   set ip next-hop unchanged
+    #   set ip next-hop redist-unchanged
+    #
     - name: Replace route-maps configurations of listed route-maps with provided configurations
       cisco.nxos.nxos_route_maps:
         config:
@@ -2723,7 +3259,35 @@ Examples
                         - AllowPrefix1
                 set:
                   community:
-                    local_as: True
+                    local_as: true
+
+          - route_map: rmap3
+            entries:
+              - sequence: 10
+                description: "*** first stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      verify_availability:
+                        - address: 3.3.3.3
+                          track: 1
+              - sequence: 20
+                description: "*** second stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      peer_address: true
+              - sequence: 30
+                description: "*** third stanza ***"
+                action: permit
+                set:
+                  ip:
+                    next_hop:
+                      address: 6.6.6.6 2.2.2.2
+                      load_share: true
+                      drop_on_fail: true
         state: replaced
 
     # Task output
@@ -2805,6 +3369,47 @@ Examples
     #         - 2
     #       sequence: 40
     #
+    #   - route_map: rmap3
+    #     entries:
+    #     - sequence: 10
+    #       description: "*** first stanza ***"
+    #       action: permit
+    #       set:
+    #         ip:
+    #           next_hop:
+    #             verify_availability:
+    #             - address: 3.3.3.3
+    #               track: 1
+    #             - address: 4.4.4.4
+    #               track: 3
+    #
+    #     - sequence: 20
+    #       description: "*** second stanza ***"
+    #       action: permit
+    #       set:
+    #         ip:
+    #           next_hop:
+    #             address: 6.6.6.6 2.2.2.2
+    #             load_share: true
+    #             drop_on_fail: true
+    #
+    #     - sequence: 30
+    #       description: "*** third stanza ***"
+    #       action: permit
+    #       set:
+    #         ip:
+    #           next_hop:
+    #             peer_address: true
+    #
+    #     - sequence: 40
+    #       description: "*** fourth stanza ***"
+    #       action: permit
+    #       set:
+    #         ip:
+    #           next_hop:
+    #             unchanged: true
+    #             redist_unchanged: true
+    #
     #  commands:
     #    - no route-map rmap1 permit 10
     #    - route-map rmap1 deny 20
@@ -2814,6 +3419,15 @@ Examples
     #    - match ip address prefix-list AllowPrefix1
     #    - no set dampening 30 1500 10000 120
     #    - set community local-AS
+    #    - route-map rmap3 permit 10
+    #    - no set ip next-hop verify-availability 4.4.4.4 track 3
+    #    - route-map rmap3 permit 20
+    #    - no set ip next-hop 6.6.6.6 2.2.2.2 load-share drop-on-fail
+    #    - set ip next-hop peer-address
+    #    - route-map rmap3 permit 30
+    #    - no set ip next-hop peer-address
+    #    - set ip next-hop 6.6.6.6 2.2.2.2 load-share drop-on-fail
+    #    - no route-map rmap3 permit 40
     #
     #  after:
     #    - route_map: rmap1
@@ -2832,7 +3446,7 @@ Examples
     #                  - AllowPrefix1
     #          set:
     #            community:
-    #              local_as: True
+    #              local_as: true
     #
     #    - route_map: rmap2
     #      entries:
@@ -2875,6 +3489,33 @@ Examples
     #            - 2
     #          sequence: 40
     #
+    #    - route_map: rmap3
+    #      entries:
+    #      - sequence: 10
+    #        description: "*** first stanza ***"
+    #        action: permit
+    #        set:
+    #          ip:
+    #            next_hop:
+    #              verify_availability:
+    #              - address: 3.3.3.3
+    #                track: 1
+    #      - sequence: 20
+    #        description: "*** second stanza ***"
+    #        action: permit
+    #        set:
+    #          ip:
+    #            next_hop:
+    #              peer_address: true
+    #      - sequence: 30
+    #        description: "*** third stanza ***"
+    #        action: permit
+    #        set:
+    #          ip:
+    #            next_hop:
+    #              address: 6.6.6.6 2.2.2.2
+    #              load_share: true
+    #              drop_on_fail: true
 
     # After state:
     # ------------
@@ -2896,6 +3537,15 @@ Examples
     #   match route-type level-1 level-2
     #   match tag 2
     #   description rmap2-40-deny
+    # route-map rmap3 permit 10
+    #   description *** first stanza ***
+    #   set ip next-hop verify-availability 3.3.3.3 track 1
+    # route-map rmap3 permit 20
+    #   description *** second stanza ***
+    #   set ip next-hop peer-address
+    # route-map rmap3 permit 30
+    #   description *** third stanza ***
+    #   set ip next-hop 6.6.6.6 2.2.2.2 load-share  drop-on-fail
 
     # Using overridden
 
@@ -2944,7 +3594,7 @@ Examples
                         - AllowPrefix1
                 set:
                   community:
-                    local_as: True
+                    local_as: true
         state: overridden
 
     # Task output
@@ -3055,7 +3705,7 @@ Examples
     #            - AllowPrefix1
     #      set:
     #        community:
-    #          local_as: True
+    #          local_as: true
     #
     # After state:
     # ------------

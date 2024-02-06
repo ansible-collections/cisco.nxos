@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -84,20 +85,16 @@ updates:
     type: list
     sample: ["ip igmp flush-routes"]
 """
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def get_current(module):
-    output = run_commands(
-        module, {"command": "show running-config", "output": "text"}
-    )
+    output = run_commands(module, {"command": "show running-config", "output": "text"})
     return {
         "flush_routes": "ip igmp flush-routes" in output[0],
         "enforce_rtr_alert": "ip igmp enforce-router-alert" in output[0],
@@ -119,11 +116,7 @@ def main():
         state=dict(choices=["present", "default"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 

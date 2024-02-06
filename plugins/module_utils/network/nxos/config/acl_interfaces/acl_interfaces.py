@@ -12,24 +12,22 @@ created
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
     remove_empties,
-    dict_diff,
+    to_list,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    flatten_dict,
-    search_obj_in_list,
     get_interface_type,
     normalize_interface,
+    search_obj_in_list,
 )
 
 
@@ -52,11 +50,11 @@ class Acl_interfaces(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
-        acl_interfaces_facts = facts["ansible_network_resources"].get(
-            "acl_interfaces"
-        )
+        acl_interfaces_facts = facts["ansible_network_resources"].get("acl_interfaces")
         if not acl_interfaces_facts:
             return []
         return acl_interfaces_facts
@@ -88,7 +86,7 @@ class Acl_interfaces(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
             result["parsed"] = self.set_config({})
             # no need to fetch facts for parsed
@@ -122,7 +120,7 @@ class Acl_interfaces(ConfigBase):
             for w in config:
                 if get_interface_type(w["name"]) == "loopback":
                     self._module.fail_json(
-                        msg="This module works with ethernet, management or port-channe"
+                        msg="This module works with ethernet, management or port-channe",
                     )
                 w.update({"name": normalize_interface(w["name"])})
                 want.append(remove_empties(w))
@@ -139,14 +137,9 @@ class Acl_interfaces(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        if (
-            self.state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    self.state
-                )
+                msg="value of config parameter must not be empty for state {0}".format(self.state),
             )
 
         commands = []
@@ -192,9 +185,7 @@ class Acl_interfaces(ConfigBase):
                 for ag in obj_in_have["access_groups"]:
                     want_afi = []
                     if want.get("access_groups"):
-                        want_afi = search_obj_in_list(
-                            ag["afi"], want["access_groups"], "afi"
-                        )
+                        want_afi = search_obj_in_list(ag["afi"], want["access_groups"], "afi")
                     if not want_afi:
                         # whatever in have is not in want
                         del_dict["access_groups"].append(ag)
@@ -207,18 +198,12 @@ class Acl_interfaces(ConfigBase):
                             else:
                                 del_acl.append(acl)
                         afi = want_afi["afi"]
-                        del_dict["access_groups"].append(
-                            {"afi": afi, "acls": del_acl}
-                        )
+                        del_dict["access_groups"].append({"afi": afi, "acls": del_acl})
 
             commands.extend(self._state_deleted([del_dict], have))
             commands.extend(self._state_merged(want, have))
             new_commands.append(commands[0])
-            commands = [
-                commands[i]
-                for i in range(1, len(commands))
-                if commands[i] != commands[0]
-            ]
+            commands = [commands[i] for i in range(1, len(commands)) if commands[i] != commands[0]]
             new_commands.extend(commands)
         return new_commands
 
@@ -256,36 +241,26 @@ class Acl_interfaces(ConfigBase):
                     ip = "ipv6"
                     if w_afi["afi"] == "ipv4":
                         ip = "ip"
-                    have_afi = search_obj_in_list(
-                        w_afi["afi"], have_name["access_groups"], "afi"
-                    )
+                    have_afi = search_obj_in_list(w_afi["afi"], have_name["access_groups"], "afi")
                     if have_afi:
                         new_acls = []
                         if deleted:
                             if w_afi.get("acls") and have_afi.get("acls"):
                                 new_acls = [
-                                    acl
-                                    for acl in w_afi.get("acls")
-                                    if acl in have_afi.get("acls")
+                                    acl for acl in w_afi.get("acls") if acl in have_afi.get("acls")
                                 ]
                             elif "acls" not in w_afi.keys():
                                 new_acls = have_afi.get("acls")
                         else:
                             if w_afi.get("acls"):
                                 new_acls = [
-                                    acl
-                                    for acl in w_afi["acls"]
-                                    if acl not in have_afi["acls"]
+                                    acl for acl in w_afi["acls"] if acl not in have_afi["acls"]
                                 ]
-                        commands.extend(
-                            self.process_acl(new_acls, ip, deleted)
-                        )
+                        commands.extend(self.process_acl(new_acls, ip, deleted))
                     else:
                         if not deleted:
                             if w_afi.get("acls"):
-                                commands.extend(
-                                    self.process_acl(w_afi["acls"], ip)
-                                )
+                                commands.extend(self.process_acl(w_afi["acls"], ip))
             else:
                 # only name is given to delete
                 if deleted and "access_groups" in have_name.keys():
@@ -320,9 +295,7 @@ class Acl_interfaces(ConfigBase):
             ag = " access-group "
             if ip == "ipv6":
                 ag = " traffic-filter "
-            commands.append(
-                no + ip + port + ag + acl["name"] + " " + acl["direction"]
-            )
+            commands.append(no + ip + port + ag + acl["name"] + " " + acl["direction"])
         return commands
 
     def _state_deleted(self, main_want, have):
@@ -340,9 +313,7 @@ class Acl_interfaces(ConfigBase):
                     commands.extend(self.set_commands(h, have, deleted=True))
             else:
                 for want in main_want:
-                    commands.extend(
-                        self.set_commands(want, have, deleted=True)
-                    )
+                    commands.extend(self.set_commands(want, have, deleted=True))
         else:
             for h in have:
                 commands.extend(self.set_commands(h, have, deleted=True))

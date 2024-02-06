@@ -5,7 +5,7 @@
 - ansible.builtin.include_tasks: populate_config.yaml
 
 - block:
-    - name: Gather acl interfaces facts
+    - name: Gather ACL interfaces facts
       cisco.nxos.nxos_facts:
         gather_subset:
           - "!all"

@@ -13,31 +13,29 @@ created
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from copy import deepcopy
 import re
+
+from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_diff,
-    to_list,
     remove_empties,
+    to_list,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    default_intf_enabled,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     normalize_interface,
     search_obj_in_list,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    remove_rsvd_interfaces,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    default_intf_enabled,
 )
 
 
@@ -63,11 +61,11 @@ class Interfaces(ConfigBase):
         :returns: The current configuration as a dictionary
         """
         self.facts, _warnings = Facts(self._module).get_facts(
-            self.gather_subset, self.gather_network_resources, data=data
+            self.gather_subset,
+            self.gather_network_resources,
+            data=data,
         )
-        interfaces_facts = self.facts["ansible_network_resources"].get(
-            "interfaces"
-        )
+        interfaces_facts = self.facts["ansible_network_resources"].get("interfaces")
 
         return interfaces_facts
 
@@ -82,12 +80,12 @@ class Interfaces(ConfigBase):
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
         return self._connection.get(
-            "show running-config all | incl 'system default switchport'"
+            "show running-config all | incl 'system default switchport'",
         )
 
     def edit_config(self, commands):
         """Wrapper method for `_connection.edit_config()`
-        This method exists solely to allow the unit test framework to mock device connection calls.
+        This method exists solely to allow the unit test framework to mcdock device connection calls.
         """
         return self._connection.edit_config(commands)
 
@@ -108,7 +106,8 @@ class Interfaces(ConfigBase):
 
         if self.state in self.ACTION_STATES:
             self.intf_defs = self.render_interface_defaults(
-                self.get_system_defaults(), existing_interfaces_facts
+                self.get_system_defaults(),
+                existing_interfaces_facts,
             )
             commands.extend(self.set_config(existing_interfaces_facts))
 
@@ -120,7 +119,7 @@ class Interfaces(ConfigBase):
                     "L2_enabled": False,
                     "L3_enabled": False,
                     "mode": "layer3",
-                }
+                },
             }
             commands.extend(self.set_config(existing_interfaces_facts))
 
@@ -142,7 +141,7 @@ class Interfaces(ConfigBase):
             running_config = self._module.params["running_config"]
             if not running_config:
                 self._module.fail_json(
-                    msg="value of running_config parameter must not be empty for state parsed"
+                    msg="value of running_config parameter must not be empty for state parsed",
                 )
             result["parsed"] = self.get_interfaces_facts(data=running_config)
 
@@ -185,14 +184,11 @@ class Interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    state
-                )
+                    state,
+                ),
             )
 
         commands = list()
@@ -364,7 +360,9 @@ class Interfaces(ConfigBase):
         ):
             # L2-L3 is changing or this is a new virtual intf. Get new default.
             intf_def_enabled = default_intf_enabled(
-                name=name, sysdefs=sysdefs, mode=want_mode
+                name=name,
+                sysdefs=sysdefs,
+                mode=want_mode,
             )
         return intf_def_enabled
 
@@ -412,8 +410,6 @@ class Interfaces(ConfigBase):
 
     def add_commands(self, d, obj_in_have=None):
         commands = []
-        if not d:
-            return commands
         if obj_in_have is None:
             obj_in_have = {}
         # mode/switchport changes should occur before other changes
@@ -433,15 +429,17 @@ class Interfaces(ConfigBase):
         if "duplex" in d:
             commands.append("duplex " + d["duplex"])
         if "enabled" in d:
-            have_enabled = obj_in_have.get(
-                "enabled", self.default_enabled(d, obj_in_have)
-            )
+            have_enabled = obj_in_have.get("enabled", self.default_enabled(d, obj_in_have)) or False
             if d["enabled"] is False and have_enabled is True:
                 commands.append("shutdown")
             elif d["enabled"] is True and have_enabled is False:
                 commands.append("no shutdown")
-        if "mtu" in d:
-            commands.append("mtu " + str(d["mtu"]))
+        if "mtu" in d or ("switchport" in commands):
+            # changing mode to layer2 defaults the MTU
+            # we need re-apply existing (non-default) MTU
+            mtu = d.get("mtu") or obj_in_have.get("mtu")
+            if mtu:
+                commands.append("mtu " + str(mtu))
         if "ip_forward" in d:
             if d["ip_forward"] is True:
                 commands.append("ip forward")
@@ -478,29 +476,23 @@ class Interfaces(ConfigBase):
         Run through the gathered interfaces and tag their default enabled state.
         """
         intf_defs = {}
-        L3_enabled = (
-            True if re.search("N[356]K", self.get_platform()) else False
-        )
+        L3_enabled = True if re.search("N[356]K", self.get_platform()) else False
         intf_defs = {
             "sysdefs": {
                 "mode": None,
                 "L2_enabled": None,
                 "L3_enabled": L3_enabled,
-            }
+            },
         }
         pat = "(no )*system default switchport$"
         m = re.search(pat, config, re.MULTILINE)
         if m:
-            intf_defs["sysdefs"]["mode"] = (
-                "layer3" if "no " in m.groups() else "layer2"
-            )
+            intf_defs["sysdefs"]["mode"] = "layer3" if "no " in m.groups() else "layer2"
 
         pat = "(no )*system default switchport shutdown$"
         m = re.search(pat, config, re.MULTILINE)
         if m:
-            intf_defs["sysdefs"]["L2_enabled"] = (
-                True if "no " in m.groups() else False
-            )
+            intf_defs["sysdefs"]["L2_enabled"] = True if "no " in m.groups() else False
 
         for item in intfs:
             intf_defs[item["name"]] = default_intf_enabled(

@@ -60,7 +60,7 @@
     that:
       - merged['commands'] == result['rendered']
 
-- name: Gather bgp facts
+- name: Gather BGP facts
   cisco.nxos.nxos_bgp_global:
     state: gathered
   register: result

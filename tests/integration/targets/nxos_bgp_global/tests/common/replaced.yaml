@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Replace bgp configuration with provided configuration
+    - name: Replace BGP configuration with provided configuration
       cisco.nxos.nxos_bgp_global: &id001
         config:
           as_number: 65536
@@ -58,7 +58,7 @@
         that:
           - merged['after'] == result['before']
 
-    - name: Replace device configurations of listed ospf processes with provided configurarions (idempotent)
+    - name: Replace device configurations of listed OSPF processes with provided configurarions (idempotent)
       register: result
       cisco.nxos.nxos_bgp_global: *id001
 
