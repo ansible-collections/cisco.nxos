@@ -84,7 +84,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.edit_config.return_value = None
         if device == "legacy":
             # call execute_module() with device='legacy' to use this codepath
-            self.get_platform.return_value = "N3K-Cxxx"
+            self.get_platform.return_value = "N5K-Cxxx"
         else:
             self.get_platform.return_value = "N9K-Cxxx"
 
