@@ -2,16 +2,18 @@
 """A test files updater."""
 
 import logging
-import ruamel.yaml
 
 from pathlib import Path
 from typing import OrderedDict
 
+import ruamel.yaml
+
 from ansiblelint.yaml_utils import FormattedYAML
 from ruamel.yaml import CommentedSeq
 from ruamel.yaml.comments import CommentedMap
-from ruamel.yaml.tokens import CommentToken
 from ruamel.yaml.error import CommentMark
+from ruamel.yaml.tokens import CommentToken
+
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
@@ -111,11 +113,7 @@ def update_include_cli(data: CommentedSeq) -> bool:
     :param data: The task list
     :return: Whether the include_cli task was updated
     """
-    match = [
-        idx
-        for idx, item in enumerate(data)
-        if item.get("include") == "cli.yaml"
-    ]
+    match = [idx for idx, item in enumerate(data) if item.get("include") == "cli.yaml"]
     if not match:
         return False
 
@@ -133,11 +131,7 @@ def update_include_nxapi(data: CommentedSeq) -> bool:
     :param data: The task list
     :return: Whether the include_nxapi task was updated
     """
-    match = [
-        idx
-        for idx, item in enumerate(data)
-        if item.get("include") == "nxapi.yaml"
-    ]
+    match = [idx for idx, item in enumerate(data) if item.get("include") == "nxapi.yaml"]
     if not match:
         return False
 
@@ -192,14 +186,16 @@ def update_include_test_case(list_of_tasks) -> bool:
         for idx, item in enumerate(list_of_tasks)
         if item.get("include", "").startswith("{{ test_case_to_run }}")
         or item.get("ansible.builtin.include_tasks", "").startswith(
-            "{{ test_case_to_run }}"
+            "{{ test_case_to_run }}",
         )
     ]
     if not match:
         return False
     for entry in match:
         change_key(
-            list_of_tasks[entry], "include", "ansible.builtin.include_tasks"
+            list_of_tasks[entry],
+            "include",
+            "ansible.builtin.include_tasks",
         )
         values = (
             list_of_tasks[entry]
@@ -209,13 +205,15 @@ def update_include_test_case(list_of_tasks) -> bool:
         )
         first, var_pairs = values.split(" ", 1)
         list_of_tasks[entry]["ansible.builtin.include_tasks"] = first.replace(
-            "{{", "{{ "
+            "{{",
+            "{{ ",
         ).replace("}}", " }}")
         list_of_tasks[entry]["vars"] = {}
         for var_pair in var_pairs.split(" "):
             key, value = var_pair.split("=")
             list_of_tasks[entry]["vars"][key] = value.replace(
-                "{{", "{{ "
+                "{{",
+                "{{ ",
             ).replace("}}", " }}")
 
     return True
@@ -294,13 +292,13 @@ def undo_set_fact_equal(list_of_tasks) -> bool:
             commented = True
 
         change_key(
-            list_of_tasks[entry], "set_fact", "ansible.builtin.set_fact"
+            list_of_tasks[entry],
+            "set_fact",
+            "ansible.builtin.set_fact",
         )
 
         if commented:
-            list_of_tasks[entry]["ansible.builtin.set_fact"].ca.items[
-                last_key
-            ] = [
+            list_of_tasks[entry]["ansible.builtin.set_fact"].ca.items[last_key] = [
                 None,
                 None,
                 ct,
