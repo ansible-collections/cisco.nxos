@@ -20,7 +20,7 @@ Bugfixes
 --------
 
 - Prevents module_defaults from were being incorrectly applied to the platform action, instead of the concerned module.
-- nxos_file_copy - corectly set file_pull_timeout/persistent_command_timeout value.
+- nxos_file_copy - correctly set file_pull_timeout/persistent_command_timeout value.
 
 v6.0.0
 ======
