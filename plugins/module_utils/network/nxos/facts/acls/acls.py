@@ -119,11 +119,12 @@ class AclsFacts(object):
             keywords = ["eq", "lt", "gt", "neq", "range"]
             if len(ace.split()) and ace.split()[0] in keywords:
                 port_protocol = {}
-                port_pro = re.search(r"(eq|lt|gt|neq) (\S+)", ace)
-                if port_pro:
-                    port_protocol.update({port_pro.group(1): port_pro.group(2)})
-                    ace = re.sub(port_pro.group(1), "", ace, 1)
-                    ace = re.sub(port_pro.group(2), "", ace, 1)
+                if "range" not in ace.split()[0]:
+                    port_pro = re.search(r"(eq|lt|gt|neq) (\S+)", ace)
+                    if port_pro:
+                        port_protocol.update({port_pro.group(1): port_pro.group(2)})
+                        ace = re.sub(port_pro.group(1), "", ace, 1)
+                        ace = re.sub(port_pro.group(2), "", ace, 1)
                 else:
                     limit = re.search(r"range\s(?P<rstart>\S+)\s(?P<rend>\S+)", ace)
                     if limit:
