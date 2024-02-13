@@ -500,9 +500,9 @@ class TestNxosAclsModule(TestNxosModule):
                                 "protocol": "sctp",
                                 "source": {"any": True},
                                 "destination": {"any": True},
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
                 "afi": "ipv6",
             },
@@ -543,7 +543,7 @@ class TestNxosAclsModule(TestNxosModule):
                                     "wildcard_bits": "0.0.0.255",
                                     "port_protocol": {"eq": "1700"},
                                 },
-                            }
+                            },
                         ],
                     },
                 ],
