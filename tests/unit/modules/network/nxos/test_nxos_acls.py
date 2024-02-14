@@ -475,22 +475,33 @@ class TestNxosAclsModule(TestNxosModule):
         self.assertEqual(result["parsed"], compare_list, result["parsed"])
 
     def test_nxos_acls_gathered(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip access-list ACL1v4
+                10 permit ip any any
+                20 deny udp any any
+            ip access-list ComplicatedAcl
+                10 permit tcp any range 1024 65500 192.168.0.0 0.0.0.255 eq 1700
+            ipv6 access-list ACL1v6
+                10 permit sctp any any
+            """,
+        )
         set_module_args(dict(config=[], state="gathered"))
         result = self.execute_module(changed=False)
         compare_list = [
             {
                 "acls": [
                     {
+                        "name": "ACL1v6",
                         "aces": [
                             {
-                                "destination": {"any": True},
                                 "sequence": 10,
+                                "grant": "permit",
                                 "protocol": "sctp",
                                 "source": {"any": True},
-                                "grant": "permit",
+                                "destination": {"any": True},
                             },
                         ],
-                        "name": "ACL1v6",
                     },
                 ],
                 "afi": "ipv6",
@@ -498,23 +509,42 @@ class TestNxosAclsModule(TestNxosModule):
             {
                 "acls": [
                     {
+                        "name": "ACL1v4",
                         "aces": [
                             {
-                                "destination": {"any": True},
                                 "sequence": 10,
+                                "grant": "permit",
                                 "protocol": "ip",
                                 "source": {"any": True},
-                                "grant": "permit",
+                                "destination": {"any": True},
                             },
                             {
-                                "destination": {"any": True},
                                 "sequence": 20,
+                                "grant": "deny",
                                 "protocol": "udp",
                                 "source": {"any": True},
-                                "grant": "deny",
+                                "destination": {"any": True},
                             },
                         ],
-                        "name": "ACL1v4",
+                    },
+                    {
+                        "name": "ComplicatedAcl",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "source": {
+                                    "any": True,
+                                    "port_protocol": {"range": {"start": "1024", "end": "65500"}},
+                                },
+                                "destination": {
+                                    "address": "192.168.0.0",
+                                    "wildcard_bits": "0.0.0.255",
+                                    "port_protocol": {"eq": "1700"},
+                                },
+                            },
+                        ],
                     },
                 ],
                 "afi": "ipv4",
