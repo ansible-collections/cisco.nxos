@@ -1055,3 +1055,10 @@ releases:
     fragments:
       - fix_749.yaml
     release_date: "2024-02-06"
+  6.0.3:
+    changes:
+      bugfixes:
+        - nxos_acls - Fix parsing of ace entries with range in it. (https://github.com/ansible-collections/cisco.nxos/issues/788)
+    fragments:
+      - acls_gather_fix.yml
+    release_date: "2024-02-14"
