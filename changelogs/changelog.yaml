@@ -1036,3 +1036,29 @@ releases:
       - prep_300.yaml
       - trivial_lint.yaml
     release_date: "2023-11-30"
+  6.0.1:
+    changes:
+      bugfixes:
+        - Prevents module_defaults from were being incorrectly applied to the platform
+          action, instead of the concerned module.
+        - nxos_file_copy - correctly set file_pull_timeout/persistent_command_timeout
+          value.
+    fragments:
+      - file_copy.yaml
+      - module_defaults.yaml
+    release_date: "2024-01-30"
+  6.0.2:
+    changes:
+      bugfixes:
+        - nxos_interfaces - Correctly enable L3 interfaces on supported N3K platforms
+          (https://github.com/ansible-collections/cisco.nxos/issues/749).
+    fragments:
+      - fix_749.yaml
+    release_date: "2024-02-06"
+  6.0.3:
+    changes:
+      bugfixes:
+        - nxos_acls - Fix parsing of ace entries with range in it. (https://github.com/ansible-collections/cisco.nxos/issues/788)
+    fragments:
+      - acls_gather_fix.yml
+    release_date: "2024-02-14"

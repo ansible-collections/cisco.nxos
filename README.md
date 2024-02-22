@@ -23,7 +23,7 @@ PEP440 is the schema used to describe the versions of Ansible.
 <!--end requires_ansible-->
 
 ### Supported connections
-The Cisco NX-OS collection supports ``network_cli``  and ``httpapi`` connections.
+The Cisco NX-OS collection supports ``network_cli``  and ``httpapi`` connections. A detailed platform guide can be found [here](https://github.com/ansible-collections/cisco.nxos/blob/main/platform_guide.rst).
 
 ## Included content
 <!--start collection content-->

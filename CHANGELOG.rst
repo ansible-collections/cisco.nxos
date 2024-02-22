@@ -5,6 +5,31 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v6.0.3
+======
+
+Bugfixes
+--------
+
+- nxos_acls - Fix parsing of ace entries with range in it. (https://github.com/ansible-collections/cisco.nxos/issues/788)
+
+v6.0.2
+======
+
+Bugfixes
+--------
+
+- nxos_interfaces - Correctly enable L3 interfaces on supported N3K platforms (https://github.com/ansible-collections/cisco.nxos/issues/749).
+
+v6.0.1
+======
+
+Bugfixes
+--------
+
+- Prevents module_defaults from were being incorrectly applied to the platform action, instead of the concerned module.
+- nxos_file_copy - correctly set file_pull_timeout/persistent_command_timeout value.
+
 v6.0.0
 ======
 

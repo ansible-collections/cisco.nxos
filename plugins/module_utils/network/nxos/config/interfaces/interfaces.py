@@ -470,13 +470,13 @@ class Interfaces(ConfigBase):
         and enabled/shutdown states. The default values for user-defined-default
         configurations may be different for legacy platforms.
         Notes:
-        - L3 enabled default state is False on N9K,N7K but True for N3K,N6K
+        - L3 enabled default state is False on N9K,N7K,N3K but True for N5K,N6K
         - Changing L2-L3 modes may change the default enabled value.
         - '(no) system default switchport shutdown' only applies to L2 interfaces.
         Run through the gathered interfaces and tag their default enabled state.
         """
         intf_defs = {}
-        L3_enabled = True if re.search("N[356]K", self.get_platform()) else False
+        L3_enabled = True if re.search("N[56]K", self.get_platform()) else False
         intf_defs = {
             "sysdefs": {
                 "mode": None,
