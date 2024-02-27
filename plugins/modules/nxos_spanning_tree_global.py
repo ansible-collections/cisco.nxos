@@ -10,22 +10,20 @@ The module file for nxos_spanning_tree_global
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
+---
 module: nxos_spanning_tree_global
-extends_documentation_fragment:
-- cisco.nxos.nxos
-short_description:
-  - Resource module to configure spanning tree.
-description:
-  - This module configures and manages the attributes of Spanning-tree on Cisco NXOS.
+short_description: Resource module to configure spanning tree.
+description: This module configures and manages the attributes of Spanning-tree on Cisco NXOS.
 version_added: 6.0.3
 author: Vinay Mulugund (@roverflow)
 notes:
-  - Tested against NX-OS 9.3.6.
-  - This module works with connection C(network_cli) and C(httpapi).
-    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
+- Tested against NX-OS 9.3.6.
+- This module works with connection C(network_cli) and C(httpapi).
+  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 options:
   config:
     description: A dict of Spanning-tree options.
@@ -177,6 +175,7 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
     Spanning_tree_globalArgs,
 )

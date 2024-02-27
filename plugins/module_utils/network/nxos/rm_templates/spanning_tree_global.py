@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 class Spanning_tree_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -26,24 +29,29 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "key_a",
+            "name": "bridge_assurance",
             "getval": re.compile(
                 r"""
-                ^key_a\s(?P<key_a>\S+)
-                $""", re.VERBOSE),
-            "setval": "",
+                ^spanning-tree
+                \sbridge\s(?P<assurance>assurance)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bridge assurance",
             "result": {
+                "bridge_assurance": "{{ True if assurance is defined else None }}",
             },
-            "shared": True
         },
         {
-            "name": "key_b",
+            "name": "mode",
             "getval": re.compile(
                 r"""
-                \s+key_b\s(?P<key_b>\S+)
-                $""", re.VERBOSE),
-            "setval": "",
+                ^spanning-tree
+                (\smode\s(?P<mode>mst|rapid-pvst))
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree mode {{ mode }}",
             "result": {
+                "mode": "{{ mode }}",
             },
         },
     ]

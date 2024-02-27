@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -17,26 +18,31 @@ based on the configuration.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
+    Spanning_tree_globalArgs,
 )
 from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.rm_templates.spanning_tree_global import (
     Spanning_tree_globalTemplate,
 )
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
-    Spanning_tree_globalArgs,
-)
+
 
 class Spanning_tree_globalFacts(object):
-    """ The nxos spanning_tree_global facts class
-    """
+    """The nxos spanning_tree_global facts class"""
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Spanning_tree_globalArgs.argument_spec
 
+    def get_config(self, connection):
+        """Wrapper method for `connection.get()`
+        This method exists solely to allow the unit test framework to mock device connection calls.
+        """
+        return connection.get("show running-config | section '^spanning-tree'")
+
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Spanning_tree_global network resource
+        """Populate the facts for Spanning_tree_global network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -49,19 +55,26 @@ class Spanning_tree_globalFacts(object):
         objs = []
 
         if not data:
-            data = connection.get()
+            data = self.get_config(connection)
 
         # parse native config using the Spanning_tree_global template
-        spanning_tree_global_parser = Spanning_tree_globalTemplate(lines=data.splitlines(), module=self._module)
+        spanning_tree_global_parser = Spanning_tree_globalTemplate(
+            lines=data.splitlines(),
+            module=self._module,
+        )
         objs = list(spanning_tree_global_parser.parse().values())
 
-        ansible_facts['ansible_network_resources'].pop('spanning_tree_global', None)
+        ansible_facts["ansible_network_resources"].pop("spanning_tree_global", None)
 
         params = utils.remove_empties(
-            spanning_tree_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            spanning_tree_global_parser.validate_config(
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
-        facts['spanning_tree_global'] = params['config']
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["spanning_tree_global"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
