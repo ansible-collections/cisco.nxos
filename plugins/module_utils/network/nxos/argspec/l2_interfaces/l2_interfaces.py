@@ -53,7 +53,7 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                         "private-vlan promiscuous",
                         "private-vlan host",
                         "private-vlan trunk promiscuous",
-                        "private-vlan trunk secondary"
+                        "private-vlan trunk secondary",
                     ],
                 },
                 "name": {"required": True, "type": "str"},
