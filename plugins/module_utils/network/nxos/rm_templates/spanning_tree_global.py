@@ -78,7 +78,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "setval": "spanning-tree lc-issu {{ lc_issu }}",
             "result": {
                 "lc_issu": "{{ lc_issu }}",
-            },        
+            },
         },
         {
             "name": "loopguard_default",
@@ -92,7 +92,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "setval": "spanning-tree loopguard default",
             "result": {
                 "loopguard_default": "{{ True if default is defined else None }}",
-            },        
+            },
         },
         {
             "name": "mode",
