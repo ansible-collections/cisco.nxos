@@ -42,6 +42,59 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "bridge_domain",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree
+                \sbridge-domain\s(?P<range>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bridge-domain {{ range }}",
+            "result": {
+                "bridge_domain": "{{ range }}",
+            },
+        },
+        {
+            "name": "fcoe",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree
+                \s(?P<fcoe>fcoe)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree fcoe",
+            "result": {
+                "fcoe": "{{ True if fcoe is defined else None }}",
+            },
+        },
+        {
+            "name": "lc_issu",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree
+                \slc-issu\s(?P<lc_issu>auto|disruptive|non-disruptive)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree lc-issu {{ lc_issu }}",
+            "result": {
+                "lc_issu": "{{ lc_issu }}",
+            },        
+        },
+        {
+            "name": "loopguard_default",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree
+                \sloopguard
+                \s(?P<default>default)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree loopguard default",
+            "result": {
+                "loopguard_default": "{{ True if default is defined else None }}",
+            },        
+        },
+        {
             "name": "mode",
             "getval": re.compile(
                 r"""
