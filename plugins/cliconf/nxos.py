@@ -134,6 +134,12 @@ class Cliconf(CliconfBase):
 
         return self._device_info
 
+    def restore(self, force=None, filename=None, path="bootflash:///"):
+        if not filename:
+            raise ValueError("'file_name' value is required for restore")
+        cmd = f"configure replace {path}{filename} best-effort"
+        return self.send_command(cmd)
+
     def get_diff(
         self,
         candidate=None,
