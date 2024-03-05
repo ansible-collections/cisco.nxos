@@ -134,7 +134,7 @@ class Cliconf(CliconfBase):
 
         return self._device_info
 
-    def restore(self, force=None, filename=None, path="bootflash:///"):
+    def restore(self, filename=None, path=""):
         if not filename:
             raise ValueError("'file_name' value is required for restore")
         cmd = f"configure replace {path}{filename} best-effort"
