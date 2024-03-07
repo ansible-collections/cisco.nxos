@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -141,7 +142,7 @@ options:
     description:
     - Purge VRFs not defined in the I(aggregate) parameter.
     type: bool
-    default: no
+    default: false
   state:
     description:
     - Manages desired state of the resource.
@@ -168,48 +169,48 @@ EXAMPLES = """
     name: ntc
     description: testing
     state: present
-
 - name: Aggregate definition of VRFs
   cisco.nxos.nxos_vrf:
     aggregate:
-    - {name: test1, description: Testing, admin_state: down}
-    - {name: test2, interfaces: Ethernet1/2}
-
+      - name: test1
+        description: Testing
+        admin_state: down
+      - name: test2
+        interfaces: Ethernet1/2
 - name: Aggregate definitions of VRFs with Purge
   cisco.nxos.nxos_vrf:
     aggregate:
-    - {name: ntc1, description: purge test1}
-    - {name: ntc2, description: purge test2}
+      - name: ntc1
+        description: purge test1
+      - name: ntc2
+        description: purge test2
     state: present
-    purge: yes
-
+    purge: true
 - name: Delete VRFs exist on switch
   cisco.nxos.nxos_vrf:
     aggregate:
-    - {name: ntc1}
-    - {name: ntc2}
+      - name: ntc1
+      - name: ntc2
     state: absent
-
 - name: Assign interfaces to VRF declaratively
   cisco.nxos.nxos_vrf:
     name: test1
     interfaces:
-    - Ethernet2/3
-    - Ethernet2/5
-
+      - Ethernet2/3
+      - Ethernet2/5
 - name: Check interfaces assigned to VRF
   cisco.nxos.nxos_vrf:
     name: test1
     associated_interfaces:
-    - Ethernet2/3
-    - Ethernet2/5
-
-- name: Ensure VRF is tagged with interface Ethernet2/5 only (Removes from Ethernet2/3)
+      - Ethernet2/3
+      - Ethernet2/5
+- name: >-
+    Ensure VRF is tagged with interface Ethernet2/5 only (Removes from
+    Ethernet2/3)
   cisco.nxos.nxos_vrf:
     name: test1
     interfaces:
-    - Ethernet2/5
-
+      - Ethernet2/5
 - name: Delete VRF
   cisco.nxos.nxos_vrf:
     name: ntc
@@ -235,16 +236,14 @@ import time
 from copy import deepcopy
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-    run_commands,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-    get_interface_type,
-)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
+)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_interface_type,
+    load_config,
+    run_commands,
 )
 
 
@@ -340,12 +339,8 @@ def map_obj_to_commands(updates, module):
             else:
                 # If vni is already configured on vrf, unconfigure it first.
                 if vni:
-                    if obj_in_have.get("vni") and vni != obj_in_have.get(
-                        "vni"
-                    ):
-                        commands.append(
-                            "no vni {0}".format(obj_in_have.get("vni"))
-                        )
+                    if obj_in_have.get("vni") and vni != obj_in_have.get("vni"):
+                        commands.append("no vni {0}".format(obj_in_have.get("vni")))
 
                 for item in args:
                     candidate = w.get(item)
@@ -356,9 +351,7 @@ def map_obj_to_commands(updates, module):
                     elif candidate and candidate != obj_in_have.get(item):
                         cmd = item + " " + str(candidate)
                         commands.append(cmd)
-                if admin_state and admin_state != obj_in_have.get(
-                    "admin_state"
-                ):
+                if admin_state and admin_state != obj_in_have.get("admin_state"):
                     if admin_state == "up":
                         commands.append("no shutdown")
                     elif admin_state == "down":
@@ -383,7 +376,7 @@ def map_obj_to_commands(updates, module):
 
                     elif set(interfaces) != set(obj_in_have["interfaces"]):
                         missing_interfaces = list(
-                            set(interfaces) - set(obj_in_have["interfaces"])
+                            set(interfaces) - set(obj_in_have["interfaces"]),
                         )
                         for i in missing_interfaces:
                             commands.append("vrf context {0}".format(name))
@@ -397,7 +390,7 @@ def map_obj_to_commands(updates, module):
                             commands.append("vrf member {0}".format(name))
 
                         superfluous_interfaces = list(
-                            set(obj_in_have["interfaces"]) - set(interfaces)
+                            set(obj_in_have["interfaces"]) - set(interfaces),
                         )
                         for i in superfluous_interfaces:
                             commands.append("vrf context {0}".format(name))
@@ -442,9 +435,7 @@ def validate_vrf(name, module):
         if name == "default":
             module.fail_json(msg="cannot use default as name of a VRF")
         elif len(name) > 32:
-            module.fail_json(
-                msg="VRF name exceeded max length of 32", name=name
-            )
+            module.fail_json(msg="VRF name exceeded max length of 32", name=name)
         else:
             return name
 
@@ -471,10 +462,8 @@ def map_params_to_obj(module):
                 "admin_state": module.params["admin_state"],
                 "state": module.params["state"],
                 "interfaces": module.params["interfaces"],
-                "associated_interfaces": module.params[
-                    "associated_interfaces"
-                ],
-            }
+                "associated_interfaces": module.params["associated_interfaces"],
+            },
         )
     return obj
 
@@ -534,7 +523,6 @@ def map_config_to_obj(want, element_spec, module):
 
 
 def check_declarative_intent_params(want, module, element_spec, result):
-
     have = None
     is_delay = False
 
@@ -556,8 +544,7 @@ def check_declarative_intent_params(want, module, element_spec, result):
                 interfaces = obj_in_have.get("interfaces")
                 if interfaces is not None and i not in interfaces:
                     module.fail_json(
-                        msg="Interface %s not configured on vrf %s"
-                        % (i, w["name"])
+                        msg="Interface %s not configured on vrf %s" % (i, w["name"]),
                     )
 
 
@@ -567,13 +554,9 @@ def vrf_error_check(module, commands, responses):
     if re.search(pattern, str(responses)):
         # Allow delay/retry for VRF changes
         time.sleep(15)
-        responses = load_config(
-            module, commands, opts={"catch_clierror": True}
-        )
+        responses = load_config(module, commands, opts={"catch_clierror": True})
         if re.search(pattern, str(responses)):
-            module.fail_json(
-                msg="VRF config (and retry) failure: %s " % responses
-            )
+            module.fail_json(msg="VRF config (and retry) failure: %s " % responses)
         module.warn("VRF config delayed by VRF deletion - passed on retry")
 
 
@@ -588,9 +571,7 @@ def main():
         interfaces=dict(type="list", elements="str"),
         associated_interfaces=dict(type="list", elements="str"),
         delay=dict(type="int", default=10),
-        state=dict(
-            type="str", default="present", choices=["present", "absent"]
-        ),
+        state=dict(type="str", default="present", choices=["present", "absent"]),
     )
 
     aggregate_spec = deepcopy(element_spec)
@@ -604,7 +585,6 @@ def main():
     )
 
     argument_spec.update(element_spec)
-    argument_spec.update(nxos_argument_spec)
 
     required_one_of = [["name", "aggregate"]]
     mutually_exclusive = [["name", "aggregate"]]
@@ -627,9 +607,7 @@ def main():
     result["commands"] = commands
 
     if commands and not module.check_mode:
-        responses = load_config(
-            module, commands, opts={"catch_clierror": True}
-        )
+        responses = load_config(module, commands, opts={"catch_clierror": True})
         vrf_error_check(module, commands, responses)
         result["changed"] = True
 

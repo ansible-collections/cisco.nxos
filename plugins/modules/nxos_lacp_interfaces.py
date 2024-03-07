@@ -28,6 +28,7 @@ The module file for nxos_lacp_interfaces
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -142,9 +143,9 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration.
   cisco.nxos.nxos_lacp_interfaces:
     config:
-    - name: Ethernet1/3
-      port_priority: 5
-      rate: fast
+      - name: Ethernet1/3
+        port_priority: 5
+        rate: fast
     state: merged
 
 # After state:
@@ -168,9 +169,9 @@ EXAMPLES = """
 - name: Replace device lacp interfaces configuration with the given configuration.
   cisco.nxos.nxos_lacp_interfaces:
     config:
-    - name: port-channel11
-      links:
-        min: 4
+      - name: port-channel11
+        links:
+          min: 4
     state: replaced
 
 # After state:
@@ -196,9 +197,9 @@ EXAMPLES = """
     on device with provided configuration.
   cisco.nxos.nxos_lacp_interfaces:
     config:
-    - name: port-channel11
-      links:
-        min: 4
+      - name: port-channel11
+        links:
+          min: 4
     state: overridden
 
 # After state:
@@ -231,17 +232,17 @@ EXAMPLES = """
 - name: Use rendered state to convert task input to device specific commands
   cisco.nxos.nxos_lacp_interfaces:
     config:
-    - name: Ethernet1/800
-      rate: fast
-    - name: Ethernet1/801
-      rate: fast
-      port_priority: 32
-    - name: port-channel10
-      links:
-        max: 15
-        min: 2
-      convergence:
-        graceful: true
+      - name: Ethernet1/800
+        rate: fast
+      - name: Ethernet1/801
+        rate: fast
+        port_priority: 32
+      - name: port-channel10
+        links:
+          max: 15
+          min: 2
+        convergence:
+          graceful: true
     state: rendered
 
 # Task Output (redacted)
@@ -341,6 +342,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_interfacesArgs,
 )

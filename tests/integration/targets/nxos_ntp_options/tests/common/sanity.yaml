@@ -2,7 +2,7 @@
 - ansible.builtin.debug:
     msg: START connection={{ ansible_connection }} nxos_ntp_options sanity test
 
-- name: Apply default ntp config
+- name: Apply default ntp configuration
   ignore_errors: true
   cisco.nxos.nxos_ntp_options: &id007
     state: absent
@@ -91,7 +91,7 @@
 
     - ansible.builtin.assert: *id004
   always:
-    - name: Cleanup ntp config
+    - name: Cleanup ntp configuration
       register: result
       cisco.nxos.nxos_ntp_options: *id007
 

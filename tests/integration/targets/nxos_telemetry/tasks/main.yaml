@@ -18,13 +18,13 @@
     commands: show interface mgmt 0 | json
   register: result
 
-- name: Store mgmt interface ip address
+- name: Store mgmt interface IP address
   ansible.builtin.set_fact:
     mgmt0_ip: "{{ result['stdout'][0]['TABLE_interface']['ROW_interface']['eth_ip_addr'] }}"
 
 - name: Generate and store random password for temp user
   ansible.builtin.set_fact:
-    temp_passwd: "{{ lookup('password', 'length=15 chars=ascii_letters') }}"
+    temp_passwd: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
   delegate_to: localhost
   no_log: true
 
@@ -34,7 +34,7 @@
     configured_password: "{{ temp_passwd }}"
   no_log: true
 
-- name: Setup - turn on feature scp-server
+- name: Setup - turn on 'feature scp-server'
   cisco.nxos.nxos_feature:
     feature: scp-server
     state: enabled
@@ -58,7 +58,7 @@
   cisco.nxos.nxos_file_copy:
     local_file: "{{ role_path }}/tests/common/fixtures/{{ item }}"
     file_system: "bootflash:"
-    connect_ssh_port: "{{ ansible_ssh_port|d(22) }}"
+    connect_ssh_port: "{{ ansible_ssh_port | d(22) }}"
   loop:
     - server.crt
     - new_server.crt
@@ -66,13 +66,14 @@
   vars:
     ansible_connection: ansible.netcommon.network_cli
 
-- block:
-    - name: Include the cli tasks
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags: cli
       when: run_test
 
-    - name: Include the nx-api tasks
+    - name: Include the NX-API tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags: nxapi
       when: run_test
@@ -82,13 +83,13 @@
         name: temp_user
         state: absent
 
-    - name: Turn off feature scp-server
+    - name: Turn off 'feature scp-server'
       cisco.nxos.nxos_feature:
         feature: scp-server
         state: disabled
 
     - name: Setup - remove existing file
-      ignore_errors: true
+      ignore_errors: true # noqa ignore-errors
       cisco.nxos.nxos_command:
         commands:
           - terminal dont-ask

@@ -258,28 +258,28 @@ Examples
     - name: Merge ACL interfaces configuration
       cisco.nxos.nxos_acl_interfaces:
         config:
-        - name: Ethernet1/2
-          access_groups:
-          - afi: ipv6
-            acls:
-            - name: ACL1v6
-              direction: in
+          - name: Ethernet1/2
+            access_groups:
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
 
-        - name: Eth1/5
-          access_groups:
-          - afi: ipv4
-            acls:
-            - name: PortACL
-              direction: in
-              port: true
+          - name: Eth1/5
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: PortACL
+                    direction: in
+                    port: true
 
-            - name: ACL1v4
-              direction: out
+                  - name: ACL1v4
+                    direction: out
 
-          - afi: ipv6
-            acls:
-            - name: ACL1v6
-              direction: in
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
         state: merged
 
     # After state:
@@ -305,20 +305,20 @@ Examples
     - name: Replace interface configuration with given configuration
       cisco.nxos.nxos_acl_interfaces:
         config:
-        - name: Eth1/5
-          access_groups:
-          - afi: ipv4
-            acls:
-            - name: NewACLv4
-              direction: out
+          - name: Eth1/5
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: NewACLv4
+                    direction: out
 
-        - name: Ethernet1/3
-          access_groups:
-          - afi: ipv6
-            acls:
-            - name: NewACLv6
-              direction: in
-              port: true
+          - name: Ethernet1/3
+            access_groups:
+              - afi: ipv6
+                acls:
+                  - name: NewACLv6
+                    direction: in
+                    port: true
         state: replaced
 
     # After state:
@@ -344,21 +344,21 @@ Examples
     - name: Override interface configuration with given configuration
       cisco.nxos.nxos_acl_interfaces:
         config:
-        - name: Ethernet1/3
-          access_groups:
-          - afi: ipv4
-            acls:
-            - name: ACL1v4
-              direction: out
+          - name: Ethernet1/3
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: ACL1v4
+                    direction: out
 
-            - name: PortACL
-              port: true
-              direction: in
-          - afi: ipv6
-            acls:
-            - name: NewACLv6
-              direction: in
-              port: true
+                  - name: PortACL
+                    port: true
+                    direction: in
+              - afi: ipv6
+                acls:
+                  - name: NewACLv6
+                    direction: in
+                    port: true
         state: overridden
 
     # After state:
@@ -384,8 +384,8 @@ Examples
     - name: Delete ACL configuration on interfaces
       cisco.nxos.nxos_acl_interfaces:
         config:
-        - name: Ethernet1/5
-        - name: Ethernet1/2
+          - name: Ethernet1/5
+          - name: Ethernet1/2
         state: deleted
 
     # After state:
@@ -498,27 +498,27 @@ Examples
     - name: Render required configuration to be pushed to the device
       cisco.nxos.nxos_acl_interfaces:
         config:
-        - name: Ethernet1/2
-          access_groups:
-          - afi: ipv6
-            acls:
-            - name: ACL1v6
-              direction: in
-
-        - name: Ethernet1/5
-          access_groups:
-          - afi: ipv4
-            acls:
-            - name: PortACL
-              direction: in
-              port: true
-            - name: ACL1v4
-              direction: out
-          - afi: ipv6
-            acls:
-            - name: ACL1v6
-              direction: in
+          - name: Ethernet1/2
+            access_groups:
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
+          - name: Ethernet1/5
+            access_groups:
+              - afi: ipv4
+                acls:
+                  - name: PortACL
+                    direction: in
+                    port: true
+                  - name: ACL1v4
+                    direction: out
+              - afi: ipv6
+                acls:
+                  - name: ACL1v6
+                    direction: in
         state: rendered
+
 
     # returns
     # rendered:

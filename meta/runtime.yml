@@ -1,422 +1,11 @@
 ---
-requires_ansible: ">=2.9.10"
+requires_ansible: ">=2.14.0"
 plugin_routing:
-  action:
-    nxos_aaa_server:
-      redirect: cisco.nxos.nxos
-    aaa_server:
-      redirect: cisco.nxos.nxos
-    nxos_aaa_server_host:
-      redirect: cisco.nxos.nxos
-    aaa_server_host:
-      redirect: cisco.nxos.nxos
-    nxos_acl:
-      redirect: cisco.nxos.nxos
-    acl:
-      redirect: cisco.nxos.nxos
-    nxos_acl_interface:
-      redirect: cisco.nxos.nxos
-    acl_interface:
-      redirect: cisco.nxos.nxos
-    nxos_acl_interfaces:
-      redirect: cisco.nxos.nxos
-    acl_interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_acls:
-      redirect: cisco.nxos.nxos
-    acls:
-      redirect: cisco.nxos.nxos
-    nxos_banner:
-      redirect: cisco.nxos.nxos
-    banner:
-      redirect: cisco.nxos.nxos
-    nxos_bfd_global:
-      redirect: cisco.nxos.nxos
-    bfd_global:
-      redirect: cisco.nxos.nxos
-    nxos_bfd_interfaces:
-      redirect: cisco.nxos.nxos
-    bfd_interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_bgp:
-      redirect: cisco.nxos.nxos
-    bgp:
-      redirect: cisco.nxos.nxos
-    nxos_bgp_af:
-      redirect: cisco.nxos.nxos
-    bgp_af:
-      redirect: cisco.nxos.nxos
-    nxos_bgp_neighbor:
-      redirect: cisco.nxos.nxos
-    bgp_neighbor:
-      redirect: cisco.nxos.nxos
-    nxos_bgp_neighbor_af:
-      redirect: cisco.nxos.nxos
-    bgp_neighbor_af:
-      redirect: cisco.nxos.nxos
-    nxos_command:
-      redirect: cisco.nxos.nxos
-    command:
-      redirect: cisco.nxos.nxos
-    nxos_config:
-      redirect: cisco.nxos.nxos
-    config:
-      redirect: cisco.nxos.nxos
-    nxos_devicealias:
-      redirect: cisco.nxos.nxos
-    devicealias:
-      redirect: cisco.nxos.nxos
-    nxos_evpn_global:
-      redirect: cisco.nxos.nxos
-    evpn_global:
-      redirect: cisco.nxos.nxos
-    nxos_evpn_vni:
-      redirect: cisco.nxos.nxos
-    evpn_vni:
-      redirect: cisco.nxos.nxos
-    nxos_facts:
-      redirect: cisco.nxos.nxos
-    facts:
-      redirect: cisco.nxos.nxos
-    nxos_feature:
-      redirect: cisco.nxos.nxos
-    feature:
-      redirect: cisco.nxos.nxos
-    nxos_gir:
-      redirect: cisco.nxos.nxos
-    gir:
-      redirect: cisco.nxos.nxos
-    nxos_gir_profile_management:
-      redirect: cisco.nxos.nxos
-    gir_profile_management:
-      redirect: cisco.nxos.nxos
-    nxos_hostname:
-      redirect: cisco.nxos.nxos
-    hostname:
-      redirect: cisco.nxos.nxos
-    nxos_hsrp:
-      redirect: cisco.nxos.nxos
-    hsrp:
-      redirect: cisco.nxos.nxos
-    nxos_hsrp_interfaces:
-      redirect: cisco.nxos.nxos
-    hsrp_interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_igmp:
-      redirect: cisco.nxos.nxos
-    igmp:
-      redirect: cisco.nxos.nxos
-    nxos_igmp_interface:
-      redirect: cisco.nxos.nxos
-    igmp_interface:
-      redirect: cisco.nxos.nxos
-    nxos_igmp_snooping:
-      redirect: cisco.nxos.nxos
-    igmp_snooping:
-      redirect: cisco.nxos.nxos
-    nxos_install_os:
-      redirect: cisco.nxos.nxos
-    install_os:
-      redirect: cisco.nxos.nxos
-    nxos_interface:
-      redirect: cisco.nxos.nxos
-    interface:
-      redirect: cisco.nxos.nxos
-    nxos_interface_ospf:
-      redirect: cisco.nxos.nxos
-    interface_ospf:
-      redirect: cisco.nxos.nxos
-    nxos_interfaces:
-      redirect: cisco.nxos.nxos
-    interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_l2_interface:
-      redirect: cisco.nxos.nxos
-    l2_interface:
-      redirect: cisco.nxos.nxos
-    nxos_l2_interfaces:
-      redirect: cisco.nxos.nxos
-    l2_interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_l3_interface:
-      redirect: cisco.nxos.nxos
-    l3_interface:
-      redirect: cisco.nxos.nxos
-    nxos_l3_interfaces:
-      redirect: cisco.nxos.nxos
-    l3_interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_lacp:
-      redirect: cisco.nxos.nxos
-    lacp:
-      redirect: cisco.nxos.nxos
-    nxos_lacp_interfaces:
-      redirect: cisco.nxos.nxos
-    lacp_interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_lag_interfaces:
-      redirect: cisco.nxos.nxos
-    lag_interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_linkagg:
-      redirect: cisco.nxos.nxos
-    linkagg:
-      redirect: cisco.nxos.nxos
-    nxos_lldp:
-      redirect: cisco.nxos.nxos
-    lldp:
-      redirect: cisco.nxos.nxos
-    nxos_lldp_global:
-      redirect: cisco.nxos.nxos
-    lldp_global:
-      redirect: cisco.nxos.nxos
-    nxos_lldp_interfaces:
-      redirect: cisco.nxos.nxos
-    lldp_interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_logging:
-      redirect: cisco.nxos.nxos
-    logging:
-      redirect: cisco.nxos.nxos
-    nxos_logging_global:
-      redirect: cisco.nxos.nxos
-    logging_global:
-      redirect: cisco.nxos.nxos
-    nxos_ntp_global:
-      redirect: cisco.nxos.nxos
-    ntp_global:
-      redirect: cisco.nxos.nxos
-    nxos_ntp:
-      redirect: cisco.nxos.nxos
-    ntp:
-      redirect: cisco.nxos.nxos
-    nxos_ntp_auth:
-      redirect: cisco.nxos.nxos
-    ntp_auth:
-      redirect: cisco.nxos.nxos
-    nxos_ntp_options:
-      redirect: cisco.nxos.nxos
-    ntp_options:
-      redirect: cisco.nxos.nxos
-    nxos_nxapi:
-      redirect: cisco.nxos.nxos
-    nxapi:
-      redirect: cisco.nxos.nxos
-    nxos_ospf_interfaces:
-      redirect: cisco.nxos.nxos
-    ospf_interfaces:
-      redirect: cisco.nxos.nxos
-    nxos_ospf:
-      redirect: cisco.nxos.nxos
-    ospf:
-      redirect: cisco.nxos.nxos
-    nxos_ospf_vrf:
-      redirect: cisco.nxos.nxos
-    ospf_vrf:
-      redirect: cisco.nxos.nxos
-    nxos_bgp_global:
-      redirect: cisco.nxos.nxos
-    bgp_global:
-      redirect: cisco.nxos.nxos
-    nxos_bgp_address_family:
-      redirect: cisco.nxos.nxos
-    bgp_address_family:
-      redirect: cisco.nxos.nxos
-    nxos_ospfv2:
-      redirect: cisco.nxos.nxos
-    ospfv2:
-      redirect: cisco.nxos.nxos
-    nxos_ospfv3:
-      redirect: cisco.nxos.nxos
-    ospfv3:
-      redirect: cisco.nxos.nxos
-    nxos_overlay_global:
-      redirect: cisco.nxos.nxos
-    overlay_global:
-      redirect: cisco.nxos.nxos
-    nxos_pim:
-      redirect: cisco.nxos.nxos
-    pim:
-      redirect: cisco.nxos.nxos
-    nxos_pim_interface:
-      redirect: cisco.nxos.nxos
-    pim_interface:
-      redirect: cisco.nxos.nxos
-    nxos_pim_rp_address:
-      redirect: cisco.nxos.nxos
-    pim_rp_address:
-      redirect: cisco.nxos.nxos
-    nxos_ping:
-      redirect: cisco.nxos.nxos
-    ping:
-      redirect: cisco.nxos.nxos
-    nxos_prefix_lists:
-      redirect: cisco.nxos.nxos
-    prefix_lists:
-      redirect: cisco.nxos.nxos
-    nxos_reboot:
-      redirect: cisco.nxos.nxos
-    reboot:
-      redirect: cisco.nxos.nxos
-    nxos_rollback:
-      redirect: cisco.nxos.nxos
-    rollback:
-      redirect: cisco.nxos.nxos
-    nxos_route_maps:
-      redirect: cisco.nxos.nxos
-    route_maps:
-      redirect: cisco.nxos.nxos
-    nxos_rpm:
-      redirect: cisco.nxos.nxos
-    rpm:
-      redirect: cisco.nxos.nxos
-    nxos_smu:
-      redirect: cisco.nxos.nxos
-    smu:
-      redirect: cisco.nxos.nxos
-    nxos_snapshot:
-      redirect: cisco.nxos.nxos
-    snapshot:
-      redirect: cisco.nxos.nxos
-    nxos_snmp_community:
-      redirect: cisco.nxos.nxos
-    snmp_community:
-      redirect: cisco.nxos.nxos
-    nxos_snmp_contact:
-      redirect: cisco.nxos.nxos
-    snmp_contact:
-      redirect: cisco.nxos.nxos
-    nxos_snmp_host:
-      redirect: cisco.nxos.nxos
-    snmp_host:
-      redirect: cisco.nxos.nxos
-    nxos_snmp_location:
-      redirect: cisco.nxos.nxos
-    snmp_location:
-      redirect: cisco.nxos.nxos
-    nxos_snmp_server:
-      redirect: cisco.nxos.nxos
-    snmp_server:
-      redirect: cisco.nxos.nxos
-    nxos_snmp_traps:
-      redirect: cisco.nxos.nxos
-    snmp_traps:
-      redirect: cisco.nxos.nxos
-    nxos_snmp_user:
-      redirect: cisco.nxos.nxos
-    snmp_user:
-      redirect: cisco.nxos.nxos
-    nxos_static_route:
-      redirect: cisco.nxos.nxos
-    static_route:
-      redirect: cisco.nxos.nxos
-    nxos_static_routes:
-      redirect: cisco.nxos.nxos
-    static_routes:
-      redirect: cisco.nxos.nxos
-    nxos_system:
-      redirect: cisco.nxos.nxos
-    system:
-      redirect: cisco.nxos.nxos
-    nxos_telemetry:
-      redirect: cisco.nxos.nxos
-    telemetry:
-      redirect: cisco.nxos.nxos
-    nxos_udld:
-      redirect: cisco.nxos.nxos
-    udld:
-      redirect: cisco.nxos.nxos
-    nxos_udld_interface:
-      redirect: cisco.nxos.nxos
-    udld_interface:
-      redirect: cisco.nxos.nxos
-    nxos_user:
-      redirect: cisco.nxos.nxos
-    user:
-      redirect: cisco.nxos.nxos
-    nxos_vlan:
-      redirect: cisco.nxos.nxos
-    vlan:
-      redirect: cisco.nxos.nxos
-    nxos_vlans:
-      redirect: cisco.nxos.nxos
-    vlans:
-      redirect: cisco.nxos.nxos
-    nxos_vpc:
-      redirect: cisco.nxos.nxos
-    vpc:
-      redirect: cisco.nxos.nxos
-    nxos_vpc_interface:
-      redirect: cisco.nxos.nxos
-    vpc_interface:
-      redirect: cisco.nxos.nxos
-    nxos_vrf:
-      redirect: cisco.nxos.nxos
-    vrf:
-      redirect: cisco.nxos.nxos
-    nxos_vrf_af:
-      redirect: cisco.nxos.nxos
-    vrf_af:
-      redirect: cisco.nxos.nxos
-    nxos_vrf_interface:
-      redirect: cisco.nxos.nxos
-    vrf_interface:
-      redirect: cisco.nxos.nxos
-    nxos_vrrp:
-      redirect: cisco.nxos.nxos
-    vrrp:
-      redirect: cisco.nxos.nxos
-    nxos_vsan:
-      redirect: cisco.nxos.nxos
-    vsan:
-      redirect: cisco.nxos.nxos
-    nxos_vtp_domain:
-      redirect: cisco.nxos.nxos
-    vtp_domain:
-      redirect: cisco.nxos.nxos
-    nxos_vtp_password:
-      redirect: cisco.nxos.nxos
-    vtp_password:
-      redirect: cisco.nxos.nxos
-    nxos_vtp_version:
-      redirect: cisco.nxos.nxos
-    vtp_version:
-      redirect: cisco.nxos.nxos
-    nxos_vxlan_vtep:
-      redirect: cisco.nxos.nxos
-    vxlan_vtep:
-      redirect: cisco.nxos.nxos
-    nxos_vxlan_vtep_vni:
-      redirect: cisco.nxos.nxos
-    vxlan_vtep_vni:
-      redirect: cisco.nxos.nxos
-    nxos_zone_zoneset:
-      redirect: cisco.nxos.nxos
-    zone_zoneset:
-      redirect: cisco.nxos.nxos
   modules:
     aaa_server:
       redirect: cisco.nxos.nxos_aaa_server
     aaa_server_host:
       redirect: cisco.nxos.nxos_aaa_server_host
-    acl:
-      redirect: cisco.nxos.nxos_acl
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_acl:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    acl_interface:
-      redirect: cisco.nxos.nxos_acl_interface
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_acl_interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     acl_interfaces:
       redirect: cisco.nxos.nxos_acl_interfaces
     acls:
@@ -427,42 +16,6 @@ plugin_routing:
       redirect: cisco.nxos.nxos_bfd_global
     bfd_interfaces:
       redirect: cisco.nxos.nxos_bfd_interfaces
-    bgp:
-      redirect: cisco.nxos.nxos_bgp
-      deprecation:
-        removal_date: "2023-01-27"
-        warning_text: See the plugin documentation for more details
-    nxos_bgp:
-      deprecation:
-        removal_date: "2023-01-27"
-        warning_text: See the plugin documentation for more details
-    bgp_af:
-      redirect: cisco.nxos.nxos_bgp_af
-      deprecation:
-        removal_date: "2023-02-24"
-        warning_text: See the plugin documentation for more details
-    nxos_bgp_af:
-      deprecation:
-        removal_date: "2023-02-24"
-        warning_text: See the plugin documentation for more details
-    bgp_neighbor:
-      redirect: cisco.nxos.nxos_bgp_neighbor
-      deprecation:
-        removal_date: "2023-01-27"
-        warning_text: See the plugin documentation for more details
-    nxos_bgp_neighbor:
-      deprecation:
-        removal_date: "2023-01-27"
-        warning_text: See the plugin documentation for more details
-    bgp_neighbor_af:
-      redirect: cisco.nxos.nxos_bgp_neighbor_af
-      deprecation:
-        removal_date: "2023-02-24"
-        warning_text: See the plugin documentation for more details
-    nxos_bgp_neighbor_af:
-      deprecation:
-        removal_date: "2023-02-24"
-        warning_text: See the plugin documentation for more details
     command:
       redirect: cisco.nxos.nxos_command
     config:
@@ -497,46 +50,10 @@ plugin_routing:
       redirect: cisco.nxos.nxos_igmp_snooping
     install_os:
       redirect: cisco.nxos.nxos_install_os
-    interface:
-      redirect: cisco.nxos.nxos_interface
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    interface_ospf:
-      redirect: cisco.nxos.nxos_interface_ospf
-      deprecation:
-        removal_date: "2022-10-26"
-        warning_text: See the plugin documentation for more details
-    nxos_interface_ospf:
-      deprecation:
-        removal_date: "2022-10-26"
-        warning_text: See the plugin documentation for more details
     interfaces:
       redirect: cisco.nxos.nxos_interfaces
-    l2_interface:
-      redirect: cisco.nxos.nxos_l2_interface
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_l2_interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     l2_interfaces:
       redirect: cisco.nxos.nxos_l2_interfaces
-    l3_interface:
-      redirect: cisco.nxos.nxos_l3_interface
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_l3_interface:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     l3_interfaces:
       redirect: cisco.nxos.nxos_l3_interfaces
     lacp:
@@ -545,24 +62,6 @@ plugin_routing:
       redirect: cisco.nxos.nxos_lacp_interfaces
     lag_interfaces:
       redirect: cisco.nxos.nxos_lag_interfaces
-    linkagg:
-      redirect: cisco.nxos.nxos_linkagg
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_linkagg:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    lldp:
-      redirect: cisco.nxos.nxos_lldp
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_lldp:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     lldp_global:
       redirect: cisco.nxos.nxos_lldp_global
     lldp_interfaces:
@@ -611,24 +110,6 @@ plugin_routing:
       redirect: cisco.nxos.nxos_nxapi
     ospf_interfaces:
       redirect: cisco.nxos.nxos_ospf_interfaces
-    ospf:
-      redirect: cisco.nxos.nxos_ospf
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_ospf:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    ospf_vrf:
-      redirect: cisco.nxos.nxos_ospf_vrf
-      deprecation:
-        removal_date: "2022-10-01"
-        warning_text: See the plugin documentation for more details
-    nxos_ospf_vrf:
-      deprecation:
-        removal_date: "2022-10-01"
-        warning_text: See the plugin documentation for more details
     bgp_global:
       redirect: cisco.nxos.nxos_bgp_global
     bgp_address_family:
@@ -657,15 +138,6 @@ plugin_routing:
       redirect: cisco.nxos.nxos_route_maps
     rpm:
       redirect: cisco.nxos.nxos_rpm
-    smu:
-      redirect: cisco.nxos.nxos_smu
-      deprecation:
-        removal_date: "2022-10-01"
-        warning_text: See the plugin documentation for more details
-    nxos_smu:
-      deprecation:
-        removal_date: "2022-10-01"
-        warning_text: See the plugin documentation for more details
     snapshot:
       redirect: cisco.nxos.nxos_snapshot
     snmp_community:
@@ -724,15 +196,6 @@ plugin_routing:
       deprecation:
         removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
-    static_route:
-      redirect: cisco.nxos.nxos_static_route
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_static_route:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     static_routes:
       redirect: cisco.nxos.nxos_static_routes
     system:
@@ -745,15 +208,6 @@ plugin_routing:
       redirect: cisco.nxos.nxos_udld_interface
     user:
       redirect: cisco.nxos.nxos_user
-    vlan:
-      redirect: cisco.nxos.nxos_vlan
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
-    nxos_vlan:
-      deprecation:
-        removal_date: "2022-06-01"
-        warning_text: See the plugin documentation for more details
     vlans:
       redirect: cisco.nxos.nxos_vlans
     vpc:

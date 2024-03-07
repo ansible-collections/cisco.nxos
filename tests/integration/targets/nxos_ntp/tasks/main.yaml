@@ -1,11 +1,12 @@
 ---
-- block:
-    - name: Include the cli tasks
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
   always:
-    - name: Include the nx-api tasks
+    - name: Include the NX-API tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi

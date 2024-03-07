@@ -6,7 +6,7 @@
   cisco.nxos.nxos_config:
     lines: hostname switch
 
-- name: Nxos_config diff against retrieved config
+- name: Nxos_config diff against retrieved configuration
   diff: true
   register: result
   cisco.nxos.nxos_config:

@@ -426,54 +426,54 @@ Examples
     - name: Test that zone/zoneset module works
       cisco.nxos.nxos_zone_zoneset:
         zone_zoneset_details:
-        - mode: enhanced
-          vsan: 22
-          zone:
-          - members:
-            - pwwn: 11:11:11:11:11:11:11:11
-            - device_alias: test123
-            - pwwn: 61:61:62:62:12:12:12:12
-              remove: true
-            name: zoneA
-          - members:
-            - pwwn: 10:11:11:11:11:11:11:11
-            - pwwn: 62:62:62:62:21:21:21:21
-            name: zoneB
-          - name: zoneC
-            remove: true
-          zoneset:
-          - action: activate
-            members:
-            - name: zoneA
-            - name: zoneB
-            - name: zoneC
-              remove: true
-            name: zsetname1
-          - action: deactivate
-            name: zsetTestExtra
-            remove: true
-        - mode: basic
-          smart_zoning: true
-          vsan: 21
-          zone:
-          - members:
-            - devtype: both
-              pwwn: 11:11:11:11:11:11:11:11
-            - pwwn: 62:62:62:62:12:12:12:12
-            - devtype: both
-              pwwn: 92:62:62:62:12:12:1a:1a
-              remove: true
-            name: zone21A
-          - members:
-            - pwwn: 10:11:11:11:11:11:11:11
-            - pwwn: 62:62:62:62:21:21:21:21
-            name: zone21B
-          zoneset:
-          - action: activate
-            members:
-            - name: zone21A
-            - name: zone21B
-            name: zsetname212
+          - mode: enhanced
+            vsan: 22
+            zone:
+              - members:
+                  - pwwn: 31314874576271
+                  - device_alias: test123
+                  - pwwn: '61:61:62:62:12:12:12:12'
+                    remove: true
+                name: zoneA
+              - members:
+                  - pwwn: 28515514576271
+                  - pwwn: '62:62:62:62:21:21:21:21'
+                name: zoneB
+              - name: zoneC
+                remove: true
+            zoneset:
+              - action: activate
+                members:
+                  - name: zoneA
+                  - name: zoneB
+                  - name: zoneC
+                    remove: true
+                name: zsetname1
+              - action: deactivate
+                name: zsetTestExtra
+                remove: true
+          - mode: basic
+            smart_zoning: true
+            vsan: 21
+            zone:
+              - members:
+                  - devtype: both
+                    pwwn: 31314874576271
+                  - pwwn: '62:62:62:62:12:12:12:12'
+                  - devtype: both
+                    pwwn: '92:62:62:62:12:12:1a:1a'
+                    remove: true
+                name: zone21A
+              - members:
+                  - pwwn: 28515514576271
+                  - pwwn: '62:62:62:62:21:21:21:21'
+                name: zone21B
+            zoneset:
+              - action: activate
+                members:
+                  - name: zone21A
+                  - name: zone21B
+                name: zsetname212
 
 
 

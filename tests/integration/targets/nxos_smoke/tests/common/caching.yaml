@@ -42,7 +42,7 @@
         that:
           - result.changed == False
 
-    - name: Merge l2 interfaces configuration
+    - name: Merge layer 2 interfaces configuration
       register: result
       cisco.nxos.nxos_l2_interfaces: &mergedl2
         config:
@@ -59,7 +59,7 @@
           - '"switchport trunk allowed vlan 2,4,15" in result.commands'
           - result.commands|length == 3
 
-    - name: Merge l2 interfaces configuration (idempotent)
+    - name: Merge layer 2 interfaces configuration (idempotent)
       register: result
       cisco.nxos.nxos_l2_interfaces: *mergedl2
 
@@ -67,7 +67,7 @@
         that:
           - result.changed == False
 
-    - name: Merge l3 interfaces configuration
+    - name: Merge layer 3 interfaces configuration
       register: result
       cisco.nxos.nxos_l3_interfaces: &mergedl3
         config:
@@ -82,7 +82,7 @@
           - '"ip address 203.0.113.1/24" in result.commands'
           - result.commands|length == 2
 
-    - name: Merge l3 interfaces configuration (idempotent)
+    - name: Merge layer 3 interfaces configuration (idempotent)
       register: result
       cisco.nxos.nxos_l3_interfaces: *mergedl3
 

@@ -20,27 +20,28 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_system
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosSystemModule(TestNxosModule):
-
     module = nxos_system
 
     def setUp(self):
         super(TestNxosSystemModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_system.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_system.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_system.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_system.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -50,9 +51,7 @@ class TestNxosSystemModule(TestNxosModule):
         self.mock_load_config.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.get_config.return_value = load_fixture(
-            "nxos_system", "config.cfg", device=device
-        )
+        self.get_config.return_value = load_fixture("nxos_system", "config.cfg", device=device)
         self.load_config.return_value = None
 
     def test_nxos_system_hostname_changed(self):
@@ -87,13 +86,11 @@ class TestNxosSystemModule(TestNxosModule):
                 domain_name=[
                     {"name": "abc.com", "vrf": "test"},
                     {"name": "xyz.com", "vrf": "test2"},
-                ]
-            )
+                ],
+            ),
         )
         commands = []
-        self.execute_module(
-            changed=False, commands=commands, device="vrf_only"
-        )
+        self.execute_module(changed=False, commands=commands, device="vrf_only")
 
     def test_nxos_system_domain_name_complex(self):
         domain_name = dict(name="example.net", vrf="management")

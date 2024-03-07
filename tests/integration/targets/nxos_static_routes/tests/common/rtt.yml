@@ -16,11 +16,9 @@
                       - forward_router_address: 192.0.2.32
                         route_name: test_route1
                         tag: 14
-
                       - forward_router_address: 192.0.2.48
                         route_name: test_route2
                         admin_distance: 2
-
           - vrf: trial_vrf
             address_families:
               - afi: ipv4
@@ -51,6 +49,7 @@
                       - forward_router_address: 192.0.2.55
                         tag: 1
                         admin_distance: 1
+          - "{{ var_vrf_mgmt }}"
         state: overridden
       register: result
 
@@ -58,13 +57,12 @@
       ansible.builtin.assert:
         that:
           - "result.changed == true"
-          - "'configure terminal' in result.commands"
           - "'no ip route 192.0.2.36/30 192.0.2.32 name test_route1 tag 14' in result.commands"
           - "'no ip route 192.0.2.36/30 192.0.2.48 name test_route2 2'"
           - "'ip route 192.0.2.44/30 192.0.2.55 tag 1 1' in result.commands"
           - "'vrf context trial_vrf' in result.commands"
           - "'no ip route 192.0.2.32/30 192.0.2.105 vrf test_dest_vrf' in result.commands"
-          - "result.commands | length == 6"
+          - "result.commands | length == 5"
 
     - name: Revert back to base configuration
       cisco.nxos.nxos_static_routes:

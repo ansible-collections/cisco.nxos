@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,6 +16,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -22,9 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 class Ntp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Ntp_globalTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
-        )
+        super(Ntp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [
@@ -33,12 +33,13 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group\s(?P<match_all>match-all)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp access-group match-all",
             "result": {
                 "access_group": {
                     "match_all": "{{ True if match_all is defined else None }}",
-                }
+                },
             },
         },
         {
@@ -46,16 +47,17 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group\speer\s(?P<acl>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp access-group peer {{ access_list }}",
             "result": {
                 "access_group": {
                     "peer": [
                         {
                             "access_list": "{{ acl }}",
-                        }
+                        },
                     ],
-                }
+                },
             },
         },
         {
@@ -63,16 +65,17 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group\squery-only\s(?P<acl>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp access-group query-only {{ access_list }}",
             "result": {
                 "access_group": {
                     "query_only": [
                         {
                             "access_list": "{{ acl }}",
-                        }
+                        },
                     ],
-                }
+                },
             },
         },
         {
@@ -80,16 +83,17 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group\sserve\s(?P<acl>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp access-group serve {{ access_list }}",
             "result": {
                 "access_group": {
                     "serve": [
                         {
                             "access_list": "{{ acl }}",
-                        }
+                        },
                     ],
-                }
+                },
             },
         },
         {
@@ -97,16 +101,17 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\saccess-group\sserve-only\s(?P<acl>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp access-group serve-only {{ access_list }}",
             "result": {
                 "access_group": {
                     "serve_only": [
                         {
                             "access_list": "{{ acl }}",
-                        }
+                        },
                     ],
-                }
+                },
             },
         },
         {
@@ -114,14 +119,15 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\sallow\scontrol\srate-limit\s(?P<rate_limit>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp allow control rate-limit {{ allow.control.rate_limit }}",
             "result": {
                 "allow": {
                     "control": {
                         "rate_limit": "{{ rate_limit }}",
-                    }
-                }
+                    },
+                },
             },
         },
         {
@@ -129,12 +135,13 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\sallow\s(?P<private>private)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp allow private",
             "result": {
                 "allow": {
                     "private": "{{ not not private }}",
-                }
+                },
             },
         },
         {
@@ -142,7 +149,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\s(?P<authenticate>authenticate)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp authenticate",
             "result": {
                 "authenticate": "{{ not not authenticate }}",
@@ -153,7 +161,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\sauthentication-key\s(?P<id>\d+)\smd5\s(?P<key>\S+)\s(?P<encryption>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp authentication-key {{ id }} md5 {{ key }} {{ encryption }}",
             "result": {
                 "authentication_keys": [
@@ -162,7 +171,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                         "key": "{{ key }}",
                         "encryption": "{{ encryption }}",
                     },
-                ]
+                ],
             },
         },
         {
@@ -170,7 +179,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\s(?P<logging>logging)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp logging",
             "result": {
                 "logging": "{{ not not logging }}",
@@ -181,12 +191,13 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\smaster\s(?P<stratum>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp master {{ master.stratum }}",
             "result": {
                 "master": {
                     "stratum": "{{ stratum }}",
-                }
+                },
             },
         },
         {
@@ -194,7 +205,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\s(?P<passive>passive)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp passive",
             "result": {
                 "passive": "{{ not not passive }}",
@@ -211,9 +223,10 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\skey\s(?P<key>\d+))?
                 (\sminpoll\s(?P<minpoll>\d+))?
                 (\smaxpoll\s(?P<maxpoll>\d+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp peer {{ peer }}"
-                      "{{ ' prefer' if prefer is defined else ''}}"
+                      "{{ ' prefer' if prefer|d(False) else ''}}"
                       "{{ (' use-vrf ' + vrf) if vrf is defined else '' }}"
                       "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
@@ -227,8 +240,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                         "key_id": "{{ key }}",
                         "minpoll": "{{ minpoll }}",
                         "maxpoll": "{{ maxpoll }}",
-                    }
-                ]
+                    },
+                ],
             },
         },
         {
@@ -242,9 +255,10 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\skey\s(?P<key>\d+))?
                 (\sminpoll\s(?P<minpoll>\d+))?
                 (\smaxpoll\s(?P<maxpoll>\d+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp server {{ server }}"
-                      "{{ ' prefer' if prefer is defined else ''}}"
+                      "{{ ' prefer' if prefer|d(False) else ''}}"
                       "{{ (' use-vrf ' + vrf) if vrf is defined else '' }}"
                       "{{ (' key ' + key_id|string) if key_id is defined else '' }}"
                       "{{ (' minpoll ' + minpoll|string) if minpoll is defined else '' }}"
@@ -258,8 +272,8 @@ class Ntp_globalTemplate(NetworkTemplate):
                         "key_id": "{{ key }}",
                         "minpoll": "{{ minpoll }}",
                         "maxpoll": "{{ maxpoll }}",
-                    }
-                ]
+                    },
+                ],
             },
         },
         {
@@ -267,7 +281,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\ssource\s(?P<source>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp source {{ source }}",
             "result": {
                 "source": "{{ source }}",
@@ -278,7 +293,8 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\ssource-interface(\s)+(?P<source_interface>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp source-interface {{ source_interface }}",
             "result": {
                 "source_interface": "{{ source_interface }}",
@@ -289,14 +305,15 @@ class Ntp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^ntp\strusted-key\s(?P<key>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ntp trusted-key {{ key_id|string }}",
             "result": {
                 "trusted_keys": [
                     {
                         "key_id": "{{ key }}",
-                    }
-                ]
+                    },
+                ],
             },
         },
     ]

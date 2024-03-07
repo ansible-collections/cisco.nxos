@@ -10,6 +10,7 @@ The module file for nxos_logging_global
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -19,9 +20,10 @@ description:
 - This module manages logging configuration on devices running Cisco NX-OS.
 version_added: 2.5.0
 notes:
-- Tested against NX-OS 9.3.6.
+- Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
 - Limited Support for Cisco MDS
 - This module works with connection C(network_cli) and C(httpapi).
+- Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
 author: Nilashish Chakraborty (@NilashishC)
 options:
   running_config:
@@ -84,7 +86,9 @@ options:
             description: Set history table size.
             type: int
       ip:
-        description: IP configuration.
+        description:
+          - IP configuration.
+          - This option is unsupported on MDS switches.
         type: dict
         suboptions:
           access_list:
@@ -136,7 +140,9 @@ options:
             type: str
           severity: *sev
           persistent_threshold:
-            description: Set persistent logging utilization alert threshold in percentage.
+            description:
+              - Set persistent logging utilization alert threshold in percentage.
+              - This option is unsupported on MDS switches.
             type: int
           size:
             description: Enter the logfile size in bytes.
@@ -186,6 +192,7 @@ options:
         description:
           - Set RFC to which messages should compliant.
           - Syslogs will be compliant to RFC 5424.
+          - This option is unsupported on MDS switches.
         type: bool
       hosts:
         description: Enable forwarding to Remote Syslog Servers.
@@ -216,10 +223,14 @@ options:
                       - Trustpoint to use for client certificate authentication.
                     type: str
           use_vrf:
-            description: Display per-VRF information.
+            description:
+              - Display per-VRF information.
+              - This option is unsupported on MDS switches.
             type: str
       source_interface:
-        description: Enable Source-Interface for Remote Syslog Server.
+        description:
+          - Enable Source-Interface for Remote Syslog Server.
+          - This option is unsupported on MDS switches.
         type: str
       timestamp:
         description: Set logging timestamp granularity.
@@ -279,7 +290,7 @@ EXAMPLES = """
           facility: local6
           use_vrf: default
       origin_id:
-        hostname: True
+        hostname: true
 
 # Task output
 # -------------
@@ -565,7 +576,7 @@ EXAMPLES = """
           facility: local6
           use_vrf: default
       origin_id:
-        hostname: True
+        hostname: true
 
 # Task Output (redacted)
 # -----------------------
@@ -688,6 +699,7 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.logging_global.logging_global import (
     Logging_globalArgs,
 )

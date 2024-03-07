@@ -18,6 +18,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -38,9 +39,7 @@ options:
 """
 
 from ansible.plugins.netconf import NetconfBase
-from ansible_collections.ansible.netcommon.plugins.plugin_utils.netconf_base import (
-    NetconfBase,
-)
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.netconf_base import NetconfBase
 
 
 class Netconf(NetconfBase):

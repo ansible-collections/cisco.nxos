@@ -12,18 +12,18 @@
   when: platform is search('N3K-F|N9K-F')
 
 - block:
-    - name: Disable feature vtp
+    - name: Disable 'feature vtp'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: vtp
         state: disabled
 
-    - name: Enable feature vtp
+    - name: Enable 'feature vtp'
       cisco.nxos.nxos_feature:
         feature: vtp
         state: enabled
 
-    - name: Configure vtp domain
+    - name: Configure VTP domain
       register: result
       cisco.nxos.nxos_vtp_domain: &id001
         domain: ntc
@@ -32,7 +32,7 @@
         that:
           - result.changed == true
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vtp_domain: *id001
 
@@ -41,7 +41,7 @@
           - result.changed == false
   when: vtp_run
   always:
-    - name: Disable feature vtp
+    - name: Disable 'feature vtp'
       cisco.nxos.nxos_feature:
         feature: vtp
         state: disabled

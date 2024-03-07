@@ -40,5 +40,5 @@
   ansible.builtin.set_fact:
     ki: n7000-s2-kickstart.7.3.0.D1.1.bin
 
-- name: Upgrade n7k device to helsinki release image
-  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+- name: Upgrade N7K device to helsinki release image
+  ansible.builtin.include_tasks: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

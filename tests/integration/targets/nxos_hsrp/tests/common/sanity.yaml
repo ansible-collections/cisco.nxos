@@ -11,7 +11,7 @@
     intname2: "{{ nxos_int2 }}"
 
 - block:
-    - name: Enable feature hsrp
+    - name: Enable 'feature hsrp'
       cisco.nxos.nxos_feature:
         feature: hsrp
         state: enabled
@@ -48,7 +48,7 @@
         that:
           - result.changed == true
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id001
 
@@ -70,7 +70,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id003
 
@@ -90,7 +90,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id005
 
@@ -108,7 +108,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id006
 
@@ -126,7 +126,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_hsrp: *id007
 
@@ -147,7 +147,7 @@
 
     - ansible.builtin.assert: *id004
   always:
-    - name: Disable feature hsrp
+    - name: Disable 'feature hsrp'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: hsrp

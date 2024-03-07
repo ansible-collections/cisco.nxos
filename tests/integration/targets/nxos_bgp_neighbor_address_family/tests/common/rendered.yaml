@@ -53,7 +53,7 @@
     that:
       - "{{ merged['commands'] | symmetric_difference(result['rendered']) |length == 0 }}"
 
-- name: Gather bgp facts
+- name: Gather BGP facts
   cisco.nxos.nxos_bgp_neighbor_address_family:
     state: gathered
   register: result

@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,6 +16,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -22,9 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 class Prefix_listsTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Prefix_listsTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
-        )
+        super(Prefix_listsTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [
@@ -43,7 +43,8 @@ class Prefix_listsTemplate(NetworkTemplate):
                 (\sle\s(?P<le>\d+))?
                 (\smask\s(?P<mask>\S+))?
                 \s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "{{ 'ip' if afi == 'ipv4' else afi }} prefix-list {{ name }}"
                       "{{ (' seq ' + sequence|string) if sequence|d('') else '' }}"
                       " {{ action }}"
@@ -67,10 +68,10 @@ class Prefix_listsTemplate(NetworkTemplate):
                                     "ge": "{{ ge }}",
                                     "le": "{{ le }}",
                                     "mask": "{{ mask }}",
-                                }
+                                },
                             ],
-                        }
-                    }
+                        },
+                    },
                 },
             },
         },
@@ -82,7 +83,8 @@ class Prefix_listsTemplate(NetworkTemplate):
                 \sprefix-list
                 \s(?P<name>\S+)
                 \sdescription\s(?P<description>.+)\s*
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "{{ 'ip' if afi == 'ipv4' else afi }} prefix-list {{ name }} description {{ description }}",
             "result": {
                 "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}": {
@@ -91,8 +93,8 @@ class Prefix_listsTemplate(NetworkTemplate):
                         "{{ name }}": {
                             "name": "{{ name }}",
                             "description": "{{ description }}",
-                        }
-                    }
+                        },
+                    },
                 },
             },
         },

@@ -1,5 +1,5 @@
 ---
-- name: Populate config
+- name: Populate configuration
   cisco.nxos.nxos_config:
     lines:
       - "ip route 192.0.2.16/28 192.0.2.24 name new_route"

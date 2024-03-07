@@ -59,7 +59,7 @@ merged:
               - afi: ipv4
                 safi: multicast
                 send_community:
-                  standard: True
+                  standard: true
               - afi: ipv6
                 safi: unicast
 
@@ -106,7 +106,7 @@ replaced:
               - afi: ipv4
                 safi: multicast
                 send_community:
-                  standard: True
+                  standard: true
               - afi: ipv6
                 safi: unicast
 
@@ -140,9 +140,9 @@ overridden:
             address_family:
               - afi: ipv4
                 safi: unicast
-                suppress_inactive: True
+                suppress_inactive: true
                 next_hop_self:
-                  set: True
+                  set: true
 
 deleted:
   commands:
@@ -181,7 +181,7 @@ deleted:
               - afi: ipv4
                 safi: multicast
                 send_community:
-                  standard: True
+                  standard: true
 
 deleted_all:
   commands:

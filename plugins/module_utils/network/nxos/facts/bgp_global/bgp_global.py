@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -14,24 +15,21 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_global.bgp_global import (
+    Bgp_globalArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_global import (
     Bgp_globalTemplate,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_global.bgp_global import (
-    Bgp_globalArgs,
 )
 
 
 class Bgp_globalFacts(object):
     """The nxos bgp_global facts class"""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = Bgp_globalArgs.argument_spec
 
@@ -59,9 +57,7 @@ class Bgp_globalFacts(object):
         data = self._flatten_config(data)
 
         # parse native config using the Bgp_global template
-        bgp_global_parser = Bgp_globalTemplate(
-            lines=data.splitlines(), module=self._module
-        )
+        bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines(), module=self._module)
         obj = bgp_global_parser.parse()
 
         vrfs = obj.get("vrfs", {})
@@ -75,9 +71,7 @@ class Bgp_globalFacts(object):
 
         # transform vrfs into a list
         if vrfs:
-            obj["vrfs"] = sorted(
-                list(obj["vrfs"].values()), key=lambda k, sk="vrf": k[sk]
-            )
+            obj["vrfs"] = sorted(list(obj["vrfs"].values()), key=lambda k, sk="vrf": k[sk])
             for vrf in obj["vrfs"]:
                 self._post_parse(vrf)
 
@@ -87,9 +81,7 @@ class Bgp_globalFacts(object):
 
         ansible_facts["ansible_network_resources"].pop("bgp_global", None)
         params = utils.remove_empties(
-            bgp_global_parser.validate_config(
-                self.argument_spec, {"config": obj}, redact=True
-            )
+            bgp_global_parser.validate_config(self.argument_spec, {"config": obj}, redact=True),
         )
 
         facts["bgp_global"] = params.get("config", {})

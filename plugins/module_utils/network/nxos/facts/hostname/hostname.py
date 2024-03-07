@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -14,17 +15,13 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from copy import deepcopy
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.hostname.hostname import (
+    HostnameArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.hostname import (
     HostnameTemplate,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.hostname.hostname import (
-    HostnameArgs,
 )
 
 
@@ -58,17 +55,13 @@ class HostnameFacts(object):
             data = self.get_config(connection)
 
         # parse native config using the Hostname template
-        hostname_parser = HostnameTemplate(
-            lines=data.splitlines(), module=self._module
-        )
+        hostname_parser = HostnameTemplate(lines=data.splitlines(), module=self._module)
         objs = hostname_parser.parse()
 
         ansible_facts["ansible_network_resources"].pop("hostname", None)
 
         params = utils.remove_empties(
-            hostname_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+            hostname_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["hostname"] = params.get("config", {})

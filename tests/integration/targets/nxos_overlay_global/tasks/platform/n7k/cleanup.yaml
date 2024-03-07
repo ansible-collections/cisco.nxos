@@ -1,6 +1,6 @@
 ---
-- name: Unconfigure vdc setting limit-resource module-type f3
-  ignore_errors: true
+- name: Unconfigure VDC setting limit-resource module-type f3
+  ignore_errors: true # noqa ignore-errors
   cisco.nxos.nxos_config:
     commands:
       - terminal dont-ask ; vdc {{ vdcid }} ;  no limit-resource module-type f3
@@ -10,8 +10,8 @@
   ansible.builtin.pause:
     seconds: 45
 
-- name: Configure vdc setting allocate interface unallocated-interfaces
-  ignore_errors: true
+- name: Configure VDC setting allocate interface unallocated-interfaces
+  ignore_errors: true # noqa ignore-errors
   cisco.nxos.nxos_config:
     commands:
       - terminal dont-ask ; vdc {{ vdcid }} ; allocate interface unallocated-interfaces

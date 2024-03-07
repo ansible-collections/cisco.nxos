@@ -39,7 +39,7 @@
           - "!min"
         gather_network_resources: l3_interfaces
 
-    - name: Store reserved interface ip config
+    - name: Store reserved interface IP configuration
       ansible.builtin.set_fact:
         mgmt: "{{ ansible_facts.network_resources.l3_interfaces|selectattr('name', 'equalto', rsvd_intf)|list }}"
         overriden_config:

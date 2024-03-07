@@ -17,26 +17,27 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_banner
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, set_module_args
 
 
 class TestNxosBannerModule(TestNxosModule):
-
     module = nxos_banner
 
     def setUp(self):
         super(TestNxosBannerModule, self).setUp()
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_banner.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_banner.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_banner.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_banner.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
@@ -97,5 +98,19 @@ class TestNxosBannerModule(TestNxosModule):
     def test_nxos_banner_with_preserved_spaces(self):
         set_module_args(dict(banner="motd", text="  foo \n"))
         commands = ["banner motd @\n  foo \n\n@"]
+        self.run_commands.return_value = commands
+        self.execute_module(changed=True, commands=commands)
+
+    def test_nxos_banner_multiline_delimiter(self):
+        set_module_args(
+            dict(
+                banner="exec",
+                text="this is my exec banner\nthat contains my email address email@address.com \nand it's a multiline string\n",
+                multiline_delimiter="*",
+            ),
+        )
+        commands = [
+            "banner exec *\nthis is my exec banner\nthat contains my email address email@address.com \nand it's a multiline string\n\n*",
+        ]
         self.run_commands.return_value = commands
         self.execute_module(changed=True, commands=commands)

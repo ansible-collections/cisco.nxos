@@ -18,23 +18,21 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-import re
 import json
+import re
 
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
-from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import (
-    TerminalBase,
-)
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
 
 
 class TerminalModule(TerminalBase):
-
     terminal_stdout_re = [
         re.compile(
-            rb"[\r\n](?!\s*<)?(\x1b\S+)*[a-zA-Z_0-9]{1}[a-zA-Z0-9-_.]*[>|#](?:\s*)(\x1b\S+)*$"
+            rb"[\r\n](?!\s*<)?(\x1b\S+)*[a-zA-Z_0-9]{1}[a-zA-Z0-9-_.]*[>|#](?:\s*)(\x1b\S+)*$",
         ),
         re.compile(rb"[\r\n]?[a-zA-Z0-9]{1}[a-zA-Z0-9-_.]*\(.+\)#(?:\s*)$"),
     ]
@@ -58,21 +56,20 @@ class TerminalModule(TerminalBase):
             rb"[B|b]aud rate of console should be.* (\d*) to increase [a-z]* level",
             re.I,
         ),
-        re.compile(
-            rb"cannot apply non-existing acl policy to interface", re.I
-        ),
+        re.compile(rb"cannot apply non-existing acl policy to interface", re.I),
         re.compile(rb"Duplicate sequence number", re.I),
         re.compile(
             rb"Cannot apply ACL to an interface that is a port-channel member",
             re.I,
         ),
         re.compile(rb"No corresponding (.+) configured", re.I),
+        re.compile(rb"(.+)please specify sequence number", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.*\((?!maint-mode).*\)#$")
 
     def on_become(self, passwd=None):
-        if self._get_prompt().strip().endswith(b"enable#"):
+        if self._get_prompt().strip().endswith(b"#"):
             return
 
         out = self._exec_cli_command("show privilege")
@@ -90,27 +87,22 @@ class TerminalModule(TerminalBase):
 
         cmd = {"command": "enable"}
         if passwd:
-            cmd["prompt"] = to_text(
-                r"(?i)[\r\n]?Password: $", errors="surrogate_or_strict"
-            )
+            cmd["prompt"] = to_text(r"(?i)[\r\n]?Password: $", errors="surrogate_or_strict")
             cmd["answer"] = passwd
             cmd["prompt_retry_check"] = True
 
         try:
-            self._exec_cli_command(
-                to_bytes(json.dumps(cmd), errors="surrogate_or_strict")
-            )
+            self._exec_cli_command(to_bytes(json.dumps(cmd), errors="surrogate_or_strict"))
             prompt = self._get_prompt()
             if prompt is None or not prompt.strip().endswith(b"enable#"):
                 raise AnsibleConnectionFailure(
-                    "failed to elevate privilege to enable mode still at prompt [%s]"
-                    % prompt
+                    "failed to elevate privilege to enable mode still at prompt [%s]" % prompt,
                 )
         except AnsibleConnectionFailure as e:
             prompt = self._get_prompt()
             raise AnsibleConnectionFailure(
                 "unable to elevate privilege to enable mode, at prompt [%s] with error: %s"
-                % (prompt, e.message)
+                % (prompt, e.message),
             )
 
     def on_unbecome(self):

@@ -38,7 +38,7 @@
         that:
           - result.changed == true
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id001
 
@@ -79,7 +79,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id005
 
@@ -102,7 +102,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id006
 
@@ -115,7 +115,7 @@
 
     - ansible.builtin.assert: *id002
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_snapshot: *id007
 

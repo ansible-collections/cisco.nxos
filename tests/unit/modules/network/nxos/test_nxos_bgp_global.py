@@ -19,41 +19,38 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
-from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_global
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_global
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
+from .nxos_module import TestNxosModule, set_module_args
+
 
 ignore_provider_arg = True
 
 
 class TestNxosBgpGlobalModule(TestNxosModule):
-
     module = nxos_bgp_global
 
     def setUp(self):
         super(TestNxosBgpGlobalModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_global.bgp_global.Bgp_globalFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_global.bgp_global.Bgp_globalFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_cfg_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bgp_global.bgp_global.Bgp_global._get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bgp_global.bgp_global.Bgp_global._get_config",
         )
         self.cfg_get_config = self.mock_cfg_get_config.start()
 
@@ -90,9 +87,12 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                         dict(
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
-                            password=dict(
-                                encryption=7, key="12090404011C03162E"
-                            ),
+                            password=dict(encryption=7, key="12090404011C03162E"),
+                        ),
+                        dict(
+                            neighbor_address="2001:4000:4000:fff1::/64",
+                            remote_as_route_map="rmap1",
+                            description="TEST_NBR",
                         ),
                     ],
                     vrfs=[
@@ -111,7 +111,12 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         encryption=3,
                                         key="13D4D3549493D2877B1DC116EE27A6BE",
                                     ),
-                                )
+                                ),
+                                dict(
+                                    neighbor_address="2001:4000:5000:fff1::/64",
+                                    remote_as_route_map="rmap2",
+                                    description="TEST_NBR_2",
+                                ),
                             ],
                         ),
                         dict(
@@ -139,6 +144,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "neighbor 198.51.100.21",
             "remote-as 65537",
             "password 7 12090404011C03162E",
+            "neighbor 2001:4000:4000:fff1::/64 remote-as route-map rmap1",
+            "description TEST_NBR",
             "vrf site-1",
             "local-as 200",
             "log-neighbor-changes",
@@ -148,6 +155,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "description site-1-nbr-1",
             "password 3 13D4D3549493D2877B1DC116EE27A6BE",
             "timers 5 15",
+            "neighbor 2001:4000:5000:fff1::/64 remote-as route-map rmap2",
+            "description TEST_NBR_2",
             "vrf site-2",
             "local-as 300",
             "log-neighbor-changes",
@@ -171,7 +180,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         tx_interval=300,
                                         min_rx_interval=258,
                                         multiplier=12,
-                                    )
+                                    ),
                                 ),
                             ),
                         ),
@@ -185,7 +194,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         min_rx_interval=260,
                                         multiplier=15,
                                     ),
-                                )
+                                ),
                             ),
                         ),
                         dict(
@@ -240,7 +249,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 bfd multihop
               neighbor 198.51.100.24
                 bfd
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -259,7 +268,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         tx_interval=300,
                                         min_rx_interval=258,
                                         multiplier=12,
-                                    )
+                                    ),
                                 ),
                             ),
                         ),
@@ -273,7 +282,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         min_rx_interval=260,
                                         multiplier=15,
                                     ),
-                                )
+                                ),
                             ),
                         ),
                         dict(
@@ -313,6 +322,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
               neighbor 198.51.100.21
                 remote-as 65537
                 password 7 12090404011C03162E
+              neighbor 2001:4000:4000:fff1::/64 remote-as route-map rmap1
+                description TEST_NBR
               vrf site-1
                 local-as 200
                 log-neighbor-changes
@@ -325,7 +336,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 local-as 300
                 log-neighbor-changes
                 neighbor-down fib-accelerate
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
 
@@ -347,9 +358,12 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                         dict(
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
-                            password=dict(
-                                encryption=7, key="12090404011C03162E"
-                            ),
+                            password=dict(encryption=7, key="12090404011C03162E"),
+                        ),
+                        dict(
+                            neighbor_address="2001:4000:4000:fff1::/64",
+                            remote_as_route_map="rmap1",
+                            description="TEST_NBR",
                         ),
                     ],
                     vrfs=[
@@ -367,7 +381,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         encryption=3,
                                         key="13D4D3549493D2877B1DC116EE27A6BE",
                                     ),
-                                )
+                                ),
                             ],
                         ),
                         dict(
@@ -413,7 +427,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 local-as 300
                 log-neighbor-changes
                 neighbor-down fib-accelerate
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -432,7 +446,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             remote_as="65537",
                             description="NBR-1",
                             low_memory=dict(exempt=True),
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -449,12 +463,99 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         encryption=3,
                                         key="13D4D3549493D2877B1DC116EE27A6BE",
                                     ),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "router bgp 65536",
+            "router-id 198.51.100.212",
+            "neighbor 198.51.100.20",
+            "no shutdown",
+            "no neighbor 198.51.100.21",
+            "vrf site-1",
+            "neighbor 192.0.2.10",
+            "affinity-group 190",
+            "no vrf site-2",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_global_overridden(self):
+        run_cfg = dedent(
+            """\
+            router bgp 65536
+              log-neighbor-changes
+              maxas-limit 20
+              router-id 198.51.100.2
+              neighbor 198.51.100.20
+                remote-as 65537
+                affinity-group 161
+                description NBR-1
+                shutdown
+                low-memory exempt
+              neighbor 198.51.100.21
+                remote-as 65537
+                password 7 12090404011C03162E
+              vrf site-1
+                local-as 200
+                log-neighbor-changes
+                neighbor 192.0.2.10
+                  affinity-group 170
+                  remote-as 65538
+                  description site-1-nbr-1
+                  password 3 13D4D3549493D2877B1DC116EE27A6BE
+              vrf site-2
+                local-as 300
+                log-neighbor-changes
+                neighbor-down fib-accelerate
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        self.cfg_get_config.return_value = run_cfg
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65536",
+                    router_id="198.51.100.212",
+                    log_neighbor_changes=True,
+                    maxas_limit=20,
+                    neighbors=[
+                        dict(
+                            neighbor_address="198.51.100.20",
+                            neighbor_affinity_group=dict(group_id=161),
+                            remote_as="65537",
+                            description="NBR-1",
+                            low_memory=dict(exempt=True),
+                        ),
+                    ],
+                    vrfs=[
+                        dict(
+                            vrf="site-1",
+                            local_as="200",
+                            log_neighbor_changes=True,
+                            neighbors=[
+                                dict(
+                                    neighbor_address="192.0.2.10",
+                                    neighbor_affinity_group=dict(group_id=190),
+                                    remote_as="65538",
+                                    description="site-1-nbr-1",
+                                    password=dict(
+                                        encryption=3,
+                                        key="13D4D3549493D2877B1DC116EE27A6BE",
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="overridden",
             ),
             ignore_provider_arg,
         )
@@ -492,7 +593,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                   remote-as 65538
                   description site-1-nbr-1
                   password 3 13D4D3549493D2877B1DC116EE27A6BE
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -511,7 +612,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             remote_as="65537",
                             description="NBR-1",
                             low_memory=dict(exempt=True),
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -528,9 +629,9 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         encryption=3,
                                         key="13D4D3549493D2877B1DC116EE27A6BE",
                                     ),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -568,7 +669,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 local-as 300
                 log-neighbor-changes
                 neighbor-down fib-accelerate
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -587,7 +688,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             remote_as="65537",
                             description="NBR-1",
                             low_memory=dict(exempt=True),
-                        )
+                        ),
                     ],
                     vrfs=[
                         dict(
@@ -604,9 +705,9 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                         encryption=3,
                                         key="13D4D3549493D2877B1DC116EE27A6BE",
                                     ),
-                                )
+                                ),
                             ],
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -643,7 +744,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 local-as 300
                 log-neighbor-changes
                 neighbor-down fib-accelerate
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -666,9 +767,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                         dict(
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
-                            password=dict(
-                                encryption=7, key="12090404011C03162E"
-                            ),
+                            password=dict(encryption=7, key="12090404011C03162E"),
                         ),
                     ],
                     vrfs=[
@@ -677,7 +776,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             local_as="300",
                             log_neighbor_changes=True,
                             neighbor_down=dict(fib_accelerate=True),
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -714,7 +813,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 local-as 300
                 log-neighbor-changes
                 neighbor-down fib-accelerate
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -737,9 +836,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                         dict(
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
-                            password=dict(
-                                encryption=7, key="12090404011C03162E"
-                            ),
+                            password=dict(encryption=7, key="12090404011C03162E"),
                         ),
                     ],
                     vrfs=[
@@ -789,7 +886,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 local-as 300
                 log-neighbor-changes
                 neighbor-down fib-accelerate
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -812,7 +909,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
     def test_nxos_bgp_global_deleted_idempotent_1(self):
         run_cfg = dedent(
             """\
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -849,7 +946,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 local-as 300
                 log-neighbor-changes
                 neighbor-down fib-accelerate
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -890,7 +987,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 local-as 300
                 log-neighbor-changes
                 neighbor-down fib-accelerate
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -925,7 +1022,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                 local-as 300
                 log-neighbor-changes
                 neighbor-down fib-accelerate
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -939,7 +1036,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
     def test_nxos_bgp_global_purged_idempotent(self):
         run_cfg = dedent(
             """\
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -953,7 +1050,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         run_cfg = dedent(
             """\
             router bgp 65001
-            """
+            """,
         )
         self.get_config.return_value = run_cfg
         self.cfg_get_config.return_value = run_cfg
@@ -967,7 +1064,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             neighbor_address="10.239.0.13",
                             peer_type="fabric-external",
                             remote_as="65002",
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -983,3 +1080,36 @@ class TestNxosBgpGlobalModule(TestNxosModule):
 
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_bgp_global_neighbor_3K(self):
+        run_cfg = dedent(
+            """\
+            router bgp 65535
+              neighbor 192.168.20.2 remote-as 56789
+                address-family ipv4 unicast
+                  soft-reconfiguration inbound always
+            """,
+        )
+        self.get_config.return_value = ""
+        self.cfg_get_config.return_value = ""
+
+        set_module_args(
+            dict(
+                running_config=run_cfg,
+                state="parsed",
+            ),
+            ignore_provider_arg,
+        )
+
+        parsed = {
+            "as_number": "65535",
+            "neighbors": [
+                {
+                    "neighbor_address": "192.168.20.2",
+                    "remote_as": "56789",
+                },
+            ],
+        }
+
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed)

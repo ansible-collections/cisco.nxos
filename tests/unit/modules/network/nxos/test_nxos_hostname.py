@@ -18,35 +18,34 @@
 # Make coding more python3-ish
 
 from __future__ import absolute_import, division, print_function
-from typing import Sequence
+
 
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_hostname
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
+
 
 ignore_provider_arg = True
 
 
 class TestNxosHostnameModule(TestNxosModule):
-
     module = nxos_hostname
 
     def setUp(self):
         super(TestNxosHostnameModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname.HostnameFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname.HostnameFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -59,7 +58,7 @@ class TestNxosHostnameModule(TestNxosModule):
         # test merged for linear attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv-9k"), state="merged"),
@@ -74,7 +73,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv-9k"), state="merged"),
@@ -88,7 +87,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv"), state="merged"),
@@ -103,7 +102,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv"), state="replaced"),
@@ -118,7 +117,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(hostname="NXOSv"), state="overridden"),
@@ -132,7 +131,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = ["no hostname NXOSv-9k"]
@@ -153,11 +152,9 @@ class TestNxosHostnameModule(TestNxosModule):
         cfg = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
-        set_module_args(
-            dict(running_config=cfg, state="parsed"), ignore_provider_arg
-        )
+        set_module_args(dict(running_config=cfg, state="parsed"), ignore_provider_arg)
         parsed = {"hostname": "NXOSv-9k"}
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
@@ -167,7 +164,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             hostname NXOSv-9k
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = {"hostname": "NXOSv-9k"}

@@ -1,19 +1,19 @@
 ---
 - name: Enable feature privilege
   connection: ansible.netcommon.network_cli
-  ignore_errors: true
+  ignore_errors: true # noqa ignore-errors
   cisco.nxos.nxos_config:
     lines:
       - feature privilege
 
-- name: Enable feature nxapi
+- name: Enable feature NX-API
   connection: ansible.netcommon.network_cli
   cisco.nxos.nxos_nxapi:
     state: present
 
 - name: Enable lldp
   connection: ansible.netcommon.network_cli
-  ignore_errors: true
+  ignore_errors: true # noqa ignore-errors
   cisco.nxos.nxos_config:
     lines:
       - feature lldp
@@ -75,12 +75,12 @@
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N3K-F
-  when: ( platform is match("N3K")) and ( fretta is search("true"))
+  when: (platform is match("N3K")) and (fretta is search("true"))
 
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N9K-F
-  when: ( platform is match("N9K")) and ( fretta is search("true"))
+  when: (platform is match("N9K")) and (fretta is search("true"))
 
 - name: Set a fact for 'titanium'
   ansible.builtin.set_fact:
@@ -94,17 +94,17 @@
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N35
-  when: ( chassis_type is search("C35"))
+  when: (chassis_type is search("C35"))
 
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N35NG
-  when: ( chassis_type is search("C35")) and image_version is search("7.0\(3\)I7")
+  when: (chassis_type is search("C35")) and image_version is search("7.0\(3\)I7")
 
 - name: Set a fact for 'platform'
   ansible.builtin.set_fact:
     platform: N3L
-  when: ( chassis_type is search("C3048"))
+  when: (chassis_type is search("C3048"))
 
 - name: Set a fact for 'imagetag'
   ansible.builtin.set_fact:
@@ -148,13 +148,16 @@
     imagemr: "{{ image_version[11:12] }}"
   when: image_version is search("\d\.\d\(\d\)\S\S\S\S\(\d\)")
 
-- ansible.builtin.debug:
+- name: Debug output the image version
+  ansible.builtin.debug:
     msg: IMAGE VERSION {{ image_version }}
 
-- ansible.builtin.debug:
+- name: Debug output the image tag
+  ansible.builtin.debug:
     msg: IMAGE TAG {{ imagetag }}
 
-- ansible.builtin.debug:
+- name: Debug output the image maintenance release
+  ansible.builtin.debug:
     msg: IMAGE MR {{ imagemr }}
 
 - name: Set a fact for 'ipv6_supported'

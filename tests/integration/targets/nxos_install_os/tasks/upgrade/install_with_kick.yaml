@@ -1,5 +1,5 @@
 ---
-- name: Install os image {{ si }}
+- name: Install OS image {{ si }}
   check_mode: "{{ checkmode }}"
   register: result
   when: not force
@@ -8,7 +8,7 @@
     kickstart_image_file: "{{ ki }}"
     issu: "{{ issu }}"
 
-- name: Set os image {{ si }} boot pointers
+- name: Set boot pointers for OS image {{ si }}
   when: force
   cisco.nxos.nxos_config:
     lines:
@@ -19,13 +19,14 @@
       - copy run start
     match: line
 
-- name: Boot image {{ si }} using reload
-  ignore_errors: true
+- name: "Boot image using reload {{ si }}"
+  ignore_errors: true # noqa ignore-errors
   when: force
   cisco.nxos.nxos_command:
     commands: terminal dont-ask ; reload
 
-- ansible.builtin.debug:
+- name: Debug output the result from the image installation
+  ansible.builtin.debug:
     msg: " {{ result['install_state'] }}"
   when: not force
 
@@ -38,10 +39,12 @@
     host: "{{ inventory_hostname }}"
   when: result.changed and not checkmode
 
-- ansible.builtin.debug:
+- name: Debug output a warning about the 5 minute wait
+  ansible.builtin.debug:
     msg: Wait 5 mins to allow system to stabilize
   when: result.changed and not checkmode
 
-- ansible.builtin.pause:
+- name: Wait for device to come back up with new image
+  ansible.builtin.pause:
     seconds: 300
   when: result.changed and not checkmode

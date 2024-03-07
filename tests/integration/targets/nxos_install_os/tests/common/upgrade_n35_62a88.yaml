@@ -42,4 +42,4 @@
     ki: n3500-uk9-kickstart.6.0.2.A8.8.bin
 
 - name: Upgrade n3500 device to a8_8 release image
-  ansible.builtin.include: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml
+  ansible.builtin.include_tasks: targets/nxos_install_os/tasks/upgrade/main_os_install.yaml

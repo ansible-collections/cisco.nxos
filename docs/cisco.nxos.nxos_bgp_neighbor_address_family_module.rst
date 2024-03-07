@@ -859,6 +859,28 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>rewrite_rt_asn</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Auto generate RTs for EBGP neighbor.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -2080,6 +2102,29 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>rewrite_rt_asn</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Auto generate RTs for EBGP neighbor.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_map</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -2587,9 +2632,9 @@ Examples
                   address_family:
                     - afi: ipv4
                       safi: unicast
-                      suppress_inactive: True
+                      suppress_inactive: true
                       next_hop_self:
-                        set: True
+                        set: true
                 - neighbor_address: 203.0.113.2
                   address_family:
                     - afi: ipv6
@@ -2597,10 +2642,10 @@ Examples
                     - afi: ipv4
                       safi: multicast
                       send_community:
-                        set: True
+                        set: true
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     #  before: {}
     #
     #  commands:
@@ -2663,12 +2708,12 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
 
     # After state:
-    # -------------
+    # ------------
     # Nexus9000v# show running-config | section "^router bgp"
     # router bgp 65536
     #   neighbor 192.0.2.32
@@ -2752,11 +2797,11 @@ Examples
                     - afi: ipv4
                       safi: multicast
                       send_community:
-                        set: True
+                        set: true
         state: replaced
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     #  before:
     #    as_number: "65536"
     #    neighbors:
@@ -2795,7 +2840,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
     #
@@ -2842,12 +2887,12 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
 
     # After state:
-    # -------------
+    # ------------
     # Nexus9000v# show running-config | section "^router bgp"
     # router bgp 65536
     #   neighbor 192.0.2.32
@@ -2909,13 +2954,13 @@ Examples
                   address_family:
                     - afi: ipv4
                       safi: unicast
-                      suppress_inactive: True
+                      suppress_inactive: true
                       next_hop_self:
-                        set: True
+                        set: true
         state: overridden
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     #  before:
     #    as_number: "65536"
     #    neighbors:
@@ -2954,7 +2999,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
     #
@@ -2988,12 +3033,12 @@ Examples
     #            address_family:
     #              - afi: ipv4
     #                safi: unicast
-    #                suppress_inactive: True
+    #                suppress_inactive: true
     #                next_hop_self:
-    #                  set: True
+    #                  set: true
 
     # After state:
-    # -------------
+    # ------------
     # Nexus9000v# show running-config | section "^router bgp"
     # router bgp 65536
     #   neighbor 192.0.2.32
@@ -3049,8 +3094,8 @@ Examples
                       safi: unicast
         state: deleted
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     #  before:
     #    as_number: "65536"
     #    neighbors:
@@ -3089,7 +3134,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
     #
@@ -3130,10 +3175,10 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #
     # After state:
-    # -------------
+    # ------------
     # Nexus9000v# show running-config | section "^router bgp"
     # router bgp 65536
     #   neighbor 192.0.2.32
@@ -3182,8 +3227,8 @@ Examples
       cisco.nxos.nxos_bgp_neighbor_address_family:
         state: deleted
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     #  before:
     #    as_number: "65536"
     #    neighbors:
@@ -3222,7 +3267,7 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
     #
@@ -3244,7 +3289,7 @@ Examples
     #    as_number: "65536"
     #
     # After state:
-    # -------------
+    # ------------
     # Nexus9000v# show running-config | section "^router bgp"
     # router bgp 65536
     #   neighbor 192.0.2.32
@@ -3288,9 +3333,9 @@ Examples
                   address_family:
                     - afi: ipv4
                       safi: unicast
-                      suppress_inactive: True
+                      suppress_inactive: true
                       next_hop_self:
-                        set: True
+                        set: true
                 - neighbor_address: 203.0.113.2
                   address_family:
                     - afi: ipv6
@@ -3298,11 +3343,11 @@ Examples
                     - afi: ipv4
                       safi: multicast
                       send_community:
-                        set: True
+                        set: true
         state: rendered
 
-    # Task Output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     #  rendered:
     #    - router bgp 65536
     #    - neighbor 192.0.2.32
@@ -3356,8 +3401,8 @@ Examples
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     #  parsed:
     #    as_number: "65536"
     #    neighbors:
@@ -3396,11 +3441,128 @@ Examples
     #              - afi: ipv4
     #                safi: multicast
     #                send_community:
-    #                  set: True
+    #                  set: true
     #              - afi: ipv6
     #                safi: unicast
 
 
+
+Return Values
+-------------
+Common return values are documented `here <https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html#common-return-values>`_, the following are the fields unique to this module:
+
+.. raw:: html
+
+    <table border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="1">Key</th>
+            <th>Returned</th>
+            <th width="100%">Description</th>
+        </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>after</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when changed</td>
+                <td>
+                            <div>The resulting configuration after module execution.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>before</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>
+                            <div>The configuration prior to the module execution.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>commands</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>
+                            <div>The set of commands pushed to the remote device.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65536&#x27;, &#x27;neighbor 192.0.2.32&#x27;, &#x27;address-family ipv4 unicast&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65536&#x27;, &#x27;neighbor 192.0.2.32&#x27;, &#x27;address-family ipv4 unicast&#x27;]</div>
+                </td>
+            </tr>
+    </table>
+    <br/><br/>
 
 
 Status

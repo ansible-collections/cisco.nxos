@@ -19,32 +19,33 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_pim_interface
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosIPInterfaceModule(TestNxosModule):
-
     module = nxos_pim_interface
 
     def setUp(self):
         super(TestNxosIPInterfaceModule, self).setUp()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
@@ -62,14 +63,9 @@ class TestNxosIPInterfaceModule(TestNxosModule):
             output = list()
 
             for command in commands:
-                if type(command) == dict:
+                if isinstance(command, dict):
                     command = command["command"]
-                filename = (
-                    str(command)
-                    .split(" | ", 1)[0]
-                    .replace(" ", "_")
-                    .replace("/", "_")
-                )
+                filename = str(command).split(" | ", 1)[0].replace(" ", "_").replace("/", "_")
                 output.append(load_fixture(module_name, filename))
             return output
 
@@ -85,7 +81,7 @@ class TestNxosIPInterfaceModule(TestNxosModule):
                 hello_interval=40,
                 sparse=True,
                 border=False,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -105,7 +101,7 @@ class TestNxosIPInterfaceModule(TestNxosModule):
                 jp_policy_out="JPOUT",
                 jp_type_in="routemap",
                 jp_type_out="routemap",
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -126,29 +122,28 @@ class TestNxosIPInterfaceModule(TestNxosModule):
 
 
 class TestNxosPimInterfaceBfdModule(TestNxosModule):
-
     module = nxos_pim_interface
 
     def setUp(self):
         super(TestNxosPimInterfaceBfdModule, self).setUp()
 
         self.mock_get_interface_mode = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_interface_mode"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_interface_mode",
         )
         self.get_interface_mode = self.mock_get_interface_mode.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_pim_interface.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
@@ -166,9 +161,7 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
         # default (None) -> enable
         self.get_config.return_value = None
         set_module_args(dict(interface="eth2/1", bfd="enable"))
-        self.execute_module(
-            changed=True, commands=["interface eth2/1", "ip pim bfd-instance"]
-        )
+        self.execute_module(changed=True, commands=["interface eth2/1", "ip pim bfd-instance"])
 
         # default (None) -> disable
         set_module_args(dict(interface="eth2/1", bfd="disable"))
@@ -275,7 +268,7 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
                 interface="Ethernet9/2",
                 hello_interval=1,
                 hello_interval_ms=True,
-            )
+            ),
         )
         self.execute_module(
             changed=True,
@@ -288,7 +281,7 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
                 interface="Ethernet9/2",
                 hello_interval=1000,
                 hello_interval_ms=True,
-            )
+            ),
         )
         self.execute_module(changed=False, commands=[])
 

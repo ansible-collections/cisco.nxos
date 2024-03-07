@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -113,7 +114,6 @@ EXAMPLES = """
     tacacs_port: 89
     host_timeout: 10
     address: 5.6.7.8
-
 """
 
 RETURN = """
@@ -148,15 +148,13 @@ changed:
 """
 import re
 
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_capabilities,
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_capabilities,
-    nxos_argument_spec,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 def execute_show_command(command, module):
@@ -199,24 +197,19 @@ def get_aaa_host_info(module, server_type, address):
                 match = re.search(pattern, body)
                 aaa_host_info["key"] = match.group(1)
                 if aaa_host_info["key"]:
-                    aaa_host_info["key"] = aaa_host_info["key"].replace(
-                        '"', ""
-                    )
+                    aaa_host_info["key"] = aaa_host_info["key"].replace('"', "")
                     aaa_host_info["encrypt_type"] = "7"
                 aaa_host_info["auth_port"] = match.group(2)
                 aaa_host_info["acct_port"] = match.group(3)
                 aaa_host_info["host_timeout"] = match.group(4)
             elif "tacacs" in body:
                 pattern = (
-                    r"\S+ host \S+(?:\s+key 7\s+(\S+))?(?:\s+port (\d+))?"
-                    r"(?:\s+timeout (\d+))?"
+                    r"\S+ host \S+(?:\s+key 7\s+(\S+))?(?:\s+port (\d+))?(?:\s+timeout (\d+))?"
                 )
                 match = re.search(pattern, body)
                 aaa_host_info["key"] = match.group(1)
                 if aaa_host_info["key"]:
-                    aaa_host_info["key"] = aaa_host_info["key"].replace(
-                        '"', ""
-                    )
+                    aaa_host_info["key"] = aaa_host_info["key"].replace('"', "")
                     aaa_host_info["encrypt_type"] = "7"
                 aaa_host_info["tacacs_port"] = match.group(2)
                 aaa_host_info["host_timeout"] = match.group(3)
@@ -286,11 +279,7 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 
@@ -322,14 +311,11 @@ def main():
         module.fail_json(msg="encrypt_type must be used with key")
 
     if tacacs_port and server_type != "tacacs":
-        module.fail_json(
-            msg="tacacs_port can only be used with server_type=tacacs"
-        )
+        module.fail_json(msg="tacacs_port can only be used with server_type=tacacs")
 
     if (auth_port or acct_port) and server_type != "radius":
         module.fail_json(
-            msg="auth_port and acct_port can only be used"
-            "when server_type=radius"
+            msg="auth_port and acct_port can only be used" "when server_type=radius",
         )
 
     existing = get_aaa_host_info(module, server_type, address)
@@ -356,7 +342,8 @@ def main():
         intersect = dict(set(proposed.items()).intersection(existing.items()))
         if intersect.get("address") and intersect.get("server_type"):
             command = "no {0}-server host {1}".format(
-                intersect.get("server_type"), intersect.get("address")
+                intersect.get("server_type"),
+                intersect.get("address"),
             )
             commands.append(command)
 

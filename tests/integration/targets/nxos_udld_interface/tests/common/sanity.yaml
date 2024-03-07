@@ -30,7 +30,7 @@
     intname: "{{ nxos_int1 }}"
 
 - block:
-    - name: Enable feature udld
+    - name: Enable 'feature udld'
       cisco.nxos.nxos_feature:
         feature: udld
         state: enabled
@@ -104,7 +104,7 @@
         - assert: *id004
       when: udld_enable
 
-    - name: Remove the config
+    - name: Remove the configuration
       cisco.nxos.nxos_udld_interface:
         interface: "{{ intname }}"
         mode: enabled

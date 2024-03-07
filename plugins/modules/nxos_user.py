@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -54,8 +55,12 @@ options:
       configured_password:
         description:
         - The password to be configured on the network device. The password needs to be
-          provided in cleartext and it will be encrypted on the device. Please note that
-          this option is not same as C(provider password).
+          provided in cleartext and it will be encrypted on the device.
+        type: str
+      hashed_password:
+        description:
+        - The hashed password to be configured on the network device. The password needs to
+          already be encrypted.
         type: str
       update_password:
         description:
@@ -99,8 +104,12 @@ options:
   configured_password:
     description:
     - The password to be configured on the network device. The password needs to be
-      provided in cleartext and it will be encrypted on the device. Please note that
-      this option is not same as C(provider password).
+      provided in cleartext and it will be encrypted on the device.
+    type: str
+  hashed_password:
+    description:
+    - The hashed password to be configured on the network device. The password needs to
+      already be encrypted.
     type: str
   update_password:
     description:
@@ -133,7 +142,7 @@ options:
       absolute.  It will remove any previously configured usernames on the device
       with the exception of the `admin` user which cannot be deleted per nxos constraints.
     type: bool
-    default: no
+    default: false
   state:
     description:
     - The C(state) argument configures the state of the username definition as it
@@ -156,13 +165,13 @@ EXAMPLES = """
 
 - name: remove all users except admin
   cisco.nxos.nxos_user:
-    purge: yes
+    purge: true
 
 - name: set multiple users role
   cisco.nxos.nxos_user:
     aggregate:
-    - name: netop
-    - name: netend
+      - name: netop
+      - name: netend
     role: network-operator
   state: present
 """
@@ -181,20 +190,19 @@ import re
 from copy import deepcopy
 from functools import partial
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    run_commands,
-    load_config,
-    get_config,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
     to_list,
 )
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_config,
+    load_config,
+    run_commands,
+)
+
 
 BUILTIN_ROLES = [
     "network-admin",
@@ -217,6 +225,7 @@ BUILTIN_ROLES = [
     "priv-2",
     "priv-1",
     "priv-0",
+    "dev-ops",
 ]
 
 
@@ -280,6 +289,10 @@ def map_obj_to_commands(updates, module):
             if update_password == "always" or not have:
                 add("password %s" % want["configured_password"])
 
+        if needs_update("hashed_password"):
+            if update_password == "always" or not have:
+                add("password 5 %s" % want["hashed_password"])
+
         if needs_update("sshkey"):
             add("sshkey %s" % want["sshkey"])
 
@@ -307,9 +320,7 @@ def parse_roles(data):
 
 
 def map_config_to_obj(module):
-    out = run_commands(
-        module, [{"command": "show user-account", "output": "json"}]
-    )
+    out = run_commands(module, [{"command": "show user-account", "output": "json"}])
     data = out[0]
 
     objects = list()
@@ -319,10 +330,11 @@ def map_config_to_obj(module):
             {
                 "name": item["usr_name"],
                 "configured_password": parse_password(item),
+                "hashed_password": parse_password(item),
                 "sshkey": item.get("sshkey_info"),
                 "roles": parse_roles(item),
                 "state": "present",
-            }
+            },
         )
     return objects
 
@@ -368,10 +380,11 @@ def map_params_to_obj(module):
         item.update(
             {
                 "configured_password": get_value("configured_password"),
+                "hashed_password": get_value("hashed_password"),
                 "sshkey": get_value("sshkey"),
                 "roles": get_value("roles"),
                 "state": get_value("state"),
-            }
+            },
         )
 
         for key, value in iteritems(item):
@@ -404,9 +417,8 @@ def main():
     element_spec = dict(
         name=dict(),
         configured_password=dict(no_log=True),
-        update_password=dict(
-            default="always", choices=["on_create", "always"]
-        ),
+        hashed_password=dict(no_log=True),
+        update_password=dict(default="always", choices=["on_create", "always"]),
         roles=dict(type="list", aliases=["role"], elements="str"),
         sshkey=dict(no_log=False),
         state=dict(default="present", choices=["present", "absent"]),
@@ -428,9 +440,8 @@ def main():
     )
 
     argument_spec.update(element_spec)
-    argument_spec.update(nxos_argument_spec)
 
-    mutually_exclusive = [("name", "aggregate")]
+    mutually_exclusive = [("name", "aggregate"), ("configured_password", "hashed_password")]
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -460,6 +471,11 @@ def main():
     if "no username admin" in commands:
         module.fail_json(msg="cannot delete the `admin` account")
 
+    # check if provided hashed password is infact a hash
+    if module.params["hashed_password"] is not None:
+        if not re.match(r"^\$5\$......\$.*$", module.params["hashed_password"]):
+            module.fail_json(msg="Provided hash is not valid")
+
     if commands:
         if not module.check_mode:
             responses = load_config(module, commands)
@@ -468,11 +484,7 @@ def main():
                     module.fail_json(msg=resp)
                 else:
                     result["warnings"].extend(
-                        [
-                            x[9:]
-                            for x in resp.splitlines()
-                            if x.startswith("WARNING: ")
-                        ]
+                        [x[9:] for x in resp.splitlines() if x.startswith("WARNING: ")],
                     )
 
         result["changed"] = True
