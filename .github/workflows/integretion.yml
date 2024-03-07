@@ -1,0 +1,19 @@
+name: Integration
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  integration:
+    uses: .github/workflows/integretion_utils.yml@gh_final
+    with:
+      network_os: cisco.nxos.nxos
+      pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
+
+    secrets:
+      cml_ssh_password: ${{ secrets.cml_ssh_password }}
+      virl_host: ${{ secrets.virl_host }}
+      virl_password: ${{ secrets.virl_password }}
