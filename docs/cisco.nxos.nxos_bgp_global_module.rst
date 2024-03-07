@@ -1892,6 +1892,23 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>remote_as_route_map</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Route-map to match prefix peer AS number.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>remove_private_as</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -4008,6 +4025,24 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>remote_as_route_map</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Route-map to match prefix peer AS number.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>remove_private_as</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -4544,6 +4579,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
+                                    <li>overridden</li>
                                     <li>deleted</li>
                                     <li>purged</li>
                                     <li>parsed</li>
@@ -4556,7 +4592,8 @@ Parameters
                         <div>State <em>purged</em> removes all the BGP configurations from the target device. Use caution with this state.</div>
                         <div>State <em>deleted</em> only removes BGP attributes that this modules manages and does not negate the BGP process completely. Thereby, preserving address-family related configurations under BGP context.</div>
                         <div>Running states <em>deleted</em> and <em>replaced</em> will result in an error if there are address-family configuration lines present under a neighbor, or a vrf context that is to be removed. Please use the <span class='module'>cisco.nxos.nxos_bgp_af</span> or <span class='module'>cisco.nxos.nxos_bgp_neighbor_af</span> modules for prior cleanup.</div>
-                        <div>States <em>merged</em> and <em>replaced</em> will result in a failure if BGP is already configured with a different ASN than what is provided in the task. In such cases, please use state <em>purged</em> to remove the existing BGP process and proceed further.</div>
+                        <div>States <code>merged</code> and <code>replaced</code> will result in a failure if BGP is already configured with a different ASN than what is provided in the task. In such cases, please use state <code>purged</code> to remove the existing BGP process and proceed further.</div>
+                        <div>States <code>replaced</code> and <code>overridden</code> have the same behaviour for this module.</div>
                         <div>Refer to examples for more details.</div>
                 </td>
             </tr>
@@ -4593,16 +4630,16 @@ Examples
           router_id: 192.168.1.1
           bestpath:
             as_path:
-              multipath_relax: True
-            compare_neighborid: True
-            cost_community_ignore: True
+              multipath_relax: true
+            compare_neighborid: true
+            cost_community_ignore: true
           confederation:
             identifier: 42
             peers:
               - 65020
               - 65030
               - 65040
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           maxas_limit: 20
           neighbors:
             - neighbor_address: 192.168.1.100
@@ -4612,19 +4649,19 @@ Examples
               remote_as: 65563
               description: NBR-1
               low_memory:
-                exempt: True
+                exempt: true
             - neighbor_address: 192.168.1.101
               remote_as: 65563
               password:
                 encryption: 7
                 key: 12090404011C03162E
           neighbor_down:
-            fib_accelerate: True
+            fib_accelerate: true
           vrfs:
             - vrf: site-1
               allocate_index: 5000
               local_as: 200
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 198.51.100.1
                   description: site-1-nbr-1
@@ -4637,7 +4674,7 @@ Examples
                   description: site-1-nbr-2
             - vrf: site-2
               local_as: 300
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 203.0.113.2
                   description: site-2-nbr-1
@@ -4646,10 +4683,10 @@ Examples
                     key: AF92F4C16A0A0EC5BDF56CF58BC030F6
                   remote_as: 65568
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     # before: {}
     #
     # commands:
@@ -4754,7 +4791,7 @@ Examples
 
 
     # After state:
-    # -------------
+    # ------------
     # Nexus9000v# show running-config | section "^router bgp"
     # router bgp 65563
     #   router-id 192.168.1.1
@@ -4845,8 +4882,8 @@ Examples
           as_number: 65563
           router_id: 192.168.1.1
           bestpath:
-            compare_neighborid: True
-            cost_community_ignore: True
+            compare_neighborid: true
+            cost_community_ignore: true
           confederation:
             identifier: 42
             peers:
@@ -4862,24 +4899,24 @@ Examples
               remote_as: 65563
               description: NBR-1
               low_memory:
-                exempt: True
+                exempt: true
           neighbor_down:
-            fib_accelerate: True
+            fib_accelerate: true
           vrfs:
             - vrf: site-2
               local_as: 300
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 203.0.113.2
                   password:
                     encryption: 7
                     key: 12090404011C03162E
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
         state: replaced
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
     #  before:
     #    as_number: '65563'
     #    bestpath:
@@ -4992,7 +5029,7 @@ Examples
     #      vrf: site-2
     #
     # After state:
-    # -------------
+    # ------------
     # Nexus9000v# show running-config | section "^router bgp"
     # router bgp 65563
     #   router-id 192.168.1.1
@@ -5073,8 +5110,8 @@ Examples
       cisco.nxos.nxos_bgp_global:
         state: deleted
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
 
     # before:
     #    as_number: '65563'
@@ -5156,7 +5193,7 @@ Examples
     #    as_number: '65563'
     #
     # After state:
-    # -------------
+    # ------------
     # Nexus9000v# show running-config | section "^router bgp"
     # router bgp 65563
     #   address-family ipv4 unicast
@@ -5226,8 +5263,8 @@ Examples
       cisco.nxos.nxos_bgp_global:
         state: purged
 
-    # Task output
-    # -------------
+    # Task output:
+    # ------------
 
     # before:
     #    as_number: '65563'
@@ -5295,7 +5332,7 @@ Examples
     #  after: {}
     #
     # After state:
-    # -------------
+    # ------------
     # Nexus9000v# show running-config | section "^router bgp"
     # Nexus9000v#
 
@@ -5308,16 +5345,16 @@ Examples
           router_id: 192.168.1.1
           bestpath:
             as_path:
-              multipath_relax: True
-            compare_neighborid: True
-            cost_community_ignore: True
+              multipath_relax: true
+            compare_neighborid: true
+            cost_community_ignore: true
           confederation:
             identifier: 42
             peers:
               - 65020
               - 65030
               - 65040
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           maxas_limit: 20
           neighbors:
             - neighbor_address: 192.168.1.100
@@ -5327,19 +5364,19 @@ Examples
               remote_as: 65563
               description: NBR-1
               low_memory:
-                exempt: True
+                exempt: true
             - neighbor_address: 192.168.1.101
               remote_as: 65563
               password:
                 encryption: 7
                 key: 12090404011C03162E
           neighbor_down:
-            fib_accelerate: True
+            fib_accelerate: true
           vrfs:
             - vrf: site-1
               allocate_index: 5000
               local_as: 200
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 198.51.100.1
                   description: site-1-nbr-1
@@ -5352,7 +5389,7 @@ Examples
                   description: site-1-nbr-2
             - vrf: site-2
               local_as: 300
-              log_neighbor_changes: True
+              log_neighbor_changes: true
               neighbors:
                 - neighbor_address: 203.0.113.2
                   description: site-1-nbr-1
@@ -5361,10 +5398,10 @@ Examples
                     key: AF92F4C16A0A0EC5BDF56CF58BC030F6
                   remote_as: 65568
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
 
-    # Task Output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     # rendered:
     #   - router bgp 65563
     #   - bestpath as-path multipath-relax
@@ -5453,8 +5490,8 @@ Examples
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     #  parsed:
     #    as_number: '65563'
     #    bestpath:
@@ -5546,8 +5583,8 @@ Examples
       cisco.nxos.nxos_bgp_global:
         state: gathered
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     #  gathered:
     #    as_number: '65563'
     #    bestpath:
@@ -5611,7 +5648,7 @@ Examples
           as_number: 65536
           router_id: 198.51.100.2
           maxas_limit: 20
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           neighbors:
             - neighbor_address: 192.0.2.1
               remote_as: 65537
@@ -5620,8 +5657,8 @@ Examples
                 key: 12090404011C03162E
         state: replaced
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     # fatal: [Nexus9000v]: FAILED! => changed=false
     #    msg: Neighbor 203.0.113.2 has address-family configurations.
     #         Please use the nxos_bgp_neighbor_af module to remove those first.
@@ -5655,7 +5692,7 @@ Examples
           as_number: 65536
           router_id: 198.51.100.2
           maxas_limit: 20
-          log_neighbor_changes: True
+          log_neighbor_changes: true
           neighbors:
             - neighbor_address: 192.0.2.1
               remote_as: 65537
@@ -5665,11 +5702,11 @@ Examples
           vrfs:
             - vrf: site-2
               neighbor_down:
-                fib_accelerate: True
+                fib_accelerate: true
         state: replaced
 
-    # Task output (redacted)
-    # -----------------------
+    # Task output:
+    # ------------
     # fatal: [Nexus9000v]: FAILED! => changed=false
     #    msg: VRF site-1 has address-family configurations.
     #         Please use the nxos_bgp_af module to remove those first.
@@ -5739,6 +5776,57 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
                         <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65563&#x27;, &#x27;maxas-limit 20&#x27;, &#x27;router-id 192.168.1.1&#x27;, &#x27;confederation peers 65020 65030 65040&#x27;, &#x27;neighbor 192.168.1.100&#x27;, &#x27;remote-as 65563&#x27;, &#x27;affinity-group 160&#x27;, &#x27;bmp-activate-server 1&#x27;, &#x27;description NBR-1&#x27;, &#x27;low-memory exempt&#x27;, &#x27;vrf site-1&#x27;, &#x27;log-neighbor-changes&#x27;, &#x27;neighbor 198.51.100.1&#x27;, &#x27;remote-as 65562&#x27;, &#x27;description site-1-nbr-1&#x27;, &#x27;password 3 13D4D3549493D2877B1DC116EE27A6BE&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router bgp 65563&#x27;, &#x27;maxas-limit 20&#x27;, &#x27;router-id 192.168.1.1&#x27;]</div>
                 </td>
             </tr>
     </table>

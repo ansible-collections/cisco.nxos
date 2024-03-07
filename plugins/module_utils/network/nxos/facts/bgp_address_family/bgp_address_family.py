@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -14,17 +15,14 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
+    Bgp_address_familyArgs,
 )
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_address_family import (
     Bgp_address_familyTemplate,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
-    Bgp_address_familyArgs,
 )
 
 
@@ -60,9 +58,7 @@ class Bgp_address_familyFacts(object):
         data = self._flatten_config(data)
 
         # parse native config using the Bgp_address_family template
-        bgp_address_family_parser = Bgp_address_familyTemplate(
-            lines=data.splitlines()
-        )
+        bgp_address_family_parser = Bgp_address_familyTemplate(lines=data.splitlines())
         objs = bgp_address_family_parser.parse()
         if objs:
             nbr = []
@@ -83,9 +79,7 @@ class Bgp_address_familyFacts(object):
                             key=lambda k, s="prefix": k[s],
                         )
                     if "networks" in x:
-                        x["networks"] = sorted(
-                            x["networks"], key=lambda k, s="prefix": k[s]
-                        )
+                        x["networks"] = sorted(x["networks"], key=lambda k, s="prefix": k[s])
                     if "redistribute" in x:
                         x["redistribute"] = sorted(
                             x["redistribute"],
@@ -100,13 +94,9 @@ class Bgp_address_familyFacts(object):
                     ),
                 )
 
-        ansible_facts["ansible_network_resources"].pop(
-            "bgp_address_family", None
-        )
+        ansible_facts["ansible_network_resources"].pop("bgp_address_family", None)
 
-        params = utils.remove_empties(
-            utils.validate_config(self.argument_spec, {"config": objs})
-        )
+        params = utils.remove_empties(utils.validate_config(self.argument_spec, {"config": objs}))
 
         facts["bgp_address_family"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)

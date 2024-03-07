@@ -11,7 +11,7 @@
       register: result
       cisco.nxos.nxos_logging:
         dest: console
-        dest_level: 00
+        dest_level: 0
         state: present
 
     - ansible.builtin.assert:
@@ -87,7 +87,7 @@
       cisco.nxos.nxos_logging:
         aggregate:
           - dest: console
-            dest_level: 00
+            dest_level: 0
 
           - dest: monitor
             dest_level: 3

@@ -106,7 +106,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Change acl
+    - name: Change ACL
       register: result
       cisco.nxos.nxos_snmp_community: &id008
         community: TESTING7
@@ -122,7 +122,7 @@
 
     - ansible.builtin.assert: *id004
 
-    - name: Remove acl
+    - name: Remove ACL
       register: result
       cisco.nxos.nxos_snmp_community: &id009
         community: TESTING7

@@ -26,6 +26,7 @@ The arg spec for the nxos_l2_interfaces module
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -43,7 +44,7 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                 },
                 "mode": {
                     "type": "str",
-                    "choices": ["access", "trunk", "fex-fabric", "fabricpath"],
+                    "choices": ["access", "dot1q-tunnel", "trunk", "fex-fabric", "fabricpath"],
                 },
                 "name": {"required": True, "type": "str"},
                 "trunk": {

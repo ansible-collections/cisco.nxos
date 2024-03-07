@@ -19,39 +19,41 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_user
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, set_module_args
+
 
 ignore_provider_arg = True
 
 
 class TestNxosUserModule(TestNxosModule):
-
     module = nxos_user
 
     def setUp(self):
         super(TestNxosUserModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_load_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.load_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.load_config",
         )
         self.load_config = self.mock_load_config.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.get_config"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_user.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
         self.mock_get_device_info = patch(
-            "ansible_collections.cisco.nxos.plugins.cliconf.nxos.Cliconf.get_device_info"
+            "ansible_collections.cisco.nxos.plugins.cliconf.nxos.Cliconf.get_device_info",
         )
         self.get_device_info = self.mock_get_device_info.start()
 
@@ -71,18 +73,16 @@ class TestNxosUserModule(TestNxosModule):
                         {
                             "usr_name": "admin",
                             "expire_date": "this user account has no expiry date",
-                            "TABLE_role": {
-                                "ROW_role": {"role": "network-admin"}
-                            },
+                            "TABLE_role": {"ROW_role": {"role": "network-admin"}},
                         },
                         {
                             "usr_name": "ansible-test-1",
                             "expire_date": "this user account has no expiry date",
                             "TABLE_role": {"ROW_role": [{"role": "priv-10"}]},
                         },
-                    ]
-                }
-            }
+                    ],
+                },
+            },
         ]
         self.get_device_info.return_value = {
             "network_os": "nxos",
@@ -92,13 +92,26 @@ class TestNxosUserModule(TestNxosModule):
             "network_os_image": "bootflash:///m9100-s5ek9-mz.8.4.2b.bin",
             "network_os_platform": "DS-C9710",
         }
-        set_module_args(
-            dict(name="ansible-test-2", configured_password="ansible")
-        )
+        set_module_args(dict(name="ansible-test-2", configured_password="ansible"))
         self.execute_module(
             changed=True,
             commands=[
                 "username ansible-test-2",
                 "username ansible-test-2 password ansible",
+            ],
+        )
+
+    def test_nxos_hashed_password(self):
+        set_module_args(
+            dict(
+                name="ansible",
+                hashed_password="$5$JFHICC$u.zXRUgprAkkYLiEns8VrhsNEIOj7FzVrn67tuJdtKB",
+            ),
+        )
+        self.execute_module(
+            changed=True,
+            commands=[
+                "username ansible",
+                "username ansible password 5 $5$JFHICC$u.zXRUgprAkkYLiEns8VrhsNEIOj7FzVrn67tuJdtKB",
             ],
         )

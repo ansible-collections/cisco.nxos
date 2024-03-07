@@ -25,22 +25,22 @@
     dict_facts_length: 7
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
 
-- name: Setup - disable feature telemetry
+- name: Setup - disable 'feature telemetry'
   ignore_errors: true
   cisco.nxos.nxos_feature: &id003
     feature: telemetry
     state: disabled
 
-- name: Setup - enable feature telemetry
+- name: Setup - enable 'feature telemetry'
   cisco.nxos.nxos_feature:
     feature: telemetry
     state: enabled
 
-- name: Setup - add initial telemetry config
+- name: Setup - add initial telemetry configuration
   cisco.nxos.nxos_config:
     src: populate_config.cfg
 
-- name: Setup - add initial source-interface telemetry config
+- name: Setup - add initial source-interface telemetry configuration
   when: imagetag and (major_version is version_compare('9.1', 'ge'))
   cisco.nxos.nxos_config:
     lines:

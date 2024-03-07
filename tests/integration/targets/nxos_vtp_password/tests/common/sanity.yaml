@@ -12,22 +12,22 @@
   when: platform is search('N3K-F|N9K-F')
 
 - block:
-    - name: Disable feature vtp
+    - name: Disable 'feature vtp'
       ignore_errors: true
       cisco.nxos.nxos_feature:
         feature: vtp
         state: disabled
 
-    - name: Enable feature vtp
+    - name: Enable 'feature vtp'
       cisco.nxos.nxos_feature:
         feature: vtp
         state: enabled
 
-    - name: Configure vtp domain
+    - name: Configure VTP domain
       cisco.nxos.nxos_vtp_domain:
         domain: testing
 
-    - name: Configure vtp password
+    - name: Configure VTP password
       register: result
       cisco.nxos.nxos_vtp_password: &id001
         vtp_password: ntc
@@ -37,7 +37,7 @@
         that:
           - result.changed == true
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vtp_password: *id001
 
@@ -45,7 +45,7 @@
         that:
           - result.changed == false
 
-    - name: Remove vtp password
+    - name: Remove VTP password
       register: result
       cisco.nxos.nxos_vtp_password: &id003
         vtp_password: ntc
@@ -60,7 +60,7 @@
     - ansible.builtin.assert: *id004
   when: vtp_run
   always:
-    - name: Disable feature vtp
+    - name: Disable 'feature vtp'
       cisco.nxos.nxos_feature:
         feature: vtp
         state: disabled

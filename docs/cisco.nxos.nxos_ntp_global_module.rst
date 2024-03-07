@@ -62,6 +62,7 @@ Parameters
                 </td>
                 <td>
                         <div>NTP access-group.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -432,6 +433,7 @@ Parameters
                 </td>
                 <td>
                         <div>Act as NTP master clock.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
                                 <tr>
@@ -470,6 +472,7 @@ Parameters
                 </td>
                 <td>
                         <div>NTP passive command.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -595,6 +598,7 @@ Parameters
                 </td>
                 <td>
                         <div>Display per-VRF information.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                         <div style="font-size: small; color: darkgreen"><br/>aliases: use_vrf</div>
                 </td>
             </tr>
@@ -722,6 +726,7 @@ Parameters
                 </td>
                 <td>
                         <div>Display per-VRF information.</div>
+                        <div>This option is not applicable for MDS switches.</div>
                         <div style="font-size: small; color: darkgreen"><br/>aliases: use_vrf</div>
                 </td>
             </tr>
@@ -740,6 +745,7 @@ Parameters
                 </td>
                 <td>
                         <div>Source of NTP packets.</div>
+                        <div>This option is unsupported on MDS switches.</div>
                 </td>
             </tr>
             <tr>
@@ -845,8 +851,9 @@ Notes
 -----
 
 .. note::
-   - Tested against NX-OS 9.3.6.
+   - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
    - This module works with connection ``network_cli`` and ``httpapi``.
+   - Tested against Cisco MDS NX-OS 9.2(2) with connection ``network_cli``.
 
 
 
@@ -870,7 +877,7 @@ Examples
               - access_list: PeerAcl1
             serve:
               - access_list: ServeAcl1
-          authenticate: True
+          authenticate: true
           authentication_keys:
             - id: 1001
               key: vagwwtKfkv
@@ -878,7 +885,7 @@ Examples
             - id: 1002
               key: vagwwtKfkvgthz
               encryption: 7
-          logging: True
+          logging: true
           master:
             stratum: 2
           peers:
@@ -889,7 +896,7 @@ Examples
               vrf: default
             - peer: 192.0.2.2
               key_id: 2
-              prefer: True
+              prefer: true
               vrf: siteA
           servers:
             - server: 198.51.100.1
@@ -922,7 +929,7 @@ Examples
     #        - access_list: PeerAcl1
     #      serve:
     #       - access_list: ServeAcl1
-    #    authenticate: True
+    #    authenticate: true
     #    authentication_keys:
     #      - id: 1001
     #        key: vagwwtKfkv
@@ -930,7 +937,7 @@ Examples
     #      - id: 1002
     #        key: vagwwtKfkvgthz
     #        encryption: 7
-    #    logging: True
+    #    logging: true
     #    master:
     #     stratum: 2
     #    peers:
@@ -941,7 +948,7 @@ Examples
     #        vrf: default
     #      - peer: 192.0.2.2
     #        key_id: 2
-    #        prefer: True
+    #        prefer: true
     #        vrf: siteA
     #    servers:
     #      - server: 198.51.100.1
@@ -991,7 +998,7 @@ Examples
               - access_list: PeerAcl2
             serve:
               - access_list: ServeAcl2
-          logging: True
+          logging: true
           master:
             stratum: 2
           peers:
@@ -1002,7 +1009,7 @@ Examples
               vrf: default
             - peer: 192.0.2.5
               key_id: 2
-              prefer: True
+              prefer: true
               vrf: siteA
           servers:
             - server: 198.51.100.1
@@ -1018,7 +1025,7 @@ Examples
     #        - access_list: PeerAcl1
     #      serve:
     #       - access_list: ServeAcl1
-    #    authenticate: True
+    #    authenticate: true
     #    authentication_keys:
     #      - id: 1001
     #        key: vagwwtKfkv
@@ -1026,7 +1033,7 @@ Examples
     #      - id: 1002
     #        key: vagwwtKfkvgthz
     #        encryption: 7
-    #    logging: True
+    #    logging: true
     #    master:
     #     stratum: 2
     #    peers:
@@ -1037,7 +1044,7 @@ Examples
     #        vrf: default
     #      - peer: 192.0.2.2
     #        key_id: 2
-    #        prefer: True
+    #        prefer: true
     #        vrf: siteA
     #    servers:
     #      - server: 198.51.100.1
@@ -1065,7 +1072,7 @@ Examples
     #        - access_list: PeerAcl2
     #      serve:
     #        - access_list: ServeAcl2
-    #    logging: True
+    #    logging: true
     #    master:
     #      stratum: 2
     #    peers:
@@ -1076,7 +1083,7 @@ Examples
     #        vrf: default
     #      - peer: 192.0.2.5
     #        key_id: 2
-    #        prefer: True
+    #        prefer: true
     #        vrf: siteA
     #    servers:
     #      - server: 198.51.100.1
@@ -1112,7 +1119,7 @@ Examples
     #        - access_list: PeerAcl1
     #      serve:
     #       - access_list: ServeAcl1
-    #    authenticate: True
+    #    authenticate: true
     #    authentication_keys:
     #      - id: 1001
     #        key: vagwwtKfkv
@@ -1120,7 +1127,7 @@ Examples
     #      - id: 1002
     #        key: vagwwtKfkvgthz
     #        encryption: 7
-    #    logging: True
+    #    logging: true
     #    master:
     #     stratum: 2
     #    peers:
@@ -1131,7 +1138,7 @@ Examples
     #        vrf: default
     #      - peer: 192.0.2.2
     #        key_id: 2
-    #        prefer: True
+    #        prefer: true
     #        vrf: siteA
     #    servers:
     #      - server: 198.51.100.1
@@ -1171,7 +1178,7 @@ Examples
               - access_list: PeerAcl1
             serve:
               - access_list: ServeAcl1
-          authenticate: True
+          authenticate: true
           authentication_keys:
             - id: 1001
               key: vagwwtKfkv
@@ -1179,7 +1186,7 @@ Examples
             - id: 1002
               key: vagwwtKfkvgthz
               encryption: 7
-          logging: True
+          logging: true
           master:
             stratum: 2
           peers:
@@ -1190,7 +1197,7 @@ Examples
               vrf: default
             - peer: 192.0.2.2
               key_id: 2
-              prefer: True
+              prefer: true
               vrf: siteA
           servers:
             - server: 198.51.100.1
@@ -1245,7 +1252,7 @@ Examples
     #        - access_list: PeerAcl1
     #      serve:
     #       - access_list: ServeAcl1
-    #    authenticate: True
+    #    authenticate: true
     #    authentication_keys:
     #      - id: 1001
     #        key: vagwwtKfkv
@@ -1253,7 +1260,7 @@ Examples
     #      - id: 1002
     #        key: vagwwtKfkvgthz
     #        encryption: 7
-    #    logging: True
+    #    logging: true
     #    master:
     #     stratum: 2
     #    peers:
@@ -1264,7 +1271,7 @@ Examples
     #        vrf: default
     #      - peer: 192.0.2.2
     #        key_id: 2
-    #        prefer: True
+    #        prefer: true
     #        vrf: siteA
     #    servers:
     #      - server: 198.51.100.1

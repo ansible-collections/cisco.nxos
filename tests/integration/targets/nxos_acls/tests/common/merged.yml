@@ -80,7 +80,7 @@
         that:
           - result.changed == false
 
-    - name: Update one parameter of an existing ace with state merged (should fail)
+    - name: Update one parameter of an existing ACE with state merged (should fail)
       register: result
       cisco.nxos.nxos_acls:
         config:

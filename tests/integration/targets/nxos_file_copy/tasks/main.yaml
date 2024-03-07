@@ -4,13 +4,13 @@
     commands: show interface mgmt 0 | json
   register: result
 
-- name: Store mgmt interface ip address
+- name: Store mgmt interface IP address
   ansible.builtin.set_fact:
     mgmt0_ip: "{{ result['stdout'][0]['TABLE_interface']['ROW_interface']['eth_ip_addr'] }}"
 
 - name: Generate and store random password for temp user
   ansible.builtin.set_fact:
-    temp_passwd: "{{ lookup('password', 'length=15 chars=ascii_letters') }}"
+    temp_passwd: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
   delegate_to: localhost
   no_log: true
 
@@ -19,13 +19,14 @@
     name: temp_user
     configured_password: "{{ temp_passwd }}"
 
-- block:
-    - name: Include the cli tasks
+- name: Run the CLI and NX-API tests
+  block:
+    - name: Include the CLI tasks
       ansible.builtin.include_tasks: cli.yaml
       tags:
         - cli
 
-    - name: Include the nx-api tasks
+    - name: Include the NX-API tasks
       ansible.builtin.include_tasks: nxapi.yaml
       tags:
         - nxapi

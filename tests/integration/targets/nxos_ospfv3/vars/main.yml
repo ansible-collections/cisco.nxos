@@ -54,7 +54,7 @@ merged:
                   no_summary: true
               - area_id: 0.0.0.103
                 nssa:
-                  no_summary: True
+                  no_summary: true
                   translate:
                     type7:
                       always: true
@@ -131,7 +131,7 @@ overridden:
         router_id: 203.0.113.20
       - process_id: "102"
         router_id: 198.51.100.1
-        shutdown: True
+        shutdown: true
         address_family:
           afi: ipv6
           safi: unicast

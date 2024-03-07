@@ -14,7 +14,7 @@
     mode: normal
     state: absent
 
-- name: Setup - turn on feature eigrp
+- name: Setup - turn on 'feature eigrp'
   ignore_errors: true
   cisco.nxos.nxos_feature:
     feature: eigrp
@@ -93,7 +93,7 @@
     - name: Remove maintenance mode profile
       cisco.nxos.nxos_gir_profile_management: *id005
 
-    - name: Turn off feature eigrp
+    - name: Turn off 'feature eigrp'
       cisco.nxos.nxos_feature:
         feature: eigrp
         state: disabled

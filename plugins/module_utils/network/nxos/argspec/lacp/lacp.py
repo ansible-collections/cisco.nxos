@@ -26,6 +26,7 @@ The arg spec for the nxos_lacp module
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -51,7 +52,7 @@ class LacpArgs(object):
                         "priority": {"type": "int"},
                     },
                     "type": "dict",
-                }
+                },
             },
             "type": "dict",
         },
@@ -59,6 +60,7 @@ class LacpArgs(object):
             "choices": [
                 "merged",
                 "replaced",
+                "overridden",
                 "deleted",
                 "gathered",
                 "rendered",

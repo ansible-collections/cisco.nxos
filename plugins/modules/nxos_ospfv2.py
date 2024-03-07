@@ -28,6 +28,7 @@ The module file for nxos_ospfv2
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -1017,60 +1018,60 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-      - process_id: 100
-        router_id: 203.0.113.20
-      - process_id: 102
-        router_id: 198.51.100.1
-        areas:
-        - area_id: 0.0.0.100
-          filter_list:
-          - route_map: rmap_1
-            direction: in
-          - route_map: rmap_2
-            direction: out
-          ranges:
-          - prefix: 198.51.100.64/27
-            not_advertise: true
-          - prefix: 198.51.100.96/27
-            cost: 120
-        - area_id: 0.0.0.101
-          authentication:
-            message_digest: true
-        redistribute:
-        - protocol: eigrp
-          id: 120
-          route_map: rmap_1
-        - protocol: direct
-          route_map: ospf102-direct-connect
-        vrfs:
-        - vrf: zone1
-          router_id: 198.51.100.129
-          redistribute:
-          - protocol: static
-            route_map: zone1-static-connect
-          summary_address:
-          - prefix: 198.51.100.128/27
-            tag: 121
-          - prefix: 198.51.100.160/27
+        - process_id: 100
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
           areas:
-          - area_id: 0.0.0.102
-            nssa:
-              default_information_originate: true
-              no_summary: true
-          - area_id: 0.0.0.103
-            nssa:
-              no_summary: true
-              translate:
-                type7:
-                  always: true
-        - vrf: zone2
-          auto_cost:
-            reference_bandwidth: 45
-            unit: Gbps
+            - area_id: 0.0.0.100
+              filter_list:
+                - route_map: rmap_1
+                  direction: in
+                - route_map: rmap_2
+                  direction: out
+              ranges:
+                - prefix: 198.51.100.64/27
+                  not_advertise: true
+                - prefix: 198.51.100.96/27
+                  cost: 120
+            - area_id: 0.0.0.101
+              authentication:
+                message_digest: true
+          redistribute:
+            - protocol: eigrp
+              id: 120
+              route_map: rmap_1
+            - protocol: direct
+              route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              redistribute:
+                - protocol: static
+                  route_map: zone1-static-connect
+              summary_address:
+                - prefix: 198.51.100.128/27
+                  tag: 121
+                - prefix: 198.51.100.160/27
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: true
+                    no_summary: true
+                - area_id: 0.0.0.103
+                  nssa:
+                    no_summary: true
+                    translate:
+                      type7:
+                        always: true
+            - vrf: zone2
+              auto_cost:
+                reference_bandwidth: 45
+                unit: Gbps
     state: merged
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before: {}
 #
 # commands:
@@ -1198,45 +1199,48 @@ EXAMPLES = """
 #   vrf zone2
 #     auto-cost reference-bandwidth 45 Gbps
 
-- name: Replace device configurations of listed OSPF processes with provided configurations
+- name: >-
+    Replace device configurations of listed OSPF processes with provided
+    configurations
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-      - process_id: 102
-        router_id: 198.51.100.1
-        areas:
-        - area_id: 0.0.0.100
-          filter_list:
-          - route_map: rmap_8
-            direction: in
-          ranges:
-          - prefix: 198.51.100.64/27
-            not_advertise: true
-        - area_id: 0.0.0.101
-          stub:
-            no_summary: true
-        redistribute:
-        - protocol: eigrp
-          id: 130
-          route_map: rmap_1
-        - protocol: direct
-          route_map: ospf102-direct-connect
-        vrfs:
-        - vrf: zone1
-          router_id: 198.51.100.129
-          redistribute:
-          - protocol: bgp
-            id: 65563
-            route_map: zone1-bgp-connect
+        - process_id: 102
+          router_id: 198.51.100.1
           areas:
-          - area_id: 0.0.0.102
-            nssa:
-              default_information_originate: true
-              no_summary: true
+            - area_id: 0.0.0.100
+              filter_list:
+                - route_map: rmap_8
+                  direction: in
+              ranges:
+                - prefix: 198.51.100.64/27
+                  not_advertise: true
+            - area_id: 0.0.0.101
+              stub:
+                no_summary: true
+          redistribute:
+            - protocol: eigrp
+              id: 130
+              route_map: rmap_1
+            - protocol: direct
+              route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              redistribute:
+                - protocol: bgp
+                  id: 65563
+                  route_map: zone1-bgp-connect
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: true
+                    no_summary: true
     state: replaced
 
-# Task output
-# -------------
+
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1388,15 +1392,15 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-      - process_id: 104
-        router_id: 203.0.113.20
-      - process_id: 102
-        router_id: 198.51.100.1
-        shutdown: true
+        - process_id: 104
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
+          shutdown: true
     state: overridden
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1510,11 +1514,11 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-      - process_id: 102
+        - process_id: 102
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1609,8 +1613,8 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1673,64 +1677,67 @@ EXAMPLES = """
 
 # Using rendered
 
-- name: Render platform specific configuration lines (without connecting to the device)
+- name: >-
+    Render platform specific configuration lines (without connecting to the
+    device)
   cisco.nxos.nxos_ospfv2:
     config:
       processes:
-      - process_id: 100
-        router_id: 203.0.113.20
-      - process_id: 102
-        router_id: 198.51.100.1
-        areas:
-        - area_id: 0.0.0.100
-          filter_list:
-          - route_map: rmap_1
-            direction: in
-          - route_map: rmap_2
-            direction: out
-          ranges:
-          - prefix: 198.51.100.64/27
-            not_advertise: true
-          - prefix: 198.51.100.96/27
-            cost: 120
-        - area_id: 0.0.0.101
-          authentication:
-            message_digest: true
-        redistribute:
-        - protocol: eigrp
-          id: 120
-          route_map: rmap_1
-        - protocol: direct
-          route_map: ospf102-direct-connect
-        vrfs:
-        - vrf: zone1
-          router_id: 198.51.100.129
-          redistribute:
-          - protocol: static
-            route_map: zone1-static-connect
-          summary_address:
-          - prefix: 198.51.100.128/27
-            tag: 121
-          - prefix: 198.51.100.160/27
+        - process_id: 100
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
           areas:
-          - area_id: 0.0.0.102
-            nssa:
-              default_information_originate: true
-              no_summary: true
-          - area_id: 0.0.0.103
-            nssa:
-              no_summary: true
-              translate:
-                type7:
-                  always: true
-        - vrf: zone2
-          auto_cost:
-            reference_bandwidth: 45
-            unit: Gbps
+            - area_id: 0.0.0.100
+              filter_list:
+                - route_map: rmap_1
+                  direction: in
+                - route_map: rmap_2
+                  direction: out
+              ranges:
+                - prefix: 198.51.100.64/27
+                  not_advertise: true
+                - prefix: 198.51.100.96/27
+                  cost: 120
+            - area_id: 0.0.0.101
+              authentication:
+                message_digest: true
+          redistribute:
+            - protocol: eigrp
+              id: 120
+              route_map: rmap_1
+            - protocol: direct
+              route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              redistribute:
+                - protocol: static
+                  route_map: zone1-static-connect
+              summary_address:
+                - prefix: 198.51.100.128/27
+                  tag: 121
+                - prefix: 198.51.100.160/27
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: true
+                    no_summary: true
+                - area_id: 0.0.0.103
+                  nssa:
+                    no_summary: true
+                    translate:
+                      type7:
+                        always: true
+            - vrf: zone2
+              auto_cost:
+                reference_bandwidth: 45
+                unit: Gbps
     state: rendered
 
-# Task Output (redacted)
-# -----------------------
+
+# Task output:
+# ------------
 # rendered:
 #  - router ospf 100
 #  - router-id 203.0.113.20
@@ -1793,8 +1800,8 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'ospfv2.cfg') }}"
     state: parsed
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # parsed:
 #   processes:
 #   - process_id: "100"
@@ -1868,8 +1875,8 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv2:
     state: gathered
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  gathered:
 #    processes:
 #      - process_id: "102"
@@ -1943,10 +1950,33 @@ commands:
     - "vrf zone2"
     - "auto-cost reference-bandwidth 45 Gbps"
     - "capability vrf-lite evpn"
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - "router ospf 102"
+    - "router-id 198.54.100.1"
+    - "router ospf 100"
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv2.ospfv2 import (
     Ospfv2Args,
 )

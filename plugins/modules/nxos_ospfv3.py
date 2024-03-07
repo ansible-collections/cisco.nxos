@@ -28,6 +28,7 @@ The module file for nxos_ospfv3
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -86,7 +87,7 @@ options:
                     description:
                     - The Area ID in IP Address format.
                     type: str
-                    required: True
+                    required: true
                   default_cost:
                     description:
                     - Specify the default cost.
@@ -101,13 +102,13 @@ options:
                         description:
                         - The Route-map name.
                         type: str
-                        required: True
+                        required: true
                       direction:
                         description:
                         - The direction to apply the route map.
                         type: str
                         choices: [in, out]
-                        required: True
+                        required: true
                   ranges:
                     description:
                     - Configure an address range for the area.
@@ -118,7 +119,7 @@ options:
                         description:
                         - IP in Prefix format (x.x.x.x/len)
                         type: str
-                        required: True
+                        required: true
                       cost:
                         description:
                         - Cost to use for the range.
@@ -168,7 +169,7 @@ options:
                     - The name of the protocol.
                     type: str
                     choices: [bgp, direct, eigrp, isis, lisp, ospfv3, rip, static]
-                    required: True
+                    required: true
                   id:
                     description:
                     - The identifier for the protocol specified.
@@ -177,7 +178,7 @@ options:
                     description:
                     - The route map policy to constrain redistribution.
                     type: str
-                    required: True
+                    required: true
               summary_address:
                 description:
                 - Configure route summarization for redistribution.
@@ -188,7 +189,7 @@ options:
                     description:
                     - IPv6 prefix format 'xxxx:xxxx/ml', 'xxxx:xxxx::/ml' or 'xxxx::xx/128'
                     type: str
-                    required: True
+                    required: true
                   not_advertise:
                     description:
                     - Suppress advertising the specified summary.
@@ -207,7 +208,7 @@ options:
                     description:
                     - The Route Map name.
                     type: str
-                    required: True
+                    required: true
                   filter:
                     description:
                     - Block the OSPF routes from being sent to RIB.
@@ -249,7 +250,7 @@ options:
                 description:
                 - The Area ID in IP Address format.
                 type: str
-                required: True
+                required: true
               nssa:
                 description:
                 - NSSA settings for the area.
@@ -319,12 +320,12 @@ options:
                 description:
                 - Reference bandwidth used to assign OSPF cost.
                 type: int
-                required: True
+                required: true
               unit:
                 description:
                 - Specify in which unit the reference bandwidth is specified.
                 type: str
-                required: True
+                required: true
                 choices: [Gbps, Mbps]
           flush_routes:
             description:
@@ -377,7 +378,7 @@ options:
                 description:
                 - Set the maximum number of non self-generated LSAs.
                 type: int
-                required: True
+                required: true
               threshold:
                 description:
                 - Threshold value (%) at which to generate a warning message.
@@ -476,7 +477,7 @@ options:
             description:
             - The OSPF process tag.
             type: str
-            required: True
+            required: true
           router_id:
             description:
             - Set OSPF process router-id.
@@ -536,7 +537,7 @@ options:
                     description:
                     - The Area ID in IP Address format.
                     type: str
-                    required: True
+                    required: true
                   nssa:
                     description:
                     - NSSA settings for the area.
@@ -606,12 +607,12 @@ options:
                     description:
                     - Reference bandwidth used to assign OSPF cost.
                     type: int
-                    required: True
+                    required: true
                   unit:
                     description:
                     - Specify in which unit the reference bandwidth is specified.
                     type: str
-                    required: True
+                    required: true
                     choices: [Gbps, Mbps]
               graceful_restart:
                 description:
@@ -656,7 +657,7 @@ options:
                     description:
                     - Set the maximum number of non self-generated LSAs.
                     type: int
-                    required: True
+                    required: true
                   threshold:
                     description:
                     - Threshold value (%) at which to generate a warning message.
@@ -798,7 +799,7 @@ options:
                 description:
                 - Name/Identifier of the VRF.
                 type: str
-                required: True
+                required: true
   state:
     description:
     - The state the configuration should be left in.
@@ -825,53 +826,53 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 100
-        router_id: 203.0.113.20
-      - process_id: 102
-        router_id: 198.51.100.1
-        address_family:
-          afi: ipv6
-          safi: unicast
-          areas:
-          - area_id: 0.0.0.100
-            filter_list:
-            - route_map: rmap_1
-              direction: in
-            - route_map: rmap_2
-              direction: out
-            ranges:
-            - prefix: 2001:db2::/32
-              not_advertise: true
-            - prefix: 2001:db3::/32
-              cost: 120
-          redistribute:
-          - protocol: eigrp
-            id: 120
-            route_map: rmap_1
-          - protocol: direct
-            route_map: ospf102-direct-connect
-        vrfs:
-        - vrf: zone1
-          router_id: 198.51.100.129
-          areas:
-          - area_id: 0.0.0.102
-            nssa:
-              default_information_originate: true
-              no_summary: true
-          - area_id: 0.0.0.103
-            nssa:
-              no_summary: true
-              translate:
-                type7:
-                  always: true
-        - vrf: zone2
-          auto_cost:
-            reference_bandwidth: 45
-            unit: Gbps
+        - process_id: 100
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
+          address_family:
+            afi: ipv6
+            safi: unicast
+            areas:
+              - area_id: 0.0.0.100
+                filter_list:
+                  - route_map: rmap_1
+                    direction: in
+                  - route_map: rmap_2
+                    direction: out
+                ranges:
+                  - prefix: '2001:db2::/32'
+                    not_advertise: true
+                  - prefix: '2001:db3::/32'
+                    cost: 120
+            redistribute:
+              - protocol: eigrp
+                id: 120
+                route_map: rmap_1
+              - protocol: direct
+                route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: true
+                    no_summary: true
+                - area_id: 0.0.0.103
+                  nssa:
+                    no_summary: true
+                    translate:
+                      type7:
+                        always: true
+            - vrf: zone2
+              auto_cost:
+                reference_bandwidth: 45
+                unit: Gbps
     state: merged
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before: {}
 #
 # commands:
@@ -966,7 +967,7 @@ EXAMPLES = """
 # Using replaced
 
 # Before state:
-# ------------
+# -------------
 # nxos-9k-rdo# sh running-config | section "^router ospfv3"
 # router ospfv3 100
 #   router-id 203.0.113.20
@@ -991,37 +992,37 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 102
-        router_id: 198.51.100.1
-        address_family:
-          afi: ipv6
-          safi: unicast
-          areas:
-          - area_id: 0.0.0.100
-            filter_list:
-            - route_map: rmap_8
-              direction: in
-            ranges:
-            - not_advertise: true
-              prefix: 2001:db2::/32
-          redistribute:
-          - protocol: eigrp
-            id: 130
-            route_map: rmap_1
-          - protocol: direct
-            route_map: ospf102-direct-connect
-        vrfs:
-        - vrf: zone1
-          router_id: 198.51.100.129
-          areas:
-          - area_id: 0.0.0.102
-            nssa:
-              default_information_originate: True
-              no_summary: True
+        - process_id: 102
+          router_id: 198.51.100.1
+          address_family:
+            afi: ipv6
+            safi: unicast
+            areas:
+              - area_id: 0.0.0.100
+                filter_list:
+                  - route_map: rmap_8
+                    direction: in
+                ranges:
+                  - not_advertise: true
+                    prefix: 2001:db2::/32
+            redistribute:
+              - protocol: eigrp
+                id: 130
+                route_map: rmap_1
+              - protocol: direct
+                route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: true
+                    no_summary: true
     state: replaced
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1132,7 +1133,7 @@ EXAMPLES = """
 # Using overridden
 
 # Before state:
-# ------------
+# -------------
 # nxos-9k-rdo# sh running-config | section "^router ospfv3"
 # router ospfv3 100
 #   router-id 203.0.113.20
@@ -1157,15 +1158,15 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 104
-        router_id: 203.0.113.20
-      - process_id: 102
-        router_id: 198.51.100.1
-        shutdown: true
+        - process_id: 104
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
+          shutdown: true
     state: overridden
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1252,7 +1253,7 @@ EXAMPLES = """
 # Using deleted to delete a single OSPF process
 
 # Before state:
-# ------------
+# -------------
 # nxos-9k-rdo# sh running-config | section "^router ospf .*"
 # router ospfv3 100
 #   router-id 203.0.113.20
@@ -1277,11 +1278,11 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 102
+        - process_id: 102
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1329,7 +1330,7 @@ EXAMPLES = """
 #        vrf: zone2
 #
 # commands:
-#  - no router ospfv3 102
+#   - no router ospfv3 102
 #
 # after:
 #   processes:
@@ -1345,7 +1346,7 @@ EXAMPLES = """
 # Using deleted all OSPFv3 processes from the device
 
 # Before state:
-# ------------
+# -------------
 # nxos-9k-rdo# sh running-config | section "^router ospfv3"
 # router ospfv3 100
 #   router-id 203.0.113.20
@@ -1370,8 +1371,8 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 # before:
 #    processes:
 #    - process_id: "100"
@@ -1435,53 +1436,53 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     config:
       processes:
-      - process_id: 100
-        router_id: 203.0.113.20
-      - process_id: 102
-        router_id: 198.51.100.1
-        address_family:
-          afi: ipv6
-          safi: unicast
-          areas:
-          - area_id: 0.0.0.100
-            filter_list:
-            - route_map: rmap_1
-              direction: in
-            - route_map: rmap_2
-              direction: out
-            ranges:
-            - prefix: 2001:db2::/32
-              not_advertise: true
-            - prefix: 2001:db3::/32
-              cost: 120
-          redistribute:
-          - protocol: eigrp
-            id: 120
-            route_map: rmap_1
-          - protocol: direct
-            route_map: ospf102-direct-connect
-        vrfs:
-        - vrf: zone1
-          router_id: 198.51.100.129
-          areas:
-          - area_id: 0.0.0.102
-            nssa:
-              default_information_originate: true
-              no_summary: true
-          - area_id: 0.0.0.103
-            nssa:
-              no_summary: true
-              translate:
-                type7:
-                  always: true
-        - vrf: zone2
-          auto_cost:
-            reference_bandwidth: 45
-            unit: Gbps
+        - process_id: 100
+          router_id: 203.0.113.20
+        - process_id: 102
+          router_id: 198.51.100.1
+          address_family:
+            afi: ipv6
+            safi: unicast
+            areas:
+              - area_id: 0.0.0.100
+                filter_list:
+                  - route_map: rmap_1
+                    direction: in
+                  - route_map: rmap_2
+                    direction: out
+                ranges:
+                  - prefix: 2001:db2::/32
+                    not_advertise: true
+                  - prefix: 2001:db3::/32
+                    cost: 120
+            redistribute:
+              - protocol: eigrp
+                id: 120
+                route_map: rmap_1
+              - protocol: direct
+                route_map: ospf102-direct-connect
+          vrfs:
+            - vrf: zone1
+              router_id: 198.51.100.129
+              areas:
+                - area_id: 0.0.0.102
+                  nssa:
+                    default_information_originate: true
+                    no_summary: true
+                - area_id: 0.0.0.103
+                  nssa:
+                    no_summary: true
+                    translate:
+                      type7:
+                        always: true
+            - vrf: zone2
+              auto_cost:
+                reference_bandwidth: 45
+                unit: Gbps
     state: rendered
 
-# Task Output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # rendered:
 #  - router ospfv3 100
 #  - router-id 203.0.113.20
@@ -1527,8 +1528,8 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'ospfv2.cfg') }}"
     state: parsed
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 # parsed:
 #   processes:
 #   - process_id: "100"
@@ -1570,7 +1571,7 @@ EXAMPLES = """
 #         router_id: 192.0.100.2
 #   - process_id: "102"
 #     router_id: 198.54.100.1
-#     shutdown: True
+#     shutdown: true
 
 # Using gathered
 
@@ -1578,8 +1579,8 @@ EXAMPLES = """
   cisco.nxos.nxos_ospfv3:
     state: gathered
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  gathered:
 #    processes:
 #    - process_id: "100"
@@ -1662,9 +1663,32 @@ commands:
     - "router-id 192.0.100.2"
     - "vrf zone2"
     - "auto-cost reference-bandwidth 45 Gbps"
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - "router ospfv3 102"
+    - "router-id 198.54.100.1"
+    - "router ospfv3 100"
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv3.ospfv3 import (
     Ospfv3Args,
 )

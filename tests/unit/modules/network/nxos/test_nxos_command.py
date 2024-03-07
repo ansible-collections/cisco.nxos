@@ -19,24 +19,25 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import json
 
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 from ansible_collections.cisco.nxos.plugins.modules import nxos_command
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
 
 class TestNxosCommandModule(TestNxosModule):
-
     module = nxos_command
 
     def setUp(self):
         super(TestNxosCommandModule, self).setUp()
 
         self.mock_run_commands = patch(
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_command.run_commands"
+            "ansible_collections.cisco.nxos.plugins.modules.nxos_command.run_commands",
         )
         self.run_commands = self.mock_run_commands.start()
 
@@ -86,20 +87,21 @@ class TestNxosCommandModule(TestNxosModule):
 
     def test_nxos_command_retries(self):
         wait_for = 'result[0] contains "test string"'
-        set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, retries=2)
-        )
+        set_module_args(dict(commands=["show version"], wait_for=wait_for, retries=2))
         self.execute_module(failed=True)
-        self.assertEqual(self.run_commands.call_count, 2)
+        self.assertEqual(self.run_commands.call_count, 3)
+
+    def test_nxos_command_retries_0(self):
+        set_module_args(dict(commands=["show version"], retries=0))
+        self.execute_module(failed=False)
+        self.assertEqual(self.run_commands.call_count, 1)
 
     def test_nxos_command_match_any(self):
         wait_for = [
             'result[0] contains "Cisco"',
             'result[0] contains "test string"',
         ]
-        set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, match="any")
-        )
+        set_module_args(dict(commands=["show version"], wait_for=wait_for, match="any"))
         self.execute_module()
 
     def test_nxos_command_match_all(self):
@@ -107,9 +109,7 @@ class TestNxosCommandModule(TestNxosModule):
             'result[0] contains "Cisco"',
             'result[0] contains "image file"',
         ]
-        set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, match="all")
-        )
+        set_module_args(dict(commands=["show version"], wait_for=wait_for, match="all"))
         self.execute_module()
 
     def test_nxos_command_match_all_failure(self):
@@ -118,7 +118,5 @@ class TestNxosCommandModule(TestNxosModule):
             'result[0] contains "test string"',
         ]
         commands = ["show version", "show version"]
-        set_module_args(
-            dict(commands=commands, wait_for=wait_for, match="all")
-        )
+        set_module_args(dict(commands=commands, wait_for=wait_for, match="all"))
         self.execute_module(failed=True)

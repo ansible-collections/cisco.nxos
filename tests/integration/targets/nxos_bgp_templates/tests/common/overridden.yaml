@@ -1,0 +1,61 @@
+---
+- ansible.builtin.debug:
+    msg: Start nxos_bgp_templates replaced integration tests connection={{ ansible_connection}}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Override BGP templates configuration with provided configuration
+      cisco.nxos.nxos_bgp_templates: &id001
+        config:
+          as_number: 65536
+          neighbor:
+            - name: neighbor_tmplt_1
+              address_family:
+                - afi: ipv4
+                  safi: unicast
+                  advertise_map:
+                    route_map: rmap1
+                    non_exist_map: nemap1
+                  advertisement_interval: 60
+                  disable_peer_as_check: true
+              inherit:
+                peer_session: psession1
+              description: Test_BGP_PEER_TEMPLATE_1
+              local_as: 65537
+        state: overridden
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) |length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - overridden['after'] == result['after']
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['before']
+
+    - name: Override device configurations of listed OSPF processes with provided configurarions (idempotent)
+      register: result
+      cisco.nxos.nxos_bgp_templates: *id001
+
+    - name: Assert that task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Assert that before dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - overridden['after'] == result['before']
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

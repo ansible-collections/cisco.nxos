@@ -28,7 +28,7 @@
     state: default
 
 - block:
-    - name: Configure igmp snooping with non-default values
+    - name: Configure IGMP snooping with non-default values
       register: result
       cisco.nxos.nxos_igmp_snooping: &id001
         snooping: false
@@ -81,7 +81,7 @@
         - assert: *id004
       when: gt_run
 
-    - name: Configure igmp snooping with default group timeout
+    - name: Configure IGMP snooping with default group timeout
       register: result
       cisco.nxos.nxos_igmp_snooping: &id005
         group_timeout: "{{def_group_timeout|default(omit)}}"
@@ -98,7 +98,7 @@
         - assert: *id004
       when: (imagetag and imagetag is not search("D1"))
 
-    - name: Configure igmp snooping with default values
+    - name: Configure IGMP snooping with default values
       register: result
       cisco.nxos.nxos_igmp_snooping: *id006
 
@@ -112,7 +112,7 @@
         - assert: *id004
       when: (imagetag and imagetag is not search("D1"))
   always:
-    - name: Configure igmp snooping with default values
+    - name: Configure IGMP snooping with default values
       register: result
       cisco.nxos.nxos_igmp_snooping: *id006
 

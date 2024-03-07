@@ -1,3 +1,0 @@
----
-trivial:
-  - Begin switch from include to ansible.builtin.include_tasks

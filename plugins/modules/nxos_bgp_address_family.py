@@ -10,6 +10,7 @@ The module file for nxos_bgp_address_family
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -51,7 +52,7 @@ options:
             description: Address Family indicator.
             type: str
             choices: ["ipv4", "ipv6", "link-state", "vpnv4", "vpnv6", "l2vpn"]
-            required: True
+            required: true
           safi:
             description: Sub Address Family indicator.
             type: str
@@ -366,11 +367,11 @@ EXAMPLES = """
           safi: unicast
           vrf: site-1
           default_information:
-            originate: True
+            originate: true
           aggregate_address:
             - prefix: 203.0.113.0/24
-              as_set: True
-              summary_only: True
+              as_set: true
+              summary_only: true
         - afi: ipv6
           safi: multicast
           vrf: site-1
@@ -382,8 +383,8 @@ EXAMPLES = """
               id: 101
               route_map: rmap-eigrp-1
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before: {}
 #
 #  commands:
@@ -419,11 +420,11 @@ EXAMPLES = """
 #        safi: unicast
 #        vrf: site-1
 #        default_information:
-#          originate: True
+#          originate: true
 #        aggregate_address:
 #          - prefix: 203.0.113.0/24
-#            as_set: True
-#            summary_only: True
+#            as_set: true
+#            summary_only: true
 #      - afi: ipv6
 #        safi: multicast
 #        vrf: site-1
@@ -436,7 +437,7 @@ EXAMPLES = """
 #            route_map: rmap-eigrp-1
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   address-family ipv4 multicast
@@ -489,15 +490,15 @@ EXAMPLES = """
               non_critical_delay: 180
           aggregate_address:
             - prefix: 203.0.113.0/24
-              as_set: True
-              summary_only: True
+              as_set: true
+              summary_only: true
         - afi: ipv4
           safi: unicast
           vrf: site-1
     state: replaced
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    address_family:
@@ -516,11 +517,11 @@ EXAMPLES = """
 #        safi: unicast
 #        vrf: site-1
 #        default_information:
-#          originate: True
+#          originate: true
 #        aggregate_address:
 #          - prefix: 203.0.113.0/24
-#            as_set: True
-#            summary_only: True
+#            as_set: true
+#            summary_only: true
 #      - afi: ipv6
 #        safi: multicast
 #        vrf: site-1
@@ -557,8 +558,8 @@ EXAMPLES = """
 #            non_critical_delay: 180
 #        aggregate_address:
 #          - prefix: 203.0.113.0/24
-#            as_set: True
-#            summary_only: True
+#            as_set: true
+#            summary_only: true
 #
 #      - afi: ipv4
 #        safi: unicast
@@ -576,7 +577,7 @@ EXAMPLES = """
 #            route_map: rmap-eigrp-1
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   address-family ipv4 multicast
@@ -621,15 +622,15 @@ EXAMPLES = """
               route_map: rmap1
           aggregate_address:
             - prefix: 203.0.113.0/24
-              as_set: True
-              summary_only: True
+              as_set: true
+              summary_only: true
         - afi: ipv4
           safi: unicast
           vrf: site-1
     state: overridden
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    address_family:
@@ -648,11 +649,11 @@ EXAMPLES = """
 #        safi: unicast
 #        vrf: site-1
 #        default_information:
-#          originate: True
+#          originate: true
 #        aggregate_address:
 #          - prefix: 203.0.113.0/24
-#            as_set: True
-#            summary_only: True
+#            as_set: true
+#            summary_only: true
 #      - afi: ipv6
 #        safi: multicast
 #        vrf: site-1
@@ -689,15 +690,15 @@ EXAMPLES = """
 #            route_map: rmap1
 #        aggregate_address:
 #          - prefix: 203.0.113.0/24
-#            as_set: True
-#            summary_only: True
+#            as_set: true
+#            summary_only: true
 #      - afi: ipv4
 #        safi: unicast
 #        vrf: site-1
 
 #
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   address-family ipv4 multicast
@@ -738,8 +739,8 @@ EXAMPLES = """
           safi: multicast
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    address_family:
@@ -758,11 +759,11 @@ EXAMPLES = """
 #        safi: unicast
 #        vrf: site-1
 #        default_information:
-#          originate: True
+#          originate: true
 #        aggregate_address:
 #          - prefix: 203.0.113.0/24
-#            as_set: True
-#            summary_only: True
+#            as_set: true
+#            summary_only: true
 #      - afi: ipv6
 #        safi: multicast
 #        vrf: site-1
@@ -787,14 +788,14 @@ EXAMPLES = """
 #        safi: unicast
 #        vrf: site-1
 #        default_information:
-#          originate: True
+#          originate: true
 #        aggregate_address:
 #          - prefix: 203.0.113.0/24
-#            as_set: True
-#            summary_only: True
+#            as_set: true
+#            summary_only: true
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 #   vrf site-1
@@ -825,8 +826,8 @@ EXAMPLES = """
   cisco.nxos.nxos_bgp_address_family:
     state: deleted
 
-# Task output
-# -------------
+# Task output:
+# ------------
 #  before:
 #    as_number: "65536"
 #    address_family:
@@ -845,11 +846,11 @@ EXAMPLES = """
 #        safi: unicast
 #        vrf: site-1
 #        default_information:
-#          originate: True
+#          originate: true
 #        aggregate_address:
 #          - prefix: 203.0.113.0/24
-#            as_set: True
-#            summary_only: True
+#            as_set: true
+#            summary_only: true
 #      - afi: ipv6
 #        safi: multicast
 #        vrf: site-1
@@ -872,7 +873,7 @@ EXAMPLES = """
 #    as_number: "65536"
 
 # After state:
-# -------------
+# ------------
 # Nexus9000v# show running-config | section "^router bgp"
 # router bgp 65536
 # Nexus9000v#
@@ -899,11 +900,11 @@ EXAMPLES = """
           safi: unicast
           vrf: site-1
           default_information:
-            originate: True
+            originate: true
           aggregate_address:
             - prefix: 203.0.113.0/24
-              as_set: True
-              summary_only: True
+              as_set: true
+              summary_only: true
         - afi: ipv6
           safi: multicast
           vrf: site-1
@@ -916,8 +917,8 @@ EXAMPLES = """
               route_map: rmap-eigrp-1
     state: rendered
 
-# Task Output (redacted)
-# -----------------------
+# Task Output:
+# ------------
 # rendered:
 # - router bgp 65536
 # - address-family ipv4 multicast
@@ -956,8 +957,8 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
-# Task output (redacted)
-# -----------------------
+# Task output:
+# ------------
 #  parsed:
 #    as_number: "65536"
 #    address_family:
@@ -976,11 +977,11 @@ EXAMPLES = """
 #        safi: unicast
 #        vrf: site-1
 #        default_information:
-#          originate: True
+#          originate: true
 #        aggregate_address:
 #          - prefix: 203.0.113.0/24
-#            as_set: True
-#            summary_only: True
+#            as_set: true
+#            summary_only: true
 #      - afi: ipv6
 #        safi: multicast
 #        vrf: site-1
@@ -992,8 +993,55 @@ EXAMPLES = """
 #            protocol: eigrp
 #            route_map: rmap-eigrp-1
 """
+RETURN = """
+before:
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+after:
+  description: The resulting configuration after module execution.
+  returned: when changed
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: list
+  sample:
+    - router bgp 65536
+    - address-family ipv4 multicast
+    - nexthop route-map rmap2
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - router bgp 65536
+    - address-family ipv4 multicast
+    - nexthop route-map rmap2
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+"""
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
 )

@@ -7,6 +7,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,21 +21,20 @@ created.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
+    ResourceModule,
+)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
     get_from_dict,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
-    get_logging_sevmap,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
-    ResourceModule,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.logging_global import (
     Logging_globalTemplate,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    get_logging_sevmap,
 )
 
 
@@ -115,7 +115,7 @@ class Logging_global(ResourceModule):
                     self.state in self._state_set,
                     have_k is False,
                     want_k is None,
-                )
+                ),
             ):
                 # if want is missing and have is negated
                 # set want to True in order to revert to default state

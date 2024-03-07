@@ -1,0 +1,20 @@
+---
+- ansible.builtin.debug:
+    msg: "START nxos_bgp_templates gathered integration tests"
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gather BGP templates facts using gathered
+      register: result
+      cisco.nxos.nxos_bgp_templates:
+        state: gathered
+
+    - name: Assert that facts were correctly generated
+      ansible.builtin.assert:
+        that: merged['after'] == result['gathered']
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

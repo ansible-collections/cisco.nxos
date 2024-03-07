@@ -784,164 +784,119 @@ Examples
         config:
           - name: Ethernet1/1
             address_family:
-            - afi: ipv4
-              processes:
-              - process_id: "100"
-                area:
-                  area_id: 1.1.1.1
-                  secondaries: False
-              multi_areas:
-              - 11.11.11.11
-            - afi: ipv6
-              processes:
-              - process_id: "200"
-                area:
-                  area_id: 2.2.2.2
+              - afi: ipv4
+                processes:
+                  - process_id: '100'
+                    area:
+                      area_id: 1.1.1.1
+                      secondaries: false
                 multi_areas:
-                - 21.0.0.0
-              - process_id: "300"
+                  - 11.11.11.11
+              - afi: ipv6
+                processes:
+                  - process_id: '200'
+                    area:
+                      area_id: 2.2.2.2
+                    multi_areas:
+                      - 21.0.0.0
+                  - process_id: '300'
+                    multi_areas:
+                      - 50.50.50.50
                 multi_areas:
-                - 50.50.50.50
-              multi_areas:
-              - 16.10.10.10
+                  - 16.10.10.10
           - name: Ethernet1/2
             address_family:
-            - afi: ipv4
-              authentication:
-                enable: True
-                key_chain: test-1
-              message_digest_key:
-                key_id: 10
-                encryption: 3
-                key: abc01d272be25d29
-              cost: 100
-            - afi: ipv6
-              network: broadcast
-              shutdown: True
+              - afi: ipv4
+                authentication:
+                  enable: true
+                  key_chain: test-1
+                message_digest_key:
+                  key_id: 10
+                  encryption: 3
+                  key: abc01d272be25d29
+                cost: 100
+              - afi: ipv6
+                network: broadcast
+                shutdown: true
           - name: Ethernet1/3
             address_family:
-            - afi: ipv4
-              authentication_key:
-                encryption: 7
-                key: 12090404011C03162E
+              - afi: ipv4
+                authentication_key:
+                  encryption: 7
+                  key: 12090404011C03162E
         state: merged
 
-    # Task output
-    # -------------
-    # "before": [
-    #        {
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # Task output:
+    # ------------
+    # before:
+    # - name: Ethernet1/1
+    # - name: Ethernet1/2
+    # - name: Ethernet1/3
     #
-    # "commands": [
-    #        "interface Ethernet1/1",
-    #        "ip router ospf multi-area 11.11.11.11",
-    #        "ip router ospf 100 area 1.1.1.1 secondaries none",
-    #        "ipv6 router ospfv3 multi-area 16.10.10.10",
-    #        "ipv6 router ospfv3 200 area 2.2.2.2",
-    #        "ipv6 router ospfv3 200 multi-area 21.0.0.0",
-    #        "ipv6 router ospfv3 300 multi-area 50.50.50.50",
-    #        "interface Ethernet1/2",
-    #        "ip ospf authentication key-chain test-1",
-    #        "ip ospf authentication",
-    #        "ip ospf message-digest-key 10 md5 3 abc01d272be25d29",
-    #        "ip ospf cost 100",
-    #        "ospfv3 network broadcast",
-    #        "ospfv3 shutdown",
-    #        "interface Ethernet1/3",
-    #        "ip ospf authentication-key 7 12090404011C03162E"
-    # ]
+    # commands:
+    # - interface Ethernet1/1
+    # - ip router ospf multi-area 11.11.11.11
+    # - ip router ospf 100 area 1.1.1.1 secondaries none
+    # - ipv6 router ospfv3 multi-area 16.10.10.10
+    # - ipv6 router ospfv3 200 area 2.2.2.2
+    # - ipv6 router ospfv3 200 multi-area 21.0.0.0
+    # - ipv6 router ospfv3 300 multi-area 50.50.50.50
+    # - interface Ethernet1/2
+    # - ip ospf authentication key-chain test-1
+    # - ip ospf authentication
+    # - ip ospf message-digest-key 10 md5 3 abc01d272be25d29
+    # - ip ospf cost 100
+    # - ospfv3 network broadcast
+    # - ospfv3 shutdown
+    # - interface Ethernet1/3
+    # - ip ospf authentication-key 7 12090404011C03162E
     #
-    # "after": [
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "multi_areas": [
-    #                        "11.11.11.11"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "1.1.1.1",
-    #                                "secondaries": false
-    #                            },
-    #                            "process_id": "100"
-    #                        }
-    #                    ]
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "multi_areas": [
-    #                        "16.10.10.10"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "2.2.2.2"
-    #                            },
-    #                            "multi_areas": [
-    #                                "21.0.0.0"
-    #                            ],
-    #                            "process_id": "200"
-    #                        },
-    #                        {
-    #                            "multi_areas": [
-    #                                "50.50.50.50"
-    #                            ],
-    #                            "process_id": "300"
-    #                        }
-    #                    ]
-    #                }
-    #            ],
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication": {
-    #                       "enable": true,
-    #                       "key_chain": "test-1"
-    #                    },
-    #                    "cost": 100,
-    #                    "message_digest_key": {
-    #                        "encryption": 3,
-    #                        "key": "abc01d272be25d29",
-    #                        "key_id": 10
-    #                    }
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "network": "broadcast",
-    #                    "shutdown": true
-    #                }
-    #            ],
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication_key": {
-    #                        "encryption": 7,
-    #                        "key": "12090404011C03162E"
-    #                    }
-    #                }
-    #            ],
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # after:
+    #   - address_family:
+    #     - afi: ipv4
+    #       multi_areas:
+    #       - 11.11.11.11
+    #       processes:
+    #       - area:
+    #           area_id: 1.1.1.1
+    #           secondaries: false
+    #         process_id: '100'
+    #     - afi: ipv6
+    #       multi_areas:
+    #       - 16.10.10.10
+    #       processes:
+    #       - area:
+    #           area_id: 2.2.2.2
+    #         multi_areas:
+    #         - 21.0.0.0
+    #         process_id: '200'
+    #       - multi_areas:
+    #         - 50.50.50.50
+    #         process_id: '300'
+    #     name: Ethernet1/1
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication:
+    #         enable: true
+    #         key_chain: test-1
+    #       cost: 100
+    #       message_digest_key:
+    #         encryption: 3
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #         key_id: 10
+    #     - afi: ipv6
+    #       network: broadcast
+    #       shutdown: true
+    #     name: Ethernet1/2
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication_key:
+    #         encryption: 7
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #     name: Ethernet1/3
 
     # After state:
-    # -------------
+    # ------------
     # NXOS# show running-config | section ^interface
     # interface Ethernet1/1
     #   no switchport
@@ -967,7 +922,7 @@ Examples
     # Using replaced
 
     # Before state:
-    # ------------
+    # -------------
     # NXOS# show running-config | section ^interface
     # interface Ethernet1/1
     #   no switchport
@@ -992,164 +947,105 @@ Examples
     - name: Replace OSPF configurations of listed interfaces with provided configurations
       cisco.nxos.nxos_ospf_interfaces:
         config:
-        - name: Ethernet1/1
-          address_family:
-          - afi: ipv4
-            processes:
-            - process_id: "100"
-              area:
-                area_id: 1.1.1.1
-                secondaries: False
-            multi_areas:
-            - 11.11.11.12
-        - name: Ethernet1/3
+          - name: Ethernet1/1
+            address_family:
+              - afi: ipv4
+                processes:
+                  - process_id: "100"
+                    area:
+                      area_id: 1.1.1.1
+                      secondaries: false
+                multi_areas:
+                  - 11.11.11.12
+          - name: Ethernet1/3
         state: replaced
 
-    # Task output
-    # -------------
-    # "before": [
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "multi_areas": [
-    #                        "11.11.11.11"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "1.1.1.1",
-    #                                "secondaries": false
-    #                            },
-    #                            "process_id": "100"
-    #                        }
-    #                    ]
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "multi_areas": [
-    #                        "16.10.10.10"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "2.2.2.2"
-    #                            },
-    #                            "multi_areas": [
-    #                                "21.0.0.0"
-    #                            ],
-    #                            "process_id": "200"
-    #                        },
-    #                        {
-    #                            "multi_areas": [
-    #                                "50.50.50.50"
-    #                            ],
-    #                            "process_id": "300"
-    #                        }
-    #                    ]
-    #                }
-    #            ],
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication": {
-    #                       "enable": true,
-    #                       "key_chain": "test-1"
-    #                    },
-    #                    "cost": 100,
-    #                    "message_digest_key": {
-    #                        "encryption": 3,
-    #                        "key": "abc01d272be25d29",
-    #                        "key_id": 10
-    #                    }
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "network": "broadcast",
-    #                    "shutdown": true
-    #                }
-    #            ],
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication_key": {
-    #                        "encryption": 7,
-    #                        "key": "12090404011C03162E"
-    #                    }
-    #                }
-    #            ],
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # Task output:
+    # ------------
+    # before:
+    #   - address_family:
+    #     - afi: ipv4
+    #       multi_areas:
+    #       - 11.11.11.11
+    #       processes:
+    #       - area:
+    #           area_id: 1.1.1.1
+    #           secondaries: false
+    #         process_id: '100'
+    #     - afi: ipv6
+    #       multi_areas:
+    #       - 16.10.10.10
+    #       processes:
+    #       - area:
+    #           area_id: 2.2.2.2
+    #         multi_areas:
+    #         - 21.0.0.0
+    #         process_id: '200'
+    #       - multi_areas:
+    #         - 50.50.50.50
+    #         process_id: '300'
+    #     name: Ethernet1/1
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication:
+    #         enable: true
+    #         key_chain: test-1
+    #       cost: 100
+    #       message_digest_key:
+    #         encryption: 3
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #         key_id: 10
+    #     - afi: ipv6
+    #       network: broadcast
+    #       shutdown: true
+    #     name: Ethernet1/2
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication_key:
+    #         encryption: 7
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #     name: Ethernet1/3
     #
-    # "commands": [
-    #        "interface Ethernet1/1",
-    #        "ip router ospf multi-area 11.11.11.12",
-    #        "no ip router ospf multi-area 11.11.11.11",
-    #        "no ipv6 router ospfv3 multi-area 16.10.10.10",
-    #        "no ipv6 router ospfv3 200 area 2.2.2.2",
-    #        "no ipv6 router ospfv3 200 multi-area 21.0.0.0",
-    #        "no ipv6 router ospfv3 300 multi-area 50.50.50.50",
-    #        "interface Ethernet1/3",
-    #        "no ip ospf authentication-key 7 12090404011C03162E"
-    # ]
+    # commands:
+    # - interface Ethernet1/1
+    # - ip router ospf multi-area 11.11.11.12
+    # - no ip router ospf multi-area 11.11.11.11
+    # - no ipv6 router ospfv3 multi-area 16.10.10.10
+    # - no ipv6 router ospfv3 200 area 2.2.2.2
+    # - no ipv6 router ospfv3 200 multi-area 21.0.0.0
+    # - no ipv6 router ospfv3 300 multi-area 50.50.50.50
+    # - interface Ethernet1/3
+    # - no ip ospf authentication-key 7 12090404011C03162E
     #
-    # "after": [
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "multi_areas": [
-    #                        "11.11.11.12"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "1.1.1.1",
-    #                                "secondaries": false
-    #                            },
-    #                            "process_id": "100"
-    #                        }
-    #                    ]
-    #                }
-    #            ],
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication": {
-    #                        "enable": true,
-    #                        "key_chain": "test-1"
-    #                    },
-    #                    "cost": 100,
-    #                    "message_digest_key": {
-    #                        "encryption": 3,
-    #                        "key": "abc01d272be25d29",
-    #                        "key_id": 10
-    #                    }
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "network": "broadcast",
-    #                    "shutdown": true
-    #                }
-    #            ],
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "name": "Ethernet1/3"
-    #        },
+    # after:
+    #   - address_family:
+    #     - afi: ipv4
+    #       multi_areas:
+    #       - 11.11.11.12
+    #       processes:
+    #       - area:
+    #           area_id: 1.1.1.1
+    #           secondaries: false
+    #         process_id: '100'
+    #     name: Ethernet1/1
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication:
+    #         enable: true
+    #         key_chain: test-1
+    #       cost: 100
+    #       message_digest_key:
+    #         encryption: 3
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #         key_id: 10
+    #     - afi: ipv6
+    #       network: broadcast
+    #       shutdown: true
+    #     name: Ethernet1/2
+    #   - name: Ethernet1/3
     #
     # After state:
-    # -------------
+    # ------------
     # NXOS# show running-config | section ^interface
     # interface Ethernet1/1
     #   no switchport
@@ -1170,7 +1066,7 @@ Examples
     # Using overridden
 
     # Before state:
-    # ------------
+    # -------------
     # NXOS# show running-config | section ^interface
     # interface Ethernet1/1
     #   no switchport
@@ -1195,148 +1091,95 @@ Examples
     - name: Override all OSPF interfaces configuration with provided configuration
       cisco.nxos.nxos_ospf_interfaces:
         config:
-        - name: Ethernet1/1
-          address_family:
-          - afi: ipv4
-            processes:
-            - process_id: "100"
-              area:
-                area_id: 1.1.1.1
-                secondaries: False
-            multi_areas:
-            - 11.11.11.12
+          - name: Ethernet1/1
+            address_family:
+              - afi: ipv4
+                processes:
+                  - process_id: "100"
+                    area:
+                      area_id: 1.1.1.1
+                      secondaries: false
+                multi_areas:
+                  - 11.11.11.12
         state: overridden
 
-    # Task output
-    # -------------
-    # "before": [
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "multi_areas": [
-    #                        "11.11.11.11"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "1.1.1.1",
-    #                                "secondaries": false
-    #                            },
-    #                            "process_id": "100"
-    #                        }
-    #                    ]
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "multi_areas": [
-    #                        "16.10.10.10"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "2.2.2.2"
-    #                            },
-    #                            "multi_areas": [
-    #                                "21.0.0.0"
-    #                            ],
-    #                            "process_id": "200"
-    #                        },
-    #                        {
-    #                            "multi_areas": [
-    #                                "50.50.50.50"
-    #                            ],
-    #                            "process_id": "300"
-    #                        }
-    #                    ]
-    #                }
-    #            ],
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication": {
-    #                       "enable": true,
-    #                       "key_chain": "test-1"
-    #                    },
-    #                    "cost": 100,
-    #                    "message_digest_key": {
-    #                        "encryption": 3,
-    #                        "key": "abc01d272be25d29",
-    #                        "key_id": 10
-    #                    }
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "network": "broadcast",
-    #                    "shutdown": true
-    #                }
-    #            ],
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication_key": {
-    #                        "encryption": 7,
-    #                        "key": "12090404011C03162E"
-    #                    }
-    #                }
-    #            ],
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # Task output:
+    # ------------
+    # before:
+    #   - address_family:
+    #     - afi: ipv4
+    #       multi_areas:
+    #       - 11.11.11.11
+    #       processes:
+    #       - area:
+    #           area_id: 1.1.1.1
+    #           secondaries: false
+    #         process_id: '100'
+    #     - afi: ipv6
+    #       multi_areas:
+    #       - 16.10.10.10
+    #       processes:
+    #       - area:
+    #           area_id: 2.2.2.2
+    #         multi_areas:
+    #         - 21.0.0.0
+    #         process_id: '200'
+    #       - multi_areas:
+    #         - 50.50.50.50
+    #         process_id: '300'
+    #     name: Ethernet1/1
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication:
+    #         enable: true
+    #         key_chain: test-1
+    #       cost: 100
+    #       message_digest_key:
+    #         encryption: 3
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #         key_id: 10
+    #     - afi: ipv6
+    #       network: broadcast
+    #       shutdown: true
+    #     name: Ethernet1/2
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication_key:
+    #         encryption: 7
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #     name: Ethernet1/3
     #
-    # "commands": [
-    #        "interface Ethernet1/2",
-    #        "no ip ospf authentication key-chain test-1",
-    #        "no ip ospf authentication",
-    #        "no ip ospf message-digest-key 10 md5 3 abc01d272be25d29",
-    #        "no ip ospf cost 100",
-    #        "no ospfv3 network broadcast",
-    #        "no ospfv3 shutdown",
-    #        "interface Ethernet1/3",
-    #        "no ip ospf authentication-key 7 12090404011C03162E",
-    #        "interface Ethernet1/1",
-    #        "ip router ospf multi-area 11.11.11.12",
-    #        "no ip router ospf multi-area 11.11.11.11",
-    #        "no ipv6 router ospfv3 multi-area 16.10.10.10",
-    #        "no ipv6 router ospfv3 200 area 2.2.2.2",
-    #        "no ipv6 router ospfv3 200 multi-area 21.0.0.0",
-    #        "no ipv6 router ospfv3 300 multi-area 50.50.50.50"
-    # ]
+    # commands:
+    # - interface Ethernet1/2
+    # - no ip ospf authentication key-chain test-1
+    # - no ip ospf authentication
+    # - no ip ospf message-digest-key 10 md5 3 abc01d272be25d29
+    # - no ip ospf cost 100
+    # - no ospfv3 network broadcast
+    # - no ospfv3 shutdown
+    # - interface Ethernet1/3
+    # - no ip ospf authentication-key 7 12090404011C03162E
+    # - interface Ethernet1/1
+    # - ip router ospf multi-area 11.11.11.12
+    # - no ip router ospf multi-area 11.11.11.11
+    # - no ipv6 router ospfv3 multi-area 16.10.10.10
+    # - no ipv6 router ospfv3 200 area 2.2.2.2
+    # - no ipv6 router ospfv3 200 multi-area 21.0.0.0
+    # - no ipv6 router ospfv3 300 multi-area 50.50.50.50
     #
-    # "after": [
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "multi_areas": [
-    #                        "11.11.11.12"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "1.1.1.1",
-    #                                "secondaries": false
-    #                            },
-    #                            "process_id": "100"
-    #                        }
-    #                    ]
-    #                }
-    #            ],
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # after:
+    #   - address_family:
+    #     - afi: ipv4
+    #       multi_areas:
+    #       - 11.11.11.12
+    #       processes:
+    #       - area:
+    #           area_id: 1.1.1.1
+    #           secondaries: false
+    #         process_id: '100'
+    #     name: Ethernet1/1
+    #   - name: Ethernet1/2
+    #   - name: Ethernet1/3
 
     # After state:
     # -------------
@@ -1353,7 +1196,7 @@ Examples
     # Using deleted to delete OSPF config of a single interface
 
     # Before state:
-    # ------------
+    # -------------
     # NXOS# show running-config | section ^interface
     # interface Ethernet1/1
     #   no switchport
@@ -1381,139 +1224,84 @@ Examples
           - name: Ethernet1/1
         state: deleted
 
-    # Task output
-    # -------------
-    # "before": [
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "multi_areas": [
-    #                        "11.11.11.11"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "1.1.1.1",
-    #                                "secondaries": false
-    #                            },
-    #                            "process_id": "100"
-    #                        }
-    #                    ]
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "multi_areas": [
-    #                        "16.10.10.10"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "2.2.2.2"
-    #                            },
-    #                            "multi_areas": [
-    #                                "21.0.0.0"
-    #                            ],
-    #                            "process_id": "200"
-    #                        },
-    #                        {
-    #                            "multi_areas": [
-    #                                "50.50.50.50"
-    #                            ],
-    #                            "process_id": "300"
-    #                        }
-    #                    ]
-    #                }
-    #            ],
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication": {
-    #                       "enable": true,
-    #                       "key_chain": "test-1"
-    #                    },
-    #                    "cost": 100,
-    #                    "message_digest_key": {
-    #                        "encryption": 3,
-    #                        "key": "abc01d272be25d29",
-    #                        "key_id": 10
-    #                    }
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "network": "broadcast",
-    #                    "shutdown": true
-    #                }
-    #            ],
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication_key": {
-    #                        "encryption": 7,
-    #                        "key": "12090404011C03162E"
-    #                    }
-    #                }
-    #            ],
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # Task output:
+    # ------------
+    # before:
+    #   - address_family:
+    #     - afi: ipv4
+    #       multi_areas:
+    #       - 11.11.11.11
+    #       processes:
+    #       - area:
+    #           area_id: 1.1.1.1
+    #           secondaries: false
+    #         process_id: '100'
+    #     - afi: ipv6
+    #       multi_areas:
+    #       - 16.10.10.10
+    #       processes:
+    #       - area:
+    #           area_id: 2.2.2.2
+    #         multi_areas:
+    #         - 21.0.0.0
+    #         process_id: '200'
+    #       - multi_areas:
+    #         - 50.50.50.50
+    #         process_id: '300'
+    #     name: Ethernet1/1
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication:
+    #         enable: true
+    #         key_chain: test-1
+    #       cost: 100
+    #       message_digest_key:
+    #         encryption: 3
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #         key_id: 10
+    #     - afi: ipv6
+    #       network: broadcast
+    #       shutdown: true
+    #     name: Ethernet1/2
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication_key:
+    #         encryption: 7
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #     name: Ethernet1/3
     #
-    # "commands": [
-    #        "interface Ethernet1/1",
-    #        "no ip router ospf multi-area 11.11.11.11",
-    #        "no ip router ospf 100 area 1.1.1.1 secondaries none",
-    #        "no ipv6 router ospfv3 multi-area 16.10.10.10",
-    #        "no ipv6 router ospfv3 200 area 2.2.2.2",
-    #        "no ipv6 router ospfv3 200 multi-area 21.0.0.0",
-    #        "no ipv6 router ospfv3 300 multi-area 50.50.50.50"
-    # ]
+    # commands:
+    # - interface Ethernet1/1
+    # - no ip router ospf multi-area 11.11.11.11
+    # - no ip router ospf 100 area 1.1.1.1 secondaries none
+    # - no ipv6 router ospfv3 multi-area 16.10.10.10
+    # - no ipv6 router ospfv3 200 area 2.2.2.2
+    # - no ipv6 router ospfv3 200 multi-area 21.0.0.0
+    # - no ipv6 router ospfv3 300 multi-area 50.50.50.50
     #
-    # "before": [
-    #        {
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication": {
-    #                       "enable": true,
-    #                       "key_chain": "test-1"
-    #                    },
-    #                    "cost": 100,
-    #                    "message_digest_key": {
-    #                        "encryption": 3,
-    #                        "key": "abc01d272be25d29",
-    #                        "key_id": 10
-    #                    }
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "network": "broadcast",
-    #                    "shutdown": true
-    #                }
-    #            ],
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication_key": {
-    #                        "encryption": 7,
-    #                        "key": "12090404011C03162E"
-    #                    }
-    #                }
-    #            ],
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # after:
+    #   - name: Ethernet1/1
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication:
+    #         enable: true
+    #         key_chain: test-1
+    #       cost: 100
+    #       message_digest_key:
+    #         encryption: 3
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #         key_id: 10
+    #     - afi: ipv6
+    #       network: broadcast
+    #       shutdown: true
+    #     name: Ethernet1/2
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication_key:
+    #         encryption: 7
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #     name: Ethernet1/3
+
 
     # After state:
     # ------------
@@ -1535,7 +1323,7 @@ Examples
     # Using deleted to delete OSPF config from all interfaces
 
     # Before state:
-    # ------------
+    # -------------
     # NXOS# show running-config | section ^interface
     # interface Ethernet1/1
     #   no switchport
@@ -1561,119 +1349,53 @@ Examples
       cisco.nxos.nxos_ospf_interfaces:
         state: deleted
 
-    # Task output
-    # -------------
-    # "before": [
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "multi_areas": [
-    #                        "11.11.11.11"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "1.1.1.1",
-    #                                "secondaries": false
-    #                            },
-    #                            "process_id": "100"
-    #                        }
-    #                    ]
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "multi_areas": [
-    #                        "16.10.10.10"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "2.2.2.2"
-    #                            },
-    #                            "multi_areas": [
-    #                                "21.0.0.0"
-    #                            ],
-    #                            "process_id": "200"
-    #                        },
-    #                        {
-    #                            "multi_areas": [
-    #                                "50.50.50.50"
-    #                            ],
-    #                            "process_id": "300"
-    #                        }
-    #                    ]
-    #                }
-    #            ],
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication": {
-    #                       "enable": true,
-    #                       "key_chain": "test-1"
-    #                    },
-    #                    "cost": 100,
-    #                    "message_digest_key": {
-    #                        "encryption": 3,
-    #                        "key": "abc01d272be25d29",
-    #                        "key_id": 10
-    #                    }
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "network": "broadcast",
-    #                    "shutdown": true
-    #                }
-    #            ],
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication_key": {
-    #                        "encryption": 7,
-    #                        "key": "12090404011C03162E"
-    #                    }
-    #                }
-    #            ],
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # Task output:
+    # ------------
+    # before:
+    #   - name: Ethernet1/1
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication:
+    #         enable: true
+    #         key_chain: test-1
+    #       cost: 100
+    #       message_digest_key:
+    #         encryption: 3
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #         key_id: 10
+    #     - afi: ipv6
+    #       network: broadcast
+    #       shutdown: true
+    #     name: Ethernet1/2
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication_key:
+    #         encryption: 7
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #     name: Ethernet1/3
     #
-    # "commands": [
-    #        "interface Ethernet1/1",
-    #        "no ip router ospf multi-area 11.11.11.11",
-    #        "no ip router ospf 100 area 1.1.1.1 secondaries none",
-    #        "no ipv6 router ospfv3 multi-area 16.10.10.10",
-    #        "no ipv6 router ospfv3 200 area 2.2.2.2",
-    #        "no ipv6 router ospfv3 200 multi-area 21.0.0.0",
-    #        "no ipv6 router ospfv3 300 multi-area 50.50.50.50",
-    #        "interface Ethernet1/2",
-    #        "no ip ospf authentication key-chain test-1",
-    #        "no ip ospf authentication",
-    #        "no ip ospf message-digest-key 10 md5 3 abc01d272be25d29",
-    #        "no ip ospf cost 100",
-    #        "no ospfv3 network broadcast",
-    #        "no ospfv3 shutdown",
-    #        "interface Ethernet1/3",
-    #        "no ip ospf authentication-key 7 12090404011C03162E"
-    # ]
+    # commands:
+    # - interface Ethernet1/1
+    # - no ip router ospf multi-area 11.11.11.11
+    # - no ip router ospf 100 area 1.1.1.1 secondaries none
+    # - no ipv6 router ospfv3 multi-area 16.10.10.10
+    # - no ipv6 router ospfv3 200 area 2.2.2.2
+    # - no ipv6 router ospfv3 200 multi-area 21.0.0.0
+    # - no ipv6 router ospfv3 300 multi-area 50.50.50.50
+    # - interface Ethernet1/2
+    # - no ip ospf authentication key-chain test-1
+    # - no ip ospf authentication
+    # - no ip ospf message-digest-key 10 md5 3 abc01d272be25d29
+    # - no ip ospf cost 100
+    # - no ospfv3 network broadcast
+    # - no ospfv3 shutdown
+    # - interface Ethernet1/3
+    # - no ip ospf authentication-key 7 12090404011C03162E
     #
-    # "after": [
-    #        {
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # after:
+    #   - name: Ethernet1/1
+    #   - name: Ethernet1/2
+    #   - name: Ethernet1/3
 
     # After state:
     # ------------
@@ -1687,73 +1409,75 @@ Examples
 
     # Using rendered
 
-    - name: Render platform specific configuration lines with state rendered (without connecting to the device)
+    - name: >-
+        Render platform specific configuration lines with state rendered (without
+        connecting to the device)
       cisco.nxos.nxos_ospf_interfaces:
         config:
           - name: Ethernet1/1
             address_family:
-            - afi: ipv4
-              processes:
-              - process_id: "100"
-                area:
-                  area_id: 1.1.1.1
-                  secondaries: False
-              multi_areas:
-              - 11.11.11.11
-            - afi: ipv6
-              processes:
-              - process_id: "200"
-                area:
-                  area_id: 2.2.2.2
+              - afi: ipv4
+                processes:
+                  - process_id: '100'
+                    area:
+                      area_id: 1.1.1.1
+                      secondaries: false
                 multi_areas:
-                - 21.0.0.0
-              - process_id: "300"
+                  - 11.11.11.11
+              - afi: ipv6
+                processes:
+                  - process_id: '200'
+                    area:
+                      area_id: 2.2.2.2
+                    multi_areas:
+                      - 21.0.0.0
+                  - process_id: '300'
+                    multi_areas:
+                      - 50.50.50.50
                 multi_areas:
-                - 50.50.50.50
-              multi_areas:
-              - 16.10.10.10
+                  - 16.10.10.10
           - name: Ethernet1/2
             address_family:
-            - afi: ipv4
-              authentication:
-                enable: True
-                key_chain: test-1
-              message_digest_key:
-                key_id: 10
-                encryption: 3
-                key: abc01d272be25d29
-              cost: 100
-            - afi: ipv6
-              network: broadcast
-              shutdown: True
+              - afi: ipv4
+                authentication:
+                  enable: true
+                  key_chain: test-1
+                message_digest_key:
+                  key_id: 10
+                  encryption: 3
+                  key: abc01d272be25d29
+                cost: 100
+              - afi: ipv6
+                network: broadcast
+                shutdown: true
           - name: Ethernet1/3
             address_family:
-            - afi: ipv4
-              authentication_key:
-                encryption: 7
-                key: 12090404011C03162E
+              - afi: ipv4
+                authentication_key:
+                  encryption: 7
+                  key: 12090404011C03162E
         state: rendered
 
-    # Task Output (redacted)
-    # -----------------------
-    # "rendered": [
-    #        "interface Ethernet1/1",
-    #        "ip router ospf multi-area 11.11.11.11",
-    #        "ip router ospf 100 area 1.1.1.1 secondaries none",
-    #        "ipv6 router ospfv3 multi-area 16.10.10.10",
-    #        "ipv6 router ospfv3 200 area 2.2.2.2",
-    #        "ipv6 router ospfv3 200 multi-area 21.0.0.0",
-    #        "ipv6 router ospfv3 300 multi-area 50.50.50.50",
-    #        "interface Ethernet1/2",
-    #        "ip ospf authentication key-chain test-1",
-    #        "ip ospf authentication",
-    #        "ip ospf message-digest-key 10 md5 3 abc01d272be25d29",
-    #        "ip ospf cost 100",
-    #        "ospfv3 network broadcast",
-    #        "ospfv3 shutdown",
-    #        "interface Ethernet1/3",
-    #        "ip ospf authentication-key 7 12090404011C03162E"
-    # ]
+
+    # Task Output:
+    # ------------
+    # rendered:
+    # - interface Ethernet1/1
+    # - ip router ospf multi-area 11.11.11.11
+    # - ip router ospf 100 area 1.1.1.1 secondaries none
+    # - ipv6 router ospfv3 multi-area 16.10.10.10
+    # - ipv6 router ospfv3 200 area 2.2.2.2
+    # - ipv6 router ospfv3 200 multi-area 21.0.0.0
+    # - ipv6 router ospfv3 300 multi-area 50.50.50.50
+    # - interface Ethernet1/2
+    # - ip ospf authentication key-chain test-1
+    # - ip ospf authentication
+    # - ip ospf message-digest-key 10 md5 3 abc01d272be25d29
+    # - ip ospf cost 100
+    # - ospfv3 network broadcast
+    # - ospfv3 shutdown
+    # - interface Ethernet1/3
+    # - ip ospf authentication-key 7 12090404011C03162E
 
     # Using parsed
 
@@ -1781,88 +1505,51 @@ Examples
         running_config: "{{ lookup('file', 'ospf_interfaces.cfg') }}"
         state: parsed
 
-    # Task output (redacted)
-    # -----------------------
-    # "parsed": [
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "multi_areas": [
-    #                        "11.11.11.11"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "1.1.1.1",
-    #                                "secondaries": false
-    #                            },
-    #                            "process_id": "100"
-    #                        }
-    #                    ]
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "multi_areas": [
-    #                        "16.10.10.10"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "2.2.2.2"
-    #                            },
-    #                            "multi_areas": [
-    #                                "21.0.0.0"
-    #                            ],
-    #                            "process_id": "200"
-    #                        },
-    #                        {
-    #                            "multi_areas": [
-    #                                "50.50.50.50"
-    #                            ],
-    #                            "process_id": "300"
-    #                        }
-    #                    ]
-    #                }
-    #            ],
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication": {
-    #                       "enable": true,
-    #                       "key_chain": "test-1"
-    #                    },
-    #                    "cost": 100,
-    #                    "message_digest_key": {
-    #                        "encryption": 3,
-    #                        "key": "abc01d272be25d29",
-    #                        "key_id": 10
-    #                    }
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "network": "broadcast",
-    #                    "shutdown": true
-    #                }
-    #            ],
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication_key": {
-    #                        "encryption": 7,
-    #                        "key": "12090404011C03162E"
-    #                    }
-    #                }
-    #            ],
-    #            "name": "Ethernet1/3"
-    #        },
-    # ]
+    # Task output:
+    # ------------
+    # parsed:
+    #   - address_family:
+    #     - afi: ipv4
+    #       multi_areas:
+    #       - 11.11.11.11
+    #       processes:
+    #       - area:
+    #           area_id: 1.1.1.1
+    #           secondaries: false
+    #         process_id: '100'
+    #     - afi: ipv6
+    #       multi_areas:
+    #       - 16.10.10.10
+    #       processes:
+    #       - area:
+    #           area_id: 2.2.2.2
+    #         multi_areas:
+    #         - 21.0.0.0
+    #         process_id: '200'
+    #       - multi_areas:
+    #         - 50.50.50.50
+    #         process_id: '300'
+    #     name: Ethernet1/1
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication:
+    #         enable: true
+    #         key_chain: test-1
+    #       cost: 100
+    #       message_digest_key:
+    #         encryption: 3
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #         key_id: 10
+    #     - afi: ipv6
+    #       network: broadcast
+    #       shutdown: true
+    #     name: Ethernet1/2
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication_key:
+    #         encryption: 7
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #     name: Ethernet1/3
 
     # Using gathered
 
@@ -1884,55 +1571,34 @@ Examples
     # interface Ethernet1/3
     #   no switchport
 
-    # Task output (redacted)
-    # -----------------------
-    # "gathered": [
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "multi_areas": [
-    #                        "11.11.11.12"
-    #                    ],
-    #                    "processes": [
-    #                        {
-    #                            "area": {
-    #                                "area_id": "1.1.1.1",
-    #                                "secondaries": false
-    #                            },
-    #                            "process_id": "100"
-    #                        }
-    #                    ]
-    #                }
-    #            ],
-    #            "name": "Ethernet1/1"
-    #        },
-    #        {
-    #            "address_family": [
-    #                {
-    #                    "afi": "ipv4",
-    #                    "authentication": {
-    #                        "enable": true,
-    #                        "key_chain": "test-1"
-    #                    },
-    #                    "cost": 100,
-    #                    "message_digest_key": {
-    #                        "encryption": 3,
-    #                        "key": "abc01d272be25d29",
-    #                        "key_id": 10
-    #                    }
-    #                },
-    #                {
-    #                    "afi": "ipv6",
-    #                    "network": "broadcast",
-    #                    "shutdown": true
-    #                }
-    #            ],
-    #            "name": "Ethernet1/2"
-    #        },
-    #        {
-    #            "name": "Ethernet1/3"
-    #        },
+    # Task output:
+    # ------------
+    # gathered:
+    #   - address_family:
+    #     - afi: ipv4
+    #       multi_areas:
+    #       - 11.11.11.12
+    #       processes:
+    #       - area:
+    #           area_id: 1.1.1.1
+    #           secondaries: false
+    #         process_id: '100'
+    #     name: Ethernet1/1
+    #   - address_family:
+    #     - afi: ipv4
+    #       authentication:
+    #         enable: true
+    #         key_chain: test-1
+    #       cost: 100
+    #       message_digest_key:
+    #         encryption: 3
+    #         key: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+    #         key_id: 10
+    #     - afi: ipv6
+    #       network: broadcast
+    #       shutdown: true
+    #     name: Ethernet1/2
+    #   - name: Ethernet1/3
 
 
 
@@ -1999,6 +1665,57 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
                         <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface Ethernet1/1&#x27;, &#x27;ip router ospf multi-area 11.11.11.11&#x27;, &#x27;ip router ospf 100 area 1.1.1.1 secondaries none&#x27;, &#x27;no ipv6 router ospfv3 multi-area 16.10.10.10&#x27;, &#x27;ipv6 router ospfv3 200 area 2.2.2.2&#x27;, &#x27;ipv6 router ospfv3 200 multi-area 21.0.0.0&#x27;, &#x27;ipv6 router ospfv3 300 multi-area 50.50.50.50&#x27;, &#x27;interface Ethernet1/2&#x27;, &#x27;no ip ospf authentication key-chain test-1&#x27;, &#x27;ip ospf authentication&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface Ethernet1/1&#x27;, &#x27;ip router ospf multi-area 11.11.11.11&#x27;, &#x27;ip router ospf 100 area 1.1.1.1 secondaries none&#x27;]</div>
                 </td>
             </tr>
     </table>

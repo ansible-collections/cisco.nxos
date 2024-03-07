@@ -178,12 +178,12 @@ Examples
     - name: Configure interfaces
       cisco.nxos.nxos_bfd_interfaces:
         config:
-        - name: Ethernet1/1
-          bfd: enable
-          echo: enable
-        - name: Ethernet1/2
-          bfd: disable
-          echo: disable
+          - name: Ethernet1/1
+            bfd: enable
+            echo: enable
+          - name: Ethernet1/2
+            bfd: disable
+            echo: disable
         state: merged
 
 
@@ -192,12 +192,12 @@ Examples
     - name: Configure interfaces
       cisco.nxos.nxos_bfd_interfaces:
         config:
-        - name: Ethernet1/1
-          bfd: enable
-          echo: enable
-        - name: Ethernet1/2
-          bfd: disable
-          echo: disable
+          - name: Ethernet1/1
+            bfd: enable
+            echo: enable
+          - name: Ethernet1/2
+            bfd: disable
+            echo: disable
         state: overridden
 
 
@@ -206,12 +206,12 @@ Examples
     - name: Configure interfaces
       cisco.nxos.nxos_bfd_interfaces:
         config:
-        - name: Ethernet1/1
-          bfd: enable
-          echo: enable
-        - name: Ethernet1/2
-          bfd: disable
-          echo: disable
+          - name: Ethernet1/1
+            bfd: enable
+            echo: enable
+          - name: Ethernet1/2
+            bfd: disable
+            echo: disable
         state: replaced
 
     # Using rendered
@@ -219,12 +219,12 @@ Examples
     - name: Use rendered state to convert task input to device specific commands
       cisco.nxos.nxos_bfd_interfaces:
         config:
-        - name: Ethernet1/800
-          bfd: enable
-          echo: enable
-        - name: Ethernet1/801
-          bfd: disable
-          echo: disable
+          - name: Ethernet1/800
+            bfd: enable
+            echo: enable
+          - name: Ethernet1/801
+            bfd: disable
+            echo: disable
         state: rendered
 
     # Task Output (redacted)

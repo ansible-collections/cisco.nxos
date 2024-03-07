@@ -9,7 +9,7 @@
       - no feature fabric forwarding
     match: none
 
-- name: Enable bgp
+- name: Enable BGP
   register: result
   cisco.nxos.nxos_feature:
     feature: bgp
@@ -19,7 +19,7 @@
     that:
       - result.changed == true
 
-- name: Verify bgp
+- name: Verify BGP
   register: result
   cisco.nxos.nxos_feature:
     feature: bgp
@@ -29,7 +29,7 @@
     that:
       - result.changed == false
 
-- name: Disable bgp
+- name: Disable BGP
   register: result
   cisco.nxos.nxos_feature:
     feature: bgp
@@ -39,7 +39,7 @@
     that:
       - result.changed == true
 
-- name: Verify bgp
+- name: Verify BGP
   register: result
   cisco.nxos.nxos_feature:
     feature: bgp

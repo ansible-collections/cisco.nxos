@@ -34,5 +34,3 @@ plugins/module_utils/network/nxos/config/ntp_global/ntp_global.py import-2.6!ski
 plugins/module_utils/network/nxos/config/ntp_global/ntp_global.py compile-2.6!skip
 plugins/module_utils/network/nxos/utils/utils.py import-2.6!skip
 plugins/module_utils/network/nxos/utils/utils.py compile-2.6!skip
-plugins/cliconf/nxos.py pylint:arguments-renamed
-tests/unit/mock/loader.py pylint:arguments-renamed

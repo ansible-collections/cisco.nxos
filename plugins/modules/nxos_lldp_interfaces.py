@@ -27,6 +27,7 @@ The module file for nxos_lldp_interfaces
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -110,12 +111,12 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.nxos.nxos_lldp_interfaces:
     config:
-    - name: Ethernet1/4
-      receive: false
-      transmit: true
-      tlv_set:
-        management_address: 192.168.122.64
-      vlan: 12
+      - name: Ethernet1/4
+        receive: false
+        transmit: true
+        tlv_set:
+          management_address: 192.168.122.64
+        vlan: 12
     state: merged
 
 # After state:
@@ -142,10 +143,10 @@ EXAMPLES = """
 - name: Replace LLDP configuration on interfaces with given configuration
   cisco.nxos.nxos_lldp_interfaces:
     config:
-    - name: Ethernet1/4
-      transmit: no
-      tlv_set:
-        vlan: 2
+      - name: Ethernet1/4
+        transmit: false
+        tlv_set:
+          vlan: 2
     state: replaced
 
 
@@ -175,10 +176,10 @@ EXAMPLES = """
 - name: Override LLDP configuration on all interfaces with given configuration
   cisco.nxos.nxos_lldp_interfaces:
     config:
-    - name: Ethernet1/7
-      receive: no
-      tlv_set:
-        vlan: 12
+      - name: Ethernet1/7
+        receive: false
+        tlv_set:
+          vlan: 12
     state: overridden
 
 
@@ -208,8 +209,6 @@ EXAMPLES = """
 # After state:
 # ------------
 #
-
-
 """
 RETURN = """
 before:
@@ -234,6 +233,7 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lldp_interfaces.lldp_interfaces import (
     Lldp_interfacesArgs,
 )

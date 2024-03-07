@@ -9,7 +9,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Override all ospf interfaces configuration with provided configuration
+    - name: Override all OSPF interfaces configuration with provided configuration
       cisco.nxos.nxos_ospf_interfaces: &id001
         config:
           - name: Ethernet1/1
@@ -44,7 +44,7 @@
           - result['after'][1]  == overridden['after'][1]
           - result['after'][2]  == overridden['after'][2]
 
-    - name: Override all ospf interfaces configuration with provided configuration (idempotent)
+    - name: Override all OSPF interfaces configuration with provided configuration (idempotent)
       register: result
       cisco.nxos.nxos_ospf_interfaces: *id001
 

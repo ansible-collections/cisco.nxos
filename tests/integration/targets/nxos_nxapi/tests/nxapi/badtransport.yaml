@@ -2,14 +2,13 @@
 - ansible.builtin.debug:
     msg: START nxapi/badtransport.yaml
 
-- name: Sending transport other than cli should fail
+- name: Sending transport other than CLI should fail
   register: result
   ignore_errors: true
   cisco.nxos.nxos_nxapi:
     enable_http: false
     enable_sandbox: false
     https_port: 9443
-    provider: "{{ nxapi }}"
 
 - ansible.builtin.assert:
     that:

@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -16,14 +17,13 @@ based on the configuration.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospfv2 import (
-    Ospfv2Template,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv2.ospfv2 import (
     Ospfv2Args,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospfv2 import (
+    Ospfv2Template,
 )
 
 
@@ -48,9 +48,7 @@ class Ospfv2Facts(object):
         """Wrapper method for `connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
-        return connection.get(
-            "show running-config | section '^router ospf .*'"
-        )
+        return connection.get("show running-config | section '^router ospf .*'")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for interfaces

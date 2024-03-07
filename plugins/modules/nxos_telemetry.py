@@ -28,6 +28,7 @@ The module file for nxos_telemetry
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -82,10 +83,10 @@ options:
         elements: raw
         suboptions:
           id:
-            type: int
+            type: str
             description:
             - Destination group identifier.
-            - Value must be a int representing the destination group identifier.
+            - Value must be an integer or string representing the destination group identifier.
           destination:
             type: dict
             description:
@@ -123,10 +124,10 @@ options:
         elements: raw
         suboptions:
           id:
-            type: int
+            type: str
             description:
             - Sensor group identifier.
-            - Value must be a int representing the sensor group identifier.
+            - Value must be a integer or a string representing the sensor group identifier.
           data_source:
             type: str
             description:
@@ -167,12 +168,12 @@ options:
         elements: raw
         suboptions:
           id:
-            type: int
+            type: str
             description:
             - Subscription identifier.
-            - Value must be a int representing the subscription identifier.
+            - Value must be an integer or string representing the subscription identifier.
           destination_group:
-            type: int
+            type: str
             description:
             - Associated destination group.
           sensor_group:
@@ -182,7 +183,7 @@ options:
             - Value must be a dict defining values for keys (id, sample_interval).
             suboptions:
               id:
-                type: int
+                type: str
                 description:
                 - Associated sensor group id.
               sample_interval:
@@ -224,41 +225,41 @@ EXAMPLES = """
       source_interface: Ethernet1/1
       vrf: management
       destination_groups:
-      - id: 2
-        destination:
-          ip: 192.168.0.2
-          port: 50001
-          protocol: gPRC
-          encoding: GPB
-      - id: 55
-        destination:
-          ip: 192.168.0.55
-          port: 60001
-          protocol: gPRC
-          encoding: GPB
+        - id: 2
+          destination:
+            ip: 192.168.0.2
+            port: 50001
+            protocol: gRPC
+            encoding: GPB
+        - id: 55
+          destination:
+            ip: 192.168.0.55
+            port: 60001
+            protocol: gRPC
+            encoding: GPB
       sensor_groups:
-      - id: 1
-        data_source: NX-API
-        path:
-          name: '"show lldp neighbors detail"'
-          depth: 0
-      - id: 55
-        data_source: DME
-        path:
-          name: sys/ch
-          depth: unbounded
-          filter_condition: ne(eqptFt.operSt,"ok")
+        - id: 1
+          data_source: NX-API
+          path:
+            name: '"show lldp neighbors detail"'
+            depth: 0
+        - id: 55
+          data_source: DME
+          path:
+            name: sys/ch
+            depth: unbounded
+            filter_condition: ne(eqptFt.operSt,"ok")
       subscriptions:
-      - id: 5
-        destination_group: 55
-        sensor_group:
-          id: 1
-          sample_interval: 1000
-      - id: 6
-        destination_group: 2
-        sensor_group:
-          id: 55
-          sample_interval: 2000
+        - id: 5
+          destination_group: 55
+          sensor_group:
+            id: 1
+            sample_interval: 1000
+        - id: 6
+          destination_group: 2
+          sensor_group:
+            id: 55
+            sample_interval: 2000
     state: merged
 
 
@@ -276,18 +277,16 @@ EXAMPLES = """
       source_interface: Ethernet1/1
       vrf: management
       destination_groups:
-      - id: 2
-        destination:
-          ip: 192.168.0.2
-          port: 50001
-          protocol: gPRC
-          encoding: GPB
+        - id: 2
+          destination:
+            ip: 192.168.0.2
+            port: 50001
+            protocol: gRPC
+            encoding: GPB
       subscriptions:
-      - id: 5
-        destination_group: 55
+        - id: 5
+          destination_group: 55
     state: replaced
-
-
 """
 RETURN = """
 before:
@@ -313,6 +312,7 @@ commands:
 
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.telemetry.telemetry import (
     TelemetryArgs,
 )
@@ -327,9 +327,7 @@ def main():
 
     :returns: the result form module invocation
     """
-    module = AnsibleModule(
-        argument_spec=TelemetryArgs.argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=TelemetryArgs.argument_spec, supports_check_mode=True)
 
     result = Telemetry(module).execute_module()
     module.exit_json(**result)

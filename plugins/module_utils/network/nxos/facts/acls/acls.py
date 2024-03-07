@@ -11,16 +11,21 @@ based on the configuration.
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 import re
+
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acls.acls import (
     AclsArgs,
+)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
+    validate_ipv4_addr,
+    validate_ipv6_addr,
 )
 
 
@@ -41,9 +46,7 @@ class AclsFacts(object):
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
     def get_device_data(self, connection):
-        data = connection.get(
-            "show running-config | section 'ip(v6)* access-list'"
-        )
+        data = connection.get("show running-config | section '^ip(v6)* access-list'")
         if data == "{}":
             return ""
         return data
@@ -82,9 +85,7 @@ class AclsFacts(object):
         ansible_facts["ansible_network_resources"].pop("acls", None)
         facts = {}
         if objs:
-            params = utils.validate_config(
-                self.argument_spec, {"config": objs}
-            )
+            params = utils.validate_config(self.argument_spec, {"config": objs})
             params = utils.remove_empties(params)
             facts["acls"] = params["config"]
 
@@ -99,11 +100,15 @@ class AclsFacts(object):
         else:
             # it could be a.b.c.d or a.b.c.d/x or a.b.c.d/32
             if "/" in option:  # or 'host' in option:
-                ip = re.search(r"(.*)/(\d+)", option)
-                if int(ip.group(2)) < 32 or 32 < int(ip.group(2)) < 128:
-                    ret_dict.update({"prefix": option})
+                prefix = re.search(r"(.*)/(\d+)", option)
+                ip = prefix.group(1)
+                cidr = prefix.group(2)
+                if (validate_ipv4_addr(option) and int(cidr) == 32) or (
+                    validate_ipv6_addr(option) and int(cidr) == 128
+                ):
+                    ret_dict.update({"host": ip})
                 else:
-                    ret_dict.update({"host": ip.group(1)})
+                    ret_dict.update({"prefix": option})
             else:
                 ret_dict.update({"address": option})
                 wb = ace.split()[1]
@@ -114,26 +119,27 @@ class AclsFacts(object):
             keywords = ["eq", "lt", "gt", "neq", "range"]
             if len(ace.split()) and ace.split()[0] in keywords:
                 port_protocol = {}
-                port_pro = re.search(r"(eq|lt|gt|neq) (\w*)", ace)
-                if port_pro:
-                    port_protocol.update(
-                        {port_pro.group(1): port_pro.group(2)}
-                    )
-                    ace = re.sub(port_pro.group(1), "", ace, 1)
-                    ace = re.sub(port_pro.group(2), "", ace, 1)
+                if "range" not in ace.split()[0]:
+                    port_pro = re.search(r"(eq|lt|gt|neq) (\S+)", ace)
+                    if port_pro:
+                        port_protocol.update({port_pro.group(1): port_pro.group(2)})
+                        ace = re.sub(port_pro.group(1), "", ace, 1)
+                        ace = re.sub(port_pro.group(2), "", ace, 1)
                 else:
-                    limit = re.search(r"(range) (\w*) (\w*)", ace)
+                    limit = re.search(r"range\s(?P<rstart>\S+)\s(?P<rend>\S+)", ace)
                     if limit:
+                        rstart = limit.groupdict()["rstart"]
+                        rend = limit.groupdict()["rend"]
                         port_protocol.update(
                             {
                                 "range": {
-                                    "start": limit.group(2),
-                                    "end": limit.group(3),
-                                }
-                            }
+                                    "start": rstart,
+                                    "end": rend,
+                                },
+                            },
                         )
-                        ace = re.sub(limit.group(2), "", ace, 1)
-                        ace = re.sub(limit.group(3), "", ace, 1)
+                        range_substring = "range %s %s" % (rstart, rend)
+                        ace = re.sub(range_substring, "", ace, 1)
                 if port_protocol:
                     ret_dict.update({"port_protocol": port_protocol})
         return ace, ret_dict
@@ -158,8 +164,8 @@ class AclsFacts(object):
                 "dod_host_prohibited",
                 "dod_net_prohibited",
                 "echo_request",
-                "echo",
                 "echo_reply",
+                "echo",
                 "general_parameter_problem",
                 "host_isolated",
                 "host_precedence_unreachable",
@@ -185,6 +191,7 @@ class AclsFacts(object):
                 "port_unreachable",
                 "precedence_unreachable",
                 "protocol_unreachable",
+                "unreachable",
                 "reassembly_timeout",
                 "redirect",
                 "router_advertisement",
@@ -196,7 +203,39 @@ class AclsFacts(object):
                 "timestamp_request",
                 "traceroute",
                 "ttl_exceeded",
+            ],
+            "icmpv6": [
+                "beyond_scope",
+                "destination_unreachable",
+                "echo_reply",
+                "echo_request",
+                "fragments",
+                "header",
+                "hop_limit",
+                "mld_query",
+                "mld_reduction",
+                "mld_report",
+                "mldv2",
+                "nd_na",
+                "nd_ns",
+                "next_header",
+                "no_admin",
+                "no_route",
+                "packet_too_big",
+                "parameter_option",
+                "parameter_problem",
+                "port_unreachable",
+                "reassembly_timeout",
+                "renum_command",
+                "renum_result",
+                "renum_seq_number",
+                "router_advertisement",
+                "router_renumbering",
+                "router_solicitation",
+                "time_exceeded",
                 "unreachable",
+                "telemetry_path",
+                "telemetry_queue",
             ],
             "igmp": ["dvmrp", "host_query", "host_report"],
         }
@@ -214,9 +253,9 @@ class AclsFacts(object):
                 acl = acl.split("\n")
                 acl = [a.strip() for a in acl]
                 acl = list(filter(None, acl))
-                acls["name"] = re.match(
-                    r"(ip)?(v6)?\s?access-list (.*)", acl[0]
-                ).group(3)
+                acls["name"] = re.match(r"(ip)?(v6)?\s?access-list (.*)", acl[0]).group(
+                    3,
+                )
                 acls["aces"] = []
                 for ace in list(filter(None, acl[1:])):
                     if re.search(r"^ip(.*)access-list.*", ace):
@@ -238,8 +277,13 @@ class AclsFacts(object):
 
                     if not rem and seq:
                         ace = re.sub(grant, "", ace, 1)
+
                         pro = ace.split()[0]
-                        entry.update({"protocol": pro})
+                        if pro == "icmp" and config["afi"] == "ipv6":
+                            entry.update({"protocol": "icmpv6"})
+                        else:
+                            entry.update({"protocol": pro})
+
                         ace = re.sub(pro, "", ace, 1)
                         ace, source = self.get_endpoint(ace, pro)
                         entry.update({"source": source})
@@ -262,16 +306,19 @@ class AclsFacts(object):
                         if log:
                             entry.update({"log": True})
 
-                        if pro == "tcp" or pro == "icmp" or pro == "igmp":
+                        pro = entry.get("protocol", "")
+                        if pro in ["tcp", "icmp", "icmpv6", "igmp"]:
                             pro_options = {}
                             options = {}
                             for option in protocol_options[pro]:
-                                option = re.sub("_", "-", option)
+                                if option not in ["telemetry_path", "telemetry_queue"]:
+                                    option = re.sub("_", "-", option)
                                 if option in ace:
-                                    if (
-                                        option == "echo"
-                                        and "echo_request" in options
+                                    if option == "echo" and (
+                                        "echo_request" in options or "echo_reply" in options
                                     ):
+                                        continue
+                                    elif option == "unreachable" and "port_unreachable" in options:
                                         continue
                                     option = re.sub("-", "_", option)
                                     options.update({option: True})

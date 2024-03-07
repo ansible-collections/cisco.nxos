@@ -7,7 +7,7 @@
     config: "interface loopback1\nno description\nno shutdown\n"
     diff_match: none
 
-- name: Configure device with config
+- name: Configure device with configuration
   register: result
   ansible.netcommon.cli_config: &id001
     config: "{{ lookup('template', 'basic/config.j2') }}"
@@ -24,10 +24,10 @@
     that:
       - result.changed == false
 
-- name: Remove config
+- name: Remove configuration
   ansible.netcommon.cli_config: *id002
 
-- name: Configure device with config
+- name: Configure device with configuration
   register: result
   ansible.netcommon.cli_config:
     config: "{{ lookup('template', 'basic/config.j2') }}"

@@ -3,7 +3,7 @@
     msg: START connection={{ ansible_connection }} nxos_vpc_interface sanity test
 
 - block:
-    - name: Enable feature vpc
+    - name: Enable 'feature vpc'
       cisco.nxos.nxos_feature:
         feature: vpc
         state: enabled
@@ -43,7 +43,7 @@
         that:
           - result.changed == true
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vpc_interface: *id001
 
@@ -61,7 +61,7 @@
     - ansible.builtin.assert: *id002
       when: image_version != "7.0(3)I5(1)"
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       when: image_version != "7.0(3)I5(1)"
       cisco.nxos.nxos_vpc_interface: *id003
@@ -79,7 +79,7 @@
     - ansible.builtin.assert: *id002
       when: image_version != "7.0(3)I5(1)"
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       when: image_version != "7.0(3)I5(1)"
       cisco.nxos.nxos_vpc_interface: *id005
@@ -129,7 +129,7 @@
           - no interface port-channel11
         match: none
 
-    - name: Disable feature vpc
+    - name: Disable 'feature vpc'
       cisco.nxos.nxos_feature:
         feature: vpc
         state: disabled

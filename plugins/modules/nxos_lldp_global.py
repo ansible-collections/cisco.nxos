@@ -26,6 +26,7 @@ The module file for nxos_lldp_global
 """
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -133,11 +134,13 @@ options:
                 type: bool
   state:
     description:
-    - The state of the configuration after module completion
+    - The state of the configuration after module completion.
+    - States C(replaced) and C(overridden) have the same behaviour for this module.
     type: str
     choices:
     - merged
     - replaced
+    - overridden
     - deleted
     - gathered
     - rendered
@@ -228,8 +231,8 @@ EXAMPLES = """
       port_id: 1
       reinit: 5
       tlv_select:
-        dcbxp: yes
-        power_management: yes
+        dcbxp: true
+        power_management: true
     state: rendered
 
 # Task Output (redacted)
@@ -306,6 +309,7 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lldp_global.lldp_global import (
     Lldp_globalArgs,
 )

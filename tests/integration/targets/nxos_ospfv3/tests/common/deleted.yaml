@@ -7,7 +7,7 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Delete a single ospf process
+    - name: Delete a single OSPF process
       cisco.nxos.nxos_ospfv3: &id001
         config:
           processes:
@@ -31,7 +31,7 @@
         that:
           - "{{ deleted['after']['processes'] | symmetric_difference(result['after']['processes']) |length == 0 }}"
 
-    - name: Delete a single ospf process (idempotent)
+    - name: Delete a single OSPF process (idempotent)
       register: result
       cisco.nxos.nxos_ospfv3: *id001
 
@@ -70,7 +70,7 @@
         that:
           - "{{ result['after'] == {} }}"
 
-    - name: Delete all ospf processes from the device (idempotent)
+    - name: Delete all OSPF processes from the device (idempotent)
       register: result
       cisco.nxos.nxos_ospfv3: *id002
 

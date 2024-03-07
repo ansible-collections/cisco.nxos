@@ -19,36 +19,33 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_ntp_global
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
+
 
 ignore_provider_arg = True
 
 
 class TestNxosNtpGlobalModule(TestNxosModule):
-
     module = nxos_ntp_global
 
     def setUp(self):
         super(TestNxosNtpGlobalModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ntp_global.ntp_global.Ntp_globalFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ntp_global.ntp_global.Ntp_globalFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -61,7 +58,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         # test merged for linear attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -119,7 +116,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp access-group serve-only ServeOnlyAcl2
             ntp allow control rate-limit 400
             ntp allow private
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -165,7 +162,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp access-group serve-only ServeOnlyAcl2
             ntp allow control rate-limit 400
             ntp allow private
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -203,7 +200,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         # test merged for complex attributes
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -248,7 +245,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp master 2
             ntp passive
             ntp source 192.168.1.1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -283,7 +280,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp master 2
             ntp passive
             ntp source 192.168.1.1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -314,7 +311,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         # test merged for complex attributes - 2
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -329,9 +326,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                             prefer=True,
                         ),
                         dict(peer="192.168.1.2", key_id=3, use_vrf="siteB"),
-                        dict(
-                            peer="192.168.1.3", maxpoll=10, use_vrf="default"
-                        ),
+                        dict(peer="192.168.1.3", maxpoll=10, use_vrf="default"),
                     ],
                     servers=[
                         dict(
@@ -343,9 +338,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                             prefer=True,
                         ),
                         dict(server="203.0.113.2", key_id=3, use_vrf="siteB"),
-                        dict(
-                            server="203.0.113.3", maxpoll=10, use_vrf="default"
-                        ),
+                        dict(server="203.0.113.3", maxpoll=10, use_vrf="default"),
                     ],
                 ),
                 state="merged",
@@ -373,7 +366,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp server 203.0.113.1 prefer use-vrf siteA key 2 minpoll 5 maxpoll 15
             ntp server 203.0.113.2 use-vrf siteB key 3
             ntp server 203.0.113.3 use-vrf default maxpoll 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -420,7 +413,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp server 203.0.113.1 prefer use-vrf siteA key 2 minpoll 5 maxpoll 15
             ntp server 203.0.113.2 use-vrf siteB key 3
             ntp server 203.0.113.3 use-vrf default maxpoll 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -444,7 +437,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                             maxpoll=15,
                             vrf="siteA",
                             prefer=True,
-                        )
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -465,7 +458,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         # test merged for complex attributes - 3
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -498,7 +491,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp trusted-key 1002
             ntp trusted-key 1003
             ntp source-interface  Ethernet1/1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -525,7 +518,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp trusted-key 1002
             ntp trusted-key 1003
             ntp source-interface Ethernet1/1
-            """
+            """,
         )
         set_module_args(
             dict(config=dict(source_interface="Ethernet1/1"), state="merged"),
@@ -542,7 +535,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp trusted-key 1002
             ntp trusted-key 1003
             ntp source-interface 192.168.1.100
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -567,9 +560,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         self.assertEqual(set(result["commands"]), set(commands))
 
     def test_nxos_ntp_global_gathered_empty(self):
-        set_module_args(
-            dict(running_config="", state="gathered"), ignore_provider_arg
-        )
+        set_module_args(dict(running_config="", state="gathered"), ignore_provider_arg)
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], {})
 
@@ -580,7 +571,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp trusted-key 1002
             ntp trusted-key 1003
             ntp source-interface 192.168.1.100
-            """
+            """,
         )
         set_module_args(dict(state="gathered"), ignore_provider_arg)
         gathered = {
@@ -601,11 +592,9 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp trusted-key 1002
             ntp trusted-key 1003
             ntp source-interface 192.168.1.100
-            """
+            """,
         )
-        set_module_args(
-            dict(running_config=cfg, state="parsed"), ignore_provider_arg
-        )
+        set_module_args(dict(running_config=cfg, state="parsed"), ignore_provider_arg)
         parsed = {
             "trusted_keys": [
                 {"key_id": 1001},
@@ -630,7 +619,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp access-group serve-only ServeOnlyAcl2
             ntp allow control rate-limit 400
             ntp allow private
-            """
+            """,
         )
         set_module_args(dict(state="deleted"), ignore_provider_arg)
         commands = [
@@ -651,7 +640,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
     def test_nxos_ntp_global_alias(self):
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -697,7 +686,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             ntp server 1.1.1.3 use-vrf v200
             ntp peer 192.168.1.1 use-vrf default
             ntp peer 192.168.1.2 use-vrf v200
-            """
+            """,
         )
         set_module_args(
             dict(

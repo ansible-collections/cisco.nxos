@@ -1,8 +1,9 @@
+---
 gathered:
   - name: "{{ nxos_int1 }}"
     description: outbound-intf
     mode: layer2
-    enabled: True
+    enabled: true
   - name: "{{ nxos_int2 }}"
     description: intf-l3
     speed: "1000"

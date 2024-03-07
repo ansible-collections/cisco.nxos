@@ -1,3 +1,4 @@
+---
 gathered:
   - name: "{{ nxos_int1 }}"
     access:
@@ -11,6 +12,8 @@ gathered:
 
 parsed:
   - name: nve1
+  - name: Ethernet1/799
+    mode: dot1q-tunnel
   - name: Ethernet1/800
     access:
       vlan: 18

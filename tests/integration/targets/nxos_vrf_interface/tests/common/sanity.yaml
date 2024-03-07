@@ -7,7 +7,7 @@
     intname: "{{ nxos_int1 }}"
 
 - block:
-    - name: Put interface in l3
+    - name: Put interface in layer 3
       cisco.nxos.nxos_config:
         commands:
           - no switchport
@@ -15,7 +15,7 @@
           - interface {{ intname }}
         match: none
 
-    - name: Ensure vrf ntc exists on interface
+    - name: Ensure VRF NTC exists on interface
       register: result
       cisco.nxos.nxos_vrf_interface: &id001
         vrf: ntc
@@ -26,7 +26,7 @@
         that:
           - result.changed == true
 
-    - name: Conf idempotence
+    - name: Configure idempotence
       register: result
       cisco.nxos.nxos_vrf_interface: *id001
 
@@ -34,7 +34,7 @@
         that:
           - result.changed == false
 
-    - name: Ensure ntc vrf does not exist on interface
+    - name: Ensure NTC VRF does not exist on interface
       register: result
       cisco.nxos.nxos_vrf_interface: &id003
         vrf: ntc

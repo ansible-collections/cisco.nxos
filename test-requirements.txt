@@ -1,8 +1,10 @@
-black==22.3.0 ; python_version > '3.5'
+# For ansible-tox-linters
+black==23.3.0
 flake8
-mock ; python_version < '3.5'
-pexpect
-pytest-xdist
 yamllint
-coverage==4.5.4
 virl2-client==2.6.1
+
+# Unit test runner
+pytest-ansible
+pytest-xdist
+pytest-cov

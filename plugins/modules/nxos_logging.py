@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 # Copyright: (c) 2017, Ansible by Red Hat, inc
@@ -191,9 +192,9 @@ EXAMPLES = """
 - name: Configure logging using aggregate
   cisco.nxos.nxos_logging:
     aggregate:
-    - {dest: console, dest_level: 2}
-    - {dest: logfile, dest_level: 2, name: testfile}
-    - {facility: daemon, facility_level: 0}
+      - {dest: console, dest_level: 2}
+      - {dest: logfile, dest_level: 2, name: testfile}
+      - {facility: daemon, facility_level: 0}
     state: present
 """
 
@@ -208,21 +209,19 @@ commands:
     - logging level daemon 0
 """
 
-import re
 import copy
+import re
+
+from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
     load_config,
+    normalize_interface,
+    read_module_context,
     run_commands,
     save_module_context,
-    read_module_context,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-    normalize_interface,
-)
-from ansible.module_utils.basic import AnsibleModule
 
 
 STATIC_CLI = {
@@ -267,13 +266,10 @@ def map_obj_to_commands(module, updates):
                 if (
                     not w["dest"]
                     and not w["facility_link_status"]
-                    and w["facility"]
-                    not in DEFAULT_LOGGING_LEVEL[int(w["facility_level"])]
+                    and w["facility"] not in DEFAULT_LOGGING_LEVEL[int(w["facility_level"])]
                 ):
                     commands.append(
-                        "no logging level {0} {1}".format(
-                            w["facility"], w["facility_level"]
-                        )
+                        "no logging level {0} {1}".format(w["facility"], w["facility_level"]),
                     )
 
                 if w["facility_link_status"] and w["facility"] in ("ethpm"):
@@ -281,7 +277,7 @@ def map_obj_to_commands(module, updates):
                         "no logging level {0} {1}".format(
                             w["facility"],
                             STATIC_CLI[w["facility_link_status"]],
-                        )
+                        ),
                     )
 
             if w["name"] is not None:
@@ -291,9 +287,7 @@ def map_obj_to_commands(module, updates):
                 commands.append("no logging {0}".format(w["dest"]))
 
             if w["dest"] == "server":
-                commands.append(
-                    "no logging server {0}".format(w["remote_server"])
-                )
+                commands.append("no logging server {0}".format(w["remote_server"]))
 
             if w["interface"]:
                 commands.append("no logging source-interface")
@@ -311,24 +305,20 @@ def map_obj_to_commands(module, updates):
             if w["facility"] is None:
                 if w["dest"]:
                     if w["dest"] not in ("logfile", "server"):
-                        commands.append(
-                            "logging {0} {1}".format(
-                                w["dest"], w["dest_level"]
-                            )
-                        )
+                        commands.append("logging {0} {1}".format(w["dest"], w["dest_level"]))
 
                     elif w["dest"] == "logfile":
                         if w["file_size"]:
                             commands.append(
                                 "logging logfile {0} {1} size {2}".format(
-                                    w["name"], w["dest_level"], w["file_size"]
-                                )
+                                    w["name"],
+                                    w["dest_level"],
+                                    w["file_size"],
+                                ),
                             )
                         else:
                             commands.append(
-                                "logging logfile {0} {1}".format(
-                                    w["name"], w["dest_level"]
-                                )
+                                "logging logfile {0} {1}".format(w["name"], w["dest_level"]),
                             )
 
                     elif w["dest"] == "server":
@@ -339,28 +329,26 @@ def map_obj_to_commands(module, updates):
                                         w["remote_server"],
                                         w["facility_level"],
                                         w["use_vrf"],
-                                    )
+                                    ),
                                 )
                             else:
                                 commands.append(
                                     "logging server {0} {1}".format(
-                                        w["remote_server"], w["facility_level"]
-                                    )
+                                        w["remote_server"],
+                                        w["facility_level"],
+                                    ),
                                 )
 
                         else:
                             if w["use_vrf"]:
                                 commands.append(
                                     "logging server {0} use-vrf {1}".format(
-                                        w["remote_server"], w["use_vrf"]
-                                    )
+                                        w["remote_server"],
+                                        w["use_vrf"],
+                                    ),
                                 )
                             else:
-                                commands.append(
-                                    "logging server {0}".format(
-                                        w["remote_server"]
-                                    )
-                                )
+                                commands.append("logging server {0}".format(w["remote_server"]))
 
             if w["facility"]:
                 if w["dest"] == "server":
@@ -372,7 +360,7 @@ def map_obj_to_commands(module, updates):
                                     w["facility_level"],
                                     w["facility"],
                                     w["use_vrf"],
-                                )
+                                ),
                             )
                         else:
                             commands.append(
@@ -380,7 +368,7 @@ def map_obj_to_commands(module, updates):
                                     w["remote_server"],
                                     w["facility_level"],
                                     w["facility"],
-                                )
+                                ),
                             )
                     else:
                         if w["use_vrf"]:
@@ -389,13 +377,14 @@ def map_obj_to_commands(module, updates):
                                     w["remote_server"],
                                     w["facility"],
                                     w["use_vrf"],
-                                )
+                                ),
                             )
                         else:
                             commands.append(
                                 "logging server {0} facility {1}".format(
-                                    w["remote_server"], w["facility"]
-                                )
+                                    w["remote_server"],
+                                    w["facility"],
+                                ),
                             )
                 else:
                     if w["facility_link_status"]:
@@ -403,23 +392,17 @@ def map_obj_to_commands(module, updates):
                             "logging level {0} {1}".format(
                                 w["facility"],
                                 STATIC_CLI[w["facility_link_status"]],
-                            )
+                            ),
                         )
                     else:
-                        if not match_facility_default(
-                            module, w["facility"], w["facility_level"]
-                        ):
+                        if not match_facility_default(module, w["facility"], w["facility_level"]):
                             commands.append(
-                                "logging level {0} {1}".format(
-                                    w["facility"], w["facility_level"]
-                                )
+                                "logging level {0} {1}".format(w["facility"], w["facility_level"]),
                             )
 
             if w["interface"]:
                 commands.append(
-                    "logging source-interface {0} {1}".format(
-                        *split_interface(w["interface"])
-                    )
+                    "logging source-interface {0} {1}".format(*split_interface(w["interface"])),
                 )
 
             if w["event"] and w["event"] in STATIC_CLI:
@@ -455,11 +438,7 @@ def match_facility_default(module, facility, want_level):
     facility_data = run_commands(module, cmd)
     for line in facility_data[0].split("\n"):
         mo = re.search(regexl, line)
-        if (
-            mo
-            and int(mo.group(1)) == int(want_level)
-            and int(mo.group(2)) == int(want_level)
-        ):
+        if mo and int(mo.group(1)) == int(want_level) and int(mo.group(2)) == int(want_level):
             matches_default = True
 
     return matches_default
@@ -475,9 +454,7 @@ def parse_facility_link_status(line, facility, status):
     facility_link_status = None
 
     if facility is not None:
-        match = re.search(
-            r"logging level {0} {1} (\S+)".format(facility, status), line, re.M
-        )
+        match = re.search(r"logging level {0} {1} (\S+)".format(facility, status), line, re.M)
         if match:
             facility_link_status = status + "-" + match.group(1)
 
@@ -487,9 +464,7 @@ def parse_facility_link_status(line, facility, status):
 def parse_event_status(line, event):
     status = None
 
-    match = re.search(
-        r"logging event {0} (\S+)".format(event + "-status"), line, re.M
-    )
+    match = re.search(r"logging event {0} (\S+)".format(event + "-status"), line, re.M)
     if match:
         state = match.group(1)
         if state:
@@ -515,9 +490,7 @@ def parse_event(line):
 def parse_message(line):
     message = None
 
-    match = re.search(
-        r"logging message interface type ethernet description", line, re.M
-    )
+    match = re.search(r"logging message interface type ethernet description", line, re.M)
     if match:
         message = "add-interface-description"
 
@@ -527,9 +500,7 @@ def parse_message(line):
 def parse_file_size(line, name, level):
     file_size = None
 
-    match = re.search(
-        r"logging logfile {0} {1} size (\S+)".format(name, level), line, re.M
-    )
+    match = re.search(r"logging logfile {0} {1} size (\S+)".format(name, level), line, re.M)
     if match:
         file_size = match.group(1)
         if file_size == "8192" or file_size == "4194304":
@@ -587,9 +558,7 @@ def parse_dest_level(line, dest, name):
 
     if dest and dest != "server":
         if dest == "logfile":
-            match = re.search(
-                r"logging logfile {0} (\S+)".format(name), line, re.M
-            )
+            match = re.search(r"logging logfile {0} (\S+)".format(name), line, re.M)
             if match:
                 dest_level = parse_match(match)
 
@@ -614,9 +583,7 @@ def parse_facility_level(line, facility, dest):
             facility_level = match.group(1)
 
     elif facility is not None:
-        match = re.search(
-            r"logging level {0} (\S+)".format(facility), line, re.M
-        )
+        match = re.search(r"logging level {0} (\S+)".format(facility), line, re.M)
         if match:
             facility_level = match.group(1)
 
@@ -641,9 +608,7 @@ def parse_use_vrf(line, dest):
     use_vrf = None
 
     if dest and dest == "server":
-        match = re.search(
-            r"logging server (?:\S+) (?:\d+) use-vrf (\S+)", line, re.M
-        )
+        match = re.search(r"logging server (?:\S+) (?:\d+) use-vrf (\S+)", line, re.M)
         if match:
             use_vrf = match.group(1)
 
@@ -706,9 +671,7 @@ def map_config_to_obj(module):
                 if level.isdigit():
                     facility_level = level
                 else:
-                    facility_link_status = parse_facility_link_status(
-                        line, facility, level
-                    )
+                    facility_link_status = parse_facility_link_status(line, facility, level)
 
             elif match.group(1) == "event" and state == "present":
                 event = parse_event(line)
@@ -737,7 +700,7 @@ def map_config_to_obj(module):
                     "file_size": file_size,
                     "message": parse_message(line),
                     "timestamp": parse_timestamp(line),
-                }
+                },
             )
 
     cmd = [
@@ -764,10 +727,7 @@ def map_config_to_obj(module):
             if match.group(1) == "console" and match.group(2) == "critical":
                 dest_level = "2"
                 flag = True
-            elif (
-                match.group(1) == "monitor"
-                and match.group(2) == "notifications"
-            ):
+            elif match.group(1) == "monitor" and match.group(2) == "notifications":
                 dest_level = "5"
                 flag = True
         if flag:
@@ -786,7 +746,7 @@ def map_config_to_obj(module):
                     "file_size": None,
                     "message": None,
                     "timestamp": None,
-                }
+                },
             )
 
     return obj
@@ -866,7 +826,7 @@ def map_params_to_obj(module):
                 "message": module.params["interface_message"],
                 "file_size": file_size,
                 "timestamp": module.params["timestamp"],
-            }
+            },
         )
     return obj
 
@@ -916,7 +876,7 @@ def main():
                 "link-down-error",
                 "link-up-notif",
                 "link-up-error",
-            ]
+            ],
         ),
         event=dict(
             choices=[
@@ -924,7 +884,7 @@ def main():
                 "link-default",
                 "trunk-enable",
                 "trunk-default",
-            ]
+            ],
         ),
         interface_message=dict(choices=["add-interface-description"]),
         file_size=dict(type="int"),
@@ -933,8 +893,6 @@ def main():
         aggregate=dict(type="list", elements="dict"),
         purge=dict(default=False, type="bool"),
     )
-
-    argument_spec.update(nxos_argument_spec)
 
     required_if = [
         ("dest", "logfile", ["name"]),
@@ -968,9 +926,7 @@ def main():
     save_module_context(module, merged_wants)
 
     if module.params.get("purge"):
-        pcommands = map_obj_to_commands(
-            module, (outliers(have, merged_wants), have)
-        )
+        pcommands = map_obj_to_commands(module, (outliers(have, merged_wants), have))
         if pcommands:
             if not module.check_mode:
                 load_config(module, pcommands)

@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -102,18 +103,15 @@ changed:
     sample: true
 """
 
+import re
+
+from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    get_capabilities,
     load_config,
     run_commands,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    get_capabilities,
-)
-from ansible.module_utils.basic import AnsibleModule
-import re
 
 
 def execute_show_command(command, module, output="json"):
@@ -202,11 +200,7 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
-    module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
-    )
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     warnings = list()
 
@@ -240,14 +234,11 @@ def main():
                     "current vtp password. It cannot be "
                     "removed when state=absent. If you are "
                     "trying to change the vtp password, use "
-                    "state=present."
+                    "state=present.",
                 )
         else:
             if not existing.get("domain"):
-                module.fail_json(
-                    msg="Cannot remove a vtp password "
-                    "before vtp domain is set."
-                )
+                module.fail_json(msg="Cannot remove a vtp password " "before vtp domain is set.")
 
             elif existing["vtp_password"] != ("\\"):
                 commands.append(["no vtp password"])
@@ -255,9 +246,7 @@ def main():
     elif state == "present":
         if delta:
             if not existing.get("domain"):
-                module.fail_json(
-                    msg="Cannot set vtp password " "before vtp domain is set."
-                )
+                module.fail_json(msg="Cannot set vtp password " "before vtp domain is set.")
 
             else:
                 commands.append(["vtp password {0}".format(vtp_password)])

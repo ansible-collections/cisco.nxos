@@ -1,3 +1,4 @@
+---
 gathered:
   - name: "{{ nxos_int1 }}"
     ipv4:
@@ -7,8 +8,8 @@ gathered:
       - address: 203.0.113.10/24
     ipv6:
       - address: 2001:db8::1/32
-    redirects: False
-    unreachables: True
+    redirects: false
+    unreachables: true
 
 rendered:
   - "interface Ethernet1/800"
@@ -23,14 +24,14 @@ parsed:
       - address: 192.168.1.100/24
         tag: 5
       - address: 10.1.1.1/24
-        secondary: True
+        secondary: true
         tag: 10
-    redirects: False
+    redirects: false
   - name: Ethernet1/801
     ipv6:
       - address: fd5d:12c9:2201:2::1/64
         tag: 6
-    unreachables: True
+    unreachables: true
   - name: mgmt0
     ipv4:
       - address: dhcp
@@ -50,15 +51,15 @@ parsed_multi:
       - address: 192.168.1.100/24
         tag: 5
       - address: 10.1.1.1/24
-        secondary: True
+        secondary: true
         tag: 10
-    redirects: False
+    redirects: false
     evpn_multisite_tracking: fabric-tracking
   - name: Ethernet1/801
     ipv6:
       - address: fd5d:12c9:2201:2::1/64
         tag: 6
-    unreachables: True
+    unreachables: true
     evpn_multisite_tracking: dci-tracking
   - name: mgmt0
     ipv4:

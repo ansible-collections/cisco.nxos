@@ -17,6 +17,7 @@
 #
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 
@@ -124,7 +125,7 @@ options:
       playbook root directory or role root directory, if playbook is part of an ansible
       role. If the directory does not exist, it is created.
     type: bool
-    default: no
+    default: false
   running_config:
     description:
     - The module, by default, will connect to the remote device and retrieve the current
@@ -145,7 +146,7 @@ options:
       the running-config is append with the all keyword.  When the value is set to
       false, the command is issued without the all keyword
     type: bool
-    default: no
+    default: false
   save_when:
     description:
     - When changes are made to the device running-configuration, the changes are not
@@ -245,21 +246,21 @@ EXAMPLES = """
 
 - cisco.nxos.nxos_config:
     lines:
-    - 10 permit ip 192.0.2.1/32 any log
-    - 20 permit ip 192.0.2.2/32 any log
-    - 30 permit ip 192.0.2.3/32 any log
-    - 40 permit ip 192.0.2.4/32 any log
-    - 50 permit ip 192.0.2.5/32 any log
+      - 10 permit ip 192.0.2.1/32 any log
+      - 20 permit ip 192.0.2.2/32 any log
+      - 30 permit ip 192.0.2.3/32 any log
+      - 40 permit ip 192.0.2.4/32 any log
+      - 50 permit ip 192.0.2.5/32 any log
     parents: ip access-list test
     before: no ip access-list test
     match: exact
 
 - cisco.nxos.nxos_config:
     lines:
-    - 10 permit ip 192.0.2.1/32 any log
-    - 20 permit ip 192.0.2.2/32 any log
-    - 30 permit ip 192.0.2.3/32 any log
-    - 40 permit ip 192.0.2.4/32 any log
+      - 10 permit ip 192.0.2.1/32 any log
+      - 20 permit ip 192.0.2.2/32 any log
+      - 30 permit ip 192.0.2.3/32 any log
+      - 40 permit ip 192.0.2.4/32 any log
     parents: ip access-list test
     before: no ip access-list test
     replace: block
@@ -273,13 +274,13 @@ EXAMPLES = """
   cisco.nxos.nxos_config:
     lines:
       # - shut
-    - shutdown
+      - shutdown
     # parents: int eth1/1
     parents: interface Ethernet1/1
 
 - name: configurable backup path
   cisco.nxos.nxos_config:
-    backup: yes
+    backup: true
     backup_options:
       filename: backup.cfg
       dir_path: /home/user
@@ -329,17 +330,13 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
+    get_connection,
     load_config,
     run_commands,
-    get_connection,
-)
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    nxos_argument_spec,
-)
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
 )
 
 
@@ -389,7 +386,7 @@ def save_config(module, result):
         module.warn(
             "Skipping command `copy running-config startup-config` "
             "due to check_mode.  Configuration not copied to "
-            "non-volatile storage"
+            "non-volatile storage",
         )
 
 
@@ -403,9 +400,7 @@ def main():
         parents=dict(type="list", elements="str"),
         before=dict(type="list", elements="str"),
         after=dict(type="list", elements="str"),
-        match=dict(
-            default="line", choices=["line", "strict", "exact", "none"]
-        ),
+        match=dict(default="line", choices=["line", "strict", "exact", "none"]),
         replace=dict(default="line", choices=["line", "block", "config"]),
         running_config=dict(aliases=["config"]),
         intended_config=dict(),
@@ -413,20 +408,19 @@ def main():
         backup=dict(type="bool", default=False),
         backup_options=dict(type="dict", options=backup_spec),
         save_when=dict(
-            choices=["always", "never", "modified", "changed"], default="never"
+            choices=["always", "never", "modified", "changed"],
+            default="never",
         ),
         diff_against=dict(choices=["running", "startup", "intended"]),
         diff_ignore_lines=dict(type="list", elements="str"),
     )
 
-    argument_spec.update(nxos_argument_spec)
-
     mutually_exclusive = [("lines", "src", "replace_src"), ("parents", "src")]
 
     required_if = [
-        ("match", "strict", ["lines"]),
-        ("match", "exact", ["lines"]),
-        ("replace", "block", ["lines"]),
+        ("match", "strict", ["lines", "src"], True),
+        ("match", "exact", ["lines", "src"], True),
+        ("replace", "block", ["lines", "src"], True),
         ("replace", "config", ["replace_src"]),
         ("diff_against", "intended", ["intended_config"]),
     ]
@@ -452,13 +446,9 @@ def main():
     replace_src = module.params["replace_src"]
     if replace_src:
         if module.params["replace"] != "config":
-            module.fail_json(
-                msg="replace: config is required with replace_src"
-            )
+            module.fail_json(msg="replace: config is required with replace_src")
 
-    if module.params["backup"] or (
-        module._diff and module.params["diff_against"] == "running"
-    ):
+    if module.params["backup"] or (module._diff and module.params["diff_against"] == "running"):
         contents = get_config(module, flags=flags)
         config = NetworkConfig(indent=2, contents=contents)
         if module.params["backup"]:
@@ -489,9 +479,7 @@ def main():
                     diff_replace=replace,
                 )
             except ConnectionError as exc:
-                module.fail_json(
-                    msg=to_text(exc, errors="surrogate_then_replace")
-                )
+                module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
 
             config_diff = response["config_diff"]
             if config_diff:
@@ -518,14 +506,19 @@ def main():
         save_config(module, result)
     elif module.params["save_when"] == "modified":
         output = execute_show_commands(
-            module, ["show running-config", "show startup-config"]
+            module,
+            ["show running-config", "show startup-config"],
         )
 
         running_config = NetworkConfig(
-            indent=2, contents=output[0], ignore_lines=diff_ignore_lines
+            indent=2,
+            contents=output[0],
+            ignore_lines=diff_ignore_lines,
         )
         startup_config = NetworkConfig(
-            indent=2, contents=output[1], ignore_lines=diff_ignore_lines
+            indent=2,
+            contents=output[1],
+            ignore_lines=diff_ignore_lines,
         )
 
         if running_config.sha1 != startup_config.sha1:
@@ -542,13 +535,15 @@ def main():
 
         # recreate the object in order to process diff_ignore_lines
         running_config = NetworkConfig(
-            indent=2, contents=contents, ignore_lines=diff_ignore_lines
+            indent=2,
+            contents=contents,
+            ignore_lines=diff_ignore_lines,
         )
 
         if module.params["diff_against"] == "running":
             if module.check_mode:
                 module.warn(
-                    "unable to perform diff against running-config due to check mode"
+                    "unable to perform diff against running-config due to check mode",
                 )
                 contents = None
             else:
@@ -566,10 +561,14 @@ def main():
 
         if contents is not None:
             base_config = NetworkConfig(
-                indent=2, contents=contents, ignore_lines=diff_ignore_lines
+                indent=2,
+                contents=contents,
+                ignore_lines=diff_ignore_lines,
             )
 
             if running_config.sha1 != base_config.sha1:
+                before = ""
+                after = ""
                 if module.params["diff_against"] == "intended":
                     before = running_config
                     after = base_config
@@ -581,12 +580,10 @@ def main():
                     {
                         "changed": True,
                         "diff": {"before": str(before), "after": str(after)},
-                    }
+                    },
                 )
 
-    if result.get("changed") and any(
-        (module.params["src"], module.params["lines"])
-    ):
+    if result.get("changed") and any((module.params["src"], module.params["lines"])):
         msg = (
             "To ensure idempotency and correct diff the input configuration lines should be"
             " similar to how they appear if present in"

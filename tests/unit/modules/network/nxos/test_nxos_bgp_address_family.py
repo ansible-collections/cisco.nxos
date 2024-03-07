@@ -19,24 +19,21 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
-from ansible_collections.cisco.nxos.plugins.modules import (
-    nxos_bgp_address_family,
-)
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_address_family
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
+from .nxos_module import TestNxosModule, set_module_args
+
 
 ignore_provider_arg = True
 
 
 class TestNxosBGPAddressFamilyModule(TestNxosModule):
-
     # Testing strategy
     # ------------------
     # (a) The unit tests cover `merged` and `replaced` for every attribute.
@@ -54,14 +51,12 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         super(TestNxosBGPAddressFamilyModule, self).setUp()
 
         self.mock_get_resource_connection = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_address_family.bgp_address_family.Bgp_address_familyFacts.get_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_address_family.bgp_address_family.Bgp_address_familyFacts.get_config",
         )
         self.get_config = self.mock_get_config.start()
 
@@ -79,7 +74,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                 address-family ipv4 unicast
                   additional-paths install backup
                   additional-paths send
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -146,7 +141,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-2
                 address-family ipv6 multicast
                   additional-paths receive
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -156,9 +151,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            additional_paths=dict(
-                                selection=dict(route_map="rmap1")
-                            ),
+                            additional_paths=dict(selection=dict(route_map="rmap1")),
                         ),
                         dict(
                             vrf="site-1",
@@ -193,7 +186,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             router bgp 65563
               address-family l2vpn evpn
                 advertise-pip
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -206,7 +199,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             advertise_pip=False,
                             advertise_system_mac=True,
                             allow_vni_in_ethertag=True,
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -231,15 +224,13 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               address-family l2vpn evpn
                 advertise-system-mac
                 allow-vni-in-ethertag
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=dict(
                     as_number="65563",
-                    address_family=[
-                        dict(afi="l2vpn", safi="evpn", advertise_pip=True)
-                    ],
+                    address_family=[dict(afi="l2vpn", safi="evpn", advertise_pip=True)],
                 ),
                 state="replaced",
             ),
@@ -263,7 +254,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   no client-to-client reflection
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -309,7 +300,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   no client-to-client reflection
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -349,7 +340,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   aggregate-address 192.168.1.0/24 as-set
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -360,9 +351,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             afi="ipv4",
                             safi="multicast",
                             aggregate_address=[
-                                dict(
-                                    prefix="192.168.1.0/24", summary_only=True
-                                ),
+                                dict(prefix="192.168.1.0/24", summary_only=True),
                                 dict(
                                     prefix="192.168.2.0/24",
                                     advertise_map="rmap1",
@@ -424,7 +413,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                 address-family ipv4 unicast
                 aggregate-address 10.0.0.0/8 summary-only
                 aggregate-address 11.0.0.0/8 advertise-map rmap1 as-set attribute-map rmap2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -440,7 +429,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                                     advertise_map="rmap1",
                                     as_set=True,
                                     attribute_map="rmap2",
-                                )
+                                ),
                             ],
                         ),
                         dict(
@@ -486,16 +475,14 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   dampen-igp-metric 1200
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=dict(
                     as_number="65563",
                     address_family=[
-                        dict(
-                            afi="ipv4", safi="multicast", dampen_igp_metric=300
-                        ),
+                        dict(afi="ipv4", safi="multicast", dampen_igp_metric=300),
                         dict(
                             vrf="site-1",
                             afi="ipv4",
@@ -531,7 +518,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                   dampen-igp-metric 1800
                 address-family ipv6 unicast
                   dampen-igp-metric 1200
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -569,7 +556,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   dampening 3 22 23 23
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -633,7 +620,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   dampening 3 22 23 23
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -674,7 +661,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   dampening route-map rmap1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -719,7 +706,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   dampening route-map rmap1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -755,7 +742,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   default-information originate
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -800,7 +787,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   default-information originate
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -836,16 +823,14 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   default-metric 6400
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=dict(
                     as_number="65563",
                     address_family=[
-                        dict(
-                            afi="ipv4", safi="multicast", default_metric=7200
-                        ),
+                        dict(afi="ipv4", safi="multicast", default_metric=7200),
                         dict(
                             vrf="site-1",
                             afi="ipv4",
@@ -881,7 +866,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   default-metric 6400
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -917,7 +902,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   distance 20 18 2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -927,17 +912,13 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            distance=dict(
-                                ebgp_routes=25, ibgp_routes=12, local_routes=4
-                            ),
+                            distance=dict(ebgp_routes=25, ibgp_routes=12, local_routes=4),
                         ),
                         dict(
                             vrf="site-1",
                             afi="ipv4",
                             safi="unicast",
-                            distance=dict(
-                                ebgp_routes=20, ibgp_routes=18, local_routes=3
-                            ),
+                            distance=dict(ebgp_routes=20, ibgp_routes=18, local_routes=3),
                         ),
                     ],
                 ),
@@ -968,7 +949,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   distance 20 18 2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -980,9 +961,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             vrf="site-1",
                             afi="ipv4",
                             safi="unicast",
-                            distance=dict(
-                                ebgp_routes=20, ibgp_routes=18, local_routes=2
-                            ),
+                            distance=dict(ebgp_routes=20, ibgp_routes=18, local_routes=2),
                         ),
                     ],
                 ),
@@ -1009,7 +988,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-2
                 address-family ipv4 unicast
                   export-gateway-ip
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1067,7 +1046,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-2
                 address-family ipv4 unicast
                   export-gateway-ip
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1112,7 +1091,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   inject-map rmap1 exist-map rmap2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1140,7 +1119,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                                     route_map="rmap3",
                                     exist_map="rmap4",
                                     copy_attributes=True,
-                                )
+                                ),
                             ],
                         ),
                     ],
@@ -1172,7 +1151,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   inject-map rmap3 exist-map rmap4 copy-attributes
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1182,9 +1161,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            inject_map=[
-                                dict(route_map="rmap1", exist_map="rmap3")
-                            ],
+                            inject_map=[dict(route_map="rmap1", exist_map="rmap3")],
                         ),
                         dict(
                             vrf="site-1",
@@ -1195,7 +1172,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                                     route_map="rmap3",
                                     exist_map="rmap4",
                                     copy_attributes=True,
-                                )
+                                ),
                             ],
                         ),
                     ],
@@ -1223,7 +1200,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                 address-family ipv4 unicast
                   maximum-paths 14
                   maximum-paths eibgp 64
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1233,9 +1210,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            maximum_paths=dict(
-                                parallel_paths=15, ibgp=dict(parallel_paths=64)
-                            ),
+                            maximum_paths=dict(parallel_paths=15, ibgp=dict(parallel_paths=64)),
                         ),
                         dict(
                             vrf="site-1",
@@ -1288,7 +1263,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                   maximum-paths local 30
                 address-family ipv4 multicast
                   maximum-paths mixed 40
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1298,9 +1273,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            maximum_paths=dict(
-                                parallel_paths=15, ibgp=dict(parallel_paths=64)
-                            ),
+                            maximum_paths=dict(parallel_paths=15, ibgp=dict(parallel_paths=64)),
                         ),
                         dict(
                             vrf="site-1",
@@ -1334,7 +1307,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   network 192.168.1.0/24 route-map rmap1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1345,13 +1318,9 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             afi="ipv4",
                             safi="multicast",
                             networks=[
-                                dict(
-                                    prefix="192.168.1.0/24", route_map="rmap2"
-                                ),
+                                dict(prefix="192.168.1.0/24", route_map="rmap2"),
                                 dict(prefix="192.168.2.0/24"),
-                                dict(
-                                    prefix="192.168.3.0/24", route_map="rmap3"
-                                ),
+                                dict(prefix="192.168.3.0/24", route_map="rmap3"),
                             ],
                         ),
                         dict(
@@ -1397,7 +1366,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                   network 10.0.0.0/8
                   network 11.0.0.0/8 route-map rmap2
                   network 192.168.1.0/24 route-map rmap1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1407,19 +1376,13 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                         dict(
                             afi="ipv4",
                             safi="multicast",
-                            networks=[
-                                dict(
-                                    prefix="192.168.3.0/24", route_map="rmap4"
-                                )
-                            ],
+                            networks=[dict(prefix="192.168.3.0/24", route_map="rmap4")],
                         ),
                         dict(
                             vrf="site-1",
                             afi="ipv4",
                             safi="unicast",
-                            networks=[
-                                dict(prefix="11.0.0.0/8", route_map="rmap2")
-                            ],
+                            networks=[dict(prefix="11.0.0.0/8", route_map="rmap2")],
                         ),
                     ],
                 ),
@@ -1449,7 +1412,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   nexthop route-map rmap2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1461,9 +1424,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             safi="multicast",
                             nexthop=dict(
                                 route_map="rmap1",
-                                trigger_delay=dict(
-                                    critical_delay=120, non_critical_delay=180
-                                ),
+                                trigger_delay=dict(critical_delay=120, non_critical_delay=180),
                             ),
                         ),
                         dict(
@@ -1471,9 +1432,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             afi="ipv4",
                             safi="unicast",
                             nexthop=dict(
-                                trigger_delay=dict(
-                                    critical_delay=110, non_critical_delay=170
-                                )
+                                trigger_delay=dict(critical_delay=110, non_critical_delay=170),
                             ),
                         ),
                     ],
@@ -1506,7 +1465,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                 address-family ipv4 unicast
                   nexthop route-map rmap2
                   nexthop trigger-delay critical 110 non-critical 170
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1523,9 +1482,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             afi="ipv4",
                             safi="unicast",
                             nexthop=dict(
-                                trigger_delay=dict(
-                                    critical_delay=110, non_critical_delay=170
-                                )
+                                trigger_delay=dict(critical_delay=110, non_critical_delay=170),
                             ),
                         ),
                     ],
@@ -1553,7 +1510,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   redistribute eigrp 100 route-map test-17
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1630,7 +1587,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                 address-family ipv4 unicast
                   redistribute eigrp 100 route-map test-18
                   redistribute ospf 101 route-map test-2
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1659,7 +1616,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                                     protocol="ospf",
                                     id="101",
                                     route_map="test-2",
-                                )
+                                ),
                             ],
                         ),
                     ],
@@ -1688,7 +1645,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   retain route-target all
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1733,7 +1690,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   retain route-target route-map rmap1
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1769,7 +1726,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   suppress-inactive
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1814,7 +1771,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   suppress-inactive
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1850,7 +1807,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   table-map rmap1 filter
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1890,7 +1847,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   table-map rmap1 filter
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1928,7 +1885,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   timers bestpath-defer 100 maximum 350
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1939,9 +1896,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             afi="ipv4",
                             safi="multicast",
                             timers=dict(
-                                bestpath_defer=dict(
-                                    defer_time=120, maximum_defer_time=380
-                                )
+                                bestpath_defer=dict(defer_time=120, maximum_defer_time=380),
                             ),
                         ),
                         dict(
@@ -1949,9 +1904,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             afi="ipv4",
                             safi="unicast",
                             timers=dict(
-                                bestpath_defer=dict(
-                                    defer_time=110, maximum_defer_time=350
-                                )
+                                bestpath_defer=dict(defer_time=110, maximum_defer_time=350),
                             ),
                         ),
                     ],
@@ -1981,7 +1934,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   timers bestpath-defer 100 maximum 350
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1992,9 +1945,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             afi="ipv4",
                             safi="multicast",
                             timers=dict(
-                                bestpath_defer=dict(
-                                    defer_time=120, maximum_defer_time=380
-                                )
+                                bestpath_defer=dict(defer_time=120, maximum_defer_time=380),
                             ),
                         ),
                         dict(vrf="site-1", afi="ipv4", safi="unicast"),
@@ -2021,7 +1972,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   wait-igp-convergence
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2066,7 +2017,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-1
                 address-family ipv4 unicast
                   wait-igp-convergence
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2111,7 +2062,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                       vrf site-1
                         address-family ipv4 unicast
                           timers bestpath-defer 100 maximum 350
-                    """
+                    """,
                 ),
                 state="parsed",
             ),
@@ -2125,11 +2076,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                     vrf="site-1",
                     afi="ipv4",
                     safi="unicast",
-                    timers=dict(
-                        bestpath_defer=dict(
-                            defer_time=100, maximum_defer_time=350
-                        )
-                    ),
+                    timers=dict(bestpath_defer=dict(defer_time=100, maximum_defer_time=350)),
                 ),
             ],
         )
@@ -2152,7 +2099,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                   timers bestpath-defer 100 maximum 350
                 neighbor 192.168.3.0
                   address-family ipv6 multicast
-            """
+            """,
         )
 
         set_module_args(dict(state="gathered"), ignore_provider_arg)
@@ -2164,11 +2111,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                     vrf="site-1",
                     afi="ipv4",
                     safi="unicast",
-                    timers=dict(
-                        bestpath_defer=dict(
-                            defer_time=100, maximum_defer_time=350
-                        )
-                    ),
+                    timers=dict(bestpath_defer=dict(defer_time=100, maximum_defer_time=350)),
                 ),
             ],
         )
@@ -2179,7 +2122,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         # test gathered
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
 
         set_module_args(dict(state="gathered"), ignore_provider_arg)
@@ -2190,7 +2133,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         # test gathered
         self.get_config.return_value = dedent(
             """\
-            """
+            """,
         )
 
         set_module_args(
@@ -2219,7 +2162,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                                     protocol="ospf",
                                     id="101",
                                     route_map="test-2",
-                                )
+                                ),
                             ],
                         ),
                     ],
@@ -2259,7 +2202,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                   address-family ipv6 multicast
               vrf site-2
                 address-family ipv6 unicast
-            """
+            """,
         )
 
         set_module_args(
@@ -2297,7 +2240,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
             router bgp 65563
               address-family ipv4 multicast
                 wait-igp-convergence
-            """
+            """,
         )
 
         set_module_args(
@@ -2309,7 +2252,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             afi="ipv4",
                             safi="multicast",
                             wait_igp_convergence=True,
-                        )
+                        ),
                     ],
                 ),
                 state="merged",
@@ -2337,7 +2280,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                   address-family ipv6 multicast
               vrf site-2
                 address-family ipv6 unicast
-            """
+            """,
         )
 
         set_module_args(
@@ -2349,7 +2292,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                             afi="ipv4",
                             safi="multicast",
                             wait_igp_convergence=False,
-                        )
+                        ),
                     ],
                 ),
                 state="overridden",
@@ -2391,7 +2334,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
                   address-family ipv6 multicast
               vrf site-2
                 address-family ipv6 unicast
-            """
+            """,
         )
 
         set_module_args(dict(state="deleted"), ignore_provider_arg)
@@ -2419,7 +2362,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-2
                 address-family ipv4 unicast
                   advertise l2vpn evpn
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -2466,7 +2409,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
               vrf site-2
                 address-family ipv4 unicast
                   advertise l2vpn evpn
-            """
+            """,
         )
         set_module_args(
             dict(

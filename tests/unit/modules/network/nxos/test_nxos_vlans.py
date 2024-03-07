@@ -19,60 +19,51 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
-from textwrap import dedent
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vlans
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vlans.vlans import (
-    Vlans,
-)
+from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
+
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
+
 
 ignore_provider_arg = True
 
 
 class TestNxosVlansModule(TestNxosModule):
-
     module = nxos_vlans
 
     def setUp(self):
         super(TestNxosVlansModule, self).setUp()
 
         self.mock_FACT_LEGACY_SUBSETS = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts.FACT_LEGACY_SUBSETS",
         )
         self.FACT_LEGACY_SUBSETS = self.mock_FACT_LEGACY_SUBSETS.start()
 
         self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection"
+            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vlans.vlans.Vlans.edit_config"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vlans.vlans.Vlans.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
 
         self.mock_get_device_data = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vlans.vlans.VlansFacts.get_device_data"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vlans.vlans.VlansFacts.get_device_data",
         )
         self.get_device_data = self.mock_get_device_data.start()
 
         self.mock_get_platform = patch(
-            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vlans.vlans.Vlans.get_platform"
+            "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vlans.vlans.Vlans.get_platform",
         )
         self.get_platform = self.mock_get_platform.start()
 
@@ -128,12 +119,10 @@ class TestNxosVlansModule(TestNxosModule):
             config=[
                 dict(vlan_id=4),
                 dict(vlan_id=5, mapped_vni=555, mode="ce"),
-                dict(
-                    vlan_id=7, mapped_vni=777, name="test-vlan7", enabled=False
-                ),
-                dict(vlan_id="8", state="active", name="test-changeme-not")
+                dict(vlan_id=7, mapped_vni=777, name="test-vlan7", enabled=False),
+                dict(vlan_id="8", state="active", name="test-changeme-not"),
                 # vlan 3 is not present in playbook.
-            ]
+            ],
         )
 
         merged = [
@@ -278,7 +267,7 @@ class TestNxosVlansModule(TestNxosModule):
                     state="suspend",
                     enabled=False,
                 ),
-            ]
+            ],
         )
 
         playbook["state"] = "merged"
