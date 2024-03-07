@@ -22,7 +22,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
     normalize_interface,
@@ -53,7 +55,9 @@ class Hsrp_interfaces(ConfigBase):
             self.gather_network_resources,
             data=data,
         )
-        hsrp_interfaces_facts = facts["ansible_network_resources"].get("hsrp_interfaces", [])
+        hsrp_interfaces_facts = facts["ansible_network_resources"].get(
+            "hsrp_interfaces", []
+        )
         return hsrp_interfaces_facts
 
     def edit_config(self, commands):
@@ -97,7 +101,9 @@ class Hsrp_interfaces(ConfigBase):
                 self._module.fail_json(
                     msg="value of running_config parameter must not be empty for state parsed",
                 )
-            result["parsed"] = self.get_hsrp_interfaces_facts(data=running_config)
+            result["parsed"] = self.get_hsrp_interfaces_facts(
+                data=running_config
+            )
 
         if self.state in self.ACTION_STATES:
             result["before"] = existing_hsrp_interfaces_facts
@@ -139,9 +145,14 @@ class Hsrp_interfaces(ConfigBase):
         """
         state = self._module.params["state"]
         # check for 'config' keyword in play
-        if state in ("overridden", "merged", "replaced", "rendered") and not want:
+        if (
+            state in ("overridden", "merged", "replaced", "rendered")
+            and not want
+        ):
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(state),
+                msg="value of config parameter must not be empty for state {0}".format(
+                    state
+                ),
             )
 
         cmds = list()
@@ -229,7 +240,9 @@ class Hsrp_interfaces(ConfigBase):
         cmds = []
         if want:
             for w in want:
-                obj_in_have = flatten_dict(search_obj_in_list(w["name"], have, "name"))
+                obj_in_have = flatten_dict(
+                    search_obj_in_list(w["name"], have, "name")
+                )
                 cmds.extend(self.del_attribs(obj_in_have))
         else:
             for h in have:
@@ -267,7 +280,11 @@ class Hsrp_interfaces(ConfigBase):
             if want["bfd"] == "enable":
                 cmd = "hsrp bfd"
                 cmds.append(cmd)
-            elif want["bfd"] == "disable" and obj_in_have and obj_in_have.get("bfd") == "enable":
+            elif (
+                want["bfd"] == "disable"
+                and obj_in_have
+                and obj_in_have.get("bfd") == "enable"
+            ):
                 cmd = "no hsrp bfd"
                 cmds.append(cmd)
 

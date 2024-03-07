@@ -57,7 +57,9 @@ class Static_routesArgs(object):  # pylint: disable=R0903
                                     "type": "list",
                                     "elements": "dict",
                                     "options": {
-                                        "forward_router_address": {"type": "str"},
+                                        "forward_router_address": {
+                                            "type": "str"
+                                        },
                                         "interface": {"type": "str"},
                                         "admin_distance": {"type": "int"},
                                         "route_name": {"type": "str"},

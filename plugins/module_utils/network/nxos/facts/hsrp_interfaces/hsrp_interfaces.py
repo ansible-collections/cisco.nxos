@@ -16,7 +16,9 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfacesArgs,
@@ -67,7 +69,9 @@ class Hsrp_interfacesFacts(object):
         facts = {}
         if objs:
             facts["hsrp_interfaces"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             for cfg in params["config"]:
                 facts["hsrp_interfaces"].append(utils.remove_empties(cfg))
 
@@ -91,6 +95,8 @@ class Hsrp_interfacesFacts(object):
         if get_interface_type(intf) == "unknown":
             return {}
         config["name"] = intf
-        config["bfd"] = utils.parse_conf_cmd_arg(conf, "hsrp bfd", "enable", "disable")
+        config["bfd"] = utils.parse_conf_cmd_arg(
+            conf, "hsrp bfd", "enable", "disable"
+        )
 
         return utils.remove_empties(config)

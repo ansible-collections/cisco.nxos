@@ -320,7 +320,9 @@ def parse_roles(data):
 
 
 def map_config_to_obj(module):
-    out = run_commands(module, [{"command": "show user-account", "output": "json"}])
+    out = run_commands(
+        module, [{"command": "show user-account", "output": "json"}]
+    )
     data = out[0]
 
     objects = list()
@@ -418,7 +420,9 @@ def main():
         name=dict(),
         configured_password=dict(no_log=True),
         hashed_password=dict(no_log=True),
-        update_password=dict(default="always", choices=["on_create", "always"]),
+        update_password=dict(
+            default="always", choices=["on_create", "always"]
+        ),
         roles=dict(type="list", aliases=["role"], elements="str"),
         sshkey=dict(no_log=False),
         state=dict(default="present", choices=["present", "absent"]),
@@ -441,7 +445,10 @@ def main():
 
     argument_spec.update(element_spec)
 
-    mutually_exclusive = [("name", "aggregate"), ("configured_password", "hashed_password")]
+    mutually_exclusive = [
+        ("name", "aggregate"),
+        ("configured_password", "hashed_password"),
+    ]
 
     module = AnsibleModule(
         argument_spec=argument_spec,
@@ -473,7 +480,9 @@ def main():
 
     # check if provided hashed password is infact a hash
     if module.params["hashed_password"] is not None:
-        if not re.match(r"^\$5\$......\$.*$", module.params["hashed_password"]):
+        if not re.match(
+            r"^\$5\$......\$.*$", module.params["hashed_password"]
+        ):
             module.fail_json(msg="Provided hash is not valid")
 
     if commands:
@@ -484,7 +493,11 @@ def main():
                     module.fail_json(msg=resp)
                 else:
                     result["warnings"].extend(
-                        [x[9:] for x in resp.splitlines() if x.startswith("WARNING: ")],
+                        [
+                            x[9:]
+                            for x in resp.splitlines()
+                            if x.startswith("WARNING: ")
+                        ],
                     )
 
         result["changed"] = True

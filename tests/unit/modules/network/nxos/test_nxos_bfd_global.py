@@ -208,7 +208,9 @@ class TestNxosBfdGlobalModule(TestNxosModule):
 
     def test_bfd_existing_n9k(self):
         module_name = self.module.__name__.rsplit(".", 1)[1]
-        self.execute_show_command.return_value = load_fixture(module_name, "N9K.cfg")
+        self.execute_show_command.return_value = load_fixture(
+            module_name, "N9K.cfg"
+        )
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -244,7 +246,9 @@ class TestNxosBfdGlobalModule(TestNxosModule):
 
     def test_bfd_idempotence_n9k(self):
         module_name = self.module.__name__.rsplit(".", 1)[1]
-        self.execute_show_command.return_value = load_fixture(module_name, "N9K.cfg")
+        self.execute_show_command.return_value = load_fixture(
+            module_name, "N9K.cfg"
+        )
         self.get_platform_shortname.return_value = "N9K"
         set_module_args(
             dict(
@@ -265,7 +269,9 @@ class TestNxosBfdGlobalModule(TestNxosModule):
 
     def test_bfd_existing_n7k(self):
         module_name = self.module.__name__.rsplit(".", 1)[1]
-        self.execute_show_command.return_value = load_fixture(module_name, "N7K.cfg")
+        self.execute_show_command.return_value = load_fixture(
+            module_name, "N7K.cfg"
+        )
         self.get_platform_shortname.return_value = "N7K"
         set_module_args(
             dict(
@@ -305,7 +311,9 @@ class TestNxosBfdGlobalModule(TestNxosModule):
 
     def test_bfd_idempotence_n7k(self):
         module_name = self.module.__name__.rsplit(".", 1)[1]
-        self.execute_show_command.return_value = load_fixture(module_name, "N7K.cfg")
+        self.execute_show_command.return_value = load_fixture(
+            module_name, "N7K.cfg"
+        )
         self.get_platform_shortname.return_value = "N7K"
         set_module_args(
             dict(

@@ -203,11 +203,15 @@ def get_commands(module, state, mode):
     commands = list()
     if module.params["system_mode_maintenance"] is True and mode == "normal":
         commands.append("system mode maintenance")
-    elif module.params["system_mode_maintenance"] is False and mode == "maintenance":
+    elif (
+        module.params["system_mode_maintenance"] is False
+        and mode == "maintenance"
+    ):
         commands.append("no system mode maintenance")
 
     elif (
-        module.params["system_mode_maintenance_dont_generate_profile"] is True and mode == "normal"
+        module.params["system_mode_maintenance_dont_generate_profile"] is True
+        and mode == "normal"
     ):
         commands.append("system mode maintenance dont-generate-profile")
     elif (
@@ -218,46 +222,65 @@ def get_commands(module, state, mode):
 
     elif module.params["system_mode_maintenance_timeout"]:
         timeout = get_maintenance_timeout(module)
-        if state == "present" and timeout != module.params["system_mode_maintenance_timeout"]:
+        if (
+            state == "present"
+            and timeout != module.params["system_mode_maintenance_timeout"]
+        ):
             commands.append(
                 "system mode maintenance timeout {0}".format(
                     module.params["system_mode_maintenance_timeout"],
                 ),
             )
-        elif state == "absent" and timeout == module.params["system_mode_maintenance_timeout"]:
+        elif (
+            state == "absent"
+            and timeout == module.params["system_mode_maintenance_timeout"]
+        ):
             commands.append(
                 "no system mode maintenance timeout {0}".format(
                     module.params["system_mode_maintenance_timeout"],
                 ),
             )
 
-    elif module.params["system_mode_maintenance_shutdown"] and mode == "normal":
+    elif (
+        module.params["system_mode_maintenance_shutdown"] and mode == "normal"
+    ):
         commands.append("system mode maintenance shutdown")
-    elif module.params["system_mode_maintenance_shutdown"] is False and mode == "maintenance":
+    elif (
+        module.params["system_mode_maintenance_shutdown"] is False
+        and mode == "maintenance"
+    ):
         commands.append("no system mode maintenance")
 
     elif module.params["system_mode_maintenance_on_reload_reset_reason"]:
         reset_reasons = get_reset_reasons(module)
         if (
             state == "present"
-            and module.params["system_mode_maintenance_on_reload_reset_reason"].lower()
+            and module.params[
+                "system_mode_maintenance_on_reload_reset_reason"
+            ].lower()
             not in reset_reasons.lower()
         ):
             commands.append(
                 "system mode maintenance on-reload "
                 "reset-reason {0}".format(
-                    module.params["system_mode_maintenance_on_reload_reset_reason"],
+                    module.params[
+                        "system_mode_maintenance_on_reload_reset_reason"
+                    ],
                 ),
             )
         elif (
             state == "absent"
-            and module.params["system_mode_maintenance_on_reload_reset_reason"].lower()
+            and module.params[
+                "system_mode_maintenance_on_reload_reset_reason"
+            ].lower()
             in reset_reasons.lower()
         ):
             commands.append(
                 "no system mode maintenance on-reload "
                 "reset-reason {0}".format(
-                    module.params["system_mode_maintenance_on_reload_reset_reason"],
+                    module.params[
+                        "system_mode_maintenance_on_reload_reset_reason"
+                    ],
                 ),
             )
 
@@ -269,7 +292,9 @@ def get_commands(module, state, mode):
 def main():
     argument_spec = dict(
         system_mode_maintenance=dict(required=False, type="bool"),
-        system_mode_maintenance_dont_generate_profile=dict(required=False, type="bool"),
+        system_mode_maintenance_dont_generate_profile=dict(
+            required=False, type="bool"
+        ),
         system_mode_maintenance_timeout=dict(required=False, type="str"),
         system_mode_maintenance_shutdown=dict(required=False, type="bool"),
         system_mode_maintenance_on_reload_reset_reason=dict(
@@ -287,7 +312,9 @@ def main():
                 "maintenance",
             ],
         ),
-        state=dict(choices=["absent", "present"], default="present", required=False),
+        state=dict(
+            choices=["absent", "present"], default="present", required=False
+        ),
     )
 
     module = AnsibleModule(

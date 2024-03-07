@@ -144,7 +144,9 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "tx_interval": {"type": "int"},
-                                                "min_rx_interval": {"type": "int"},
+                                                "min_rx_interval": {
+                                                    "type": "int"
+                                                },
                                                 "multiplier": {"type": "int"},
                                             },
                                         },
@@ -159,7 +161,9 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "bmp_activate_server": {"type": "int"},
                         "capability": {
                             "type": "dict",
-                            "options": {"suppress_4_byte_as": {"type": "bool"}},
+                            "options": {
+                                "suppress_4_byte_as": {"type": "bool"}
+                            },
                         },
                         "description": {"type": "str"},
                         "disable_connected_check": {"type": "bool"},
@@ -274,7 +278,9 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                 },
                 "nexthop": {
                     "type": "dict",
-                    "options": {"suppress_default_resolution": {"type": "bool"}},
+                    "options": {
+                        "suppress_default_resolution": {"type": "bool"}
+                    },
                 },
                 "rd": {
                     "type": "dict",
@@ -379,9 +385,15 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                                 "interval": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "tx_interval": {"type": "int"},
-                                                        "min_rx_interval": {"type": "int"},
-                                                        "multiplier": {"type": "int"},
+                                                        "tx_interval": {
+                                                            "type": "int"
+                                                        },
+                                                        "min_rx_interval": {
+                                                            "type": "int"
+                                                        },
+                                                        "multiplier": {
+                                                            "type": "int"
+                                                        },
                                                     },
                                                 },
                                             },
@@ -395,7 +407,9 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "bmp_activate_server": {"type": "int"},
                                 "capability": {
                                     "type": "dict",
-                                    "options": {"suppress_4_byte_as": {"type": "bool"}},
+                                    "options": {
+                                        "suppress_4_byte_as": {"type": "bool"}
+                                    },
                                 },
                                 "description": {"type": "str"},
                                 "disable_connected_check": {"type": "bool"},
@@ -493,7 +507,9 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "connection_mode": {
                                             "type": "dict",
-                                            "options": {"passive": {"type": "bool"}},
+                                            "options": {
+                                                "passive": {"type": "bool"}
+                                            },
                                         },
                                     },
                                 },

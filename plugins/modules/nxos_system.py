@@ -373,7 +373,9 @@ def main():
         state=dict(default="present", choices=["present", "absent"]),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     warnings = list()
 

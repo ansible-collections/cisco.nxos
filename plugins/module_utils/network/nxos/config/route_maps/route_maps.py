@@ -27,7 +27,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     get_from_dict,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.route_maps import (
     Route_mapsTemplate,
 )
@@ -130,7 +132,9 @@ class Route_maps(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {
+                k: v for k, v in iteritems(haved) if k in wantd or not wantd
+            }
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -138,7 +142,9 @@ class Route_maps(ResourceModule):
             for k, have in iteritems(haved):
                 if k not in wantd:
                     for _hk, hentry in iteritems(have.get("entries", {})):
-                        self.commands.append(self._tmplt.render(hentry, "route_map", True))
+                        self.commands.append(
+                            self._tmplt.render(hentry, "route_map", True)
+                        )
 
         for wk, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(wk, {}))
@@ -169,24 +175,38 @@ class Route_maps(ResourceModule):
                     if self.commands[i][0:3] == "no ":
                         self.commands.insert(pos, self.commands.pop(i))
                         pos += 1
-                self.commands.insert(begin, self._tmplt.render(wentry, "route_map", False))
+                self.commands.insert(
+                    begin, self._tmplt.render(wentry, "route_map", False)
+                )
         # remove superfluos entries from have
         for _hk, hentry in iteritems(have):
             self.commands.append(self._tmplt.render(hentry, "route_map", True))
 
     def _compare_extcomm(self, want, have):
-        hentry = get_from_dict(data_dict=have, keypath="set.extcommunity.rt") or {}
-        wentry = get_from_dict(data_dict=want, keypath="set.extcommunity.rt") or {}
+        hentry = (
+            get_from_dict(data_dict=have, keypath="set.extcommunity.rt") or {}
+        )
+        wentry = (
+            get_from_dict(data_dict=want, keypath="set.extcommunity.rt") or {}
+        )
 
         h_nums = set(hentry.get("extcommunity_numbers", []))
         w_nums = set(wentry.get("extcommunity_numbers", []))
 
-        if h_nums != w_nums or wentry.get("additive") != hentry.get("additive"):
+        if h_nums != w_nums or wentry.get("additive") != hentry.get(
+            "additive"
+        ):
             if self.state not in ["merged", "rendered"]:
                 # need to explicitly remove existing entry to correctly apply new one
-                self.commands.append(self._tmplt.render(hentry, "set.extcommunity.rt", negate=True))
+                self.commands.append(
+                    self._tmplt.render(
+                        hentry, "set.extcommunity.rt", negate=True
+                    )
+                )
             # default CLI behaviour is to 'merge' with existing entry
-            self.commands.append(self._tmplt.render(wentry, "set.extcommunity.rt", negate=False))
+            self.commands.append(
+                self._tmplt.render(wentry, "set.extcommunity.rt", negate=False)
+            )
 
     def _compare_lists(self, want, have):
         for x in self.complex_parsers:
@@ -202,26 +222,46 @@ class Route_maps(ResourceModule):
                     h_set[hx[i]["address"]] = hx[i]
                 sum_set = list(set(list(w_set) + list(h_set)))
                 for each in sum_set:
-                    if each in w_set and each in h_set and w_set[each] == h_set[each]:
+                    if (
+                        each in w_set
+                        and each in h_set
+                        and w_set[each] == h_set[each]
+                    ):
                         for i in range(
                             0,
-                            len(want["set"]["ip"]["next_hop"]["verify_availability"]),
+                            len(
+                                want["set"]["ip"]["next_hop"][
+                                    "verify_availability"
+                                ]
+                            ),
                         ):
                             if (
-                                want["set"]["ip"]["next_hop"]["verify_availability"][i]["address"]
+                                want["set"]["ip"]["next_hop"][
+                                    "verify_availability"
+                                ][i]["address"]
                                 == each
                             ):
-                                want["set"]["ip"]["next_hop"]["verify_availability"].pop(i)
+                                want["set"]["ip"]["next_hop"][
+                                    "verify_availability"
+                                ].pop(i)
                                 break
                         for i in range(
                             0,
-                            len(have["set"]["ip"]["next_hop"]["verify_availability"]),
+                            len(
+                                have["set"]["ip"]["next_hop"][
+                                    "verify_availability"
+                                ]
+                            ),
                         ):
                             if (
-                                have["set"]["ip"]["next_hop"]["verify_availability"][i]["address"]
+                                have["set"]["ip"]["next_hop"][
+                                    "verify_availability"
+                                ][i]["address"]
                                 == each
                             ):
-                                have["set"]["ip"]["next_hop"]["verify_availability"].pop(i)
+                                have["set"]["ip"]["next_hop"][
+                                    "verify_availability"
+                                ].pop(i)
                                 break
                         w_set.pop(each)
                         h_set.pop(each)

@@ -202,7 +202,9 @@ def main():
         vsan=dict(type="list", elements="dict", options=vsan_element_spec),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
     warnings = list()
     messages = list()
     commands_executed = list()
@@ -223,7 +225,8 @@ def main():
 
         if int(vsanid) < 1 or int(vsanid) >= 4095:
             module.fail_json(
-                msg=vsanid + " - This is an invalid vsan. Supported vsan range is 1-4094",
+                msg=vsanid
+                + " - This is an invalid vsan. Supported vsan range is 1-4094",
             )
 
         if vsanid in dictSwVsanObjs.keys():
@@ -241,7 +244,8 @@ def main():
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
-                    str(vsanid) + " is a reserved vsan, hence cannot be removed",
+                    str(vsanid)
+                    + " is a reserved vsan, hence cannot be removed",
                 )
                 continue
             if vsanid == sw_vsanid:
@@ -258,7 +262,8 @@ def main():
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
-                    str(vsanid) + " is a reserved vsan, and always present on the switch",
+                    str(vsanid)
+                    + " is a reserved vsan, and always present on the switch",
                 )
             else:
                 if vsanid == sw_vsanid:
@@ -287,16 +292,22 @@ def main():
                         + " Hence there is nothing to configure",
                     )
                 else:
-                    commands.append("vsan " + str(vsanid) + " name " + vsanname)
+                    commands.append(
+                        "vsan " + str(vsanid) + " name " + vsanname
+                    )
                     messages.append(
-                        "setting vsan name to " + vsanname + " for vsan " + str(vsanid),
+                        "setting vsan name to "
+                        + vsanname
+                        + " for vsan "
+                        + str(vsanid),
                     )
 
         if vsansuspend:
             # Negative case:
             if vsanid == "4079" or vsanid == "4094":
                 messages.append(
-                    str(vsanid) + " is a reserved vsan, and cannot be suspended",
+                    str(vsanid)
+                    + " is a reserved vsan, and cannot be suspended",
                 )
             else:
                 if sw_vsanstate == "suspended":
@@ -333,14 +344,25 @@ def main():
                     )
                 else:
                     commands.append(
-                        "vsan " + str(vsanid) + " interface " + each_interface_name,
+                        "vsan "
+                        + str(vsanid)
+                        + " interface "
+                        + each_interface_name,
                     )
                     messages.append(
-                        "adding interface " + each_interface_name + " to vsan " + str(vsanid),
+                        "adding interface "
+                        + each_interface_name
+                        + " to vsan "
+                        + str(vsanid),
                     )
 
     if len(commands) != 0:
-        commands = ["terminal dont-ask"] + ["vsan database"] + commands + ["no terminal dont-ask"]
+        commands = (
+            ["terminal dont-ask"]
+            + ["vsan database"]
+            + commands
+            + ["no terminal dont-ask"]
+        )
 
     cmds = flatten_list(commands)
     commands_executed = cmds

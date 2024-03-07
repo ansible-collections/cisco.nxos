@@ -90,7 +90,9 @@ class TestNxosNxapiModule(TestNxosModule):
 
     def test_nxos_nxapi_disable(self):
         set_module_args(dict(state="absent"))
-        self.execute_module_devices(changed=True, commands=["no feature nxapi"])
+        self.execute_module_devices(
+            changed=True, commands=["no feature nxapi"]
+        )
 
     def test_nxos_nxapi_no_http(self):
         set_module_args(dict(https=True, http=False, https_port=8443))

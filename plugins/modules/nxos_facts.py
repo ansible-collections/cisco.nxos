@@ -219,7 +219,9 @@ from ansible.module_utils.connection import Connection
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.facts.facts import (
     FactsArgs,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
 
 
 def get_chassis_type(connection):
@@ -246,7 +248,9 @@ def main():
     """
     argument_spec = FactsArgs.argument_spec
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
     connection = Connection(module._socket_path)
     facts = Facts(module, chassis_type=get_chassis_type(connection))
 
@@ -254,7 +258,9 @@ def main():
 
     ansible_facts = {}
     if module.params.get("available_network_resources"):
-        ansible_facts["available_network_resources"] = sorted(facts.get_resource_subsets().keys())
+        ansible_facts["available_network_resources"] = sorted(
+            facts.get_resource_subsets().keys()
+        )
 
     result = facts.get_facts()
     additional_facts, additional_warnings = result

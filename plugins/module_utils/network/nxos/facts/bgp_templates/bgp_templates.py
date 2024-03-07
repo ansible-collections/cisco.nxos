@@ -16,7 +16,9 @@ based on the configuration.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_templates.bgp_templates import (
     Bgp_templatesArgs,
@@ -37,8 +39,12 @@ class Bgp_templatesFacts(object):
         """Wrapper method for `connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
-        as_number = connection.get("show running-config bgp | include 'router bgp'")
-        templates = connection.get("show running-config bgp | section 'template'")
+        as_number = connection.get(
+            "show running-config bgp | include 'router bgp'"
+        )
+        templates = connection.get(
+            "show running-config bgp | section 'template'"
+        )
 
         return as_number + "\n" + templates
 
@@ -60,7 +66,9 @@ class Bgp_templatesFacts(object):
         data = self._flatten_config(data)
 
         # parse native config using the Bgp_templates template
-        bgp_templates_parser = Bgp_templatesTemplate(lines=data, module=self._module)
+        bgp_templates_parser = Bgp_templatesTemplate(
+            lines=data, module=self._module
+        )
         parsed = bgp_templates_parser.parse()
 
         objs = {}
@@ -72,7 +80,9 @@ class Bgp_templatesFacts(object):
                 objs[k] = list(v.values())
                 for x in objs[k]:
                     if "address_family" in x:
-                        x["address_family"] = list(x["address_family"].values())
+                        x["address_family"] = list(
+                            x["address_family"].values()
+                        )
 
         for nbr in objs.get("neighbor", []):
             for af in nbr.get("address_family", []):
@@ -88,7 +98,9 @@ class Bgp_templatesFacts(object):
         ansible_facts["ansible_network_resources"].pop("bgp_templates", None)
 
         params = utils.remove_empties(
-            bgp_templates_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
+            bgp_templates_parser.validate_config(
+                self.argument_spec, {"config": objs}, redact=True
+            ),
         )
 
         facts["bgp_templates"] = params.get("config", {})

@@ -24,7 +24,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 class Prefix_listsTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Prefix_listsTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Prefix_listsTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     # fmt: off
     PARSERS = [

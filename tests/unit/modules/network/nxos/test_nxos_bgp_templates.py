@@ -42,7 +42,9 @@ class TestNxosBgpTemplatesModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = self.mock_get_resource_connection.start()
+        self.get_resource_connection = (
+            self.mock_get_resource_connection.start()
+        )
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_templates.bgp_templates.Bgp_templatesFacts.get_config",
@@ -340,7 +342,9 @@ class TestNxosBgpTemplatesModule(TestNxosModule):
         )
         set_module_args(
             dict(
-                config=dict(as_number="65536", neighbor=[dict(name="tmplt_1")]),
+                config=dict(
+                    as_number="65536", neighbor=[dict(name="tmplt_1")]
+                ),
                 state="deleted",
             ),
             ignore_provider_arg,
@@ -372,7 +376,11 @@ class TestNxosBgpTemplatesModule(TestNxosModule):
             ),
             ignore_provider_arg,
         )
-        commands = ["router bgp 65536", "no template peer tmplt_1", "no template peer tmplt_2"]
+        commands = [
+            "router bgp 65536",
+            "no template peer tmplt_1",
+            "no template peer tmplt_2",
+        ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 

@@ -15,7 +15,9 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.logging_global.logging_global import (
     Logging_globalArgs,
@@ -59,7 +61,9 @@ class Logging_globalFacts(object):
             data = self.get_config(connection)
 
         # parse native config using the Logging_global template
-        logging_global_parser = Logging_globalTemplate(lines=data.splitlines(), module=self._module)
+        logging_global_parser = Logging_globalTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         objs = logging_global_parser.parse()
 
         if objs:

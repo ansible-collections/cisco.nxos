@@ -113,7 +113,9 @@ def _tmplt_set_ip_next_hop_verify_availability(data):
 
 class Route_mapsTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Route_mapsTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Route_mapsTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     # fmt: off
     PARSERS = [

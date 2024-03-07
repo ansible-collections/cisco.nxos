@@ -431,7 +431,10 @@ def check_mode_legacy(module, issu, image, kick=None):
     if target_image["error"]:
         data["error"] = True
         data["raw"] = target_image["raw"]
-    if current["kickstart_ver_str"] != target_image["version"] and not data["error"]:
+    if (
+        current["kickstart_ver_str"] != target_image["version"]
+        and not data["error"]
+    ):
         data["upgrade_needed"] = True
         data["disruptive"] = True
         upgrade_msg = "Switch upgraded: system: %s" % tsver
@@ -444,7 +447,10 @@ def check_mode_legacy(module, issu, image, kick=None):
         if target_kick["error"]:
             data["error"] = True
             data["raw"] = target_kick["raw"]
-        if current["kickstart_ver_str"] != target_kick["version"] and not data["error"]:
+        if (
+            current["kickstart_ver_str"] != target_kick["version"]
+            and not data["error"]
+        ):
             data["upgrade_needed"] = True
             data["disruptive"] = True
             upgrade_msg = upgrade_msg + " kickstart: %s" % tkver
@@ -534,7 +540,9 @@ def do_install_all(module, issu, image, kick=None):
         if upgrade["invalid_command"] and "force" in commands[1]:
             # Not all platforms support the 'force' keyword.  Check for this
             # condition and re-try without the 'force' keyword if needed.
-            commands = build_install_cmd_set(issu, image, kick, "install", False)
+            commands = build_install_cmd_set(
+                issu, image, kick, "install", False
+            )
             upgrade = check_install_in_progress(module, commands, opts)
         upgrade["upgrade_cmd"] = commands
 
@@ -566,7 +574,9 @@ def main():
         issu=dict(choices=["required", "desired", "no", "yes"], default="no"),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     warnings = list()
 

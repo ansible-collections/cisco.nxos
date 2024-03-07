@@ -116,7 +116,9 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     warnings = list()
     results = {"changed": False, "commands": [], "warnings": warnings}

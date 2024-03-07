@@ -330,7 +330,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    to_list,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     get_config,
@@ -400,7 +402,9 @@ def main():
         parents=dict(type="list", elements="str"),
         before=dict(type="list", elements="str"),
         after=dict(type="list", elements="str"),
-        match=dict(default="line", choices=["line", "strict", "exact", "none"]),
+        match=dict(
+            default="line", choices=["line", "strict", "exact", "none"]
+        ),
         replace=dict(default="line", choices=["line", "block", "config"]),
         running_config=dict(aliases=["config"]),
         intended_config=dict(),
@@ -446,9 +450,13 @@ def main():
     replace_src = module.params["replace_src"]
     if replace_src:
         if module.params["replace"] != "config":
-            module.fail_json(msg="replace: config is required with replace_src")
+            module.fail_json(
+                msg="replace: config is required with replace_src"
+            )
 
-    if module.params["backup"] or (module._diff and module.params["diff_against"] == "running"):
+    if module.params["backup"] or (
+        module._diff and module.params["diff_against"] == "running"
+    ):
         contents = get_config(module, flags=flags)
         config = NetworkConfig(indent=2, contents=contents)
         if module.params["backup"]:
@@ -479,7 +487,9 @@ def main():
                     diff_replace=replace,
                 )
             except ConnectionError as exc:
-                module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
+                module.fail_json(
+                    msg=to_text(exc, errors="surrogate_then_replace")
+                )
 
             config_diff = response["config_diff"]
             if config_diff:
@@ -583,7 +593,9 @@ def main():
                     },
                 )
 
-    if result.get("changed") and any((module.params["src"], module.params["lines"])):
+    if result.get("changed") and any(
+        (module.params["src"], module.params["lines"])
+    ):
         msg = (
             "To ensure idempotency and correct diff the input configuration lines should be"
             " similar to how they appear if present in"

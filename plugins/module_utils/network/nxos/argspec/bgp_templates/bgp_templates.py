@@ -58,7 +58,12 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                 },
                                 "safi": {
                                     "type": "str",
-                                    "choices": ["unicast", "multicast", "mvpn", "evpn"],
+                                    "choices": [
+                                        "unicast",
+                                        "multicast",
+                                        "mvpn",
+                                        "evpn",
+                                    ],
                                 },
                                 "advertise_map": {
                                     "type": "dict",
@@ -121,7 +126,9 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                 },
                                 "inherit": {
                                     "type": "dict",
-                                    "options": {"peer_policy": {"type": "str"}},
+                                    "options": {
+                                        "peer_policy": {"type": "str"}
+                                    },
                                 },
                                 "maximum_prefix": {
                                     "type": "dict",
@@ -159,7 +166,11 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                 "route_reflector_client": {"type": "bool"},
                                 "send_community": {
                                     "type": "str",
-                                    "choices": ["standard", "extended", "both"],
+                                    "choices": [
+                                        "standard",
+                                        "extended",
+                                        "both",
+                                    ],
                                 },
                                 "soft_reconfiguration_inbound": {
                                     "type": "dict",
@@ -186,12 +197,18 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                         "interval": {
                                             "type": "dict",
                                             "options": {
-                                                "tx_interval": {"type": "int", "required": True},
+                                                "tx_interval": {
+                                                    "type": "int",
+                                                    "required": True,
+                                                },
                                                 "min_rx_interval": {
                                                     "type": "int",
                                                     "required": True,
                                                 },
-                                                "multiplier": {"type": "int", "required": True},
+                                                "multiplier": {
+                                                    "type": "int",
+                                                    "required": True,
+                                                },
                                             },
                                         },
                                     },
@@ -201,7 +218,9 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                         "bmp_activate_server": {"type": "int"},
                         "capability": {
                             "type": "dict",
-                            "options": {"suppress_4_byte_as": {"type": "bool"}},
+                            "options": {
+                                "suppress_4_byte_as": {"type": "bool"}
+                            },
                         },
                         "description": {"type": "str"},
                         "disable_connected_check": {"type": "bool"},
@@ -251,7 +270,10 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "action": {
                                     "type": "str",
-                                    "choices": ["discard", "treat-as-withdraw"],
+                                    "choices": [
+                                        "discard",
+                                        "treat-as-withdraw",
+                                    ],
                                 },
                                 "type": {"type": "int"},
                                 "range": {

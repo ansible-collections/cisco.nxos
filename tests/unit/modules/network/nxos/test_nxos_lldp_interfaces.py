@@ -10,7 +10,9 @@ __metaclass__ = type
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_lldp_interfaces
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
+    set_module_args,
+)
 
 from .nxos_module import TestNxosModule
 
@@ -34,12 +36,16 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
+        self.get_resource_connection_config = (
+            self.mock_get_resource_connection_config.start()
+        )
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.lldp_interfaces.lldp_interfaces.Lldp_interfaces.edit_config",
@@ -150,7 +156,9 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
     def test_nxos_lldp_interfaces_overridden(self):
         set_module_args(
             dict(
-                config=[dict(name="Ethernet1/4", receive=True, transmit=False)],
+                config=[
+                    dict(name="Ethernet1/4", receive=True, transmit=False)
+                ],
                 state="overridden",
             ),
         )
@@ -184,7 +192,9 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_nxos_lldp_interfaces_deleted_intf(self):
-        set_module_args(dict(config=[dict(name="Ethernet1/2")], state="deleted"))
+        set_module_args(
+            dict(config=[dict(name="Ethernet1/2")], state="deleted")
+        )
         commands = [
             "interface Ethernet1/2",
             "lldp receive",
@@ -227,7 +237,9 @@ class TestNxosLldpInterfacesModule(TestNxosModule):
             "lldp tlv-set vlan 12",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands), result["rendered"])
+        self.assertEqual(
+            sorted(result["rendered"]), sorted(commands), result["rendered"]
+        )
 
     def test_nxos_lldp_interfaces_parsed(self):
         set_module_args(

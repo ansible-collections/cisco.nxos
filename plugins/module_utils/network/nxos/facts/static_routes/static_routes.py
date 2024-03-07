@@ -15,7 +15,9 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.static_routes.static_routes import (
     Static_routesArgs,
@@ -33,8 +35,12 @@ class Static_routesFacts(object):
         self.argument_spec = Static_routesArgs.argument_spec
 
     def get_static_routes_data(self, connection):
-        non_vrf_data = connection.get("show running-config | include '^ip(v6)* route'")
-        vrf_data = connection.get("show running-config | section '^vrf context'")
+        non_vrf_data = connection.get(
+            "show running-config | include '^ip(v6)* route'"
+        )
+        vrf_data = connection.get(
+            "show running-config | section '^vrf context'"
+        )
         if vrf_data:
             non_vrf_data += "\n" + vrf_data
         return non_vrf_data
@@ -84,9 +90,13 @@ class Static_routesFacts(object):
             _triv_static_route = {"address_families": []}
 
             if afi_v4:
-                _triv_static_route["address_families"].append({"afi": "ipv4", "routes": afi_v4})
+                _triv_static_route["address_families"].append(
+                    {"afi": "ipv4", "routes": afi_v4}
+                )
             if afi_v6:
-                _triv_static_route["address_families"].append({"afi": "ipv6", "routes": afi_v6})
+                _triv_static_route["address_families"].append(
+                    {"afi": "ipv6", "routes": afi_v6}
+                )
 
             _static_route_facts.append(_triv_static_route)
 
@@ -100,9 +110,13 @@ class Static_routesFacts(object):
             }
 
             if afi_v4:
-                _vrf_static_route["address_families"].append({"afi": "ipv4", "routes": afi_v4})
+                _vrf_static_route["address_families"].append(
+                    {"afi": "ipv4", "routes": afi_v4}
+                )
             if afi_v6:
-                _vrf_static_route["address_families"].append({"afi": "ipv6", "routes": afi_v6})
+                _vrf_static_route["address_families"].append(
+                    {"afi": "ipv6", "routes": afi_v6}
+                )
 
             _static_route_facts.append(_vrf_static_route)
         return _static_route_facts
@@ -125,7 +139,9 @@ class Static_routesFacts(object):
             data = self.get_static_routes_data(connection)
 
         # parse native config using the Static_routes template
-        static_routes_parser = Static_routesTemplate(lines=data.splitlines(), module=self._module)
+        static_routes_parser = Static_routesTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         objs = static_routes_parser.parse()
 
         strout = self.process_static_routes(objs)
@@ -134,7 +150,9 @@ class Static_routesFacts(object):
         ansible_facts["ansible_network_resources"].pop("static_routes", None)
 
         params = utils.remove_empties(
-            static_routes_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
+            static_routes_parser.validate_config(
+                self.argument_spec, {"config": objs}, redact=True
+            ),
         )
 
         facts["static_routes"] = params.get("config")

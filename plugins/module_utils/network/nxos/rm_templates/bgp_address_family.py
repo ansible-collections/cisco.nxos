@@ -68,7 +68,9 @@ def _tmplt_redistribute(redis):
 
 class Bgp_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None):
-        super(Bgp_address_familyTemplate, self).__init__(lines=lines, tmplt=self)
+        super(Bgp_address_familyTemplate, self).__init__(
+            lines=lines, tmplt=self
+        )
 
     # fmt: off
     PARSERS = [

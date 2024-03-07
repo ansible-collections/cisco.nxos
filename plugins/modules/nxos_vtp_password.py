@@ -200,7 +200,9 @@ def main():
         state=dict(choices=["absent", "present"], default="present"),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     warnings = list()
 
@@ -238,7 +240,10 @@ def main():
                 )
         else:
             if not existing.get("domain"):
-                module.fail_json(msg="Cannot remove a vtp password " "before vtp domain is set.")
+                module.fail_json(
+                    msg="Cannot remove a vtp password "
+                    "before vtp domain is set."
+                )
 
             elif existing["vtp_password"] != ("\\"):
                 commands.append(["no vtp password"])
@@ -246,7 +251,9 @@ def main():
     elif state == "present":
         if delta:
             if not existing.get("domain"):
-                module.fail_json(msg="Cannot set vtp password " "before vtp domain is set.")
+                module.fail_json(
+                    msg="Cannot set vtp password " "before vtp domain is set."
+                )
 
             else:
                 commands.append(["vtp password {0}".format(vtp_password)])

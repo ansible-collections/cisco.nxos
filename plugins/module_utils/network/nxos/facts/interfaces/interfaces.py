@@ -18,7 +18,9 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.interfaces.interfaces import (
     InterfacesArgs,
@@ -68,7 +70,9 @@ class InterfacesFacts(object):
         facts = {}
         facts["interfaces"] = []
         if objs:
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             for cfg in params["config"]:
                 facts["interfaces"].append(utils.remove_empties(cfg))
 
@@ -95,16 +99,22 @@ class InterfacesFacts(object):
         config["speed"] = utils.parse_conf_arg(conf, "speed")
         config["mtu"] = utils.parse_conf_arg(conf, "mtu")
         config["duplex"] = utils.parse_conf_arg(conf, "duplex")
-        config["mode"] = utils.parse_conf_cmd_arg(conf, "switchport", "layer2", "layer3")
+        config["mode"] = utils.parse_conf_cmd_arg(
+            conf, "switchport", "layer2", "layer3"
+        )
 
-        config["enabled"] = utils.parse_conf_cmd_arg(conf, "shutdown", False, True)
+        config["enabled"] = utils.parse_conf_cmd_arg(
+            conf, "shutdown", False, True
+        )
 
         config["fabric_forwarding_anycast_gateway"] = utils.parse_conf_cmd_arg(
             conf,
             "fabric forwarding mode anycast-gateway",
             True,
         )
-        config["ip_forward"] = utils.parse_conf_cmd_arg(conf, "ip forward", True)
+        config["ip_forward"] = utils.parse_conf_cmd_arg(
+            conf, "ip forward", True
+        )
 
         interfaces_cfg = utils.remove_empties(config)
         return interfaces_cfg

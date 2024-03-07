@@ -18,7 +18,9 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lldp_interfaces.lldp_interfaces import (
     Lldp_interfacesArgs,
@@ -83,7 +85,9 @@ class Lldp_interfacesFacts(object):
         facts = {}
         if objs:
             facts["lldp_interfaces"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             for cfg in params["config"]:
                 facts["lldp_interfaces"].append(utils.remove_empties(cfg))
 

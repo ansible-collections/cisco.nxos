@@ -24,7 +24,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 class HostnameTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(HostnameTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(HostnameTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     # fmt: off
     PARSERS = [

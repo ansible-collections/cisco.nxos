@@ -66,7 +66,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 def main():
     argument_spec = dict(nv_overlay_evpn=dict(required=True, type="bool"))
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     result = {"changed": False}
 
@@ -81,7 +83,9 @@ def main():
     os_platform = info.get("network_os_platform", "")
 
     if "3K" in os_platform:
-        module.fail_json(msg="This module is not supported on Nexus 3000 series")
+        module.fail_json(
+            msg="This module is not supported on Nexus 3000 series"
+        )
 
     if module.params["nv_overlay_evpn"] is True:
         if "nv overlay evpn" not in config:

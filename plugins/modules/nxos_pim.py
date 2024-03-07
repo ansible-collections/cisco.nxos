@@ -157,10 +157,14 @@ def get_commands(module, existing, proposed, candidate):
 def main():
     argument_spec = dict(
         bfd=dict(required=False, type="str", choices=["enable", "disable"]),
-        ssm_range=dict(required=False, type="list", default=[], elements="str"),
+        ssm_range=dict(
+            required=False, type="list", default=[], elements="str"
+        ),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
     warnings = list()
     result = {"changed": False, "commands": [], "warnings": warnings}
 

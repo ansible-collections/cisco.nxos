@@ -192,13 +192,17 @@ def main():
             elements="dict",
             options=dict(
                 rt=dict(type="str", required=True),
-                direction=dict(choices=["import", "export", "both"], default="both"),
+                direction=dict(
+                    choices=["import", "export", "both"], default="both"
+                ),
                 state=dict(choices=["present", "absent"], default="present"),
             ),
         ),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     warnings = list()
 
@@ -239,9 +243,13 @@ def main():
         if module.params["route_targets"] is not None:
             for rt in module.params["route_targets"]:
                 if rt.get("direction") == "both" or not rt.get("direction"):
-                    platform = get_capabilities(module)["device_info"]["network_os_platform"]
+                    platform = get_capabilities(module)["device_info"][
+                        "network_os_platform"
+                    ]
                     if platform.startswith("N9K") and rt.get("rt") == "auto":
-                        rt_commands = match_current_rt(rt, "both", current, rt_commands)
+                        rt_commands = match_current_rt(
+                            rt, "both", current, rt_commands
+                        )
                     else:
                         rt_commands = match_current_rt(
                             rt,
@@ -267,7 +275,9 @@ def main():
             commands.extend(rt_commands)
 
         if commands and current:
-            commands.insert(0, "address-family %s unicast" % module.params["afi"])
+            commands.insert(
+                0, "address-family %s unicast" % module.params["afi"]
+            )
 
     if commands:
         commands.insert(0, "vrf context %s" % module.params["vrf"])

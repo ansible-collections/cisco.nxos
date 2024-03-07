@@ -47,12 +47,16 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
+        self.get_resource_connection_config = (
+            self.mock_get_resource_connection_config.start()
+        )
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bfd_interfaces.bfd_interfaces.Bfd_interfaces.edit_config",
@@ -99,7 +103,9 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
           interface Ethernet1/3
         """,
         )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_CMD: existing
+        }
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", bfd="disable", echo="disable"),
@@ -148,7 +154,9 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
             no bfd echo
         """,
         )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_CMD: existing
+        }
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", bfd="enable", echo="disable"),
@@ -213,7 +221,9 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
             no bfd echo
         """,
         )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_CMD: existing
+        }
         playbook = dict(config=[dict(name="Ethernet1/1")])
         # Expected result commands for each 'state'
         merged = []
@@ -254,8 +264,12 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
             no bfd
         """,
         )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
-        playbook = dict(config=[dict(name="Ethernet1/1.42", bfd="enable", echo="disable")])
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_CMD: existing
+        }
+        playbook = dict(
+            config=[dict(name="Ethernet1/1.42", bfd="enable", echo="disable")]
+        )
         # Expected result commands for each 'state'
         merged = ["interface Ethernet1/1.42", "bfd", "no bfd echo"]
         deleted = []
@@ -295,7 +309,9 @@ class TestNxosBfdInterfacesModule(TestNxosModule):
           interface Ethernet1/2
         """,
         )
-        self.get_resource_connection_facts.return_value = {self.SHOW_CMD: existing}
+        self.get_resource_connection_facts.return_value = {
+            self.SHOW_CMD: existing
+        }
         playbook = dict(
             config=[
                 dict(name="Ethernet1/1", bfd="disable", echo="disable"),

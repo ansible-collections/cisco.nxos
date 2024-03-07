@@ -84,11 +84,15 @@ class TestNxosModule(ModuleTestCase):
 
         retvals = {}
         for model in models:
-            retvals[model] = self.execute_module(failed, changed, commands, sort, device=model)
+            retvals[model] = self.execute_module(
+                failed, changed, commands, sort, device=model
+            )
 
         return retvals
 
-    def execute_module(self, failed=False, changed=False, commands=None, sort=True, device=""):
+    def execute_module(
+        self, failed=False, changed=False, commands=None, sort=True, device=""
+    ):
         self.load_fixtures(commands, device=device)
 
         if failed:
@@ -105,7 +109,9 @@ class TestNxosModule(ModuleTestCase):
                     result["commands"],
                 )
             else:
-                self.assertEqual(commands, result["commands"], result["commands"])
+                self.assertEqual(
+                    commands, result["commands"], result["commands"]
+                )
 
         return result
 

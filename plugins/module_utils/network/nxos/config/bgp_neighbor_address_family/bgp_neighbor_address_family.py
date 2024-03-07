@@ -27,7 +27,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_neighbor_address_family import (
     Bgp_neighbor_address_familyTemplate,
 )
@@ -124,7 +126,9 @@ class Bgp_neighbor_address_family(ResourceModule):
         self._compare(want=wantd, have=haved)
 
         if self.commands:
-            self.commands.insert(0, "router bgp {as_number}".format(**haved or wantd))
+            self.commands.insert(
+                0, "router bgp {as_number}".format(**haved or wantd)
+            )
 
     def _compare(self, want, have, vrf=""):
         """Leverages the base class `compare()` method and
@@ -171,7 +175,9 @@ class Bgp_neighbor_address_family(ResourceModule):
                 self.addcmd(have_af, "address_family", True)
 
             if len(self.commands) != begin:
-                self.commands.insert(begin, "neighbor {0}".format(w_nbr["neighbor_address"]))
+                self.commands.insert(
+                    begin, "neighbor {0}".format(w_nbr["neighbor_address"])
+                )
 
         if self.state in ["overridden", "deleted"]:
             for k, h_nbr in iteritems(h_nbrs):
@@ -181,7 +187,9 @@ class Bgp_neighbor_address_family(ResourceModule):
                     for k, have_af in iteritems(have_afs):
                         self.addcmd(have_af, "address_family", True)
                 if len(self.commands) != begin:
-                    self.commands.insert(begin, "neighbor {0}".format(h_nbr["neighbor_address"]))
+                    self.commands.insert(
+                        begin, "neighbor {0}".format(h_nbr["neighbor_address"])
+                    )
 
         if vrf:
             if len(self.commands) != begin_vrf:
@@ -204,9 +212,12 @@ class Bgp_neighbor_address_family(ResourceModule):
             for nbr in data["neighbors"]:
                 if "address_family" in nbr:
                     nbr["address_family"] = {
-                        (x["afi"], x.get("safi")): x for x in nbr["address_family"]
+                        (x["afi"], x.get("safi")): x
+                        for x in nbr["address_family"]
                     }
-            data["neighbors"] = {x["neighbor_address"]: x for x in data["neighbors"]}
+            data["neighbors"] = {
+                x["neighbor_address"]: x for x in data["neighbors"]
+            }
 
         if "vrfs" in data:
             for vrf in data["vrfs"]:

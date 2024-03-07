@@ -124,7 +124,9 @@ def remove_rsvd_interfaces(interfaces):
     """Exclude reserved interfaces from user management"""
     if not interfaces:
         return []
-    return [i for i in interfaces if get_interface_type(i["name"]) != "management"]
+    return [
+        i for i in interfaces if get_interface_type(i["name"]) != "management"
+    ]
 
 
 def vlan_range_to_list(vlans):

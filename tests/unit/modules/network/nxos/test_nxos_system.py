@@ -51,7 +51,9 @@ class TestNxosSystemModule(TestNxosModule):
         self.mock_load_config.stop()
 
     def load_fixtures(self, commands=None, device=""):
-        self.get_config.return_value = load_fixture("nxos_system", "config.cfg", device=device)
+        self.get_config.return_value = load_fixture(
+            "nxos_system", "config.cfg", device=device
+        )
         self.load_config.return_value = None
 
     def test_nxos_system_hostname_changed(self):
@@ -90,7 +92,9 @@ class TestNxosSystemModule(TestNxosModule):
             ),
         )
         commands = []
-        self.execute_module(changed=False, commands=commands, device="vrf_only")
+        self.execute_module(
+            changed=False, commands=commands, device="vrf_only"
+        )
 
     def test_nxos_system_domain_name_complex(self):
         domain_name = dict(name="example.net", vrf="management")

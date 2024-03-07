@@ -18,7 +18,9 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.l2_interfaces.l2_interfaces import (
     L2_interfacesArgs,
@@ -68,7 +70,9 @@ class L2_interfacesFacts(object):
         facts = {}
         if objs:
             facts["l2_interfaces"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             for cfg in params["config"]:
                 facts["l2_interfaces"].append(utils.remove_empties(cfg))
 
@@ -94,11 +98,15 @@ class L2_interfacesFacts(object):
         config["name"] = intf
         config["mode"] = utils.parse_conf_arg(conf, "switchport mode")
         config["ip_forward"] = utils.parse_conf_arg(conf, "ip forward")
-        config["access"]["vlan"] = utils.parse_conf_arg(conf, "switchport access vlan")
+        config["access"]["vlan"] = utils.parse_conf_arg(
+            conf, "switchport access vlan"
+        )
         config["trunk"]["allowed_vlans"] = utils.parse_conf_arg(
             conf,
             "switchport trunk allowed vlan",
         )
-        config["trunk"]["native_vlan"] = utils.parse_conf_arg(conf, "switchport trunk native vlan")
+        config["trunk"]["native_vlan"] = utils.parse_conf_arg(
+            conf, "switchport trunk native vlan"
+        )
 
         return utils.remove_empties(config)

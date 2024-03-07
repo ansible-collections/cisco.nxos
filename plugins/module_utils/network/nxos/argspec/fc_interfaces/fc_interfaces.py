@@ -53,7 +53,10 @@ class Fc_interfacesArgs(object):  # pylint: disable=R0903
                     "choices": allowed_port_modes,
                     "type": "str",
                 },
-                "trunk_mode": {"choices": ["auto", "on", "off"], "type": "str"},
+                "trunk_mode": {
+                    "choices": ["auto", "on", "off"],
+                    "type": "str",
+                },
                 "analytics": {
                     "choices": ["fc-scsi", "fc-nvme", "fc-all"],
                     "type": "str",

@@ -20,7 +20,9 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     parse_conf_arg,
 )
@@ -74,13 +76,19 @@ class VlansFacts(object):
             try:
                 # Not all devices support | json-pretty but is a workaround for
                 # libssh issue https://github.com/ansible/pylibssh/issues/208
-                structured = self.get_device_data(connection, "show vlan | json-pretty")
+                structured = self.get_device_data(
+                    connection, "show vlan | json-pretty"
+                )
             except Exception:
                 # When json-pretty is not supported, we fall back to | json
-                structured = self.get_device_data(connection, "show vlan | json")
+                structured = self.get_device_data(
+                    connection, "show vlan | json"
+                )
 
             # Raw cli config is needed for mapped_vni, which is not included in structured.
-            run_cfg_output = self.get_device_data(connection, "show running-config | section ^vlan")
+            run_cfg_output = self.get_device_data(
+                connection, "show running-config | section ^vlan"
+            )
         else:
             running_config = data.split("\n\n")
             structured, run_cfg_output = running_config[0], running_config[1]
@@ -97,7 +105,9 @@ class VlansFacts(object):
         facts = {}
         if objs:
             facts["vlans"] = []
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             for cfg in params["config"]:
                 facts["vlans"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
@@ -127,7 +137,9 @@ class VlansFacts(object):
         obj["mode"] = vlan["vlanshowinfo-vlanmode"].replace("-vlan", "")
 
         # enabled: shutdown, noshutdown
-        obj["enabled"] = True if "noshutdown" in vlan["vlanshowbr-shutstate"] else False
+        obj["enabled"] = (
+            True if "noshutdown" in vlan["vlanshowbr-shutstate"] else False
+        )
 
         # state: active, suspend
         obj["state"] = vlan["vlanshowbr-vlanstate"]

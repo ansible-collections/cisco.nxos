@@ -132,7 +132,9 @@ packet_loss:
 """
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
+    run_commands,
+)
 
 
 def get_summary(results_list, reference_point):
@@ -202,7 +204,9 @@ def get_ping_results(command, module):
         splitted_ping = ping.split("\n")
         reference_point = get_statistics_summary_line(splitted_ping)
         summary, ping_pass = get_summary(splitted_ping, reference_point)
-        rtt = get_rtt(splitted_ping, summary["packet_loss"], reference_point + 2)
+        rtt = get_rtt(
+            splitted_ping, summary["packet_loss"], reference_point + 2
+        )
 
     return (summary, rtt, ping_pass)
 
@@ -215,10 +219,14 @@ def main():
         source=dict(required=False),
         size=dict(required=False, type="int"),
         df_bit=dict(required=False, default=False, type="bool"),
-        state=dict(required=False, choices=["present", "absent"], default="present"),
+        state=dict(
+            required=False, choices=["present", "absent"], default="present"
+        ),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     destination = module.params["dest"]
     state = module.params["state"]

@@ -24,7 +24,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
     get_interface_type,
@@ -56,7 +58,9 @@ class Lldp_interfaces(ConfigBase):
             self.gather_network_resources,
             data=data,
         )
-        lldp_interfaces_facts = facts["ansible_network_resources"].get("lldp_interfaces")
+        lldp_interfaces_facts = facts["ansible_network_resources"].get(
+            "lldp_interfaces"
+        )
         if not lldp_interfaces_facts:
             return []
         return lldp_interfaces_facts
@@ -154,7 +158,9 @@ class Lldp_interfaces(ConfigBase):
                 if state == "merged":
                     commands.extend(self._state_merged(flatten_dict(w), have))
                 elif state == "replaced":
-                    commands.extend(self._state_replaced(flatten_dict(w), have))
+                    commands.extend(
+                        self._state_replaced(flatten_dict(w), have)
+                    )
         return commands
 
     def _state_parsed(self, want):
@@ -187,7 +193,9 @@ class Lldp_interfaces(ConfigBase):
         commands = []
         del_commands = []
         delete_dict = {}
-        obj_in_have = flatten_dict(search_obj_in_list(want["name"], have, "name"))
+        obj_in_have = flatten_dict(
+            search_obj_in_list(want["name"], have, "name")
+        )
         for k1 in obj_in_have.keys():
             if k1 not in want.keys():
                 delete_dict.update({k1: obj_in_have[k1]})
@@ -252,7 +260,9 @@ class Lldp_interfaces(ConfigBase):
         commands = []
         if want:
             for w in want:
-                obj_in_have = flatten_dict(search_obj_in_list(w["name"], have, "name"))
+                obj_in_have = flatten_dict(
+                    search_obj_in_list(w["name"], have, "name")
+                )
                 commands.extend(self.del_commands(obj_in_have))
         else:
             if not have:
@@ -263,7 +273,9 @@ class Lldp_interfaces(ConfigBase):
 
     def set_commands(self, want, have):
         commands = []
-        obj_in_have = flatten_dict(search_obj_in_list(want["name"], have, "name"))
+        obj_in_have = flatten_dict(
+            search_obj_in_list(want["name"], have, "name")
+        )
         if not obj_in_have:
             commands = self.add_commands(flatten_dict(want))
         else:
@@ -289,7 +301,9 @@ class Lldp_interfaces(ConfigBase):
             else:
                 commands.append("no lldp receive")
         if "management_address" in d:
-            commands.append("lldp tlv-set management-address " + d["management_address"])
+            commands.append(
+                "lldp tlv-set management-address " + d["management_address"]
+            )
         if "vlan" in d:
             commands.append("lldp tlv-set vlan " + str(d["vlan"]))
 
@@ -305,7 +319,10 @@ class Lldp_interfaces(ConfigBase):
         if "receive" in obj:
             commands.append("lldp receive")
         if "management_address" in obj:
-            commands.append("no lldp tlv-set management-address " + obj["management_address"])
+            commands.append(
+                "no lldp tlv-set management-address "
+                + obj["management_address"]
+            )
         if "vlan" in obj:
             commands.append("no lldp tlv-set vlan " + str(obj["vlan"]))
 

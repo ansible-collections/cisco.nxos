@@ -15,7 +15,9 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.route_maps.route_maps import (
     Route_mapsArgs,
@@ -55,7 +57,9 @@ class Route_mapsFacts(object):
             data = self.get_config(connection)
 
         # parse native config using the Route_maps template
-        route_maps_parser = Route_mapsTemplate(lines=data.splitlines(), module=self._module)
+        route_maps_parser = Route_mapsTemplate(
+            lines=data.splitlines(), module=self._module
+        )
 
         objs = list(route_maps_parser.parse().values())
 
@@ -65,7 +69,9 @@ class Route_mapsFacts(object):
         ansible_facts["ansible_network_resources"].pop("route_maps", None)
 
         params = utils.remove_empties(
-            route_maps_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
+            route_maps_parser.validate_config(
+                self.argument_spec, {"config": objs}, redact=True
+            ),
         )
 
         facts["route_maps"] = params.get("config", [])

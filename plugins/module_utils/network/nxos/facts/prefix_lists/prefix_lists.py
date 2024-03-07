@@ -15,7 +15,9 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.prefix_lists.prefix_lists import (
     Prefix_listsArgs,
@@ -36,7 +38,9 @@ class Prefix_listsFacts(object):
         """Wrapper method for `connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
-        return connection.get("show running-config | section 'ip(.*) prefix-list'")
+        return connection.get(
+            "show running-config | section 'ip(.*) prefix-list'"
+        )
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Prefix_lists network resource
@@ -54,7 +58,9 @@ class Prefix_listsFacts(object):
             data = self.get_config(connection)
 
         # parse native config using the Prefix_lists template
-        prefix_lists_parser = Prefix_listsTemplate(lines=data.splitlines(), module=self._module)
+        prefix_lists_parser = Prefix_listsTemplate(
+            lines=data.splitlines(), module=self._module
+        )
 
         objs = list(prefix_lists_parser.parse().values())
         if objs:
@@ -66,12 +72,16 @@ class Prefix_listsFacts(object):
                 )
                 for x in item["prefix_lists"]:
                     if "entries" in x:
-                        x["entries"] = sorted(x["entries"], key=lambda k: k["sequence"])
+                        x["entries"] = sorted(
+                            x["entries"], key=lambda k: k["sequence"]
+                        )
             objs = sorted(objs, key=lambda k: k["afi"])
 
         ansible_facts["ansible_network_resources"].pop("prefix_lists", None)
         params = utils.remove_empties(
-            prefix_lists_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
+            prefix_lists_parser.validate_config(
+                self.argument_spec, {"config": objs}, redact=True
+            ),
         )
         facts["prefix_lists"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)

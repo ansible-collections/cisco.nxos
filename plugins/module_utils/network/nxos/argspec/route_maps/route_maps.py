@@ -118,19 +118,29 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "source": {"type": "str"},
                                                 "group": {
                                                     "type": "dict",
-                                                    "options": {"prefix": {"type": "str"}},
+                                                    "options": {
+                                                        "prefix": {
+                                                            "type": "str"
+                                                        }
+                                                    },
                                                 },
                                                 "group_range": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "first": {"type": "str"},
-                                                        "last": {"type": "str"},
+                                                        "first": {
+                                                            "type": "str"
+                                                        },
+                                                        "last": {
+                                                            "type": "str"
+                                                        },
                                                     },
                                                 },
                                                 "rp": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "prefix": {"type": "str"},
+                                                        "prefix": {
+                                                            "type": "str"
+                                                        },
                                                         "rp_type": {
                                                             "type": "str",
                                                             "choices": [
@@ -181,19 +191,29 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                 "source": {"type": "str"},
                                                 "group": {
                                                     "type": "dict",
-                                                    "options": {"prefix": {"type": "str"}},
+                                                    "options": {
+                                                        "prefix": {
+                                                            "type": "str"
+                                                        }
+                                                    },
                                                 },
                                                 "group_range": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "first": {"type": "str"},
-                                                        "last": {"type": "str"},
+                                                        "first": {
+                                                            "type": "str"
+                                                        },
+                                                        "last": {
+                                                            "type": "str"
+                                                        },
                                                     },
                                                 },
                                                 "rp": {
                                                     "type": "dict",
                                                     "options": {
-                                                        "prefix": {"type": "str"},
+                                                        "prefix": {
+                                                            "type": "str"
+                                                        },
                                                         "rp_type": {
                                                             "type": "str",
                                                             "choices": [
@@ -297,7 +317,9 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "half_life": {"type": "int"},
                                         "start_reuse_route": {"type": "int"},
-                                        "start_suppress_route": {"type": "int"},
+                                        "start_suppress_route": {
+                                            "type": "int"
+                                        },
                                         "max_suppress_time": {"type": "int"},
                                     },
                                 },
@@ -314,10 +336,14 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "gateway_ip": {
                                             "type": "dict",
-                                            "mutually_exclusive": [["ip", "use_nexthop"]],
+                                            "mutually_exclusive": [
+                                                ["ip", "use_nexthop"]
+                                            ],
                                             "options": {
                                                 "ip": {"type": "str"},
-                                                "use_nexthop": {"type": "bool"},
+                                                "use_nexthop": {
+                                                    "type": "bool"
+                                                },
                                             },
                                         },
                                     },
@@ -345,7 +371,9 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "address": {
                                             "type": "dict",
-                                            "options": {"prefix_list": {"type": "str"}},
+                                            "options": {
+                                                "prefix_list": {"type": "str"}
+                                            },
                                         },
                                         "precedence": {"type": "str"},
                                         "next_hop": {
@@ -366,11 +394,24 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                             ],
                                             "options": {
                                                 "address": {"type": "str"},
-                                                "drop_on_fail": {"type": "bool", "default": False},
-                                                "force_order": {"type": "bool", "default": False},
-                                                "load_share": {"type": "bool", "default": False},
-                                                "peer_address": {"type": "bool"},
-                                                "redist_unchanged": {"type": "bool"},
+                                                "drop_on_fail": {
+                                                    "type": "bool",
+                                                    "default": False,
+                                                },
+                                                "force_order": {
+                                                    "type": "bool",
+                                                    "default": False,
+                                                },
+                                                "load_share": {
+                                                    "type": "bool",
+                                                    "default": False,
+                                                },
+                                                "peer_address": {
+                                                    "type": "bool"
+                                                },
+                                                "redist_unchanged": {
+                                                    "type": "bool"
+                                                },
                                                 "unchanged": {"type": "bool"},
                                                 "verify_availability": {
                                                     "type": "list",
@@ -380,7 +421,10 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                                             "type": "str",
                                                             "required": True,
                                                         },
-                                                        "track": {"type": "int", "required": True},
+                                                        "track": {
+                                                            "type": "int",
+                                                            "required": True,
+                                                        },
                                                         "drop_on_fail": {
                                                             "type": "bool",
                                                             "default": False,
@@ -404,7 +448,9 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "address": {
                                             "type": "dict",
-                                            "options": {"prefix_list": {"type": "str"}},
+                                            "options": {
+                                                "prefix_list": {"type": "str"}
+                                            },
                                         },
                                         "precedence": {"type": "str"},
                                     },
@@ -424,8 +470,12 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "bandwidth": {"type": "int"},
                                         "igrp_delay_metric": {"type": "int"},
-                                        "igrp_reliability_metric": {"type": "int"},
-                                        "igrp_effective_bandwidth_metric": {"type": "int"},
+                                        "igrp_reliability_metric": {
+                                            "type": "int"
+                                        },
+                                        "igrp_effective_bandwidth_metric": {
+                                            "type": "int"
+                                        },
                                         "igrp_mtu": {"type": "int"},
                                     },
                                 },

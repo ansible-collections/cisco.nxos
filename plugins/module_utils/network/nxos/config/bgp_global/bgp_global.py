@@ -26,7 +26,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_global import (
     Bgp_globalTemplate,
 )
@@ -132,11 +134,15 @@ class Bgp_global(ResourceModule):
 
         # if state is deleted, clean up global params
         if self.state == "deleted":
-            if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
+            if not self.want or (
+                self.have.get("as_number") == self.want.get("as_number")
+            ):
                 self._compare(want={}, have=self.have)
 
         elif self.state == "purged":
-            if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
+            if not self.want or (
+                self.have.get("as_number") == self.want.get("as_number")
+            ):
                 self.addcmd(self.have or {}, "as_number", True)
 
         else:
@@ -164,7 +170,9 @@ class Bgp_global(ResourceModule):
                 begin,
                 self._tmplt.render(
                     want or have,
-                    "vrf" if "vrf" in (want.keys() or have.keys()) else "as_number",
+                    "vrf"
+                    if "vrf" in (want.keys() or have.keys())
+                    else "as_number",
                     False,
                 ),
             )
@@ -235,7 +243,9 @@ class Bgp_global(ResourceModule):
             self._compare_path_attribute(entry, have_nbr)
 
             if len(self.commands) != begin or (entry and not have_nbr):
-                self.commands.insert(begin, self._tmplt.render(entry, "neighbor_address", False))
+                self.commands.insert(
+                    begin, self._tmplt.render(entry, "neighbor_address", False)
+                )
 
         # cleanup remaining neighbors
         # but do not negate it entirely
@@ -288,7 +298,9 @@ class Bgp_global(ResourceModule):
             if self._has_af(vrf=name):
                 self._module.fail_json(
                     msg="VRF {0} has address-family configurations. "
-                    "Please use the nxos_bgp_af module to remove those first.".format(name),
+                    "Please use the nxos_bgp_af module to remove those first.".format(
+                        name
+                    ),
                 )
             else:
                 self.addcmd(entry, "vrf", True)
@@ -317,10 +329,13 @@ class Bgp_global(ResourceModule):
             for x in entry["neighbors"]:
                 if "path_attribute" in x:
                     x["path_attribute"] = {
-                        _build_key(item): item for item in x.get("path_attribute", [])
+                        _build_key(item): item
+                        for item in x.get("path_attribute", [])
                     }
 
-            entry["neighbors"] = {x["neighbor_address"]: x for x in entry.get("neighbors", [])}
+            entry["neighbors"] = {
+                x["neighbor_address"]: x for x in entry.get("neighbors", [])
+            }
 
         if "vrfs" in entry:
             entry["vrfs"] = {x["vrf"]: x for x in entry.get("vrfs", [])}
@@ -328,7 +343,9 @@ class Bgp_global(ResourceModule):
                 self._bgp_list_to_dict(vrf)
 
     def _get_config(self):
-        return self._connection.get("show running-config | section '^router bgp'")
+        return self._connection.get(
+            "show running-config | section '^router bgp'"
+        )
 
     def _build_af_data(self):
         """Build a dictionary with AF related information

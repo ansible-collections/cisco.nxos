@@ -202,7 +202,8 @@ def activate_reload(module, pkg, flag):
                 if "socket is closed" in msg[0].lower():
                     return cmd
                 if (
-                    "another install operation is in progress" in msg[0].lower()
+                    "another install operation is in progress"
+                    in msg[0].lower()
                     or "failed" in msg[0].lower()
                 ):
                     time.sleep(2)
@@ -261,7 +262,11 @@ def install_remove_rpm(module, full_pkg, file_system, state):
         active_body = execute_show_command(show_active, module)
 
         if pkg not in inactive_body and pkg not in active_body:
-            commands.append(add_operation(module, show_inactive, file_system, full_pkg, pkg))
+            commands.append(
+                add_operation(
+                    module, show_inactive, file_system, full_pkg, pkg
+                )
+            )
 
         patch_type_body = execute_show_command(show_pkg_info, module)
         if patch_type_body and "Patch Type    :  reload" in patch_type_body:
@@ -280,9 +285,13 @@ def install_remove_rpm(module, full_pkg, file_system, state):
             patch_body = execute_show_command(show_patches, module)
             if pkg in patch_body:
                 # This is smu/patch rpm
-                commands.append(commit_operation(module, show_commit, pkg, False))
+                commands.append(
+                    commit_operation(module, show_commit, pkg, False)
+                )
             else:
-                err = 'Operation "install activate {0} forced" Failed'.format(pkg)
+                err = 'Operation "install activate {0} forced" Failed'.format(
+                    pkg
+                )
                 module.fail_json(msg=err)
 
     else:
@@ -299,11 +308,15 @@ def install_remove_rpm(module, full_pkg, file_system, state):
                 commands.append(activate_reload(module, pkg, False))
                 return commands
             else:
-                commands.append(deactivate_operation(module, show_active, pkg, True))
+                commands.append(
+                    deactivate_operation(module, show_active, pkg, True)
+                )
                 commit_body = execute_show_command(show_commit, module)
                 if pkg in commit_body:
                     # This is smu/patch rpm
-                    commands.append(commit_operation(module, show_commit, pkg, True))
+                    commands.append(
+                        commit_operation(module, show_commit, pkg, True)
+                    )
                 commands.extend(remove_operation(module, show_inactive, pkg))
 
         elif pkg in commit_body:
@@ -317,7 +330,9 @@ def install_remove_rpm(module, full_pkg, file_system, state):
                 commands.append(activate_reload(module, pkg, False))
                 return commands
             else:
-                commands.append(deactivate_operation(module, show_inactive, pkg, False))
+                commands.append(
+                    deactivate_operation(module, show_inactive, pkg, False)
+                )
                 commands.extend(remove_operation(module, show_inactive, pkg))
 
         else:
@@ -341,7 +356,9 @@ def main():
     # remove default in aggregate spec, to handle common arguments
     remove_default_spec(aggregate_spec)
 
-    argument_spec = dict(aggregate=dict(type="list", elements="dict", options=aggregate_spec))
+    argument_spec = dict(
+        aggregate=dict(type="list", elements="dict", options=aggregate_spec)
+    )
 
     argument_spec.update(element_spec)
     required_one_of = [["pkg", "aggregate"]]
@@ -378,12 +395,18 @@ def main():
 
     for obj in objects:
         if obj["state"] == "present":
-            remote_exists = remote_file_exists(module, obj["pkg"], file_system=obj["file_system"])
+            remote_exists = remote_file_exists(
+                module, obj["pkg"], file_system=obj["file_system"]
+            )
 
             if not remote_exists:
-                module.fail_json(msg="The requested package doesn't exist on the device")
+                module.fail_json(
+                    msg="The requested package doesn't exist on the device"
+                )
 
-        cmds = install_remove_rpm(module, obj["pkg"], obj["file_system"], obj["state"])
+        cmds = install_remove_rpm(
+            module, obj["pkg"], obj["file_system"], obj["state"]
+        )
 
         if cmds:
             results["changed"] = True

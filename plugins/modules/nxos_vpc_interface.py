@@ -197,7 +197,9 @@ def get_portchannel_vpc_config(module, portchannel):
     return config
 
 
-def get_commands_to_config_vpc_interface(portchannel, delta, config_value, existing):
+def get_commands_to_config_vpc_interface(
+    portchannel, delta, config_value, existing
+):
     commands = []
 
     if not delta.get("peer-link") and existing.get("peer-link"):
@@ -219,7 +221,9 @@ def get_commands_to_config_vpc_interface(portchannel, delta, config_value, exist
 def state_present(portchannel, delta, config_value, existing):
     commands = []
 
-    command = get_commands_to_config_vpc_interface(portchannel, delta, config_value, existing)
+    command = get_commands_to_config_vpc_interface(
+        portchannel, delta, config_value, existing
+    )
     commands.append(command)
 
     return commands
@@ -266,7 +270,9 @@ def main():
     active_peer_link = None
 
     if portchannel not in get_portchannel_list(module):
-        if not portchannel.isdigit() or int(portchannel) not in get_portchannel_list(module):
+        if not portchannel.isdigit() or int(
+            portchannel
+        ) not in get_portchannel_list(module):
             module.fail_json(
                 msg="The portchannel you are trying to make a"
                 " VPC or PL is not created yet. "
@@ -308,7 +314,8 @@ def main():
             if active_peer_link != portchannel:
                 if peer_link:
                     module.fail_json(
-                        msg="A peer link already exists on" " the device. Remove it first",
+                        msg="A peer link already exists on"
+                        " the device. Remove it first",
                         current_peer_link="Po{0}".format(active_peer_link),
                     )
         config_value = "peer-link"
@@ -319,7 +326,9 @@ def main():
     if state == "present":
         delta = dict(set(proposed.items()).difference(existing.items()))
         if delta:
-            commands = state_present(portchannel, delta, config_value, existing)
+            commands = state_present(
+                portchannel, delta, config_value, existing
+            )
 
     elif state == "absent" and existing:
         commands = state_absent(portchannel, existing)

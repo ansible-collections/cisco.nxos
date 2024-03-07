@@ -18,7 +18,9 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp.lacp import (
     LacpArgs,
@@ -57,7 +59,9 @@ class LacpFacts(object):
         ansible_facts["ansible_network_resources"].pop("lacp", None)
         facts = {}
         if objs:
-            params = utils.validate_config(self.argument_spec, {"config": objs})
+            params = utils.validate_config(
+                self.argument_spec, {"config": objs}
+            )
             facts["lacp"] = utils.remove_empties(params["config"])
         ansible_facts["ansible_network_resources"].update(facts)
         return ansible_facts
@@ -82,7 +86,9 @@ class LacpFacts(object):
         if a_match:
             address = a_match.group(1)
             config["system"]["mac"]["address"] = address
-            r_match = re.search(r"lacp system-mac {0} role (\S+)".format(address), conf, re.M)
+            r_match = re.search(
+                r"lacp system-mac {0} role (\S+)".format(address), conf, re.M
+            )
             if r_match:
                 config["system"]["mac"]["role"] = r_match.group(1)
 

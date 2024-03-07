@@ -27,7 +27,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.fc_interfaces import (
     Fc_interfacesTemplate,
 )
@@ -49,7 +51,13 @@ class Fc_interfaces(ResourceModule):
             resource="fc_interfaces",
             tmplt=Fc_interfacesTemplate(),
         )
-        self.parsers = ["description", "speed", "mode", "trunk_mode", "analytics"]
+        self.parsers = [
+            "description",
+            "speed",
+            "mode",
+            "trunk_mode",
+            "analytics",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -79,7 +87,9 @@ class Fc_interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {
+                k: v for k, v in iteritems(haved) if k in wantd or not wantd
+            }
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -92,7 +102,9 @@ class Fc_interfaces(ResourceModule):
             self._compare(want=want, have=haved.pop(k, {}))
 
         modified_list = [
-            "switchport trunk mode on" if item.startswith("no switchport trunk mode") else item
+            "switchport trunk mode on"
+            if item.startswith("no switchport trunk mode")
+            else item
             for item in self.commands
         ]
         self.commands = modified_list
@@ -158,7 +170,10 @@ class Fc_interfaces(ResourceModule):
             elif have_ana == "":
                 val = [f"analytics type {want_ana}"]
             else:
-                val = ["no analytics type fc-all", f"analytics type {want_ana}"]
+                val = [
+                    "no analytics type fc-all",
+                    f"analytics type {want_ana}",
+                ]
         elif self.state in ["deleted"]:
             if have_ana:
                 val = ["no analytics type fc-all"]
@@ -188,12 +203,16 @@ class Fc_interfaces(ResourceModule):
                     # negates if no shutdown
                     self.addcmd(have, "enabled", False)
 
-        ana_cmds = self._calculate_ana_config(want.get("analytics", ""), have.get("analytics", ""))
+        ana_cmds = self._calculate_ana_config(
+            want.get("analytics", ""), have.get("analytics", "")
+        )
 
         self.commands.extend(ana_cmds)
 
         if len(self.commands) != begin:
-            self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
+            self.commands.insert(
+                begin, self._tmplt.render(want or have, "interface", False)
+            )
 
     def normalize_interface_names(self, param):
         if param:

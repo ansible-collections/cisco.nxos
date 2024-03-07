@@ -45,12 +45,16 @@ class TestNxosVlansModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
+        self.get_resource_connection_config = (
+            self.mock_get_resource_connection_config.start()
+        )
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vlans.vlans.Vlans.edit_config",
@@ -119,7 +123,9 @@ class TestNxosVlansModule(TestNxosModule):
             config=[
                 dict(vlan_id=4),
                 dict(vlan_id=5, mapped_vni=555, mode="ce"),
-                dict(vlan_id=7, mapped_vni=777, name="test-vlan7", enabled=False),
+                dict(
+                    vlan_id=7, mapped_vni=777, name="test-vlan7", enabled=False
+                ),
                 dict(vlan_id="8", state="active", name="test-changeme-not"),
                 # vlan 3 is not present in playbook.
             ],

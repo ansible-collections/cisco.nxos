@@ -327,7 +327,8 @@ def validate_params(param, module):
                 raise ValueError
         except ValueError:
             module.fail_json(
-                msg="Warning! 'priority' must be an integer " "between 1 and 254",
+                msg="Warning! 'priority' must be an integer "
+                "between 1 and 254",
                 priority=value,
             )
 
@@ -347,9 +348,13 @@ def main():
             default="shutdown",
         ),
         authentication=dict(required=False, type="str", no_log=True),
-        state=dict(choices=["absent", "present"], required=False, default="present"),
+        state=dict(
+            choices=["absent", "present"], required=False, default="present"
+        ),
     )
-    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
+    module = AnsibleModule(
+        argument_spec=argument_spec, supports_check_mode=True
+    )
 
     warnings = list()
     results = {"changed": False, "commands": [], "warnings": warnings}
@@ -386,7 +391,8 @@ def main():
     mode, name = get_interface_mode(interface, intf_type, module)
     if mode == "layer2":
         module.fail_json(
-            msg="That interface is a layer2 port.\nMake it " "a layer 3 port first.",
+            msg="That interface is a layer2 port.\nMake it "
+            "a layer 3 port first.",
             interface=interface,
         )
 

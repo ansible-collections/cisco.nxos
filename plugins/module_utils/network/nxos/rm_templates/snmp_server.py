@@ -78,7 +78,9 @@ def _tmplt_users_auth(data):
 
 class Snmp_serverTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Snmp_serverTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Snmp_serverTemplate, self).__init__(
+            lines=lines, tmplt=self, module=module
+        )
 
     # fmt: off
     PARSERS = [
