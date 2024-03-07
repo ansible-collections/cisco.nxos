@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 #############################################
@@ -30,14 +29,63 @@ The arg spec for the nxos_spanning_tree_global module
 
 
 class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_spanning_tree_global module"""
+    """The arg spec for the nxos_spanning_tree_global module
+    """
 
     argument_spec = {
         "config": {
             "type": "dict",
             "options": {
-                "bridge_assurance": {"type": "bool"},
-                "bridge_domain": {"type": "str"},
+                "bridge": {
+                    "type": "dict",
+                    "options": {
+                        "bridge_assurance": {"type": "bool"},
+                        "bridge_domain": {
+                            "type": "dict",
+                            "options": {
+                                "bd_list_range": {"type": "str"},
+                                "forward_time": {"type": "int"},
+                                "hello_time": {"type": "int"},
+                                "max_age": {"type": "int"},
+                                "priority": {"type": "int"},
+                                "root": {
+                                    "type": "dict",
+                                    "mutually_exclusive": [
+                                        ["primary", "secondary"]
+                                    ],
+                                    "options": {
+                                        "primary": {
+                                            "type": "dict",
+                                            "options": {
+                                                "enable": {"type": "bool"},
+                                                "diameter": {"type": "int"},
+                                                "hello_time": {"type": "int"},
+                                            },
+                                        },
+                                        "secondary": {
+                                            "type": "dict",
+                                            "options": {
+                                                "enable": {"type": "bool"},
+                                                "diameter": {"type": "int"},
+                                                "hello_time": {"type": "int"},
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                "domain": {
+                    "type": "dict",
+                    "mutually_exclusive": [["identifier", "disable", "enable"]],
+                    "options": {
+                        "identifier": {"type": "int"},
+                        "disable": {"type": "bool"},
+                        "enable": {"type": "bool"},
+                        "clear_stats": {"type": "bool"},
+                    },
+                },
                 "fcoe": {"type": "bool"},
                 "lc_issu": {
                     "type": "str",
@@ -45,6 +93,32 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                 },
                 "loopguard_default": {"type": "bool"},
                 "mode": {"type": "str", "choices": ["mst", "rapid-pvst"]},
+                "mst": {
+                    "type": "dict",
+                    "options": {
+                        "forward-time": {"type": "int"},
+                        "hello-time": {"type": "int"},
+                        "max_age": {"type": "int"},
+                        "max_hops": {"type": "int"},
+                        "simulate_pvst_global": {"type": "bool"},
+                        "configure_mst": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {
+                                "name": {"type": "str"},
+                                "revision": {"type": "int"},
+                                "private_vlan_sync": {"type": "bool"},
+                                "instance_vlan": {
+                                    "type": "dict",
+                                    "options": {
+                                        "instance_id": {"type": "int"},
+                                        "vlan_range": {"type": "str"},
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
                 "pathcost_method": {"type": "str", "choices": ["long", "short"]},
                 "port_type": {
                     "type": "dict",
@@ -58,7 +132,70 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                         "default": {"type": "bool"},
                     },
                 },
-                "vlan": {"type": "str"},
+                "pseudo_info": {
+                    "type": "dict",
+                    "options": {
+                        "bridge_domain_info": {
+                            "type": "dict",
+                            "mutually_exclusive": [["designated", "root"]],
+                            "options": {
+                                "range": {"type": "str"},
+                                "designated_priority": {"type": "int"},
+                                "root_priority": {"type": "int\\"},
+                            },
+                        },
+                        "mst_info": {
+                            "type": "dict",
+                            "mutually_exclusive": [["designated", "root"]],
+                            "options": {
+                                "range": {"type": "str"},
+                                "designated_priority": {"type": "int"},
+                                "root_priority": {"type": "int"},
+                            },
+                        },
+                        "vlan_info": {
+                            "type": "dict",
+                            "mutually_exclusive": [["designated", "root"]],
+                            "options": {
+                                "range": {"type": "str"},
+                                "designated_priority": {"type": "int"},
+                                "root_priority": {"type": "int"},
+                            },
+                        },
+                    },
+                },
+                "vlan": {
+                    "type": "dict",
+                    "options": {
+                        "vlan_range": {"type": "str"},
+                        "forward_time": {"type": "int"},
+                        "hello_time": {"type": "int"},
+                        "max_age": {"type": "int"},
+                        "priority": {"type": "int"},
+                        "root": {
+                            "type": "dict",
+                            "mutually_exclusive": [["primary", "secondary"]],
+                            "options": {
+                                "primary": {
+                                    "type": "dict",
+                                    "options": {
+                                        "enable": {"type": "bool"},
+                                        "diameter": {"type": "int"},
+                                        "hello_time": {"type": "int"},
+                                    },
+                                },
+                                "secondary": {
+                                    "type": "dict",
+                                    "options": {
+                                        "enable": {"type": "bool"},
+                                        "diameter": {"type": "int"},
+                                        "hello_time": {"type": "int"},
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         "running_config": {"type": "str"},

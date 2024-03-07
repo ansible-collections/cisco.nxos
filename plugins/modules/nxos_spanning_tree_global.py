@@ -10,31 +10,99 @@ The module file for nxos_spanning_tree_global
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
----
 module: nxos_spanning_tree_global
-short_description: Resource module to configure spanning tree.
-description: This module configures and manages the attributes of Spanning-tree on Cisco NXOS.
+short_description:
+  - Resource module to configure spanning tree.
+description:
+  - This module configures and manages the attributes of Spanning-tree on Cisco NXOS.
 version_added: 6.0.3
 author: Vinay Mulugund (@roverflow)
 notes:
-- Tested against NX-OS 9.3.6.
-- This module works with connection C(network_cli) and C(httpapi).
-  See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
+  - Tested against NX-OS 9.3.6.
+  - This module works with connection C(network_cli) and C(httpapi).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_nxos.html)
 options:
   config:
     description: A dict of Spanning-tree options.
     type: dict
     suboptions:
-      bridge_assurance:
-        description: Enable bridge assurance.
-        type: bool
-      bridge_domain:
-        decsription: Bridge-Domain Spanning Trees range.
-        type: str
+      bridge:
+        description: Bridge options in spanning-tree.
+        type: dict
+        suboptions:
+          bridge_assurance:
+            description: Enable bridge assurance.
+            type: bool
+          bridge_domain:
+            decsription: Bridge-Domain Spanning Trees range.
+            type: dict
+            suboptions:
+              bd_list_range:
+                description: Bridge-Domain Spanning Trees range.
+                type: str
+              forward_time:
+                description: Forward time for bridge domain.
+                type: int
+              hello_time:
+                description: Hello time for bridge domain.
+                type: int
+              max_age:
+                description: Max age for bridge domain.
+                type: int
+              priority:
+                description: Priority for bridge domain.
+                type: int
+              root:
+                description: Configure switch as root.
+                type: dict
+                mutually_exclusive: [["primary", "secondary"]]
+                suboptions:
+                  primary:
+                    description: Configure primary root.
+                    type: dict
+                    suboptions:
+                      enable:
+                        description: Enable primary root.
+                        type: bool
+                      diameter:
+                        description: Priority for primary root.
+                        type: int
+                      hello_time:
+                        description: Configure secondary root.
+                        type: int
+                  secondary:
+                    description: Configure secondary root.
+                    type: dict
+                    suboptions:
+                      enable:
+                        description: Enable primary root.
+                        type: bool
+                      diameter:
+                        description: Priority for primary root.
+                        type: int
+                      hello_time:
+                        description: Configure secondary root.
+                        type: int
+      domain:
+        description: Spanning tree domain options.
+        type: dict
+        mutually_exclusive: [["identifier", "disable", "enable"]]
+        suboptions:
+          identifier:
+            description: Spanning tree domain identifier.
+            type: int
+          disable:
+            description: Disable spanning tree domain.
+            type: bool
+          enable:
+            description: Enable spanning tree domain.
+            type: bool
+          clear_stats:
+            description: Clear spanning tree domain statistics.
+            type: bool
       fcoe:
         description: Enable STP for FCoE VLANs.
         type: bool
@@ -54,6 +122,49 @@ options:
         choices:
           - mst
           - rapid-pvst
+      mst:
+        description: Multiple spanning tree configuration.
+        type: dict
+        suboptions:
+          forward-time:
+            description: Forward time for MST.
+            type: int
+          hello-time:
+            description: Hello time for MST.
+            type: int
+          max_age:
+            description: Max age for MST.
+            type: int
+          max_hops:
+            description: Max hops for MST.
+            type: int
+          simulate_pvst_global:
+            description: Enable Simulate PVST global.
+            type: bool
+          configure_mst:
+            description: MST configuration submode options.
+            type: list
+            elements: dict
+            suboptions:
+              name:
+                description: MST configuration submode instance name.
+                type: str
+              revision:
+                description: MST configuration submode instance revision.
+                type: int
+              private_vlan_sync:
+                description: MST configuration submode private vlan sync.
+                type: bool
+              instance_vlan:
+                description: MST configuration submode instance.
+                type: dict
+                suboptions:
+                  instance_id:
+                    description: MST configuration submode instance id.
+                    type: int
+                  vlan_range:
+                    description: MST configuration submode instance vlan range.
+                    type: str
       pathcost_method:
         description: Spanning tree pathcost options.
         type: str
@@ -78,9 +189,102 @@ options:
           default:
             description: Enable default port type.
             type: bool
+      pseudo_info:
+        description: Configure spanning tree pseudo information
+        type: dict
+        suboptions:
+          bridge_domain_info:
+            description: Pseudo information bridge domain.
+            type: dict
+            mutually_exclusive: [["designated", "root"]]
+            suboptions:
+              range:
+                description: Pseudo information bridge domain range.
+                type: str
+              designated_priority:
+                description: Pseudo information bridge domain designated priority.
+                type: int
+              root_priority:
+                description: Pseudo information bridge domain root priority.
+                type: int\
+          mst_info:
+            description: Pseudo information MST.
+            type: dict
+            mutually_exclusive: [["designated", "root"]]
+            suboptions:
+              range:
+                description: Pseudo information MST range.
+                type: str
+              designated_priority:
+                description: Pseudo information MST designated priority.
+                type: int
+              root_priority:
+                description: Pseudo information MST root priority.
+                type: int
+          vlan_info:
+            description: Pseudo information MST.
+            type: dict
+            mutually_exclusive: [["designated", "root"]]
+            suboptions:
+              range:
+                description: Pseudo information MST range.
+                type: str
+              designated_priority:
+                description: Pseudo information MST designated priority.
+                type: int
+              root_priority:
+                description: Pseudo information MST root priority.
+                type: int
       vlan:
-        description: Spanning tree VLAN range.
-        type: str
+        description: VLAN Switch Spanning Trees.
+        type: dict
+        suboptions:
+          vlan_range:
+            description: VLAN range for spanning tree.
+            type: str
+          forward_time:
+            description: Forward time for VLAN.
+            type: int
+          hello_time:
+            description: Hello time for VLAN.
+            type: int
+          max_age:
+            description: Max age for VLAN.
+            type: int
+          priority:
+            description: Priority for VLAN.
+            type: int
+          root:
+            description: Configure switch as root.
+            type: dict
+            mutually_exclusive: [["primary", "secondary"]]
+            suboptions:
+              primary:
+                description: Configure primary root.
+                type: dict
+                suboptions:
+                  enable:
+                    description: Enable primary root.
+                    type: bool
+                  diameter:
+                    description: Priority for primary root.
+                    type: int
+                  hello_time:
+                    description: Configure secondary root.
+                    type: int
+              secondary:
+                description: Configure secondary root.
+                type: dict
+                suboptions:
+                  enable:
+                    description: Enable primary root.
+                    type: bool
+                  diameter:
+                    description: Priority for primary root.
+                    type: int
+                  hello_time:
+                    description: Configure secondary root.
+                    type: int
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -175,7 +379,6 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
     Spanning_tree_globalArgs,
 )
