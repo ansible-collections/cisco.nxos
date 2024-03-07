@@ -16,9 +16,7 @@ based on the configuration.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_templates.bgp_templates import (
     Bgp_templatesArgs,
@@ -40,10 +38,10 @@ class Bgp_templatesFacts(object):
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
         as_number = connection.get(
-            "show running-config bgp | include 'router bgp'"
+            "show running-config bgp | include 'router bgp'",
         )
         templates = connection.get(
-            "show running-config bgp | section 'template'"
+            "show running-config bgp | section 'template'",
         )
 
         return as_number + "\n" + templates
@@ -67,7 +65,8 @@ class Bgp_templatesFacts(object):
 
         # parse native config using the Bgp_templates template
         bgp_templates_parser = Bgp_templatesTemplate(
-            lines=data, module=self._module
+            lines=data,
+            module=self._module,
         )
         parsed = bgp_templates_parser.parse()
 
@@ -81,7 +80,7 @@ class Bgp_templatesFacts(object):
                 for x in objs[k]:
                     if "address_family" in x:
                         x["address_family"] = list(
-                            x["address_family"].values()
+                            x["address_family"].values(),
                         )
 
         for nbr in objs.get("neighbor", []):
@@ -99,7 +98,9 @@ class Bgp_templatesFacts(object):
 
         params = utils.remove_empties(
             bgp_templates_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 

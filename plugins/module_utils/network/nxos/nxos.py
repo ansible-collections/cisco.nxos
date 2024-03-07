@@ -105,7 +105,7 @@ class Cli:
                 out = connection.get_config(flags=flags)
             except ConnectionError as exc:
                 self._module.fail_json(
-                    msg=to_text(exc, errors="surrogate_then_replace")
+                    msg=to_text(exc, errors="surrogate_then_replace"),
                 )
 
             cfg = to_text(out, errors="surrogate_then_replace").strip() + "\n"
@@ -125,13 +125,13 @@ class Cli:
                 if network_api == "cliconf" and out:
                     for index, resp in enumerate(out):
                         if (
-                            "Invalid command at" in resp
-                            or "Ambiguous command at" in resp
+                            "Invalid command at" in resp or "Ambiguous command at" in resp
                         ) and "json" in resp:
                             if commands[index]["output"] == "json":
                                 commands[index]["output"] = "text"
                                 out = connection.run_commands(
-                                    commands, check_rc
+                                    commands,
+                                    check_rc,
                                 )
             return out
         except ConnectionError as exc:
@@ -156,10 +156,7 @@ class Cli:
                 responses.append(err)
                 return responses
             elif code and "no graceful-restart" in err:
-                if (
-                    "ISSU/HA will be affected if Graceful Restart is disabled"
-                    in err
-                ):
+                if "ISSU/HA will be affected if Graceful Restart is disabled" in err:
                     msg = [""]
                     responses.extend(msg)
                     return responses
@@ -192,7 +189,7 @@ class Cli:
             )
         except ConnectionError as exc:
             self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
+                msg=to_text(exc, errors="surrogate_then_replace"),
             )
         return response
 
@@ -206,7 +203,7 @@ class Cli:
             capabilities = connection.get_capabilities()
         except ConnectionError as exc:
             self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
+                msg=to_text(exc, errors="surrogate_then_replace"),
             )
         self._module._capabilities = json.loads(capabilities)
         return self._module._capabilities
@@ -217,7 +214,7 @@ class Cli:
             module_context = connection.read_module_context(module_key)
         except ConnectionError as exc:
             self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
+                msg=to_text(exc, errors="surrogate_then_replace"),
             )
 
         return module_context
@@ -228,7 +225,7 @@ class Cli:
             connection.save_module_context(module_key, module_context)
         except ConnectionError as exc:
             self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
+                msg=to_text(exc, errors="surrogate_then_replace"),
             )
 
         return None
@@ -282,7 +279,7 @@ class HttpApi:
                 out = self._connection.send_request(cmd)
             except ConnectionError as exc:
                 self._module.fail_json(
-                    msg=to_text(exc, errors="surrogate_then_replace")
+                    msg=to_text(exc, errors="surrogate_then_replace"),
                 )
 
             cfg = to_text(out).strip()
@@ -307,7 +304,9 @@ class HttpApi:
         if running and diff_match != "none" and diff_replace != "config":
             # running configuration
             running_obj = NetworkConfig(
-                indent=2, contents=running, ignore_lines=diff_ignore_lines
+                indent=2,
+                contents=running,
+                ignore_lines=diff_ignore_lines,
             )
             configdiffobjs = candidate_obj.difference(
                 running_obj,
@@ -319,13 +318,15 @@ class HttpApi:
         else:
             configdiffobjs = candidate_obj.items
 
-        diff["config_diff"] = (
-            dumps(configdiffobjs, "commands") if configdiffobjs else ""
-        )
+        diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
         return diff
 
     def load_config(
-        self, commands, return_error=False, opts=None, replace=None
+        self,
+        commands,
+        return_error=False,
+        opts=None,
+        replace=None,
     ):
         """Sends the ordered set of commands to the device"""
         if opts is None:
@@ -344,10 +345,7 @@ class HttpApi:
             elif opts.get("catch_clierror") and "400" in code:
                 return [code, err]
             elif code and "no graceful-restart" in err:
-                if (
-                    "ISSU/HA will be affected if Graceful Restart is disabled"
-                    in err
-                ):
+                if "ISSU/HA will be affected if Graceful Restart is disabled" in err:
                     msg = [""]
                     responses.extend(msg)
                     return responses
@@ -360,7 +358,11 @@ class HttpApi:
         return responses
 
     def edit_config(
-        self, candidate=None, commit=True, replace=None, comment=None
+        self,
+        candidate=None,
+        commit=True,
+        replace=None,
+        comment=None,
     ):
         resp = list()
 
@@ -384,19 +386,23 @@ class HttpApi:
             capabilities = self._connection.get_capabilities()
         except ConnectionError as exc:
             self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
+                msg=to_text(exc, errors="surrogate_then_replace"),
             )
 
         return json.loads(capabilities)
 
     def check_edit_config_capability(
-        self, candidate=None, commit=True, replace=None, comment=None
+        self,
+        candidate=None,
+        commit=True,
+        replace=None,
+        comment=None,
     ):
         operations = self._connection.get_device_operations()
 
         if not candidate and not replace:
             raise ValueError(
-                "must provide a candidate or replace to load configuration"
+                "must provide a candidate or replace to load configuration",
             )
 
         if commit not in (True, False):
@@ -413,7 +419,7 @@ class HttpApi:
             module_context = self._connection.read_module_context(module_key)
         except ConnectionError as exc:
             self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
+                msg=to_text(exc, errors="surrogate_then_replace"),
             )
 
         return module_context
@@ -423,7 +429,7 @@ class HttpApi:
             self._connection.save_module_context(module_key, module_context)
         except ConnectionError as exc:
             self._module.fail_json(
-                msg=to_text(exc, errors="surrogate_then_replace")
+                msg=to_text(exc, errors="surrogate_then_replace"),
             )
 
         return None
@@ -537,7 +543,8 @@ class NxosCmdRef:
 
         # Supported Platforms: N3K,N5K,N6K,N7K,N9K,N3K-F,N9K-F
         m = re.match(
-            "(?P<short>N[35679][K57])-(?P<N35>C35)*", network_os_platform
+            "(?P<short>N[35679][K57])-(?P<N35>C35)*",
+            network_os_platform,
         )
         if not m:
             return None
@@ -627,8 +634,8 @@ class NxosCmdRef:
             if len(match) > 1 and not multiple:
                 raise ValueError(
                     "get_existing: multiple matches found for property {0}".format(
-                        k
-                    )
+                        k,
+                    ),
                 )
         else:
             match = [m.groups() for m in match_lines if m]
@@ -637,8 +644,8 @@ class NxosCmdRef:
             if len(match) > 1 and not multiple:
                 raise ValueError(
                     "get_existing: multiple matches found for property {0}".format(
-                        k
-                    )
+                        k,
+                    ),
                 )
             for item in match:
                 index = match.index(item)
@@ -703,10 +710,7 @@ class NxosCmdRef:
 
         # We need to remove the last item in context for state absent case.
         if ref["_state"] in self.absent_states and ref["_context"]:
-            if (
-                ref["_resource_key"]
-                and ref["_resource_key"] == ref["_context"][-1]
-            ):
+            if ref["_resource_key"] and ref["_resource_key"] == ref["_context"][-1]:
                 if ref["_context"][-1] in output:
                     ref["_context"][-1] = "no " + ref["_context"][-1]
                 else:
@@ -740,7 +744,7 @@ class NxosCmdRef:
                 else:
                     raise ValueError(
                         "get_existing: unknown 'kind' value specified for key '{0}'".format(
-                            k
+                            k,
                         ),
                     )
 
@@ -817,12 +821,13 @@ class NxosCmdRef:
         else:
             raise ValueError(
                 "get_proposed: unknown 'kind' value specified for key '{0}'".format(
-                    k
-                )
+                    k,
+                ),
             )
         if cmd:
             if ref["_state"] in self.absent_states and not re.search(
-                r"^no", cmd
+                r"^no",
+                cmd,
             ):
                 cmd = "no " + cmd
             # Commands may require parent commands for proper context.
@@ -853,15 +858,11 @@ class NxosCmdRef:
                     return False
                 elif str(playval) == str(existing):
                     return True
-                elif (
-                    isinstance(existing, dict) and playval in existing.values()
-                ):
+                elif isinstance(existing, dict) and playval in existing.values():
                     return True
 
             if ref["_state"] in self.absent_states:
-                if isinstance(existing, dict) and all(
-                    x is None for x in existing.values()
-                ):
+                if isinstance(existing, dict) and all(x is None for x in existing.values()):
                     existing = None
                 if existing is None or playval not in existing.values():
                     return True
@@ -881,9 +882,7 @@ class NxosCmdRef:
                 for ekey, evalue in existing.items():
                     if isinstance(evalue, dict):
                         # Remove values set to string 'None' from dvalue
-                        evalue = dict(
-                            (k, v) for k, v in evalue.items() if v != "None"
-                        )
+                        evalue = dict((k, v) for k, v in evalue.items() if v != "None")
                     for pkey, pvalue in playval.items():
                         if compare(pvalue, evalue):
                             if playval_copy.get(pkey):

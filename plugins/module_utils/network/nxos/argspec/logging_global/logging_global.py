@@ -247,7 +247,7 @@ class Logging_globalArgs(object):  # pylint: disable=R0903
                                 "trustpoint": {
                                     "type": "dict",
                                     "options": {
-                                        "client_identity": {"type": "str"}
+                                        "client_identity": {"type": "str"},
                                     },
                                 },
                             },

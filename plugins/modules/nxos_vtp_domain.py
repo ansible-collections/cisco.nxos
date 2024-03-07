@@ -171,7 +171,8 @@ def main():
     argument_spec = dict(domain=dict(type="str", required=True))
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()

@@ -19,9 +19,7 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acl_interfaces.acl_interfaces import (
     Acl_interfacesArgs,
@@ -65,7 +63,8 @@ class Acl_interfacesFacts(object):
             intf = data[i].split("\n")
             for l in range(1, len(intf)):
                 if not re.search(
-                    "ip(v6)?( port)? (access-group|traffic-filter)", intf[l]
+                    "ip(v6)?( port)? (access-group|traffic-filter)",
+                    intf[l],
                 ):
                     intf[l] = ""
             intf = list(filter(None, intf))
@@ -82,7 +81,8 @@ class Acl_interfacesFacts(object):
         facts = {}
         if objs:
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             params = utils.remove_empties(params)
             facts["acl_interfaces"] = params["config"]

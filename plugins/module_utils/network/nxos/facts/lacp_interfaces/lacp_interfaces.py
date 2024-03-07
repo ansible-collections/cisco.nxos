@@ -18,9 +18,7 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_interfacesArgs,
@@ -72,7 +70,8 @@ class Lacp_interfacesFacts(object):
         if objs:
             facts["lacp_interfaces"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["lacp_interfaces"].append(utils.remove_empties(cfg))
@@ -98,7 +97,8 @@ class Lacp_interfacesFacts(object):
             return {}
         config["name"] = intf
         config["port_priority"] = utils.parse_conf_arg(
-            conf, "lacp port-priority"
+            conf,
+            "lacp port-priority",
         )
         config["rate"] = utils.parse_conf_arg(conf, "lacp rate")
         config["mode"] = utils.parse_conf_arg(conf, "lacp mode")

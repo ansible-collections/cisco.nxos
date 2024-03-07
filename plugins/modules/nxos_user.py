@@ -321,7 +321,8 @@ def parse_roles(data):
 
 def map_config_to_obj(module):
     out = run_commands(
-        module, [{"command": "show user-account", "output": "json"}]
+        module,
+        [{"command": "show user-account", "output": "json"}],
     )
     data = out[0]
 
@@ -421,7 +422,8 @@ def main():
         configured_password=dict(no_log=True),
         hashed_password=dict(no_log=True),
         update_password=dict(
-            default="always", choices=["on_create", "always"]
+            default="always",
+            choices=["on_create", "always"],
         ),
         roles=dict(type="list", aliases=["role"], elements="str"),
         sshkey=dict(no_log=False),
@@ -481,7 +483,8 @@ def main():
     # check if provided hashed password is infact a hash
     if module.params["hashed_password"] is not None:
         if not re.match(
-            r"^\$5\$......\$.*$", module.params["hashed_password"]
+            r"^\$5\$......\$.*$",
+            module.params["hashed_password"],
         ):
             module.fail_json(msg="Provided hash is not valid")
 
@@ -493,11 +496,7 @@ def main():
                     module.fail_json(msg=resp)
                 else:
                     result["warnings"].extend(
-                        [
-                            x[9:]
-                            for x in resp.splitlines()
-                            if x.startswith("WARNING: ")
-                        ],
+                        [x[9:] for x in resp.splitlines() if x.startswith("WARNING: ")],
                     )
 
         result["changed"] = True

@@ -67,7 +67,8 @@ def main():
     argument_spec = dict(nv_overlay_evpn=dict(required=True, type="bool"))
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     result = {"changed": False}
@@ -84,7 +85,7 @@ def main():
 
     if "3K" in os_platform:
         module.fail_json(
-            msg="This module is not supported on Nexus 3000 series"
+            msg="This module is not supported on Nexus 3000 series",
         )
 
     if module.params["nv_overlay_evpn"] is True:

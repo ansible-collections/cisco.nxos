@@ -16,9 +16,7 @@ based on the configuration.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_global.bgp_global import (
     Bgp_globalArgs,
@@ -60,7 +58,8 @@ class Bgp_globalFacts(object):
 
         # parse native config using the Bgp_global template
         bgp_global_parser = Bgp_globalTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         obj = bgp_global_parser.parse()
 
@@ -76,7 +75,8 @@ class Bgp_globalFacts(object):
         # transform vrfs into a list
         if vrfs:
             obj["vrfs"] = sorted(
-                list(obj["vrfs"].values()), key=lambda k, sk="vrf": k[sk]
+                list(obj["vrfs"].values()),
+                key=lambda k, sk="vrf": k[sk],
             )
             for vrf in obj["vrfs"]:
                 self._post_parse(vrf)
@@ -88,7 +88,9 @@ class Bgp_globalFacts(object):
         ansible_facts["ansible_network_resources"].pop("bgp_global", None)
         params = utils.remove_empties(
             bgp_global_parser.validate_config(
-                self.argument_spec, {"config": obj}, redact=True
+                self.argument_spec,
+                {"config": obj},
+                redact=True,
             ),
         )
 

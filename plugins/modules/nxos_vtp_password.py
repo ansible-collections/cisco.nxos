@@ -201,7 +201,8 @@ def main():
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()
@@ -241,8 +242,7 @@ def main():
         else:
             if not existing.get("domain"):
                 module.fail_json(
-                    msg="Cannot remove a vtp password "
-                    "before vtp domain is set."
+                    msg="Cannot remove a vtp password " "before vtp domain is set.",
                 )
 
             elif existing["vtp_password"] != ("\\"):
@@ -252,7 +252,7 @@ def main():
         if delta:
             if not existing.get("domain"):
                 module.fail_json(
-                    msg="Cannot set vtp password " "before vtp domain is set."
+                    msg="Cannot set vtp password " "before vtp domain is set.",
                 )
 
             else:

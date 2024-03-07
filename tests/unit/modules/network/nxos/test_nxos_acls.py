@@ -12,9 +12,7 @@ from textwrap import dedent
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_acls
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    set_module_args,
-)
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
 
 from .nxos_module import TestNxosModule
 
@@ -38,16 +36,12 @@ class TestNxosAclsModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acls.acls.Acls.edit_config",
@@ -90,7 +84,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         sequence=20,
                                         protocol="tcp",
                                         protocol_options=dict(
-                                            tcp=dict(ack=True)
+                                            tcp=dict(ack=True),
                                         ),
                                     ),
                                     dict(
@@ -110,7 +104,7 @@ class TestNxosAclsModule(TestNxosModule):
                                     dict(
                                         grant="deny",
                                         destination=dict(
-                                            prefix="2002:2:2:2::/64"
+                                            prefix="2002:2:2:2::/64",
                                         ),
                                         source=dict(prefix="2002:1:1:1::/64"),
                                         sequence=30,
@@ -207,7 +201,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         protocol="icmp",
                                         protocol_options=dict(
                                             icmp=dict(
-                                                administratively_prohibited=True
+                                                administratively_prohibited=True,
                                             ),
                                         ),
                                     ),
@@ -297,7 +291,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         protocol="icmp",
                                         protocol_options=dict(
                                             icmp=dict(
-                                                administratively_prohibited=True
+                                                administratively_prohibited=True,
                                             ),
                                         ),
                                     ),
@@ -554,7 +548,7 @@ class TestNxosAclsModule(TestNxosModule):
                                         "range": {
                                             "start": "1024",
                                             "end": "65500",
-                                        }
+                                        },
                                     },
                                 },
                                 "destination": {
@@ -746,7 +740,7 @@ class TestNxosAclsModule(TestNxosModule):
                                 "grant": "permit",
                                 "protocol": "ipv6",
                                 "source": {
-                                    "host": "2001:db8:85a3::8a2e:370:7334"
+                                    "host": "2001:db8:85a3::8a2e:370:7334",
                                 },
                                 "destination": {"any": True},
                             },
@@ -802,7 +796,7 @@ class TestNxosAclsModule(TestNxosModule):
                                 "grant": "permit",
                                 "protocol": "tcp",
                                 "protocol_options": {
-                                    "tcp": {"established": True}
+                                    "tcp": {"established": True},
                                 },
                                 "source": {
                                     "host": "1.1.1.1",

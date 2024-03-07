@@ -61,13 +61,15 @@ class TestNxosEvpnGlobalModule(TestNxosModule):
 
     def start_configured(self, *args, **kwargs):
         self.get_config.return_value = load_fixture(
-            "nxos_evpn_global", "configured.cfg"
+            "nxos_evpn_global",
+            "configured.cfg",
         )
         return self.execute_module(*args, **kwargs)
 
     def start_unconfigured(self, *args, **kwargs):
         self.get_config.return_value = load_fixture(
-            "nxos_evpn_global", "unconfigured.cfg"
+            "nxos_evpn_global",
+            "unconfigured.cfg",
         )
         return self.execute_module(*args, **kwargs)
 

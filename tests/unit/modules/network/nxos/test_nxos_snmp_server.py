@@ -42,9 +42,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.snmp_server.snmp_server.Snmp_serverFacts.get_config",
@@ -71,7 +69,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     counter=dict(cache=dict(timeout=1800)),
                     drop=dict(unknown_engine_id=True, unknown_user=True),
                     engine_id=dict(
-                        local="'00:00:00:63:00:01:00:10:20:15:10:03'"
+                        local="'00:00:00:63:00:01:00:10:20:15:10:03'",
                     ),
                     communities=[
                         dict(name="private", group="network-admin"),
@@ -81,13 +79,15 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     location="lab",
                     mib=dict(
                         community_map=dict(
-                            community="public", context="public1"
-                        )
+                            community="public",
+                            context="public1",
+                        ),
                     ),
                     packetsize=484,
                     protocol=dict(enable=True),
                     source_interface=dict(
-                        informs="Ethernet1/1", traps="Ethernet1/2"
+                        informs="Ethernet1/1",
+                        traps="Ethernet1/2",
                     ),
                     system_shutdown=True,
                     tcp_session=dict(auth=True),
@@ -150,19 +150,21 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     counter=dict(cache=dict(timeout=1800)),
                     drop=dict(unknown_engine_id=True, unknown_user=True),
                     engine_id=dict(
-                        local="00:00:00:63:00:01:00:10:20:15:10:03"
+                        local="00:00:00:63:00:01:00:10:20:15:10:03",
                     ),
                     global_enforce_priv=True,
                     location="lab",
                     mib=dict(
                         community_map=dict(
-                            community="public", context="public1"
-                        )
+                            community="public",
+                            context="public1",
+                        ),
                     ),
                     packetsize=484,
                     protocol=dict(enable=True),
                     source_interface=dict(
-                        informs="Ethernet1/1", traps="Ethernet1/2"
+                        informs="Ethernet1/1",
+                        traps="Ethernet1/2",
                     ),
                     system_shutdown=True,
                     tcp_session=dict(auth=True),
@@ -204,19 +206,21 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     context=dict(name="public", vrf="siteA"),
                     counter=dict(cache=dict(timeout=1860)),
                     engine_id=dict(
-                        local="00:00:00:63:00:01:00:10:20:15:10:03"
+                        local="00:00:00:63:00:01:00:10:20:15:10:03",
                     ),
                     global_enforce_priv=True,
                     location="lab",
                     mib=dict(
                         community_map=dict(
-                            community="public", context="public1"
-                        )
+                            community="public",
+                            context="public1",
+                        ),
                     ),
                     packetsize=484,
                     protocol=dict(enable=True),
                     source_interface=dict(
-                        informs="Ethernet1/3", traps="Ethernet1/2"
+                        informs="Ethernet1/3",
+                        traps="Ethernet1/2",
                     ),
                     tcp_session=dict(auth=True),
                 ),
@@ -265,19 +269,21 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     context=dict(name="public", vrf="siteA"),
                     counter=dict(cache=dict(timeout=1860)),
                     engine_id=dict(
-                        local="00:00:00:63:00:01:00:10:20:15:10:03"
+                        local="00:00:00:63:00:01:00:10:20:15:10:03",
                     ),
                     global_enforce_priv=True,
                     location="lab",
                     mib=dict(
                         community_map=dict(
-                            community="public", context="public1"
-                        )
+                            community="public",
+                            context="public1",
+                        ),
                     ),
                     packetsize=484,
                     protocol=dict(enable=True),
                     source_interface=dict(
-                        informs="Ethernet1/3", traps="Ethernet1/2"
+                        informs="Ethernet1/3",
+                        traps="Ethernet1/2",
                     ),
                     tcp_session=dict(auth=True),
                 ),
@@ -474,7 +480,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
                             traps=True,
                         ),
                         dict(
-                            host="192.168.1.1", source_interface="Ethernet1/1"
+                            host="192.168.1.1",
+                            source_interface="Ethernet1/1",
                         ),
                         dict(
                             host="192.168.2.1",
@@ -541,7 +548,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
                             traps=True,
                         ),
                         dict(
-                            host="192.168.1.1", source_interface="Ethernet1/1"
+                            host="192.168.1.1",
+                            source_interface="Ethernet1/1",
                         ),
                         dict(
                             host="192.168.2.1",
@@ -600,7 +608,8 @@ class TestNxosSnmpServerModule(TestNxosModule):
                             traps=True,
                         ),
                         dict(
-                            host="192.168.1.1", source_interface="Ethernet1/1"
+                            host="192.168.1.1",
+                            source_interface="Ethernet1/1",
                         ),
                         dict(
                             host="192.168.2.1",
@@ -746,7 +755,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     password="0x5632724fb8ac3699296af262",
                                     engine_id="2:2:2:2:2",
                                     priv=dict(
-                                        privacy_password="0x5632724fb8ac3699296af262"
+                                        privacy_password="0x5632724fb8ac3699296af262",
                                     ),
                                     localizedv2_key=True,
                                 ),
@@ -926,7 +935,9 @@ class TestNxosSnmpServerModule(TestNxosModule):
             communities=[
                 dict(name="private", group="network-admin"),
                 dict(
-                    name="public", use_ipv4acl="myacl", use_ipv6acl="myaclv6"
+                    name="public",
+                    use_ipv4acl="myacl",
+                    use_ipv6acl="myaclv6",
                 ),
             ],
             context=dict(name="public", vrf="siteA"),
@@ -936,7 +947,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             global_enforce_priv=True,
             location="lab",
             mib=dict(
-                community_map=dict(community="public", context="public1")
+                community_map=dict(community="public", context="public1"),
             ),
             packetsize=484,
             protocol=dict(enable=True),
@@ -953,7 +964,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
                             password="0x7d425fbf09417c44bca69e1d9e9ce889",
                             localized_key=True,
                             priv=dict(
-                                privacy_password="0x7d425fbf09417c44bca69e1d9e9ce889"
+                                privacy_password="0x7d425fbf09417c44bca69e1d9e9ce889",
                             ),
                         ),
                     ),
@@ -991,19 +1002,21 @@ class TestNxosSnmpServerModule(TestNxosModule):
                     ],
                     drop=dict(unknown_engine_id=True, unknown_user=True),
                     engine_id=dict(
-                        local="'00:00:00:63:00:01:00:10:20:15:10:03'"
+                        local="'00:00:00:63:00:01:00:10:20:15:10:03'",
                     ),
                     global_enforce_priv=True,
                     location="lab",
                     mib=dict(
                         community_map=dict(
-                            community="public", context="public1"
-                        )
+                            community="public",
+                            context="public1",
+                        ),
                     ),
                     packetsize=484,
                     protocol=dict(enable=True),
                     source_interface=dict(
-                        informs="Ethernet1/1", traps="Ethernet1/2"
+                        informs="Ethernet1/1",
+                        traps="Ethernet1/2",
                     ),
                     system_shutdown=True,
                     tcp_session=dict(auth=True),
@@ -1069,7 +1082,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
             global_enforce_priv=True,
             location="lab",
             mib=dict(
-                community_map=dict(community="public", context="public1")
+                community_map=dict(community="public", context="public1"),
             ),
             packetsize=484,
             protocol=dict(enable=True),

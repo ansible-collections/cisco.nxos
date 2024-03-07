@@ -10,9 +10,7 @@ __metaclass__ = type
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_acl_interfaces
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    set_module_args,
-)
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import set_module_args
 
 from .nxos_module import TestNxosModule
 
@@ -36,16 +34,12 @@ class TestNxosAclInterfacesModule(TestNxosModule):
         self.mock_get_resource_connection_config = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base.get_resource_connection",
         )
-        self.get_resource_connection_config = (
-            self.mock_get_resource_connection_config.start()
-        )
+        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
 
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.facts.facts.get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_edit_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.acl_interfaces.acl_interfaces.Acl_interfaces.edit_config",
@@ -264,7 +258,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
 
     def test_nxos_acl_interfaces_deletedname(self):
         set_module_args(
-            dict(config=[dict(name="Ethernet1/2")], state="deleted")
+            dict(config=[dict(name="Ethernet1/2")], state="deleted"),
         )
         commands = ["interface Ethernet1/2", "no ip access-group ACL1v4 out"]
         self.execute_module(changed=True, commands=commands)
@@ -273,7 +267,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(name="Ethernet1/2", access_groups=[dict(afi="ipv4")])
+                    dict(name="Ethernet1/2", access_groups=[dict(afi="ipv4")]),
                 ],
                 state="deleted",
             ),
@@ -341,7 +335,9 @@ class TestNxosAclInterfacesModule(TestNxosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(
-            sorted(result["rendered"]), sorted(commands), result["rendered"]
+            sorted(result["rendered"]),
+            sorted(commands),
+            result["rendered"],
         )
 
     def test_nxos_acl_interfaces_parsed(self):
@@ -367,7 +363,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                 "access_groups": [
                     {
                         "acls": [
-                            {"direction": "in", "name": "ACL2v6", "port": True}
+                            {"direction": "in", "name": "ACL2v6", "port": True},
                         ],
                         "afi": "ipv6",
                     },
@@ -394,7 +390,7 @@ class TestNxosAclInterfacesModule(TestNxosModule):
                 "access_groups": [
                     {
                         "acls": [
-                            {"direction": "in", "name": "ACL2v6", "port": True}
+                            {"direction": "in", "name": "ACL2v6", "port": True},
                         ],
                         "afi": "ipv6",
                     },

@@ -29,9 +29,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
     default_intf_enabled,
 )
@@ -68,7 +66,7 @@ class Interfaces(ConfigBase):
             data=data,
         )
         interfaces_facts = self.facts["ansible_network_resources"].get(
-            "interfaces"
+            "interfaces",
         )
 
         return interfaces_facts
@@ -188,10 +186,7 @@ class Interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
                     state,
@@ -438,7 +433,8 @@ class Interfaces(ConfigBase):
         if "enabled" in d:
             have_enabled = (
                 obj_in_have.get(
-                    "enabled", self.default_enabled(d, obj_in_have)
+                    "enabled",
+                    self.default_enabled(d, obj_in_have),
                 )
                 or False
             )
@@ -488,9 +484,7 @@ class Interfaces(ConfigBase):
         Run through the gathered interfaces and tag their default enabled state.
         """
         intf_defs = {}
-        L3_enabled = (
-            True if re.search("N[56]K", self.get_platform()) else False
-        )
+        L3_enabled = True if re.search("N[56]K", self.get_platform()) else False
         intf_defs = {
             "sysdefs": {
                 "mode": None,
@@ -501,16 +495,12 @@ class Interfaces(ConfigBase):
         pat = "(no )*system default switchport$"
         m = re.search(pat, config, re.MULTILINE)
         if m:
-            intf_defs["sysdefs"]["mode"] = (
-                "layer3" if "no " in m.groups() else "layer2"
-            )
+            intf_defs["sysdefs"]["mode"] = "layer3" if "no " in m.groups() else "layer2"
 
         pat = "(no )*system default switchport shutdown$"
         m = re.search(pat, config, re.MULTILINE)
         if m:
-            intf_defs["sysdefs"]["L2_enabled"] = (
-                True if "no " in m.groups() else False
-            )
+            intf_defs["sysdefs"]["L2_enabled"] = True if "no " in m.groups() else False
 
         for item in intfs:
             intf_defs[item["name"]] = default_intf_enabled(

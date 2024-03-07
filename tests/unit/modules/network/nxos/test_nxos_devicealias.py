@@ -11,9 +11,7 @@ import pytest
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_devicealias
 from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
-from ansible_collections.cisco.nxos.tests.unit.modules.utils import (
-    AnsibleFailJson,
-)
+from ansible_collections.cisco.nxos.tests.unit.modules.utils import AnsibleFailJson
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
@@ -23,15 +21,13 @@ class TestNxosDeviceAliasModule(TestNxosModule):
 
     def setUp(self):
         super(TestNxosDeviceAliasModule, self).setUp()
-        module_path = (
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_devicealias."
-        )
+        module_path = "ansible_collections.cisco.nxos.plugins.modules.nxos_devicealias."
 
         self.mock_run_commands = patch(module_path + "run_commands")
         self.run_commands = self.mock_run_commands.start()
 
         self.mock_execute_show_cmd = patch(
-            module_path + "showDeviceAliasStatus.execute_show_cmd"
+            module_path + "showDeviceAliasStatus.execute_show_cmd",
         )
         self.execute_show_cmd = self.mock_execute_show_cmd.start()
 
@@ -58,7 +54,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Switch has mode as enahnced
         set_module_args(dict(mode="basic"), True)
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -76,7 +73,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Switch has mode as enahnced
         set_module_args(dict(mode="enhanced"), True)
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -86,7 +84,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Switch has mode as enahnced, distrbute = True
         set_module_args(dict(distribute=True, mode="enhanced"), True)
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -96,7 +95,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Switch has mode as enhanced, distrbute = True
         set_module_args(dict(distribute=False, mode="enhanced"), True)
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["no device-alias distribute"])
@@ -106,7 +106,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
         # Switch has mode as enahnced, distrbute = True
         set_module_args(dict(distribute=False, mode="basic"), True)
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -129,10 +130,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -159,10 +162,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -179,10 +184,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         result = self.execute_module(changed=False, failed=True)
 
@@ -198,10 +205,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         result = self.execute_module(changed=False, failed=True)
 
@@ -223,10 +232,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -258,10 +269,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -283,7 +296,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatuslock.cfg"
+            "nxos_devicealias",
+            "shdastatuslock.cfg",
         )
         self.execute_module(failed=True)
 
@@ -305,10 +319,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
@@ -327,10 +343,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         with pytest.raises(AnsibleFailJson) as errinfo:
             self.execute_module()
@@ -350,10 +368,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -380,10 +400,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         result = self.execute_module(changed=False, failed=True)
         self.assertEqual(result["commands"], [])
@@ -395,7 +417,8 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             "shdastatus_mansi.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -421,10 +444,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
 
         result = self.execute_module(changed=False, failed=True)
@@ -442,10 +467,12 @@ class TestNxosDeviceAliasModule(TestNxosModule):
             True,
         )
         self.execute_show_cmd.return_value = load_fixture(
-            "nxos_devicealias", "shdastatus.cfg"
+            "nxos_devicealias",
+            "shdastatus.cfg",
         )
         self.execute_show_cmd_1.return_value = load_fixture(
-            "nxos_devicealias", "shdadatabse.cfg"
+            "nxos_devicealias",
+            "shdadatabse.cfg",
         )
 
         result = self.execute_module(changed=False, failed=True)

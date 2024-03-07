@@ -42,9 +42,7 @@ class TestNxosHostnameModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.hostname.hostname.HostnameFacts.get_config",
@@ -157,7 +155,8 @@ class TestNxosHostnameModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(running_config=cfg, state="parsed"), ignore_provider_arg
+            dict(running_config=cfg, state="parsed"),
+            ignore_provider_arg,
         )
         parsed = {"hostname": "NXOSv-9k"}
         result = self.execute_module(changed=False)

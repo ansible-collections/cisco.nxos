@@ -28,9 +28,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ntp_global import (
     Ntp_globalTemplate,
 )
@@ -150,9 +148,7 @@ class Ntp_global(ResourceModule):
         if "access_group" in tmp:
             for x in ["peer", "query_only", "serve", "serve_only"]:
                 if x in tmp["access_group"]:
-                    tmp["access_group"][x] = {
-                        i["access_list"]: i for i in tmp["access_group"][x]
-                    }
+                    tmp["access_group"][x] = {i["access_list"]: i for i in tmp["access_group"][x]}
         pkey = {
             "authentication_keys": "id",
             "peers": "peer",

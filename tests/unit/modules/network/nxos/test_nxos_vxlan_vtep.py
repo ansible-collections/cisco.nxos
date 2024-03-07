@@ -51,13 +51,14 @@ class TestNxosVxlanVtepVniModule(TestNxosModule):
 
     def load_fixtures(self, commands=None, device=""):
         self.get_config.return_value = load_fixture(
-            "nxos_vxlan_vtep", "config.cfg"
+            "nxos_vxlan_vtep",
+            "config.cfg",
         )
         self.load_config.return_value = None
 
     def test_nxos_vxlan_vtep(self):
         set_module_args(
-            dict(interface="nve1", description="simple description")
+            dict(interface="nve1", description="simple description"),
         )
         self.execute_module(
             changed=True,

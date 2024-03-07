@@ -316,12 +316,11 @@ def get_pim_interface(module, interface):
                 pim_interface["sparse"] = True
             elif "bfd-instance" in each:
                 m = re.search(
-                    r"ip pim bfd-instance(?P<disable> disable)?", each
+                    r"ip pim bfd-instance(?P<disable> disable)?",
+                    each,
                 )
                 if m:
-                    pim_interface["bfd"] = (
-                        "disable" if m.group("disable") else "enable"
-                    )
+                    pim_interface["bfd"] = "disable" if m.group("disable") else "enable"
             elif "border" in each:
                 pim_interface["border"] = True
             elif "hello-interval" in each:
@@ -331,7 +330,8 @@ def get_pim_interface(module, interface):
                 ).group(1)
             elif "dr-priority" in each:
                 pim_interface["dr_prio"] = re.search(
-                    r"ip pim dr-priority (\d+)", body
+                    r"ip pim dr-priority (\d+)",
+                    body,
                 ).group(1)
 
     return pim_interface
@@ -340,10 +340,7 @@ def get_pim_interface(module, interface):
 def fix_delta(delta, existing):
     for key in list(delta):
         if key in ["dr_prio", "hello_interval", "sparse", "border"]:
-            if (
-                delta.get(key) == PARAM_TO_DEFAULT_KEYMAP.get(key)
-                and existing.get(key) is None
-            ):
+            if delta.get(key) == PARAM_TO_DEFAULT_KEYMAP.get(key) and existing.get(key) is None:
                 delta.pop(key)
     return delta
 
@@ -358,11 +355,11 @@ def config_pim_interface(delta, existing, jp_bidir, isauth):
         if delta.get("jp_policy_in") or delta.get("jp_policy_out"):
             if existing.get("jp_type_in") == "prefix":
                 command = "no ip pim jp-policy prefix-list {0}".format(
-                    existing.get("jp_policy_in")
+                    existing.get("jp_policy_in"),
                 )
             else:
                 command = "no ip pim jp-policy {0}".format(
-                    existing.get("jp_policy_in")
+                    existing.get("jp_policy_in"),
                 )
             if command:
                 commands.append(command)
@@ -396,7 +393,7 @@ def config_pim_interface(delta, existing, jp_bidir, isauth):
         ]:
             if k in ["neighbor_policy", "neighbor_type"]:
                 temp = delta.get("neighbor_policy") or existing.get(
-                    "neighbor_policy"
+                    "neighbor_policy",
                 )
                 if delta.get("neighbor_type") == "prefix":
                     command = PARAM_TO_COMMAND_KEYMAP.get(k).format(temp)
@@ -408,7 +405,7 @@ def config_pim_interface(delta, existing, jp_bidir, isauth):
                     command = "ip pim neighbor-policy {0}".format(temp)
             elif k in ["jp_policy_in", "jp_type_in"]:
                 temp = delta.get("jp_policy_in") or existing.get(
-                    "jp_policy_in"
+                    "jp_policy_in",
                 )
                 if delta.get("jp_type_in") == "prefix":
                     command = PARAM_TO_COMMAND_KEYMAP.get(k).format(temp)
@@ -420,7 +417,7 @@ def config_pim_interface(delta, existing, jp_bidir, isauth):
                     command = "ip pim jp-policy {0} in".format(temp)
             elif k in ["jp_policy_out", "jp_type_out"]:
                 temp = delta.get("jp_policy_out") or existing.get(
-                    "jp_policy_out"
+                    "jp_policy_out",
                 )
                 if delta.get("jp_type_out") == "prefix":
                     command = PARAM_TO_COMMAND_KEYMAP.get(k).format(temp)
@@ -451,9 +448,7 @@ def get_pim_interface_defaults():
         hello_auth_key=PARAM_TO_DEFAULT_KEYMAP.get("hello_auth_key"),
     )
 
-    default = dict(
-        (param, value) for (param, value) in args.items() if value is not None
-    )
+    default = dict((param, value) for (param, value) in args.items() if value is not None)
 
     return default
 
@@ -465,7 +460,7 @@ def default_pim_interface_policies(existing, jp_bidir):
         if existing.get("jp_policy_in") or existing.get("jp_policy_out"):
             if existing.get("jp_type_in") == "prefix":
                 command = "no ip pim jp-policy prefix-list {0}".format(
-                    existing.get("jp_policy_in")
+                    existing.get("jp_policy_in"),
                 )
         if command:
             commands.append(command)
@@ -476,22 +471,18 @@ def default_pim_interface_policies(existing, jp_bidir):
             if k == "jp_policy_in":
                 if existing.get("jp_policy_in"):
                     if existing.get("jp_type_in") == "prefix":
-                        command = (
-                            "no ip pim jp-policy prefix-list {0} in".format(
-                                existing.get("jp_policy_in"),
-                            )
+                        command = "no ip pim jp-policy prefix-list {0} in".format(
+                            existing.get("jp_policy_in"),
                         )
                     else:
                         command = "no ip pim jp-policy {0} in".format(
-                            existing.get("jp_policy_in")
+                            existing.get("jp_policy_in"),
                         )
             elif k == "jp_policy_out":
                 if existing.get("jp_policy_out"):
                     if existing.get("jp_type_out") == "prefix":
-                        command = (
-                            "no ip pim jp-policy prefix-list {0} out".format(
-                                existing.get("jp_policy_out"),
-                            )
+                        command = "no ip pim jp-policy prefix-list {0} out".format(
+                            existing.get("jp_policy_out"),
                         )
                     else:
                         command = "no ip pim jp-policy {0} out".format(
@@ -586,26 +577,24 @@ def main():
     if jp_policy_in:
         if not jp_type_in:
             module.fail_json(
-                msg="jp_type_in required when using jp_policy_in."
+                msg="jp_type_in required when using jp_policy_in.",
             )
     if jp_policy_out:
         if not jp_type_out:
             module.fail_json(
-                msg="jp_type_out required when using jp_policy_out."
+                msg="jp_type_out required when using jp_policy_out.",
             )
     if neighbor_policy:
         if not neighbor_type:
             module.fail_json(
-                msg="neighbor_type required when using neighbor_policy."
+                msg="neighbor_type required when using neighbor_policy.",
             )
 
     get_existing = get_pim_interface(module, interface)
     existing, jp_bidir, isauth = local_existing(get_existing)
 
     args = PARAM_TO_COMMAND_KEYMAP.keys()
-    proposed = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
     normalize_proposed_values(proposed, module)
 
     delta = dict(set(proposed.items()).difference(existing.items()))

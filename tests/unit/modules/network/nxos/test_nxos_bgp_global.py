@@ -42,9 +42,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.bgp_global.bgp_global.Bgp_globalFacts.get_config",
@@ -90,7 +88,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
                             password=dict(
-                                encryption=7, key="12090404011C03162E"
+                                encryption=7,
+                                key="12090404011C03162E",
                             ),
                         ),
                         dict(
@@ -363,7 +362,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
                             password=dict(
-                                encryption=7, key="12090404011C03162E"
+                                encryption=7,
+                                key="12090404011C03162E",
                             ),
                         ),
                         dict(
@@ -774,7 +774,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
                             password=dict(
-                                encryption=7, key="12090404011C03162E"
+                                encryption=7,
+                                key="12090404011C03162E",
                             ),
                         ),
                     ],
@@ -845,7 +846,8 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             neighbor_address="198.51.100.21",
                             remote_as="65537",
                             password=dict(
-                                encryption=7, key="12090404011C03162E"
+                                encryption=7,
+                                key="12090404011C03162E",
                             ),
                         ),
                     ],

@@ -22,12 +22,8 @@ import re
 
 from ansible.module_utils._text import to_text
 from ansible.module_utils.connection import ConnectionError
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    to_list,
-)
-from ansible_collections.ansible.netcommon.plugins.plugin_utils.httpapi_base import (
-    HttpApiBase,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.httpapi_base import HttpApiBase
 
 
 OPTIONS = {
@@ -110,7 +106,7 @@ class HttpApi(HttpApiBase):
         except ValueError:
             raise ConnectionError(
                 "Response was not valid JSON, got {0}".format(
-                    to_text(response_data.getvalue())
+                    to_text(response_data.getvalue()),
                 ),
             )
 
@@ -125,7 +121,7 @@ class HttpApi(HttpApiBase):
 
         device_info["network_os"] = "nxos"
         reply, platform_reply = self.send_request(
-            ["show version", "show inventory"]
+            ["show version", "show inventory"],
         )
 
         find_os_version = [
@@ -140,7 +136,9 @@ class HttpApi(HttpApiBase):
                 break
 
         match_chassis_id = re.search(
-            r"Hardware\n\s+cisco\s*(\S+\s+\S+)", reply, re.M
+            r"Hardware\n\s+cisco\s*(\S+\s+\S+)",
+            reply,
+            re.M,
         )
         if match_chassis_id:
             device_info["network_os_model"] = match_chassis_id.group(1)

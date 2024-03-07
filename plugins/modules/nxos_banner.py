@@ -219,10 +219,7 @@ def main():
                             err_str = item["clierror"]
                         else:
                             err_str = item
-                        if (
-                            "more than 40 lines" in err_str
-                            or "buffer overflowed" in err_str
-                        ):
+                        if "more than 40 lines" in err_str or "buffer overflowed" in err_str:
                             load_config(module, commands)
 
         result["changed"] = True

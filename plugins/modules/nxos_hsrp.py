@@ -216,7 +216,9 @@ def get_hsrp_group(group, interface, module):
             del hsrp_key["sh_keystring_attr"]
         if "unknown enum:" in str(hsrp_table):
             hsrp_table = get_hsrp_group_unknown_enum(
-                module, command, hsrp_table
+                module,
+                command,
+                hsrp_table,
             )
     except (AttributeError, IndexError, TypeError, KeyError):
         return {}
@@ -255,9 +257,7 @@ def get_hsrp_group_unknown_enum(module, command, hsrp_table):
     if "unknown enum:" in hsrp_table["sh_preempt"]:
         cmd = {"output": "text", "command": command.split("|")[0]}
         out = run_commands(module, cmd)[0]
-        hsrp_table["sh_preempt"] = (
-            "enabled" if ("may preempt" in out) else "disabled"
-        )
+        hsrp_table["sh_preempt"] = "enabled" if ("may preempt" in out) else "disabled"
     return hsrp_table
 
 
@@ -290,7 +290,7 @@ def get_commands_config_hsrp(delta, interface, args, existing):
     if priority:
         if priority == "default":
             if existing and existing.get(
-                "priority"
+                "priority",
             ) != PARAM_TO_DEFAULT_KEYMAP.get("priority"):
                 delta["priority"] = "no priority"
             else:
@@ -301,7 +301,7 @@ def get_commands_config_hsrp(delta, interface, args, existing):
     if vip:
         if vip == "default":
             if existing and existing.get("vip") != PARAM_TO_DEFAULT_KEYMAP.get(
-                "vip"
+                "vip",
             ):
                 delta["vip"] = "no ip"
             else:
@@ -329,7 +329,8 @@ def get_commands_config_hsrp(delta, interface, args, existing):
         if auth_string != "default":
             if auth_type == "md5":
                 command = "authentication md5 key-string {0} {1}".format(
-                    auth_enc, auth_string
+                    auth_enc,
+                    auth_string,
                 )
                 commands.append(command)
             elif auth_type == "text":
@@ -337,7 +338,7 @@ def get_commands_config_hsrp(delta, interface, args, existing):
                 commands.append(command)
         else:
             if existing and existing.get(
-                "auth_string"
+                "auth_string",
             ) != PARAM_TO_DEFAULT_KEYMAP.get(
                 "auth_string",
             ):
@@ -383,7 +384,8 @@ def validate_config(body, vip, module):
     new_body = "".join(body)
     if "invalid ip address" in new_body.lower():
         module.fail_json(
-            msg="Invalid VIP. Possible duplicate IP address.", vip=vip
+            msg="Invalid VIP. Possible duplicate IP address.",
+            vip=vip,
         )
 
 
@@ -394,18 +396,23 @@ def main():
         version=dict(choices=["1", "2"], default="1", required=False),
         priority=dict(type="str", required=False),
         preempt=dict(
-            type="str", choices=["disabled", "enabled"], required=False
+            type="str",
+            choices=["disabled", "enabled"],
+            required=False,
         ),
         vip=dict(type="str", required=False),
         auth_type=dict(choices=["text", "md5"], required=False),
         auth_string=dict(type="str", required=False),
         state=dict(
-            choices=["absent", "present"], required=False, default="present"
+            choices=["absent", "present"],
+            required=False,
+            default="present",
         ),
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()
@@ -453,16 +460,14 @@ def main():
     mode = get_interface_mode(interface, intf_type, module)
     if mode == "layer2":
         module.fail_json(
-            msg="That interface is a layer2 port.\nMake it "
-            "a layer 3 port first.",
+            msg="That interface is a layer2 port.\nMake it " "a layer 3 port first.",
             interface=interface,
         )
 
     if auth_type or auth_string:
         if not (auth_type and auth_string):
             module.fail_json(
-                msg="When using auth parameters, you need BOTH "
-                "auth_type AND auth_string.",
+                msg="When using auth parameters, you need BOTH " "auth_type AND auth_string.",
             )
 
     args = dict(
@@ -484,16 +489,13 @@ def main():
     if proposed.get("auth_type", None) == "md5":
         if proposed["version"] == "1":
             module.fail_json(
-                msg="It's recommended to use HSRP v2 " "when auth_type=md5"
+                msg="It's recommended to use HSRP v2 " "when auth_type=md5",
             )
 
     elif not proposed.get("auth_type", None) and existing:
-        if (
-            proposed["version"] == "1" and existing["auth_type"] == "md5"
-        ) and state == "present":
+        if (proposed["version"] == "1" and existing["auth_type"] == "md5") and state == "present":
             module.fail_json(
-                msg="Existing auth_type is md5. It's recommended "
-                "to use HSRP v2 when using md5",
+                msg="Existing auth_type is md5. It's recommended " "to use HSRP v2 when using md5",
             )
 
     commands = []
@@ -501,7 +503,10 @@ def main():
         delta = dict(set(proposed.items()).difference(existing.items()))
         if delta:
             command = get_commands_config_hsrp(
-                delta, interface, args, existing
+                delta,
+                interface,
+                args,
+                existing,
             )
             commands.extend(command)
 

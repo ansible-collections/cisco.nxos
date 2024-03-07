@@ -268,7 +268,8 @@ def main():
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()
@@ -304,7 +305,7 @@ def main():
                         + ". Note that name cannot be more than 64 alphanumeric chars, "
                         + "it must start with a letter, and can only contain these characters: "
                         + ", ".join(
-                            ["'{0}'".format(c) for c in VALID_DA_CHARS]
+                            ["'{0}'".format(c) for c in VALID_DA_CHARS],
                         ),
                     )
                 if not isPwwnValid(pwwn):
@@ -392,7 +393,7 @@ def main():
                 # but switch mode is enhanced, so set it to basic
                 commands.append("no device-alias mode enhanced")
                 messages.append(
-                    "device-alias mode changed from enhanced to basic"
+                    "device-alias mode changed from enhanced to basic",
                 )
             else:
                 messages.append(
@@ -405,7 +406,7 @@ def main():
                 # but switch mode is basic, so set it to enhanced
                 commands.append("device-alias mode enhanced")
                 messages.append(
-                    "device-alias mode changed from basic to enhanced"
+                    "device-alias mode changed from basic to enhanced",
                 )
             else:
                 messages.append(
@@ -415,15 +416,11 @@ def main():
     if commands:
         if distribute:
             commands.append("device-alias commit")
-            commands = (
-                ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
-            )
+            commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
         else:
             if distribute is None and d == "enabled":
                 commands.append("device-alias commit")
-                commands = (
-                    ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
-                )
+                commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
 
     cmds = flatten_list(commands)
 
@@ -484,7 +481,7 @@ def main():
 
                     else:
                         commands.append(
-                            "device-alias name " + name + " pwwn " + pwwn
+                            "device-alias name " + name + " pwwn " + pwwn,
                         )
                         da_add_list.append(name)
 
@@ -492,17 +489,11 @@ def main():
             commands = ["device-alias database"] + commands
             if distribute:
                 commands.append("device-alias commit")
-                commands = (
-                    ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
-                )
+                commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
-                    commands = (
-                        ["terminal dont-ask"]
-                        + commands
-                        + ["no terminal dont-ask"]
-                    )
+                    commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
 
         cmds = flatten_list(commands)
         if cmds:
@@ -515,13 +506,11 @@ def main():
                 load_config(module, cmds)
                 if len(da_remove_list) != 0:
                     messages.append(
-                        "the required device-alias were removed. "
-                        + ",".join(da_remove_list),
+                        "the required device-alias were removed. " + ",".join(da_remove_list),
                     )
                 if len(da_add_list) != 0:
                     messages.append(
-                        "the required device-alias were added. "
-                        + ",".join(da_add_list),
+                        "the required device-alias were added. " + ",".join(da_add_list),
                     )
 
     # Step 5: Process rename
@@ -541,7 +530,7 @@ def main():
                 )
             if shDADatabaseObj.isNameInDaDatabase(oldname):
                 commands.append(
-                    "device-alias rename " + oldname + " " + newname
+                    "device-alias rename " + oldname + " " + newname,
                 )
             else:
                 module.fail_json(
@@ -555,17 +544,11 @@ def main():
             commands = ["device-alias database"] + commands
             if distribute:
                 commands.append("device-alias commit")
-                commands = (
-                    ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
-                )
+                commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
             else:
                 if distribute is None and d == "enabled":
                     commands.append("device-alias commit")
-                    commands = (
-                        ["terminal dont-ask"]
-                        + commands
-                        + ["no terminal dont-ask"]
-                    )
+                    commands = ["terminal dont-ask"] + commands + ["no terminal dont-ask"]
         cmds = flatten_list(commands)
         if cmds:
             commands_to_execute = commands_to_execute + cmds

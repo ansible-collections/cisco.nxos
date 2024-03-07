@@ -136,25 +136,25 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 "ibgp": {
                                     "type": "dict",
                                     "options": {
-                                        "parallel_paths": {"type": "int"}
+                                        "parallel_paths": {"type": "int"},
                                     },
                                 },
                                 "eibgp": {
                                     "type": "dict",
                                     "options": {
-                                        "parallel_paths": {"type": "int"}
+                                        "parallel_paths": {"type": "int"},
                                     },
                                 },
                                 "local": {
                                     "type": "dict",
                                     "options": {
-                                        "parallel_paths": {"type": "int"}
+                                        "parallel_paths": {"type": "int"},
                                     },
                                 },
                                 "mixed": {
                                     "type": "dict",
                                     "options": {
-                                        "parallel_paths": {"type": "int"}
+                                        "parallel_paths": {"type": "int"},
                                     },
                                 },
                             },

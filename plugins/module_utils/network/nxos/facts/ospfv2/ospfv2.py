@@ -17,9 +17,7 @@ based on the configuration.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospfv2.ospfv2 import (
     Ospfv2Args,
@@ -51,7 +49,7 @@ class Ospfv2Facts(object):
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
         return connection.get(
-            "show running-config | section '^router ospf .*'"
+            "show running-config | section '^router ospf .*'",
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):

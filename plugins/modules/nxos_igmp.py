@@ -95,7 +95,8 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
 
 def get_current(module):
     output = run_commands(
-        module, {"command": "show running-config", "output": "text"}
+        module,
+        {"command": "show running-config", "output": "text"},
     )
     return {
         "flush_routes": "ip igmp flush-routes" in output[0],
@@ -119,7 +120,8 @@ def main():
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()

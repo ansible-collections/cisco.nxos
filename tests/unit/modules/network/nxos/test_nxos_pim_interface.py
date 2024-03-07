@@ -65,12 +65,7 @@ class TestNxosIPInterfaceModule(TestNxosModule):
             for command in commands:
                 if isinstance(command, dict):
                     command = command["command"]
-                filename = (
-                    str(command)
-                    .split(" | ", 1)[0]
-                    .replace(" ", "_")
-                    .replace("/", "_")
-                )
+                filename = str(command).split(" | ", 1)[0].replace(" ", "_").replace("/", "_")
                 output.append(load_fixture(module_name, filename))
             return output
 
@@ -167,7 +162,8 @@ class TestNxosPimInterfaceBfdModule(TestNxosModule):
         self.get_config.return_value = None
         set_module_args(dict(interface="eth2/1", bfd="enable"))
         self.execute_module(
-            changed=True, commands=["interface eth2/1", "ip pim bfd-instance"]
+            changed=True,
+            commands=["interface eth2/1", "ip pim bfd-instance"],
         )
 
         # default (None) -> disable

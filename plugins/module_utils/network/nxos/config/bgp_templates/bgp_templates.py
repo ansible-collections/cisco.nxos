@@ -27,9 +27,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.bgp_templates import (
     Bgp_templatesTemplate,
 )
@@ -132,9 +130,7 @@ class Bgp_templates(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -150,7 +146,8 @@ class Bgp_templates(ResourceModule):
             self._compare(want=want, have=haved.pop(k, {}))
             if len(self.commands) != begin:
                 self.commands.insert(
-                    begin, "template peer {0}".format(want["name"])
+                    begin,
+                    "template peer {0}".format(want["name"]),
                 )
 
         if self.commands:
@@ -193,11 +190,12 @@ class Bgp_templates(ResourceModule):
             self._af_compare(want=wentry, have=have.pop(name, {}))
             if begin != len(self.commands):
                 self.commands.insert(
-                    begin, self._tmplt.render(wentry, "address_family", False)
+                    begin,
+                    self._tmplt.render(wentry, "address_family", False),
                 )
         for name, hentry in iteritems(have):
             self.commands.append(
-                self._tmplt.render(hentry, "address_family", True)
+                self._tmplt.render(hentry, "address_family", True),
             )
 
     def _af_compare(self, want, have):
@@ -234,13 +232,11 @@ class Bgp_templates(ResourceModule):
             for entry in v:
                 if "address_family" in entry:
                     entry["address_family"] = {
-                        (x["afi"], x.get("safi")): x
-                        for x in entry["address_family"]
+                        (x["afi"], x.get("safi")): x for x in entry["address_family"]
                     }
                 if "path_attribute" in entry:
                     entry["path_attribute"] = {
-                        _build_key(x): x
-                        for x in entry.get("path_attribute", [])
+                        _build_key(x): x for x in entry.get("path_attribute", [])
                     }
 
             # attach top-level keys with their values

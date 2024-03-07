@@ -253,7 +253,8 @@ class FilePush(FileCopy):
         command = "show file {0}{1} md5sum".format(file_system, dst)
         remote_filehash = self._connection.run_commands(command)[0]
         remote_filehash = to_bytes(
-            remote_filehash, errors="surrogate_or_strict"
+            remote_filehash,
+            errors="surrogate_or_strict",
         )
 
         local_file = self._module.params["local_file"]
@@ -262,7 +263,7 @@ class FilePush(FileCopy):
                 filecontent = f.read()
         except (OSError, IOError) as exc:
             self._module.fail_json(
-                "Error reading the file: {0}".format(to_text(exc))
+                "Error reading the file: {0}".format(to_text(exc)),
             )
 
         filecontent = to_bytes(filecontent, errors="surrogate_or_strict")
@@ -296,13 +297,13 @@ class FilePush(FileCopy):
         match = re.search(r"No such file or directory", body)
         if match:
             self._module.fail_json(
-                "Invalid nxos filesystem {0}".format(file_system)
+                "Invalid nxos filesystem {0}".format(file_system),
             )
         else:
             self._module.fail_json(
                 "Unable to determine size of filesystem {0}".format(
-                    file_system
-                )
+                    file_system,
+                ),
             )
 
     def enough_space(self, file, file_system):
@@ -319,7 +320,7 @@ class FilePush(FileCopy):
 
         if not self.enough_space(local_file, file_system):
             self._module.fail_json(
-                "Could not transfer file. Not enough space on device."
+                "Could not transfer file. Not enough space on device.",
             )
 
         # frp = full_remote_path, flp = full_local_path
@@ -334,12 +335,10 @@ class FilePush(FileCopy):
                 destination=frp,
                 proto="scp",
                 timeout=self._connection.get_option(
-                    "persistent_command_timeout"
+                    "persistent_command_timeout",
                 ),
             )
-            self.result[
-                "transfer_status"
-            ] = "Sent: File copied to remote device."
+            self.result["transfer_status"] = "Sent: File copied to remote device."
         except Exception as exc:
             self.result["failed"] = True
             self.result["msg"] = "Exception received : %s" % exc
@@ -347,13 +346,13 @@ class FilePush(FileCopy):
     def run(self):
         local_file = self._module.params["local_file"]
         remote_file = self._module.params["remote_file"] or os.path.basename(
-            local_file
+            local_file,
         )
         file_system = self._module.params["file_system"]
 
         if not os.path.isfile(local_file):
             self._module.fail_json(
-                "Local file {0} not found".format(local_file)
+                "Local file {0} not found".format(local_file),
             )
 
         remote_file = remote_file or os.path.basename(local_file)
@@ -363,9 +362,7 @@ class FilePush(FileCopy):
             self.result["changed"] = True
             file_exists = False
         else:
-            self.result[
-                "transfer_status"
-            ] = "No Transfer: File already copied to remote device."
+            self.result["transfer_status"] = "No Transfer: File already copied to remote device."
             file_exists = True
 
         if not self._module.check_mode and not file_exists:
@@ -439,7 +436,8 @@ class FilePull(FileCopy):
 
         self.result["copy_cmd"] = copy_cmd
         pulled = self._connection.pull_file(
-            command=copy_cmd, remotepassword=rserverpassword
+            command=copy_cmd,
+            remotepassword=rserverpassword,
         )
         if pulled:
             self.result[
@@ -451,9 +449,7 @@ class FilePull(FileCopy):
     def run(self):
         self.result["failed"] = False
         remote_file = self._module.params["remote_file"]
-        local_file = (
-            self._module.params["local_file"] or remote_file.split("/")[-1]
-        )
+        local_file = self._module.params["local_file"] or remote_file.split("/")[-1]
         file_system = self._module.params["file_system"]
         # Note: This is the local file directory on the remote nxos device.
         local_file_dir = self._module.params["local_file_directory"]
@@ -467,9 +463,7 @@ class FilePull(FileCopy):
         else:
             dir = ""
         self.result["local_file"] = file_system + dir + "/" + local_file
-        self.result["remote_scp_server"] = self._module.params[
-            "remote_scp_server"
-        ]
+        self.result["remote_scp_server"] = self._module.params["remote_scp_server"]
         self.result["file_system"] = self._module.params["file_system"]
 
         if not self.result["failed"]:
@@ -503,7 +497,7 @@ def main():
     module = AnsibleModule(
         argument_spec=argument_spec,
         required_if=[
-            ("file_pull", True, ("remote_file", "remote_scp_server"))
+            ("file_pull", True, ("remote_file", "remote_scp_server")),
         ],
         required_together=[("remote_scp_server", "remote_scp_server_user")],
         supports_check_mode=True,

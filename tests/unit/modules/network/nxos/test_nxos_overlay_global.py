@@ -50,7 +50,8 @@ class TestNxosOverlayGlobalModule(TestNxosModule):
 
     def load_fixtures(self, commands=None, device=""):
         self.get_config.return_value = load_fixture(
-            "", "nxos_overlay_global_config.cfg"
+            "",
+            "nxos_overlay_global_config.cfg",
         )
         self.load_config.return_value = None
 

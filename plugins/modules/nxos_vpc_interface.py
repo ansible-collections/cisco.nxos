@@ -198,7 +198,10 @@ def get_portchannel_vpc_config(module, portchannel):
 
 
 def get_commands_to_config_vpc_interface(
-    portchannel, delta, config_value, existing
+    portchannel,
+    delta,
+    config_value,
+    existing,
 ):
     commands = []
 
@@ -222,7 +225,10 @@ def state_present(portchannel, delta, config_value, existing):
     commands = []
 
     command = get_commands_to_config_vpc_interface(
-        portchannel, delta, config_value, existing
+        portchannel,
+        delta,
+        config_value,
+        existing,
     )
     commands.append(command)
 
@@ -271,7 +277,7 @@ def main():
 
     if portchannel not in get_portchannel_list(module):
         if not portchannel.isdigit() or int(
-            portchannel
+            portchannel,
         ) not in get_portchannel_list(module):
             module.fail_json(
                 msg="The portchannel you are trying to make a"
@@ -314,8 +320,7 @@ def main():
             if active_peer_link != portchannel:
                 if peer_link:
                     module.fail_json(
-                        msg="A peer link already exists on"
-                        " the device. Remove it first",
+                        msg="A peer link already exists on" " the device. Remove it first",
                         current_peer_link="Po{0}".format(active_peer_link),
                     )
         config_value = "peer-link"
@@ -327,7 +332,10 @@ def main():
         delta = dict(set(proposed.items()).difference(existing.items()))
         if delta:
             commands = state_present(
-                portchannel, delta, config_value, existing
+                portchannel,
+                delta,
+                config_value,
+                existing,
             )
 
     elif state == "absent" and existing:

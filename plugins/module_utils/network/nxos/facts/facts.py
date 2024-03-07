@@ -178,7 +178,10 @@ class Facts(FactsBase):
         return facts_resource_subsets
 
     def get_facts(
-        self, legacy_facts_type=None, resource_facts_type=None, data=None
+        self,
+        legacy_facts_type=None,
+        resource_facts_type=None,
+        data=None,
     ):
         """Collect the facts for nxos
         :param legacy_facts_type: List of legacy facts types
@@ -191,12 +194,15 @@ class Facts(FactsBase):
 
         if frozenset(VALID_RESOURCE_SUBSETS.keys()):
             self.get_network_resources_facts(
-                VALID_RESOURCE_SUBSETS, resource_facts_type, data
+                VALID_RESOURCE_SUBSETS,
+                resource_facts_type,
+                data,
             )
 
         if self.VALID_LEGACY_GATHER_SUBSETS:
             self.get_network_legacy_facts(
-                FACT_LEGACY_SUBSETS, legacy_facts_type
+                FACT_LEGACY_SUBSETS,
+                legacy_facts_type,
             )
 
         return self.ansible_facts, self._warnings

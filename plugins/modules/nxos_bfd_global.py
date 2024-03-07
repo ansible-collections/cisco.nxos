@@ -308,7 +308,8 @@ def main():
         fabricpath_vlan=dict(required=False, type="int"),
     )
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
     warnings = list()
 

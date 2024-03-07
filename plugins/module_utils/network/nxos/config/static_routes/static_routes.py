@@ -26,9 +26,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.static_routes import (
     Static_routesTemplate,
 )
@@ -95,15 +93,19 @@ class Static_routes(ResourceModule):
 
             for k, want in wantd.items():
                 self._compare_top_level_keys(
-                    want=want, have=haved.pop(k, {}), vrf_name=k
+                    want=want,
+                    have=haved.pop(k, {}),
+                    vrf_name=k,
                 )
 
             if (self.state == "deleted" and not wantd) or self.state in [
-                "overridden"
+                "overridden",
             ]:
                 for k, have in haved.items():
                     self._compare_top_level_keys(
-                        want={}, have=have, vrf_name=k
+                        want={},
+                        have=have,
+                        vrf_name=k,
                     )
 
     def _compare_top_level_keys(self, want, have, vrf_name):
@@ -126,7 +128,9 @@ class Static_routes(ResourceModule):
         if self.state != "deleted":
             for _afi, routes in want.items():
                 self._compare(
-                    s_want=routes, s_have=have.pop(_afi, {}), afi=_afi
+                    s_want=routes,
+                    s_have=have.pop(_afi, {}),
+                    afi=_afi,
                 )
 
         if self.state in ["overridden", "deleted"]:
@@ -187,7 +191,8 @@ class Static_routes(ResourceModule):
 
                         for nxh in rts.get("next_hops", []):
                             _forw_rtr_add = nxh.get(
-                                "forward_router_address", ""
+                                "forward_router_address",
+                                "",
                             ).upper()
                             _intf = nxh.get("interface", "")
                             _key = _dest + "_" + _forw_rtr_add + _intf
@@ -202,9 +207,7 @@ class Static_routes(ResourceModule):
                             if _intf:
                                 dummy_sr["interface"] = _intf
                             if _forw_rtr_add:
-                                dummy_sr[
-                                    "forward_router_address"
-                                ] = _forw_rtr_add
+                                dummy_sr["forward_router_address"] = _forw_rtr_add
                             dummy_sr.update(nxh)
 
                             _routes[_key] = dummy_sr

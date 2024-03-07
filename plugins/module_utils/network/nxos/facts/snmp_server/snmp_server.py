@@ -15,9 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 from ansible.module_utils._text import to_text
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.snmp_server.snmp_server import (
     Snmp_serverArgs,
@@ -58,13 +56,15 @@ class Snmp_serverFacts(object):
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = snmp_server_parser.parse()
 
         if "communities" in objs:
             objs["communities"] = sorted(
-                objs["communities"], key=lambda k: to_text(k["name"])
+                objs["communities"],
+                key=lambda k: to_text(k["name"]),
             )
 
         if "users" in objs:
@@ -83,7 +83,9 @@ class Snmp_serverFacts(object):
 
         params = utils.remove_empties(
             snmp_server_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 

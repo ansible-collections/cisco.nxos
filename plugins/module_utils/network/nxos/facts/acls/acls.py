@@ -18,9 +18,7 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.acls.acls import (
     AclsArgs,
@@ -49,7 +47,7 @@ class AclsFacts(object):
 
     def get_device_data(self, connection):
         data = connection.get(
-            "show running-config | section '^ip(v6)* access-list'"
+            "show running-config | section '^ip(v6)* access-list'",
         )
         if data == "{}":
             return ""
@@ -90,7 +88,8 @@ class AclsFacts(object):
         facts = {}
         if objs:
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             params = utils.remove_empties(params)
             facts["acls"] = params["config"]
@@ -129,13 +128,14 @@ class AclsFacts(object):
                     port_pro = re.search(r"(eq|lt|gt|neq) (\S+)", ace)
                     if port_pro:
                         port_protocol.update(
-                            {port_pro.group(1): port_pro.group(2)}
+                            {port_pro.group(1): port_pro.group(2)},
                         )
                         ace = re.sub(port_pro.group(1), "", ace, 1)
                         ace = re.sub(port_pro.group(2), "", ace, 1)
                 else:
                     limit = re.search(
-                        r"range\s(?P<rstart>\S+)\s(?P<rend>\S+)", ace
+                        r"range\s(?P<rstart>\S+)\s(?P<rend>\S+)",
+                        ace,
                     )
                     if limit:
                         rstart = limit.groupdict()["rstart"]
@@ -264,7 +264,8 @@ class AclsFacts(object):
                 acl = [a.strip() for a in acl]
                 acl = list(filter(None, acl))
                 acls["name"] = re.match(
-                    r"(ip)?(v6)?\s?access-list (.*)", acl[0]
+                    r"(ip)?(v6)?\s?access-list (.*)",
+                    acl[0],
                 ).group(
                     3,
                 )
@@ -330,14 +331,10 @@ class AclsFacts(object):
                                     option = re.sub("_", "-", option)
                                 if option in ace:
                                     if option == "echo" and (
-                                        "echo_request" in options
-                                        or "echo_reply" in options
+                                        "echo_request" in options or "echo_reply" in options
                                     ):
                                         continue
-                                    elif (
-                                        option == "unreachable"
-                                        and "port_unreachable" in options
-                                    ):
+                                    elif option == "unreachable" and "port_unreachable" in options:
                                         continue
                                     option = re.sub("-", "_", option)
                                     options.update({option: True})

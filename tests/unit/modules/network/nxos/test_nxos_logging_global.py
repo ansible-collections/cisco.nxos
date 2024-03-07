@@ -42,9 +42,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.logging_global.logging_global.Logging_globalFacts.get_config",
@@ -239,7 +237,9 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                     ip=dict(
                         access_list=dict(
                             cache=dict(
-                                entries=16384, interval=200, threshold=80
+                                entries=16384,
+                                interval=200,
+                                threshold=80,
                             ),
                             detailed=True,
                             include=dict(sgt=True),
@@ -286,7 +286,9 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                     ip=dict(
                         access_list=dict(
                             cache=dict(
-                                entries=16384, interval=200, threshold=80
+                                entries=16384,
+                                interval=200,
+                                threshold=80,
                             ),
                             detailed=True,
                             include=dict(sgt=True),
@@ -322,8 +324,8 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                     origin_id=dict(ip="192.168.1.1"),
                     ip=dict(
                         access_list=dict(
-                            cache=dict(entries=16384, interval=210)
-                        )
+                            cache=dict(entries=16384, interval=210),
+                        ),
                     ),
                     source_interface="Ethernet1/120",
                 ),
@@ -531,7 +533,8 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
 
     def test_nxos_logging_global_gathered_empty(self):
         set_module_args(
-            dict(running_config="", state="gathered"), ignore_provider_arg
+            dict(running_config="", state="gathered"),
+            ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], {})
@@ -561,7 +564,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             "rfc_strict": True,
             "origin_id": {"string": "nodeA"},
             "facilities": [
-                {"facility": "vlan_mgr", "severity": "notification"}
+                {"facility": "vlan_mgr", "severity": "notification"},
             ],
         }
         result = self.execute_module(changed=False)
@@ -582,7 +585,8 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(running_config=cfg, state="parsed"), ignore_provider_arg
+            dict(running_config=cfg, state="parsed"),
+            ignore_provider_arg,
         )
         parsed = {
             "console": {"severity": "alert"},
@@ -613,7 +617,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                             port=5891,
                             use_vrf="default",
                             secure=dict(
-                                trustpoint=dict(client_identity="test")
+                                trustpoint=dict(client_identity="test"),
                             ),
                         ),
                         dict(host="192.168.1.2"),
@@ -652,7 +656,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
                             port=5891,
                             use_vrf="default",
                             secure=dict(
-                                trustpoint=dict(client_identity="test")
+                                trustpoint=dict(client_identity="test"),
                             ),
                         ),
                         dict(
@@ -740,7 +744,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config=dict(
-                    event=dict(trunk_status=dict(enable=False, default=True))
+                    event=dict(trunk_status=dict(enable=False, default=True)),
                 ),
                 state="replaced",
             ),

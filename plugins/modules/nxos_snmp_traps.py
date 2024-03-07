@@ -178,7 +178,7 @@ def get_snmp_traps(group, module):
 
     if "all" in group and "N3K-C35" in get_platform_id(module):
         module.warn(
-            "Platform does not support bfd traps; bfd ignored for 'group: all' request"
+            "Platform does not support bfd traps; bfd ignored for 'group: all' request",
         )
         feature_list.remove("bfd")
 
@@ -228,7 +228,7 @@ def get_trap_commands(group, state, existing, module):
             for feature in existing:
                 if existing[feature]:
                     trap_command = "no snmp-server enable traps {0}".format(
-                        feature
+                        feature,
                     )
                     commands.append(trap_command)
 
@@ -236,7 +236,7 @@ def get_trap_commands(group, state, existing, module):
             for feature in existing:
                 if existing[feature] is False:
                     trap_command = "snmp-server enable traps {0}".format(
-                        feature
+                        feature,
                     )
                     commands.append(trap_command)
 
@@ -249,13 +249,13 @@ def get_trap_commands(group, state, existing, module):
 
             if state == "disabled" and enabled:
                 commands.append(
-                    ["no snmp-server enable traps {0}".format(group)]
+                    ["no snmp-server enable traps {0}".format(group)],
                 )
             elif state == "enabled" and disabled:
                 commands.append(["snmp-server enable traps {0}".format(group)])
         else:
             module.fail_json(
-                msg="{0} is not a currently " "enabled feature.".format(group)
+                msg="{0} is not a currently " "enabled feature.".format(group),
             )
 
     return commands
@@ -302,7 +302,8 @@ def main():
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()

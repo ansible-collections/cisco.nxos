@@ -328,7 +328,8 @@ def main():
     :returns: the result form module invocation
     """
     module = AnsibleModule(
-        argument_spec=TelemetryArgs.argument_spec, supports_check_mode=True
+        argument_spec=TelemetryArgs.argument_spec,
+        supports_check_mode=True,
     )
 
     result = Telemetry(module).execute_module()

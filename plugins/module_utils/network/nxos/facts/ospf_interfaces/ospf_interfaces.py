@@ -15,9 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ospf_interfaces.ospf_interfaces import (
     Ospf_interfacesArgs,
@@ -72,14 +70,14 @@ class Ospf_interfacesFacts(object):
                         if af.get("multi_areas"):
                             af["multi_areas"].sort()
                     item["address_family"] = sorted(
-                        item["address_family"], key=lambda i: i["afi"]
+                        item["address_family"],
+                        key=lambda i: i["afi"],
                     )
 
             objs = sorted(
                 objs,
                 key=lambda i: [
-                    int(k) if k.isdigit() else k
-                    for k in i["name"].replace(".", "/").split("/")
+                    int(k) if k.isdigit() else k for k in i["name"].replace(".", "/").split("/")
                 ],
             )
 

@@ -138,7 +138,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "max_prefix_limit": {"type": "int"},
                                         "generate_warning_threshold": {
-                                            "type": "int"
+                                            "type": "int",
                                         },
                                         "restart_interval": {"type": "int"},
                                         "warning_only": {"type": "bool"},
@@ -246,19 +246,19 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                                 },
                                                 "exist_map": {"type": "str"},
                                                 "non_exist_map": {
-                                                    "type": "str"
+                                                    "type": "str",
                                                 },
                                             },
                                         },
                                         "advertisement_interval": {
-                                            "type": "int"
+                                            "type": "int",
                                         },
                                         "allowas_in": {
                                             "type": "dict",
                                             "options": {
                                                 "set": {"type": "bool"},
                                                 "max_occurences": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                             },
                                         },
@@ -295,7 +295,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                         "disable_peer_as_check": {
-                                            "type": "bool"
+                                            "type": "bool",
                                         },
                                         "filter_list": {
                                             "type": "dict",
@@ -315,16 +315,16 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "max_prefix_limit": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "generate_warning_threshold": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "restart_interval": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "warning_only": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                             },
                                         },
@@ -336,7 +336,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                         "next_hop_third_party": {
-                                            "type": "bool"
+                                            "type": "bool",
                                         },
                                         "prefix_list": {
                                             "type": "dict",
@@ -346,7 +346,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                         "rewrite_evpn_rt_asn": {
-                                            "type": "bool"
+                                            "type": "bool",
                                         },
                                         "rewrite_rt_asn": {"type": "bool"},
                                         "route_map": {
@@ -357,7 +357,7 @@ class Bgp_neighbor_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                         "route_reflector_client": {
-                                            "type": "bool"
+                                            "type": "bool",
                                         },
                                         "send_community": {
                                             "type": "dict",

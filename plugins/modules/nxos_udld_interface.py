@@ -143,9 +143,7 @@ def get_udld_interface(module, interface):
     mode = None
     mode_str = None
     try:
-        body = run_commands(module, [{"command": command, "output": "text"}])[
-            0
-        ]
+        body = run_commands(module, [{"command": command, "output": "text"}])[0]
         if "aggressive" in body:
             mode = "aggressive"
             mode_str = "aggressive"
@@ -230,14 +228,16 @@ def get_commands_remove_udld_interface(delta, interface, module, existing):
 def main():
     argument_spec = dict(
         mode=dict(
-            choices=["enabled", "disabled", "aggressive"], required=True
+            choices=["enabled", "disabled", "aggressive"],
+            required=True,
         ),
         interface=dict(type="str", required=True),
         state=dict(choices=["absent", "present"], default="present"),
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()
@@ -258,7 +258,10 @@ def main():
     if state == "present":
         if delta:
             command = get_commands_config_udld_interface1(
-                delta, interface, module, existing
+                delta,
+                interface,
+                module,
+                existing,
             )
             commands.append(command)
             cmds = flatten_list(commands)
@@ -271,7 +274,10 @@ def main():
             if delta["mode"] == "enabled" or delta["mode"] == "disabled":
                 commands = []
                 command = get_commands_config_udld_interface2(
-                    delta, interface, module, existing
+                    delta,
+                    interface,
+                    module,
+                    existing,
                 )
                 commands.append(command)
                 cmds = flatten_list(commands)
@@ -284,7 +290,10 @@ def main():
         common = set(proposed.items()).intersection(existing.items())
         if common:
             command = get_commands_remove_udld_interface(
-                dict(common), interface, module, existing
+                dict(common),
+                interface,
+                module,
+                existing,
             )
             cmds = flatten_list(commands)
             if module.check_mode:

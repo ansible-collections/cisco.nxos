@@ -8,9 +8,7 @@ from __future__ import absolute_import, division, print_function
 import operator
 import re
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.fc_interfaces.fc_interfaces import (
     Fc_interfacesArgs,
@@ -58,7 +56,8 @@ class Fc_interfacesFacts(object):
 
         # parse native config using the Fc_interfaces template
         fc_interfaces_parser = Fc_interfacesTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
 
         objs = list(fc_interfaces_parser.parse().values())
@@ -91,11 +90,7 @@ class Fc_interfacesFacts(object):
 
         sorted_dict = sorted(modified_objs, key=operator.itemgetter("m", "p"))
         objs = [
-            {
-                key: value
-                for key, value in eachdict.items()
-                if key not in ["m", "p"]
-            }
+            {key: value for key, value in eachdict.items() if key not in ["m", "p"]}
             for eachdict in sorted_dict
         ]
 
@@ -103,7 +98,9 @@ class Fc_interfacesFacts(object):
 
         params = utils.remove_empties(
             fc_interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 

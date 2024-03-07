@@ -22,9 +22,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     ResourceModule,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.hostname import (
     HostnameTemplate,
 )

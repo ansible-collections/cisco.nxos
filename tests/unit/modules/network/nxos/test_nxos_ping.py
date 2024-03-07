@@ -65,7 +65,8 @@ class TestNxosPingModule(TestNxosModule):
         set_module_args(dict(dest="172.28.128.7", vrf="management"))
         result = self.execute_module()
         self.assertEqual(
-            result["commands"], ["ping 172.28.128.7 count 5 vrf management"]
+            result["commands"],
+            ["ping 172.28.128.7 count 5 vrf management"],
         )
         self.assertEqual(result["packet_loss"], "0.00%")
         self.assertEqual(result["packets_rx"], 5)
@@ -89,7 +90,7 @@ class TestNxosPingModule(TestNxosModule):
         """,
         ]
         set_module_args(
-            dict(dest="172.28.128.8", vrf="management", state="absent")
+            dict(dest="172.28.128.8", vrf="management", state="absent"),
         )
         self.execute_module(failed=False)
 
@@ -127,7 +128,7 @@ class TestNxosPingModule(TestNxosModule):
         """,
         ]
         set_module_args(
-            dict(dest="172.28.128.7", vrf="management", state="absent")
+            dict(dest="172.28.128.7", vrf="management", state="absent"),
         )
         result = self.execute_module(failed=True)
         self.assertEqual(result["msg"], "Ping succeeded unexpectedly")
@@ -178,7 +179,8 @@ class TestNxosPingModule(TestNxosModule):
         set_module_args(dict(dest="172.28.128.7", df_bit=True))
         result = self.execute_module()
         self.assertEqual(
-            result["commands"], ["ping 172.28.128.7 count 5 df-bit"]
+            result["commands"],
+            ["ping 172.28.128.7 count 5 df-bit"],
         )
 
     def test_nxos_ping_expected_success_size(self):
@@ -199,7 +201,8 @@ class TestNxosPingModule(TestNxosModule):
         set_module_args(dict(dest="172.28.128.7", size=65468))
         result = self.execute_module()
         self.assertEqual(
-            result["commands"], ["ping 172.28.128.7 count 5 packet-size 65468"]
+            result["commands"],
+            ["ping 172.28.128.7 count 5 packet-size 65468"],
         )
 
     def test_nxos_ping_expected_success_all(self):
@@ -270,5 +273,6 @@ class TestNxosPingModule(TestNxosModule):
         set_module_args(dict(dest="172.28.128.7", count=10, vrf="site-1"))
         result = self.execute_module(failed=True)
         self.assertEqual(
-            result["msg"], "An unexpected error occurred. Check all params."
+            result["msg"],
+            "An unexpected error occurred. Check all params.",
         )

@@ -15,9 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_neighbor_address_family.bgp_neighbor_address_family import (
     Bgp_neighbor_address_familyArgs,
@@ -59,15 +57,14 @@ class Bgp_neighbor_address_familyFacts(object):
         data = self._flatten_config(data)
 
         # parse native config using the Bgp_neighbor_address_family template
-        bgp_neighbor_address_family_parser = (
-            Bgp_neighbor_address_familyTemplate(lines=data)
-        )
+        bgp_neighbor_address_family_parser = Bgp_neighbor_address_familyTemplate(lines=data)
         objs = bgp_neighbor_address_family_parser.parse()
 
         if objs:
             top_lvl_nbrs = objs.get("vrfs", {}).pop("vrf_", {})
             objs["neighbors"] = self._post_parse(top_lvl_nbrs).get(
-                "neighbors", []
+                "neighbors",
+                [],
             )
 
             if "vrfs" in objs:
@@ -76,11 +73,12 @@ class Bgp_neighbor_address_familyFacts(object):
                 objs["vrfs"] = list(objs["vrfs"].values())
 
         ansible_facts["ansible_network_resources"].pop(
-            "bgp_neighbor_address_family", None
+            "bgp_neighbor_address_family",
+            None,
         )
 
         params = utils.remove_empties(
-            utils.validate_config(self.argument_spec, {"config": objs})
+            utils.validate_config(self.argument_spec, {"config": objs}),
         )
 
         facts["bgp_neighbor_address_family"] = params.get("config", {})

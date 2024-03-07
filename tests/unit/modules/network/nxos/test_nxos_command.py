@@ -88,7 +88,7 @@ class TestNxosCommandModule(TestNxosModule):
     def test_nxos_command_retries(self):
         wait_for = 'result[0] contains "test string"'
         set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, retries=2)
+            dict(commands=["show version"], wait_for=wait_for, retries=2),
         )
         self.execute_module(failed=True)
         self.assertEqual(self.run_commands.call_count, 3)
@@ -104,7 +104,7 @@ class TestNxosCommandModule(TestNxosModule):
             'result[0] contains "test string"',
         ]
         set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, match="any")
+            dict(commands=["show version"], wait_for=wait_for, match="any"),
         )
         self.execute_module()
 
@@ -114,7 +114,7 @@ class TestNxosCommandModule(TestNxosModule):
             'result[0] contains "image file"',
         ]
         set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, match="all")
+            dict(commands=["show version"], wait_for=wait_for, match="all"),
         )
         self.execute_module()
 
@@ -125,6 +125,6 @@ class TestNxosCommandModule(TestNxosModule):
         ]
         commands = ["show version", "show version"]
         set_module_args(
-            dict(commands=commands, wait_for=wait_for, match="all")
+            dict(commands=commands, wait_for=wait_for, match="all"),
         )
         self.execute_module(failed=True)

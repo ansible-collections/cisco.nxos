@@ -86,14 +86,16 @@ class TestNxosFeatureModule(TestNxosModule):
         set_module_args(dict(feature="nve", state="enabled"))
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["terminal dont-ask", "feature nv overlay"]
+            result["commands"],
+            ["terminal dont-ask", "feature nv overlay"],
         )
 
     def test_nxos_feature_disable(self):
         set_module_args(dict(feature="ospf", state="disabled"))
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["terminal dont-ask", "no feature ospf"]
+            result["commands"],
+            ["terminal dont-ask", "no feature ospf"],
         )
 
 
@@ -159,14 +161,16 @@ class TestNxosFeatureModuleMDS(TestNxosModule):
         set_module_args(dict(feature="fcrxbbcredit", state="enabled"))
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["terminal dont-ask", "feature fcrxbbcredit"]
+            result["commands"],
+            ["terminal dont-ask", "feature fcrxbbcredit"],
         )
 
     def test_nxos_feature_disable(self):
         set_module_args(dict(feature="port-track", state="disabled"))
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["terminal dont-ask", "no feature port-track"]
+            result["commands"],
+            ["terminal dont-ask", "no feature port-track"],
         )
 
     def test_nxos_feature_enable_already_enabled(self):

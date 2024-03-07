@@ -29,9 +29,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     get_from_dict,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.logging_global import (
     Logging_globalTemplate,
 )

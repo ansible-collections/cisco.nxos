@@ -113,7 +113,8 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
         """Test _get_command_with_output for nxos"""
         self._prepare()
         cmd = self._cliconf._get_command_with_output(
-            command="show version", output="json"
+            command="show version",
+            output="json",
         )
 
         self.assertEqual(cmd, "show version | json")
@@ -122,7 +123,8 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
         """Test _get_command_with_output for mds"""
         self._prepare(platform="mds")
         cmd = self._cliconf._get_command_with_output(
-            command="show version", output="json"
+            command="show version",
+            output="json",
         )
 
         self.assertEqual(cmd, "show version | json native")

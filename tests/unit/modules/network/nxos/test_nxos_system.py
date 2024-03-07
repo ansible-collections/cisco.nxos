@@ -52,7 +52,9 @@ class TestNxosSystemModule(TestNxosModule):
 
     def load_fixtures(self, commands=None, device=""):
         self.get_config.return_value = load_fixture(
-            "nxos_system", "config.cfg", device=device
+            "nxos_system",
+            "config.cfg",
+            device=device,
         )
         self.load_config.return_value = None
 
@@ -93,7 +95,9 @@ class TestNxosSystemModule(TestNxosModule):
         )
         commands = []
         self.execute_module(
-            changed=False, commands=commands, device="vrf_only"
+            changed=False,
+            commands=commands,
+            device="vrf_only",
         )
 
     def test_nxos_system_domain_name_complex(self):

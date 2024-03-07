@@ -127,7 +127,7 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                                 "inherit": {
                                     "type": "dict",
                                     "options": {
-                                        "peer_policy": {"type": "str"}
+                                        "peer_policy": {"type": "str"},
                                     },
                                 },
                                 "maximum_prefix": {
@@ -219,7 +219,7 @@ class Bgp_templatesArgs(object):  # pylint: disable=R0903
                         "capability": {
                             "type": "dict",
                             "options": {
-                                "suppress_4_byte_as": {"type": "bool"}
+                                "suppress_4_byte_as": {"type": "bool"},
                             },
                         },
                         "description": {"type": "str"},

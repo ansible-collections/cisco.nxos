@@ -151,7 +151,9 @@ def get_ntp_source(module):
     source = None
     command = "show run | inc ntp.source"
     output = execute_show_command(
-        command, module, command_type="cli_show_ascii"
+        command,
+        module,
+        command_type="cli_show_ascii",
     )
 
     if output:
@@ -172,7 +174,9 @@ def get_ntp_peer(module):
     command = "show run | inc ntp.(server|peer)"
     ntp_peer_list = []
     response = execute_show_command(
-        command, module, command_type="cli_show_ascii"
+        command,
+        module,
+        command_type="cli_show_ascii",
     )
 
     if response:
@@ -306,25 +310,27 @@ def config_ntp(delta, existing):
         if existing.get("peer_type") and existing.get("address"):
             ntp_cmds.append(
                 "no ntp {0} {1}".format(
-                    existing.get("peer_type"), existing.get("address")
+                    existing.get("peer_type"),
+                    existing.get("address"),
                 ),
             )
         ntp_cmds.append(
-            set_ntp_server_peer(peer_type, address, prefer, key_id, vrf_name)
+            set_ntp_server_peer(peer_type, address, prefer, key_id, vrf_name),
         )
     if source:
         existing_source_type = existing.get("source_type")
         existing_source = existing.get("source")
         if existing_source_type and source_type != existing_source_type:
             ntp_cmds.append(
-                "no ntp {0} {1}".format(existing_source_type, existing_source)
+                "no ntp {0} {1}".format(existing_source_type, existing_source),
             )
         if source == "default":
             if existing_source_type and existing_source:
                 ntp_cmds.append(
                     "no ntp {0} {1}".format(
-                        existing_source_type, existing_source
-                    )
+                        existing_source_type,
+                        existing_source,
+                    ),
                 )
         else:
             ntp_cmds.append("ntp {0} {1}".format(source_type, source))
@@ -418,7 +424,8 @@ def main():
     elif state == "absent":
         if existing.get("peer_type") and existing.get("address"):
             command = "no ntp {0} {1}".format(
-                existing["peer_type"], existing["address"]
+                existing["peer_type"],
+                existing["address"],
             )
             if command:
                 commands.append([command])
@@ -432,7 +439,8 @@ def main():
             if proposed_source_type == existing_source_type:
                 if proposed_source == existing_source:
                     command = "no ntp {0} {1}".format(
-                        existing_source_type, existing_source
+                        existing_source_type,
+                        existing_source,
                     )
                     if command:
                         commands.append([command])

@@ -644,9 +644,7 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.fc_interfaces.fc_interfaces.Fc_interfacesFacts.get_interfaces_data",
@@ -708,7 +706,8 @@ class TestNxosFcInterfacesModule(TestNxosModule):
     def test_parsed(self):
         # test parsed for config
         set_module_args(
-            dict(state="parsed", running_config=sh_run), ignore_provider_arg
+            dict(state="parsed", running_config=sh_run),
+            ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], gath_val)
@@ -924,7 +923,8 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["interface fc18/11", "analytics type fc-all"]
+            result["commands"],
+            ["interface fc18/11", "analytics type fc-all"],
         )
 
     def test_analytics_scsi_to_all_replaced(self):
@@ -1065,7 +1065,8 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["interface fc1/1", "analytics type fc-scsi"]
+            result["commands"],
+            ["interface fc1/1", "analytics type fc-scsi"],
         )
 
     def test_analytics_none_to_scsi_replaced(self):
@@ -1106,7 +1107,8 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["interface fc1/1", "analytics type fc-nvme"]
+            result["commands"],
+            ["interface fc1/1", "analytics type fc-nvme"],
         )
 
     def test_analytics_none_to_nvme_replaced(self):
@@ -1254,7 +1256,8 @@ class TestNxosFcInterfacesModule(TestNxosModule):
         set_module_args(args, ignore_provider_arg)
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["interface fc1/1", "analytics type fc-all"]
+            result["commands"],
+            ["interface fc1/1", "analytics type fc-all"],
         )
 
     def test_analytics_none_to_all_replaced(self):

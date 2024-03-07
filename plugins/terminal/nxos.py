@@ -26,9 +26,7 @@ import re
 
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
-from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import (
-    TerminalBase,
-)
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
 
 
 class TerminalModule(TerminalBase):
@@ -59,7 +57,8 @@ class TerminalModule(TerminalBase):
             re.I,
         ),
         re.compile(
-            rb"cannot apply non-existing acl policy to interface", re.I
+            rb"cannot apply non-existing acl policy to interface",
+            re.I,
         ),
         re.compile(rb"Duplicate sequence number", re.I),
         re.compile(
@@ -92,20 +91,20 @@ class TerminalModule(TerminalBase):
         cmd = {"command": "enable"}
         if passwd:
             cmd["prompt"] = to_text(
-                r"(?i)[\r\n]?Password: $", errors="surrogate_or_strict"
+                r"(?i)[\r\n]?Password: $",
+                errors="surrogate_or_strict",
             )
             cmd["answer"] = passwd
             cmd["prompt_retry_check"] = True
 
         try:
             self._exec_cli_command(
-                to_bytes(json.dumps(cmd), errors="surrogate_or_strict")
+                to_bytes(json.dumps(cmd), errors="surrogate_or_strict"),
             )
             prompt = self._get_prompt()
             if prompt is None or not prompt.strip().endswith(b"enable#"):
                 raise AnsibleConnectionFailure(
-                    "failed to elevate privilege to enable mode still at prompt [%s]"
-                    % prompt,
+                    "failed to elevate privilege to enable mode still at prompt [%s]" % prompt,
                 )
         except AnsibleConnectionFailure as e:
             prompt = self._get_prompt()

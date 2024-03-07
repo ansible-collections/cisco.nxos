@@ -145,7 +145,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                             "options": {
                                                 "tx_interval": {"type": "int"},
                                                 "min_rx_interval": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "multiplier": {"type": "int"},
                                             },
@@ -162,7 +162,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "capability": {
                             "type": "dict",
                             "options": {
-                                "suppress_4_byte_as": {"type": "bool"}
+                                "suppress_4_byte_as": {"type": "bool"},
                             },
                         },
                         "description": {"type": "str"},
@@ -279,7 +279,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                 "nexthop": {
                     "type": "dict",
                     "options": {
-                        "suppress_default_resolution": {"type": "bool"}
+                        "suppress_default_resolution": {"type": "bool"},
                     },
                 },
                 "rd": {
@@ -386,13 +386,13 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "tx_interval": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "min_rx_interval": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "multiplier": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                     },
                                                 },
@@ -408,7 +408,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "capability": {
                                     "type": "dict",
                                     "options": {
-                                        "suppress_4_byte_as": {"type": "bool"}
+                                        "suppress_4_byte_as": {"type": "bool"},
                                     },
                                 },
                                 "description": {"type": "str"},
@@ -508,7 +508,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                         "connection_mode": {
                                             "type": "dict",
                                             "options": {
-                                                "passive": {"type": "bool"}
+                                                "passive": {"type": "bool"},
                                             },
                                         },
                                     },

@@ -62,7 +62,8 @@ def valiate_input(playvals, type, module):
             msg += " Parameter <id> under <destination_groups> is required"
             module.fail_json(msg=msg)
         if playvals.get("destination") and not isinstance(
-            playvals["destination"], dict
+            playvals["destination"],
+            dict,
         ):
             msg = "Invalid playbook value: {0}.".format(playvals)
             msg += " Parameter <destination> under <destination_groups> must be a dict"
@@ -70,7 +71,9 @@ def valiate_input(playvals, type, module):
         if not playvals.get("destination") and len(playvals) > 1:
             msg = "Invalid playbook value: {0}.".format(playvals)
             msg += " Playbook entry contains unrecongnized parameters."
-            msg += " Make sure <destination> keys under <destination_groups> are specified as follows:"
+            msg += (
+                " Make sure <destination> keys under <destination_groups> are specified as follows:"
+            )
             msg += " destination: {ip: <ip>, port: <port>, protocol: <prot>, encoding: <enc>}}"
             module.fail_json(msg=msg)
 
@@ -81,9 +84,7 @@ def valiate_input(playvals, type, module):
             module.fail_json(msg=msg)
         if playvals.get("path") and "name" not in playvals["path"].keys():
             msg = "Invalid playbook value: {0}.".format(playvals)
-            msg += (
-                " Parameter <path> under <sensor_groups> requires <name> key"
-            )
+            msg += " Parameter <path> under <sensor_groups> requires <name> key"
             module.fail_json(msg=msg)
 
 
@@ -149,9 +150,7 @@ def remove_duplicate_context(cmds):
     """Helper method to remove duplicate telemetry context commands"""
     if not cmds:
         return cmds
-    feature_indices = [
-        i for i, x in enumerate(cmds) if x == "feature telemetry"
-    ]
+    feature_indices = [i for i, x in enumerate(cmds) if x == "feature telemetry"]
     telemetry_indices = [i for i, x in enumerate(cmds) if x == "telemetry"]
     if len(feature_indices) == 1 and len(telemetry_indices) == 1:
         return cmds
@@ -182,7 +181,7 @@ def get_setval_path(module_or_path_data):
         path = module_or_path_data
     else:
         path = module_or_path_data.params["config"]["sensor_groups"][0].get(
-            "path"
+            "path",
         )
     if path is None:
         return path
@@ -229,16 +228,12 @@ def massage_data(have_or_want):
                 if item.get("destination"):
                     if item.get("destination").get("port"):
                         item["destination"]["port"] = str(
-                            item["destination"]["port"]
+                            item["destination"]["port"],
                         )
                     if item.get("destination").get("protocol"):
-                        item["destination"]["protocol"] = item["destination"][
-                            "protocol"
-                        ].lower()
+                        item["destination"]["protocol"] = item["destination"]["protocol"].lower()
                     if item.get("destination").get("encoding"):
-                        item["destination"]["encoding"] = item["destination"][
-                            "encoding"
-                        ].lower()
+                        item["destination"]["encoding"] = item["destination"]["encoding"].lower()
                 if item.get("path"):
                     for key in [
                         "filter_condition",
@@ -254,7 +249,7 @@ def massage_data(have_or_want):
                 if item.get("sensor_group"):
                     if item.get("sensor_group").get("id"):
                         item["sensor_group"]["id"] = str(
-                            item["sensor_group"]["id"]
+                            item["sensor_group"]["id"],
                         )
                     if item.get("sensor_group").get("sample_interval"):
                         item["sensor_group"]["sample_interval"] = str(

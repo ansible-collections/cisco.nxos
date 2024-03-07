@@ -23,9 +23,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     remove_empties,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 
 
 class Lldp_global(ConfigBase):
@@ -52,7 +50,7 @@ class Lldp_global(ConfigBase):
             data=data,
         )
         lldp_global_facts = facts["ansible_network_resources"].get(
-            "lldp_global"
+            "lldp_global",
         )
         if not lldp_global_facts:
             return {}
@@ -135,7 +133,7 @@ class Lldp_global(ConfigBase):
         if state in ("merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    state
+                    state,
                 ),
             )
         commands = list()
@@ -180,7 +178,7 @@ class Lldp_global(ConfigBase):
             else:
                 if key in want.keys():
                     outer_dict.update(
-                        {key: self.delete_nested_dict(val, want[key])}
+                        {key: self.delete_nested_dict(val, want[key])},
                     )
                 else:
                     outer_dict.update({key: val})
@@ -199,8 +197,9 @@ class Lldp_global(ConfigBase):
                     delete_dict.update(
                         {
                             key: self.delete_nested_dict(
-                                have["tlv_select"], want["tlv_select"]
-                            )
+                                have["tlv_select"],
+                                want["tlv_select"],
+                            ),
                         },
                     )
         return delete_dict

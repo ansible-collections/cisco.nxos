@@ -36,9 +36,7 @@ class ActionModule(ActionNetworkModule):
         del tmp  # tmp no longer has any effect
 
         module_name = self._task.action.split(".")[-1]
-        self._config_module = (
-            True if module_name in ["nxos_config", "config"] else False
-        )
+        self._config_module = True if module_name in ["nxos_config", "config"] else False
         persistent_connection = self._play_context.connection.split(".")[-1]
 
         warnings = []
@@ -68,7 +66,7 @@ class ActionModule(ActionNetworkModule):
 
             conn = Connection(self._connection.socket_path)
             persistent_command_timeout = conn.get_option(
-                "persistent_command_timeout"
+                "persistent_command_timeout",
             )
             file_pull = self._task.args.get("file_pull", False)
             file_pull_timeout = self._task.args.get("file_pull_timeout")
@@ -78,7 +76,8 @@ class ActionModule(ActionNetworkModule):
                 # if file_pull_timeout is explicitly set, use that
                 if file_pull_timeout:
                     conn.set_option(
-                        "persistent_command_timeout", file_pull_timeout
+                        "persistent_command_timeout",
+                        file_pull_timeout,
                     )
                 # if file_pull_timeout is not set and command_timeout < 300s, bump to 300s.
                 elif persistent_command_timeout < 300:
@@ -102,13 +101,8 @@ class ActionModule(ActionNetworkModule):
                 f"PERSISTENT_CONNECT_TIMEOUT is %s {persistent_connect_timeout}",
                 self._play_context.remote_addr,
             )
-            if (
-                persistent_command_timeout < 600
-                or persistent_connect_timeout < 600
-            ):
-                msg = (
-                    "PERSISTENT_COMMAND_TIMEOUT and PERSISTENT_CONNECT_TIMEOUT"
-                )
+            if persistent_command_timeout < 600 or persistent_connect_timeout < 600:
+                msg = "PERSISTENT_COMMAND_TIMEOUT and PERSISTENT_CONNECT_TIMEOUT"
                 msg += " must be set to 600 seconds or higher when using nxos_install_os module."
                 msg += " Current persistent_command_timeout setting:" + str(
                     persistent_command_timeout,

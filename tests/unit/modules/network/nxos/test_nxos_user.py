@@ -74,7 +74,7 @@ class TestNxosUserModule(TestNxosModule):
                             "usr_name": "admin",
                             "expire_date": "this user account has no expiry date",
                             "TABLE_role": {
-                                "ROW_role": {"role": "network-admin"}
+                                "ROW_role": {"role": "network-admin"},
                             },
                         },
                         {
@@ -95,7 +95,7 @@ class TestNxosUserModule(TestNxosModule):
             "network_os_platform": "DS-C9710",
         }
         set_module_args(
-            dict(name="ansible-test-2", configured_password="ansible")
+            dict(name="ansible-test-2", configured_password="ansible"),
         )
         self.execute_module(
             changed=True,

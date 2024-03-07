@@ -133,14 +133,14 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "enable": {"type": "bool"},
                                 "cefcMIBEnableStatusNotification": {
-                                    "type": "bool"
+                                    "type": "bool",
                                 },
                                 "entity_fan_status_change": {"type": "bool"},
                                 "entity_mib_change": {"type": "bool"},
                                 "entity_module_inserted": {"type": "bool"},
                                 "entity_module_removed": {"type": "bool"},
                                 "entity_module_status_change": {
-                                    "type": "bool"
+                                    "type": "bool",
                                 },
                                 "entity_power_out_change": {"type": "bool"},
                                 "entity_power_status_change": {"type": "bool"},
@@ -170,11 +170,11 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "enable": {"type": "bool"},
                                 "notify_license_expiry": {"type": "bool"},
                                 "notify_license_expiry_warning": {
-                                    "type": "bool"
+                                    "type": "bool",
                                 },
                                 "notify_licensefile_missing": {"type": "bool"},
                                 "notify_no_license_for_feature": {
-                                    "type": "bool"
+                                    "type": "bool",
                                 },
                             },
                         },
@@ -183,7 +183,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "enable": {"type": "bool"},
                                 "cErrDisableInterfaceEventRev1": {
-                                    "type": "bool"
+                                    "type": "bool",
                                 },
                                 "cieLinkDown": {"type": "bool"},
                                 "cieLinkUp": {"type": "bool"},
@@ -265,7 +265,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "enable": {"type": "bool"},
                                 "cseFailSwCoreNotifyExtended": {
-                                    "type": "bool"
+                                    "type": "bool",
                                 },
                             },
                         },
@@ -282,7 +282,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                                 "enable": {"type": "bool"},
                                 "upgradeJobStatusNotify": {"type": "bool"},
                                 "upgradeOpNotifyOnCompletion": {
-                                    "type": "bool"
+                                    "type": "bool",
                                 },
                             },
                         },

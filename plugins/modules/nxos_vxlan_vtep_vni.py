@@ -148,7 +148,8 @@ PARAM_TO_COMMAND_KEYMAP = {
 def get_value(arg, config, module):
     command = PARAM_TO_COMMAND_KEYMAP[arg]
     command_val_re = re.compile(
-        r"(?:{0}\s)(?P<value>.*)$".format(command), re.M
+        r"(?:{0}\s)(?P<value>.*)$".format(command),
+        re.M,
     )
 
     if arg in BOOL_PARAMS:
@@ -197,12 +198,9 @@ def get_existing(module, args):
         parents = ["interface {0}".format(interface_exist)]
         temp_config = netcfg.get_section(parents)
 
-        if (
-            "member vni {0} associate-vrf".format(module.params["vni"])
-            in temp_config
-        ):
+        if "member vni {0} associate-vrf".format(module.params["vni"]) in temp_config:
             parents.append(
-                "member vni {0} associate-vrf".format(module.params["vni"])
+                "member vni {0} associate-vrf".format(module.params["vni"]),
             )
             config = netcfg.get_section(parents)
         elif "member vni {0}".format(module.params["vni"]) in temp_config:
@@ -252,17 +250,16 @@ def state_present(module, existing, proposed, candidate):
             if vni_command not in commands:
                 commands.append("member vni {0}".format(module.params["vni"]))
             if value != PARAM_TO_DEFAULT_KEYMAP.get(
-                "multicast_group", "default"
+                "multicast_group",
+                "default",
             ):
                 commands.append("{0} {1}".format(key, value))
 
-        elif (
-            key == "ingress-replication protocol"
-            and value != existing_commands.get(key)
-        ):
+        elif key == "ingress-replication protocol" and value != existing_commands.get(key):
             evalue = existing_commands.get(key)
             dvalue = PARAM_TO_DEFAULT_KEYMAP.get(
-                "ingress_replication", "default"
+                "ingress_replication",
+                "default",
             )
             if value != dvalue:
                 if evalue and evalue != dvalue:
@@ -287,10 +284,7 @@ def state_present(module, existing, proposed, candidate):
             else:
                 if key.replace(" ", "_").replace("-", "_") in BOOL_PARAMS:
                     commands.append("no {0}".format(key.lower()))
-        elif (
-            key == "multisite ingress-replication"
-            and value != existing_commands.get(key)
-        ):
+        elif key == "multisite ingress-replication" and value != existing_commands.get(key):
             vni_command = "member vni {0}".format(module.params["vni"])
             if vni_command not in commands:
                 commands.append("member vni {0}".format(module.params["vni"]))
@@ -311,9 +305,7 @@ def state_present(module, existing, proposed, candidate):
         vni_command = "member vni {0}".format(module.params["vni"])
         ingress_replications_command = "ingress-replication protocol static"
         ingress_replicationb_command = "ingress-replication protocol bgp"
-        ingress_replicationns_command = (
-            "no ingress-replication protocol static"
-        )
+        ingress_replicationns_command = "no ingress-replication protocol static"
         ingress_replicationnb_command = "no ingress-replication protocol bgp"
         interface_command = "interface {0}".format(module.params["interface"])
 
@@ -353,7 +345,7 @@ def state_present(module, existing, proposed, candidate):
 def state_absent(module, existing, proposed, candidate):
     if existing["assoc_vrf"]:
         commands = [
-            "no member vni {0} associate-vrf".format(module.params["vni"])
+            "no member vni {0} associate-vrf".format(module.params["vni"]),
         ]
     else:
         commands = ["no member vni {0}".format(module.params["vni"])]
@@ -371,10 +363,14 @@ def main():
         suppress_arp=dict(required=False, type="bool"),
         suppress_arp_disable=dict(required=False, type="bool"),
         ingress_replication=dict(
-            required=False, type="str", choices=["bgp", "static", "default"]
+            required=False,
+            type="str",
+            choices=["bgp", "static", "default"],
         ),
         state=dict(
-            choices=["present", "absent"], default="present", required=False
+            choices=["present", "absent"],
+            default="present",
+            required=False,
         ),
         multisite_ingress_replication=dict(
             required=False,
@@ -405,8 +401,7 @@ def main():
             and module.params["ingress_replication"] != "static"
         ):
             module.fail_json(
-                msg="ingress_replication=static is required "
-                "when using peer_list param",
+                msg="ingress_replication=static is required " "when using peer_list param",
             )
         else:
             peer_list = module.params["peer_list"]
@@ -437,7 +432,7 @@ def main():
             )
         elif interface_exist != module.params["interface"]:
             module.fail_json(
-                msg="Only 1 NVE interface is allowed on the switch."
+                msg="Only 1 NVE interface is allowed on the switch.",
             )
     elif state == "absent":
         if interface_exist != module.params["interface"]:
@@ -450,9 +445,7 @@ def main():
                 existing_vni=existing["vni"],
             )
 
-    proposed_args = dict(
-        (k, v) for k, v in module.params.items() if v is not None and k in args
-    )
+    proposed_args = dict((k, v) for k, v in module.params.items() if v is not None and k in args)
 
     proposed = {}
     for key, value in proposed_args.items():

@@ -21,10 +21,7 @@ def _tmplt_area_range(arange):
 
 def _tmplt_default_information(proc):
     command = "default-information originate"
-    if (
-        "always" in proc["default_information"]
-        and proc["default_information"]["always"]
-    ):
+    if "always" in proc["default_information"] and proc["default_information"]["always"]:
         command += " always"
     if "route_map" in proc["default_information"]:
         command += " route-map"
@@ -112,7 +109,7 @@ def _tmplt_max_metric(proc):
                 command += " {wait_period}".format(**on_startup)
             if on_startup.get("wait_for_bgp_asn"):
                 command += " wait-for bgp {wait_for_bgp_asn}".format(
-                    **on_startup
+                    **on_startup,
                 )
         if summary_lsa:
             command += " summary-lsa"

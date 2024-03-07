@@ -16,9 +16,7 @@ based on the configuration.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
@@ -61,7 +59,7 @@ class Bgp_address_familyFacts(object):
 
         # parse native config using the Bgp_address_family template
         bgp_address_family_parser = Bgp_address_familyTemplate(
-            lines=data.splitlines()
+            lines=data.splitlines(),
         )
         objs = bgp_address_family_parser.parse()
         if objs:
@@ -84,7 +82,8 @@ class Bgp_address_familyFacts(object):
                         )
                     if "networks" in x:
                         x["networks"] = sorted(
-                            x["networks"], key=lambda k, s="prefix": k[s]
+                            x["networks"],
+                            key=lambda k, s="prefix": k[s],
                         )
                     if "redistribute" in x:
                         x["redistribute"] = sorted(
@@ -101,11 +100,12 @@ class Bgp_address_familyFacts(object):
                 )
 
         ansible_facts["ansible_network_resources"].pop(
-            "bgp_address_family", None
+            "bgp_address_family",
+            None,
         )
 
         params = utils.remove_empties(
-            utils.validate_config(self.argument_spec, {"config": objs})
+            utils.validate_config(self.argument_spec, {"config": objs}),
         )
 
         facts["bgp_address_family"] = params.get("config", {})

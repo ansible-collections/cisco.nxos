@@ -117,10 +117,7 @@ def get_available_features(feature, module):
             if feature not in available_features:
                 available_features[feature] = state
             else:
-                if (
-                    available_features[feature] == "disabled"
-                    and state == "enabled"
-                ):
+                if available_features[feature] == "disabled" and state == "enabled":
                     available_features[feature] = state
 
     # certain configurable features do not
@@ -272,7 +269,8 @@ def main():
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()

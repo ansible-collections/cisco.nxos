@@ -144,9 +144,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     transform_commands,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    run_commands,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import run_commands
 
 
 def parse_commands(module, warnings):
@@ -183,7 +181,8 @@ def main():
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()
@@ -226,7 +225,7 @@ def main():
         module.fail_json(msg=msg, failed_conditions=failed_conditions)
 
     result.update(
-        {"stdout": responses, "stdout_lines": list(to_lines(responses))}
+        {"stdout": responses, "stdout_lines": list(to_lines(responses))},
     )
 
     module.exit_json(**result)

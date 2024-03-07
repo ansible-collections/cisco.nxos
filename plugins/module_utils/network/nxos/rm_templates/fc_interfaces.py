@@ -49,15 +49,15 @@ allowed_port_modes = [
     "SD",
 ]
 
-allowed_values_pattern = "|".join(
-    re.escape(val) for val in allowed_speed_values
-)
+allowed_values_pattern = "|".join(re.escape(val) for val in allowed_speed_values)
 
 
 class Fc_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Fc_interfacesTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     # fmt: off

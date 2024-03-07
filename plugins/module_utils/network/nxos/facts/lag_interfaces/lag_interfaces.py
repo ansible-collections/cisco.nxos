@@ -18,9 +18,7 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.lag_interfaces.lag_interfaces import (
     Lag_interfacesArgs,
@@ -62,7 +60,8 @@ class Lag_interfacesFacts(object):
         if objs:
             facts["lag_interfaces"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["lag_interfaces"].append(utils.remove_empties(cfg))
@@ -101,7 +100,7 @@ class Lag_interfacesFacts(object):
 
             if member and member.get("port_channel", None):
                 port_channel = "port-channel{0}".format(
-                    member.pop("port_channel")
+                    member.pop("port_channel"),
                 )
                 for x in result:
                     if x["name"] == port_channel:

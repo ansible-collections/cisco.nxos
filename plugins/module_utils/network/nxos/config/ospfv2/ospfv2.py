@@ -25,9 +25,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     get_from_dict,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospfv2 import (
     Ospfv2Template,
 )
@@ -93,14 +91,8 @@ class Ospfv2(ResourceModule):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        wantd = {
-            (entry["process_id"]): entry
-            for entry in self.want.get("processes", [])
-        }
-        haved = {
-            (entry["process_id"]): entry
-            for entry in self.have.get("processes", [])
-        }
+        wantd = {(entry["process_id"]): entry for entry in self.want.get("processes", [])}
+        haved = {(entry["process_id"]): entry for entry in self.have.get("processes", [])}
 
         # turn all lists of dicts into dicts prior to merge
         for entry in wantd, haved:
@@ -112,9 +104,7 @@ class Ospfv2(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
         # if state is overridden, first remove processes that are in have but not in want
@@ -138,9 +128,7 @@ class Ospfv2(ResourceModule):
                 begin,
                 self._tmplt.render(
                     want or have,
-                    "vrf"
-                    if "vrf" in (want.keys() or have.keys())
-                    else "process_id",
+                    "vrf" if "vrf" in (want.keys() or have.keys()) else "process_id",
                     False,
                 ),
             )
@@ -205,34 +193,24 @@ class Ospfv2(ResourceModule):
     def _ospf_list_to_dict(self, entry):
         for _pid, proc in iteritems(entry):
             for area in proc.get("areas", []):
-                area["ranges"] = {
-                    entry["prefix"]: entry for entry in area.get("ranges", [])
-                }
+                area["ranges"] = {entry["prefix"]: entry for entry in area.get("ranges", [])}
                 area["filter_list"] = {
-                    entry["direction"]: entry
-                    for entry in area.get("filter_list", [])
+                    entry["direction"]: entry for entry in area.get("filter_list", [])
                 }
             mpls_areas = {
                 entry["area_id"]: entry
-                for entry in proc.get("mpls", {})
-                .get("traffic_eng", {})
-                .get("areas", [])
+                for entry in proc.get("mpls", {}).get("traffic_eng", {}).get("areas", [])
             }
             if mpls_areas:
                 proc["mpls"]["traffic_eng"]["areas"] = mpls_areas
-            proc["areas"] = {
-                entry["area_id"]: entry for entry in proc.get("areas", [])
-            }
+            proc["areas"] = {entry["area_id"]: entry for entry in proc.get("areas", [])}
             proc["summary_address"] = {
-                entry["prefix"]: entry
-                for entry in proc.get("summary_address", [])
+                entry["prefix"]: entry for entry in proc.get("summary_address", [])
             }
             proc["redistribute"] = {
                 (entry.get("id"), entry["protocol"]): entry
                 for entry in proc.get("redistribute", [])
             }
             if "vrfs" in proc:
-                proc["vrfs"] = {
-                    entry["vrf"]: entry for entry in proc.get("vrfs", [])
-                }
+                proc["vrfs"] = {entry["vrf"]: entry for entry in proc.get("vrfs", [])}
                 self._ospf_list_to_dict(proc["vrfs"])

@@ -430,7 +430,8 @@ def main():
     :returns: the result form module invocation
     """
     module = AnsibleModule(
-        argument_spec=VlansArgs.argument_spec, supports_check_mode=True
+        argument_spec=VlansArgs.argument_spec,
+        supports_check_mode=True,
     )
 
     result = Vlans(module).execute_module()

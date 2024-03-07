@@ -60,9 +60,7 @@ rebooted:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import (
-    load_config,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos import load_config
 
 
 def reboot(module):
@@ -75,7 +73,8 @@ def main():
     argument_spec = dict(confirm=dict(default=False, type="bool"))
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()

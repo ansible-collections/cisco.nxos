@@ -15,9 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.ntp_global.ntp_global import (
     Ntp_globalArgs,
@@ -58,7 +56,8 @@ class Ntp_globalFacts(object):
 
         # parse native config using the Ntp_global template
         ntp_global_parser = Ntp_globalTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = ntp_global_parser.parse()
 
@@ -85,7 +84,9 @@ class Ntp_globalFacts(object):
 
         params = utils.remove_empties(
             ntp_global_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 

@@ -50,7 +50,9 @@ def _tmplt_path_attribute(proc):
 class Bgp_templatesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_templatesTemplate, self).__init__(
-            lines=lines, tmplt=self, module=module
+            lines=lines,
+            tmplt=self,
+            module=module,
         )
 
     # fmt: off

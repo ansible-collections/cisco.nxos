@@ -26,9 +26,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.ospf_interfaces import (
     Ospf_interfacesTemplate,
 )
@@ -92,9 +90,7 @@ class Ospf_interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
@@ -116,7 +112,8 @@ class Ospf_interfaces(ResourceModule):
         self._compare_ospf_interfaces(want, have)
         if len(self.commands) != begin:
             self.commands.insert(
-                begin, self._tmplt.render(want or have, "interface", False)
+                begin,
+                self._tmplt.render(want or have, "interface", False),
             )
 
     def _compare_ospf_interfaces(self, want, have):
@@ -136,14 +133,11 @@ class Ospf_interfaces(ResourceModule):
 
             # this ensures that the "no" form of "ip ospf passive-interface"
             # command is executed even when there is no existing config
-            if (
-                witem.get("passive_interface") is False
-                and "passive_interface" not in hitem
-            ):
+            if witem.get("passive_interface") is False and "passive_interface" not in hitem:
                 hitem["passive_interface"] = True
 
             if "passive_interface" in hitem and witem.get(
-                "default_passive_interface"
+                "default_passive_interface",
             ):
                 self.commands.append(self._generate_passive_intf(witem))
 
@@ -153,18 +147,24 @@ class Ospf_interfaces(ResourceModule):
             for area in witem.get("multi_areas", []):
                 if area not in hitem.get("multi_areas", []):
                     self.addcmd(
-                        {"afi": afi, "area": area}, "multi_areas", negate=False
+                        {"afi": afi, "area": area},
+                        "multi_areas",
+                        negate=False,
                     )
             # remove superfluous top-level `multi_areas` config
             for area in hitem.get("multi_areas", []):
                 if area not in witem.get("multi_areas", []):
                     self.addcmd(
-                        {"afi": afi, "area": area}, "multi_areas", negate=True
+                        {"afi": afi, "area": area},
+                        "multi_areas",
+                        negate=True,
                     )
 
             # compare config->address_family->processes
             self._compare_processes(
-                afi, witem.get("processes", {}), hitem.get("processes", {})
+                afi,
+                witem.get("processes", {}),
+                hitem.get("processes", {}),
             )
 
     def _compare_processes(self, afi, want, have):
@@ -183,14 +183,18 @@ class Ospf_interfaces(ResourceModule):
                 if area not in hproc.get("multi_areas", []):
                     marea_dict["area"] = area
                     self.addcmd(
-                        marea_dict, "processes_multi_areas", negate=False
+                        marea_dict,
+                        "processes_multi_areas",
+                        negate=False,
                     )
             # remove superfluous processes->multi_areas config
             for area in hproc.get("multi_areas", []):
                 if area not in wproc.get("multi_areas", []):
                     marea_dict["area"] = area
                     self.addcmd(
-                        marea_dict, "processes_multi_areas", negate=True
+                        marea_dict,
+                        "processes_multi_areas",
+                        negate=True,
                     )
 
         # remove superflous config->address_family->processes
@@ -210,12 +214,10 @@ class Ospf_interfaces(ResourceModule):
         for item in entry.values():
             for ag in item.get("address_family", []):
                 ag["processes"] = {
-                    subentry["process_id"]: subentry
-                    for subentry in ag.get("processes", [])
+                    subentry["process_id"]: subentry for subentry in ag.get("processes", [])
                 }
             item["address_family"] = {
-                subentry["afi"]: subentry
-                for subentry in item.get("address_family", [])
+                subentry["afi"]: subentry for subentry in item.get("address_family", [])
             }
 
     def _generate_passive_intf(self, data):

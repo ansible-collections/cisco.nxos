@@ -16,9 +16,7 @@ import re
 
 from copy import deepcopy
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bfd_interfaces.bfd_interfaces import (
     Bfd_interfacesArgs,
@@ -57,7 +55,7 @@ class Bfd_interfacesFacts(object):
 
         if not data:
             data = connection.get(
-                "show running-config | section '^interface|^feature bfd'"
+                "show running-config | section '^interface|^feature bfd'",
             )
 
         # Some of the bfd attributes
@@ -77,7 +75,8 @@ class Bfd_interfacesFacts(object):
         if objs:
             facts["bfd_interfaces"] = []
             params = utils.validate_config(
-                self.argument_spec, {"config": objs}
+                self.argument_spec,
+                {"config": objs},
             )
             for cfg in params["config"]:
                 facts["bfd_interfaces"].append(utils.remove_empties(cfg))
@@ -104,13 +103,7 @@ class Bfd_interfacesFacts(object):
         config["name"] = intf
         # 'bfd'/'bfd echo' do not nvgen when enabled thus set to 'enable' when None.
         # 'bfd' is not supported on some platforms
-        config["bfd"] = (
-            utils.parse_conf_cmd_arg(conf, "bfd", "enable", "disable")
-            or "enable"
-        )
-        config["echo"] = (
-            utils.parse_conf_cmd_arg(conf, "bfd echo", "enable", "disable")
-            or "enable"
-        )
+        config["bfd"] = utils.parse_conf_cmd_arg(conf, "bfd", "enable", "disable") or "enable"
+        config["echo"] = utils.parse_conf_cmd_arg(conf, "bfd echo", "enable", "disable") or "enable"
 
         return utils.remove_empties(config)

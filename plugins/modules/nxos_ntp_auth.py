@@ -165,7 +165,9 @@ def get_ntp_trusted_key(module):
 def get_ntp_auth_key(key_id, module):
     authentication_key = {}
     command = "show run | inc ntp.authentication-key.{0}".format(key_id)
-    auth_regex = r".*ntp\sauthentication-key\s(?P<key_id>\d+)\smd5\s(?P<md5string>\S+)\s(?P<atype>\S+).*"
+    auth_regex = (
+        r".*ntp\sauthentication-key\s(?P<key_id>\d+)\smd5\s(?P<md5string>\S+)\s(?P<atype>\S+).*"
+    )
 
     body = execute_show_command(command, module)[0]
 
@@ -210,14 +212,20 @@ def auth_type_to_num(auth_type):
 
 
 def set_ntp_auth_key(
-    key_id, md5string, auth_type, trusted_key, authentication
+    key_id,
+    md5string,
+    auth_type,
+    trusted_key,
+    authentication,
 ):
     ntp_auth_cmds = []
     if key_id and md5string:
         auth_type_num = auth_type_to_num(auth_type)
         ntp_auth_cmds.append(
             "ntp authentication-key {0} md5 {1} {2}".format(
-                key_id, md5string, auth_type_num
+                key_id,
+                md5string,
+                auth_type_num,
             ),
         )
 
@@ -235,14 +243,20 @@ def set_ntp_auth_key(
 
 
 def remove_ntp_auth_key(
-    key_id, md5string, auth_type, trusted_key, authentication
+    key_id,
+    md5string,
+    auth_type,
+    trusted_key,
+    authentication,
 ):
     auth_remove_cmds = []
     if key_id:
         auth_type_num = auth_type_to_num(auth_type)
         auth_remove_cmds.append(
             "no ntp authentication-key {0} md5 {1} {2}".format(
-                key_id, md5string, auth_type_num
+                key_id,
+                md5string,
+                auth_type_num,
             ),
         )
 
@@ -262,7 +276,8 @@ def main():
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()
@@ -313,7 +328,11 @@ def main():
         if not existing.get("key_id"):
             key_id = None
         command = remove_ntp_auth_key(
-            key_id, md5string, auth_type, trusted_key, auth_toggle
+            key_id,
+            md5string,
+            auth_type,
+            trusted_key,
+            auth_toggle,
         )
         if command:
             commands.append(command)

@@ -215,7 +215,7 @@ def main():
 
     if group not in configured_groups:
         module.fail_json(
-            msg="Group not on switch. Please add before moving forward"
+            msg="Group not on switch. Please add before moving forward",
         )
 
     existing = get_snmp_community(module, community)

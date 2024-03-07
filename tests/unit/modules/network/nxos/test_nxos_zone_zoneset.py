@@ -19,9 +19,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
 
     def setUp(self):
         super(TestNxosZoneZonesetModule, self).setUp()
-        module_path = (
-            "ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset."
-        )
+        module_path = "ansible_collections.cisco.nxos.plugins.modules.nxos_zone_zoneset."
 
         self.mock_run_commands = patch(module_path + "run_commands")
         self.run_commands = self.mock_run_commands.start()
@@ -29,16 +27,12 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         self.mock_execute_show_cmd_zoneset_active = patch(
             module_path + "ShowZonesetActive.execute_show_zoneset_active_cmd",
         )
-        self.execute_show_cmd_zoneset_active = (
-            self.mock_execute_show_cmd_zoneset_active.start()
-        )
+        self.execute_show_cmd_zoneset_active = self.mock_execute_show_cmd_zoneset_active.start()
 
         self.mock_execute_show_cmd_zoneset = patch(
             module_path + "ShowZoneset.execute_show_zoneset_cmd",
         )
-        self.execute_show_cmd_zoneset = (
-            self.mock_execute_show_cmd_zoneset.start()
-        )
+        self.execute_show_cmd_zoneset = self.mock_execute_show_cmd_zoneset.start()
 
         self.mock_execute_show_cmd_zone = patch(
             module_path + "ShowZone.execute_show_zone_vsan_cmd",
@@ -48,9 +42,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         self.mock_execute_show_cmd_zone_status = patch(
             module_path + "ShowZoneStatus.execute_show_zone_status_cmd",
         )
-        self.execute_show_cmd_zone_status = (
-            self.mock_execute_show_cmd_zone_status.start()
-        )
+        self.execute_show_cmd_zone_status = self.mock_execute_show_cmd_zone_status.start()
 
         self.mock_load_config = patch(module_path + "load_config")
         self.load_config = self.mock_load_config.start()
@@ -270,7 +262,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
 
     def test_zone_add_rem_2(self):
         a = dict(
-            zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneBNew")])]
+            zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneBNew")])],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
@@ -294,7 +286,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
 
     def test_zone_add_rem_3(self):
         a = dict(
-            zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneB")])]
+            zone_zoneset_details=[dict(vsan=923, zone=[dict(name="zoneB")])],
         )
         set_module_args(a, True)
         self.execute_show_cmd_zone_status.return_value = load_fixture(
@@ -351,7 +343,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(
             zone_zoneset_details=[
                 dict(
-                    vsan=923, zone=[dict(name="zoneA", members=[mem1, mem2])]
+                    vsan=923,
+                    zone=[dict(name="zoneA", members=[mem1, mem2])],
                 ),
             ],
         )
@@ -384,7 +377,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(
             zone_zoneset_details=[
                 dict(
-                    vsan=923, zone=[dict(name="zoneA1", members=[mem1, mem2])]
+                    vsan=923,
+                    zone=[dict(name="zoneA1", members=[mem1, mem2])],
                 ),
             ],
         )
@@ -495,7 +489,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
     def test_zoneset_add_rem_1(self):
         a = dict(
             zone_zoneset_details=[
-                dict(vsan=922, zoneset=[dict(name="zsetname21New")])
+                dict(vsan=922, zoneset=[dict(name="zsetname21New")]),
             ],
         )
         set_module_args(a, True)
@@ -520,7 +514,7 @@ class TestNxosZoneZonesetModule(TestNxosModule):
     def test_zoneset_add_rem_2(self):
         a = dict(
             zone_zoneset_details=[
-                dict(vsan=922, zoneset=[dict(name="zsetname21")])
+                dict(vsan=922, zoneset=[dict(name="zsetname21")]),
             ],
         )
         set_module_args(a, True)
@@ -541,7 +535,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(
             zone_zoneset_details=[
                 dict(
-                    vsan=922, zoneset=[dict(name="zsetname21New", remove=True)]
+                    vsan=922,
+                    zoneset=[dict(name="zsetname21New", remove=True)],
                 ),
             ],
         )
@@ -566,7 +561,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(
             zone_zoneset_details=[
                 dict(
-                    vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])]
+                    vsan=922,
+                    zoneset=[dict(name="zsetname21", members=[mem1])],
                 ),
             ],
         )
@@ -597,7 +593,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(
             zone_zoneset_details=[
                 dict(
-                    vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])]
+                    vsan=922,
+                    zoneset=[dict(name="zsetname21", members=[mem1])],
                 ),
             ],
         )
@@ -628,7 +625,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(
             zone_zoneset_details=[
                 dict(
-                    vsan=922, zoneset=[dict(name="zsetname21", members=[mem1])]
+                    vsan=922,
+                    zoneset=[dict(name="zsetname21", members=[mem1])],
                 ),
             ],
         )
@@ -651,7 +649,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(
             zone_zoneset_details=[
                 dict(
-                    vsan=221, zoneset=[dict(name="zsv221", action="activate")]
+                    vsan=221,
+                    zoneset=[dict(name="zsv221", action="activate")],
                 ),
             ],
         )
@@ -744,7 +743,8 @@ class TestNxosZoneZonesetModule(TestNxosModule):
         a = dict(
             zone_zoneset_details=[
                 dict(
-                    vsan=221, zone=[dict(name="zv221", members=[mem1, mem2])]
+                    vsan=221,
+                    zone=[dict(name="zv221", members=[mem1, mem2])],
                 ),
             ],
         )

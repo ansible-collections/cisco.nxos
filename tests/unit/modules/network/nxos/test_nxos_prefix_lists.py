@@ -53,9 +53,7 @@ class TestNxosPrefixListsModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.prefix_lists.prefix_lists.Prefix_listsFacts.get_config",
@@ -560,19 +558,20 @@ class TestNxosPrefixListsModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(running_config=cfg, state="parsed"), ignore_provider_arg
+            dict(running_config=cfg, state="parsed"),
+            ignore_provider_arg,
         )
         parsed = [
             {
                 "afi": "ipv4",
                 "prefix_lists": [
-                    {"name": "plist1", "description": "Test plist1"}
+                    {"name": "plist1", "description": "Test plist1"},
                 ],
             },
             {
                 "afi": "ipv6",
                 "prefix_lists": [
-                    {"name": "plist3", "description": "Test plist3"}
+                    {"name": "plist3", "description": "Test plist3"},
                 ],
             },
         ]

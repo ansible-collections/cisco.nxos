@@ -158,12 +158,16 @@ def main():
     argument_spec = dict(
         bfd=dict(required=False, type="str", choices=["enable", "disable"]),
         ssm_range=dict(
-            required=False, type="list", default=[], elements="str"
+            required=False,
+            type="list",
+            default=[],
+            elements="str",
         ),
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
     warnings = list()
     result = {"changed": False, "commands": [], "warnings": warnings}

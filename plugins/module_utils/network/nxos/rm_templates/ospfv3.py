@@ -91,11 +91,13 @@ def _tmplt_max_metric(proc):
     else:
         external_lsa = max_metric.get("router_lsa", {}).get("external_lsa", {})
         stub_prefix_lsa = max_metric.get("router_lsa", {}).get(
-            "stub_prefix_lsa", {}
+            "stub_prefix_lsa",
+            {},
         )
         on_startup = max_metric.get("router_lsa", {}).get("on_startup", {})
         inter_area_prefix_lsa = max_metric.get("router_lsa", {}).get(
-            "inter_area_prefix_lsa", {}
+            "inter_area_prefix_lsa",
+            {},
         )
         if external_lsa:
             command += " external-lsa"
@@ -109,13 +111,13 @@ def _tmplt_max_metric(proc):
                 command += " {wait_period}".format(**on_startup)
             if on_startup.get("wait_for_bgp_asn"):
                 command += " wait-for bgp {wait_for_bgp_asn}".format(
-                    **on_startup
+                    **on_startup,
                 )
         if inter_area_prefix_lsa:
             command += " inter-area-prefix-lsa"
             if inter_area_prefix_lsa.get("max_metric_value"):
                 command += " {max_metric_value}".format(
-                    **inter_area_prefix_lsa
+                    **inter_area_prefix_lsa,
                 )
 
     return command

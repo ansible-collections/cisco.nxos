@@ -24,9 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.utils.utils import (
     flatten_dict,
     get_interface_type,
@@ -61,7 +59,7 @@ class Lacp_interfaces(ConfigBase):
             data=data,
         )
         lacp_interfaces_facts = facts["ansible_network_resources"].get(
-            "lacp_interfaces"
+            "lacp_interfaces",
         )
         if not lacp_interfaces_facts:
             return []
@@ -106,7 +104,7 @@ class Lacp_interfaces(ConfigBase):
                     msg="value of running_config parameter must not be empty for state parsed",
                 )
             result["parsed"] = self.get_lacp_interfaces_facts(
-                data=running_config
+                data=running_config,
             )
 
         if self.state in self.ACTION_STATES:
@@ -155,13 +153,10 @@ class Lacp_interfaces(ConfigBase):
                   to the desired configuration
         """
         state = self._module.params["state"]
-        if (
-            state in ("overridden", "merged", "replaced", "rendered")
-            and not want
-        ):
+        if state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    state
+                    state,
                 ),
             )
         commands = list()
@@ -176,7 +171,7 @@ class Lacp_interfaces(ConfigBase):
                     commands.extend(self._state_merged(flatten_dict(w), have))
                 elif state == "replaced":
                     commands.extend(
-                        self._state_replaced(flatten_dict(w), have)
+                        self._state_replaced(flatten_dict(w), have),
                     )
         return commands
 
@@ -219,7 +214,7 @@ class Lacp_interfaces(ConfigBase):
         for h in have:
             h = flatten_dict(h)
             obj_in_want = flatten_dict(
-                search_obj_in_list(h["name"], want, "name")
+                search_obj_in_list(h["name"], want, "name"),
             )
             if h == obj_in_want:
                 continue
@@ -256,7 +251,7 @@ class Lacp_interfaces(ConfigBase):
         if want:
             for w in want:
                 obj_in_have = flatten_dict(
-                    search_obj_in_list(w["name"], have, "name")
+                    search_obj_in_list(w["name"], have, "name"),
                 )
                 commands.extend(self.del_attribs(obj_in_have))
         else:

@@ -49,7 +49,7 @@ class TestNxosVrfafModule(TestNxosModule):
         )
         self.get_capabilities = self.mock_get_capabilities.start()
         self.get_capabilities.return_value = {
-            "device_info": {"network_os_platform": "N7K-C7018"}
+            "device_info": {"network_os_platform": "N7K-C7018"},
         }
 
     def tearDown(self):
@@ -60,7 +60,8 @@ class TestNxosVrfafModule(TestNxosModule):
 
     def load_fixtures(self, commands=None, device=""):
         self.get_config.return_value = load_fixture(
-            "nxos_vrf_af", "config.cfg"
+            "nxos_vrf_af",
+            "config.cfg",
         )
         self.load_config.return_value = None
 
@@ -92,7 +93,7 @@ class TestNxosVrfafModule(TestNxosModule):
 
     def test_nxos_vrf_af_auto_evpn_route_target_present_current_existing(self):
         set_module_args(
-            dict(vrf="vrf11", afi="ipv4", route_target_both_auto_evpn=True)
+            dict(vrf="vrf11", afi="ipv4", route_target_both_auto_evpn=True),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -101,7 +102,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self,
     ):
         set_module_args(
-            dict(vrf="vrf10", afi="ipv4", route_target_both_auto_evpn=True)
+            dict(vrf="vrf10", afi="ipv4", route_target_both_auto_evpn=True),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -115,7 +116,7 @@ class TestNxosVrfafModule(TestNxosModule):
 
     def test_nxos_vrf_af_auto_evpn_route_target_absent_current_existing(self):
         set_module_args(
-            dict(vrf="vrf11", afi="ipv4", route_target_both_auto_evpn=False)
+            dict(vrf="vrf11", afi="ipv4", route_target_both_auto_evpn=False),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
@@ -131,7 +132,7 @@ class TestNxosVrfafModule(TestNxosModule):
         self,
     ):
         set_module_args(
-            dict(vrf="vrf1", afi="ipv4", route_target_both_auto_evpn=False)
+            dict(vrf="vrf1", afi="ipv4", route_target_both_auto_evpn=False),
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -1101,14 +1102,14 @@ class TestNxosVrfafModule(TestNxosModule):
 
     def test_nxos_vrf_af_both_auto_N9K(self):
         self.get_capabilities.return_value = {
-            "device_info": {"network_os_platform": "N9K-C9300v"}
+            "device_info": {"network_os_platform": "N9K-C9300v"},
         }
         set_module_args(
             dict(
                 vrf="v2000",
                 afi="ipv4",
                 route_targets=[
-                    {"rt": "auto", "direction": "both", "state": "present"}
+                    {"rt": "auto", "direction": "both", "state": "present"},
                 ],
             ),
         )

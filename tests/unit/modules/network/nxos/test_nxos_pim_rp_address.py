@@ -51,14 +51,16 @@ class TestNxosPimRpAddressModule(TestNxosModule):
 
     def load_fixtures(self, commands=None, device=""):
         self.get_config.return_value = load_fixture(
-            "nxos_pim_rp_address", "config.cfg"
+            "nxos_pim_rp_address",
+            "config.cfg",
         )
         self.load_config.return_value = None
 
     def test_nxos_pim_rp_address(self):
         set_module_args(dict(rp_address="5.6.7.8"))
         self.execute_module(
-            changed=True, commands=["ip pim rp-address 5.6.7.8"]
+            changed=True,
+            commands=["ip pim rp-address 5.6.7.8"],
         )
 
     def test_nxos_pim_rp_address_no_change(self):
@@ -68,7 +70,8 @@ class TestNxosPimRpAddressModule(TestNxosModule):
     def test_nxos_pim_rp_address_absent(self):
         set_module_args(dict(rp_address="1.2.3.4", state="absent"))
         self.execute_module(
-            changed=True, commands=["no ip pim rp-address 1.2.3.4"]
+            changed=True,
+            commands=["no ip pim rp-address 1.2.3.4"],
         )
 
     def test_nxos_pim_rp_address_absent_no_change(self):

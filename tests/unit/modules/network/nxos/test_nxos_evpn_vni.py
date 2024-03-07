@@ -51,13 +51,14 @@ class TestNxosEvpnVniModule(TestNxosModule):
 
     def load_fixtures(self, commands=None, device=""):
         self.get_config.return_value = load_fixture(
-            "", "nxos_evpn_vni_config.cfg"
+            "",
+            "nxos_evpn_vni_config.cfg",
         )
         self.load_config.return_value = None
 
     def test_nxos_evpn_vni_present(self):
         set_module_args(
-            dict(vni="6000", route_target_import="5000:10", state="present")
+            dict(vni="6000", route_target_import="5000:10", state="present"),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(

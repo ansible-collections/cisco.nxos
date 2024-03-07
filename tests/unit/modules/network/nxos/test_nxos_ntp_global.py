@@ -42,9 +42,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         self.mock_get_resource_connection = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base.get_resource_connection",
         )
-        self.get_resource_connection = (
-            self.mock_get_resource_connection.start()
-        )
+        self.get_resource_connection = self.mock_get_resource_connection.start()
 
         self.mock_get_config = patch(
             "ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.ntp_global.ntp_global.Ntp_globalFacts.get_config",
@@ -329,7 +327,9 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                         ),
                         dict(peer="192.168.1.2", key_id=3, use_vrf="siteB"),
                         dict(
-                            peer="192.168.1.3", maxpoll=10, use_vrf="default"
+                            peer="192.168.1.3",
+                            maxpoll=10,
+                            use_vrf="default",
                         ),
                     ],
                     servers=[
@@ -343,7 +343,9 @@ class TestNxosNtpGlobalModule(TestNxosModule):
                         ),
                         dict(server="203.0.113.2", key_id=3, use_vrf="siteB"),
                         dict(
-                            server="203.0.113.3", maxpoll=10, use_vrf="default"
+                            server="203.0.113.3",
+                            maxpoll=10,
+                            use_vrf="default",
                         ),
                     ],
                 ),
@@ -567,7 +569,8 @@ class TestNxosNtpGlobalModule(TestNxosModule):
 
     def test_nxos_ntp_global_gathered_empty(self):
         set_module_args(
-            dict(running_config="", state="gathered"), ignore_provider_arg
+            dict(running_config="", state="gathered"),
+            ignore_provider_arg,
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], {})
@@ -603,7 +606,8 @@ class TestNxosNtpGlobalModule(TestNxosModule):
             """,
         )
         set_module_args(
-            dict(running_config=cfg, state="parsed"), ignore_provider_arg
+            dict(running_config=cfg, state="parsed"),
+            ignore_provider_arg,
         )
         parsed = {
             "trusted_keys": [

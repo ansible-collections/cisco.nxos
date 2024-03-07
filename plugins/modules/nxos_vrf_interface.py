@@ -182,12 +182,15 @@ def main():
         vrf=dict(required=True),
         interface=dict(type="str", required=True),
         state=dict(
-            default="present", choices=["present", "absent"], required=False
+            default="present",
+            choices=["present", "absent"],
+            required=False,
         ),
     )
 
     module = AnsibleModule(
-        argument_spec=argument_spec, supports_check_mode=True
+        argument_spec=argument_spec,
+        supports_check_mode=True,
     )
 
     warnings = list()
@@ -203,7 +206,7 @@ def main():
     current_vrfs = get_vrf_list(module)
     if vrf not in current_vrfs:
         warnings.append(
-            "The VRF is not present/active on the device. Use nxos_vrf to fix this."
+            "The VRF is not present/active on the device. Use nxos_vrf to fix this.",
         )
 
     intf_type = get_interface_type(interface)

@@ -57,7 +57,8 @@ class TestNxosPimModule(TestNxosModule):
         self.get_config.return_value = load_fixture("nxos_pim", "config.cfg")
         set_module_args(dict(ssm_range="233.0.0.0/8"))
         self.execute_module(
-            changed=True, commands=["ip pim ssm range 233.0.0.0/8"]
+            changed=True,
+            commands=["ip pim ssm range 233.0.0.0/8"],
         )
 
     def test_nxos_pim_2(self):
@@ -65,7 +66,8 @@ class TestNxosPimModule(TestNxosModule):
         self.get_config.return_value = load_fixture("nxos_pim", "config.cfg")
         set_module_args(dict(bfd="disable", ssm_range="none"))
         self.execute_module(
-            changed=True, commands=["no ip pim bfd", "ip pim ssm range none"]
+            changed=True,
+            commands=["no ip pim bfd", "ip pim ssm range none"],
         )
 
     def test_nxos_pim_3(self):
@@ -93,7 +95,8 @@ class TestNxosPimModule(TestNxosModule):
         self.get_config.return_value = load_fixture("nxos_pim", "config.cfg")
         set_module_args(dict(ssm_range="default"))
         self.execute_module(
-            changed=True, commands=["no ip pim ssm range none"]
+            changed=True,
+            commands=["no ip pim ssm range none"],
         )
 
         # SSM 'default' idempotence

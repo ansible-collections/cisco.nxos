@@ -291,7 +291,7 @@ def action_delete(module, existing_snapshots):
 
     if exist:
         commands.append(
-            "snapshot delete {0}".format(module.params["snapshot_name"])
+            "snapshot delete {0}".format(module.params["snapshot_name"]),
         )
 
     return commands
@@ -373,8 +373,8 @@ def main():
     if not os.path.isdir(module.params["path"]):
         module.fail_json(
             msg="{0} is not a valid directory name.".format(
-                module.params["path"]
-            )
+                module.params["path"],
+            ),
         )
 
     existing_snapshots = invoke("get_existing", module)
@@ -391,7 +391,8 @@ def main():
                 snapshot2 = module.params["snapshot2"]
                 compare_option = module.params["compare_option"]
                 command = "show snapshot compare {0} {1}".format(
-                    snapshot1, snapshot2
+                    snapshot1,
+                    snapshot2,
                 )
                 if compare_option:
                     command += " {0}".format(compare_option)
@@ -410,12 +411,14 @@ def main():
                 and module.params["save_snapshot_locally"]
             ):
                 command = "show snapshot dump {0} | json".format(
-                    module.params["snapshot_name"]
+                    module.params["snapshot_name"],
                 )
                 content = execute_show_command(command, module)[0]
                 if content:
                     write_on_file(
-                        str(content), module.params["snapshot_name"], module
+                        str(content),
+                        module.params["snapshot_name"],
+                        module,
                     )
 
     module.exit_json(**result)

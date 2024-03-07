@@ -42,7 +42,7 @@ class Ospf_interfacesArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "mutually_exclusive": [
-                        ["passive_interface", "default_passive_interface"]
+                        ["passive_interface", "default_passive_interface"],
                     ],
                     "options": {
                         "afi": {

@@ -113,11 +113,7 @@ def update_include_cli(data: CommentedSeq) -> bool:
     :param data: The task list
     :return: Whether the include_cli task was updated
     """
-    match = [
-        idx
-        for idx, item in enumerate(data)
-        if item.get("include") == "cli.yaml"
-    ]
+    match = [idx for idx, item in enumerate(data) if item.get("include") == "cli.yaml"]
     if not match:
         return False
 
@@ -135,11 +131,7 @@ def update_include_nxapi(data: CommentedSeq) -> bool:
     :param data: The task list
     :return: Whether the include_nxapi task was updated
     """
-    match = [
-        idx
-        for idx, item in enumerate(data)
-        if item.get("include") == "nxapi.yaml"
-    ]
+    match = [idx for idx, item in enumerate(data) if item.get("include") == "nxapi.yaml"]
     if not match:
         return False
 
@@ -306,9 +298,7 @@ def undo_set_fact_equal(list_of_tasks) -> bool:
         )
 
         if commented:
-            list_of_tasks[entry]["ansible.builtin.set_fact"].ca.items[
-                last_key
-            ] = [
+            list_of_tasks[entry]["ansible.builtin.set_fact"].ca.items[last_key] = [
                 None,
                 None,
                 ct,
