@@ -2,5 +2,7 @@
 black==23.3.0
 flake8
 yamllint
-coverage==4.5.4
 virl2-client==2.6.1
+pytest-ansible
+pytest-xdist
+pytest-cov
