@@ -16,14 +16,13 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: nxos_spanning_tree_global
 short_description: Resource module to configure spanning tree.
-description:
-- This module configures and manages the attributes of Spanning-tree on Cisco NXOS.
+description: This module configures and manages the attributes of Spanning-tree on Cisco NXOS.
 version_added: 6.0.3
 author: Vinay Mulugund (@roverflow)
 notes:
-- Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
-- This module works with connection C(network_cli) and C(httpapi).
-- Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
+  - Tested against NX-OS 9.3.6 on Cisco Nexus Switches.
+  - This module works with connection C(network_cli) and C(httpapi).
+  - Tested against Cisco MDS NX-OS 9.2(2) with connection C(network_cli).
 options:
   config:
     description: A dict of Spanning-tree options.
