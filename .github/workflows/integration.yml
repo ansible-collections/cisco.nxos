@@ -1,19 +1,162 @@
-name: Integration
+name: Integration tests
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      collection_pre_install:
+        required: false
+        type: string
+        default: ""
+      cml_lab:
+        default: tests/integration/labs/single.yaml
+        required: false
+        type: string
+      integration_test_path:
+        default: tests/integration/targets
+        required: false
+        type: string
+      network_os:
+        required: true
+        type: string
+      pytest_addopts:
+        default: ""
+        required: false
+        type: string
+
+    secrets:
+      cml_ssh_password:
+        required: true
+      virl_password:
+        required: true
+      virl_host:
+        required: true
 
 jobs:
   integration:
-    uses: ansible-network/github_actions/.github/workflows/integration.yml@main
-    with:
-      network_os: cisco.nxos.nxos
-      pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
+    env:
+      PY_COLORS: "1"
+      source_directory: "./source"
+      dependency_directory: "./dependency"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ansible-version:
+          # - stable-2.9
+          # - stable-2.13
+          # - stable-2.14
+           - stable-2.15
+          # - milestone
+          # - devel
+        python-version:
+          # - "3.8"
+          # - "3.9"
+          # - "3.10"
+           - "3.11"
+        dependency-source:
+          - github
 
-    secrets:
-      cml_ssh_password: ${{ secrets.cml_ssh_password }}
-      virl_host: ${{ secrets.virl_host }}
-      virl_password: ${{ secrets.virl_password }}
+    name: "py${{ matrix.python-version }} / ${{ matrix.ansible-version }} / ${{ matrix.dependency-source }}"
+    steps:
+      - name: Checkout the collection repository
+        uses: ansible-network/github_actions/.github/actions/checkout_dependency@main
+        with:
+          path: ${{ env.source_directory }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: "0"
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install wheel now for faster builds
+        run: python3 -m pip install wheel --upgrade
+
+      - name: Install ansible-core (${{ matrix.ansible-version }})
+        run: python3 -m pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible-version }}.tar.gz --disable-pip-version-check
+
+      - name: Pre install collections dependencies first so the collection install does not
+        run: ansible-galaxy collection install --pre ${{ inputs.collection_pre_install }} -p /home/runner/collections
+        if: inputs.collection_pre_install != ''
+
+      - name: Read collection metadata from galaxy.yml
+        id: identify
+        uses: ansible-network/github_actions/.github/actions/identify_collection@main
+        with:
+          source_path: ${{ env.source_directory }}
+
+      - name: Checkout ${{ steps.identify.outputs.dependency }}
+        if: steps.identify.outputs.dependency != '' && matrix.dependency-source == 'github'
+        uses: ansible-network/github_actions/.github/actions/checkout_dependency@main
+        with:
+          repository: ansible-collections/${{ steps.identify.outputs.dependency }}
+          path: ${{ env.dependency_directory }}
+          fetch-depth: "0"
+
+      - name: Read collection metadata from ${{ steps.identify.outputs.dependency }}
+        if: steps.identify.outputs.dependency != '' && matrix.dependency-source == 'github'
+        id: identify-dependency
+        uses: ansible-network/github_actions/.github/actions/identify_collection@main
+        with:
+          source_path: ${{ env.dependency_directory }}
+
+      - name: Build and install ${{ steps.identify.outputs.dependency }}
+        if: steps.identify.outputs.dependency != '' && matrix.dependency-source == 'github'
+        uses: ansible-network/github_actions/.github/actions/build_install_collection@main
+        with:
+          install_python_dependencies: true
+          source_path: ${{ env.dependency_directory }}
+          collection_path: ${{ steps.identify-dependency.outputs.collection_path }}
+          tar_file: ${{ steps.identify-dependency.outputs.tar_file }}
+
+      - name: Build and install the collection
+        uses: ansible-network/github_actions/.github/actions/build_install_collection@main
+        with:
+          install_python_dependencies: true
+          source_path: ${{ env.source_directory }}
+          collection_path: ${{ steps.identify.outputs.collection_path }}
+          tar_file: ${{ steps.identify.outputs.tar_file }}
+          ansible_version: ${{ matrix.ansible-version }}
+
+      - name: Print the ansible version
+        run: ansible --version
+
+      - name: Install the integration test dependency
+        run: python3 -m pip install git+https://github.com/ansible-network/pytest-ansible-network-integration.git
+
+      - name: Print the python dependencies
+        run: python3 -m pip list
+
+      - name: Run integration tests
+        run: >-
+          python -m pytest tests/integration
+          --integration-tests-path ${{ inputs.integration_test_path }}
+          --cml-lab ${{ inputs.cml_lab }}
+          ${{ inputs.pytest_addopts }}
+        env:
+          ANSIBLE_FORCE_COLOR: "1"
+          ANSIBLE_NETWORK_OS: ${{ inputs.network_os }}
+          CML_SSH_PASSWORD: ${{ secrets.cml_ssh_password }}
+          CML_SSH_PORT: 1122
+          CML_SSH_USER: sysadmin
+          VIRL_HOST: ${{ secrets.virl_host }}
+          VIRL_PASSWORD: ${{ secrets.virl_password }}
+          VIRL_USERNAME: admin
+        working-directory: ${{ steps.identify.outputs.collection_path }}
+
+      - name: Attempt to remove any labs in case the workflow was cancelled
+        if: cancelled()
+        run: echo ${{ env.CML_LABS }} | tr -d '\n' | xargs -d ',' -i sh -c  'cml use --id {} && cml rm --force --no-confirm'
+        continue-on-error: true
+        env:
+          CML_VERIFY_CERT: False
+          VIRL_HOST: ${{ secrets.virl_host }}
+          VIRL_PASSWORD: ${{ secrets.virl_password }}
+          VIRL_USERNAME: admin
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: /home/runner/test_logs/
