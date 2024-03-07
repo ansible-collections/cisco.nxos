@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the nxos_spanning_tree_global module
 
 
 class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_spanning_tree_global module
-    """
+    """The arg spec for the nxos_spanning_tree_global module"""
 
     argument_spec = {
         "config": {
@@ -51,7 +51,7 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                                 "root": {
                                     "type": "dict",
                                     "mutually_exclusive": [
-                                        ["primary", "secondary"]
+                                        ["primary", "secondary"],
                                     ],
                                     "options": {
                                         "primary": {
