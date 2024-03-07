@@ -8,7 +8,7 @@ on:
 
 jobs:
   integration:
-    uses: .github/workflows/integretion_utils.yml@gh_final
+    uses: ./integretion_utils.yml@gh_final
     with:
       network_os: cisco.nxos.nxos
       pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
