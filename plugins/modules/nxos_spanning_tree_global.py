@@ -39,7 +39,8 @@ options:
             type: bool
           bridge_domain:
             decsription: Bridge-Domain Spanning Trees range.
-            type: dict
+            type: list
+            elements: dict
             suboptions:
               bd_list_range:
                 description: Bridge-Domain Spanning Trees range.
@@ -144,8 +145,7 @@ options:
             type: bool
           configure_mst:
             description: MST configuration submode options.
-            type: list
-            elements: dict
+            type: dict
             suboptions:
               name:
                 description: MST configuration submode instance name.
@@ -238,7 +238,8 @@ options:
                 type: int
       vlan:
         description: VLAN Switch Spanning Trees.
-        type: dict
+        type: list
+        elements: dict
         suboptions:
           vlan_range:
             description: VLAN range for spanning tree.
@@ -379,20 +380,14 @@ parsed:
     module argspec.
 """
 
-import debugpy
-
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
+from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
     Spanning_tree_globalArgs,
 )
-from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.spanning_tree_global.spanning_tree_global import (
+from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.config.spanning_tree_global.spanning_tree_global import (
     Spanning_tree_global,
 )
-
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 def main():

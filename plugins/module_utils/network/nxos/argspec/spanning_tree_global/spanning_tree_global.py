@@ -41,7 +41,8 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                     "options": {
                         "bridge_assurance": {"type": "bool"},
                         "bridge_domain": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "options": {
                                 "bd_list_range": {"type": "str"},
                                 "forward_time": {"type": "int"},
@@ -102,8 +103,7 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                         "max_hops": {"type": "int"},
                         "simulate_pvst_global": {"type": "bool"},
                         "configure_mst": {
-                            "type": "list",
-                            "elements": "dict",
+                            "type": "dict",
                             "options": {
                                 "name": {"type": "str"},
                                 "revision": {"type": "int"},
@@ -165,7 +165,8 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "vlan": {
-                    "type": "dict",
+                    "type": "list",
+                    "elements": "dict",
                     "options": {
                         "vlan_range": {"type": "str"},
                         "forward_time": {"type": "int"},
