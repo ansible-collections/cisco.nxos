@@ -83,6 +83,6 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "result": {
                 "pathcost_method": "{{ pc_method }}",
             },
-        }
+        },
     ]
     # fmt: on
