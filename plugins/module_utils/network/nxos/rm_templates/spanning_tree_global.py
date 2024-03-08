@@ -29,83 +29,60 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "bridge_assurance",
+            "name": "bridge.bridge_assurance",
             "getval": re.compile(
                 r"""
-                ^spanning-tree
-                \sbridge\s(?P<assurance>assurance)
+                ^Bridge\sAssurance
+                \s*(?P<is_enabled>is\senabled|is\sdisabled)
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree bridge assurance",
             "result": {
-                "bridge_assurance": "{{ True if assurance is defined else None }}",
-            },
-        },
-        {
-            "name": "bridge_domain",
-            "getval": re.compile(
-                r"""
-                ^spanning-tree
-                \sbridge-domain\s(?P<range>\S+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "spanning-tree bridge-domain {{ range }}",
-            "result": {
-                "bridge_domain": "{{ range }}",
-            },
-        },
-        {
-            "name": "fcoe",
-            "getval": re.compile(
-                r"""
-                ^spanning-tree
-                \s(?P<fcoe>fcoe)
-                $""", re.VERBOSE,
-            ),
-            "setval": "spanning-tree fcoe",
-            "result": {
-                "fcoe": "{{ True if fcoe is defined else None }}",
-            },
-        },
-        {
-            "name": "lc_issu",
-            "getval": re.compile(
-                r"""
-                ^spanning-tree
-                \slc-issu\s(?P<lc_issu>auto|disruptive|non-disruptive)
-                $""", re.VERBOSE,
-            ),
-            "setval": "spanning-tree lc-issu {{ lc_issu }}",
-            "result": {
-                "lc_issu": "{{ lc_issu }}",
+                "bridge": {
+                    "bridge_assurance": "{{ True if 'enabled' in is_enabled else False }}",
+                },
             },
         },
         {
             "name": "loopguard_default",
             "getval": re.compile(
                 r"""
-                ^spanning-tree
-                \sloopguard
-                \s(?P<default>default)
+                ^Loopguard\sDefault
+                \s*(?P<is_enabled>is\senabled|is\sdisabled)
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree loopguard default",
             "result": {
-                "loopguard_default": "{{ True if default is defined else None }}",
+                "loopguard_default": "{{ True if 'enabled' in is_enabled else False }}",
             },
         },
         {
             "name": "mode",
             "getval": re.compile(
                 r"""
-                ^spanning-tree
-                (\smode\s(?P<mode>mst|rapid-pvst))
+                ^Switch\sis\sin
+                \s(?P<mode_val>mst|rapid-pvst)
+                \smode
+                (\s\(IEEE\sStandard\))?
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree mode {{ mode }}",
             "result": {
-                "mode": "{{ mode }}",
+                "mode": "{{ mode_val }}",
             },
         },
+        {
+            "name": "pathcost_method",
+            "getval": re.compile(
+                r"""
+                ^Pathcost\smethod\sused
+                \s*is\s(?P<pc_method>long|short)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree pathcost method {{ pathcost_method }}",
+            "result": {
+                "pathcost_method": "{{ pc_method }}",
+            },
+        }
     ]
     # fmt: on

@@ -20,10 +20,10 @@ from copy import deepcopy
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
     Spanning_tree_globalArgs,
 )
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.rm_templates.spanning_tree_global import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.spanning_tree_global import (
     Spanning_tree_globalTemplate,
 )
 
@@ -39,7 +39,9 @@ class Spanning_tree_globalFacts(object):
         """Wrapper method for `connection.get()`
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
-        return connection.get("show running-config | section '^spanning-tree'")
+        summary = connection.get("show spanning-tree summary")
+        general = connection.get("show running-config | section '^spanning-tree'")
+        return summary + general
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Spanning_tree_global network resource
@@ -62,7 +64,7 @@ class Spanning_tree_globalFacts(object):
             lines=data.splitlines(),
             module=self._module,
         )
-        objs = list(spanning_tree_global_parser.parse().values())
+        objs = spanning_tree_global_parser.parse()
 
         ansible_facts["ansible_network_resources"].pop("spanning_tree_global", None)
 
