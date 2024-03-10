@@ -97,8 +97,8 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                 "mst": {
                     "type": "dict",
                     "options": {
-                        "forward-time": {"type": "int"},
-                        "hello-time": {"type": "int"},
+                        "forward_time": {"type": "int"},
+                        "hello_time": {"type": "int"},
                         "max_age": {"type": "int"},
                         "max_hops": {"type": "int"},
                         "simulate_pvst_global": {"type": "bool"},
@@ -109,7 +109,8 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                                 "revision": {"type": "int"},
                                 "private_vlan_sync": {"type": "bool"},
                                 "instance_vlan": {
-                                    "type": "dict",
+                                    "type": "list",
+                                    "elements": "dict",
                                     "options": {
                                         "instance_id": {"type": "int"},
                                         "vlan_range": {"type": "str"},

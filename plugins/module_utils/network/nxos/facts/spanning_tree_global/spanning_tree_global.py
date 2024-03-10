@@ -40,7 +40,7 @@ class Spanning_tree_globalFacts(object):
         This method exists solely to allow the unit test framework to mock device connection calls.
         """
         summary = connection.get("show spanning-tree summary")
-        general = connection.get("show running-config | section '^spanning-tree'")
+        general = connection.get("show running-config spanning-tree")
         return summary + general
 
     def populate_facts(self, connection, ansible_facts, data=None):

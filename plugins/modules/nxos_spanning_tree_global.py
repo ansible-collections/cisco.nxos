@@ -128,10 +128,10 @@ options:
         description: Multiple spanning tree configuration.
         type: dict
         suboptions:
-          forward-time:
+          forward_time:
             description: Forward time for MST.
             type: int
-          hello-time:
+          hello_time:
             description: Hello time for MST.
             type: int
           max_age:
@@ -158,7 +158,8 @@ options:
                 type: bool
               instance_vlan:
                 description: MST configuration submode instance.
-                type: dict
+                type: list
+                elements: dict
                 suboptions:
                   instance_id:
                     description: MST configuration submode instance id.

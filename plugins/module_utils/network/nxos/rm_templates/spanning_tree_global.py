@@ -44,6 +44,185 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "bridge.bridge_domain",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\sbridge-domain
+                \s(?P<b_domain_range>\d+)
+                (\sforward-time\s(?P<forward_time>\d+))?
+                (\shello-time\s(?P<hello_time>\d+))?
+                (\smax-age\s(?P<max_age>\d+))?
+                (\spriority\s(?P<priority>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bridge-domain {{ bd_list_range }}"
+                      "{{ (' forward-time ' + forward_time|string) if forward_time is defined else '' }}"
+                      "{{ (' hello-time ' + hello_time|string) if hello_time is defined else '' }}"
+                      "{{ (' max-age ' + max_age|string) if max_age is defined else '' }}"
+                      "{{ (' priority ' + priority|string) if priority is defined else ''}}",
+            "result": {
+                "bridge": {
+                    "bridge_domain": {
+                        "{{ b_domain_range }}": {
+                            "bd_list_range": "{{ b_domain_range }}",
+                            "forward_time": "{{ forward_time }}",
+                            "hello_time": "{{ hello_time }}",
+                            "max_age": "{{ max_age }}",
+                            "priority": "{{ priority }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "bridge.bridge_domain.root.primary",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\sbridge-domain
+                \s(?P<b_domain_range>\d+)
+                \sroot\sprimary
+                (\sdiameter\s(?P<diameter>\d+))?
+                (\shello-time\s(?P<hello_time>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bridge-domain {{ bd_list_range }}"
+                      " root primary"
+                      "{{ (' diameter ' + root.primary.diameter|string) if root.primary.diameter is defined else '' }}"
+                      "{{ (' hello-time ' + root.primary.hello_time|string) if root.primary.hello_time is defined else '' }}",
+            "result": {
+                "bridge": {
+                    "bridge_domain": {
+                        "{{ b_domain_range }}": {
+                            "bd_list_range": "{{ b_domain_range }}",
+                            "root": {
+                                "primary": {
+                                    "diameter": "{{ diameter }}",
+                                    "hello_time": "{{ hello_time }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "bridge.bridge_domain.root.secondary",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\sbridge-domain
+                \s(?P<b_domain_range>\d+)
+                \sroot\ssecondary
+                (\sdiameter\s(?P<diameter>\d+))?
+                (\shello-time\s(?P<hello_time>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bridge-domain {{ bd_list_range }}"
+                      " root secondary"
+                      "{{ (' diameter ' + root.secondary.diameter|string) if root.secondary.diameter is defined else '' }}"
+                      "{{ (' hello-time ' + root.secondary.hello_time|string) if root.secondary.hello_time is defined else '' }}",
+            "result": {
+                "bridge": {
+                    "bridge_domain": {
+                        "{{ b_domain_range }}": {
+                            "bd_list_range": "{{ b_domain_range }}",
+                            "root": {
+                                "secondary": {
+                                    "diameter": "{{ diameter }}",
+                                    "hello_time": "{{ hello_time }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "domain.identifier",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\domain
+                \s(?P<identifier>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree domain {{ identifier }}",
+            "result": {
+                "domain": {
+                    "identifier": "{{ identifier }}",
+                },
+            },
+        },
+        {
+            "name": "domain.disable",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\domain
+                \s(?P<disable>disable)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree domain disable",
+            "result": {
+                "domain": {
+                    "disable": "{{ True if disable is defined else False }}",
+                },
+            },
+        },
+        {
+            "name": "domain.enable",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\domain
+                \s(?P<enable>enable)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree domain enable",
+            "result": {
+                "domain": {
+                    "enable": "{{ True if enable is defined else False }}",
+                },
+            },
+        },
+        {
+            "name": "domain.clear_stats",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\domain
+                \s(?P<clear>clear\sstatistics)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree domain enable",
+            "result": {
+                "domain": {
+                    "clear_stats": "{{ True if clear is defined else False }}",
+                },
+            },
+        },
+        {
+            "name": "fcoe",
+            "getval": re.compile(
+                r"""
+                ^no\sspanning-tree
+                \s(?P<fcoe>fcoe)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree fcoe",
+            "result": {
+                "fcoe": "{{ False if fcoe is defined else True }}",
+            },
+        },
+        {
+            "name": "lc_issu",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\slc-issu
+                \s(?P<lc_issu>auto|disruptive|non-disruptive)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree lc-issu {{ lc_issu }}",
+            "result": {
+                "lc_issu": "{{ lc_issu }}",
+            },
+        },
+        {
             "name": "loopguard_default",
             "getval": re.compile(
                 r"""
@@ -69,6 +248,152 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "setval": "spanning-tree mode {{ mode }}",
             "result": {
                 "mode": "{{ mode_val }}",
+            },
+        },
+        {
+            "name": "mst.forward_time",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\smst
+                \sforward-time\s(?P<forward_time>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree mst forward-time {{ forward_time }}",
+            "result": {
+                "mst": {
+                    "forward_time": "{{ forward_time }}",
+                },
+            },
+        },
+        {
+            "name": "mst.hello_time",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\smst
+                \shello-time\s(?P<hello_time>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree mst hello-time {{ hello_time }}",
+            "result": {
+                "mst": {
+                    "hello_time": "{{ hello_time }}",
+                },
+            },
+        },
+        {
+            "name": "mst.max_age",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\smst
+                \smax-age\s(?P<max_age>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree mst max-age {{ max_age }}",
+            "result": {
+                "mst": {
+                    "max_age": "{{ max_age }}",
+                },
+            },
+        },
+        {
+            "name": "mst.max_hops",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\smst
+                \smax-hops\s(?P<max_hops>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree mst max-hops {{ max_hops }}",
+            "result": {
+                "mst": {
+                    "max_hops": "{{ max_hops }}",
+                },
+            },
+        },
+        {
+            "name": "mst.simulate_pvst_global",
+            "getval": re.compile(
+                r"""
+                ^PVST\sSimulation
+                \s+is\s(?P<simulate_pvst_global>enabled|disabled)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree mst simulate pvst global",
+            "result": {
+                "mst": {
+                    "simulate_pvst_global": "{{ True if 'enabled' in simulate_pvst_global else False }}",
+                },
+            },
+        },
+        {
+            "name": "mst.configure_mst.name",
+            "getval": re.compile(
+                r"""
+                ^\s+name\s(?P<name>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "name {{ configure_mst.name }}",
+            "result": {
+                "mst": {
+                    "configure_mst": {
+                        "name": "{{ name }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "mst.configure_mst.revision",
+            "getval": re.compile(
+                r"""
+                ^\s+revision\s(?P<revision>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "revision {{ configure_mst.revision }}",
+            "result": {
+                "mst": {
+                    "configure_mst": {
+                        "revision": "{{ revision }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "mst.configure_mst.private_vlan_sync",
+            "getval": re.compile(
+                r"""
+                ^\s+private-vlan\s(?P<synchronize>synchronize)
+                $""", re.VERBOSE,
+            ),
+            "setval": "private-vlan synchronize",
+            "result": {
+                "mst": {
+                    "configure_mst": {
+                        "private_vlan_sync": "{{ True if synchronize is defined else False }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "mst.configure_mst.instance_vlan",
+            "getval": re.compile(
+                r"""
+                ^\s+instance
+                \s(?P<instance_id>\d+)
+                \svlan\s(?P<vlan_range>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "private-vlan synchronize",
+            "result": {
+                "mst": {
+                    "configure_mst": {
+                        "instance_vlan": {
+                            "{{ instance_id }}": {
+                                "instance_id": "{{ instance_id }}",
+                                "vlan_range": "{{ vlan_range }}",
+                            },
+                        },
+                    },
+                },
             },
         },
         {
