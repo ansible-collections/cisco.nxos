@@ -134,11 +134,11 @@ jobs:
         env:
           ANSIBLE_FORCE_COLOR: "1"
           ANSIBLE_NETWORK_OS: ${{ inputs.network_os }}
-          CML_SSH_PASSWORD: abc
+          CML_SSH_PASSWORD: ${{ secrets.cml_ssh_password }}
           CML_SSH_PORT: 1122
           CML_SSH_USER: sysadmin
-          VIRL_HOST: 54.190.208.146
-          VIRL_PASSWORD: test
+          VIRL_HOST: ${{ secrets.virl_host }}
+          VIRL_PASSWORD: ${{ secrets.virl_password }}
           VIRL_USERNAME: admin
         working-directory: ${{ steps.identify.outputs.collection_path }}
 
