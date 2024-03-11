@@ -41,16 +41,11 @@ jobs:
       fail-fast: false
       matrix:
         ansible-version:
-          # - stable-2.9
-          - stable-2.13
-          # - stable-2.14
+          - stable-2.14
           # - stable-2.15
           # - milestone
           # - devel
         python-version:
-          # - "3.8"
-          # - "3.9"
-          # - "3.10"
            - "3.11"
         dependency-source:
           - github
@@ -75,6 +70,9 @@ jobs:
 
       - name: Install ansible-core (${{ matrix.ansible-version }})
         run: python3 -m pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible-version }}.tar.gz --disable-pip-version-check
+
+      - name: Print the ansible version
+        run: ansible --version
 
       - name: Pre install collections dependencies first so the collection install does not
         run: ansible-galaxy collection install --pre ${{ inputs.collection_pre_install }} -p /home/runner/collections
@@ -105,6 +103,7 @@ jobs:
         if: steps.identify.outputs.dependency != '' && matrix.dependency-source == 'github'
         uses: ansible-network/github_actions/.github/actions/build_install_collection@main
         with:
+          python-version: ${{ matrix.python-version }}
           install_python_dependencies: true
           source_path: ${{ env.dependency_directory }}
           collection_path: ${{ steps.identify-dependency.outputs.collection_path }}
@@ -118,12 +117,6 @@ jobs:
           collection_path: ${{ steps.identify.outputs.collection_path }}
           tar_file: ${{ steps.identify.outputs.tar_file }}
           ansible_version: ${{ matrix.ansible-version }}
-
-      - name: Print the ansible version
-        run: ansible --version
-
-      - name: Install the integration test dependency
-        run: python3 -m pip install git+https://github.com/ansible-network/pytest-ansible-network-integration.git
 
       - name: Print the python dependencies
         run: python3 -m pip list
