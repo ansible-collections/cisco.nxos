@@ -42,11 +42,10 @@ class Spanning_tree_globalFacts(object):
         summary = connection.get("show spanning-tree summary")
         general = connection.get("show running-config spanning-tree")
         return summary + general
-    
+
     def _dict_to_list(self, objs):
-        """Convert a dict to a list of dicts
-        """
-        
+        """Convert a dict to a list of dicts"""
+
         mst_obj = objs.get("mst", {})
         configure_mst_obj = mst_obj.get("configure_mst", {})
         instance_vlan_obj = configure_mst_obj.get("instance_vlan", {})
