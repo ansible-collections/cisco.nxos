@@ -120,11 +120,11 @@ jobs:
           ansible_version: ${{ matrix.ansible-version }}
 
       - name: Print the python dependencies
-        run: python3 -m pip list
+        run: python${{ matrix.python-version }} -m pip list
 
       - name: Run integration tests
         run: >-
-          python -m pytest tests/integration
+          python${{ matrix.python-version }} -m pytest tests/integration
           --integration-tests-path ${{ inputs.integration_test_path }}
           --cml-lab ${{ inputs.cml_lab }}
           ${{ inputs.pytest_addopts }}
