@@ -63,6 +63,8 @@ jobs:
           path: ${{ env.source_directory }}
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: "0"
+          python-version: ${{ matrix.python-version }}
+
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
