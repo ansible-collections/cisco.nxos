@@ -66,10 +66,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install wheel now for faster builds
-        run: python3 -m pip install wheel --upgrade
+        run: python${{ matrix.python-version }} -m pip install wheel --upgrade
 
       - name: Install ansible-core (${{ matrix.ansible-version }})
-        run: python3 -m pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible-version }}.tar.gz --disable-pip-version-check
+        run: python${{ matrix.python-version }} -m pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible-version }}.tar.gz --disable-pip-version-check
 
       - name: Print the ansible version
         run: ansible --version
@@ -121,6 +121,9 @@ jobs:
 
       - name: Print the python dependencies
         run: python${{ matrix.python-version }} -m pip list
+
+      - name: Install the integration test dependency
+        run: python${{ matrix.python-version }} -m pip install git+https://github.com/ansible-network/pytest-ansible-network-integration.git
 
       - name: Run integration tests
         run: >-
