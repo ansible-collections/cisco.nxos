@@ -36,47 +36,7 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "dict",
             "options": {
-                "bridge": {
-                    "type": "dict",
-                    "options": {
-                        "bridge_assurance": {"type": "bool"},
-                        "bridge_domain": {
-                            "type": "list",
-                            "elements": "dict",
-                            "options": {
-                                "bd_list_range": {"type": "str"},
-                                "forward_time": {"type": "int"},
-                                "hello_time": {"type": "int"},
-                                "max_age": {"type": "int"},
-                                "priority": {"type": "int"},
-                                "root": {
-                                    "type": "dict",
-                                    "mutually_exclusive": [
-                                        ["primary", "secondary"],
-                                    ],
-                                    "options": {
-                                        "primary": {
-                                            "type": "dict",
-                                            "options": {
-                                                "enable": {"type": "bool"},
-                                                "diameter": {"type": "int"},
-                                                "hello_time": {"type": "int"},
-                                            },
-                                        },
-                                        "secondary": {
-                                            "type": "dict",
-                                            "options": {
-                                                "enable": {"type": "bool"},
-                                                "diameter": {"type": "int"},
-                                                "hello_time": {"type": "int"},
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+                "bridge_assurance": {"type": "bool"},
                 "domain": {
                     "type": "dict",
                     "mutually_exclusive": [["identifier", "disable", "enable"]],
@@ -137,16 +97,6 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                 "pseudo_info": {
                     "type": "dict",
                     "options": {
-                        "bridge_domain_info": {
-                            "type": "list",
-                            "elements": "dict",
-                            "mutually_exclusive": [["designated", "root"]],
-                            "options": {
-                                "range": {"type": "str"},
-                                "designated_priority": {"type": "int"},
-                                "root_priority": {"type": "int\\"},
-                            },
-                        },
                         "mst_info": {
                             "type": "list",
                             "elements": "dict",

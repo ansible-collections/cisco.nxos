@@ -30,64 +30,9 @@ options:
     description: A dict of Spanning-tree options.
     type: dict
     suboptions:
-      bridge:
-        description: Bridge options in spanning-tree.
-        type: dict
-        suboptions:
-          bridge_assurance:
-            description: Enable bridge assurance.
-            type: bool
-          bridge_domain:
-            decsription: Bridge-Domain Spanning Trees range.
-            type: list
-            elements: dict
-            suboptions:
-              bd_list_range:
-                description: Bridge-Domain Spanning Trees range.
-                type: str
-              forward_time:
-                description: Forward time for bridge domain.
-                type: int
-              hello_time:
-                description: Hello time for bridge domain.
-                type: int
-              max_age:
-                description: Max age for bridge domain.
-                type: int
-              priority:
-                description: Priority for bridge domain.
-                type: int
-              root:
-                description: Configure switch as root.
-                type: dict
-                mutually_exclusive: [["primary", "secondary"]]
-                suboptions:
-                  primary:
-                    description: Configure primary root.
-                    type: dict
-                    suboptions:
-                      enable:
-                        description: Enable primary root.
-                        type: bool
-                      diameter:
-                        description: Priority for primary root.
-                        type: int
-                      hello_time:
-                        description: Configure secondary root.
-                        type: int
-                  secondary:
-                    description: Configure secondary root.
-                    type: dict
-                    suboptions:
-                      enable:
-                        description: Enable primary root.
-                        type: bool
-                      diameter:
-                        description: Priority for primary root.
-                        type: int
-                      hello_time:
-                        description: Configure secondary root.
-                        type: int
+      bridge_assurance:
+        description: Enable bridge assurance.
+        type: bool
       domain:
         description: Spanning tree domain options.
         type: dict
@@ -197,21 +142,6 @@ options:
         description: Configure spanning tree pseudo information
         type: dict
         suboptions:
-          bridge_domain_info:
-            description: Pseudo information bridge domain.
-            type: list
-            elements: dict
-            mutually_exclusive: [["designated", "root"]]
-            suboptions:
-              range:
-                description: Pseudo information bridge domain range.
-                type: str
-              designated_priority:
-                description: Pseudo information bridge domain designated priority.
-                type: int
-              root_priority:
-                description: Pseudo information bridge domain root priority.
-                type: int
           mst_info:
             description: Pseudo information MST.
             type: list
@@ -388,10 +318,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.spanning_tree_global.spanning_tree_global import (
     Spanning_tree_globalArgs,
 )
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.config.spanning_tree_global.spanning_tree_global import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.spanning_tree_global.spanning_tree_global import (
     Spanning_tree_global,
 )
 

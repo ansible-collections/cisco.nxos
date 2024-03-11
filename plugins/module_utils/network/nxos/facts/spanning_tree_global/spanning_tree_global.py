@@ -42,6 +42,21 @@ class Spanning_tree_globalFacts(object):
         summary = connection.get("show spanning-tree summary")
         general = connection.get("show running-config spanning-tree")
         return summary + general
+    
+    def _dict_to_list(self, objs):
+        """Convert a dict to a list of dicts
+        """
+        
+        mst_obj = objs.get("mst", {})
+        configure_mst_obj = mst_obj.get("configure_mst", {})
+        instance_vlan_obj = configure_mst_obj.get("instance_vlan", {})
+
+        if instance_vlan_obj:
+            objs["mst"]["configure_mst"]["instance_vlan"] = list(instance_vlan_obj.values())
+
+        if "vlan" in objs:
+            objs["vlan"] = list(objs["vlan"].values())
+        return objs
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Spanning_tree_global network resource
@@ -66,12 +81,14 @@ class Spanning_tree_globalFacts(object):
         )
         objs = spanning_tree_global_parser.parse()
 
+        facts_output = self._dict_to_list(objs)
+
         ansible_facts["ansible_network_resources"].pop("spanning_tree_global", None)
 
         params = utils.remove_empties(
             spanning_tree_global_parser.validate_config(
                 self.argument_spec,
-                {"config": objs},
+                {"config": facts_output},
                 redact=True,
             ),
         )

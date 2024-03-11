@@ -29,7 +29,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "bridge.bridge_assurance",
+            "name": "bridge_assurance",
             "getval": re.compile(
                 r"""
                 ^Bridge\sAssurance
@@ -38,155 +38,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             ),
             "setval": "spanning-tree bridge assurance",
             "result": {
-                "bridge": {
-                    "bridge_assurance": "{{ True if 'enabled' in is_enabled else False }}",
-                },
-            },
-        },
-        {
-            "name": "bridge.bridge_domain.forward_time",
-            "getval": re.compile(
-                r"""
-                ^spanning-tree\sbridge-domain
-                \s(?P<b_domain_range>\d+)
-                \sforward-time\s(?P<forward_time>\d+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "spanning-tree bridge-domain {{ bd_list_range }} forward-time {{ forward_time }}",
-            "result": {
-                "bridge": {
-                    "bridge_domain": {
-                        "{{ b_domain_range }}": {
-                            "bd_list_range": "{{ b_domain_range }}",
-                            "forward_time": "{{ forward_time }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "bridge.bridge_domain.hello_time",
-            "getval": re.compile(
-                r"""
-                ^spanning-tree\sbridge-domain
-                \s(?P<b_domain_range>\d+)
-                \shello-time\s(?P<hello_time>\d+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "spanning-tree bridge-domain {{ bd_list_range }} hello-time {{ hello_time }}",
-            "result": {
-                "bridge": {
-                    "bridge_domain": {
-                        "{{ b_domain_range }}": {
-                            "bd_list_range": "{{ b_domain_range }}",
-                            "hello_time": "{{ hello_time }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "bridge.bridge_domain.max_age",
-            "getval": re.compile(
-                r"""
-                ^spanning-tree\sbridge-domain
-                \s(?P<b_domain_range>\d+)
-                \smax-age\s(?P<max_age>\d+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "spanning-tree bridge-domain {{ bd_list_range }} max-age {{ max_age }}",
-            "result": {
-                "bridge": {
-                    "bridge_domain": {
-                        "{{ b_domain_range }}": {
-                            "bd_list_range": "{{ b_domain_range }}",
-                            "max_age": "{{ max_age }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "bridge.bridge_domain.priority",
-            "getval": re.compile(
-                r"""
-                ^spanning-tree\sbridge-domain
-                \s(?P<b_domain_range>\d+)
-                \spriority\s(?P<priority>\d+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "spanning-tree bridge-domain {{ bd_list_range }} priority {{ priority }}",
-            "result": {
-                "bridge": {
-                    "bridge_domain": {
-                        "{{ b_domain_range }}": {
-                            "bd_list_range": "{{ b_domain_range }}",
-                            "priority": "{{ priority }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "bridge.bridge_domain.root.primary",
-            "getval": re.compile(
-                r"""
-                ^spanning-tree\sbridge-domain
-                \s(?P<b_domain_range>\d+)
-                \sroot\sprimary
-                (\sdiameter\s(?P<diameter>\d+))?
-                (\shello-time\s(?P<hello_time>\d+))?
-                $""", re.VERBOSE,
-            ),
-            "setval": "spanning-tree bridge-domain {{ bd_list_range }}"
-                      " root primary"
-                      "{{ (' diameter ' + root.primary.diameter|string) if root.primary.diameter is defined else '' }}"
-                      "{{ (' hello-time ' + root.primary.hello_time|string) if root.primary.hello_time is defined else '' }}",
-            "result": {
-                "bridge": {
-                    "bridge_domain": {
-                        "{{ b_domain_range }}": {
-                            "bd_list_range": "{{ b_domain_range }}",
-                            "root": {
-                                "primary": {
-                                    "diameter": "{{ diameter }}",
-                                    "hello_time": "{{ hello_time }}",
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "bridge.bridge_domain.root.secondary",
-            "getval": re.compile(
-                r"""
-                ^spanning-tree\sbridge-domain
-                \s(?P<b_domain_range>\d+)
-                \sroot\ssecondary
-                (\sdiameter\s(?P<diameter>\d+))?
-                (\shello-time\s(?P<hello_time>\d+))?
-                $""", re.VERBOSE,
-            ),
-            "setval": "spanning-tree bridge-domain {{ bd_list_range }}"
-                      " root secondary"
-                      "{{ (' diameter ' + root.secondary.diameter|string) if root.secondary.diameter is defined else '' }}"
-                      "{{ (' hello-time ' + root.secondary.hello_time|string) if root.secondary.hello_time is defined else '' }}",
-            "result": {
-                "bridge": {
-                    "bridge_domain": {
-                        "{{ b_domain_range }}": {
-                            "bd_list_range": "{{ b_domain_range }}",
-                            "root": {
-                                "secondary": {
-                                    "diameter": "{{ diameter }}",
-                                    "hello_time": "{{ hello_time }}",
-                                },
-                            },
-                        },
-                    },
-                },
+                "bridge_assurance": "{{ True if 'enabled' in is_enabled else False }}",
             },
         },
         {
@@ -432,7 +284,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 r"""
                 ^\s+instance
                 \s(?P<instance_id>\d+)
-                \svlan\s(?P<vlan_range>\d+)
+                \svlan\s(?P<vlan_range>\S+)
                 $""", re.VERBOSE,
             ),
             "setval": "instance {{ instance_id }} vlan {{ vlan_range }}",
@@ -516,50 +368,6 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "pseudo_info.bridge_domain_info.designated_priority",
-            "getval": re.compile(
-                r"""
-                ^s+bridge-domain
-                \s(?P<range>\S+)
-                \sdesignated\spriority
-                \s(?P<designated_priority>\d+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "bridge-domain {{ bridge_domain_info.range }} designated priority {{ bridge_domain_info.designated_priority }}",
-            "result": {
-                "pseudo_info": {
-                    "bridge_domain_info": {
-                        "{{ range }}": {
-                            "range": "{{ range }}",
-                            "designated_priority": "{{ designated_priority }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "pseudo_info.bridge_domain_info.root_priority",
-            "getval": re.compile(
-                r"""
-                ^s+bridge-domain
-                \s(?P<range>\S+)
-                \sroot\spriority
-                \s(?P<root_priority>\d+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "bridge-domain {{ bridge_domain_info.range }} root priority {{ bridge_domain_info.root_priority }}",
-            "result": {
-                "pseudo_info": {
-                    "bridge_domain_info": {
-                        "{{ range }}": {
-                            "range": "{{ range }}",
-                            "root_priority": "{{ root_priority }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
             "name": "pseudo_info.mst_info.designated_priority",
             "getval": re.compile(
                 r"""
@@ -576,7 +384,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                             "range": "{{ range }}",
                             "designated_priority": "{{ designated_priority }}",
                         },
-                    },
+                    }
                 },
             },
         },
@@ -597,7 +405,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                             "range": "{{ range }}",
                             "root_priority": "{{ root_priority }}",
                         },
-                    },
+                    }
                 },
             },
         },
@@ -618,7 +426,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                             "range": "{{ range }}",
                             "designated_priority": "{{ designated_priority }}",
                         },
-                    },
+                    }
                 },
             },
         },
@@ -639,7 +447,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                             "range": "{{ range }}",
                             "root_priority": "{{ root_priority }}",
                         },
-                    },
+                    }
                 },
             },
         },
@@ -648,18 +456,18 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
-                \s(?P<vlan_range>\d+)
+                \s(?P<vlan_range>\S+)
                 \sforward-time\s(?P<forward_time>\d+)
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree vlan {{ vlan_range }} forward-time {{ forward_time }}",
             "result": {
                 "vlan": {
-                    "{{ vlan_range }}": {
+                    "{{ vlan_range | string }}": {
                         "vlan_range": "{{ vlan_range }}",
                         "forward_time": "{{ forward_time }}",
                     },
-                },
+                }, 
             },
         },
         {
@@ -667,18 +475,18 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
-                \s(?P<vlan_range>\d+)
+                \s(?P<vlan_range>\S+)
                 \shello-time\s(?P<hello_time>\d+)
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree vlan {{ vlan_range }} hello-time {{ hello_time }}",
             "result": {
                 "vlan": {
-                    "{{ vlan_range }}": {
+                    "{{ vlan_range | string }}": {
                         "vlan_range": "{{ vlan_range }}",
                         "hello_time": "{{ hello_time }}",
                     },
-                },
+                }, 
             },
         },
         {
@@ -686,18 +494,18 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
-                \s(?P<vlan_range>\d+)
+                \s(?P<vlan_range>\S+)
                 \smax-age\s(?P<max_age>\d+)
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree vlan {{ vlan_range }} max-age {{ max_age }}",
             "result": {
                 "vlan": {
-                    "{{ vlan_range }}": {
+                    "{{ vlan_range | string }}": {
                         "vlan_range": "{{ vlan_range }}",
                         "max_age": "{{ max_age }}",
                     },
-                },
+                }, 
             },
         },
         {
@@ -705,18 +513,18 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
-                \s(?P<vlan_range>\d+)
+                \s(?P<vlan_range>\S+)
                 \spriority\s(?P<priority>\d+)
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree vlan {{ vlan_range }} priority {{ priority }}",
             "result": {
                 "vlan": {
-                    "{{ vlan_range }}": {
-                        "vlan_range": "{{ vlan_range }}",
+                    "{{ vlan_range | string }}": {
+                        "vlan_range": "{{ vlan_range | string }}",
                         "priority": "{{ priority }}",
                     },
-                },
+                }, 
             },
         },
         {
@@ -724,7 +532,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
-                \s(?P<vlan_range>\d+)
+                \s(?P<vlan_range>\S+)
                 \sroot\sprimary
                 (\sdiameter\s(?P<diameter>\d+))?
                 (\shello-time\s(?P<hello_time>\d+))?
@@ -736,7 +544,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                       "{{ (' hello-time ' + root.primary.hello_time|string) if root.primary.hello_time is defined else '' }}",
             "result": {
                 "vlan": {
-                    "{{ vlan_range }}": {
+                    "{{ vlan_range | string }}": {
                         "vlan_range": "{{ vlan_range }}",
                         "root": {
                             "primary": {
@@ -753,7 +561,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
-                \s(?P<vlan_range>\d+)
+                \s(?P<vlan_range>\S+)
                 \sroot\ssecondary
                 (\sdiameter\s(?P<diameter>\d+))?
                 (\shello-time\s(?P<hello_time>\d+))?
@@ -765,7 +573,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                       "{{ (' hello-time ' + root.secondary.hello_time|string) if root.secondary.hello_time is defined else '' }}",
             "result": {
                 "vlan": {
-                    "{{ vlan_range }}": {
+                    "{{ vlan_range | string }}": {
                         "vlan_range": "{{ vlan_range }}",
                         "root": {
                             "secondary": {
