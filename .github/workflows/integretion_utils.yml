@@ -126,7 +126,7 @@ jobs:
         run: python${{ matrix.python-version }} -m pip install git+https://github.com/ansible-network/pytest-ansible-network-integration.git
 
       - name: echo secrets
-        run: echo ${ secrets.cml_ssh_password }}
+        run: echo ${{ secrets.cml_ssh_password }}
 
       - name: Run integration tests
         run: >-
