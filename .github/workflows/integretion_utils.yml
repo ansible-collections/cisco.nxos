@@ -112,6 +112,7 @@ jobs:
       - name: Build and install the collection
         uses: ansible-network/github_actions/.github/actions/build_install_collection@main
         with:
+          python-version: ${{ matrix.python-version }}
           install_python_dependencies: true
           source_path: ${{ env.source_directory }}
           collection_path: ${{ steps.identify.outputs.collection_path }}
