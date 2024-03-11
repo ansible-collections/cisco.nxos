@@ -138,7 +138,8 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                     "options": {
                         "bridge_domain_info": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "mutually_exclusive": [["designated", "root"]],
                             "options": {
                                 "range": {"type": "str"},
@@ -147,7 +148,8 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "mst_info": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "mutually_exclusive": [["designated", "root"]],
                             "options": {
                                 "range": {"type": "str"},
@@ -156,7 +158,8 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "vlan_info": {
-                            "type": "dict",
+                            "type": "list",
+                            "elements": "dict",
                             "mutually_exclusive": [["designated", "root"]],
                             "options": {
                                 "range": {"type": "str"},

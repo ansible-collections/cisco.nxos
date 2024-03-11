@@ -199,7 +199,8 @@ options:
         suboptions:
           bridge_domain_info:
             description: Pseudo information bridge domain.
-            type: dict
+            type: list
+            elements: dict
             mutually_exclusive: [["designated", "root"]]
             suboptions:
               range:
@@ -213,7 +214,8 @@ options:
                 type: int
           mst_info:
             description: Pseudo information MST.
-            type: dict
+            type: list
+            elements: dict
             mutually_exclusive: [["designated", "root"]]
             suboptions:
               range:
@@ -227,7 +229,8 @@ options:
                 type: int
           vlan_info:
             description: Pseudo information MST.
-            type: dict
+            type: list
+            elements: dict
             mutually_exclusive: [["designated", "root"]]
             suboptions:
               range:

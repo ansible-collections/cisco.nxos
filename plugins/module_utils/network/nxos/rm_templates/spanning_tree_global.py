@@ -44,31 +44,84 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "bridge.bridge_domain",
+            "name": "bridge.bridge_domain.forward_time",
             "getval": re.compile(
                 r"""
                 ^spanning-tree\sbridge-domain
                 \s(?P<b_domain_range>\d+)
-                (\sforward-time\s(?P<forward_time>\d+))?
-                (\shello-time\s(?P<hello_time>\d+))?
-                (\smax-age\s(?P<max_age>\d+))?
-                (\spriority\s(?P<priority>\d+))?
+                \sforward-time\s(?P<forward_time>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree bridge-domain {{ bd_list_range }}"
-                      "{{ (' forward-time ' + forward_time|string) if forward_time is defined else '' }}"
-                      "{{ (' hello-time ' + hello_time|string) if hello_time is defined else '' }}"
-                      "{{ (' max-age ' + max_age|string) if max_age is defined else '' }}"
-                      "{{ (' priority ' + priority|string) if priority is defined else ''}}",
+            "setval": "spanning-tree bridge-domain {{ bd_list_range }} forward-time {{ forward_time }}",
             "result": {
                 "bridge": {
                     "bridge_domain": {
                         "{{ b_domain_range }}": {
                             "bd_list_range": "{{ b_domain_range }}",
-                            "forward_time": "{{ forward_time }}",
-                            "hello_time": "{{ hello_time }}",
-                            "max_age": "{{ max_age }}",
-                            "priority": "{{ priority }}",
+                            "forward_time": "{{ forward_time }}"
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "bridge.bridge_domain.hello_time",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\sbridge-domain
+                \s(?P<b_domain_range>\d+)
+                \shello-time\s(?P<hello_time>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bridge-domain {{ bd_list_range }} hello-time {{ hello_time }}",
+            "result": {
+                "bridge": {
+                    "bridge_domain": {
+                        "{{ b_domain_range }}": {
+                            "bd_list_range": "{{ b_domain_range }}",
+                            "hello_time": "{{ hello_time }}"
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "bridge.bridge_domain.max_age",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\sbridge-domain
+                \s(?P<b_domain_range>\d+)
+                \smax-age\s(?P<max_age>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bridge-domain {{ bd_list_range }} max-age {{ max_age }}",
+            "result": {
+                "bridge": {
+                    "bridge_domain": {
+                        "{{ b_domain_range }}": {
+                            "bd_list_range": "{{ b_domain_range }}",
+                            "max_age": "{{ max_age }}"
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "bridge.bridge_domain.priority",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\sbridge-domain
+                \s(?P<b_domain_range>\d+)
+                \spriority\s(?P<priority>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bridge-domain {{ bd_list_range }} priority {{ priority }}",
+            "result": {
+                "bridge": {
+                    "bridge_domain": {
+                        "{{ b_domain_range }}": {
+                            "bd_list_range": "{{ b_domain_range }}",
+                            "priority": "{{ priority }}"
                         },
                     },
                 },
@@ -382,7 +435,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 \svlan\s(?P<vlan_range>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "private-vlan synchronize",
+            "setval": "instance {{ instance_id }} vlan {{ vlan_range }}",
             "result": {
                 "mst": {
                     "configure_mst": {
@@ -407,6 +460,321 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "setval": "spanning-tree pathcost method {{ pathcost_method }}",
             "result": {
                 "pathcost_method": "{{ pc_method }}",
+            },
+        },
+        {
+            "name": "port_type.edge.bpdufilter",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree
+                \sport\stype\sedge
+                \sbpdufilter\s(?P<bpdufilter>default)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree port type edge bpdufilter default",
+            "result": {
+                "port_type": {
+                    "edge": {
+                        "bpdufilter": "{{ True if bpdufilter is defined else False }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "port_type.edge.bpduguard",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree
+                \sport\stype\sedge
+                \sbpduguard\s(?P<bpduguard>default)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree port type edge bpduguard default",
+            "result": {
+                "port_type": {
+                    "edge": {
+                        "bpduguard": "{{ True if bpduguard is defined else False }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "port_type.default_type",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree
+                \sport\stype
+                \s(?P<default_type>edge|network)
+                \sdefault
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree port type {{ default_type }} default",
+            "result": {
+                "port_type": {
+                    "default_type": "{{ default_type }}",
+                },
+            },
+        },
+        {
+            "name": "pseudo_info.bridge_domain_info.designated_priority",
+            "getval": re.compile(
+                r"""
+                ^s+bridge-domain
+                \s(?P<range>\S+)
+                \sdesignated\spriority
+                \s(?P<designated_priority>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "bridge-domain {{ bridge_domain_info.range }} designated priority {{ bridge_domain_info.designated_priority }}",
+            "result": {
+                "pseudo_info": {
+                    "bridge_domain_info": {
+                        "{{ range }}": {
+                            "range": "{{ range }}",
+                            "designated_priority": "{{ designated_priority }}",
+                        },
+                    }
+                },
+            },
+        },
+        {
+            "name": "pseudo_info.bridge_domain_info.root_priority",
+            "getval": re.compile(
+                r"""
+                ^s+bridge-domain
+                \s(?P<range>\S+)
+                \sroot\spriority
+                \s(?P<root_priority>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "bridge-domain {{ bridge_domain_info.range }} root priority {{ bridge_domain_info.root_priority }}",
+            "result": {
+                "pseudo_info": {
+                    "bridge_domain_info": {
+                        "{{ range }}": {
+                            "range": "{{ range }}",
+                            "root_priority": "{{ root_priority }}",
+                        },
+                    }
+                },
+            },
+        },
+        {
+            "name": "pseudo_info.mst_info.designated_priority",
+            "getval": re.compile(
+                r"""
+                ^s+mst\s(?P<range>\S+)
+                \sdesignated\spriority
+                \s(?P<designated_priority>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "mst {{ mst_info.range }} designated priority {{ mst_info.designated_priority }}",
+            "result": {
+                "pseudo_info": {
+                    "mst_info": {
+                        "{{ range }}": {
+                            "range": "{{ range }}",
+                            "designated_priority": "{{ designated_priority }}",
+                        },
+                    }
+                },
+            },
+        },
+        {
+            "name": "pseudo_info.mst_info.root_priority",
+            "getval": re.compile(
+                r"""
+                ^s+mst\s(?P<range>\S+)
+                \sroot\spriority
+                \s(?P<root_priority>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "mst {{ mst_info.range }} root priority {{ mst_info.root_priority }}",
+            "result": {
+                "pseudo_info": {
+                    "mst_info": {
+                        "{{ range }}": {
+                            "range": "{{ range }}",
+                            "root_priority": "{{ root_priority }}",
+                        },
+                    }
+                },
+            },
+        },
+        {
+            "name": "pseudo_info.vlan_info.designated_priority",
+            "getval": re.compile(
+                r"""
+                ^s+vlan\s(?P<range>\S+)
+                \sdesignated\spriority
+                \s(?P<designated_priority>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "vlan {{ vlan_info.range }} designated priority {{ vlan_info.designated_priority }}",
+            "result": {
+                "pseudo_info": {
+                    "vlan_info": {
+                        "{{ range }}": {
+                            "range": "{{ range }}",
+                            "designated_priority": "{{ designated_priority }}",
+                        },
+                    }
+                },
+            },
+        },
+        {
+            "name": "pseudo_info.vlan_info.root_priority",
+            "getval": re.compile(
+                r"""
+                ^s+vlan\s(?P<range>\S+)
+                \sroot\spriority
+                \s(?P<root_priority>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "vlan {{ vlan_info.range }} root priority {{ vlan_info.root_priority }}",
+            "result": {
+                "pseudo_info": {
+                    "vlan_info": {
+                        "{{ range }}": {
+                            "range": "{{ range }}",
+                            "root_priority": "{{ root_priority }}",
+                        },
+                    }
+                },
+            },
+        },
+        {
+            "name": "vlan.forward_time",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\svlan
+                \s(?P<vlan_range>\d+)
+                \sforward-time\s(?P<forward_time>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree vlan {{ vlan_range }} forward-time {{ forward_time }}",
+            "result": {
+                "vlan": {
+                    "{{ vlan_range }}": {
+                        "vlan_range": "{{ vlan_range }}",
+                        "forward_time": "{{ forward_time }}",
+                    },
+                }, 
+            },
+        },
+        {
+            "name": "vlan.hello_time",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\svlan
+                \s(?P<vlan_range>\d+)
+                \shello-time\s(?P<hello_time>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree vlan {{ vlan_range }} hello-time {{ hello_time }}",
+            "result": {
+                "vlan": {
+                    "{{ vlan_range }}": {
+                        "vlan_range": "{{ vlan_range }}",
+                        "hello_time": "{{ hello_time }}",
+                    },
+                }, 
+            },
+        },
+        {
+            "name": "vlan.max_age",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\svlan
+                \s(?P<vlan_range>\d+)
+                \smax-age\s(?P<max_age>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree vlan {{ vlan_range }} max-age {{ max_age }}",
+            "result": {
+                "vlan": {
+                    "{{ vlan_range }}": {
+                        "vlan_range": "{{ vlan_range }}",
+                        "max_age": "{{ max_age }}",
+                    },
+                }, 
+            },
+        },
+        {
+            "name": "vlan.priority",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\svlan
+                \s(?P<vlan_range>\d+)
+                \spriority\s(?P<priority>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree vlan {{ vlan_range }} priority {{ priority }}",
+            "result": {
+                "vlan": {
+                    "{{ vlan_range }}": {
+                        "vlan_range": "{{ vlan_range }}",
+                        "priority": "{{ priority }}",
+                    },
+                }, 
+            },
+        },
+        {
+            "name": "vlan.root.primary",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\svlan
+                \s(?P<vlan_range>\d+)
+                \sroot\sprimary
+                (\sdiameter\s(?P<diameter>\d+))?
+                (\shello-time\s(?P<hello_time>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree vlan {{ vlan_range }}"
+                      " root primary"
+                      "{{ (' diameter ' + root.primary.diameter|string) if root.primary.diameter is defined else '' }}"
+                      "{{ (' hello-time ' + root.primary.hello_time|string) if root.primary.hello_time is defined else '' }}",
+            "result": {
+                "vlan": {
+                    "{{ vlan_range }}": {
+                        "vlan_range": "{{ vlan_range }}",
+                        "root": {
+                            "primary": {
+                                "diameter": "{{ diameter }}",
+                                "hello_time": "{{ hello_time }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "vlan.root.secondary",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\svlan
+                \s(?P<vlan_range>\d+)
+                \sroot\ssecondary
+                (\sdiameter\s(?P<diameter>\d+))?
+                (\shello-time\s(?P<hello_time>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree vlan {{ vlan_range }}"
+                      " root secondary"
+                      "{{ (' diameter ' + root.secondary.diameter|string) if root.secondary.diameter is defined else '' }}"
+                      "{{ (' hello-time ' + root.secondary.hello_time|string) if root.secondary.hello_time is defined else '' }}",
+            "result": {
+                "vlan": {
+                    "{{ vlan_range }}": {
+                        "vlan_range": "{{ vlan_range }}",
+                        "root": {
+                            "secondary": {
+                                "diameter": "{{ diameter }}",
+                                "hello_time": "{{ hello_time }}",
+                            },
+                        },
+                    },
+                },
             },
         },
     ]
