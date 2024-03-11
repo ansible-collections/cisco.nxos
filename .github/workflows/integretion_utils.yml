@@ -58,7 +58,7 @@ jobs:
     name: "py${{ matrix.python-version }} / ${{ matrix.ansible-version }} / ${{ matrix.dependency-source }}"
     steps:
       - name: Checkout the collection repository
-        uses: ./.github/actions/checkout_dependency/
+        uses: ansible-network/github_actions/.github/actions/checkout_dependency@main
         with:
           path: ${{ env.source_directory }}
           ref: ${{ github.event.pull_request.head.sha }}
