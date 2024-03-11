@@ -1,6 +1,5 @@
 name: Integration tests
 on:
-
   workflow_call:
     inputs:
       collection_pre_install:
@@ -33,26 +32,26 @@ on:
 
 jobs:
   integration:
-    # env:
-    #   PY_COLORS: "1"
-    #   source_directory: "./source"
-    #   dependency_directory: "./dependency"
+    env:
+      PY_COLORS: "1"
+      source_directory: "./source"
+      dependency_directory: "./dependency"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         ansible-version:
           # - stable-2.9
-          # - stable-2.13
+          - stable-2.13
           # - stable-2.14
-           - stable-2.15
+          # - stable-2.15
           # - milestone
           # - devel
         python-version:
           # - "3.8"
           # - "3.9"
           # - "3.10"
-          - "3.11"
+           - "3.11"
         dependency-source:
           - github
 
@@ -66,7 +65,7 @@ jobs:
           fetch-depth: "0"
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
