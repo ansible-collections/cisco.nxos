@@ -176,21 +176,23 @@ options:
       port_type:
         description: Spanning tree port type.
         type: dict
-        mutually_exclusive: [["edge", "network", "default"]]
         suboptions:
           edge:
-            description: Enable edge port type.
+            description: Configure edge port type.
+            type: dict
+            suboptions:
+              bpdufilter:
+                description: Enable edge bpdufilter.
+                type: bool
+              bpduguard:
+                description: Enable edge bpduguard.
+                type: bool
+          default_type:
+            description: Select default port type.
             type: str
             choices:
-              - bpdufilter
-              - bpduguard
-              - default
-          network:
-            description: Enable network port type.
-            type: bool
-          default:
-            description: Enable default port type.
-            type: bool
+              - network
+              - edge
       pseudo_info:
         description: Configure spanning tree pseudo information
         type: dict

@@ -123,14 +123,15 @@ class Spanning_tree_globalArgs(object):  # pylint: disable=R0903
                 "pathcost_method": {"type": "str", "choices": ["long", "short"]},
                 "port_type": {
                     "type": "dict",
-                    "mutually_exclusive": [["edge", "network", "default"]],
                     "options": {
                         "edge": {
-                            "type": "str",
-                            "choices": ["bpdufilter", "bpduguard", "default"],
+                            "type": "dict",
+                            "options": {
+                                "bpduguard": {"type": "bool"},
+                                "bpdufilter": {"type": "bool"},
+                            },
                         },
-                        "network": {"type": "bool"},
-                        "default": {"type": "bool"},
+                        "default_type": {"type": "str", "choices": ["edge", "network"]},
                     },
                 },
                 "pseudo_info": {
