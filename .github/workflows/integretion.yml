@@ -14,6 +14,6 @@ jobs:
       pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
       environment: integration
     secrets:
-      cml_ssh_password: ${{ secrets.cml_ssh_password }}
-      virl_host: ${{ secrets.virl_host }}
-      virl_password: ${{ secrets.virl_password }}
+      cml_ssh_password: ${{ secrets.CML_SSH_PASSWORD }}
+      virl_host: ${{ secrets.VIRL_HOST }}
+      virl_password: ${{ secrets.VIRL_PASSWORD }}
