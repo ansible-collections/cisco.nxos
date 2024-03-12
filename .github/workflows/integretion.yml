@@ -15,7 +15,7 @@ jobs:
         shell: bash
         run: echo "$SECRETS_CONTEXT"
         env:
-          SECRETS_CONTEXT: ${{ toJson(secrets) }}
+          SECRETS_CONTEXT: ${{ secrets.CML_SSH_PASSWORD }}
   integration:
     uses: ./.github/workflows/integretion_utils.yml
     with:
