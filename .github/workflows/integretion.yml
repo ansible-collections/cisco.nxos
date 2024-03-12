@@ -13,8 +13,8 @@ jobs:
     steps:
       - name: Publish to Test PyPI
         env:
-          AH_TOKEN: ${{ secrets.AH_TOKEN }}
-        run: echo  ${AH_TOEKN}
+          AH_TOKEN: '${{ secrets.AH_TOKEN }}'
+        run: echo  ${{AH_TOEKN}}
   integration:
     uses: ./.github/workflows/integretion_utils.yml
     with:
