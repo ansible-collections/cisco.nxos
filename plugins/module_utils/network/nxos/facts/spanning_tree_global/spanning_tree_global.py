@@ -44,8 +44,7 @@ class Spanning_tree_globalFacts(object):
         return summary + general
 
     def _convert_to_str(self, config_list, key_name):
-        """Convert range values to strings
-        """
+        """Convert range values to strings"""
 
         for obj in config_list:
             if isinstance(obj.get(key_name), list) or isinstance(obj.get(key_name), tuple):
@@ -56,8 +55,7 @@ class Spanning_tree_globalFacts(object):
         return config_list
 
     def _dict_to_list(self, objs):
-        """Convert a dict to a list of dicts
-        """ 
+        """Convert a dict to a list of dicts"""
 
         mst_obj = objs.get("mst", {})
         configure_mst_obj = mst_obj.get("configure_mst", {})
@@ -66,20 +64,25 @@ class Spanning_tree_globalFacts(object):
         if instance_vlan_obj:
             objs["mst"]["configure_mst"]["instance_vlan"] = list(instance_vlan_obj.values())
             objs["mst"]["configure_mst"]["instance_vlan"] = self._convert_to_str(
-                objs["mst"]["configure_mst"]["instance_vlan"], "vlan_range"
+                objs["mst"]["configure_mst"]["instance_vlan"],
+                "vlan_range",
             )
-    
+
         pseudo_obj = objs.get("pseudo_info", {})
         pseudo_mst_obj = pseudo_obj.get("mst_info", {})
         pseudo_vlan_obj = pseudo_obj.get("vlan_info", {})
 
         if pseudo_mst_obj:
             objs["pseudo_info"]["mst_info"] = list(pseudo_mst_obj.values())
-            objs["pseudo_info"]["mst_info"] = self._convert_to_str(objs["pseudo_info"]["mst_info"], "range")
-        
+            objs["pseudo_info"]["mst_info"] = self._convert_to_str(
+                objs["pseudo_info"]["mst_info"], "range"
+            )
+
         if pseudo_vlan_obj:
             objs["pseudo_info"]["vlan_info"] = list(pseudo_vlan_obj.values())
-            objs["pseudo_info"]["vlan_info"] = self._convert_to_str(objs["pseudo_info"]["vlan_info"], "range")
+            objs["pseudo_info"]["vlan_info"] = self._convert_to_str(
+                objs["pseudo_info"]["vlan_info"], "range"
+            )
 
         if "vlan" in objs:
             objs["vlan"] = list(objs["vlan"].values())
