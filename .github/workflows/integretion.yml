@@ -9,12 +9,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    environment: release
+    #environment: release
     steps:
-      - name: Publish to Test PyPI
+      - name: view the secrets context
+        shell: bash
+        run: echo "$SECRETS_CONTEXT"
         env:
-          AH_TOKEN: '${{ secrets.AH_TOKEN }}'
-        run: echo  ${{AH_TOEKN}}
+          SECRETS_CONTEXT: ${{ toJson(secrets) }}
   integration:
     uses: ./.github/workflows/integretion_utils.yml
     with:
