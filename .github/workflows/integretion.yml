@@ -12,8 +12,9 @@ jobs:
     with:
       network_os: cisco.nxos.nxos
       pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
+      environment: integretion
 
     secrets:
-      cml_ssh_password: abc
-      virl_host: ${{ secrets.VIRL_HOST }}
-      virl_password: pqr
+      cml_ssh_password: ${{ secrets.cml_ssh_password }}
+      virl_host: ${{ secrets.virl_host }}
+      virl_password: ${{ secrets.virl_password }}
