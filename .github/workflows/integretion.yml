@@ -11,7 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     steps:
-      - run: echo  ${{ secrets.AH_TOKEN }}
+      - name: Publish to Test PyPI
+        env:
+          AH_TOKEN: ${{ secrets.AH_TOKEN }}
+        run: echo  ${AH_TOEKN}
   integration:
     uses: ./.github/workflows/integretion_utils.yml
     with:
