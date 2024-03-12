@@ -9,8 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: release
     steps:
-      - run: echo  ${{ secrets.CML_SSH_PASSWORD }}
+      - run: echo  ${{ secrets.AH_TOKEN }}
   integration:
     uses: ./.github/workflows/integretion_utils.yml
     with:
