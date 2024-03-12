@@ -294,7 +294,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                         "instance_vlan": {
                             "{{ instance_id }}": {
                                 "instance_id": "{{ instance_id }}",
-                                "vlan_range": "{{ vlan_range }}",
+                                "vlan_range": "{{ vlan_range | string }}",
                             },
                         },
                     },
@@ -371,7 +371,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "name": "pseudo_info.mst_info.designated_priority",
             "getval": re.compile(
                 r"""
-                ^s+mst\s(?P<range>\S+)
+                ^\s+mst\s(?P<range>\S+)
                 \sdesignated\spriority
                 \s(?P<designated_priority>\d+)
                 $""", re.VERBOSE,
@@ -384,7 +384,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                             "range": "{{ range }}",
                             "designated_priority": "{{ designated_priority }}",
                         },
-                    },
+                    }
                 },
             },
         },
@@ -392,7 +392,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "name": "pseudo_info.mst_info.root_priority",
             "getval": re.compile(
                 r"""
-                ^s+mst\s(?P<range>\S+)
+                ^\s+mst\s(?P<range>\S+)
                 \sroot\spriority
                 \s(?P<root_priority>\d+)
                 $""", re.VERBOSE,
@@ -405,7 +405,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                             "range": "{{ range }}",
                             "root_priority": "{{ root_priority }}",
                         },
-                    },
+                    }
                 },
             },
         },
@@ -413,7 +413,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "name": "pseudo_info.vlan_info.designated_priority",
             "getval": re.compile(
                 r"""
-                ^s+vlan\s(?P<range>\S+)
+                ^\s+vlan\s(?P<range>\S+)
                 \sdesignated\spriority
                 \s(?P<designated_priority>\d+)
                 $""", re.VERBOSE,
@@ -426,7 +426,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                             "range": "{{ range }}",
                             "designated_priority": "{{ designated_priority }}",
                         },
-                    },
+                    }
                 },
             },
         },
@@ -434,7 +434,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "name": "pseudo_info.vlan_info.root_priority",
             "getval": re.compile(
                 r"""
-                ^s+vlan\s(?P<range>\S+)
+                ^\s+vlan\s(?P<range>\S+)
                 \sroot\spriority
                 \s(?P<root_priority>\d+)
                 $""", re.VERBOSE,
@@ -447,7 +447,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                             "range": "{{ range }}",
                             "root_priority": "{{ root_priority }}",
                         },
-                    },
+                    }
                 },
             },
         },
@@ -464,10 +464,10 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "result": {
                 "vlan": {
                     "{{ vlan_range | string }}": {
-                        "vlan_range": "{{ vlan_range }}",
+                        "vlan_range": "{{ vlan_range | string }}",
                         "forward_time": "{{ forward_time }}",
                     },
-                },
+                }, 
             },
         },
         {
@@ -483,10 +483,10 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "result": {
                 "vlan": {
                     "{{ vlan_range | string }}": {
-                        "vlan_range": "{{ vlan_range }}",
+                        "vlan_range": "{{ vlan_range | string }}",
                         "hello_time": "{{ hello_time }}",
                     },
-                },
+                }, 
             },
         },
         {
@@ -502,10 +502,10 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "result": {
                 "vlan": {
                     "{{ vlan_range | string }}": {
-                        "vlan_range": "{{ vlan_range }}",
+                        "vlan_range": "{{ vlan_range | string }}",
                         "max_age": "{{ max_age }}",
                     },
-                },
+                }, 
             },
         },
         {
@@ -524,7 +524,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                         "vlan_range": "{{ vlan_range | string }}",
                         "priority": "{{ priority }}",
                     },
-                },
+                }, 
             },
         },
         {
@@ -545,7 +545,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "result": {
                 "vlan": {
                     "{{ vlan_range | string }}": {
-                        "vlan_range": "{{ vlan_range }}",
+                        "vlan_range": "{{ vlan_range | string }}",
                         "root": {
                             "primary": {
                                 "diameter": "{{ diameter }}",
@@ -574,7 +574,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "result": {
                 "vlan": {
                     "{{ vlan_range | string }}": {
-                        "vlan_range": "{{ vlan_range }}",
+                        "vlan_range": "{{ vlan_range | string }}",
                         "root": {
                             "secondary": {
                                 "diameter": "{{ diameter }}",
