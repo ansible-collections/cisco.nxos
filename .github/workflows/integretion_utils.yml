@@ -21,10 +21,6 @@ on:
         default: ""
         required: false
         type: string
-      environment:
-        description: The deployment environment
-        required: true
-        type: string
 
     secrets:
       cml_ssh_password:
@@ -36,7 +32,6 @@ on:
 
 jobs:
   integration:
-    environment: "${{ inputs.environment }}"
     env:
       PY_COLORS: "1"
       source_directory: "./source"
@@ -132,7 +127,7 @@ jobs:
         run: python${{ matrix.python-version }} -m pip install git+https://github.com/ansible-network/pytest-ansible-network-integration.git
 
       - name: echo secrets
-        run: echo ${{ secrets.cml_ssh_password }}
+        run: echo "${{ secrets.cml_ssh_password }}"
 
       - name: Run integration tests
         run: >-
