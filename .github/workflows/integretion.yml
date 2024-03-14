@@ -9,8 +9,7 @@ on:
 jobs:
   safe-to-test:
     if: >-
-      github.event.label.name == 'safe to test' ||
-      github.event.action != 'labeled'
+      github.event.label.name != 'safe to test'
     uses: ansible-network/github_actions/.github/workflows/safe-to-test.yml@main
     secrets:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
