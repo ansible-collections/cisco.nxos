@@ -1,22 +1,22 @@
 name: Integration
 on:
-  push:
+  pull_request_target:
     branches: [main]
-  pull_request:
-    branches: [main]
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
   workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    #environment: release
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Access repository secret
-        run: echo "The value of MY_SECRET is ${{ secrets.CML_SSH_PASSWORD }}"
-
+  safe-to-test:
+    if: >-
+      github.event.label.name == 'safe to test' ||
+      github.event.action != 'labeled'
+    uses: ansible-network/github_actions/.github/workflows/safe-to-test.yml@main
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   integration:
     uses: ./.github/workflows/integretion_utils.yml
@@ -27,3 +27,5 @@ jobs:
       CML_SSH_PASSWORD: ${{ secrets.CML_SSH_PASSWORD }}
       VIRL_HOST: ${{ secrets.VIRL_HOST }}
       VIRL_PASSWORD: ${{ secrets.VIRL_PASSWORD }}
+    needs:
+      - safe-to-test
