@@ -1,12 +1,9 @@
 name: Integration
 on:
-  pull_request_target:
+  push:
     branches: [main]
-    types:
-      - labeled
-      - opened
-      - reopened
-      - synchronize
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -27,5 +24,3 @@ jobs:
       CML_SSH_PASSWORD: ${{ secrets.CML_SSH_PASSWORD }}
       VIRL_HOST: ${{ secrets.VIRL_HOST }}
       VIRL_PASSWORD: ${{ secrets.VIRL_PASSWORD }}
-    needs:
-      - safe-to-test
