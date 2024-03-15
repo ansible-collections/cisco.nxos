@@ -91,7 +91,6 @@ class Spanning_tree_global(ResourceModule):
             "vlan_info.root_priority",
         ]
 
-
     def execute_module(self):
         """Execute the module
 
@@ -130,7 +129,6 @@ class Spanning_tree_global(ResourceModule):
         self._vlans_compare(want=want, have=have)
         self._compare_pesudo_info_items(want=want, have=have)
 
-
     def _compare_pesudo_info_items(self, want, have):
         begin = len(self.commands)
         for ty in ["mst_info", "vlan_info"]:
@@ -140,17 +138,18 @@ class Spanning_tree_global(ResourceModule):
                 inner_want = {ty: v}
                 inner_have = {ty: i_have.pop(k, {})}
                 self._complex_compare(
-                    want=inner_want, 
+                    want=inner_want,
                     have=inner_have,
-                    parserlist=self.pseudo_info_parsers
+                    parserlist=self.pseudo_info_parsers,
                 )
             for k, v in iteritems(i_have):
                 inner_have = {ty: v}
                 self._complex_compare(
-                    parserlist=self.pseudo_info_parsers, 
-                    want={}, have=inner_have
+                    parserlist=self.pseudo_info_parsers,
+                    want={},
+                    have=inner_have,
                 )
-        
+
         if begin != len(self.commands):
             self.commands.insert(begin, "spanning-tree pseudo-information")
 
@@ -159,14 +158,15 @@ class Spanning_tree_global(ResourceModule):
         hareas = have.get("vlan", {})
         for name, entry in iteritems(wareas):
             self._complex_compare(
-                want=entry, 
-                have=hareas.pop(name, {}), 
-                parserlist=self.vlan_parsers
+                want=entry,
+                have=hareas.pop(name, {}),
+                parserlist=self.vlan_parsers,
             )
         for name, entry in iteritems(hareas):
             self._complex_compare(
-                want={}, have=entry, 
-                parserlist=self.vlan_parsers
+                want={},
+                have=entry,
+                parserlist=self.vlan_parsers,
             )
 
     def _complex_compare(self, want, have, parserlist):
@@ -178,14 +178,21 @@ class Spanning_tree_global(ResourceModule):
             "vlan": "vlan_range",
             "mst_info": "range",
             "vlan_info": "range",
-            "instance_vlan": "vlan_range"
+            "instance_vlan": "vlan_range",
         }
         tmp_data = deepcopy(data)
         for k, _v in p_key.items():
             if k in tmp_data and k == "vlan":
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             if tmp_data.get("pseudo_info", {}).get(k) and k in ["mst_info", "vlan_info"]:
-                tmp_data["pseudo_info"][k] = {str(i[p_key[k]]): i for i in tmp_data["pseudo_info"][k]}
-            if tmp_data.get("mst", {}).get("configure_mst", {}).get("instance_vlan", {}) and k == "instance_vlan":
-                tmp_data["mst"]["configure_mst"][k] = {str(i[p_key[k]]): i for i in tmp_data["mst"]["configure_mst"][k]}
+                tmp_data["pseudo_info"][k] = {
+                    str(i[p_key[k]]): i for i in tmp_data["pseudo_info"][k]
+                }
+            if (
+                tmp_data.get("mst", {}).get("configure_mst", {}).get("instance_vlan", {})
+                and k == "instance_vlan"
+            ):
+                tmp_data["mst"]["configure_mst"][k] = {
+                    str(i[p_key[k]]): i for i in tmp_data["mst"]["configure_mst"][k]
+                }
         return tmp_data

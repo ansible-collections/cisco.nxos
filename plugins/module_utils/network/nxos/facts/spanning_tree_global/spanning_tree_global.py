@@ -75,13 +75,15 @@ class Spanning_tree_globalFacts(object):
         if pseudo_mst_obj:
             objs["pseudo_info"]["mst_info"] = list(pseudo_mst_obj.values())
             objs["pseudo_info"]["mst_info"] = self._convert_to_str(
-                objs["pseudo_info"]["mst_info"], "range"
+                objs["pseudo_info"]["mst_info"],
+                "range",
             )
 
         if pseudo_vlan_obj:
             objs["pseudo_info"]["vlan_info"] = list(pseudo_vlan_obj.values())
             objs["pseudo_info"]["vlan_info"] = self._convert_to_str(
-                objs["pseudo_info"]["vlan_info"], "range"
+                objs["pseudo_info"]["vlan_info"],
+                "range",
             )
 
         if "vlan" in objs:

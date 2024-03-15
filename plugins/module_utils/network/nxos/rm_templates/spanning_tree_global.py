@@ -377,7 +377,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree pseudo-information",
-            "result": {}
+            "result": {},
         },
         {
             "name": "mst_info.designated_priority",
