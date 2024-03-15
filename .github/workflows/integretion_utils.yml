@@ -129,6 +129,15 @@ jobs:
       - name: echo secrets
         run: echo "${{ secrets.cml_ssh_password }}"
 
+      - name: Clear current lab id if any 
+        run: 'cml clear'
+        continue-on-error: true
+        env:
+          CML_VERIFY_CERT: False
+          VIRL_HOST: ${{ secrets.virl_host }}
+          VIRL_PASSWORD: ${{ secrets.virl_password }}
+          VIRL_USERNAME: admin
+
       - name: Run integration tests
         run: >-
           python${{ matrix.python-version }} -m pytest tests/integration
