@@ -38,18 +38,18 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             ),
             "setval": "spanning-tree bridge assurance",
             "result": {
-                "bridge_assurance": "{{ True if 'enabled' in is_enabled else False }}",
+                "bridge_assurance": "{{ True if 'enabled' in is_enabled else None }}",
             },
         },
         {
             "name": "domain.identifier",
             "getval": re.compile(
                 r"""
-                ^spanning-tree\domain
+                ^spanning-tree\sdomain
                 \s(?P<identifier>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree domain {{ identifier }}",
+            "setval": "spanning-tree domain {{ domain.identifier }}",
             "result": {
                 "domain": {
                     "identifier": "{{ identifier }}",
@@ -60,14 +60,14 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "name": "domain.disable",
             "getval": re.compile(
                 r"""
-                ^spanning-tree\domain
+                ^spanning-tree\sdomain
                 \s(?P<disable>disable)
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree domain disable",
             "result": {
                 "domain": {
-                    "disable": "{{ True if disable is defined else False }}",
+                    "disable": "{{ True }}",
                 },
             },
         },
@@ -75,14 +75,14 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "name": "domain.enable",
             "getval": re.compile(
                 r"""
-                ^spanning-tree\domain
+                ^spanning-tree\sdomain
                 \s(?P<enable>enable)
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree domain enable",
             "result": {
                 "domain": {
-                    "enable": "{{ True if enable is defined else False }}",
+                    "enable": "{{ True }}",
                 },
             },
         },
@@ -90,14 +90,14 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "name": "domain.clear_stats",
             "getval": re.compile(
                 r"""
-                ^spanning-tree\domain
-                \s(?P<clear>clear\sstatistics)
+                ^spanning-tree\sdomain
+                \sclear\s(?P<clear>statistics)
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree domain enable",
             "result": {
                 "domain": {
-                    "clear_stats": "{{ True if clear is defined else False }}",
+                    "clear_stats": "{{ True }}",
                 },
             },
         },
@@ -137,7 +137,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             ),
             "setval": "spanning-tree loopguard default",
             "result": {
-                "loopguard_default": "{{ True if 'enabled' in is_enabled else False }}",
+                "loopguard_default": "{{ True if 'enabled' in is_enabled else None }}",
             },
         },
         {
@@ -163,7 +163,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 \sforward-time\s(?P<forward_time>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree mst forward-time {{ forward_time }}",
+            "setval": "spanning-tree mst forward-time {{ mst.forward_time }}",
             "result": {
                 "mst": {
                     "forward_time": "{{ forward_time }}",
@@ -178,7 +178,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 \shello-time\s(?P<hello_time>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree mst hello-time {{ hello_time }}",
+            "setval": "spanning-tree mst hello-time {{ mst.hello_time }}",
             "result": {
                 "mst": {
                     "hello_time": "{{ hello_time }}",
@@ -193,7 +193,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 \smax-age\s(?P<max_age>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree mst max-age {{ max_age }}",
+            "setval": "spanning-tree mst max-age {{ mst.max_age }}",
             "result": {
                 "mst": {
                     "max_age": "{{ max_age }}",
@@ -208,7 +208,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 \smax-hops\s(?P<max_hops>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree mst max-hops {{ max_hops }}",
+            "setval": "spanning-tree mst max-hops {{ mst.max_hops }}",
             "result": {
                 "mst": {
                     "max_hops": "{{ max_hops }}",
@@ -226,7 +226,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "setval": "spanning-tree mst simulate pvst global",
             "result": {
                 "mst": {
-                    "simulate_pvst_global": "{{ True if 'enabled' in simulate_pvst_global else False }}",
+                    "simulate_pvst_global": "{{ True if 'enabled' in simulate_pvst_global else None }}",
                 },
             },
         },
@@ -237,7 +237,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 ^\s+name\s(?P<name>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "name {{ configure_mst.name }}",
+            "setval": "name {{ mst.configure_mst.name }}",
             "result": {
                 "mst": {
                     "configure_mst": {
@@ -253,7 +253,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 ^\s+revision\s(?P<revision>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "revision {{ configure_mst.revision }}",
+            "setval": "revision {{ mst.configure_mst.revision }}",
             "result": {
                 "mst": {
                     "configure_mst": {
@@ -273,7 +273,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "result": {
                 "mst": {
                     "configure_mst": {
-                        "private_vlan_sync": "{{ True if synchronize is defined else False }}",
+                        "private_vlan_sync": "{{ True }}",
                     },
                 },
             },
@@ -327,7 +327,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "result": {
                 "port_type": {
                     "edge": {
-                        "bpdufilter": "{{ True if bpdufilter is defined else False }}",
+                        "bpdufilter": "{{ True if bpdufilter is defined else None }}",
                     },
                 },
             },
@@ -345,7 +345,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             "result": {
                 "port_type": {
                     "edge": {
-                        "bpduguard": "{{ True if bpduguard is defined else False }}",
+                        "bpduguard": "{{ True if bpduguard is defined else None }}",
                     },
                 },
             },
@@ -367,8 +367,20 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 },
             },
         },
+        # pseudo_info parsers
         {
-            "name": "pseudo_info.mst_info.designated_priority",
+            "name": "pseudo_info",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree
+                \spseudo-information
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree pseudo-information",
+            "result": {}
+        },
+        {
+            "name": "mst_info.designated_priority",
             "getval": re.compile(
                 r"""
                 ^\s+mst\s(?P<range>\S+)
@@ -389,7 +401,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "pseudo_info.mst_info.root_priority",
+            "name": "mst_info.root_priority",
             "getval": re.compile(
                 r"""
                 ^\s+mst\s(?P<range>\S+)
@@ -398,6 +410,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "mst {{ mst_info.range }} root priority {{ mst_info.root_priority }}",
+            "compval": "mst_info",
             "result": {
                 "pseudo_info": {
                     "mst_info": {
@@ -410,7 +423,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "pseudo_info.vlan_info.designated_priority",
+            "name": "vlan_info.designated_priority",
             "getval": re.compile(
                 r"""
                 ^\s+vlan\s(?P<range>\S+)
@@ -431,7 +444,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "pseudo_info.vlan_info.root_priority",
+            "name": "vlan_info.root_priority",
             "getval": re.compile(
                 r"""
                 ^\s+vlan\s(?P<range>\S+)
@@ -452,7 +465,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "vlan.forward_time",
+            "name": "forward_time",
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
@@ -460,7 +473,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 \sforward-time\s(?P<forward_time>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree vlan {{ vlan_range }} forward-time {{ forward_time }}",
+            "setval": "spanning-tree vlan {{ vlan_range }} forward-time {{ forward_time|string }}",
             "result": {
                 "vlan": {
                     "{{ vlan_range | string }}": {
@@ -471,7 +484,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "vlan.hello_time",
+            "name": "hello_time",
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
@@ -479,7 +492,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 \shello-time\s(?P<hello_time>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree vlan {{ vlan_range }} hello-time {{ hello_time }}",
+            "setval": "spanning-tree vlan {{ vlan_range }} hello-time {{ hello_time|string }}",
             "result": {
                 "vlan": {
                     "{{ vlan_range | string }}": {
@@ -490,7 +503,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "vlan.max_age",
+            "name": "max_age",
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
@@ -498,7 +511,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 \smax-age\s(?P<max_age>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree vlan {{ vlan_range }} max-age {{ max_age }}",
+            "setval": "spanning-tree vlan {{ vlan_range }} max-age {{ max_age|string }}",
             "result": {
                 "vlan": {
                     "{{ vlan_range | string }}": {
@@ -509,7 +522,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "vlan.priority",
+            "name": "priority",
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
@@ -517,7 +530,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 \spriority\s(?P<priority>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree vlan {{ vlan_range }} priority {{ priority }}",
+            "setval": "spanning-tree vlan {{ vlan_range }} priority {{ priority|string }}",
             "result": {
                 "vlan": {
                     "{{ vlan_range | string }}": {
@@ -528,7 +541,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "vlan.root.primary",
+            "name": "root.primary",
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
@@ -557,7 +570,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "vlan.root.secondary",
+            "name": "root.secondary",
             "getval": re.compile(
                 r"""
                 ^spanning-tree\svlan
