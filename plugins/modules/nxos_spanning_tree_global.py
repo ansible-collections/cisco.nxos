@@ -316,7 +316,6 @@ parsed:
     module argspec.
 """
 
-import debugpy
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -326,10 +325,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.sp
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.spanning_tree_global.spanning_tree_global import (
     Spanning_tree_global,
 )
-
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 def main():

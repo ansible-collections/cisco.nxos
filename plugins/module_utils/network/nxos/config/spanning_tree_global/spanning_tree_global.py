@@ -113,7 +113,7 @@ class Spanning_tree_global(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
+        # if state is deleted, empty out wantd
         if self.state == "deleted":
             wantd = {}
 
@@ -126,47 +126,71 @@ class Spanning_tree_global(ResourceModule):
         for the Spanning_tree_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
-        self._vlans_compare(want=want, have=have)
+        self._list_compare(
+            want=want.get("vlan", {}), 
+            have=have.get("vlan", {}),
+            parserlist=self.vlan_parsers,
+        )
         self._compare_pesudo_info_items(want=want, have=have)
+        self._compare_mst_configure(want=want, have=have)
+
+    def _compare_mst_configure(self, want, have):
+        begin = len(self.commands)
+        self._complex_compare(want=want, have=have, parserlist=self.configure_mst_parsers)
+
+        iv_want = want.get("mst", {}).get("configure_mst", {}).get("instance_vlan", {})
+        iv_have = have.get("mst", {}).get("configure_mst", {}).get("instance_vlan", {})
+        
+        for want_key, want_entry in iteritems(iv_want):
+            have_entry = iv_have.pop(want_key, {})
+            if want_entry != have_entry:
+                if have_entry and self.state in ["overridden", "replaced"]:
+                    self.addcmd(have_entry, "instance_vlan", negate=True)
+                self.addcmd(want_entry, "instance_vlan", False)
+
+        for _k, hv in iteritems(iv_have):
+            self.addcmd(hv, "instance_vlan", negate=True)
+        
+        if begin != len(self.commands):
+            self.commands.insert(begin, "spanning-tree mst configuration")
 
     def _compare_pesudo_info_items(self, want, have):
         begin = len(self.commands)
-        for ty in ["mst_info", "vlan_info"]:
-            i_want = want.get("pseudo_info", {}).get(ty, {})
-            i_have = have.get("pseudo_info", {}).get(ty, {})
-            for k, v in iteritems(i_want):
-                inner_want = {ty: v}
-                inner_have = {ty: i_have.pop(k, {})}
-                self._complex_compare(
-                    want=inner_want,
-                    have=inner_have,
-                    parserlist=self.pseudo_info_parsers,
-                )
-            for k, v in iteritems(i_have):
-                inner_have = {ty: v}
-                self._complex_compare(
-                    parserlist=self.pseudo_info_parsers,
-                    want={},
-                    have=inner_have,
-                )
+        for typex in ["mst_info", "vlan_info"]:
+            i_want = want.get("pseudo_info", {}).get(typex, {})
+            i_have = have.get("pseudo_info", {}).get(typex, {})
+            self._list_compare(
+                want=i_want,
+                have=i_have,
+                parserlist=self.pseudo_info_parsers,
+                typex=typex,
+            )
 
         if begin != len(self.commands):
             self.commands.insert(begin, "spanning-tree pseudo-information")
 
-    def _vlans_compare(self, want, have):
-        wareas = want.get("vlan", {})
-        hareas = have.get("vlan", {})
-        for name, entry in iteritems(wareas):
+    def _list_compare(self, want, have, parserlist, typex = None):
+        for name, entry in iteritems(want):
+            if typex:
+                i_want = {typex: entry}
+                i_have = {typex: have.pop(name, {})}
+            else:
+                i_want = entry
+                i_have = have.pop(name, {})
             self._complex_compare(
-                want=entry,
-                have=hareas.pop(name, {}),
-                parserlist=self.vlan_parsers,
+                want=i_want,
+                have=i_have,
+                parserlist=parserlist,
             )
-        for name, entry in iteritems(hareas):
+        for name, entry in iteritems(have):
+            if typex:
+                ix_have = {typex: entry}
+            else:
+                ix_have = entry
             self._complex_compare(
                 want={},
-                have=entry,
-                parserlist=self.vlan_parsers,
+                have=ix_have,
+                parserlist=parserlist,
             )
 
     def _complex_compare(self, want, have, parserlist):

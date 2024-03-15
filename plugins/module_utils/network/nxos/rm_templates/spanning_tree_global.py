@@ -230,6 +230,18 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
                 },
             },
         },
+        # configure_mst parsers
+        {
+            "name": "configure_mst",
+            "getval": re.compile(
+                r"""
+                ^spanning-tree\smst
+                \sconfiguration
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree mst configuration",
+            "result": {},
+        },
         {
             "name": "mst.configure_mst.name",
             "getval": re.compile(
@@ -279,7 +291,7 @@ class Spanning_tree_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "mst.configure_mst.instance_vlan",
+            "name": "instance_vlan",
             "getval": re.compile(
                 r"""
                 ^\s+instance
