@@ -130,7 +130,7 @@ jobs:
         run: echo "${{ secrets.cml_ssh_password }}"
 
       - name: Clear current lab id if any
-        run: 'cml clear'
+        run: 'pip install virl2_client == 2.6.1 && cml clear'
         continue-on-error: true
         env:
           CML_VERIFY_CERT: False
