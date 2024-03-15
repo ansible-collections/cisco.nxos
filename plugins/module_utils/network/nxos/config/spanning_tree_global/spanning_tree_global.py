@@ -127,7 +127,7 @@ class Spanning_tree_global(ResourceModule):
         """
         self.compare(parsers=self.parsers, want=want, have=have)
         self._list_compare(
-            want=want.get("vlan", {}), 
+            want=want.get("vlan", {}),
             have=have.get("vlan", {}),
             parserlist=self.vlan_parsers,
         )
@@ -140,7 +140,7 @@ class Spanning_tree_global(ResourceModule):
 
         iv_want = want.get("mst", {}).get("configure_mst", {}).get("instance_vlan", {})
         iv_have = have.get("mst", {}).get("configure_mst", {}).get("instance_vlan", {})
-        
+
         for want_key, want_entry in iteritems(iv_want):
             have_entry = iv_have.pop(want_key, {})
             if want_entry != have_entry:
@@ -150,7 +150,7 @@ class Spanning_tree_global(ResourceModule):
 
         for _k, hv in iteritems(iv_have):
             self.addcmd(hv, "instance_vlan", negate=True)
-        
+
         if begin != len(self.commands):
             self.commands.insert(begin, "spanning-tree mst configuration")
 
@@ -169,7 +169,7 @@ class Spanning_tree_global(ResourceModule):
         if begin != len(self.commands):
             self.commands.insert(begin, "spanning-tree pseudo-information")
 
-    def _list_compare(self, want, have, parserlist, typex = None):
+    def _list_compare(self, want, have, parserlist, typex=None):
         for name, entry in iteritems(want):
             if typex:
                 i_want = {typex: entry}
