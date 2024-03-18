@@ -418,9 +418,9 @@ class FilePull(FileCopy):
         self.result["copy_cmd"] = copy_cmd
         pulled = self._connection.pull_file(command=copy_cmd, remotepassword=rserverpassword)
         if pulled:
-            self.result[
-                "transfer_status"
-            ] = "Received: File copied/pulled to nxos device from remote scp server."
+            self.result["transfer_status"] = (
+                "Received: File copied/pulled to nxos device from remote scp server."
+            )
         else:
             self.result["failed"] = True
 
