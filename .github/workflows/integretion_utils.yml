@@ -46,7 +46,7 @@ jobs:
           # - milestone
           # - devel
         python-version:
-           - "3.11"
+          - "3.11"
         dependency-source:
           - github
 
@@ -70,7 +70,10 @@ jobs:
         run: python${{ matrix.python-version }} -m pip install wheel --upgrade
 
       - name: Install ansible-core (${{ matrix.ansible-version }})
-        run: python${{ matrix.python-version }} -m pip install https://github.com/ansible/ansible/archive/${{ matrix.ansible-version }}.tar.gz --disable-pip-version-check
+        run: |
+          python${{ matrix.python-version }} -m pip install \
+          https://github.com/ansible/ansible/archive/${{ matrix.ansible-version }}.tar.gz \
+          --disable-pip-version-check
 
       - name: Print the ansible version
         run: ansible --version
