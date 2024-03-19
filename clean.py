@@ -4,9 +4,6 @@
 import logging
 
 from pathlib import Path
-from typing import OrderedDict
-
-import ruamel.yaml
 
 from ansiblelint.yaml_utils import FormattedYAML
 from ruamel.yaml import CommentedSeq
@@ -102,7 +99,7 @@ def change_key(task: CommentedMap, old: str, new: str) -> None:
     if old in task.ca.items:
         task.ca.items[new] = task.ca.items.pop(old)
 
-    for _ in range(len(task)):
+    for _v in range(len(task)):
         key, value = task.popitem(False)
         task[new if old == key else key] = value
 
