@@ -1,0 +1,2 @@
+[run]
+omit = "/tests/integration/test_integration.py"
