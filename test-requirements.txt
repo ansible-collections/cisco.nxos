@@ -2,6 +2,7 @@
 black==23.3.0
 flake8
 yamllint
+virl2-client==2.6.1
 
 # Unit test runner
 pytest-ansible
