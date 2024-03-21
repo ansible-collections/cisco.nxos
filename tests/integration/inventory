@@ -34,4 +34,3 @@ ansible_network_cli_ssh_type=libssh
 ansible_become=true
 ansible_become_password=cisco
 ansible_ssh_port=2094
-
