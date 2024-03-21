@@ -1,9 +1,0 @@
----
-- name: Populate configuration
-  cisco.nxos.nxos_config:
-    lines:
-      - "feature lacp"
-      - "interface {{ nxos_int1 }}"
-      - "  channel-group 10 mode active"
-      - "interface {{ nxos_int2 }}"
-      - "  channel-group 11 mode passive"

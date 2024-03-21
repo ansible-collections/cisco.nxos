@@ -1,5 +1,0 @@
----
-- name: Setup - turn on 'feature scp-server'
-  cisco.nxos.nxos_feature:
-    feature: scp-server
-    state: enabled

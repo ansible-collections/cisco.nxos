@@ -1,0 +1,37 @@
+[iosxr]
+10.0.150.231
+
+[nxos]
+10.0.151.215
+
+[ios]
+35.155.113.92
+
+[iosxr:vars]
+ansible_connection=ansible.netcommon.network_cli
+ansible_network_os=cisco.iosxr.iosxr
+#ansible_user: cisco
+#ansible_password: cisco123
+ansible_user=admin
+ansible_password=admin123
+#ansible_ssh_port: 2133
+ansible_network_cli_ssh_type=paramiko
+#netconf: {'transport': 'netconf'}
+
+[nxos:vars]
+ansible_network_os=cisco.nxos.nxos
+ansible_user=admin
+ansible_ssh_pass=admin
+ansible_connection=ansible.netcommon.network_cli
+ansible_network_cli_ssh_type=libssh
+ansible_ssh_port=8022
+[ios:vars]
+ansible_network_os=cisco.ios.ios
+ansible_user=cisco
+ansible_ssh_pass=cisco
+ansible_connection=ansible.netcommon.network_cli
+ansible_network_cli_ssh_type=libssh
+ansible_become=true
+ansible_become_password=cisco
+ansible_ssh_port=2094
+

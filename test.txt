@@ -1,0 +1,488 @@
+<_pytest.config.Config object at 0x7f02823f5a10>
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.11.6, pytest-7.4.0, pluggy-1.2.0 -- /home/amhatre/dev/virtualenvs/py3.11/bin/python3
+cachedir: .pytest_cache
+ansible: 2.15.2
+rootdir: /home/amhatre/dev/collections/ansible_collections/cisco/nxos
+configfile: pyproject.toml
+plugins: ansible-units-0.1.dev50, cov-4.1.0, forked-1.6.0, ansible-network-integration-0.0.0, xdist-3.5.0, anyio-4.3.0, ansible-24.1.2
+created: 2/2 workers
+2 workers [85 items]
+
+scheduling tests via LoadScheduling
+
+tests/integration/test_integration.py::test_integration[nxos_telemetry] 
+tests/integration/test_integration.py::test_integration[nxos_banner] 
+[gw1][36m [  1%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_banner] 
+tests/integration/test_integration.py::test_integration[nxos_bfd_global] 
+[gw1][36m [  2%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_bfd_global] 
+tests/integration/test_integration.py::test_integration[nxos_bfd_interfaces] 
+[gw1][36m [  3%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_bfd_interfaces] 
+tests/integration/test_integration.py::test_integration[nxos_bgp_address_family] 
+[gw0][36m [  4%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_telemetry] 
+tests/integration/test_integration.py::test_integration[nxos_zone_zoneset] 
+[gw0][36m [  5%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_zone_zoneset] 
+tests/integration/test_integration.py::test_integration[prepare_nxos_tests] 
+[gw0][36m [  7%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[prepare_nxos_tests] 
+tests/integration/test_integration.py::test_integration[nxos_udld] 
+[gw0][36m [  8%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_udld] 
+tests/integration/test_integration.py::test_integration[nxos_udld_interface] 
+[gw1][36m [  9%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_bgp_address_family] 
+tests/integration/test_integration.py::test_integration[nxos_bgp_global] 
+[gw0][36m [ 10%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_udld_interface] 
+tests/integration/test_integration.py::test_integration[nxos_user] 
+[gw0][36m [ 11%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_user] 
+tests/integration/test_integration.py::test_integration[nxos_aaa_server] 
+[gw0][36m [ 12%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_aaa_server] 
+tests/integration/test_integration.py::test_integration[nxos_aaa_server_host] 
+[gw0][36m [ 14%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_aaa_server_host] 
+tests/integration/test_integration.py::test_integration[nxos_acl_interfaces] 
+[gw1][36m [ 15%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_bgp_global] 
+tests/integration/test_integration.py::test_integration[nxos_bgp_neighbor_address_family] 
+[gw1][36m [ 16%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_bgp_neighbor_address_family] 
+tests/integration/test_integration.py::test_integration[nxos_command] 
+[gw1][36m [ 17%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_command] 
+tests/integration/test_integration.py::test_integration[nxos_config] 
+[gw0][36m [ 18%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_acl_interfaces] 
+tests/integration/test_integration.py::test_integration[nxos_acls] 
+[gw0][36m [ 20%] [0m[31mFAILED[0m tests/integration/test_integration.py::test_integration[nxos_acls] 
+tests/integration/test_integration.py::test_integration[nxos_evpn_vni] 
+[gw0][36m [ 21%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_evpn_vni] 
+tests/integration/test_integration.py::test_integration[nxos_facts] 
+[gw0][36m [ 22%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_facts] 
+tests/integration/test_integration.py::test_integration[nxos_feature] 
+[gw0][36m [ 23%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_feature] 
+tests/integration/test_integration.py::test_integration[nxos_file_copy] 
+[gw1][36m [ 24%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_config] 
+tests/integration/test_integration.py::test_integration[nxos_devicealias] 
+[gw1][36m [ 25%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_devicealias] 
+tests/integration/test_integration.py::test_integration[nxos_evpn_global] 
+[gw1][36m [ 27%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_evpn_global] 
+tests/integration/test_integration.py::test_integration[nxos_l3_interfaces] 
+[gw0][36m [ 28%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_file_copy] 
+tests/integration/test_integration.py::test_integration[nxos_gir] 
+[gw1][36m [ 29%] [0m[31mFAILED[0m tests/integration/test_integration.py::test_integration[nxos_l3_interfaces] 
+tests/integration/test_integration.py::test_integration[nxos_lacp] 
+[gw0][36m [ 30%] [0m[32mPASSED[0m tests/integration/test_integration.py::test_integration[nxos_gir] 
+tests/integration/test_integration.py::test_integration[nxos_gir_profile_management] 
+
+=================================== FAILURES ===================================
+[31m[1m_________________________ test_integration[nxos_acls] __________________________[0m
+[gw0] linux -- Python 3.11.6 /home/amhatre/dev/virtualenvs/py3.11/bin/python3
+
+ansible_project = AnsibleProject(collection_doc_cache=PosixPath('/tmp/pytest-of-amhatre/pytest-28/popen-gw0/test_integration_nxos_acls_0...s_acls', inventory=PosixPath('/tmp/pytest-of-amhatre/pytest-28/popen-gw0/test_integration_nxos_acls_0/inventory.json'))
+environment = {'ANSIBLE_COLLECTIONS_PATH': '/home/amhatre/dev/collections:/home/amhatre/.ansible/collections', 'ANSIBLE_LOCALHOST_WARNING': 'False', 'ANSIBLE_NETWORK_OS': 'cisco.nxos.nxos', 'CHROME_DESKTOP': 'code-url-handler.desktop', ...}
+
+    [94mdef[39;49;00m [92mtest_integration[39;49;00m(ansible_project, environment):[90m[39;49;00m
+>       run(ansible_project, environment)[90m[39;49;00m
+[1m[31mE       Failed: Integration test failed: nxos_acls[0m
+
+[1m[31mtests/integration/test_integration.py[0m:45: Failed
+---------------------------- Captured stdout setup -----------------------------
+hiiiiiii Inventory path: /tmp/pytest-of-amhatre/pytest-28/popen-gw0/test_integration_nxos_acls_0/inventory.json
+hiiiiiii Playbook path: /tmp/pytest-of-amhatre/pytest-28/popen-gw0/test_integration_nxos_acls_0/site.json
+----------------------------- Captured stdout call -----------------------------
+
+PLAY [all] *********************************************************************
+
+TASK [Run role tests/integration/targets/nxos_acls] ****************************
+
+TASK [prepare_nxos_tests : Set inventory vars here temporarily] ****************
+[0;32mok: [appliance][0m
+
+TASK [prepare_nxos_tests : Reload golden config] *******************************
+[0;36mskipping: [appliance][0m
+
+TASK [prepare_nxos_tests : Run the prepare steps if requested] *****************
+[0;36mskipping: [appliance][0m
+
+TASK [nxos_acls : Set system defaults for switchports] *************************
+[1;35m[WARNING]: To ensure idempotency and correct diff the input configuration lines[0m
+[1;35mshould be similar to how they appear if present in the running configuration on[0m
+[1;35mdevice[0m
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_acls : Include the CLI tasks] ***************************************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tasks/cli.yaml for appliance[0m
+
+TASK [nxos_acls : Collect common test cases] ***********************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_acls : Collect CLI test cases] **************************************
+[1;35m[WARNING]: Skipped '/home/amhatre/dev/collections/ansible_collections/cisco/nxo[0m
+[1;35ms/tests/integration/targets/nxos_acls/tests/cli' path due to this access issue:[0m
+[1;35m'/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration[0m
+[1;35m/targets/nxos_acls/tests/cli' is not a directory[0m
+[0;32mok: [appliance][0m
+
+TASK [nxos_acls : Set a fact for 'test_cases'] *********************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_acls : Set test_items] **********************************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_acls : Run test cases with connection network_cli] ******************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/deleted.yml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/deleted.yml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/gathered.yml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/gathered.yml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/overridden.yml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/overridden.yml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/rendered.yml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/rendered.yml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/replaced.yml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/replaced.yml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/rtt.yml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/rtt.yml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/merged.yml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/merged.yml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/parsed.yml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/parsed.yml)[0m
+
+TASK [nxos_acls : ansible.builtin.debug] ***************************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "msg": "Start nxos_acls deleted integration tests connection=ansible.netcommon.network_cli\""[0m
+[0;32m}[0m
+
+TASK [nxos_acls : ansible.builtin.include_tasks] *******************************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/populate_config.yaml for appliance[0m
+
+TASK [nxos_acls : Add configuration] *******************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_acls : Deleted (all acls)] ******************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_acls : Gather acls facts] *******************************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_acls : ansible.builtin.assert] **************************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_acls : ansible.builtin.include_tasks] *******************************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/populate_config.yaml for appliance[0m
+
+TASK [nxos_acls : Add configuration] *******************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_acls : Deleted] *****************************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_acls : ansible.builtin.assert] **************************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_acls : Gather acls facts] *******************************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_acls : Idempotence - deleted] ***************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_acls : ansible.builtin.assert] **************************************
+[0;31mfatal: [appliance]: FAILED! => {[0m
+[0;31m    "assertion": "result.changed == false",[0m
+[0;31m    "changed": false,[0m
+[0;31m    "evaluated_to": false,[0m
+[0;31m    "msg": "Assertion failed"[0m
+[0;31m}[0m
+
+TASK [nxos_acls : ansible.builtin.include_tasks] *******************************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_acls/tests/common/remove_config.yaml for appliance[0m
+
+TASK [nxos_acls : Remove configuration] ****************************************
+[0;33mchanged: [appliance][0m
+
+PLAY RECAP *********************************************************************
+[0;31mappliance[0m                  : [0;32mok=29  [0m [0;33mchanged=7   [0m unreachable=0    [0;31mfailed=1   [0m [0;36mskipped=2   [0m rescued=0    ignored=0   
+
+Please review the log for errors.
+
+[31m[1m_____________________ test_integration[nxos_l3_interfaces] _____________________[0m
+[gw1] linux -- Python 3.11.6 /home/amhatre/dev/virtualenvs/py3.11/bin/python3
+
+ansible_project = AnsibleProject(collection_doc_cache=PosixPath('/tmp/pytest-of-amhatre/pytest-28/popen-gw1/test_integration_nxos_l3_int...ces', inventory=PosixPath('/tmp/pytest-of-amhatre/pytest-28/popen-gw1/test_integration_nxos_l3_inter0/inventory.json'))
+environment = {'ANSIBLE_COLLECTIONS_PATH': '/home/amhatre/dev/collections:/home/amhatre/.ansible/collections', 'ANSIBLE_LOCALHOST_WARNING': 'False', 'ANSIBLE_NETWORK_OS': 'cisco.nxos.nxos', 'CHROME_DESKTOP': 'code-url-handler.desktop', ...}
+
+    [94mdef[39;49;00m [92mtest_integration[39;49;00m(ansible_project, environment):[90m[39;49;00m
+>       run(ansible_project, environment)[90m[39;49;00m
+[1m[31mE       Failed: Integration test failed: nxos_l3_interfaces[0m
+
+[1m[31mtests/integration/test_integration.py[0m:45: Failed
+---------------------------- Captured stdout setup -----------------------------
+hiiiiiii Inventory path: /tmp/pytest-of-amhatre/pytest-28/popen-gw1/test_integration_nxos_l3_inter0/inventory.json
+hiiiiiii Playbook path: /tmp/pytest-of-amhatre/pytest-28/popen-gw1/test_integration_nxos_l3_inter0/site.json
+----------------------------- Captured stdout call -----------------------------
+
+PLAY [all] *********************************************************************
+
+TASK [Run role tests/integration/targets/nxos_l3_interfaces] *******************
+
+TASK [prepare_nxos_tests : Set inventory vars here temporarily] ****************
+[0;32mok: [appliance][0m
+
+TASK [prepare_nxos_tests : Reload golden config] *******************************
+[0;36mskipping: [appliance][0m
+
+TASK [prepare_nxos_tests : Run the prepare steps if requested] *****************
+[0;36mskipping: [appliance][0m
+
+TASK [nxos_l3_interfaces : Set a fact for 'rsvd_intf'] *************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : Include the CLI tasks] ******************************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tasks/cli.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Collect common test cases] **************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : Collect CLI test cases] *****************************
+[1;35m[WARNING]: Skipped '/home/amhatre/dev/collections/ansible_collections/cisco/nxo[0m
+[1;35ms/tests/integration/targets/nxos_l3_interfaces/tests/cli' path due to this[0m
+[1;35maccess issue: '/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tes[0m
+[1;35mts/integration/targets/nxos_l3_interfaces/tests/cli' is not a directory[0m
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : Set a fact for 'test_cases'] ************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : Set test_items] *************************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : Run test cases with connection network_cli] *********
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/deleted.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/deleted.yaml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/gathered.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/gathered.yaml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/merged.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/merged.yaml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/rendered.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/rendered.yaml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/replaced.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/replaced.yaml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/empty_config.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/empty_config.yaml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/multisite.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/multisite.yaml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/overridden.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/overridden.yaml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/parsed.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/parsed.yaml)[0m
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/rtt.yaml for appliance => (item=/home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/rtt.yaml)[0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.debug] ******************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "msg": "Start nxos_l3_interfaces deleted integration tests connection=ansible.netcommon.network_cli"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : Set a fact for 'subint3' and 'test_int3'] ***********
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_remove_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Remove configuration] *******************************
+[1;35m[WARNING]: To ensure idempotency and correct diff the input configuration lines[0m
+[1;35mshould be similar to how they appear if present in the running configuration on[0m
+[1;35mdevice[0m
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : Setup1] *********************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : Setup3] *********************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : Gather l3_interfaces facts] *************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : Deleted] ********************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.assert] *****************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : Idempotence - deleted] ******************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.assert] *****************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : Teardown] *******************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.debug] ******************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "msg": "START nxos_l3_interfaces gathered integration tests on connection=ansible.netcommon.network_cli"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_remove_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Remove configuration] *******************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_populate_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Populate configuration - 1] *************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : Populate configuration - 2] *************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : Gather l3_interfaces facts from the device using nxos_l3_interfaces] ***
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.assert] *****************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_remove_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Remove configuration] *******************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.debug] ******************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "msg": "END nxos_l3_interfaces gathered integration tests on connection=ansible.netcommon.network_cli"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.debug] ******************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "msg": "Start nxos_l3_interfaces merged integration tests connection=ansible.netcommon.network_cli"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : Set a fact for 'subint3' and 'test_int3'] ***********
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_remove_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Remove configuration] *******************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : Setup1] *********************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : Merged] *********************************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.assert] *****************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : Gather l3_interfaces facts] *************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.assert] *****************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : Idempotence - merged] *******************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.assert] *****************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : Teardown sub-interface] *****************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_remove_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Remove configuration] *******************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.debug] ******************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "msg": "START nxos_l3_interfaces rendered integration tests on connection=ansible.netcommon.network_cli"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_remove_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Remove configuration] *******************************
+[0;33mchanged: [appliance][0m
+
+TASK [nxos_l3_interfaces : Gather pre-facts] ***********************************
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : Use rendered state to convert task input to device specific commands] ***
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.assert] *****************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : Gather l3_interfaces facts from the device and assert that its empty] ***
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : Make sure that rendered task actually did not make any changes to the device] ***
+[0;32mok: [appliance] => {[0m
+[0;32m    "changed": false,[0m
+[0;32m    "msg": "All assertions passed"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_remove_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Remove configuration] *******************************
+[0;31mfatal: [appliance]: FAILED! => {"changed": false, "msg": "command timeout triggered, timeout value is 30 secs.\nSee the timeout setting options in the Network Debug and Troubleshooting Guide."}[0m
+[0;36m...ignoring[0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.debug] ******************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "msg": "END nxos_l3_interfaces rendered integration tests on connection=ansible.netcommon.network_cli"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.debug] ******************************
+[0;32mok: [appliance] => {[0m
+[0;32m    "msg": "Start nxos_l3_interfaces replaced integration tests connection=ansible.netcommon.network_cli"[0m
+[0;32m}[0m
+
+TASK [nxos_l3_interfaces : Set a fact for 'subint3' and 'test_int3'] ***********
+[0;32mok: [appliance][0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_remove_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Remove configuration] *******************************
+[0;31mfatal: [appliance]: FAILED! => {"changed": false, "msg": "cli prompt is not identified from the last received response window: b'default interface Ethernet1/3\\r\\r\\n'"}[0m
+[0;36m...ignoring[0m
+
+TASK [nxos_l3_interfaces : Setup1] *********************************************
+[0;31mfatal: [appliance]: FAILED! => {"changed": false, "msg": "cli prompt is not identified from the last received response window: b'default interface Ethernet1/3\\r\\r\\n'"}[0m
+[0;36m...ignoring[0m
+
+TASK [nxos_l3_interfaces : Setup3] *********************************************
+[0;31mfatal: [appliance]: FAILED! => {"changed": false, "msg": "cli prompt is not identified from the last received response window: b'default interface Ethernet1/3\\r\\r\\n'"}[0m
+
+TASK [nxos_l3_interfaces : Teardown sub-interface] *****************************
+[0;31mfatal: [appliance]: FAILED! => {"changed": false, "msg": "cli prompt is not identified from the last received response window: b'default interface Ethernet1/3\\r\\r\\n'"}[0m
+[0;36m...ignoring[0m
+
+TASK [nxos_l3_interfaces : ansible.builtin.include_tasks] **********************
+[0;36mincluded: /home/amhatre/dev/collections/ansible_collections/cisco/nxos/tests/integration/targets/nxos_l3_interfaces/tests/common/_remove_config.yaml for appliance[0m
+
+TASK [nxos_l3_interfaces : Remove configuration] *******************************
+[0;31mfatal: [appliance]: FAILED! => {"changed": false, "msg": "cli prompt is not identified from the last received response window: b'default interface Ethernet1/3\\r\\r\\n'"}[0m
+[0;36m...ignoring[0m
+
+PLAY RECAP *********************************************************************
+[0;31mappliance[0m                  : [0;32mok=73  [0m [0;33mchanged=15  [0m unreachable=0    [0;31mfailed=1   [0m [0;36mskipped=2   [0m rescued=0    [1;35mignored=5   [0m
+
+Please review the log for errors.
+
+[36m[1m=========================== short test summary info ============================[0m
+[31mFAILED[0m tests/integration/test_integration.py::[1mtest_integration[nxos_acls][0m - Failed: Integration test failed: nxos_acls
+[31mFAILED[0m tests/integration/test_integration.py::[1mtest_integration[nxos_l3_interfaces][0m - Failed: Integration test failed: nxos_l3_interfaces
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[1m[31m/usr/lib64/python3.11/threading.py[0m:331: KeyboardInterrupt
+[33m(to show a full traceback on KeyboardInterrupt use --full-trace)[0m
+[31m================== [31m[1m2 failed[0m, [32m24 passed[0m[31m in 9885.94s (2:44:45)[0m[31m ===================[0m
