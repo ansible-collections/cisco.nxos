@@ -1,0 +1,31 @@
+name: Integration
+on:
+  pull_request_target:
+    branches: [main]
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
+  workflow_dispatch:
+
+jobs:
+  safe-to-test:
+    if: >-
+      github.event.label.name == 'safe to test' ||
+      github.event.action != 'labeled'
+    uses: ansible-network/github_actions/.github/workflows/safe-to-test.yml@main
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  integration:
+    uses: ./.github/workflows/integretion_utils.yml
+    needs:
+      - safe-to-test
+    with:
+      network_os: cisco.nxos.nxos
+      pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
+    secrets:
+      CML_SSH_PASSWORD: ${{ secrets.CML_SSH_PASSWORD }}
+      VIRL_HOST: ${{ secrets.VIRL_HOST }}
+      VIRL_PASSWORD: ${{ secrets.VIRL_PASSWORD }}
