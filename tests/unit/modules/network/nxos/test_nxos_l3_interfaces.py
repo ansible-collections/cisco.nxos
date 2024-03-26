@@ -23,12 +23,12 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
+from unittest.mock import PropertyMock, patch
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.l3_interfaces.l3_interfaces import (
     L3_interfaces,
 )
 from ansible_collections.cisco.nxos.plugins.modules import nxos_l3_interfaces
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import PropertyMock, patch
 
 from .nxos_module import TestNxosModule, set_module_args
 

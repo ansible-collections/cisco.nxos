@@ -22,6 +22,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+from unittest.mock import patch
+
 # TBD: These imports / import checks are only needed as a workaround for
 # shippable, which fails this test due to import yaml & import ordereddict.
 import pytest
@@ -30,7 +32,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.nxos impor
     nxosCmdRef_import_check,
 )
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bfd_global
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
