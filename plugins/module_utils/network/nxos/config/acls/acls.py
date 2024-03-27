@@ -246,13 +246,13 @@ class Acls(ConfigBase):
                                             end = int(ace[x]["port_protocol"]["range"]["end"])
 
                                             if st in port_protocol.keys():
-                                                ace[x]["port_protocol"]["range"][
-                                                    "start"
-                                                ] = port_protocol[st]
+                                                ace[x]["port_protocol"]["range"]["start"] = (
+                                                    port_protocol[st]
+                                                )
                                             if end in port_protocol.keys():
-                                                ace[x]["port_protocol"]["range"][
-                                                    "end"
-                                                ] = port_protocol[end]
+                                                ace[x]["port_protocol"]["range"]["end"] = (
+                                                    port_protocol[end]
+                                                )
         return want
 
     def set_state(self, want, have):
