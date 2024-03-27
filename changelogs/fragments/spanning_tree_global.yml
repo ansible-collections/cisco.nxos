@@ -1,0 +1,3 @@
+---
+major_changes:
+  - spanning_tree_global - add a new resource module for nxos spanning tree global configuration.
