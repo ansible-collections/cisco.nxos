@@ -24,8 +24,9 @@ __metaclass__ = type
 
 import json
 
+from unittest.mock import patch
+
 from ansible_collections.cisco.nxos.plugins.modules import nxos_feature
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
