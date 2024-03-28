@@ -42,3 +42,8 @@
       - no ip port access-group PortACL in
     parents: interface Ethernet1/6
   ignore_errors: true
+
+- name: Remove configuration - 6
+  cisco.nxos.nxos_config:
+    lines: no interface loopback1
+  ignore_errors: true
