@@ -23,7 +23,7 @@ jobs:
           scope: unit
     outputs:
       envlist: "${{ steps.build-matrix.outputs.envlist }}"
-  run-tests:
+  run-unit-galaxy:
     needs: build-tox-matrix
     strategy:
       fail-fast: false
@@ -35,4 +35,3 @@ jobs:
       - uses: NilashishC/ansible-content-actions/.github/actions/run-unit-tests@actions_refactor
         with:
           matrix-name: "${{ matrix.entry.name }}"
-          matrix-python: "${{ matrix.entry.python }}"
