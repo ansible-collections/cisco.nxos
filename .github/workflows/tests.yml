@@ -13,10 +13,10 @@ on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: '0 0 * * *'
 
-jobs:
+jobs:`
   tox_matrix:
     runs-on: ubuntu-latest
     steps:
       - uses: NilashishC/ansible-content-actions/.github/actions/generate-tox-ansible-matrix@actions_refactor
-        with:
-          scope: unit
+        #with:
+        #  scope: unit
