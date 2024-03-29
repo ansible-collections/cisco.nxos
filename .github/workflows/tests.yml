@@ -14,7 +14,7 @@ on:  # yamllint disable-line rule:truthy
     - cron: '0 0 * * *'
 
 jobs:
-  tox-matrix:
+  build-tox-matrix:
     runs-on: ubuntu-latest
     steps:
       - uses: NilashishC/ansible-content-actions/.github/actions/generate-tox-ansible-matrix@actions_refactor
@@ -24,11 +24,11 @@ jobs:
     outputs:
       envlist: "${{ steps.build-matrix.outputs.envlist }}"
   run-tests:
-    needs: tox-matrix
+    needs: build-tox-matrix
     strategy:
       fail-fast: false
       matrix:
-        entry: "${{ fromJson(needs.tox-matrix.outputs.envlist) }}"
+        entry: "${{ fromJson(needs.build-tox-matrix.outputs.envlist) }}"
     name: "${{ matrix.entry.name }}"
     runs-on: ubuntu-latest
     steps:
