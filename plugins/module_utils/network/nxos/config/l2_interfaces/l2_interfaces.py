@@ -146,7 +146,7 @@ class L2_interfaces(ConfigBase):
         if "trunk" in d and d["trunk"]:
             if "allowed_vlans" in d["trunk"]:
                 allowed_vlans = vlan_range_to_list(d["trunk"]["allowed_vlans"])
-                vlans_list = [str(l) for l in sorted(allowed_vlans)]
+                vlans_list = [str(line) for line in sorted(allowed_vlans)]
                 d["trunk"]["allowed_vlans"] = ",".join(vlans_list)
 
     def set_state(self, want, have):

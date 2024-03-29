@@ -391,7 +391,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_snmp_server_traps_replaced(self):
+    def test_nxos_snmp_server_traps_replaced_1(self):
         # test replaced for traps
         self.get_config.return_value = dedent(
             """\
@@ -482,7 +482,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_snmp_server_hosts_merged(self):
+    def test_nxos_snmp_server_hosts_merged_1(self):
         # test merged for hosts
         self.get_config.return_value = dedent(
             """\
@@ -673,7 +673,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_snmp_server_users_merged(self):
+    def test_nxos_snmp_server_users_merged_1(self):
         # test merged for users
         self.get_config.return_value = dedent(
             """\
@@ -705,7 +705,9 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     algorithm="md5",
                                     password="0x5632724fb8ac3699296af262",
                                     engine_id="2:2:2:2:2",
-                                    priv=dict(privacy_password="0x5632724fb8ac3699296af262"),
+                                    priv=dict(
+                                        privacy_password="0x5632724fb8ac3699296af262",
+                                    ),
                                     localizedv2_key=True,
                                 ),
                             ),
@@ -906,7 +908,9 @@ class TestNxosSnmpServerModule(TestNxosModule):
                             algorithm="md5",
                             password="0x7d425fbf09417c44bca69e1d9e9ce889",
                             localized_key=True,
-                            priv=dict(privacy_password="0x7d425fbf09417c44bca69e1d9e9ce889"),
+                            priv=dict(
+                                privacy_password="0x7d425fbf09417c44bca69e1d9e9ce889",
+                            ),
                         ),
                     ),
                     dict(

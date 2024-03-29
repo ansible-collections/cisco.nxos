@@ -6,6 +6,7 @@
 """
 The nxos telemetry utility library
 """
+
 from __future__ import absolute_import, division, print_function
 
 
@@ -61,7 +62,10 @@ def valiate_input(playvals, type, module):
             msg = "Invalid playbook value: {0}.".format(playvals)
             msg += " Parameter <id> under <destination_groups> is required"
             module.fail_json(msg=msg)
-        if playvals.get("destination") and not isinstance(playvals["destination"], dict):
+        if playvals.get("destination") and not isinstance(
+            playvals["destination"],
+            dict,
+        ):
             msg = "Invalid playbook value: {0}.".format(playvals)
             msg += " Parameter <destination> under <destination_groups> must be a dict"
             module.fail_json(msg=msg)
@@ -209,7 +213,6 @@ def massage_data(have_or_want):
     massaged["destination_groups"] = {}
     massaged["sensor_groups"] = {}
     massaged["subscriptions"] = {}
-    from pprint import pprint
 
     for subgroup in ["destination_groups", "sensor_groups", "subscriptions"]:
         for item in data.get(subgroup, []):
