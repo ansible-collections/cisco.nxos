@@ -22,4 +22,4 @@ jobs:
         with:
           scope: unit
       - run:  |
-          echo ${{ steps.build-matrix.outputs.envlist }}
+          ${{ steps.build-matrix.outputs.envlist }}
