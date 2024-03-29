@@ -10,25 +10,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-def _tmplt_area_range(arange):
-    command = "area {area} range {range}".format(**arange)
-    if arange.get("not_advertise") is True:
-        command += " not-advertise"
-    if "cost" in arange:
-        command += " cost {cost}".format(**arange)
-    return command
-
-
-def _tmplt_default_information(proc):
-    command = "default-information originate"
-    if "always" in proc["default_information"] and proc["default_information"]["always"]:
-        command += " always"
-    if "route_map" in proc["default_information"]:
-        command += " route-map"
-        command += " {default_information[route_map]}".format(**proc)
-    return command
-
-
 def _tmplt_log_adjacency_changes(proc):
     command = "log-adjacency-changes"
     if proc.get("log_adjacency_changes").get("detail", False) is True:
@@ -139,15 +120,6 @@ def _tmplt_area_nssa_translate(area):
     for attrib in ["always", "never", "supress_fa"]:
         if translate.get(attrib):
             command += " {0}".format(attrib.replace("_", "-"))
-    return command
-
-
-def _tmplt_area_ranges(arange):
-    command = "area {area_id} range {prefix}".format(**arange)
-    if arange.get("not_advertise") is True:
-        command += " not-advertise"
-    if "cost" in arange:
-        command += " cost {cost}".format(**arange)
     return command
 
 
