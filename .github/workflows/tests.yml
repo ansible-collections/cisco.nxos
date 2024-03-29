@@ -35,4 +35,4 @@ jobs:
       - uses: NilashishC/ansible-content-actions/.github/actions/run-unit-tests@actions_refactor
         with:
           matrix-name: "${{ matrix.entry.name }}"
-          matrix-pthon: "${{ matrix.entry.python }}"
+          matrix-python: "${{ matrix.entry.python }}"
