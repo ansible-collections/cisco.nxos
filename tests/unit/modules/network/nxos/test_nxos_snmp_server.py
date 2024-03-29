@@ -591,7 +591,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_snmp_server_users_merged(self):
+    def test_nxos_snmp_server_users_merged_1(self):
         # test merged for users
         self.get_config.return_value = dedent(
             """\
@@ -662,18 +662,19 @@ class TestNxosSnmpServerModule(TestNxosModule):
         )
         commands = [
             "snmp-server user snmp_user_2 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv 0x5632724fb8ac3699296af26281e1d0f1"
-            " localizedkey engineID 2:2:2:2:2",
+            " localizedV2key engineID 2:2:2:2:2",
             "snmp-server user snmp_user_3 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128"
-            " 0x5632724fb8ac3699296af26281e1d0f1 localizedV2key engineID 3:3:3:3:3",
+            " 0x5632724fb8ac3699296af26281e1d0f1 localizedkey engineID 3:3:3:3:3",
             "snmp-server user snmp_user_1 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1"
             " localizedkey engineID 1:1:1:1:1",
             "snmp-server user snmp_user_4 network-admin auth sha-256 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128"
             " 0x5632724fb8ac3699296af26281e1d0f1 localizedkey engineID 4:4:4:4:4",
         ]
         result = self.execute_module(changed=True)
+        print(result["commands"])
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_snmp_server_users_merged_1(self):
+    def test_nxos_snmp_server_users_merged_2(self):
         # test merged for users
         self.get_config.return_value = dedent(
             """\
