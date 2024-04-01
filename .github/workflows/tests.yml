@@ -14,7 +14,12 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   build-import:
-    uses: ansible/ansible-content-actions/.github/workflows/build_import.yaml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/build-import@actions_refactor
 
   build-tox-matrix:
     runs-on: ubuntu-latest
