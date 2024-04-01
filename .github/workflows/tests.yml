@@ -13,6 +13,16 @@ on:  # yamllint disable-line rule:truthy
     - cron: '0 0 * * *'
 
 jobs:
+  build-import:
+    uses: ansible/ansible-content-actions/.github/workflows/build_import.yaml@main
+
+  unit-source:
+    uses: ansible-network/github_actions/.github/workflows/unit_source.yml@main
+    with:
+      collection_pre_install: >-
+        git+https://github.com/ansible-collections/ansible.utils.git
+        git+https://github.com/ansible-collections/ansible.netcommon.git
+
   build-tox-matrix-unit:
     runs-on: ubuntu-latest
     steps:
@@ -68,3 +78,31 @@ jobs:
       - uses: NilashishC/ansible-content-actions/.github/actions/run-sanity@actions_refactor  # yamllint disable-line rule:line-length
         with:
           test-env: "${{ matrix.entry.name }}"
+  
+  ansible-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/run-ansible-lint@actions_refactor  # yamllint disable-line rule:line-length
+
+  all_green:
+    if: ${{ always() }}
+    needs:
+      - build-import
+      - run-sanity
+      - run-unit-galaxy
+      - unit-source
+      - ansible-lint
+    runs-on: ubuntu-latest
+    steps:
+      - run: >-
+          python -c "assert 'failure' not in
+          set([
+          '${{ needs.build-import.result }}',
+          '${{ needs.run-sanity.result }}',
+          '${{ needs.run-unit-galaxy.result }}'
+          '${{ needs.ansible-lint.result }}'
+          '${{ needs.unit-source.result }}'
+          ])"
