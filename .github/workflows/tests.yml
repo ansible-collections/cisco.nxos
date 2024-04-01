@@ -38,9 +38,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - uses: NilashishC/ansible-content-actions/.github/actions/run-unit-tests@actions_refactor
+      - uses: NilashishC/ansible-content-actions/.github/actions/run-unit-galaxy@actions_refactor
         with:
-          matrix-name: "${{ matrix.entry.name }}"
+          test-env: "${{ matrix.entry.name }}"
 
   build-tox-matrix-sanity:
     runs-on: ubuntu-latest
@@ -68,4 +68,4 @@ jobs:
 
       - uses: NilashishC/ansible-content-actions/.github/actions/run-sanity@actions_refactor
         with:
-          matrix-name: "${{ matrix.entry.name }}"
+          test-env: "${{ matrix.entry.name }}"
