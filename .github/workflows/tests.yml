@@ -78,7 +78,7 @@ jobs:
       - uses: NilashishC/ansible-content-actions/.github/actions/run-sanity@actions_refactor  # yamllint disable-line rule:line-length
         with:
           test-env: "${{ matrix.entry.name }}"
-  
+
   ansible-lint:
     runs-on: ubuntu-latest
     steps:
