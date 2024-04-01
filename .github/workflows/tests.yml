@@ -16,14 +16,7 @@ jobs:
   build-import:
     uses: ansible/ansible-content-actions/.github/workflows/build_import.yaml@main
 
-  unit-source:
-    uses: ansible-network/github_actions/.github/workflows/unit_source.yml@main
-    with:
-      collection_pre_install: >-
-        git+https://github.com/ansible-collections/ansible.utils.git
-        git+https://github.com/ansible-collections/ansible.netcommon.git
-
-  build-tox-matrix-unit:
+  build-tox-matrix:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -33,14 +26,21 @@ jobs:
         id: build-matrix-unit
         with:
           scope: unit
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/generate-tox-ansible-matrix@actions_refactor  # yamllint disable-line rule:line-length
+        id: build-matrix-sanity
+        with:
+          scope: sanity
     outputs:
-      envlist: "${{ steps.build-matrix-unit.outputs.envlist }}"
+      unit-envlist: "${{ steps.build-matrix-unit.outputs.envlist }}"
+      sanity-envlist: "${{ steps.build-matrix-sanity.outputs.envlist }}"
+
   run-unit-galaxy:
-    needs: build-tox-matrix-unit
+    needs: build-tox-matrix
     strategy:
       fail-fast: false
       matrix:
-        entry: "${{ fromJson(needs.build-tox-matrix-unit.outputs.envlist) }}"
+        entry: "${{ fromJson(needs.build-tox-matrix.outputs.unit-envlist) }}"
     name: "${{ matrix.entry.name }}"
     runs-on: ubuntu-latest
     steps:
@@ -50,25 +50,12 @@ jobs:
       - uses: NilashishC/ansible-content-actions/.github/actions/run-unit-galaxy@actions_refactor  # yamllint disable-line rule:line-length
         with:
           test-env: "${{ matrix.entry.name }}"
-
-  build-tox-matrix-sanity:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - uses: NilashishC/ansible-content-actions/.github/actions/generate-tox-ansible-matrix@actions_refactor  # yamllint disable-line rule:line-length
-        id: build-matrix-sanity
-        with:
-          scope: sanity
-    outputs:
-      envlist: "${{ steps.build-matrix-sanity.outputs.envlist }}"
   run-sanity:
-    needs: build-tox-matrix-sanity
+    needs: build-tox-matrix
     strategy:
       fail-fast: false
       matrix:
-        entry: "${{ fromJson(needs.build-tox-matrix-sanity.outputs.envlist) }}"
+        entry: "${{ fromJson(needs.build-tox-matrix.outputs.sanity-envlist) }}"
     name: "${{ matrix.entry.name }}"
     runs-on: ubuntu-latest
     steps:
@@ -86,6 +73,13 @@ jobs:
         uses: actions/checkout@v4
 
       - uses: NilashishC/ansible-content-actions/.github/actions/run-ansible-lint@actions_refactor  # yamllint disable-line rule:line-length
+
+  unit-source:
+    uses: ansible-network/github_actions/.github/workflows/unit_source.yml@main
+    with:
+      collection_pre_install: >-
+        git+https://github.com/ansible-collections/ansible.utils.git
+        git+https://github.com/ansible-collections/ansible.netcommon.git
 
   all_green:
     if: ${{ always() }}
