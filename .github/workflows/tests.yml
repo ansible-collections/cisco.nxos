@@ -14,24 +14,58 @@ on:  # yamllint disable-line rule:truthy
     - cron: '0 0 * * *'
 
 jobs:
-  build-tox-matrix:
+  build-tox-matrix-unit:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: NilashishC/ansible-content-actions/.github/actions/generate-tox-ansible-matrix@actions_refactor
-        id: build-matrix
+        id: build-matrix-unit
         with:
           scope: unit
     outputs:
-      envlist: "${{ steps.build-matrix.outputs.envlist }}"
+      envlist: "${{ steps.build-matrix-unit.outputs.envlist }}"
   run-unit-galaxy:
-    needs: build-tox-matrix
+    needs: build-tox-matrix-unit
     strategy:
       fail-fast: false
       matrix:
-        entry: "${{ fromJson(needs.build-tox-matrix.outputs.envlist) }}"
+        entry: "${{ fromJson(needs.build-tox-matrix-unit.outputs.envlist) }}"
     name: "${{ matrix.entry.name }}"
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: NilashishC/ansible-content-actions/.github/actions/run-unit-tests@actions_refactor
+        with:
+          matrix-name: "${{ matrix.entry.name }}"
+
+  build-tox-matrix-sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/generate-tox-ansible-matrix@actions_refactor
+        id: build-matrix-sanity
+        with:
+          scope: sanity
+    outputs:
+      envlist: "${{ steps.build-matrix-sanity.outputs.envlist }}"
+  run-sanity:
+    needs: build-tox-matrix-sanity
+    strategy:
+      fail-fast: false
+      matrix:
+        entry: "${{ fromJson(needs.build-tox-matrix-sanity.outputs.envlist) }}"
+    name: "${{ matrix.entry.name }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: NilashishC/ansible-content-actions/.github/actions/run-sanity@actions_refactor
         with:
           matrix-name: "${{ matrix.entry.name }}"
