@@ -88,35 +88,10 @@ jobs:
         with:
           source_path: ${{ env.source_directory }}
 
-      - name: Checkout ${{ steps.identify.outputs.dependency }}
-        if: steps.identify.outputs.dependency != '' && matrix.dependency-source == 'github'
-        uses: ansible-network/github_actions/.github/actions/checkout_dependency@main
-        with:
-          repository: ansible-collections/${{ steps.identify.outputs.dependency }}
-          path: ${{ env.dependency_directory }}
-          fetch-depth: "0"
-
-      - name: Read collection metadata from ${{ steps.identify.outputs.dependency }}
-        if: steps.identify.outputs.dependency != '' && matrix.dependency-source == 'github'
-        id: identify-dependency
-        uses: ansible-network/github_actions/.github/actions/identify_collection@main
-        with:
-          source_path: ${{ env.dependency_directory }}
-
-      - name: Build and install ${{ steps.identify.outputs.dependency }}
-        if: steps.identify.outputs.dependency != '' && matrix.dependency-source == 'github'
-        uses: ansible-network/github_actions/.github/actions/build_install_collection@main
-        with:
-          python-version: ${{ matrix.python-version }}
-          install_python_dependencies: true
-          source_path: ${{ env.dependency_directory }}
-          collection_path: ${{ steps.identify-dependency.outputs.collection_path }}
-          tar_file: ${{ steps.identify-dependency.outputs.tar_file }}
 
       - name: Build and install the collection
-        uses: NilashishC/github_actions/.github/actions/build_install_collection@main
+        uses: ansible-network/github_actions/.github/actions/identify_collection@main
         with:
-          python_version: ${{ matrix.python-version }}
           install_python_dependencies: true
           source_path: ${{ env.source_directory }}
           collection_path: ${{ steps.identify.outputs.collection_path }}
@@ -124,16 +99,14 @@ jobs:
           ansible_version: ${{ matrix.ansible-version }}
 
       - name: Print the python dependencies
-        run: python${{ matrix.python-version }} -m pip list
+        run: python3 -m pip list
 
       - name: Install the integration test dependency
-        run: python${{ matrix.python-version }} -m pip install git+https://github.com/ashwini-mhatre/pytest-ansible-network-integration.git
+        run: python3 -m pip install git+https://github.com/ashwini-mhatre/pytest-ansible-network-integration.git
 
-      - name: echo secrets
-        run: echo "${{ secrets.cml_ssh_password }}"
 
       - name: Clear current lab id if any
-        run: 'python3.11 -m pip install virl2_client==2.6.1 && cml clear'
+        run: 'python3 -m pip install virl2_client==2.6.1 & cml clear'
         continue-on-error: true
         env:
           CML_VERIFY_CERT: False
@@ -143,7 +116,7 @@ jobs:
 
       - name: Run integration tests
         run: >-
-          python${{ matrix.python-version }} -m pytest tests/integration
+          python3 -m pytest tests/integration
           --integration-tests-path ${{ inputs.integration_test_path }}
           --cml-lab ${{ inputs.cml_lab }}
           ${{ inputs.pytest_addopts }}

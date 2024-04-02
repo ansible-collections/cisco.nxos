@@ -23,9 +23,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_neighbor_address_family
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
 
@@ -868,7 +868,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_bgp_nbr_af_originate_peer_as_merged(self):
+    def test_nxos_bgp_nbr_af_originate_peer_as_merged_1(self):
         # test merged for default_originate, disable_peer_as_check
         self.get_config.return_value = dedent(
             """\

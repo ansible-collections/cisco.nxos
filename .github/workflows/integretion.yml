@@ -25,6 +25,9 @@ jobs:
     with:
       network_os: cisco.nxos.nxos
       pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
+      collection_pre_install: >-
+        git+https://github.com/ansible-collections/ansible.utils.git
+        git+https://github.com/ansible-collections/ansible.netcommon.git
     secrets:
       CML_SSH_PASSWORD: ${{ secrets.CML_SSH_PASSWORD }}
       VIRL_HOST: ${{ secrets.VIRL_HOST }}
