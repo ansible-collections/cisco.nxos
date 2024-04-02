@@ -268,7 +268,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
-    def test_nxos_ntp_global_complex_merged_idempotent(self):
+    def test_nxos_ntp_global_complex_merged_idempotent_1(self):
         # test merged for complex attributes
         self.get_config.return_value = dedent(
             """\

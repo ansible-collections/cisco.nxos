@@ -190,7 +190,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_logging_global_linear_replaced(self):
+    def test_nxos_logging_global_linear_replaced_1(self):
         # test replaced for linear attributes
         self.get_config.return_value = dedent(
             """\
@@ -464,7 +464,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_logging_global_event_merged(self):
+    def test_nxos_logging_global_event_merged_1(self):
         # test merged for `event`
         self.get_config.return_value = dedent(
             """\
@@ -731,7 +731,7 @@ class TestNxosLoggingGlobalModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_logging_global_event_replaced_2(self):
+    def test_nxos_logging_global_event_replaced_3(self):
         # test replaced for `event` - 2
         self.get_config.return_value = dedent(
             """\

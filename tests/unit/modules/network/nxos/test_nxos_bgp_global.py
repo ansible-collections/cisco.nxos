@@ -233,7 +233,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_bgp_global_bfd(self):
+    def test_nxos_bgp_global_bfd_1(self):
         run_cfg = dedent(
             """\
             router bgp 65536
@@ -1046,7 +1046,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
-    def test_nxos_bgp_global_purged(self):
+    def test_nxos_bgp_global_purged_1(self):
         run_cfg = dedent(
             """\
             router bgp 65001

@@ -66,9 +66,9 @@ class Lldp_interfacesFacts(object):
 
         for i in range(len(data)):
             intf = data[i].split("\n")
-            for l in range(1, len(intf)):
-                if not re.search("lldp", intf[l]):
-                    intf[l] = ""
+            for line in range(1, len(intf)):
+                if not re.search("lldp", intf[line]):
+                    intf[line] = ""
             intf = list(filter(None, intf))
             intf = "".join(i for i in intf)
             resources.append(intf)

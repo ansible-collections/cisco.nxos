@@ -5,6 +5,22 @@ Cisco Nxos Collection Release Notes
 .. contents:: Topics
 
 
+v7.0.0
+======
+
+Major Changes
+-------------
+
+- This release removes four previously deprecated modules from this collection. Please refer to the **Removed Features** section for details.
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- The nxos_logging module has been removed with this release.
+- The nxos_ntp module has been removed with this release.
+- The nxos_ntp_auth module has been removed with this release.
+- The nxos_ntp_options module has been removed with this release.
+
 v6.0.3
 ======
 
