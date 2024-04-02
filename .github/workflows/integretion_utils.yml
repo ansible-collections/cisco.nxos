@@ -90,7 +90,7 @@ jobs:
 
 
       - name: Build and install the collection
-        uses: ansible-network/github_actions/.github/actions/identify_collection@main
+        uses: ansible-network/github_actions/.github/actions/build_install_collection@main
         with:
           install_python_dependencies: true
           source_path: ${{ env.source_directory }}
