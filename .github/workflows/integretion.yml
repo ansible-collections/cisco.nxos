@@ -19,7 +19,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   integration:
-    uses: ./.github/workflows/integretion_utils.yml
+    uses: ansible-network/github_actions/.github/workflows/integration.yml@main
     needs:
       - safe-to-test
     with:
