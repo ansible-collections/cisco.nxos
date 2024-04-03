@@ -29,6 +29,6 @@ jobs:
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
     secrets:
-      CML_SSH_PASSWORD: ${{ secrets.CML_SSH_PASSWORD }}
-      VIRL_HOST: ${{ secrets.VIRL_HOST }}
-      VIRL_PASSWORD: ${{ secrets.VIRL_PASSWORD }}
+      cml_ssh_password: ${{ secrets.CML_SSH_PASSWORD }}
+      virl_host: ${{ secrets.VIRL_HOST }}
+      virl_password: ${{ secrets.VIRL_PASSWORD }}
