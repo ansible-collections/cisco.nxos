@@ -1,4 +1,4 @@
-# For ansible-tox-linters
+# For CML
 virl2-client==2.6.1
 
 # Unit test runner
