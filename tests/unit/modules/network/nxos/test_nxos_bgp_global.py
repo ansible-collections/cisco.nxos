@@ -23,9 +23,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_global
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
 
@@ -233,7 +233,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_bgp_global_bfd(self):
+    def test_nxos_bgp_global_bfd_1(self):
         run_cfg = dedent(
             """\
             router bgp 65536
@@ -1046,7 +1046,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
-    def test_nxos_bgp_global_purged(self):
+    def test_nxos_bgp_global_purged_1(self):
         run_cfg = dedent(
             """\
             router bgp 65001

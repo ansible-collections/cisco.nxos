@@ -23,9 +23,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_ntp_global
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
 
@@ -268,7 +268,7 @@ class TestNxosNtpGlobalModule(TestNxosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
-    def test_nxos_ntp_global_complex_merged_idempotent(self):
+    def test_nxos_ntp_global_complex_merged_idempotent_1(self):
         # test merged for complex attributes
         self.get_config.return_value = dedent(
             """\

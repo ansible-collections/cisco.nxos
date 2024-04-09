@@ -29,13 +29,14 @@ try:
 except ImportError:
     from mock import MagicMock
 
+from unittest import TestCase
+
 from ansible.module_utils._text import to_bytes, to_text
 
 from ansible_collections.cisco.nxos.plugins.cliconf import nxos
-from ansible_collections.cisco.nxos.tests.unit.compat import unittest
 
 
-class TestPluginCLIConfNXOS(unittest.TestCase):
+class TestPluginCLIConfNXOS(TestCase):
     """Test class for NXOS CLI Conf Methods"""
 
     def setUp(self):
@@ -112,13 +113,19 @@ class TestPluginCLIConfNXOS(unittest.TestCase):
     def test_get_command_with_output_nxos(self):
         """Test _get_command_with_output for nxos"""
         self._prepare()
-        cmd = self._cliconf._get_command_with_output(command="show version", output="json")
+        cmd = self._cliconf._get_command_with_output(
+            command="show version",
+            output="json",
+        )
 
         self.assertEqual(cmd, "show version | json")
 
     def test_get_command_with_output_mds(self):
         """Test _get_command_with_output for mds"""
         self._prepare(platform="mds")
-        cmd = self._cliconf._get_command_with_output(command="show version", output="json")
+        cmd = self._cliconf._get_command_with_output(
+            command="show version",
+            output="json",
+        )
 
         self.assertEqual(cmd, "show version | json native")
