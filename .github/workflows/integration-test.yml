@@ -19,10 +19,11 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   integration:
-    uses: ansible-network/github_actions/.github/workflows/integration.yml@main
+    uses: roverflow/github_actions/.github/workflows/integration.yml@intgcml
     needs:
       - safe-to-test
     with:
+      lab_title: nxostest_${{ github.event.number }}
       network_os: cisco.nxos.nxos
       pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
       collection_pre_install: >-
