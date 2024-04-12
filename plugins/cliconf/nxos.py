@@ -140,7 +140,6 @@ class Cliconf(CliconfBase):
         cmd = f"configure replace {path}{filename} best-effort"
         return self.send_command(cmd)
 
-
     def get_diff(
         self,
         candidate=None,
