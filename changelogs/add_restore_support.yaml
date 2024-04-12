@@ -1,4 +1,4 @@
-minor_changes:
+major_changes:
   - Update the netcommon base version 6.1.0 to support cli_restore plugin.
 minor_changes:
   - Add support for cli_restore functionality.
