@@ -23,7 +23,7 @@ jobs:
     needs:
       - safe-to-test
     with:
-      lab_title: nxostest
+      lab_title: cisco_nxos
       network_os: cisco.nxos.nxos
       pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv --role-excludes=snmp_server"
       collection_pre_install: >-
