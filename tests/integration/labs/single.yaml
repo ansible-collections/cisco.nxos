@@ -1,7 +1,7 @@
 lab:
   description: ""
   notes: ""
-  title: nxos test
+  title: cisco.nxos.nxos
   version: 0.2.0
 links:
   - id: l0
