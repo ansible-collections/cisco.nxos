@@ -324,14 +324,17 @@ class Interfaces(FactsBase):
                 if isinstance(data, dict):
                     data = [data]
                 for item in data:
-                    name = item["ROW_intf"]["intf-name"]
-                    intf = self.facts["interfaces"][name]
-                    intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
-                    try:
-                        addr = item["ROW_intf"]["addr"]
-                    except KeyError:
-                        addr = item["ROW_intf"]["TABLE_addr"]["ROW_addr"]["addr"]
-                    self.facts["all_ipv6_addresses"].append(addr)
+                    row_intf = item["ROW_intf"]
+                    if isinstance(row_intf, dict):
+                        row_intf = [row_intf]
+                    for item in row_intf:
+                        intf = self.facts["interfaces"][item["intf-name"]]
+                        intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
+                        try:
+                            addr = item["addr"]
+                        except KeyError:
+                            addr = item["TABLE_addr"]["ROW_addr"]["addr"]
+                        self.facts["all_ipv6_addresses"].append(addr)
             else:
                 return ""
         except TypeError:
