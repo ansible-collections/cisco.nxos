@@ -1076,13 +1076,17 @@ releases:
     release_date: "2024-03-27"
   8.0.0:
     changes:
+      bugfixes:
+        - nxos_facts - correct parse JSON output when multiple interfaces have IPv6
+          address assigned (https://github.com/ansible-collections/cisco.nxos/issues/771).
       major_changes:
-        - Update the netcommon base version 6.1.0 to support cli_restore plugin.
+        - Updated the minimum required ansible.netcommon version to 6.1.0 to support the cli_restore module.
       minor_changes:
         - Add support for cli_restore functionality.
         - Please refer the PR to know more about core changes (https://github.com/ansible-collections/ansible.netcommon/pull/618).
-        - cli_restore module is part of netcommon.
+          The cli_restore module is a part of ansible.netcommon.
     fragments:
       - add_restore_support.yaml
+      - fix_771.yaml
       - trivial.yaml
-    release_date: "2024-04-19"
+    release_date: '2024-04-19'
