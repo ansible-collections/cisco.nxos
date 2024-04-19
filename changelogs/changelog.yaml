@@ -1090,4 +1090,4 @@ releases:
       - add_restore_support.yaml
       - fix_771.yaml
       - trivial.yaml
-    release_date: '2024-04-19'
+    release_date: "2024-04-19"
