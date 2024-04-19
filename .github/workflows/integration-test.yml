@@ -8,8 +8,8 @@ on:
       - reopened
       - synchronize
     paths:
-      - "plugins/"
-      - "tests/integration/"
+      - "plugins/**"
+      - "tests/integration/**"
   workflow_dispatch:
 
 jobs:
