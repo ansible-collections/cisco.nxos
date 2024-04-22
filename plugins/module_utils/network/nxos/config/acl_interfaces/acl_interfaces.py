@@ -10,6 +10,7 @@ is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to it's desired end-state is
 created
 """
+
 from __future__ import absolute_import, division, print_function
 
 
@@ -120,7 +121,7 @@ class Acl_interfaces(ConfigBase):
             for w in config:
                 if get_interface_type(w["name"]) == "loopback":
                     self._module.fail_json(
-                        msg="This module works with ethernet, management or port-channe",
+                        msg="This module works with ethernet, management or port-channel.",
                     )
                 w.update({"name": normalize_interface(w["name"])})
                 want.append(remove_empties(w))
@@ -139,7 +140,9 @@ class Acl_interfaces(ConfigBase):
         """
         if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(self.state),
+                msg="value of config parameter must not be empty for state {0}".format(
+                    self.state,
+                ),
             )
 
         commands = []
@@ -185,7 +188,11 @@ class Acl_interfaces(ConfigBase):
                 for ag in obj_in_have["access_groups"]:
                     want_afi = []
                     if want.get("access_groups"):
-                        want_afi = search_obj_in_list(ag["afi"], want["access_groups"], "afi")
+                        want_afi = search_obj_in_list(
+                            ag["afi"],
+                            want["access_groups"],
+                            "afi",
+                        )
                     if not want_afi:
                         # whatever in have is not in want
                         del_dict["access_groups"].append(ag)
@@ -241,7 +248,11 @@ class Acl_interfaces(ConfigBase):
                     ip = "ipv6"
                     if w_afi["afi"] == "ipv4":
                         ip = "ip"
-                    have_afi = search_obj_in_list(w_afi["afi"], have_name["access_groups"], "afi")
+                    have_afi = search_obj_in_list(
+                        w_afi["afi"],
+                        have_name["access_groups"],
+                        "afi",
+                    )
                     if have_afi:
                         new_acls = []
                         if deleted:
