@@ -4,6 +4,25 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v8.0.0
+======
+
+Major Changes
+-------------
+
+- Updated the minimum required ansible.netcommon version to 6.1.0 to support the cli_restore module.
+
+Minor Changes
+-------------
+
+- Add support for cli_restore functionality.
+- Please refer the PR to know more about core changes (https://github.com/ansible-collections/ansible.netcommon/pull/618).
+  The cli_restore module is a part of ansible.netcommon.
+
+Bugfixes
+--------
+
+- nxos_facts - correct parse JSON output when multiple interfaces have IPv6 address assigned (https://github.com/ansible-collections/cisco.nxos/issues/771).
 
 v7.0.0
 ======
