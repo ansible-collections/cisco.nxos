@@ -1493,3 +1493,92 @@ class TestNxosRouteMapsModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_without_match_and_set_merged(self):
+        self.get_config.return_value = dedent(
+            """\
+            route-map test-1 permit 10
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="test-1",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=20,
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            )
+        )
+        commands = [
+            "route-map test-1 permit 20",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_without_match_and_set_overridden(self):
+        self.get_config.return_value = dedent(
+            """\
+            route-map test-1 permit 10
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="test-2",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                            ),
+                        ],
+                    ),
+                ],
+                state="overridden",
+            )
+        )
+        commands = [
+            "no route-map test-1 permit 10",
+            "route-map test-2 permit 10",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_without_match_and_set_replaced(self):
+        self.get_config.return_value = dedent(
+            """\
+            route-map test-1 permit 10
+            route-map test-1 permit 20
+            route-map test-2 permit 10
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="test-1",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=30,
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            )
+        )
+        commands = [
+            "no route-map test-1 permit 10",
+            "no route-map test-1 permit 20",
+            "route-map test-1 permit 30",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
