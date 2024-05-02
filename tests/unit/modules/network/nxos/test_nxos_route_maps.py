@@ -1498,7 +1498,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             route-map test-1 permit 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1514,7 +1514,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = [
             "route-map test-1 permit 20",
@@ -1526,7 +1526,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
         self.get_config.return_value = dedent(
             """\
             route-map test-1 permit 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1542,7 +1542,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                     ),
                 ],
                 state="overridden",
-            )
+            ),
         )
         commands = [
             "no route-map test-1 permit 10",
@@ -1557,7 +1557,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
             route-map test-1 permit 10
             route-map test-1 permit 20
             route-map test-2 permit 10
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1573,7 +1573,7 @@ class TestNxosRouteMapsModule(TestNxosModule):
                     ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         commands = [
             "no route-map test-1 permit 10",
