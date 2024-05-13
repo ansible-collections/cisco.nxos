@@ -20,6 +20,8 @@ import re
 
 from copy import deepcopy
 
+from ansible.module_utils._text import to_text
+from ansible.module_utils.connection import ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
@@ -46,6 +48,8 @@ class L3_interfaces(ConfigBase):
 
     exclude_params = []
 
+    err_responses = [r"encap in use by another sub-interface"]
+
     def __init__(self, module):
         super(L3_interfaces, self).__init__(module)
 
@@ -70,7 +74,10 @@ class L3_interfaces(ConfigBase):
         return l3_interfaces_facts
 
     def edit_config(self, commands):
-        return self._connection.edit_config(commands)
+        try:
+            self._connection.edit_config(candidate=commands, err_responses=self.err_responses)
+        except ConnectionError as exc:
+            self._module.fail_json(msg=to_text(exc, errors="surrogate_then_replace").strip())
 
     def execute_module(self):
         """Execute the module

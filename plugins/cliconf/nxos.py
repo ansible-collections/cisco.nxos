@@ -210,15 +210,27 @@ class Cliconf(CliconfBase):
 
         return self.send_command(cmd)
 
-    def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
+    def edit_config(
+        self,
+        candidate=None,
+        commit=True,
+        replace=None,
+        comment=None,
+        err_responses=None,
+    ):
         resp = {}
         operations = self.get_device_operations()
-        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
+        self.check_edit_config_capability(
+            operations,
+            candidate,
+            commit,
+            replace,
+            comment,
+        )
         results = []
         requests = []
 
         if replace:
-            device_info = self.get_device_info()
             # not all NX-OS versions support `config replace`
             # we let the device throw the invalid command error
             candidate = "config replace {0}".format(replace)
@@ -232,7 +244,15 @@ class Cliconf(CliconfBase):
 
                 cmd = line["command"]
                 if cmd != "end":
-                    results.append(self.send_command(**line))
+                    resp = self.send_command(**line)
+
+                    for err in err_responses:
+                        if re.compile(err, re.I | re.M).match(resp):
+                            raise ConnectionError(
+                                message=f"CLI error when executing '{cmd}': '{resp}'",
+                            )
+
+                    results.append(resp)
                     requests.append(cmd)
 
             self.send_command("end")
