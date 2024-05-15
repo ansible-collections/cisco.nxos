@@ -244,15 +244,15 @@ class Cliconf(CliconfBase):
 
                 cmd = line["command"]
                 if cmd != "end":
-                    resp = self.send_command(**line)
+                    output = self.send_command(**line)
 
                     for err in err_responses:
-                        if re.compile(err, re.I | re.M).match(resp):
+                        if re.compile(err, re.I | re.M).match(output):
                             raise ConnectionError(
-                                message=f"CLI error when executing '{cmd}': '{resp}'",
+                                message=f"CLI error when executing '{cmd}': '{output}'",
                             )
 
-                    results.append(resp)
+                    results.append(output)
                     requests.append(cmd)
 
             self.send_command("end")
