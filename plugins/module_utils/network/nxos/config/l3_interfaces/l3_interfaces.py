@@ -72,7 +72,7 @@ class L3_interfaces(ConfigBase):
         return l3_interfaces_facts
 
     def edit_config(self, commands):
-        self._connection.edit_config(candidate=commands, err_responses=self.err_responses)
+        return self._connection.edit_config(candidate=commands, err_responses=self.err_responses)
 
     def execute_module(self):
         """Execute the module
