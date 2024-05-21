@@ -24,7 +24,11 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 class Static_routesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Static_routesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Static_routesTemplate, self).__init__(
+            lines=lines,
+            tmplt=self,
+            module=module,
+        )
 
     # fmt: off
     PARSERS = [
@@ -49,9 +53,9 @@ class Static_routesTemplate(NetworkTemplate):
                 (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel)\S+))?
                 (\s(?P<forward_router_address>\S+))?
                 (\svrf\s(?P<dest_vrf>\S+))?
+                (\strack\s(?P<track>\d+))?
                 (\sname\s(?P<route_name>\S+))?
                 (\stag\s(?P<tag>\d+))?
-                (\strack\s(?P<track>\d+))?
                 (\s(?P<admin_distance>\d+))?
                 $""", re.VERBOSE,
             ),
@@ -60,9 +64,9 @@ class Static_routesTemplate(NetworkTemplate):
             "{{ (' ' + ipv4.interface) if ipv4.interface is defined else '' }}"
             "{{ (' ' + ipv4.forward_router_address) if ipv4.forward_router_address is defined else '' }}"
             "{{ (' vrf ' + ipv4.dest_vrf) if ipv4.dest_vrf is defined else '' }}"
+            "{{ (' track ' + ipv4.track|string) if ipv4.track is defined else '' }}"
             "{{ (' name ' + ipv4.route_name) if ipv4.route_name is defined else '' }}"
             "{{ (' tag ' + ipv4.tag|string) if ipv4.tag is defined else '' }}"
-            "{{ (' track ' + ipv4.track|string) if ipv4.track is defined else '' }}"
             "{{ (' ' + ipv4.admin_distance|string) if ipv4.admin_distance is defined else '' }}",
             "result": {
                 "{{ dest }}_{{ namevrf|d() }}_ipv4": [
@@ -90,9 +94,9 @@ class Static_routesTemplate(NetworkTemplate):
                 (\s(?P<interface>(Ethernet|loopback|mgmt|Null|port-channel)\S+))?
                 (\s(?P<forward_router_address>\S+))?
                 (\svrf\s(?P<dest_vrf>\S+))?
+                (\strack\s(?P<track>\d+))?
                 (\sname\s(?P<route_name>\S+))?
                 (\stag\s(?P<tag>\d+))?
-                (\strack\s(?P<track>\d+))?
                 (\s(?P<admin_distance>\d+))?
                 $""", re.VERBOSE,
             ),
@@ -101,9 +105,9 @@ class Static_routesTemplate(NetworkTemplate):
             "{{ (' ' + ipv6.interface) if ipv6.interface is defined else '' }}"
             "{{ (' ' + ipv6.forward_router_address) if ipv6.forward_router_address is defined else '' }}"
             "{{ (' vrf ' + ipv6.dest_vrf) if ipv6.dest_vrf is defined else '' }}"
+            "{{ (' track ' + ipv6.track|string) if ipv6.track is defined else '' }}"
             "{{ (' name ' + ipv6.route_name) if ipv6.route_name is defined else '' }}"
             "{{ (' tag ' + ipv6.tag|string) if ipv6.tag is defined else '' }}"
-            "{{ (' track ' + ipv6.track|string) if ipv6.track is defined else '' }}"
             "{{ (' ' + ipv6.admin_distance|string) if ipv6.admin_distance is defined else '' }}",
             "result": {
                 "{{ dest }}_{{ namevrf|d() }}_ipv6": [
