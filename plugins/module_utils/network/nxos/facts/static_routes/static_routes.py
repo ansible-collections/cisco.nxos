@@ -10,6 +10,7 @@ It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
+
 from __future__ import absolute_import, division, print_function
 
 
@@ -28,7 +29,7 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 class Static_routesFacts(object):
     """The nxos static_routes fact class"""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = Static_routesArgs.argument_spec
 
@@ -84,9 +85,13 @@ class Static_routesFacts(object):
             _triv_static_route = {"address_families": []}
 
             if afi_v4:
-                _triv_static_route["address_families"].append({"afi": "ipv4", "routes": afi_v4})
+                _triv_static_route["address_families"].append(
+                    {"afi": "ipv4", "routes": afi_v4},
+                )
             if afi_v6:
-                _triv_static_route["address_families"].append({"afi": "ipv6", "routes": afi_v6})
+                _triv_static_route["address_families"].append(
+                    {"afi": "ipv6", "routes": afi_v6},
+                )
 
             _static_route_facts.append(_triv_static_route)
 
@@ -100,9 +105,13 @@ class Static_routesFacts(object):
             }
 
             if afi_v4:
-                _vrf_static_route["address_families"].append({"afi": "ipv4", "routes": afi_v4})
+                _vrf_static_route["address_families"].append(
+                    {"afi": "ipv4", "routes": afi_v4},
+                )
             if afi_v6:
-                _vrf_static_route["address_families"].append({"afi": "ipv6", "routes": afi_v6})
+                _vrf_static_route["address_families"].append(
+                    {"afi": "ipv6", "routes": afi_v6},
+                )
 
             _static_route_facts.append(_vrf_static_route)
         return _static_route_facts
@@ -125,7 +134,10 @@ class Static_routesFacts(object):
             data = self.get_static_routes_data(connection)
 
         # parse native config using the Static_routes template
-        static_routes_parser = Static_routesTemplate(lines=data.splitlines(), module=self._module)
+        static_routes_parser = Static_routesTemplate(
+            lines=data.splitlines(),
+            module=self._module,
+        )
         objs = static_routes_parser.parse()
 
         strout = self.process_static_routes(objs)
@@ -134,7 +146,11 @@ class Static_routesFacts(object):
         ansible_facts["ansible_network_resources"].pop("static_routes", None)
 
         params = utils.remove_empties(
-            static_routes_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
+            static_routes_parser.validate_config(
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["static_routes"] = params.get("config")
