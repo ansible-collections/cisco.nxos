@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "nxos_static_routes - correctly generate command when track parameter is specified."
