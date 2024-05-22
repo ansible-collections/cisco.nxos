@@ -1091,3 +1091,17 @@ releases:
       - fix_771.yaml
       - trivial.yaml
     release_date: "2024-04-19"
+  8.1.0:
+    changes:
+      bugfixes:
+        - nxos_l3_interfaces - fail if encapsulation exists on a different sub-interface.
+        - nxos_static_routes - correctly generate command when track parameter is specified.
+      minor_changes:
+        - route_maps - support simple route-maps that do not contain set or match statements.
+          it allows for the creation and management of purely basic route-map entries
+          like 'route-map test-1 permit 10'.
+    fragments:
+      - ana_442.yaml
+      - nxos_l3_interfaces.yaml
+      - route_maps.yaml
+    release_date: "2024-05-22"

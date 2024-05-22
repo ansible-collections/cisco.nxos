@@ -4,6 +4,20 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v8.1.0
+======
+
+Minor Changes
+-------------
+
+- route_maps - support simple route-maps that do not contain set or match statements. it allows for the creation and management of purely basic route-map entries like 'route-map test-1 permit 10'.
+
+Bugfixes
+--------
+
+- nxos_l3_interfaces - fail if encapsulation exists on a different sub-interface.
+- nxos_static_routes - correctly generate command when track parameter is specified.
+
 v8.0.0
 ======
 
@@ -16,8 +30,7 @@ Minor Changes
 -------------
 
 - Add support for cli_restore functionality.
-- Please refer the PR to know more about core changes (https://github.com/ansible-collections/ansible.netcommon/pull/618).
-  The cli_restore module is a part of ansible.netcommon.
+- Please refer the PR to know more about core changes (https://github.com/ansible-collections/ansible.netcommon/pull/618). The cli_restore module is a part of ansible.netcommon.
 
 Bugfixes
 --------
