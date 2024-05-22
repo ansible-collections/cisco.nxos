@@ -47,6 +47,7 @@ class Route_maps(ResourceModule):
             tmplt=Route_mapsTemplate(),
         )
         self.linear_parsers = [
+            "route_map",
             "description",
             "continue_sequence",
             "set.as_path.prepend.last_as",
