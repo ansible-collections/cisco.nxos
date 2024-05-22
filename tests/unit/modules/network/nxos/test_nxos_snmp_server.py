@@ -23,9 +23,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_snmp_server
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
 
@@ -391,7 +391,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_snmp_server_traps_replaced(self):
+    def test_nxos_snmp_server_traps_replaced_1(self):
         # test replaced for traps
         self.get_config.return_value = dedent(
             """\
@@ -482,7 +482,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_snmp_server_hosts_merged(self):
+    def test_nxos_snmp_server_hosts_merged_1(self):
         # test merged for hosts
         self.get_config.return_value = dedent(
             """\
@@ -591,7 +591,7 @@ class TestNxosSnmpServerModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_snmp_server_users_merged(self):
+    def test_nxos_snmp_server_users_merged_1(self):
         # test merged for users
         self.get_config.return_value = dedent(
             """\
@@ -662,18 +662,19 @@ class TestNxosSnmpServerModule(TestNxosModule):
         )
         commands = [
             "snmp-server user snmp_user_2 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv 0x5632724fb8ac3699296af26281e1d0f1"
-            " localizedkey engineID 2:2:2:2:2",
+            " localizedV2key engineID 2:2:2:2:2",
             "snmp-server user snmp_user_3 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128"
-            " 0x5632724fb8ac3699296af26281e1d0f1 localizedV2key engineID 3:3:3:3:3",
+            " 0x5632724fb8ac3699296af26281e1d0f1 localizedkey engineID 3:3:3:3:3",
             "snmp-server user snmp_user_1 network-admin auth md5 0x5632724fb8ac3699296af26281e1d0f1"
             " localizedkey engineID 1:1:1:1:1",
             "snmp-server user snmp_user_4 network-admin auth sha-256 0x5632724fb8ac3699296af26281e1d0f1 priv aes-128"
             " 0x5632724fb8ac3699296af26281e1d0f1 localizedkey engineID 4:4:4:4:4",
         ]
         result = self.execute_module(changed=True)
+        print(result["commands"])
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_snmp_server_users_merged(self):
+    def test_nxos_snmp_server_users_merged_2(self):
         # test merged for users
         self.get_config.return_value = dedent(
             """\
@@ -705,7 +706,9 @@ class TestNxosSnmpServerModule(TestNxosModule):
                                     algorithm="md5",
                                     password="0x5632724fb8ac3699296af262",
                                     engine_id="2:2:2:2:2",
-                                    priv=dict(privacy_password="0x5632724fb8ac3699296af262"),
+                                    priv=dict(
+                                        privacy_password="0x5632724fb8ac3699296af262",
+                                    ),
                                     localizedv2_key=True,
                                 ),
                             ),
@@ -906,7 +909,9 @@ class TestNxosSnmpServerModule(TestNxosModule):
                             algorithm="md5",
                             password="0x7d425fbf09417c44bca69e1d9e9ce889",
                             localized_key=True,
-                            priv=dict(privacy_password="0x7d425fbf09417c44bca69e1d9e9ce889"),
+                            priv=dict(
+                                privacy_password="0x7d425fbf09417c44bca69e1d9e9ce889",
+                            ),
                         ),
                     ),
                     dict(

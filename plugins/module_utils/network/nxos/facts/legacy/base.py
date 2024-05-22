@@ -223,9 +223,13 @@ class Interfaces(FactsBase):
         ],
     )
 
-    INTERFACE_IPV4_MAP = frozenset([("eth_ip_addr", "address"), ("eth_ip_mask", "masklen")])
+    INTERFACE_IPV4_MAP = frozenset(
+        [("eth_ip_addr", "address"), ("eth_ip_mask", "masklen")],
+    )
 
-    INTERFACE_SVI_IPV4_MAP = frozenset([("svi_ip_addr", "address"), ("svi_ip_mask", "masklen")])
+    INTERFACE_SVI_IPV4_MAP = frozenset(
+        [("svi_ip_addr", "address"), ("svi_ip_mask", "masklen")],
+    )
 
     INTERFACE_IPV6_MAP = frozenset([("addr", "address"), ("prefix", "subnet")])
 
@@ -268,14 +272,18 @@ class Interfaces(FactsBase):
         data = self.run("show lldp neighbors", output="json")
         if data:
             if isinstance(data, dict):
-                self.facts["neighbors"].update(self.populate_structured_neighbors_lldp(data))
+                self.facts["neighbors"].update(
+                    self.populate_structured_neighbors_lldp(data),
+                )
             else:
                 self.facts["neighbors"].update(self.populate_neighbors(data))
 
         data = self.run("show cdp neighbors detail", output="json")
         if data:
             if isinstance(data, dict):
-                self.facts["neighbors"].update(self.populate_structured_neighbors_cdp(data))
+                self.facts["neighbors"].update(
+                    self.populate_structured_neighbors_cdp(data),
+                )
             else:
                 self.facts["neighbors"].update(self.populate_neighbors_cdp(data))
 
@@ -316,14 +324,17 @@ class Interfaces(FactsBase):
                 if isinstance(data, dict):
                     data = [data]
                 for item in data:
-                    name = item["ROW_intf"]["intf-name"]
-                    intf = self.facts["interfaces"][name]
-                    intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
-                    try:
-                        addr = item["ROW_intf"]["addr"]
-                    except KeyError:
-                        addr = item["ROW_intf"]["TABLE_addr"]["ROW_addr"]["addr"]
-                    self.facts["all_ipv6_addresses"].append(addr)
+                    row_intf = item["ROW_intf"]
+                    if isinstance(row_intf, dict):
+                        row_intf = [row_intf]
+                    for item in row_intf:
+                        intf = self.facts["interfaces"][item["intf-name"]]
+                        intf["ipv6"] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
+                        try:
+                            addr = item["addr"]
+                        except KeyError:
+                            addr = item["TABLE_addr"]["ROW_addr"]["addr"]
+                        self.facts["all_ipv6_addresses"].append(addr)
             else:
                 return ""
         except TypeError:
@@ -379,7 +390,9 @@ class Interfaces(FactsBase):
                 match = re.match(r"^(\S+)", line)
                 if match:
                     key = match.group(1)
-                    if not key.startswith("admin") or not key.startswith("IPv6 Interface"):
+                    if not key.startswith("admin") or not key.startswith(
+                        "IPv6 Interface",
+                    ):
                         parsed[key] = line
         return parsed
 
@@ -781,9 +794,9 @@ class Legacy(FactsBase):
 
                 match = re.search(r"\d\s*\d*\s*(.+)$", line, re.M)
                 if match:
-                    l = match.group(1).split("  ")
+                    line = match.group(1).split("  ")
                     items = list()
-                    for item in l:
+                    for item in line:
                         if item == "":
                             continue
                         items.append(item.strip())
@@ -799,28 +812,28 @@ class Legacy(FactsBase):
     def parse_fan_info(self, data):
         objects = list()
 
-        for l in data.splitlines():
-            if "-----------------" in l or "Status" in l:
+        for line in data.splitlines():
+            if "-----------------" in line or "Status" in line:
                 continue
-            line = l.split()
-            if len(line) > 1:
+            split_line = line.split()
+            if len(split_line) > 1:
                 obj = {}
-                obj["name"] = line[0]
-                obj["model"] = line[1]
-                obj["hw_ver"] = line[-2]
-                obj["status"] = line[-1]
+                obj["name"] = split_line[0]
+                obj["model"] = split_line[1]
+                obj["hw_ver"] = split_line[-2]
+                obj["status"] = split_line[-1]
                 objects.append(obj)
         return objects
 
     def parse_power_supply_info(self, data):
         objects = list()
 
-        for l in data.splitlines():
-            if l == "":
+        for line in data.splitlines():
+            if line == "":
                 break
-            if l[0].isdigit():
+            if line[0].isdigit():
                 obj = {}
-                line = l.split()
+                line = line.split()
                 obj["model"] = line[1]
                 obj["number"] = line[0]
                 obj["status"] = line[-1]

@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "`nxos_l3_interfaces` - fail if encapsulation exists on a different sub-interface."

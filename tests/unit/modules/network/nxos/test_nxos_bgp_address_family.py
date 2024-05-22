@@ -23,9 +23,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_bgp_address_family
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
 
@@ -2314,7 +2314,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_bgp_af_delete(self):
+    def test_nxos_bgp_af_delete_1(self):
         # test gathered
         self.get_config.return_value = dedent(
             """\

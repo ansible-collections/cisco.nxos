@@ -61,9 +61,9 @@ class Acl_interfacesFacts(object):
         resources = []
         for i in range(len(data)):
             intf = data[i].split("\n")
-            for l in range(1, len(intf)):
-                if not re.search("ip(v6)?( port)? (access-group|traffic-filter)", intf[l]):
-                    intf[l] = ""
+            for line in range(1, len(intf)):
+                if not re.search("ip(v6)?( port)? (access-group|traffic-filter)", intf[line]):
+                    intf[line] = ""
             intf = list(filter(None, intf))
             resources.append(intf)
 

@@ -23,9 +23,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_route_maps
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
 
@@ -1490,6 +1490,95 @@ class TestNxosRouteMapsModule(TestNxosModule):
             "route-map test-2 permit 11",
             "no set extcommunity rt 65000:516590 65000:516591 65000:516592 additive",
             "set extcommunity rt 65000:516590",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_without_match_and_set_merged(self):
+        self.get_config.return_value = dedent(
+            """\
+            route-map test-1 permit 10
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="test-1",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=20,
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "route-map test-1 permit 20",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_without_match_and_set_overridden(self):
+        self.get_config.return_value = dedent(
+            """\
+            route-map test-1 permit 10
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="test-2",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                            ),
+                        ],
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
+            "no route-map test-1 permit 10",
+            "route-map test-2 permit 10",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_nxos_route_maps_without_match_and_set_replaced(self):
+        self.get_config.return_value = dedent(
+            """\
+            route-map test-1 permit 10
+            route-map test-1 permit 20
+            route-map test-2 permit 10
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="test-1",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=30,
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "no route-map test-1 permit 10",
+            "no route-map test-1 permit 20",
+            "route-map test-1 permit 30",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))

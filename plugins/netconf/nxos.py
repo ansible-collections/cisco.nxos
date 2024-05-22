@@ -38,7 +38,6 @@ options:
       identify the ncclient device handler name refer ncclient library documentation.
 """
 
-from ansible.plugins.netconf import NetconfBase
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.netconf_base import NetconfBase
 
 

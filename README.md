@@ -1,5 +1,4 @@
 # Cisco NX-OS Collection
-[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.nxos)
 [![Codecov](https://codecov.io/gh/ansible-collections/cisco.nxos/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/cisco.nxos)
 [![CI](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml)
 
@@ -23,7 +22,7 @@ PEP440 is the schema used to describe the versions of Ansible.
 <!--end requires_ansible-->
 
 ### Supported connections
-The Cisco NX-OS collection supports ``network_cli``  and ``httpapi`` connections.
+The Cisco NX-OS collection supports ``network_cli``  and ``httpapi`` connections. A detailed platform guide can be found [here](https://github.com/ansible-collections/cisco.nxos/blob/main/platform_guide.rst).
 
 ## Included content
 <!--start collection content-->
@@ -82,12 +81,8 @@ Name | Description
 [cisco.nxos.nxos_lag_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lag_interfaces_module.rst)|LAG interfaces resource module
 [cisco.nxos.nxos_lldp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lldp_global_module.rst)|LLDP resource module
 [cisco.nxos.nxos_lldp_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_lldp_interfaces_module.rst)|LLDP interfaces resource module
-[cisco.nxos.nxos_logging](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_logging_module.rst)|Manage logging on network devices
 [cisco.nxos.nxos_logging_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_logging_global_module.rst)|Logging resource module.
-[cisco.nxos.nxos_ntp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ntp_module.rst)|Manages core NTP configuration.
-[cisco.nxos.nxos_ntp_auth](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ntp_auth_module.rst)|Manages NTP authentication.
 [cisco.nxos.nxos_ntp_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ntp_global_module.rst)|NTP Global resource module.
-[cisco.nxos.nxos_ntp_options](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ntp_options_module.rst)|Manages NTP options.
 [cisco.nxos.nxos_nxapi](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_nxapi_module.rst)|Manage NXAPI configuration on an NXOS device.
 [cisco.nxos.nxos_ospf_interfaces](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospf_interfaces_module.rst)|OSPF Interfaces Resource Module.
 [cisco.nxos.nxos_ospfv2](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_ospfv2_module.rst)|OSPFv2 resource module

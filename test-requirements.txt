@@ -1,9 +1,7 @@
-# For ansible-tox-linters
-black==23.3.0 ; python_version >= '3.7'
-flake8
-yamllint
+# For CML
+virl2-client==2.6.1
 
 # Unit test runner
-pytest-ansible ; python_version >= '3.9'
-git+https://github.com/ansible-community/pytest-ansible-units.git ; python_version < '3.9'
+pytest-ansible
 pytest-xdist
+pytest-cov

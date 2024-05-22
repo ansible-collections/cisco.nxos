@@ -27,11 +27,10 @@ import sys
 
 from contextlib import contextmanager
 from io import BytesIO, StringIO
+from unittest import TestCase
 
 from ansible.module_utils._text import to_bytes
 from ansible.module_utils.six import PY3
-
-from ansible_collections.cisco.nxos.tests.unit.compat import unittest
 
 
 @contextmanager
@@ -78,7 +77,7 @@ def swap_stdout():
         sys.stdout = old_stdout
 
 
-class ModuleTestCase(unittest.TestCase):
+class ModuleTestCase(TestCase):
     def setUp(self, module_args=None):
         if module_args is None:
             module_args = {

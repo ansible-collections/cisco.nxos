@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - "route_maps - support simple route-maps that do not contain set or match statements.
+    it allows for the creation and management of purely basic route-map entries like 'route-map test-1 permit 10'."

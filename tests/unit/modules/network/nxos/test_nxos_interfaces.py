@@ -23,9 +23,9 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_interfaces
-from ansible_collections.cisco.nxos.tests.unit.compat.mock import patch
 
 from .nxos_module import TestNxosModule, set_module_args
 
@@ -84,7 +84,7 @@ class TestNxosInterfacesModule(TestNxosModule):
         self.edit_config.return_value = None
         if device == "legacy":
             # call execute_module() with device='legacy' to use this codepath
-            self.get_platform.return_value = "N3K-Cxxx"
+            self.get_platform.return_value = "N5K-Cxxx"
         else:
             self.get_platform.return_value = "N9K-Cxxx"
 
