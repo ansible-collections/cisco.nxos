@@ -46,6 +46,8 @@ class L3_interfaces(ConfigBase):
 
     exclude_params = []
 
+    err_responses = [r"encap in use by another sub-interface"]
+
     def __init__(self, module):
         super(L3_interfaces, self).__init__(module)
 
@@ -70,7 +72,7 @@ class L3_interfaces(ConfigBase):
         return l3_interfaces_facts
 
     def edit_config(self, commands):
-        return self._connection.edit_config(commands)
+        return self._connection.edit_config(candidate=commands, err_responses=self.err_responses)
 
     def execute_module(self):
         """Execute the module
