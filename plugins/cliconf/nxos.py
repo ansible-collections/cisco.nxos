@@ -215,9 +215,16 @@ class Cliconf(CliconfBase):
         candidate=None,
         commit=True,
         replace=None,
+        diff=False,
         comment=None,
         err_responses=None,
     ):
+        if diff:
+            self._connection.queue_message(
+                "warning",
+                message="setting `diff=True` in edit_config() no effect for platform cisco.nxos",
+            )
+
         resp = {}
         operations = self.get_device_operations()
         self.check_edit_config_capability(
