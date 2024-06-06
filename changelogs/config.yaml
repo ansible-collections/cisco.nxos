@@ -10,6 +10,8 @@ prelude_section_name: release_summary
 prelude_section_title: Release Summary
 flatmap: true
 sections:
+  - - release_summary
+    - Release Summary
   - - major_changes
     - Major Changes
   - - minor_changes
