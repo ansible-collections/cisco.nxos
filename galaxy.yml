@@ -10,4 +10,4 @@ readme: README.md
 repository: https://github.com/ansible-collections/cisco.nxos
 issues: https://github.com/ansible-collections/cisco.nxos/issues
 tags: [cisco, nxos, networking, nxapi, netconf]
-version: 8.1.0
+version: 9.0.0

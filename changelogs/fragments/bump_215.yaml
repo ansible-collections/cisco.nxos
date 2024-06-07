@@ -1,3 +1,0 @@
----
-major_changes:
-  - Bumping `requires_ansible` to `>=2.15.0`, since previous ansible-core versions are EoL now.
