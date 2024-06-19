@@ -111,7 +111,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.tele
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vlans.vlans import (
     VlansFacts,
 )
-
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.vrf_global.vrf_global import (
     Vrf_globalFacts,
 )

@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the nxos_vrf_global module
 
 
 class Vrf_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_vrf_global module
-    """
+    """The arg spec for the nxos_vrf_global module"""
 
     argument_spec = {
         "config": {
@@ -64,7 +64,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                                 },
                                                 "interface_value": {"type": "str"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "igmp": {
@@ -77,7 +77,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                                 "group": {"type": "str"},
                                                 "source": {"type": "str"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "mroutes": {
@@ -107,17 +107,17 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                                             "none",
                                                             "sg_hash",
                                                             "sg_hash_next_hop",
-                                                        ]
+                                                        ],
                                                     ],
                                                     "options": {
                                                         "none": {"type": "bool"},
                                                         "legacy": {"type": "bool"},
                                                         "nbm": {"type": "bool"},
                                                         "sg_hash": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "sg_hash_next_hop": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                 },
@@ -129,7 +129,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                             "options": {
                                                 "vrf_name": {"type": "str"},
                                                 "group_list_range": {
-                                                    "type": "str"
+                                                    "type": "str",
                                                 },
                                             },
                                         },
@@ -155,7 +155,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                     "type": "list",
                                     "elements": "dict",
                                     "mutually_exclusive": [
-                                        ["tags", "vrf", "track"]
+                                        ["tags", "vrf", "track"],
                                     ],
                                     "options": {
                                         "source": {"type": "str"},
@@ -202,7 +202,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                     },
-                                }
+                                },
                             },
                         },
                         "ipv6": {
@@ -232,15 +232,15 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                                             "none",
                                                             "sg_hash",
                                                             "sg_hash_next_hop",
-                                                        ]
+                                                        ],
                                                     ],
                                                     "options": {
                                                         "none": {"type": "bool"},
                                                         "sg_hash": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "sg_hash_next_hop": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                 },
@@ -251,7 +251,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                             },
                         },
                     },
-                }
+                },
             },
         },
         "running_config": {"type": "str"},

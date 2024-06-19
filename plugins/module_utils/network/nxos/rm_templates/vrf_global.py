@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,12 +16,15 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
 
+
 def name_server_addr_list(lines, tmplt):
     pass
+
 
 class Vrf_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -33,7 +37,8 @@ class Vrf_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^vrf\scontext\s(?P<name>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "vrf context {{ name }}",
             "result": {
                 "vrfs": {
@@ -42,14 +47,15 @@ class Vrf_globalTemplate(NetworkTemplate):
                     },
                 },
             },
-            "shared": True
+            "shared": True,
         },
         {
             "name": "description",
             "getval": re.compile(
                 r"""
                 \s+description\s(?P<description>.+$)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "description {{ description }}",
             "result": {
                 "vrfs": {
@@ -65,7 +71,8 @@ class Vrf_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+ip\s(?P<auto_disc>auto-discard)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip auto-discard",
             "result": {
                 "vrfs": {
@@ -83,7 +90,8 @@ class Vrf_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+ip\sdomain-list\s(?P<domain_list>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip domain-list {{ domain_list }}",
             "result": {
                 "vrfs": {
@@ -91,7 +99,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                         'name': '{{ name }}',
                         "ip" : {
                             "domain_list": [
-                                "{{ domain_list }}"
+                                "{{ domain_list }}",
                             ],
                         },
                     },
@@ -103,7 +111,8 @@ class Vrf_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+ip\sdomain-name\s(?P<domain_name>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip domain-name {{ ip.domain_name }}",
             "result": {
                 "vrfs": {
@@ -123,7 +132,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \s+ip\sicmp-errors
                 \ssource-interface\s(?P<interface>eth|po|lo)
                 (?P<interface_val>(\d+\S*))
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip icmp-errors source-interface {{ interface }} {{ interface_value }}",
             "result": {
                 "vrfs": {
@@ -136,7 +146,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                                     "{{ 'port-channel' if 'po' in interface }}"
                                     "{{ 'loopback' if 'lo' in interface }}",
                                     "interface_value": "{{ interface_val }}",
-                                }
+                                },
                             },
                         },
                     },
@@ -151,7 +161,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \sssm-translate
                 \s(?P<group_val>\S+)
                 \s(?P<source_val>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip igmp ssm-translate {{ group }} {{ source }}",
             "result": {
                 "vrfs": {
@@ -162,7 +173,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                                 "ssm_translate": {
                                     "group": "{{ group_val }}",
                                     "source": "{{ source_val }}",
-                                }
+                                },
                             },
                         },
                     },
@@ -178,7 +189,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \s(?P<source_val>\S+)
                 (\s(?P<pref_val>\d+))?
                 (\svrf\s(?P<vrf_val>\S+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip mroute {{ group }} {{ source }}"
             "{{ ' ' + preference if preference is defined }}"
             "{{ ' vrf ' + vrf if vrf is defined }}",
@@ -193,7 +205,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                                     "source": "{{ source_val }}",
                                     "preference": "{{ pref_val if pref_val is defined }}",
                                     "vrf": "{{ vrf_val if vrf_val is defined }}",
-                                }
+                                },
                             ],
                         },
                     },
@@ -206,7 +218,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 r"""
                 \s+ip\smulticast
                 \sprefix-list\s(?P<prefix_lst>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip multicast group-range prefix-list {{ group_range_prefix_list }}",
             "result": {
                 "vrfs": {
@@ -227,7 +240,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 r"""
                 \s+ip\smulticast
                 \smultipath\s(?P<res>resilient)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip multicast multipath resilient",
             "result": {
                 "vrfs": {
@@ -250,7 +264,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 r"""
                 \s+ip\smulticast
                 \smultipath\s(?P<noneval>none)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip multicast multipath none",
             "result": {
                 "vrfs": {
@@ -275,7 +290,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 r"""
                 \s+ip\smulticast
                 \smultipath\s(?P<legacy_val>legacy)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip multicast multipath legacy",
             "result": {
                 "vrfs": {
@@ -300,7 +316,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 r"""
                 \s+ip\smulticast
                 \smultipath\s(?P<nbm_val>nbm)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip multicast multipath nbm",
             "result": {
                 "vrfs": {
@@ -325,7 +342,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 r"""
                 \s+ip\smulticast
                 \smultipath\s(?P<sg_hash_val>s-g-hash)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip multicast multipath s-g-hash",
             "result": {
                 "vrfs": {
@@ -351,7 +369,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \s+ip\smulticast
                 \smultipath
                 \s(?P<sg_hash_nxt_val>s-g-hash\snext-hop-based)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip multicast multipath s-g-hash next-hop-based",
             "result": {
                 "vrfs": {
@@ -378,7 +397,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \srpf\sselect
                 \svrf\s(?P<vrf_val>\S+)
                 \sgroup-list\s(?P<group_list>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip multicast rpf select vrf {{ vrf_name }} group-list {{ group_list_range }}",
             "result": {
                 "vrfs": {
@@ -390,7 +410,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                                     {
                                         "vrf_name": "{{ vrf_val }}",
                                         "group_list_range": "{{ group_list }}",
-                                    }
+                                    },
                                 ],
                             },
                         },
@@ -404,7 +424,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 r"""
                 \s+ip\sname-server
                 \s(?P<addr_list>.+$)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": name_server_addr_list,
             "result": {
                 "vrfs": {
@@ -426,7 +447,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \s+ip\sname-server
                 \s(?P<source_addr>\S+)
                 \suse-vrf\s(?P<vrf_name>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "ip name-server {{ source_address }} use-vrf {{ vrf }}",
             "result": {
                 "vrfs": {
