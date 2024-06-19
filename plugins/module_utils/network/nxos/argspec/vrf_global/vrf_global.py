@@ -51,7 +51,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                 "icmp_err": {
                                     "type": "dict",
                                     "options": {
-                                        "source_interace": {
+                                        "source_interface": {
                                             "type": "dict",
                                             "options": {
                                                 "interface": {
@@ -111,6 +111,8 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                                     ],
                                                     "options": {
                                                         "none": {"type": "bool"},
+                                                        "legacy": {"type": "bool"},
+                                                        "nbm": {"type": "bool"},
                                                         "sg_hash": {
                                                             "type": "bool"
                                                         },

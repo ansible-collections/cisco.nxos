@@ -57,7 +57,7 @@ options:
                 description: Enable ICMP error message.
                 type: dict
                 suboptions:
-                  source_interace:
+                  source_interface:
                     description: Configure source-address for applications.
                     type: dict
                     suboptions:
@@ -133,6 +133,12 @@ options:
                         suboptions:
                           none:
                             description: Disable multicast load splitting.
+                            type: bool
+                          legacy:
+                            description: Configure hash based on source and group.
+                            type: bool
+                          nbm:
+                            description: Configure NBM controlled RPF interface.
                             type: bool
                           sg_hash:
                             description: Configure hash based on source and group address.
@@ -376,10 +382,10 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.argspec.vrf_global.vrf_global import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vrf_global.vrf_global import (
     Vrf_globalArgs,
 )
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.config.vrf_global.vrf_global import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.vrf_global.vrf_global import (
     Vrf_global,
 )
 

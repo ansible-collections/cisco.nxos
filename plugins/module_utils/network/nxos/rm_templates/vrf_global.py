@@ -19,6 +19,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+def name_server_addr_list(lines, tmplt):
+    pass
+
 class Vrf_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Vrf_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -26,24 +29,419 @@ class Vrf_globalTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "key_a",
+            "name": "name",
             "getval": re.compile(
                 r"""
-                ^key_a\s(?P<key_a>\S+)
+                ^vrf\scontext\s(?P<name>\S+)
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "vrf context {{ name }}",
             "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                    },
+                },
             },
             "shared": True
         },
         {
-            "name": "key_b",
+            "name": "description",
             "getval": re.compile(
                 r"""
-                \s+key_b\s(?P<key_b>\S+)
+                \s+description\s(?P<description>.+$)
                 $""", re.VERBOSE),
-            "setval": "",
+            "setval": "description {{ description }}",
             "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        'description': '{{ description }}',
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.auto_discard",
+            "getval": re.compile(
+                r"""
+                \s+ip\s(?P<auto_disc>auto-discard)
+                $""", re.VERBOSE),
+            "setval": "ip auto-discard",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "auto_discard": "{{ true if auto_disc is defined }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.domain_list",
+            "getval": re.compile(
+                r"""
+                \s+ip\sdomain-list\s(?P<domain_list>\S+)
+                $""", re.VERBOSE),
+            "setval": "ip domain-list {{ domain_list }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "domain_list": [
+                                "{{ domain_list }}"
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.domain_name",
+            "getval": re.compile(
+                r"""
+                \s+ip\sdomain-name\s(?P<domain_name>\S+)
+                $""", re.VERBOSE),
+            "setval": "ip domain-name {{ ip.domain_name }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "domain_name": "{{ domain_name }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.icmp_err.source_interface",
+            "getval": re.compile(
+                r"""
+                \s+ip\sicmp-errors
+                \ssource-interface\s(?P<interface>eth|po|lo)
+                (?P<interface_val>(\d+\S*))
+                $""", re.VERBOSE),
+            "setval": "ip icmp-errors source-interface {{ interface }} {{ interface_value }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "icmp_err": {
+                                "source_interface": {
+                                    "interface": "{{ 'ethernet' if 'eth' in interface }}"
+                                    "{{ 'port-channel' if 'po' in interface }}"
+                                    "{{ 'loopback' if 'lo' in interface }}",
+                                    "interface_value": "{{ interface_val }}",
+                                }
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.igmp.ssm_translate",
+            "getval": re.compile(
+                r"""
+                \s+ip\sigmp
+                \sssm-translate
+                \s(?P<group_val>\S+)
+                \s(?P<source_val>\S+)
+                $""", re.VERBOSE),
+            "setval": "ip igmp ssm-translate {{ group }} {{ source }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "igmp": {
+                                "ssm_translate": {
+                                    "group": "{{ group_val }}",
+                                    "source": "{{ source_val }}",
+                                }
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.mroutes",
+            "getval": re.compile(
+                r"""
+                \s+ip\smroute
+                \s(?P<group_val>\S+)
+                \s(?P<source_val>\S+)
+                (\s(?P<pref_val>\d+))?
+                (\svrf\s(?P<vrf_val>\S+))?
+                $""", re.VERBOSE),
+            "setval": "ip mroute {{ group }} {{ source }}"
+            "{{ ' ' + preference if preference is defined }}"
+            "{{ ' vrf ' + vrf if vrf is defined }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "mroutes": [
+                                {
+                                    "group": "{{ group_val }}",
+                                    "source": "{{ source_val }}",
+                                    "preference": "{{ pref_val if pref_val is defined }}",
+                                    "vrf": "{{ vrf_val if vrf_val is defined }}",
+                                }
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.multicast.group_range_prefix_list",
+            "getval": re.compile(
+                r"""
+                \s+ip\smulticast
+                \sprefix-list\s(?P<prefix_lst>\S+)
+                $""", re.VERBOSE),
+            "setval": "ip multicast group-range prefix-list {{ group_range_prefix_list }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "multicast": {
+                                "group_range_prefix_list": "{{ prefix_lst }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.multicast.multipath.resilient",
+            "getval": re.compile(
+                r"""
+                \s+ip\smulticast
+                \smultipath\s(?P<res>resilient)
+                $""", re.VERBOSE),
+            "setval": "ip multicast multipath resilient",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "multicast": {
+                                "multipath": {
+                                    "resilient": "{{ true if res is defined }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.multicast.multipath.splitting_type.none",
+            "getval": re.compile(
+                r"""
+                \s+ip\smulticast
+                \smultipath\s(?P<noneval>none)
+                $""", re.VERBOSE),
+            "setval": "ip multicast multipath none",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "multicast": {
+                                "multipath": {
+                                    "splitting_type": {
+                                        "none": "{{ true if noneval is defined }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.multicast.multipath.splitting_type.legacy",
+            "getval": re.compile(
+                r"""
+                \s+ip\smulticast
+                \smultipath\s(?P<legacy_val>legacy)
+                $""", re.VERBOSE),
+            "setval": "ip multicast multipath legacy",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "multicast": {
+                                "multipath": {
+                                    "splitting_type": {
+                                        "legacy": "{{ true if legacy_val is defined }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.multicast.multipath.splitting_type.nbm",
+            "getval": re.compile(
+                r"""
+                \s+ip\smulticast
+                \smultipath\s(?P<nbm_val>nbm)
+                $""", re.VERBOSE),
+            "setval": "ip multicast multipath nbm",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "multicast": {
+                                "multipath": {
+                                    "splitting_type": {
+                                        "nbm": "{{ true if nbm_val is defined }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.multicast.multipath.splitting_type.sg_hash",
+            "getval": re.compile(
+                r"""
+                \s+ip\smulticast
+                \smultipath\s(?P<sg_hash_val>s-g-hash)
+                $""", re.VERBOSE),
+            "setval": "ip multicast multipath s-g-hash",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "multicast": {
+                                "multipath": {
+                                    "splitting_type": {
+                                        "sg_hash": "{{ true if sg_hash_val is defined }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.multicast.multipath.splitting_type.sg_hash_next_hop",
+            "getval": re.compile(
+                r"""
+                \s+ip\smulticast
+                \smultipath
+                \s(?P<sg_hash_nxt_val>s-g-hash\snext-hop-based)
+                $""", re.VERBOSE),
+            "setval": "ip multicast multipath s-g-hash next-hop-based",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "multicast": {
+                                "multipath": {
+                                    "splitting_type": {
+                                        "sg_hash_next_hop": "{{ true if sg_hash_nxt_val is defined }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.multicast.rpf",
+            "getval": re.compile(
+                r"""
+                \s+ip\smulticast
+                \srpf\sselect
+                \svrf\s(?P<vrf_val>\S+)
+                \sgroup-list\s(?P<group_list>\S+)
+                $""", re.VERBOSE),
+            "setval": "ip multicast rpf select vrf {{ vrf_name }} group-list {{ group_list_range }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "multicast": {
+                                "rpf": [
+                                    {
+                                        "vrf_name": "{{ vrf_val }}",
+                                        "group_list_range": "{{ group_list }}",
+                                    }
+                                ],
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.name_server.address_list",
+            "getval": re.compile(
+                r"""
+                \s+ip\sname-server
+                \s(?P<addr_list>.+$)
+                $""", re.VERBOSE),
+            "setval": name_server_addr_list,
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "name_server": {
+                                "address_list": "{{ addr_list }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.name_server.use_vrf",
+            "getval": re.compile(
+                r"""
+                \s+ip\sname-server
+                \s(?P<source_addr>\S+)
+                \suse-vrf\s(?P<vrf_name>\S+)
+                $""", re.VERBOSE),
+            "setval": "ip name-server {{ source_address }} use-vrf {{ vrf }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "name_server": {
+                                "use_vrf": {
+                                    "source_address": "{{ source_addr }}",
+                                    "vrf": "{{ vrf_name }}",
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
     ]
