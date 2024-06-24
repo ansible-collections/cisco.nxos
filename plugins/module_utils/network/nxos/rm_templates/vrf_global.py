@@ -590,14 +590,14 @@ class Vrf_globalTemplate(NetworkTemplate):
                 (\s(?P<l3_val>l3))?
                 $""", re.VERBOSE,
             ),
-            "setval": "vni {{ vni }} {{ 'l3' if l3 is defined }}",
+            "setval": "vni {{ vni_number }} {{ 'l3' if layer_3 is defined }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "vni": {
                             "vni_number": "{{ vni_val }}",
-                            "l3": "{{ true if l3_val is defined }}",
+                            "layer_3": "{{ true if l3_val is defined }}",
                         },
                     },
                 },
