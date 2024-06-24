@@ -517,8 +517,8 @@ class Vrf_globalTemplate(NetworkTemplate):
                                     "tags": {
                                         "tag_value": "{{ tag_val }}",
                                         "route_pref": "{{ route_pref_val if route_pref_val is defined }}",
-                                    }
-                                    
+                                    },
+
                                 },
                             ],
                         },
@@ -602,6 +602,6 @@ class Vrf_globalTemplate(NetworkTemplate):
                     },
                 },
             },
-        }
+        },
     ]
     # fmt: on
