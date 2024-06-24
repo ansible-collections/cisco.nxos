@@ -466,5 +466,142 @@ class Vrf_globalTemplate(NetworkTemplate):
                 },
             },
         },
+        {
+            "name": "ip.route",
+            "getval": re.compile(
+                r"""
+                \s+ip\sroute
+                \s(?P<src_val>\S+)
+                \s(?P<dest_val>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip route {{ ip.route.source }} {{ ip.route.destination }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "route": [
+                                {
+                                    "source": "{{ src_val }}",
+                                    "destination": "{{ dest_val }}",
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.route.tags",
+            "getval": re.compile(
+                r"""
+                \s+ip\sroute
+                \s(?P<src_val>\S+)
+                \s(?P<dest_val>\S+)
+                \stag\s(?P<tag_val>\d+)
+                (\s(?P<route_pref_val>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip route {{ ip.route.source }} {{ ip.route.destination }} tag {{ tag }}"
+            "{{ ' ' + route_pref if route_pref is defined }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "route": [
+                                {
+                                    "source": "{{ src_val }}",
+                                    "destination": "{{ dest_val }}",
+                                    "tags": {
+                                        "tag_value": "{{ tag_val }}",
+                                        "route_pref": "{{ route_pref_val if route_pref_val is defined }}",
+                                    }
+                                    
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.route.vrf",
+            "getval": re.compile(
+                r"""
+                \s+ip\sroute
+                \s(?P<src_val>\S+)
+                \s(?P<dest_val>\S+)
+                \svrf\s(?P<vrf_val>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip route {{ ip.route.source }} {{ ip.route.destination }} vrf {{ vrf }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "route": [
+                                {
+                                    "source": "{{ src_val }}",
+                                    "destination": "{{ dest_val }}",
+                                    "vrf": "{{ vrf_val }}",
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.route.track",
+            "getval": re.compile(
+                r"""
+                \s+ip\sroute
+                \s(?P<src_val>\S+)
+                \s(?P<dest_val>\S+)
+                \strack\s(?P<track_val>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip route {{ ip.route.source }} {{ ip.route.destination }} vrf {{ vrf }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "route": [
+                                {
+                                    "source": "{{ src_val }}",
+                                    "destination": "{{ dest_val }}",
+                                    "track": "{{ track_val }}",
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "vni",
+            "getval": re.compile(
+                r"""
+                \s+vni\s(?P<vni_val>\d+)
+                (\s(?P<l3_val>l3))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "vni {{ vni }} {{ 'l3' if l3 is defined }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "vni": {
+                            "vni_number": "{{ vni_val }}",
+                            "l3": "{{ true if l3_val is defined }}",
+                        },
+                    },
+                },
+            },
+        }
     ]
     # fmt: on
