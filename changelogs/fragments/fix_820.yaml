@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "nxos_snmp_server - correctly render entity traps (https://github.com/ansible-collections/cisco.nxos/issues/820)."
