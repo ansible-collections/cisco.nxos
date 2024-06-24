@@ -1033,3 +1033,43 @@ class TestNxosSnmpServerModule(TestNxosModule):
         gathered = {}
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_snmp_server_traps_merged_820(self):
+        # test merged for traps, related to #820
+        self.get_config.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    traps=dict(
+                        entity=dict(
+                            entity_fan_status_change=True,
+                            entity_mib_change=True,
+                            entity_module_inserted=True,
+                            entity_module_removed=True,
+                            entity_module_status_change=True,
+                            entity_power_out_change=True,
+                            entity_power_status_change=True,
+                            entity_unrecognised_module=True,
+                            entity_sensor=True,
+                        ),
+                    ),
+                ),
+                state="merged",
+            ),
+            ignore_provider_arg,
+        )
+        commands = [
+            "snmp-server enable traps entity entity_fan_status_change",
+            "snmp-server enable traps entity entity_mib_change",
+            "snmp-server enable traps entity entity_module_inserted",
+            "snmp-server enable traps entity entity_module_status_change",
+            "snmp-server enable traps entity entity_power_out_change",
+            "snmp-server enable traps entity entity_power_status_change",
+            "snmp-server enable traps entity entity_sensor",
+            "snmp-server enable traps entity entity_unrecognised_module",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
