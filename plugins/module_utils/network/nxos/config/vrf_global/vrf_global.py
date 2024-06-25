@@ -28,8 +28,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
-from ansible_collections.cisco.nxos.nxos.plugins.module_utils.network.nxos.rm_templates.vrf_global import (
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.vrf_global import (
     Vrf_globalTemplate,
 )
 

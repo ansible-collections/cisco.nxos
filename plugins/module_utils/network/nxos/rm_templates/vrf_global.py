@@ -170,10 +170,12 @@ class Vrf_globalTemplate(NetworkTemplate):
                         'name': '{{ name }}',
                         "ip" : {
                             "igmp": {
-                                "ssm_translate": {
-                                    "group": "{{ group_val }}",
-                                    "source": "{{ source_val }}",
-                                },
+                                "ssm_translate": [
+                                    {
+                                        "group": "{{ group_val }}",
+                                        "source": "{{ source_val }}",
+                                    },
+                                ]
                             },
                         },
                     },
@@ -590,7 +592,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 (\s(?P<l3_val>l3))?
                 $""", re.VERBOSE,
             ),
-            "setval": "vni {{ vni_number }} {{ 'l3' if layer_3 is defined }}",
+            "setval": "vni {{ vni.vni_number }} {{ 'l3' if vni.layer_3 is defined }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {

@@ -28,6 +28,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
 )
 
 
+import debugpy
+debugpy.listen(3000)
+debugpy.wait_for_client()
+
 class Vrf_globalFacts(object):
     """The nxos vrf_global facts class"""
 
@@ -58,9 +62,9 @@ class Vrf_globalFacts(object):
 
         # parse native config using the Vrf_global template
         vrf_global_parser = Vrf_globalTemplate(lines=data.splitlines(), module=self._module)
-        objs = list(vrf_global_parser.parse().values())
+        objs = vrf_global_parser.parse()
 
-        objs["vrfs"] = list(objs["vrfs"].values()) if "vrfs" in objs else []
+        objs["vrfs"] = list(objs.get("vrfs", {}).values()) if "vrfs" in objs else []
 
         ansible_facts["ansible_network_resources"].pop("vrf_global", None)
 
