@@ -175,7 +175,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                                         "group": "{{ group_val }}",
                                         "source": "{{ source_val }}",
                                     },
-                                ]
+                                ],
                             },
                         },
                     },
