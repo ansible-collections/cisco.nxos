@@ -175,7 +175,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                                         "group": "{{ group_val }}",
                                         "source": "{{ source_val }}",
                                     },
-                                ],
+                                ]
                             },
                         },
                     },
@@ -600,6 +600,186 @@ class Vrf_globalTemplate(NetworkTemplate):
                         "vni": {
                             "vni_number": "{{ vni_val }}",
                             "layer_3": "{{ true if l3_val is defined }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "multicast.service_reflect",
+            "getval": re.compile(
+                r"""
+                \s+multicast\sservice-reflect
+                \sinterface\s(?P<serv_inter>\S+)
+                \smap\sinterface\s(?P<map_inter>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "multicast service-reflect interface {{ service_interface }} map interface {{ map_to }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "multicast": {
+                            "service_reflect": [
+                                {
+                                    "service_interface": "{{ serv_inter }}",
+                                    "map_to": "{{ map_inter }}",
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv6.mld_ssm_translate",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\smld
+                (\s(?P<icmp>icmp))?
+                \sssm-translate
+                \s(?P<group_val>\S+)
+                \s(?P<source_val>\S+)
+                $""", re.VERBOSE,
+            ),
+            "getval": "ipv6 {{ 'icmp' if icmp is defined }} mld ssm-translate {{ group }} {{ source }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ipv6": {
+                            "mld_ssm_translate": [
+                                {
+                                    "icmp": "{{ true if icmp is defined }}",
+                                    "group": "{{ group_val }}",
+                                    "source": "{{ source_val }}",
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv6.multicast.group_range_prefix_list",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\smulticast
+                \sgroup-range\sprefix-list
+                \s(?P<prefix_lst>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 multicast group-range prefix-list {{ ipv6.multicast.group_range_prefix_list }}",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ipv6": {
+                            "multicast": {
+                                "group_range_prefix_list": "{{ prefix_lst }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv6.multicast.multipath.resilient",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\smulticast
+                \smultipath\s(?P<res_val>resilient)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 multicast multipath resilient",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ipv6": {
+                            "multicast": {
+                                "multipath": {
+                                    "resilient": "{{ true if res_val is defined }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv6.multicast.multipath.splitting_type.none",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\smulticast
+                \smultipath\s(?P<none_val>none)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 multicast multipath none",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ipv6": {
+                            "multicast": {
+                                "multipath": {
+                                    "splitting_type": {
+                                        "none": "{{ true if none_val is defined }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv6.multicast.multipath.splitting_type.sg_hash",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\smulticast
+                \smultipath\s(?P<sg_hash_val>s-g-hash)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 multicast multipath s-g-hash",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ipv6": {
+                            "multicast": {
+                                "multipath": {
+                                    "splitting_type": {
+                                        "sg_hash": "{{ true if sg_hash_val is defined }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ipv6.multicast.multipath.splitting_type.sg_hash_next_hop",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\smulticast
+                \smultipath\s(?P<sg_hash_next_hop_val>sg-nexthop-hash)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 multicast multipath sg-nexthop-hash",
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ipv6": {
+                            "multicast": {
+                                "multipath": {
+                                    "splitting_type": {
+                                        "sg_hash_next_hop": "{{ true if sg_hash_next_hop_val is defined }}",
+                                    },
+                                },
+                            },
                         },
                     },
                 },
