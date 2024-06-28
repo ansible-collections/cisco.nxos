@@ -28,8 +28,6 @@ def _template_hosts(data):
         cmd += " traps"
     if data.get("informs"):
         cmd += " informs"
-    if data.get("use_vrf"):
-        cmd += " use-vrf {0}".format(data["use_vrf"])
     if data.get("filter_vrf"):
         cmd += " filter-vrf {0}".format(data["filter_vrf"])
     if data.get("source_interface"):
@@ -102,32 +100,54 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "communities",
+            "name": "communities.groups",
             "getval": re.compile(
                 r"""
                 ^snmp-server
                 \scommunity\s(?P<community>\S+)
                 (\sgroup\s(?P<group>\S+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "snmp-server community "
+                      "{{ name }}"
+                      "{{ (' group ' + group) if group is defined else '' }}",
+            "result": {
+                "communities": {
+                    "groups": [
+                        {
+                            "name": "{{ community }}",
+                            "group": "{{ group }}",
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "communities.use_acls",
+            "getval": re.compile(
+                r"""
+                ^snmp-server
+                \scommunity\s(?P<community>\S+)
                 (\suse-ipv4acl\s(?P<use_ipv4acl>\S+))?
                 (\suse-ipv6acl\s(?P<use_ipv6acl>\S+))?
                 $""", re.VERBOSE,
             ),
             "setval": "snmp-server community "
                       "{{ name }}"
-                      "{{ (' group ' + group) if group is defined else '' }}"
                       "{{ (' use-ipv4acl ' + use_ipv4acl) if use_ipv4acl is defined else '' }}"
                       "{{ (' use-ipv6acl ' + use_ipv6acl) if use_ipv6acl is defined else '' }}"
                       "{{ ' ro' if ro|d(False) else ''}}"
                       "{{ ' rw' if rw|d(False) else ''}}",
             "result": {
-                "communities": [
-                    {
-                        "name": "{{ community }}",
-                        "group": "{{ group }}",
-                        "use_ipv4acl": "{{ use_ipv4acl }}",
-                        "use_ipv6acl": "{{ use_ipv6acl }}",
-                    },
-                ],
+                "communities": {
+                    "use_acls": [
+                        {
+                            "name": "{{ community }}",
+                            "use_ipv4acl": "{{ use_ipv4acl }}",
+                            "use_ipv6acl": "{{ use_ipv6acl }}",
+                        },
+                    ],
+                },
             },
         },
         {
@@ -1323,12 +1343,12 @@ class Snmp_serverTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "hosts",
+            "name": "hosts.sources",
             "getval": re.compile(
                 r"""
                 ^snmp-server
                 \shost\s(?P<host>\S+)
-                (\s((?P<traps>traps)|(?P<informs>informs)|(use-vrf\s(?P<use_vrf>\S+)|(filter-vrf\s(?P<filter_vrf>\S+))|(source-interface\s(?P<source_interface>\S+)))))
+                (\s((?P<traps>traps)|(?P<informs>informs)|(filter-vrf\s(?P<filter_vrf>\S+)|(source-interface\s(?P<source_interface>\S+)))))
                 (\sversion\s(?P<version>\S+))?
                 (\s((auth\s(?P<auth>\S+))|(priv\s(?P<priv>\S+))|((?P<community>\S+))))?
                 (\sudp-port\s(?P<udp_port>\S+))?
@@ -1336,21 +1356,45 @@ class Snmp_serverTemplate(NetworkTemplate):
             ),
             "setval": _template_hosts,
             "result": {
-                "hosts": [
-                    {
-                        "host": "{{ host }}",
-                        "community": "{{ community }}",
-                        "filter_vrf": "{{ filter_vrf }}",
-                        "informs": "{{ not not informs }}",
-                        "source_interface": "{{ source_interface }}",
-                        "traps": "{{ not not traps }}",
-                        "use_vrf": "{{ use_vrf }}",
-                        "version": "{{ version }}",
-                        "udp_port": "{{ udp_port }}",
-                        "auth": "{{ auth }}",
-                        "priv": "{{ priv }}",
-                    },
-                ],
+                "hosts": {
+                    "sources": [
+                        {
+                            "host": "{{ host }}",
+                            "community": "{{ community }}",
+                            "filter_vrf": "{{ filter_vrf }}",
+                            "informs": "{{ not not informs }}",
+                            "source_interface": "{{ source_interface }}",
+                            "traps": "{{ not not traps }}",
+                            "version": "{{ version }}",
+                            "udp_port": "{{ udp_port }}",
+                            "auth": "{{ auth }}",
+                            "priv": "{{ priv }}",
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "hosts.use_vrfs",
+            "getval": re.compile(
+                r"""
+                ^snmp-server
+                \shost\s(?P<host>\S+)
+                (\suse-vrf\s(?P<use_vrf>\S+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "snmp-server host "
+                      "{{ host }}"
+                      "{{ (' use-vrf ' + use_vrf) if use_vrf is defined else '' }}",
+            "result": {
+                "hosts": {
+                    "use_vrfs": [
+                        {
+                            "host": "{{ host }}",
+                            "use_vrf": "{{ use_vrf }}",
+                        },
+                    ],
+                },
             },
         },
         {
