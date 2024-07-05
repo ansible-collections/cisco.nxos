@@ -102,6 +102,9 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.rout
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.snmp_server.snmp_server import (
     Snmp_serverFacts,
 )
+from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.spanning_tree_global.spanning_tree_global import (
+    Spanning_tree_globalFacts,
+)
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.static_routes.static_routes import (
     Static_routesFacts,
 )
@@ -150,6 +153,7 @@ NX_FACT_RESOURCE_SUBSETS = dict(
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
     bgp_templates=Bgp_templatesFacts,
+    spanning_tree_global=Spanning_tree_globalFacts,
 )
 MDS_FACT_RESOURCE_SUBSETS = dict(
     fc_interfaces=Fc_interfacesFacts,

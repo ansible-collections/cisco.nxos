@@ -105,6 +105,7 @@ Name | Description
 [cisco.nxos.nxos_snmp_server](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_server_module.rst)|SNMP Server resource module.
 [cisco.nxos.nxos_snmp_traps](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_traps_module.rst)|(deprecated, removed after 2024-01-01) Manages SNMP traps.
 [cisco.nxos.nxos_snmp_user](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_snmp_user_module.rst)|(deprecated, removed after 2024-01-01) Manages SNMP users for monitoring.
+[cisco.nxos.nxos_spanning_tree_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_spanning_tree_global_module.rst)|Resource module to configure spanning tree.
 [cisco.nxos.nxos_static_routes](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_static_routes_module.rst)|Static routes resource module
 [cisco.nxos.nxos_system](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_system_module.rst)|Manage the system attributes on Cisco NXOS devices
 [cisco.nxos.nxos_telemetry](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_telemetry_module.rst)|TELEMETRY resource module
