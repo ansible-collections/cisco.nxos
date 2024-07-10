@@ -225,24 +225,10 @@ options:
                 suboptions:
                   service_interface:
                     description: configure service interface.
-                    type: dict
-                    suboptions:
-                      interface:
-                        description: Interface name.
-                        type: str
-                      interface_value:
-                        description: Interface value / Regex.
-                        type: str
+                    type: str
                   map_to:
                     description: Map to interface.
-                    type: dict
-                    suboptions:
-                      interface:
-                        description: Interface name.
-                        type: str
-                      interface_value:
-                        description: Interface value / Regex.
-                        type: str
+                    type: str
           ipv6:
             description: Configure IPv6 features for the specified vrf.
             type: dict

@@ -187,20 +187,8 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                     "type": "list",
                                     "elements": "dict",
                                     "options": {
-                                        "service_interface": {
-                                            "type": "dict",
-                                            "options": {
-                                                "interface": {"type": "str"},
-                                                "interface_value": {"type": "str"},
-                                            },
-                                        },
-                                        "map_to": {
-                                            "type": "dict",
-                                            "options": {
-                                                "interface": {"type": "str"},
-                                                "interface_value": {"type": "str"},
-                                            },
-                                        },
+                                        "service_interface": {"type": "str"},
+                                        "map_to": {"type": "str"},
                                     },
                                 },
                             },

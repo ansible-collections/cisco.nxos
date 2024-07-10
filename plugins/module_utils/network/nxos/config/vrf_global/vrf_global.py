@@ -92,3 +92,12 @@ class Vrf_global(ResourceModule):
         for the Vrf_global network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+
+    def _vrf_list_to_dict(self, vrf_list):
+        """Converts a list of VRFs to a dictionary with the VRF name as the key.
+
+        :param list vrf_list: A list of VRFs
+        :rtype: dict
+        :returns: A dictionary of VRFs with the VRF name as the key
+        """
+        return {entry["name"]: entry for entry in vrf_list}

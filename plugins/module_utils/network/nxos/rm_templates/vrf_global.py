@@ -421,28 +421,6 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "ip.name_server.address_list",
-            "getval": re.compile(
-                r"""
-                \s+ip\sname-server
-                \s(?P<addr_list>.+$)
-                $""", re.VERBOSE,
-            ),
-            "setval": name_server_addr_list,
-            "result": {
-                "vrfs": {
-                    '{{ name }}': {
-                        'name': '{{ name }}',
-                        "ip" : {
-                            "name_server": {
-                                "address_list": "{{ addr_list }}",
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
             "name": "ip.name_server.use_vrf",
             "getval": re.compile(
                 r"""
@@ -462,6 +440,28 @@ class Vrf_globalTemplate(NetworkTemplate):
                                     "source_address": "{{ source_addr }}",
                                     "vrf": "{{ vrf_name }}",
                                 },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "ip.name_server.address_list",
+            "getval": re.compile(
+                r"""
+                \s+ip\sname-server
+                \s(?P<addr_list>.+$)
+                $""", re.VERBOSE,
+            ),
+            "setval": name_server_addr_list,
+            "result": {
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "ip" : {
+                            "name_server": {
+                                "address_list": "{{ addr_list }}",
                             },
                         },
                     },
