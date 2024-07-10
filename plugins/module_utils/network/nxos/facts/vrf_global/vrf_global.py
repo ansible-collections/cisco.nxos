@@ -17,6 +17,7 @@ based on the configuration.
 
 from copy import deepcopy
 
+import debugpy
 
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
@@ -28,9 +29,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
     Vrf_globalTemplate,
 )
 
-import debugpy
+
 debugpy.listen(3000)
 debugpy.wait_for_client()
+
 
 class Vrf_globalFacts(object):
     """The nxos vrf_global facts class"""
@@ -53,7 +55,7 @@ class Vrf_globalFacts(object):
             name_server = item.get("ip", {}).get("name_server", {}).get("address_list", [])
             if name_server:
                 item["ip"]["name_server"]["address_list"] = name_server.split()
-        
+
         return objs
 
     def populate_facts(self, connection, ansible_facts, data=None):
@@ -80,7 +82,9 @@ class Vrf_globalFacts(object):
 
         ansible_facts["ansible_network_resources"].pop("vrf_global", None)
 
-        params = vrf_global_parser.validate_config(self.argument_spec, {"config": facts_output}, redact=True)
+        params = vrf_global_parser.validate_config(
+            self.argument_spec, {"config": facts_output}, redact=True
+        )
         params = utils.remove_empties(params)
         facts["vrf_global"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
