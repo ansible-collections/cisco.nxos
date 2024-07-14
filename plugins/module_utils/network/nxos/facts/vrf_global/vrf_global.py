@@ -16,7 +16,6 @@ based on the configuration.
 """
 
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vrf_global.vrf_global import (
