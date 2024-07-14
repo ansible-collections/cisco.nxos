@@ -12,6 +12,7 @@ from ansible_collections.cisco.nxos.plugins.modules import nxos_vrf_global
 
 from .nxos_module import TestNxosModule, load_fixture, set_module_args
 
+
 class TestNxosVrfGlobalModule(TestNxosModule):
     """Test the nxos_vrf_global module."""
 
@@ -44,13 +45,13 @@ class TestNxosVrfGlobalModule(TestNxosModule):
             vrf context management
               ip name-server 192.168.255.1
               ip route 0.0.0.0/0 192.168.255.1
-            """
+            """,
         )
 
         set_module_args(
             dict(
                 config={
-                    "vrfs":[
+                    "vrfs": [
                         {
                             "description": "this is descrition",
                             "ip": {
@@ -58,131 +59,131 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                                 "domain_list": [
                                     "anisble.com",
                                     "redhat.com",
-                                    "res.com"
+                                    "res.com",
                                 ],
                                 "domain_name": "redx.com",
                                 "icmp_err": {
                                     "source_interface": {
                                         "interface": "port-channel",
-                                        "interface_value": "1"
-                                    }
+                                        "interface_value": "1",
+                                    },
                                 },
                                 "igmp": {
                                     "ssm_translate": [
                                         {
                                             "group": "232.0.0.0/8",
-                                            "source": "10.1.1.1"
+                                            "source": "10.1.1.1",
                                         },
                                         {
                                             "group": "239.1.2.3/24",
-                                            "source": "192.168.1.1"
-                                        }
-                                    ]
+                                            "source": "192.168.1.1",
+                                        },
+                                    ],
                                 },
                                 "mroutes": [
                                     {
                                         "group": "192.168.1.0/24",
-                                        "source": "192.168.1.1"
+                                        "source": "192.168.1.1",
                                     },
                                     {
                                         "group": "192.168.1.0/24",
                                         "preference": 2,
                                         "source": "192.168.1.2",
-                                        "vrf": "temp1"
-                                    }
+                                        "vrf": "temp1",
+                                    },
                                 ],
                                 "multicast": {
                                     "multipath": {
                                         "resilient": True,
                                         "splitting_type": {
-                                            "legacy": True
-                                        }
+                                            "legacy": True,
+                                        },
                                     },
                                     "rpf": [
                                         {
                                             "group_list_range": "238.1.0.0/24",
-                                            "vrf_name": "temp1"
+                                            "vrf_name": "temp1",
                                         },
                                         {
                                             "group_list_range": "239.1.0.0/24",
-                                            "vrf_name": "temp1"
-                                        }
-                                    ]
+                                            "vrf_name": "temp1",
+                                        },
+                                    ],
                                 },
                                 "name_server": {
                                     "address_list": [
                                         "192.168.0.1",
                                         "192.168.0.2",
                                         "192.168.1.1",
-                                        "192.169.1.3"
+                                        "192.169.1.3",
                                     ],
                                     "use_vrf": {
                                         "source_address": "192.168.0.1",
-                                        "vrf": "temp1"
-                                    }
+                                        "vrf": "temp1",
+                                    },
                                 },
                                 "route": [
                                     {
                                         "destination": "192.0.2.22",
-                                        "source": "192.0.0.0/24"
+                                        "source": "192.0.0.0/24",
                                     },
                                     {
                                         "destination": "192.0.2.22",
                                         "source": "192.0.0.0/24",
-                                        "vrf": "temp1"
+                                        "vrf": "temp1",
                                     },
                                     {
                                         "destination": "192.0.2.22",
                                         "source": "192.0.2.0/24",
                                         "tags": {
                                             "route_pref": 4,
-                                            "tag_value": 2
-                                        }
-                                    }
-                                ]
+                                            "tag_value": 2,
+                                        },
+                                    },
+                                ],
                             },
                             "ipv6": {
                                 "mld_ssm_translate": [
                                     {
                                         "group": "ff28::/16",
-                                        "source": "2001:db8:0:abcd::2"
+                                        "source": "2001:db8:0:abcd::2",
                                     },
                                     {
                                         "group": "ff30::/16",
-                                        "source": "2001:db8:0:abcd::5"
-                                    }
+                                        "source": "2001:db8:0:abcd::5",
+                                    },
                                 ],
                                 "multicast": {
                                     "group_range_prefix_list": "temp2",
                                     "multipath": {
                                         "resilient": True,
                                         "splitting_type": {
-                                            "none": True
-                                        }
-                                    }
-                                }
+                                            "none": True,
+                                        },
+                                    },
+                                },
                             },
                             "multicast": {
                                 "service_reflect": [
                                     {
                                         "map_to": "Ethernet2/2",
-                                        "service_interface": "Ethernet1/1"
+                                        "service_interface": "Ethernet1/1",
                                     },
                                     {
                                         "map_to": "Ethernet4/2",
-                                        "service_interface": "Ethernet2/1"
-                                    }
-                                ]
+                                        "service_interface": "Ethernet2/1",
+                                    },
+                                ],
                             },
                             "name": "test1",
                             "vni": {
-                                "vni_number": 5
-                            }
-                        }
-                    ]
+                                "vni_number": 5,
+                            },
+                        },
+                    ],
                 },
-                state="merged"
-            )
+                state="merged",
+            ),
         )
         commands = [
             "vrf context test1",
@@ -213,7 +214,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
             "multicast service-reflect interface Ethernet1/1 map interface Ethernet2/2",
             "multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2",
             "ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2",
-            "ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
+            "ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -254,13 +255,13 @@ class TestNxosVrfGlobalModule(TestNxosModule):
              ipv6 mld ssm-translate ff32::/16 2001:db8:0:abcd::2
              ipv6 mld ssm-translate ff32::/16 2001:db8:0:abcd::3
              ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
-            """
+            """,
         )
 
         set_module_args(
             dict(
                 config={
-                    "vrfs":[
+                    "vrfs": [
                         {
                             "description": "this is descrition",
                             "ip": {
@@ -268,131 +269,131 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                                 "domain_list": [
                                     "anisble.com",
                                     "redhat.com",
-                                    "res.com"
+                                    "res.com",
                                 ],
                                 "domain_name": "redx.com",
                                 "icmp_err": {
                                     "source_interface": {
                                         "interface": "port-channel",
-                                        "interface_value": "1"
-                                    }
+                                        "interface_value": "1",
+                                    },
                                 },
                                 "igmp": {
                                     "ssm_translate": [
                                         {
                                             "group": "232.0.0.0/8",
-                                            "source": "10.1.1.1"
+                                            "source": "10.1.1.1",
                                         },
                                         {
                                             "group": "239.1.2.3/24",
-                                            "source": "192.168.1.1"
-                                        }
-                                    ]
+                                            "source": "192.168.1.1",
+                                        },
+                                    ],
                                 },
                                 "mroutes": [
                                     {
                                         "group": "192.168.1.0/24",
-                                        "source": "192.168.1.1"
+                                        "source": "192.168.1.1",
                                     },
                                     {
                                         "group": "192.168.1.0/24",
                                         "preference": 2,
                                         "source": "192.168.1.2",
-                                        "vrf": "temp1"
-                                    }
+                                        "vrf": "temp1",
+                                    },
                                 ],
                                 "multicast": {
                                     "multipath": {
                                         "resilient": True,
                                         "splitting_type": {
-                                            "legacy": True
-                                        }
+                                            "legacy": True,
+                                        },
                                     },
                                     "rpf": [
                                         {
                                             "group_list_range": "238.1.0.0/24",
-                                            "vrf_name": "temp1"
+                                            "vrf_name": "temp1",
                                         },
                                         {
                                             "group_list_range": "239.1.0.0/24",
-                                            "vrf_name": "temp1"
-                                        }
-                                    ]
+                                            "vrf_name": "temp1",
+                                        },
+                                    ],
                                 },
                                 "name_server": {
                                     "address_list": [
                                         "192.168.0.1",
                                         "192.168.0.2",
                                         "192.168.1.1",
-                                        "192.169.1.3"
+                                        "192.169.1.3",
                                     ],
                                     "use_vrf": {
                                         "source_address": "192.168.0.1",
-                                        "vrf": "temp1"
-                                    }
+                                        "vrf": "temp1",
+                                    },
                                 },
                                 "route": [
                                     {
                                         "destination": "192.0.2.22",
-                                        "source": "192.0.0.0/24"
+                                        "source": "192.0.0.0/24",
                                     },
                                     {
                                         "destination": "192.0.2.22",
                                         "source": "192.0.0.0/24",
-                                        "vrf": "temp1"
+                                        "vrf": "temp1",
                                     },
                                     {
                                         "destination": "192.0.2.22",
                                         "source": "192.0.2.0/24",
                                         "tags": {
                                             "route_pref": 4,
-                                            "tag_value": 2
-                                        }
-                                    }
-                                ]
+                                            "tag_value": 2,
+                                        },
+                                    },
+                                ],
                             },
                             "ipv6": {
                                 "mld_ssm_translate": [
                                     {
                                         "group": "ff28::/16",
-                                        "source": "2001:db8:0:abcd::2"
+                                        "source": "2001:db8:0:abcd::2",
                                     },
                                     {
                                         "group": "ff30::/16",
-                                        "source": "2001:db8:0:abcd::5"
-                                    }
+                                        "source": "2001:db8:0:abcd::5",
+                                    },
                                 ],
                                 "multicast": {
                                     "group_range_prefix_list": "temp2",
                                     "multipath": {
                                         "resilient": True,
                                         "splitting_type": {
-                                            "none": True
-                                        }
-                                    }
-                                }
+                                            "none": True,
+                                        },
+                                    },
+                                },
                             },
                             "multicast": {
                                 "service_reflect": [
                                     {
                                         "map_to": "Ethernet2/2",
-                                        "service_interface": "Ethernet1/1"
+                                        "service_interface": "Ethernet1/1",
                                     },
                                     {
                                         "map_to": "Ethernet4/2",
-                                        "service_interface": "Ethernet2/1"
-                                    }
-                                ]
+                                        "service_interface": "Ethernet2/1",
+                                    },
+                                ],
                             },
                             "name": "test1",
                             "vni": {
-                                "vni_number": 5
-                            }
-                        }
-                    ]
+                                "vni_number": 5,
+                            },
+                        },
+                    ],
                 },
-                state="merged"
-            )
+                state="merged",
+            ),
         )
         self.execute_module(changed=False, commands=[])
 
@@ -423,20 +424,20 @@ class TestNxosVrfGlobalModule(TestNxosModule):
              ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
              ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
              ip multicast group-range prefix-list temp2
-            """
+            """,
         )
 
         set_module_args(
             dict(
                 config={
-                    "vrfs":[
+                    "vrfs": [
                         {
                             "name": "test1",
-                        }
-                    ]
+                        },
+                    ],
                 },
-                state="deleted"
-            )
+                state="deleted",
+            ),
         )
 
         commands = [
@@ -517,37 +518,37 @@ class TestNxosVrfGlobalModule(TestNxosModule):
               ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
               ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
               ip multicast group-range prefix-list temp2
-            """
+            """,
         )
 
         set_module_args(
             dict(
                 config={
-                    "vrfs":[
+                    "vrfs": [
                         {
                             "name": "test1",
                             "vni": {
-                                "vni_number": 6
+                                "vni_number": 6,
                             },
                             "description": "test description",
                             "ip": {
                                 "auto_discard": False,
                                 "domain_list": [
                                     "redhat.com",
-                                    "greeblue.com"
+                                    "greeblue.com",
                                 ],
                                 "domain_name": "redblue.com",
                                 "icmp_err": {
                                     "source_interface": {
                                         "interface": "port-channel",
-                                        "interface_value": "3"
-                                    }
+                                        "interface_value": "3",
+                                    },
                                 },
-                            }
-                        }
-                    ]
+                            },
+                        },
+                    ],
                 },
-                state="overridden"
+                state="overridden",
             ),
         )
         commands = [
@@ -605,7 +606,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
               ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
               ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
               ip multicast group-range prefix-list temp2
-            """
+            """,
         )
 
         set_module_args(
@@ -615,40 +616,40 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                         {
                             "name": "test1",
                             "vni": {
-                                "vni_number": 6
+                                "vni_number": 6,
                             },
                             "description": "test description",
                             "ip": {
                                 "auto_discard": False,
                                 "domain_list": [
                                     "redhat.com",
-                                    "greeblue.com"
+                                    "greeblue.com",
                                 ],
                                 "domain_name": "redblue.com",
                                 "icmp_err": {
                                     "source_interface": {
                                         "interface": "port-channel",
-                                        "interface_value": "3"
-                                    }
+                                        "interface_value": "3",
+                                    },
                                 },
                             },
                             "multicast": {
                                 "service_reflect": [
                                     {
                                         "map_to": "Ethernet2/2",
-                                        "service_interface": "Ethernet1/1"
+                                        "service_interface": "Ethernet1/1",
                                     },
                                     {
                                         "map_to": "Ethernet4/2",
-                                        "service_interface": "Ethernet2/1"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
+                                        "service_interface": "Ethernet2/1",
+                                    },
+                                ],
+                            },
+                        },
+                    ],
                 },
-                state="replaced"
-            )
+                state="replaced",
+            ),
         )
         commands = [
             "vrf context test1",
@@ -677,7 +678,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-    
+
     def test_nxos_vrf_global_replaced_idemp(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -695,7 +696,7 @@ class TestNxosVrfGlobalModule(TestNxosModule):
               ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
               ip route 192.0.0.0/24 192.0.2.22
               ip route 192.0.0.0/24 192.0.2.22 vrf temp1
-            """
+            """,
         )
 
         set_module_args(
@@ -707,62 +708,62 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                             "ip": {
                                 "name_server": {
                                     "address_list": [
-                                        "192.168.255.1"
-                                    ]
+                                        "192.168.255.1",
+                                    ],
                                 },
                                 "route": [
                                     {
                                         "destination": "192.168.255.1",
-                                        "source": "0.0.0.0/0"
-                                    }
-                                ]
+                                        "source": "0.0.0.0/0",
+                                    },
+                                ],
                             },
                         },
                         {
                             "name": "test1",
                             "description": "this is descrition",
                             "vni": {
-                                "vni_number": 5
+                                "vni_number": 5,
                             },
                             "ip": {
                                 "auto_discard": True,
                                 "domain_list": [
                                     "redhat.com",
-                                    "res.com"
+                                    "res.com",
                                 ],
                                 "domain_name": "redx.com",
                                 "multicast": {
                                     "rpf": [
                                         {
                                             "group_list_range": "238.1.0.0/24",
-                                            "vrf_name": "temp1"
+                                            "vrf_name": "temp1",
                                         },
                                         {
                                             "group_list_range": "239.1.0.0/24",
-                                            "vrf_name": "temp1"
+                                            "vrf_name": "temp1",
                                         },
-                                    ]
+                                    ],
                                 },
                                 "route": [
                                     {
                                         "destination": "192.0.2.22",
-                                        "source": "192.0.0.0/24"
+                                        "source": "192.0.0.0/24",
                                     },
                                     {
                                         "destination": "192.0.2.22",
                                         "source": "192.0.0.0/24",
-                                        "vrf": "temp1"
+                                        "vrf": "temp1",
                                     },
-                                ]
-                            }
-                        }
-                    ]
+                                ],
+                            },
+                        },
+                    ],
                 },
-                state="replaced"
-            )
+                state="replaced",
+            ),
         )
         self.execute_module(changed=False, commands=[])
-    
+
     def test_nxos_vrf_global_rendered(self):
         pass
 
@@ -785,10 +786,10 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                       ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
                       ip route 192.0.0.0/24 192.0.2.22
                       ip route 192.0.0.0/24 192.0.2.22 vrf temp1
-                    """
+                    """,
                 ),
-                state="parsed"
-            )
+                state="parsed",
+            ),
         )
 
         parsed_item = {
@@ -798,56 +799,56 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                     "ip": {
                         "name_server": {
                             "address_list": [
-                                "192.168.255.1"
-                            ]
+                                "192.168.255.1",
+                            ],
                         },
                         "route": [
                             {
-                                 "destination": "192.168.255.1",
-                                "source": "0.0.0.0/0"
-                            }
-                        ]
+                                "destination": "192.168.255.1",
+                                "source": "0.0.0.0/0",
+                            },
+                        ],
                     },
                 },
                 {
                     "name": "test1",
                     "description": "this is descrition",
                     "vni": {
-                        "vni_number": 5
+                        "vni_number": 5,
                     },
                     "ip": {
                         "auto_discard": True,
                         "domain_list": [
                             "redhat.com",
-                            "res.com"
+                            "res.com",
                         ],
                         "domain_name": "redx.com",
                         "multicast": {
                             "rpf": [
                                 {
                                     "group_list_range": "238.1.0.0/24",
-                                    "vrf_name": "temp1"
+                                    "vrf_name": "temp1",
                                 },
                                 {
                                     "group_list_range": "239.1.0.0/24",
-                                    "vrf_name": "temp1"
+                                    "vrf_name": "temp1",
                                 },
-                            ]
+                            ],
                         },
                         "route": [
                             {
                                 "destination": "192.0.2.22",
-                                "source": "192.0.0.0/24"
+                                "source": "192.0.0.0/24",
                             },
                             {
                                 "destination": "192.0.2.22",
                                 "source": "192.0.0.0/24",
-                                "vrf": "temp1"
+                                "vrf": "temp1",
                             },
-                        ]
-                    }
-                }
-            ]
+                        ],
+                    },
+                },
+            ],
         }
         result = self.execute_module(changed=False)
         self.assertEqual(parsed_item, result["parsed"])
