@@ -22,9 +22,18 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-def name_server_addr_list(lines, tmplt):
-    pass
-
+def _tmplt_ip_route(route_item):
+    command = "ip route {source} {destination}".format(**route_item)
+    if route_item.get("tags"):
+        tag_item = route_item.get("tags")
+        command += " tag {tag_value}".format(**tag_item)
+        if route_item.get("tags").get("route_pref"):
+            command += " {route_pref}".format(**tag_item)
+    if route_item.get("vrf"):
+        command += " vrf {vrf}".format(**route_item)
+    if route_item.get("track"):
+        command += " track {track}".format(**route_item)
+    return command
 
 class Vrf_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -79,7 +88,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "ip" : {
-                            "auto_discard": "{{ true if auto_disc is defined }}",
+                            "auto_discard": "{{ True if auto_disc is defined }}",
                         },
                     },
                 },
@@ -134,7 +143,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 (?P<interface_val>(\d+\S*))
                 $""", re.VERBOSE,
             ),
-            "setval": "ip icmp-errors source-interface {{ interface }} {{ interface_value }}",
+            "setval": "ip icmp-errors source-interface {{ ip.icmp_err.source_interface.interface }} {{ ip.icmp_err.source_interface.interface_value }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -194,7 +203,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "ip mroute {{ group }} {{ source }}"
-            "{{ ' ' + preference if preference is defined }}"
+            "{{ ' ' + preference|string if preference is defined }}"
             "{{ ' vrf ' + vrf if vrf is defined }}",
             "result": {
                 "vrfs": {
@@ -222,7 +231,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \sprefix-list\s(?P<prefix_lst>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "ip multicast group-range prefix-list {{ group_range_prefix_list }}",
+            "setval": "ip multicast group-range prefix-list {{ ip.multicast.group_range_prefix_list.group_range_prefix_list }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -252,7 +261,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                         "ip" : {
                             "multicast": {
                                 "multipath": {
-                                    "resilient": "{{ true if res is defined }}",
+                                    "resilient": "{{ True if res is defined }}",
                                 },
                             },
                         },
@@ -277,7 +286,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
-                                        "none": "{{ true if noneval is defined }}",
+                                        "none": "{{ True if noneval is defined }}",
                                     },
                                 },
                             },
@@ -303,7 +312,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
-                                        "legacy": "{{ true if legacy_val is defined }}",
+                                        "legacy": "{{ True if legacy_val is defined }}",
                                     },
                                 },
                             },
@@ -329,7 +338,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
-                                        "nbm": "{{ true if nbm_val is defined }}",
+                                        "nbm": "{{ True if nbm_val is defined }}",
                                     },
                                 },
                             },
@@ -355,7 +364,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
-                                        "sg_hash": "{{ true if sg_hash_val is defined }}",
+                                        "sg_hash": "{{ True if sg_hash_val is defined }}",
                                     },
                                 },
                             },
@@ -382,7 +391,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
-                                        "sg_hash_next_hop": "{{ true if sg_hash_nxt_val is defined }}",
+                                        "sg_hash_next_hop": "{{ True if sg_hash_nxt_val is defined }}",
                                     },
                                 },
                             },
@@ -429,7 +438,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \suse-vrf\s(?P<vrf_name>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "ip name-server {{ source_address }} use-vrf {{ vrf }}",
+            "setval": "ip name-server {{ ip.name_server.use_vrf.source_address }} use-vrf {{ ip.name_server.use_vrf.vrf }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -454,7 +463,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \s(?P<addr_list>.+$)
                 $""", re.VERBOSE,
             ),
-            "setval": name_server_addr_list,
+            "setval": "ip name-server {{ ip.name_server.address_list }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -477,7 +486,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \s(?P<dest_val>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "ip route {{ ip.route.source }} {{ ip.route.destination }}",
+            "setval": _tmplt_ip_route,
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -505,8 +514,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 (\s(?P<route_pref_val>\d+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "ip route {{ ip.route.source }} {{ ip.route.destination }} tag {{ tag }}"
-            "{{ ' ' + route_pref if route_pref is defined }}",
+            "setval": _tmplt_ip_route,
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -538,7 +546,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \svrf\s(?P<vrf_val>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "ip route {{ ip.route.source }} {{ ip.route.destination }} vrf {{ vrf }}",
+            "setval": _tmplt_ip_route,
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -566,7 +574,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \strack\s(?P<track_val>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "ip route {{ ip.route.source }} {{ ip.route.destination }} vrf {{ vrf }}",
+            "setval": _tmplt_ip_route,
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -592,14 +600,14 @@ class Vrf_globalTemplate(NetworkTemplate):
                 (\s(?P<l3_val>l3))?
                 $""", re.VERBOSE,
             ),
-            "setval": "vni {{ vni.vni_number }} {{ 'l3' if vni.layer_3 is defined }}",
+            "setval": "vni {{ vni.vni_number }}{{ ' l3' if vni.layer_3 is defined }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "vni": {
                             "vni_number": "{{ vni_val }}",
-                            "layer_3": "{{ true if l3_val is defined }}",
+                            "layer_3": "{{ True if l3_val is defined }}",
                         },
                     },
                 },
@@ -636,13 +644,13 @@ class Vrf_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+ipv6\smld
-                (\s(?P<icmp>icmp))?
+                (\s(?P<icmp_val>icmp))?
                 \sssm-translate
                 \s(?P<group_val>\S+)
                 \s(?P<source_val>\S+)
                 $""", re.VERBOSE,
             ),
-            "getval": "ipv6 {{ 'icmp' if icmp is defined }} mld ssm-translate {{ group }} {{ source }}",
+            "setval": "ipv6{{ ' icmp' if icmp is defined }} mld ssm-translate {{ group }} {{ source }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -650,7 +658,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                         "ipv6": {
                             "mld_ssm_translate": [
                                 {
-                                    "icmp": "{{ true if icmp is defined }}",
+                                    "icmp": "{{ True if icmp_val is defined }}",
                                     "group": "{{ group_val }}",
                                     "source": "{{ source_val }}",
                                 },
@@ -699,7 +707,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                         "ipv6": {
                             "multicast": {
                                 "multipath": {
-                                    "resilient": "{{ true if res_val is defined }}",
+                                    "resilient": "{{ True if res_val is defined }}",
                                 },
                             },
                         },
@@ -724,7 +732,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
-                                        "none": "{{ true if none_val is defined }}",
+                                        "none": "{{ True if none_val is defined }}",
                                     },
                                 },
                             },
@@ -750,7 +758,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
-                                        "sg_hash": "{{ true if sg_hash_val is defined }}",
+                                        "sg_hash": "{{ True if sg_hash_val is defined }}",
                                     },
                                 },
                             },
@@ -776,7 +784,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
-                                        "sg_hash_next_hop": "{{ true if sg_hash_next_hop_val is defined }}",
+                                        "sg_hash_next_hop": "{{ True if sg_hash_next_hop_val is defined }}",
                                     },
                                 },
                             },
