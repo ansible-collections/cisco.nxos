@@ -88,7 +88,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "auto_discard": "{{ True if auto_disc is defined }}",
                         },
                     },
@@ -107,7 +107,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "domain_list": [
                                 "{{ domain_list }}",
                             ],
@@ -128,7 +128,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "domain_name": "{{ domain_name }}",
                         },
                     },
@@ -149,7 +149,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "icmp_err": {
                                 "source_interface": {
                                     "interface": "{{ 'ethernet' if 'eth' in interface }}"
@@ -178,7 +178,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "igmp": {
                                 "ssm_translate": [
                                     {
@@ -210,7 +210,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "mroutes": [
                                 {
                                     "group": "{{ group_val }}",
@@ -237,7 +237,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "multicast": {
                                 "group_range_prefix_list": "{{ prefix_lst }}",
                             },
@@ -259,7 +259,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "multicast": {
                                 "multipath": {
                                     "resilient": "{{ True if res is defined }}",
@@ -283,7 +283,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
@@ -309,7 +309,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
@@ -335,7 +335,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
@@ -361,7 +361,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
@@ -388,7 +388,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "multicast": {
                                 "multipath": {
                                     "splitting_type": {
@@ -416,7 +416,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "multicast": {
                                 "rpf": [
                                     {
@@ -444,7 +444,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "name_server": {
                                 "use_vrf": {
                                     "source_address": "{{ source_addr }}",
@@ -469,7 +469,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "name_server": {
                                 "address_list": "{{ addr_list }}",
                             },
@@ -492,7 +492,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "route": [
                                 {
                                     "source": "{{ src_val }}",
@@ -520,7 +520,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "route": [
                                 {
                                     "source": "{{ src_val }}",
@@ -552,7 +552,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "route": [
                                 {
                                     "source": "{{ src_val }}",
@@ -580,7 +580,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
-                        "ip" : {
+                        "ip": {
                             "route": [
                                 {
                                     "source": "{{ src_val }}",
