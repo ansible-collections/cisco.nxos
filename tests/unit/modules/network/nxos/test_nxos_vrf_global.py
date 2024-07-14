@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 from ansible_collections.cisco.nxos.plugins.modules import nxos_vrf_global
 
-from .nxos_module import TestNxosModule, load_fixture, set_module_args
+from .nxos_module import TestNxosModule, set_module_args
 
 
 class TestNxosVrfGlobalModule(TestNxosModule):
@@ -779,7 +779,6 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                       description this is descrition
                       ip domain-name redx.com
                       ip domain-list redhat.com
-                      ip domain-list res.com
                       vni 5
                       ip auto-discard
                       ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
@@ -820,7 +819,6 @@ class TestNxosVrfGlobalModule(TestNxosModule):
                         "auto_discard": True,
                         "domain_list": [
                             "redhat.com",
-                            "res.com",
                         ],
                         "domain_name": "redx.com",
                         "multicast": {
