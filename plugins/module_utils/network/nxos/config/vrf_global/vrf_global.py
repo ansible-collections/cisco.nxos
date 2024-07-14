@@ -194,7 +194,7 @@ class Vrf_global(ResourceModule):
                         tagv = entry.get("tags")
                         temp_route[
                             (
-                                f"{tagv.get("tag_value")}_{tagv.get("route_pref","")}",
+                                f"{tagv.get("tag_value")}_{tagv.get("route_pref", "")}",
                                 entry.get("source"),
                                 entry.get("destination"),
                             )
