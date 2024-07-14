@@ -121,16 +121,6 @@ options:
                       splitting_type:
                         description: Configure multicast load splitting type.
                         type: dict
-                        mutually_exclusive:
-                          [
-                            [
-                              "legacy",
-                              "nbm",
-                              "none",
-                              "sg_hash",
-                              "sg_hash_next_hop",
-                            ],
-                          ]
                         suboptions:
                           none:
                             description: Disable multicast load splitting.
@@ -180,7 +170,6 @@ options:
                 description: Configure static routes.
                 type: list
                 elements: dict
-                mutually_exclusive: [["tags", "vrf", "track"]]
                 suboptions:
                   source:
                     description: Destination prefix.
@@ -264,8 +253,6 @@ options:
                       splitting_type:
                         description: Configure multicast load splitting type.
                         type: dict
-                        mutually_exclusive:
-                          [["none", "sg_hash", "sg_hash_next_hop"]]
                         suboptions:
                           none:
                             description: Disable multicast load splitting.

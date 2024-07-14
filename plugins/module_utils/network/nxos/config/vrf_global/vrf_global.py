@@ -160,7 +160,7 @@ class Vrf_global(ResourceModule):
         for entry in vrf_list.get("vrfs", []):
             items.update({(entry["name"]): entry})
 
-        for _, value in iteritems(items):
+        for vrf, value in iteritems(items):
             domain_list = value.get("ip", {}).get("domain_list", [])
             if domain_list:
                 value["ip"]["domain_list"] = {
