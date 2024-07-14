@@ -110,7 +110,7 @@ class Vrf_global(ResourceModule):
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
                 if k not in wantd:
-                    self.addcmd(have, "name", True)
+                    self._compare(want={}, have=have)
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
