@@ -24,7 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
-    get_from_dict
+    get_from_dict,
 )
 
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.facts.facts import Facts
@@ -149,7 +149,6 @@ class Vrf_global(ResourceModule):
             for entry in hdict.values():
                 self.addcmd(entry, attrib, True)
 
-
     def _vrf_list_to_dict(self, vrf_list):
         """Converts a list of VRFs to a dictionary with the VRF name as the key.
 
@@ -160,7 +159,7 @@ class Vrf_global(ResourceModule):
         items = dict()
         for entry in vrf_list.get("vrfs", []):
             items.update({(entry["name"]): entry})
-        
+
         for _, value in iteritems(items):
             domain_list = value.get("ip", {}).get("domain_list", [])
             if domain_list:
@@ -180,31 +179,39 @@ class Vrf_global(ResourceModule):
             ip_rpf = value.get("ip", {}).get("multicast", {}).get("rpf", [])
             if ip_rpf:
                 value["ip"]["multicast"]["rpf"] = {
-                    (entry.get("vrf_name"), entry.get("group_list_range")): entry for entry in ip_rpf
+                    (entry.get("vrf_name"), entry.get("group_list_range")): entry
+                    for entry in ip_rpf
                 }
             ip_route = value.get("ip", {}).get("route", [])
             if ip_route:
                 temp_route = {}
                 for entry in ip_route:
                     if entry.get("vrf"):
-                        temp_route[(entry.get("vrf"), entry.get("source"), entry.get("destination"))] = entry
+                        temp_route[
+                            (entry.get("vrf"), entry.get("source"), entry.get("destination"))
+                        ] = entry
                     elif entry.get("tags"):
                         tagv = entry.get("tags")
                         temp_route[
-                            (f"{tagv.get("tag_value")}_{tagv.get("route_pref","")}", 
-                            entry.get("source"), 
-                            entry.get("destination"))
+                            (
+                                f"{tagv.get("tag_value")}_{tagv.get("route_pref","")}",
+                                entry.get("source"),
+                                entry.get("destination"),
+                            )
                         ] = entry
                     elif entry.get("track"):
-                        temp_route[(entry.get("track"), entry.get("source"), entry.get("destination"))] = entry
+                        temp_route[
+                            (entry.get("track"), entry.get("source"), entry.get("destination"))
+                        ] = entry
                     else:
                         temp_route[(entry.get("source"), entry.get("destination"))] = entry
                 value["ip"]["route"] = temp_route
-            
+
             service_reflect = value.get("multicast", {}).get("service_reflect", [])
             if service_reflect:
                 value["multicast"]["service_reflect"] = {
-                    (entry.get("service_interface"), entry.get("map_to")): entry for entry in service_reflect
+                    (entry.get("service_interface"), entry.get("map_to")): entry
+                    for entry in service_reflect
                 }
             ipv6_ssm = value.get("ipv6", {}).get("mld_ssm_translate", [])
             if ipv6_ssm:
@@ -213,5 +220,5 @@ class Vrf_global(ResourceModule):
                 }
             address_list = value.get("ip", {}).get("name_server", {}).get("address_list", [])
             if address_list:
-                value["ip"]["name_server"]["address_list"] = ' '.join(address_list)
+                value["ip"]["name_server"]["address_list"] = " ".join(address_list)
         return items

@@ -35,6 +35,7 @@ def _tmplt_ip_route(route_item):
         command += " track {track}".format(**route_item)
     return command
 
+
 class Vrf_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Vrf_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
