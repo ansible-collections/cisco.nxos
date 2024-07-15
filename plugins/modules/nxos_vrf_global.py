@@ -321,8 +321,8 @@ EXAMPLES = """
           ip:
             auto_discard: true
             domain_list:
-            - anisble.com
-            - redhat.com
+              - anisble.com
+              - redhat.com
             domain_name: test.com
             icmp_err:
               source_interface:
@@ -330,53 +330,53 @@ EXAMPLES = """
                 interface_value: '1'
             igmp:
               ssm_translate:
-              - group: 232.0.0.0/8
-                source: 10.1.1.1
-              - group: 239.1.2.3/24
-                source: 192.168.1.1
+                - group: 232.0.0.0/8
+                  source: 10.1.1.1
+                - group: 239.1.2.3/24
+                  source: 192.168.1.1
             mroutes:
-            - group: 192.168.1.0/24
-              source: 192.168.1.1
-            - group: 192.168.1.0/24
-              preference: 2
-              source: 192.168.1.2
-              vrf: temp1
+              - group: 192.168.1.0/24
+                source: 192.168.1.1
+              - group: 192.168.1.0/24
+                preference: 2
+                source: 192.168.1.2
+                vrf: temp1
             multicast:
               multipath:
                 resilient: true
                 splitting_type:
                   legacy: true
               rpf:
-              - group_list_range: 238.1.0.0/24
-                vrf_name: temp1
-              - group_list_range: 239.1.0.0/24
-                vrf_name: temp1
+                - group_list_range: 238.1.0.0/24
+                  vrf_name: temp1
+                - group_list_range: 239.1.0.0/24
+                  vrf_name: temp1
             name_server:
               address_list:
-              - 192.168.0.1
-              - 192.168.0.2
-              - 192.168.1.1
-              - 192.169.1.3
+                - 192.168.0.1
+                - 192.168.0.2
+                - 192.168.1.1
+                - 192.169.1.3
               use_vrf:
                 source_address: 192.168.0.1
                 vrf: temp1
             route:
-            - destination: 192.0.2.22
-              source: 192.0.0.0/24
-            - destination: 192.0.2.22
-              source: 192.0.0.0/24
-              vrf: temp1
-            - destination: 192.0.2.22
-              source: 192.0.2.0/24
-              tags:
-                route_pref: 4
-                tag_value: 2
+              - destination: 192.0.2.22
+                source: 192.0.0.0/24
+              - destination: 192.0.2.22
+                source: 192.0.0.0/24
+                vrf: temp1
+              - destination: 192.0.2.22
+                source: 192.0.2.0/24
+                tags:
+                  route_pref: 4
+                  tag_value: 2
           ipv6:
             mld_ssm_translate:
-            - group: ff28::/16
-              source: 2001:db8:0:abcd::2
-            - group: ff30::/16
-              source: 2001:db8:0:abcd::5
+              - group: 'ff28::/16'
+                source: '2001:db8:0:abcd::2'
+              - group: 'ff30::/16'
+                source: '2001:db8:0:abcd::5'
             multicast:
               group_range_prefix_list: temp2
               multipath:
@@ -385,10 +385,10 @@ EXAMPLES = """
                   none: true
           multicast:
             service_reflect:
-            - map_to: Ethernet2/2
-              service_interface: Ethernet1/1
-            - map_to: Ethernet4/2
-              service_interface: Ethernet2/1
+              - map_to: Ethernet2/2
+                service_interface: Ethernet1/1
+              - map_to: Ethernet4/2
+                service_interface: Ethernet2/1
           vni:
             vni_number: 5
     state: merged
@@ -675,6 +675,71 @@ EXAMPLES = """
 #       destination: 192.168.255.1
 # - name: test1
 
+# Using deleted with empty config
+
+# Before state:
+# -------------
+#
+# nxos#show running-config | section ^vrf
+# vrf context management
+#  ip name-server 192.168.255.1
+#  ip route 0.0.0.0/0 192.168.255.1
+# vrf context test1
+#  description this is description
+#  ip domain-name red-hat.com
+#  ip domain-list anisble.com
+#  ip domain-list redhat.com
+#  ip domain-list res.com
+#  vni 5
+
+- name: Delete VRF configuration
+  cisco.nxos.vrf_global:
+    config:
+      vrfs:
+        - name: test1
+    state: deleted
+
+# Task Output:
+# ------------
+#
+# before:
+# vrfs:
+# - name: management
+#   ip:
+#     name_server:
+#       address_list:
+#       - 192.168.255.1
+#     route:
+#     - source: 0.0.0.0/0
+#       destination: 192.168.255.1
+# - name: test1
+#   description: this is description
+#   ip:
+#     domain_name: red-hat.com
+#     domain_list:
+#     - res.com
+#     - anisble.com
+#     - redhat.com
+#   vni:
+#     vni_number: 5
+
+# commands:
+#   - vrf context management
+#   - no ip name-server 192.168.255.1
+#   - no ip route 0.0.0.0/0 192.168.255.1
+#   - vrf context test1
+#   - no description this is description
+#   - no ip domain-name red-hat.com
+#   - no vni 5
+#   - no ip domain-list anisble.com
+#   - no ip domain-list res.com
+#   - no ip domain-list redhat.com
+#
+# after:
+# vrfs:
+# - name: management
+# - name: test1
+
 # Using overridden
 
 # Before state:
@@ -707,19 +772,19 @@ EXAMPLES = """
           ip:
             name_server:
               address_list:
-              - 192.168.255.1
+                - 192.168.255.1
             route:
-            - source: 0.0.0.0/0
-              destination: 192.168.255.1
+              - source: 0.0.0.0/0
+                destination: 192.168.255.1
         - name: test1
           ip:
             auto_discard: false
             name_server:
               address_list:
-              - 192.168.255.1
+                - 192.168.255.1
             route:
-            - source: 192.0.0.0/24
-              destination: 192.0.2.22
+              - source: 192.0.0.0/24
+                destination: 192.0.2.22
     state: overridden
 
 # Task Output:
@@ -847,10 +912,10 @@ EXAMPLES = """
         - ip:
             name_server:
               address_list:
-              - 192.168.255.1
+                - 192.168.255.1
             route:
-            - destination: 192.168.255.1
-              source: 0.0.0.0/0
+              - destination: 192.168.255.1
+                source: 0.0.0.0/0
           name: management
         - name: temp
           description: Test
