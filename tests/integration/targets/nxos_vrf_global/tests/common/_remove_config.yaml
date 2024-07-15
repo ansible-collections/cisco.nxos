@@ -1,0 +1,7 @@
+---
+- name: Remove VRF global configurations
+  cisco.ios.ios_config:
+    lines:
+      - no vrf definition testvrf
+    save_when: always
+  register: result

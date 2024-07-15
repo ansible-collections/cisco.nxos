@@ -1,0 +1,69 @@
+---
+deleted:
+  commands:
+    - vrf definition testvrf
+    - no description This is a test VRF
+    - no ip auto-discard
+    - no ip domain-name redhat.com
+    - no vni 5
+    - no ip mroute 192.168.1.0/24 192.168.1.1
+    - no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
+    - no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
+  after:
+    vrfs:
+      - name: management
+      - name: testvrf
+
+gathered:
+  after:
+    vrfs:
+      - ip:
+          name_server:
+            address_list:
+              - 192.168.255.1
+          route:
+            - destination: 192.168.255.1
+              source: 0.0.0.0/0
+        name: management
+      - description: This is a test VRF
+        ip:
+          auto_discard: true
+          domain_name: redhat.com
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+        ipv6:
+          mld_ssm_translate:
+            - group: "ff28::/16"
+              source: "2001:db8:0:abcd::2"
+            - group: "ff30::/16"
+              source: "2001:db8:0:abcd::5"
+        name: testvrf
+        vni:
+          vni_number: 5
+
+parsed:
+  after:
+    vrfs:
+      - ip:
+          name_server:
+            address_list:
+              - 192.168.255.1
+          route:
+            - destination: 192.168.255.1
+              source: 0.0.0.0/0
+        name: management
+      - description: Test
+        ip:
+          auto_discard: true
+          domain_list:
+            - redhat.com
+            - bluehat.com
+          domain_name: red.com
+          multicast:
+            rpf:
+              - group_list_range: 238.1.0.0/24
+                vrf_name: temp1
+              - group_list_range: 239.1.0.0/24
+                vrf_name: temp1
+        name: temp
