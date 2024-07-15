@@ -852,7 +852,7 @@ EXAMPLES = """
             - destination: 192.168.255.1
               source: 0.0.0.0/0
           name: management
-        - name: temp 
+        - name: temp
           description: Test
           ip:
             auto_discard: true
