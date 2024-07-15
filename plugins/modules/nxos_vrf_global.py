@@ -305,6 +305,725 @@ options:
 """
 
 EXAMPLES = """
+# Using merged
+
+# Before state:
+# -------------
+#
+# nxos#show running-config | section ^vrf
+
+- name: Merge provided VRF configuration
+  cisco.nxos.vrf_global:
+    config:
+      vrfs:
+        - name: testvrf
+          description: this is description
+          ip:
+            auto_discard: true
+            domain_list:
+            - anisble.com
+            - redhat.com
+            domain_name: test.com
+            icmp_err:
+              source_interface:
+                interface: port-channel
+                interface_value: '1'
+            igmp:
+              ssm_translate:
+              - group: 232.0.0.0/8
+                source: 10.1.1.1
+              - group: 239.1.2.3/24
+                source: 192.168.1.1
+            mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+            - group: 192.168.1.0/24
+              preference: 2
+              source: 192.168.1.2
+              vrf: temp1
+            multicast:
+              multipath:
+                resilient: true
+                splitting_type:
+                  legacy: true
+              rpf:
+              - group_list_range: 238.1.0.0/24
+                vrf_name: temp1
+              - group_list_range: 239.1.0.0/24
+                vrf_name: temp1
+            name_server:
+              address_list:
+              - 192.168.0.1
+              - 192.168.0.2
+              - 192.168.1.1
+              - 192.169.1.3
+              use_vrf:
+                source_address: 192.168.0.1
+                vrf: temp1
+            route:
+            - destination: 192.0.2.22
+              source: 192.0.0.0/24
+            - destination: 192.0.2.22
+              source: 192.0.0.0/24
+              vrf: temp1
+            - destination: 192.0.2.22
+              source: 192.0.2.0/24
+              tags:
+                route_pref: 4
+                tag_value: 2
+          ipv6:
+            mld_ssm_translate:
+            - group: ff28::/16
+              source: 2001:db8:0:abcd::2
+            - group: ff30::/16
+              source: 2001:db8:0:abcd::5
+            multicast:
+              group_range_prefix_list: temp2
+              multipath:
+                resilient: true
+                splitting_type:
+                  none: true
+          multicast:
+            service_reflect:
+            - map_to: Ethernet2/2
+              service_interface: Ethernet1/1
+            - map_to: Ethernet4/2
+              service_interface: Ethernet2/1
+          vni:
+            vni_number: 5
+    state: merged
+
+# Task Output:
+# ------------
+
+# before: {}
+# commands:
+#   - vrf context test1
+#   - description this is description
+#   - ip auto-discard
+#   - ip domain-name red-hat.com
+#   - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+#   - ip icmp-errors source-interface port-channel 1
+#   - ip multicast multipath resilient
+#   - ip multicast multipath legacy
+#   - ip name-server 192.168.0.1 use-vrf temp1
+#   - vni 5
+#   - ipv6 multicast group-range prefix-list temp2
+#   - ipv6 multicast multipath resilient
+#   - ipv6 multicast multipath none
+#   - ip domain-list res.com
+#   - ip domain-list redhat.com
+#   - ip domain-list anisble.com
+#   - ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
+#   - ip igmp ssm-translate 239.1.2.3/24 192.168.1.1
+#   - ip mroute 192.168.1.0/24 192.168.1.1
+#   - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp1
+#   - ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
+#   - ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
+#   - ip route 192.0.0.0/24 192.0.2.22
+#   - ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+#   - ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+#   - multicast service-reflect interface Ethernet1/1 map interface Ethernet2/2
+#   - multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2
+#   - ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
+#   - ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
+
+# after:
+# vrfs:
+#  - name: testvrf
+#    description: this is description
+#    ip:
+#      auto_discard: true
+#      domain_list:
+#      - anisble.com
+#      - redhat.com
+#      domain_name: test.com
+#      icmp_err:
+#        source_interface:
+#          interface: port-channel
+#          interface_value: '1'
+#      igmp:
+#        ssm_translate:
+#        - group: 232.0.0.0/8
+#          source: 10.1.1.1
+#        - group: 239.1.2.3/24
+#          source: 192.168.1.1
+#      mroutes:
+#      - group: 192.168.1.0/24
+#        source: 192.168.1.1
+#      - group: 192.168.1.0/24
+#        preference: 2
+#        source: 192.168.1.2
+#        vrf: temp1
+#      multicast:
+#        multipath:
+#          resilient: true
+#          splitting_type:
+#            legacy: true
+#        rpf:
+#        - group_list_range: 238.1.0.0/24
+#          vrf_name: temp1
+#        - group_list_range: 239.1.0.0/24
+#          vrf_name: temp1
+#      name_server:
+#        address_list:
+#        - 192.168.0.1
+#        - 192.168.0.2
+#        - 192.168.1.1
+#        - 192.169.1.3
+#        use_vrf:
+#          source_address: 192.168.0.1
+#          vrf: temp1
+#      route:
+#      - destination: 192.0.2.22
+#        source: 192.0.0.0/24
+#      - destination: 192.0.2.22
+#        source: 192.0.0.0/24
+#         vrf: temp1
+#      - destination: 192.0.2.22
+#        source: 192.0.2.0/24
+#        tags:
+#          route_pref: 4
+#          tag_value: 2
+#    ipv6:
+#      mld_ssm_translate:
+#      - group: ff28::/16
+#        source: 2001:db8:0:abcd::2
+#      - group: ff30::/16
+#        source: 2001:db8:0:abcd::5
+#      multicast:
+#        group_range_prefix_list: temp2
+#        multipath:
+#          resilient: true
+#          splitting_type:
+#            none: true
+#    multicast:
+#      service_reflect:
+#       - map_to: Ethernet2/2
+#         service_interface: Ethernet1/1
+#       - map_to: Ethernet4/2
+#         service_interface: Ethernet2/1
+#    vni:
+#      vni_number: 5
+
+# After state:
+# ------------
+#
+# nxos#show running-config | section ^vrf
+# vrf context testvrf
+#   description this is description
+#   ip auto-discard
+#   ip domain-name red-hat.com
+#   ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+#   ip icmp-errors source-interface port-channel 1
+#   ip multicast multipath resilient
+#   ip multicast multipath legacy
+#   ip name-server 192.168.0.1 use-vrf temp1
+#   vni 5
+#   ipv6 multicast group-range prefix-list temp2
+#   ipv6 multicast multipath resilient
+#   ipv6 multicast multipath none
+#   ip domain-list res.com
+#   ip domain-list redhat.com
+#   ip domain-list anisble.com
+#   ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
+#   ip igmp ssm-translate 239.1.2.3/24 192.168.1.1
+#   ip mroute 192.168.1.0/24 192.168.1.1
+#   ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp1
+#   ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
+#   ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
+#   ip route 192.0.0.0/24 192.0.2.22
+#   ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+#   ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+#   multicast service-reflect interface Ethernet1/1 map interface Ethernet2/2
+#   multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2
+#   ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
+#   ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
+
+# Using deleted
+
+# Before state:
+# -------------
+#
+# nxos#show running-config | section ^vrf
+# vrf context management
+#  ip name-server 192.168.255.1
+#  ip route 0.0.0.0/0 192.168.255.1
+# vrf context test1
+#  description this is description
+#  ip domain-name red-hat.com
+#  ip domain-list anisble.com
+#  ip domain-list redhat.com
+#  ip domain-list res.com
+#  vni 5
+#  ip auto-discard
+#  ip route 192.0.0.0/24 192.0.2.22
+#  ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+#  ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+#  ip mroute 192.168.1.0/24 192.168.1.1
+#  ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp1
+#  ip icmp-errors source-interface po1
+#  ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
+#  ip igmp ssm-translate 239.1.2.3/24 192.168.1.1
+#  ip multicast multipath legacy
+#  ip multicast multipath resilient
+#  ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
+#  ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
+#  ip multicast group-range prefix-list temp2
+
+- name: Delete VRF configuration
+  cisco.nxos.vrf_global:
+    config:
+      vrfs:
+        - name: test1
+    state: deleted
+
+# Task Output:
+# ------------
+#
+# before:
+# vrfs:
+# - name: management
+#   ip:
+#     name_server:
+#       address_list:
+#       - 192.168.255.1
+#     route:
+#     - source: 0.0.0.0/0
+#       destination: 192.168.255.1
+# - name: test1
+#   description: this is description
+#   ip:
+#     domain_name: red-hat.com
+#     domain_list:
+#     - res.com
+#     - anisble.com
+#     - redhat.com
+#     auto_discard: true
+#     route:
+#     - source: 192.0.0.0/24
+#       destination: 192.0.2.22
+#     - source: 192.0.0.0/24
+#       destination: 192.0.2.22
+#       vrf: temp1
+#     - source: 192.0.2.0/24
+#       destination: 192.0.2.22
+#       tags:
+#         tag_value: 2
+#         route_pref: 4
+#     mroutes:
+#     - group: 192.168.1.0/24
+#       source: 192.168.1.1
+#     - group: 192.168.1.0/24
+#       source: 192.168.1.2
+#       preference: 2
+#       vrf: temp1
+#     icmp_err:
+#       source_interface:
+#         interface: port-channel
+#         interface_value: '1'
+#     igmp:
+#       ssm_translate:
+#       - group: 232.0.0.0/8
+#         source: 10.1.1.1
+#       - group: 239.1.2.3/24
+#         source: 192.168.1.1
+#     multicast:
+#       multipath:
+#         splitting_type:
+#           legacy: true
+#         resilient: true
+#       rpf:
+#       - vrf_name: temp1
+#         group_list_range: 238.1.0.0/24
+#       - vrf_name: temp1
+#         group_list_range: 239.1.0.0/24
+#   vni:
+#     vni_number: 5
+
+# commands:
+#   - vrf context test1
+#   - no description this is description
+#   - no ip auto-discard
+#   - no ip domain-name red-hat.com
+#   - no ip icmp-errors source-interface port-channel 1
+#   - no ip multicast multipath resilient
+#   - no ip multicast multipath legacy
+#   - no vni 5
+#   - no ip domain-list anisble.com
+#   - no ip domain-list res.com
+#   - no ip domain-list redhat.com
+#   - no ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
+#   - no ip igmp ssm-translate 239.1.2.3/24 192.168.1.1
+#   - no ip mroute 192.168.1.0/24 192.168.1.1
+#   - no ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp1
+#   - no ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
+#   - no ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
+#   - no ip route 192.0.0.0/24 192.0.2.22
+#   - no ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+#   - no ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+#
+# after:
+# vrfs:
+# - name: management
+#   ip:
+#     name_server:
+#       address_list:
+#       - 192.168.255.1
+#     route:
+#     - source: 0.0.0.0/0
+#       destination: 192.168.255.1
+# - name: test1
+
+# Using overridden
+
+# Before state:
+# -------------
+#
+# nxos#show running-config | section ^vrf
+# vrf context management
+#   ip name-server 192.168.255.1
+#   ip route 0.0.0.0/0 192.168.255.1
+# vrf context test1
+#   description this is description
+#   ip domain-name redhat.com
+#   ip domain-list anisble.com
+#   ip domain-list docs.com
+#   vni 5
+#   ip auto-discard
+#   ip route 192.0.0.0/24 192.0.2.22
+#   ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+#   ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+# vrf context test2
+#   description test description
+#   ip auto-discard
+#   ip domain-name greyhat.com
+
+- name: Override VRF configuration
+  cisco.nxos.vrf_global:
+    config:
+      vrfs:
+        - name: management
+          ip:
+            name_server:
+              address_list:
+              - 192.168.255.1
+            route:
+            - source: 0.0.0.0/0
+              destination: 192.168.255.1
+        - name: test1
+          ip:
+            auto_discard: false
+            name_server:
+              address_list:
+              - 192.168.255.1
+            route:
+            - source: 192.0.0.0/24
+              destination: 192.0.2.22
+    state: overridden
+
+# Task Output:
+# ------------
+#
+# before:
+# vrfs:
+# - name: management
+#   ip:
+#     name_server:
+#       address_list:
+#       - 192.168.255.1
+#     route:
+#     - source: 0.0.0.0/0
+#       destination: 192.168.255.1
+# - name: test1
+#   description: this is description
+#   ip:
+#     domain_name: redhat.com
+#     domain_list:
+#     - anisble.com
+#     - docs.com
+#     auto_discard: true
+#     route:
+#     - source: 192.0.0.0/24
+#       destination: 192.0.2.22
+#     - source: 192.0.0.0/24
+#       destination: 192.0.2.22
+#       vrf: temp1
+#     - source: 192.0.2.0/24
+#       destination: 192.0.2.22
+#       tags:
+#         tag_value: 2
+#         route_pref: 4
+#  vni:
+#    vni_number: 5
+# - name: test2
+#   description: test description
+#   ip:
+#     auto_discard: true
+#     domain_name: greyhat.com
+#
+# commands:
+# - vrf context test1
+# - no description this is description
+# - no ip domain-name redhat.com
+# - no ip domain-list anisble.com
+# - no ip domain-list docs.com
+# - ip name-server 192.168.255.1
+# - no ip auto-discard
+# - no vni 5
+# - no ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+# - no ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+# - vrf context test2
+# - no description test description
+# - no ip auto-discard
+# - no ip domain-name greyhat.com
+#
+# after:
+# vrfs:
+# - name: management
+#   ip:
+#     name_server:
+#       address_list:
+#       - 192.168.255.1
+#     route:
+#     - source: 0.0.0.0/0
+#       destination: 192.168.255.1
+# - name: test1
+#   ip:
+#     auto_discard: false
+#     name_server:
+#       address_list:
+#       - 192.168.255.1
+#     route:
+#     - source: 192.0.0.0/24
+#       destination: 192.0.2.22
+
+# Using replaced
+
+# Before state:
+# -------------
+#
+# nxos# show running-config | section ^vrf
+# vrf context management
+#   ip name-server 192.168.255.1
+#   ip route 0.0.0.0/0 192.168.255.1
+# vrf context temp
+#   ip domain-name red.com
+#   ip domain-list anisble.com
+#   ip domain-list redhat.com
+#   ip domain-list res.com
+#   ip name-server 192.168.0.1 192.169.1.3
+#   ip name-server 192.168.0.1 use-vrf temp1
+#   multicast service-reflect interface Ethernet1/1 map interface Ethernet2/2
+#   multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2
+#   description this is descrition
+#   vni 5
+#   ip auto-discard
+#   ip route 192.0.0.0/24 192.0.2.22
+#   ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+#   ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+#   ip mroute 192.168.1.0/24 192.168.1.1
+#   ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp1
+#   ip icmp-errors source-interface po1
+#   ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
+#   ip igmp ssm-translate 239.1.2.3/24 192.168.1.1
+#   ip multicast multipath legacy
+#   ip multicast multipath resilient
+#   ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
+#   ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
+#   ip multicast group-range prefix-list temp2
+#   ipv6 multicast multipath none
+#   ipv6 multicast multipath resilient
+#   ipv6 multicast group-range prefix-list temp2
+#   ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
+#   ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::1
+#   ipv6 mld ssm-translate ff32::/16 2001:db8:0:abcd::2
+#   ipv6 mld ssm-translate ff32::/16 2001:db8:0:abcd::3
+
+- name: Replaced state for VRF configuration
+  cisco.nxos.nxos_vrf_global:
+    config:
+      vrfs:
+        - ip:
+            name_server:
+              address_list:
+              - 192.168.255.1
+            route:
+            - destination: 192.168.255.1
+              source: 0.0.0.0/0
+          name: management
+        - name: temp 
+          description: Test
+          ip:
+            auto_discard: true
+            domain_list:
+              - bluehat.com
+              - redhat.com
+            domain_name: red.com
+    state: replaced
+
+# Task Output:
+# ------------
+#
+# before:
+# vrfs:
+# - ip:
+#     name_server:
+#       address_list:
+#       - 192.168.255.1
+#     route:
+#     - destination: 192.168.255.1
+#       source: 0.0.0.0/0
+#   name: management
+# - description: this is descrition
+#   ip:
+#     auto_discard: true
+#     domain_list:
+#     - anisble.com
+#     - res.com
+#     - redhat.com
+#     domain_name: red.com
+#     icmp_err:
+#       source_interface:
+#         interface: port-channel
+#         interface_value: '1'
+#     igmp:
+#       ssm_translate:
+#       - group: 232.0.0.0/8
+#         source: 10.1.1.1
+#       - group: 239.1.2.3/24
+#         source: 192.168.1.1
+#     mroutes:
+#     - group: 192.168.1.0/24
+#       source: 192.168.1.1
+#     - group: 192.168.1.0/24
+#       preference: 2
+#       source: 192.168.1.2
+#       vrf: temp1
+#     multicast:
+#       multipath:
+#         resilient: true
+#         splitting_type:
+#           legacy: true
+#       rpf:
+#       - group_list_range: 238.1.0.0/24
+#         vrf_name: temp1
+#       - group_list_range: 239.1.0.0/24
+#         vrf_name: temp1
+#     name_server:
+#       address_list:
+#       - 192.168.0.1
+#       - 192.169.1.3
+#       use_vrf:
+#         source_address: 192.168.0.1
+#         vrf: temp1
+#     route:
+#     - destination: 192.0.2.22
+#       source: 192.0.0.0/24
+#     - destination: 192.0.2.22
+#       source: 192.0.0.0/24
+#       vrf: temp1
+#     - destination: 192.0.2.22
+#       source: 192.0.2.0/24
+#       tags:
+#         route_pref: 4
+#         tag_value: 2
+#   ipv6:
+#     mld_ssm_translate:
+#     - group: ff28::/16
+#       source: 2001:db8:0:abcd::2
+#     - group: ff30::/16
+#       source: 2001:db8:0:abcd::1
+#     - group: ff32::/16
+#       source: 2001:db8:0:abcd::2
+#     - group: ff32::/16
+#       source: 2001:db8:0:abcd::3
+#     multicast:
+#       group_range_prefix_list: temp2
+#       multipath:
+#         resilient: true
+#         splitting_type:
+#           none: true
+#   multicast:
+#     service_reflect:
+#     - map_to: Ethernet2/2
+#       service_interface: Ethernet1/1
+#     - map_to: Ethernet4/2
+#       service_interface: Ethernet2/1
+#   name: temp
+#   vni:
+#     vni_number: 5
+#
+# commands:
+# - vrf context temp
+# - description Test
+# - no ip name-server 192.168.0.1 192.169.1.3
+# - no ip icmp-errors source-interface port-channel 1
+# - no ip multicast multipath resilient
+# - no ip multicast multipath legacy
+# - no ip name-server 192.168.0.1 use-vrf temp1
+# - no vni 5
+# - no ipv6 multicast group-range prefix-list temp2
+# - no ipv6 multicast multipath resilient
+# - no ipv6 multicast multipath none
+# - ip domain-list bluehat.com
+# - no ip domain-list anisble.com
+# - no ip domain-list res.com
+# - no ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
+# - no ip igmp ssm-translate 239.1.2.3/24 192.168.1.1
+# - no ip mroute 192.168.1.0/24 192.168.1.1
+# - no ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp1
+# - no ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
+# - no ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
+# - no ip route 192.0.0.0/24 192.0.2.22
+# - no ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+# - no ip route 192.0.2.0/24 192.0.2.22 tag 2 4
+# - no multicast service-reflect interface Ethernet1/1 map interface Ethernet2/2
+# - no multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2
+# - no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
+# - no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::1
+# - no ipv6 mld ssm-translate ff32::/16 2001:db8:0:abcd::2
+# - no ipv6 mld ssm-translate ff32::/16 2001:db8:0:abcd::3
+#
+# after:
+# vrfs:
+# - ip:
+#     name_server:
+#       address_list:
+#       - 192.168.255.1
+#     route:
+#     - destination: 192.168.255.1
+#       source: 0.0.0.0/0
+#   name: management
+# - description: Test
+#   ip:
+#     auto_discard: true
+#     domain_list:
+#     - bluehat.com
+#     - redhat.com
+#     domain_name: red.com
+#     multicast:
+#       rpf:
+#       - group_list_range: 238.1.0.0/24
+#         vrf_name: temp1
+#       - group_list_range: 239.1.0.0/24
+#         vrf_name: temp1
+#
+# After state:
+# ------------
+# router-ios#show running-config | section ^vrf
+# vrf context management
+#   ip name-server 192.168.255.1
+#   ip route 0.0.0.0/0 192.168.255.1
+# vrf context temp
+#   ip domain-name red.com
+#   ip domain-list redhat.com
+#   ip domain-list bluehat.com
+#   description Test
+#   ip auto-discard
+#   ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
+#   ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
+#   ip multicast group-range prefix-list temp2
 """
 
 RETURN = """
