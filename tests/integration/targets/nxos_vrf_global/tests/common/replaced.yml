@@ -26,7 +26,7 @@
                 domain_list:
                   - bluehat.com
                   - redhat.com
-                domain_name: redx.com
+                domain_name: red.com
         state: replaced
 
     - name: Assert that correct set of commands were generated
