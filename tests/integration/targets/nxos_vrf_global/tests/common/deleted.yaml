@@ -14,6 +14,15 @@
             - name: testvrf
         state: deleted
 
+    - name: Remove management from list of result
+      set_fact:
+        res_before:
+          before:
+            vrfs: "{{ result['before']['vrfs'] | rejectattr('name', '==', 'management') }}"
+        res_after:
+          after:
+            vrfs: "{{ result['after']['vrfs'] | rejectattr('name', '==', 'management') }}"
+
     - ansible.builtin.assert:
         that:
           - result.changed == true
@@ -26,20 +35,21 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) | length == 0 }}"
+          - "{{ general['after'] | symmetric_difference(res_before['before']) | length == 0 }}"
 
     - name: Assert that after dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - deleted['after'] == result['after']
+          - deleted['after'] == res_after['after']
 
     - name: Delete provided VRF global (idempotent)
       register: result
       cisco.nxos.nxos_vrf_global: *id001
+
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:
-          - result.changed == true
+          - result.changed == false
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

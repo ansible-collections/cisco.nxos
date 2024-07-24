@@ -1,7 +1,24 @@
 ---
 - name: Remove VRF global configurations
-  cisco.ios.ios_config:
+  cisco.nxos.nxos_config:
     lines:
-      - no vrf definition testvrf
+      - no vrf context testvrf
     save_when: always
   register: result
+  ignore_errors: yes
+
+- name: Remove VRF global configurations
+  cisco.nxos.nxos_config:
+    lines:
+      - no vrf context temp
+    save_when: always
+  register: result
+  ignore_errors: yes
+
+- name: Remove VRF global configurations
+  cisco.nxos.nxos_config:
+    lines:
+      - no vrf context VRF7
+    save_when: always
+  register: result
+  ignore_errors: yes

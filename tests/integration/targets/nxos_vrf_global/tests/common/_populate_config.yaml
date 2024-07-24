@@ -1,17 +1,20 @@
 ---
-- name: Merge provided configuration with device configuration
-  register: result
+- name: Merge provided vrf configuration with device configuration
   cisco.nxos.nxos_config:
     lines:
-      - vrf context management
-      - ip name-server 192.168.255.1
-      - ip route 0.0.0.0/0 192.168.255.1
-      - vrf context testvrf
-      - description This is a test VRF
+      - description testvrfhere
       - ip auto-discard
       - ip domain-name redhat.com
       - vni 5
       - ip mroute 192.168.1.0/24 192.168.1.1
       - ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
       - ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
-    save_when: always
+    parents:
+      - vrf context testvrf
+    match: none
+
+- name: Merge another vrf
+  cisco.nxos.nxos_config:
+    lines:
+      - vrf context temp
+    match: none

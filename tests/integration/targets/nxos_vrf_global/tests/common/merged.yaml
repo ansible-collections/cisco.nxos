@@ -10,14 +10,12 @@
       cisco.nxos.nxos_vrf_global: &id001
         config:
           vrfs:
-            - description: this is descrition
+            - description: this-is-test
               ip:
                 auto_discard: true
                 domain_list:
-                  - res.com
-                  - redhat.com
                   - anisble.com
-                domain_name: redx.com
+                domain_name: blue.com
                 icmp_err:
                   source_interface:
                     interface: port-channel
@@ -34,7 +32,7 @@
                   - group: 192.168.1.0/24
                     preference: 2
                     source: 192.168.1.2
-                    vrf: temp1
+                    vrf: temp
                 multicast:
                   multipath:
                     resilient: true
@@ -42,9 +40,9 @@
                       legacy: true
                   rpf:
                     - group_list_range: 238.1.0.0/24
-                      vrf_name: temp1
+                      vrf_name: temp
                     - group_list_range: 239.1.0.0/24
-                      vrf_name: temp1
+                      vrf_name: temp
                 name_server:
                   address_list:
                     - 192.168.0.1
@@ -53,13 +51,13 @@
                     - 192.169.1.3
                   use_vrf:
                     source_address: 192.168.0.1
-                    vrf: temp1
+                    vrf: temp
                 route:
                   - destination: 192.0.2.22
                     source: 192.0.0.0/24
                   - destination: 192.0.2.22
                     source: 192.0.0.0/24
-                    vrf: temp1
+                    vrf: temp
                   - destination: 192.0.2.22
                     source: 192.0.2.0/24
                     tags:
@@ -72,7 +70,7 @@
                   - group: ff30::/16
                     source: 2001:db8:0:abcd::5
                 multicast:
-                  group_range_prefix_list: temp2
+                  group_range_prefix_list: temp
                   multipath:
                     resilient: true
                     splitting_type:
@@ -88,6 +86,15 @@
                 vni_number: 5
         state: merged
 
+    - name: Remove management from list of result
+      set_fact:
+        res_before:
+          before:
+            vrfs: "{{ result['before']['vrfs'] | rejectattr('name', '==', 'management') }}"
+        res_after:
+          after:
+            vrfs: "{{ result['after']['vrfs'] | rejectattr('name', '==', 'management') }}"
+
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
@@ -96,16 +103,17 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - merged['before'] == {}
+          - res_before['before']['vrfs'] == []
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - merged['after'] == result['after']
+          - res_after['after']['vrfs'] == merged['after']['vrfs']
 
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
       cisco.nxos.nxos_vrf_global: *id001
+
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:

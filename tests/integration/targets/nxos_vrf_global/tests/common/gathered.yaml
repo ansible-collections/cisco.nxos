@@ -12,11 +12,17 @@
         config:
         state: gathered
 
+    - name: Remove management from list of result
+      set_fact:
+        res_parsed:
+          gathered:
+            vrfs: "{{ result['gathered']['vrfs'] | rejectattr('name', '==', 'management') }}"
+
     - name: Assert
       ansible.builtin.assert:
         that:
           - result.changed == false
-          - gathered['after'] == result['gathered']
+          - gathered['after'] == res_parsed['gathered']
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
