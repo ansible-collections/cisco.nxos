@@ -179,10 +179,10 @@ plugin_routing:
     vpc_interface:
       redirect: cisco.nxos.nxos_vpc_interface
     vrf:
-      deprecation:
-        removal_date: "2024-07-25"
-        warning_text: See the plugin documentation for more details
       redirect: cisco.nxos.nxos_vrf
+      deprecation:
+        removal_date: "2026-07-25"
+        warning_text: See the plugin documentation for more details
     vrf_af:
       redirect: cisco.nxos.nxos_vrf_af
     vrf_interface:
