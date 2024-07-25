@@ -112,8 +112,13 @@ class Vrf_global(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        if self.state == "purged":
+            purge_list = wantd or haved
+            for k, item in iteritems(purge_list):
+                self.purge(item)
+        else:
+            for k, want in iteritems(wantd):
+                self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -148,6 +153,10 @@ class Vrf_global(ResourceModule):
             # remove remaining items in have for replaced
             for entry in hdict.values():
                 self.addcmd(entry, attrib, True)
+
+    def purge(self, have):
+        """Purge the VRF configuration"""
+        self.commands.append("no vrf context {0}".format(have["name"]))
 
     def _vrf_list_to_dict(self, vrf_list):
         """Converts a list of VRFs to a dictionary with the VRF name as the key.

@@ -764,8 +764,73 @@ class TestNxosVrfGlobalModule(TestNxosModule):
         )
         self.execute_module(changed=False, commands=[])
 
-    def test_nxos_vrf_global_rendered(self):
-        pass
+    def test_nxos_vrf_global_purged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf context management
+              ip name-server 192.168.255.1
+              ip route 0.0.0.0/0 192.168.255.1
+            vrf context test1
+              description this is descrition
+              ip domain-name redx.com
+              ip domain-list redhat.com
+              ip domain-list res.com
+              vni 5
+              ip auto-discard
+              ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
+              ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
+              ip route 192.0.0.0/24 192.0.2.22
+              ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config={
+                    "vrfs" : []
+                },
+                state="purged",
+            ),
+        )
+        commands = ['no vrf context management', 'no vrf context test1']
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_nxos_vrf_global_purged_2(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf context management
+              ip name-server 192.168.255.1
+              ip route 0.0.0.0/0 192.168.255.1
+            vrf context test1
+              description this is descrition
+              ip domain-name redx.com
+              ip domain-list redhat.com
+              ip domain-list res.com
+              vni 5
+              ip auto-discard
+              ip multicast rpf select vrf temp1 group-list 238.1.0.0/24
+              ip multicast rpf select vrf temp1 group-list 239.1.0.0/24
+              ip route 192.0.0.0/24 192.0.2.22
+              ip route 192.0.0.0/24 192.0.2.22 vrf temp1
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config={
+                    "vrfs" : [
+                        {
+                            "name": "test1"
+                        }
+                    ]
+                },
+                state="purged",
+            ),
+        )
+        commands = ['no vrf context test1']
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_nxos_vrf_global_parsed(self):
         set_module_args(
