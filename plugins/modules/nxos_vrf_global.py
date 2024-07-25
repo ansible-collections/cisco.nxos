@@ -906,8 +906,8 @@ EXAMPLES = """
 # 	      tags:
 # 	        tag_value: 2
 # 	        route_pref: 4
-# 	 vni:
-# 	   vni_number: 5
+# 	  vni:
+# 	    vni_number: 5
 # 	- name: test2
 # 	  description: test description
 # 	  ip:
