@@ -15,8 +15,8 @@
               ip:
                 auto_discard: true
                 domain_list:
-                  - redhat.com
-                domain_name: ansible.com
+                  - example.com
+                domain_name: example.net
                 mroutes:
                   - group: 192.168.1.0/24
                     source: 192.168.1.1

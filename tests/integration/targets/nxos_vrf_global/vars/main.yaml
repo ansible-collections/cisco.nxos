@@ -1,4 +1,3 @@
----
 general:
   after:
     vrfs:
@@ -6,7 +5,7 @@ general:
       - description: testvrfhere
         ip:
           auto_discard: true
-          domain_name: redhat.com
+          domain_name: example.com
           mroutes:
             - group: 192.168.1.0/24
               source: 192.168.1.1
@@ -19,13 +18,12 @@ general:
         name: testvrf
         vni:
           vni_number: 5
-
 merged:
   commands:
     - vrf context VRF7
     - description this-is-test
     - ip auto-discard
-    - ip domain-name blue.com
+    - ip domain-name example.org
     - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
     - ip icmp-errors source-interface port-channel 1
     - ip multicast multipath resilient
@@ -35,7 +33,7 @@ merged:
     - ipv6 multicast group-range prefix-list temp
     - ipv6 multicast multipath resilient
     - ipv6 multicast multipath none
-    - ip domain-list anisble.com
+    - ip domain-list example.net
     - ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
     - ip igmp ssm-translate 239.1.2.3/24 192.168.1.1
     - ip mroute 192.168.1.0/24 192.168.1.1
@@ -47,16 +45,16 @@ merged:
     - ip route 192.0.2.0/24 192.0.2.22 tag 2 4
     - multicast service-reflect interface Ethernet1/1 map interface Ethernet2/2
     - multicast service-reflect interface Ethernet2/1 map interface Ethernet4/2
-    - ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
-    - ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
+    - "ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2"
+    - "ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
   after:
     vrfs:
       - description: this-is-test
         ip:
           auto_discard: true
           domain_list:
-            - anisble.com
-          domain_name: blue.com
+            - example.net
+          domain_name: example.org
           icmp_err:
             source_interface:
               interface: port-channel
@@ -106,10 +104,10 @@ merged:
                 tag_value: 2
         ipv6:
           mld_ssm_translate:
-            - group: ff28::/16
-              source: 2001:db8:0:abcd::2
-            - group: ff30::/16
-              source: 2001:db8:0:abcd::5
+            - group: "ff28::/16"
+              source: "2001:db8:0:abcd::2"
+            - group: "ff30::/16"
+              source: "2001:db8:0:abcd::5"
           multicast:
             group_range_prefix_list: temp
             multipath:
@@ -125,22 +123,20 @@ merged:
         name: VRF7
         vni:
           vni_number: 5
-
 deleted:
   commands:
     - vrf context testvrf
     - no description testvrfhere
     - no ip auto-discard
-    - no ip domain-name redhat.com
+    - no ip domain-name example.com
     - no vni 5
     - no ip mroute 192.168.1.0/24 192.168.1.1
-    - no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
-    - no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
+    - "no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2"
+    - "no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
   after:
     vrfs:
       - name: temp
       - name: testvrf
-
 gathered:
   after:
     vrfs:
@@ -148,7 +144,7 @@ gathered:
       - description: testvrfhere
         ip:
           auto_discard: true
-          domain_name: redhat.com
+          domain_name: example.com
           mroutes:
             - group: 192.168.1.0/24
               source: 192.168.1.1
@@ -161,28 +157,135 @@ gathered:
         name: testvrf
         vni:
           vni_number: 5
-
 overridden:
-  commands: []
+  commands:
+    - vrf context testvrf
+    - description Test
+    - ip domain-name example.net
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip name-server 192.168.0.1 use-vrf temp
+    - no vni 5
+    - ip domain-list example.com
+    - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
+    - "no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2"
+    - "no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
+  after:
+    vrfs:
+      - "{{ management[0] }}"
+      - name: temp
+      - description: Test
+        ip:
+          auto_discard: true
+          domain_list:
+            - example.com
+          domain_name: example.net
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+            - group: 192.168.1.0/24
+              preference: 2
+              source: 192.168.1.2
+              vrf: temp
+          name_server:
+            address_list:
+              - 192.168.0.1
+              - 192.168.0.2
+              - 192.168.1.1
+              - 192.169.1.3
+            use_vrf:
+              source_address: 192.168.0.1
+              vrf: temp
+        name: testvrf
   before:
-    - "{{ management[0] }}"
-    - description: testvrfhere
-      ip:
-        auto_discard: true
-        domain_name: redhat.com
-        mroutes:
-          - group: 192.168.1.0/24
-            source: 192.168.1.1
-      ipv6:
-        mld_ssm_translate:
-          - group: "ff28::/16"
-            source: "2001:db8:0:abcd::2"
-          - group: "ff30::/16"
-            source: "2001:db8:0:abcd::5"
-      name: testvrf
-      vni:
-        vni_number: 5
-
+    vrfs:
+      - "{{ management[0] }}"
+      - name: temp
+      - description: testvrfhere
+        ip:
+          auto_discard: true
+          domain_name: example.com
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+        ipv6:
+          mld_ssm_translate:
+            - group: "ff28::/16"
+              source: "2001:db8:0:abcd::2"
+            - group: "ff30::/16"
+              source: "2001:db8:0:abcd::5"
+        name: testvrf
+        vni:
+          vni_number: 5
+replaced:
+  after:
+    vrfs:
+      - "{{ management[0] }}"
+      - description: Test
+        ip:
+          auto_discard: true
+          domain_list:
+            - example.com
+          domain_name: example.org
+        name: temp
+      - description: Test
+        ip:
+          auto_discard: true
+          domain_list:
+            - example.com
+          domain_name: example.net
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+            - group: 192.168.1.0/24
+              preference: 2
+              source: 192.168.1.2
+              vrf: temp
+          name_server:
+            address_list:
+              - 192.168.0.1
+              - 192.168.0.2
+              - 192.168.1.1
+              - 192.169.1.3
+            use_vrf:
+              source_address: 192.168.0.1
+              vrf: temp
+        name: testvrf
+  before:
+    vrfs:
+      - "{{ management[0] }}"
+      - name: temp
+      - description: testvrfhere
+        ip:
+          auto_discard: true
+          domain_name: example.com
+          mroutes:
+            - group: 192.168.1.0/24
+              source: 192.168.1.1
+        ipv6:
+          mld_ssm_translate:
+            - group: "ff28::/16"
+              source: "2001:db8:0:abcd::2"
+            - group: "ff30::/16"
+              source: "2001:db8:0:abcd::5"
+        name: testvrf
+        vni:
+          vni_number: 5
+  commands:
+    - vrf context temp
+    - description Test
+    - ip auto-discard
+    - ip domain-name example.org
+    - ip domain-list example.com
+    - vrf context testvrf
+    - description Test
+    - ip domain-name example.net
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip name-server 192.168.0.1 use-vrf temp
+    - no vni 5
+    - ip domain-list example.com
+    - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
+    - "no ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2"
+    - "no ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5"
 parsed:
   after:
     vrfs:
@@ -198,9 +301,9 @@ parsed:
         ip:
           auto_discard: true
           domain_list:
-            - redhat.com
-            - bluehat.com
-          domain_name: red.com
+            - example.com
+            - example.net
+          domain_name: example.org
           multicast:
             rpf:
               - group_list_range: 238.1.0.0/24

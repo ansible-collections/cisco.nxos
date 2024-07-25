@@ -14,8 +14,8 @@
               ip:
                 auto_discard: true
                 domain_list:
-                  - anisble.com
-                domain_name: blue.com
+                  - example.net
+                domain_name: example.org
                 icmp_err:
                   source_interface:
                     interface: port-channel
