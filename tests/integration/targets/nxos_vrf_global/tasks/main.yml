@@ -4,7 +4,7 @@
     commands: show running | section '^vrf'
   register: result
 
-- name: set management fact
+- name: Set management fact
   ansible.builtin.set_fact:
     management:
       - ip:
