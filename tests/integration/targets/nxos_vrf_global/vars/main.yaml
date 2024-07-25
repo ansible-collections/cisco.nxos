@@ -322,3 +322,26 @@ rendered:
     - ip domain-list example.com
     - ip mroute 192.168.1.0/24 192.168.1.1
     - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
+rtt:
+  commands:
+    - vrf context VRF7
+    - no description Test
+    - no ip auto-discard
+    - no ip domain-name example.net
+    - no ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - no ip domain-list example.com
+    - no ip mroute 192.168.1.0/24 192.168.1.1
+    - vrf context testvrf
+    - description testing
+    - ip auto-discard
+    - ip domain-name example.net
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip domain-list example.com
+  revert:
+    - vrf context VRF7
+    - description Test
+    - ip auto-discard
+    - ip domain-name example.net
+    - ip name-server 192.168.0.1 192.168.0.2 192.168.1.1 192.169.1.3
+    - ip domain-list example.com
+    - ip mroute 192.168.1.0/24 192.168.1.1
