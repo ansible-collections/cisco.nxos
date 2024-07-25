@@ -14,6 +14,13 @@ Version added: 1.0.0
    :local:
    :depth: 1
 
+DEPRECATED
+----------
+:Removed in collection release after 2026-07-25
+:Why: Updated modules released with more functionality.
+:Alternative: nxos_vrf_global
+
+
 
 Synopsis
 --------
@@ -484,6 +491,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
 
 Status
 ------
+
+
+- This module will be removed in a release after 2026-07-25. *[deprecated]*
+- For more information see `DEPRECATED`_.
 
 
 Authors
