@@ -787,12 +787,12 @@ class TestNxosVrfGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config={
-                    "vrfs" : []
+                    "vrfs": [],
                 },
                 state="purged",
             ),
         )
-        commands = ['no vrf context management', 'no vrf context test1']
+        commands = ["no vrf context management", "no vrf context test1"]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
@@ -819,16 +819,16 @@ class TestNxosVrfGlobalModule(TestNxosModule):
         set_module_args(
             dict(
                 config={
-                    "vrfs" : [
+                    "vrfs": [
                         {
-                            "name": "test1"
-                        }
-                    ]
+                            "name": "test1",
+                        },
+                    ],
                 },
                 state="purged",
             ),
         )
-        commands = ['no vrf context test1']
+        commands = ["no vrf context test1"]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
