@@ -180,6 +180,9 @@ plugin_routing:
       redirect: cisco.nxos.nxos_vpc_interface
     vrf:
       redirect: cisco.nxos.nxos_vrf
+      deprecation:
+        removal_date: "2026-07-25"
+        warning_text: See the plugin documentation for more details
     vrf_af:
       redirect: cisco.nxos.nxos_vrf_af
     vrf_interface:
@@ -200,3 +203,5 @@ plugin_routing:
       redirect: cisco.nxos.nxos_vxlan_vtep_vni
     zone_zoneset:
       redirect: cisco.nxos.nxos_zone_zoneset
+    vrf_global:
+      redirect: cisco.nxos.nxos_vrf_global

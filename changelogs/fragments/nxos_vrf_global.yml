@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - Add nxos_vrf_global resource module in favor of nxos_vrf module (https://github.com/ansible-collections/cisco.nxos/pull/870).

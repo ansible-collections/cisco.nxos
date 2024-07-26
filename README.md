@@ -114,8 +114,9 @@ Name | Description
 [cisco.nxos.nxos_vlans](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vlans_module.rst)|VLANs resource module
 [cisco.nxos.nxos_vpc](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_module.rst)|Manages global VPC configuration
 [cisco.nxos.nxos_vpc_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_interface_module.rst)|Manages interface VPC configuration
-[cisco.nxos.nxos_vrf](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_module.rst)|Manages global VRF configuration.
+[cisco.nxos.nxos_vrf](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_module.rst)|(deprecated, removed after 2026-07-25) Manages global VRF configuration.
 [cisco.nxos.nxos_vrf_af](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_af_module.rst)|Manages VRF AF.
+[cisco.nxos.nxos_vrf_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_global_module.rst)|Resource module to configure VRF definitions.
 [cisco.nxos.nxos_vrf_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_interface_module.rst)|Manages interface specific VRF configuration.
 [cisco.nxos.nxos_vrrp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrrp_module.rst)|Manages VRRP configuration on NX-OS switches.
 [cisco.nxos.nxos_vsan](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vsan_module.rst)|Configuration of vsan for Cisco NXOS MDS Switches.

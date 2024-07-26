@@ -25,7 +25,7 @@ DOCUMENTATION = """
 module: nxos_vrf
 extends_documentation_fragment:
 - cisco.nxos.nxos
-short_description: Manages global VRF configuration.
+short_description: (deprecated, removed after 2026-07-25) Manages global VRF configuration.
 description:
 - This module provides declarative management of VRFs on CISCO NXOS network devices.
 version_added: 1.0.0
