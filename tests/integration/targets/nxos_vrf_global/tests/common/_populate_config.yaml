@@ -11,6 +11,8 @@
       - ipv6 mld ssm-translate ff28::/16 2001:db8:0:abcd::2
       - ipv6 mld ssm-translate ff30::/16 2001:db8:0:abcd::5
     match: none
+  retries: 3
+  delay: 20
 
 - name: Merge another vrf
   cisco.nxos.nxos_config:

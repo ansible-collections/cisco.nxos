@@ -3,6 +3,7 @@
     msg: START Merged nxos_vrf_global state for integration tests on connection={{ ansible_connection }}
 
 - ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _check_device.yaml
 
 - block:
     - name: Set config to test based on device # As some devices do not support some of the attributes
@@ -164,5 +165,9 @@
       ansible.builtin.assert:
         that:
           - result['changed'] == false
+
+    - name: Wait for 20 seconds after merging
+      ansible.builtin.wait_for:
+        timeout: 20
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
