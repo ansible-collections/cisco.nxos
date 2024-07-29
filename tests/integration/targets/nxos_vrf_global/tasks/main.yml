@@ -4,6 +4,24 @@
     commands: show running | section '^vrf'
   register: result
 
+- name: Check CI machine # Check if CI machine is being used as CI machine does not support some attributes
+  cisco.nxos.nxos_config:
+    lines:
+      - ip multicast multipath legacy
+    parents: "vrf context check"
+  register: result_check
+  ignore_errors: true
+
+- name: Set check fact
+  ansible.builtin.set_fact:
+    isci: result_check.failed
+
+- name: Remove CI check config
+  cisco.nxos.nxos_config:
+    lines:
+      - no vrf context check
+  ignore_errors: true
+
 - name: Set management fact
   ansible.builtin.set_fact:
     management:
