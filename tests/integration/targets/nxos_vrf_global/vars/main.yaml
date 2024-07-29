@@ -35,7 +35,7 @@ merged:
     - ipv6 multicast multipath none
     - ip domain-list example.net
     - ip igmp ssm-translate 232.0.0.0/8 10.1.1.1
-    - ip igmp ssm-translate 239.1.2.3/24 192.168.1.1
+    - ip igmp ssm-translate 239.1.2.0/24 192.168.1.1
     - ip mroute 192.168.1.0/24 192.168.1.1
     - ip mroute 192.168.1.0/24 192.168.1.2 2 vrf temp
     - ip multicast rpf select vrf temp group-list 238.1.0.0/24
@@ -63,7 +63,7 @@ merged:
             ssm_translate:
               - group: 232.0.0.0/8
                 source: 10.1.1.1
-              - group: 239.1.2.3/24
+              - group: 239.1.2.0/24
                 source: 192.168.1.1
           mroutes:
             - group: 192.168.1.0/24
@@ -75,8 +75,6 @@ merged:
           multicast:
             multipath:
               resilient: true
-              splitting_type:
-                legacy: true
             rpf:
               - group_list_range: 238.1.0.0/24
                 vrf_name: temp
@@ -109,17 +107,10 @@ merged:
             - group: "ff30::/16"
               source: "2001:db8:0:abcd::5"
           multicast:
-            group_range_prefix_list: temp
             multipath:
               resilient: true
               splitting_type:
                 none: true
-        multicast:
-          service_reflect:
-            - map_to: Ethernet2/2
-              service_interface: Ethernet1/1
-            - map_to: Ethernet4/2
-              service_interface: Ethernet2/1
         name: VRF7
         vni:
           vni_number: 5
@@ -302,7 +293,6 @@ parsed:
           auto_discard: true
           domain_list:
             - example.com
-            - example.net
           domain_name: example.org
           multicast:
             rpf:

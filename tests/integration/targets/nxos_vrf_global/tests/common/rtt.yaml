@@ -32,6 +32,10 @@
         gather_network_resources:
           - vrf_global
 
+    - name: Wait for 20 seconds after merging
+      ansible.builtin.wait_for:
+        timeout: 20
+
     - name: Overridden the provided configuration with the existing running configuration
       cisco.nxos.nxos_vrf_global:
         config:
