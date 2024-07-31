@@ -32,6 +32,10 @@
         gather_network_resources:
           - vrf_global
 
+    - name: Get vrf data # run command after running merged and wait 20 seconds
+      cisco.nxos.nxos_command:
+        commands: show running | section '^vrf'
+
     - name: Wait for 20 seconds after merging
       ansible.builtin.wait_for:
         timeout: 20
