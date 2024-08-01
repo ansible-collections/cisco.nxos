@@ -32,10 +32,31 @@
         gather_network_resources:
           - vrf_global
 
+    # Below tasks are to test if we are able to enter vrf context and remove it
     - name: Wait for 20 seconds after merging
       ansible.builtin.wait_for:
         timeout: 20
 
+    - name: Merge provided vrf configuration with device configuration
+      cisco.nxos.nxos_config:
+        lines:
+          - vrf context nextvrf
+          - description testvrfhere
+        match: none
+      retries: 3
+      delay: 20
+
+    - name: Remove VRF global configurations
+      cisco.nxos.nxos_config:
+        lines:
+          - no vrf context nextvrf
+      ignore_errors: true
+
+    - name: Wait for 20 seconds after merging
+      ansible.builtin.wait_for:
+        timeout: 20
+
+    # Actual test restarts here
     - name: Overridden the provided configuration with the existing running configuration
       cisco.nxos.nxos_vrf_global:
         config:
