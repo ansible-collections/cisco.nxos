@@ -99,3 +99,7 @@ class TestNxosNxapiModule(TestNxosModule):
             changed=True,
             commands=["no nxapi http", "nxapi https port 8443"],
         )
+
+    def test_nxos_nxapi_use_vrf(self):
+        set_module_args(dict(vrf="management"))
+        self.execute_module_devices(changed=True, commands=["nxapi use-vrf management"])
