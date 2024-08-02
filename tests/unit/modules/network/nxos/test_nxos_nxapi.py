@@ -142,3 +142,43 @@ class TestNxosNxapiModule(TestNxosModule):
             ),
         )
         self.execute_module_devices(changed=False, commands=[])
+
+    def test_nxos_nxapi_two_digit_version(self):
+        self.get_capabilities.return_value = {
+            "device_info": {
+                "network_os_platform": "N7K-C7018",
+                "network_os_version": "10.3(1)",
+            },
+            "network_api": "cliconf",
+        }
+        set_module_args(
+            dict(
+                http=True,
+                https=False,
+                http_port=80,
+                https_port=443,
+                sandbox=False,
+                vrf="default",
+            ),
+        )
+        self.execute_module_devices(changed=True, commands=["nxapi use-vrf default"])
+
+    def test_nxos_nxapi_ssl_strong_ciphers_two_digit_version(self):
+        self.get_capabilities.return_value = {
+            "device_info": {
+                "network_os_platform": "N9K-C7018",
+                "network_os_version": "9.10(1)",
+            },
+            "network_api": "cliconf",
+        }
+        set_module_args(
+            dict(
+                http=True,
+                https=False,
+                http_port=80,
+                https_port=443,
+                sandbox=False,
+                ssl_strong_ciphers=True,
+            ),
+        )
+        self.execute_module_devices(changed=True, commands=["no nxapi ssl ciphers weak", "nxapi ssl protocols TLSv1 "])

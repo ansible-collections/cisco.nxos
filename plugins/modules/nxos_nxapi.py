@@ -187,7 +187,7 @@ def check_args(module, warnings, capabilities):
         module.fail_json(
             msg="sandbox or enable_sandbox is supported on NX-OS 7K series of switches",
         )
-    os_version = Version(capabilities["device_info"]["network_os_version"][:3])
+    os_version = extract_major_minor_version(capabilities["device_info"]["network_os_version"])
     if module.params.get("vrf") and ((os_version < "8.2" and "7K" in os_platform) or os_version < "7.0"):
         module.fail_json(
             msg=(
@@ -219,6 +219,14 @@ def check_args(module, warnings, capabilities):
     return warnings
 
 
+def extract_major_minor_version(version_string):
+    match = re.match(r"^(\d+\.\d+)", version_string)
+    if match:
+        return Version(match.group(1))
+    else:
+        return None
+
+
 def map_obj_to_commands(want, have, module, warnings, capabilities):
     send_commands = list()
     commands = dict()
@@ -229,7 +237,7 @@ def map_obj_to_commands(want, have, module, warnings, capabilities):
     if device_info:
         os_version = device_info.get("network_os_version")
         if os_version:
-            os_version = os_version[:3]
+            os_version = extract_major_minor_version(os_version)
         os_platform = device_info.get("network_os_platform")
         if os_platform:
             os_platform = os_platform[:3]
@@ -270,7 +278,7 @@ def map_obj_to_commands(want, have, module, warnings, capabilities):
         commands["vrf"] = "nxapi use-vrf %s" % want["vrf"]
 
     if os_platform and os_version:
-        if (os_platform == "N9K" or os_platform == "N3K") and Version(os_version) >= "9.2":
+        if (os_platform == "N9K" or os_platform == "N3K") and os_version >= "9.2":
             if needs_update("ssl_strong_ciphers"):
                 commands["ssl_strong_ciphers"] = "nxapi ssl ciphers weak"
                 if want["ssl_strong_ciphers"] is True:
