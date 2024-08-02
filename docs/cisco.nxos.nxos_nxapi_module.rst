@@ -232,7 +232,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Controls the vrf used to be used for NXAPI communication. By default (if not specify this parameter), all Layer 3 interfaces are used for NXAPI communication. If specify this parameter, only the Layer 3 interfaces in the specified VRF are used for NXAPI communication. The nxapi use-vrf feature is introduced in Cisco NX-OS Release 8.2(3) at N7K, and in Cisco NX-OS Release 7.0(3)I7(1) at N3K, N5K, N6K, and N9K.</div>
+                        <div>Controls the vrf used to be used for NXAPI communication. By default (if not specify this parameter), all Layer 3 interfaces are used for NXAPI communication. If specify this parameter, only the Layer 3 interfaces in the specified VRF are used for NXAPI communication. The nxapi use-vrf feature is introduced in Cisco NX-OS Release 8.2(3) at N7K, and in Cisco NX-OS Release 7.0 at N3K and N9K.</div>
                 </td>
             </tr>
     </table>
