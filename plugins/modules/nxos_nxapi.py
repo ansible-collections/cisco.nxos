@@ -191,9 +191,9 @@ def check_args(module, warnings, capabilities):
     if (os_version < "8.2" and "7K" in os_platform) or os_version < "7.0":
         module.fail_json(
             msg=(
-                  "vrf is supported on NX-OS 7K series of switches starting from 8.2(3)"
-                  " and on other platforms starting from 7.0"
-              ),
+                "vrf is supported on NX-OS 7K series of switches starting from 8.2(3)"
+                " and on other platforms starting from 7.0"
+            ),
         )
 
     state = module.params["state"]

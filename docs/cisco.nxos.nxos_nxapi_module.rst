@@ -220,6 +220,21 @@ Parameters
                         <div>Controls the use of the Transport Layer Security version 1.2 is configured.  By default, this feature is disabled.  To enable the use of TLSV1.2, set the value of this argument to True.</div>
                 </td>
             </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vrf</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Controls the vrf used to be used for NXAPI communication. By default (if not specify this parameter), all Layer 3 interfaces are used for NXAPI communication. If specify this parameter, only the Layer 3 interfaces in the specified VRF are used for NXAPI communication. The nxapi use-vrf feature is introduced in Cisco NX-OS Release 8.2(3) at N7K, and in Cisco NX-OS Release 7.0(3)I7(1) at N3K, N5K, N6K, and N9K.</div>
+                </td>
+            </tr>
     </table>
     <br/>
 
