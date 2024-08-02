@@ -188,7 +188,9 @@ def check_args(module, warnings, capabilities):
             msg="sandbox or enable_sandbox is supported on NX-OS 7K series of switches",
         )
     os_version = extract_major_minor_version(capabilities["device_info"]["network_os_version"])
-    if module.params.get("vrf") and ((os_version < "8.2" and "7K" in os_platform) or os_version < "7.0"):
+    if module.params.get("vrf") and (
+        (os_version < "8.2" and "7K" in os_platform) or os_version < "7.0"
+    ):
         module.fail_json(
             msg=(
                 "vrf is supported on NX-OS 7K series of switches starting from 8.2(3)"

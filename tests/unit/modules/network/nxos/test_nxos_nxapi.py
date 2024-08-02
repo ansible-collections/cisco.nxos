@@ -181,4 +181,6 @@ class TestNxosNxapiModule(TestNxosModule):
                 ssl_strong_ciphers=True,
             ),
         )
-        self.execute_module_devices(changed=True, commands=["no nxapi ssl ciphers weak", "nxapi ssl protocols TLSv1 "])
+        self.execute_module_devices(
+            changed=True, commands=["no nxapi ssl ciphers weak", "nxapi ssl protocols TLSv1 "]
+        )
