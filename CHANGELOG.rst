@@ -4,6 +4,19 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v9.1.0
+======
+
+Minor Changes
+-------------
+
+- Add nxos_vrf_global resource module in favor of nxos_vrf module (https://github.com/ansible-collections/cisco.nxos/pull/870).
+
+Bugfixes
+--------
+
+- nxos_snmp_server - correctly render entity traps (https://github.com/ansible-collections/cisco.nxos/issues/820).
+
 v9.0.0
 ======
 
