@@ -1,0 +1,3 @@
+---
+trivial:
+  - nxos_ping - Fixes pylint error where variables are potentially unbound.
