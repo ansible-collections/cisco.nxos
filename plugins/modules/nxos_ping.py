@@ -179,6 +179,8 @@ def get_ping_results(command, module):
     cmd = {"command": command, "output": "text"}
     ping = run_commands(module, [cmd])[0]
 
+    summary, rtt, ping_pass = None, None, None
+
     if not ping:
         module.fail_json(
             msg="An unexpected error occurred. Check all params.",
