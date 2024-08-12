@@ -1714,11 +1714,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bgp
     Bgp_global,
 )
 
-import debugpy
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
-
 
 def main():
     """
