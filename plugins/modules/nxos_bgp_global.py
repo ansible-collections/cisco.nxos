@@ -296,6 +296,26 @@ options:
           local_as:
             description: Specify the local-as number for the eBGP neighbor.
             type: str
+          local_as_options:
+            description: Local Autonomous System Number options.
+            type: dict
+            suboptions:
+              as_number:
+                description:
+                - Set Specify the local-as number for the eBGP neighbor.
+                type: str
+              no_prepend:
+                description:
+                - Do not prepend the local-as number to updates from the eBGP neighbor.
+                type: bool
+              replace_as:
+                description:
+                - Prepend only the local-as number to updates to eBGP neighbor.
+                type: bool
+              dual_as:
+                description:
+                - Connect using either the local-as number or the real as.
+                type: bool
           log_neighbor_changes:
             description: Log message for neighbor up/down event.
             type: dict
@@ -1693,6 +1713,11 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bg
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bgp_global.bgp_global import (
     Bgp_global,
 )
+
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():
