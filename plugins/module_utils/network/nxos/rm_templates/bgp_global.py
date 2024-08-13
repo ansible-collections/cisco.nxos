@@ -1020,10 +1020,10 @@ class Bgp_globalTemplate(NetworkTemplate):
                 (\s(?P<dual_as>dual-as))?
                 $""", re.VERBOSE,
             ),
-            "setval": "local-as {{ local_as }}"
-            "{{ (' no-prepend' ) if no_prepend|d(False) else '' }}"
-            "{{ (' replace-as' ) if replace_as|d(False)  else '' }}"
-            "{{ (' dual-as' ) if dual_as|d(False)  else '' }}",
+            "setval": "local-as {{ local_as_options.as_number|string }}"
+            "{{ (' no-prepend' ) if local_as_options.no_prepend|d(False) else '' }}"
+            "{{ (' replace-as' ) if local_as_options.replace_as|d(False)  else '' }}"
+            "{{ (' dual-as' ) if local_as_options.dual_as|d(False)  else '' }}",
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {

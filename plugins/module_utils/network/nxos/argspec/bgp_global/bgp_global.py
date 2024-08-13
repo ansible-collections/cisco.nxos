@@ -186,6 +186,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "peer_session": {"type": "str"},
                             },
                         },
+                        "local_as": {"type": "str"},
                         "local_as_options": {
                             "type": "dict",
                             "options": {
@@ -430,6 +431,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                         "peer_session": {"type": "str"},
                                     },
                                 },
+                                "local_as": {"type": "str"},
                                 "local_as_options": {
                                     "type": "dict",
                                     "options": {

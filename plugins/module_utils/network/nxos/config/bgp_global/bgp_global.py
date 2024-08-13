@@ -61,6 +61,7 @@ class Bgp_global(ResourceModule):
             "bestpath.med.non_deterministic",
             "cluster_id",
             "local_as",
+            "local_as_options",
             "confederation.identifier",
             "graceful_restart",
             "graceful_restart.restart_time",
@@ -212,6 +213,7 @@ class Bgp_global(ResourceModule):
             "inherit.peer",
             "inherit.peer_session",
             "local_as",
+            "local_as_options",
             "log_neighbor_changes",
             "low_memory",
             "password",
@@ -315,6 +317,8 @@ class Bgp_global(ResourceModule):
 
         if "neighbors" in entry:
             for x in entry["neighbors"]:
+                if "local_as" in x:
+                    x["local_as_options"] = {"as_number": x.pop("local_as")}
                 if "path_attribute" in x:
                     x["path_attribute"] = {
                         _build_key(item): item for item in x.get("path_attribute", [])
