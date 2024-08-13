@@ -1,0 +1,120 @@
+.. _cisco.nxos.nxos_overlay_global_module:
+
+
+******************************
+cisco.nxos.nxos_overlay_global
+******************************
+
+**Configures anycast gateway MAC of the switch.**
+
+
+Version added: 1.0.0
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+- Configures anycast gateway MAC of the switch.
+
+
+
+
+Parameters
+----------
+
+.. raw:: html
+
+    <table  border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="1">Parameter</th>
+            <th>Choices/<font color="blue">Defaults</font></th>
+            <th width="100%">Comments</th>
+        </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>anycast_gateway_mac</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Anycast gateway mac of the switch.</div>
+                </td>
+            </tr>
+    </table>
+    <br/>
+
+
+Notes
+-----
+
+.. note::
+   - Tested against NXOSv 7.3.(0)D1(1) on VIRL
+   - Unsupported for Cisco MDS
+   - Default restores params default value
+   - Supported MAC address format are "E.E.E", "EE-EE-EE-EE-EE-EE", "EE:EE:EE:EE:EE:EE" and "EEEE.EEEE.EEEE"
+   - For information on using CLI and NX-API see the :ref:`NXOS Platform Options guide <nxos_platform_options>`
+   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
+   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+
+
+
+Examples
+--------
+
+.. code-block:: yaml
+
+    - cisco.nxos.nxos_overlay_global:
+        anycast_gateway_mac: b.b.b
+
+
+
+Return Values
+-------------
+Common return values are documented `here <https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html#common-return-values>`_, the following are the fields unique to this module:
+
+.. raw:: html
+
+    <table border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="1">Key</th>
+            <th>Returned</th>
+            <th width="100%">Description</th>
+        </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>commands</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>always</td>
+                <td>
+                            <div>commands sent to the device</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;fabric forwarding anycast-gateway-mac 000B.000B.000B&#x27;]</div>
+                </td>
+            </tr>
+    </table>
+    <br/><br/>
+
+
+Status
+------
+
+
+Authors
+~~~~~~~
+
+- Gabriele Gerbino (@GGabriele)

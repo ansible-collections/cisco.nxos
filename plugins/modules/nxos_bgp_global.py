@@ -296,8 +296,7 @@ options:
           local_as:
             description:
             - Specify the local-as number for the eBGP neighbor.
-            - B(Deprecated), Use local_as_options instead, the facts would always render local_as information
-            as a part of local_as_options.as_number
+            - B(Deprecated), Use local_as_options instead, the facts would always render local_as information as a part of local_as_options as_number
             - This option has been deprecated and will be removed in a release after 2027-01-01.
             type: str
           local_as_options:
