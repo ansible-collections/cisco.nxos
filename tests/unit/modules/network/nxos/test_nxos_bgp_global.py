@@ -1086,8 +1086,17 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             """\
             router bgp 65535
               neighbor 192.168.20.2 remote-as 56789
+                local-as 65022 no-prepend replace-as dual-as
                 address-family ipv4 unicast
                   soft-reconfiguration inbound always
+              vrf bgp_vrf
+                local-as 651002
+                address-family ipv4 unicast
+                  network 10.0.6.1/24
+                neighbor 10.239.0.13
+                  remote-as 65000
+                  local-as 65024 no-prepend replace-as
+                  address-family ipv4 unicast
             """,
         )
         self.get_config.return_value = ""
@@ -1103,12 +1112,24 @@ class TestNxosBgpGlobalModule(TestNxosModule):
 
         parsed = {
             "as_number": "65535",
-            "neighbors": [
+            "vrfs": [
                 {
-                    "neighbor_address": "192.168.20.2",
-                    "remote_as": "56789",
-                },
+                    "vrf": "bgp_vrf",
+                    "local_as": "651002",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.239.0.13",
+                            "remote_as": "65000",
+                            "local_as_options": {
+                                "as_number": "65024",
+                                "no_prepend": True,
+                                "replace_as": True,
+                            },
+                        }
+                    ],
+                }
             ],
+            "neighbors": [{"neighbor_address": "192.168.20.2", "remote_as": "56789"}],
         }
 
         result = self.execute_module(changed=False)
