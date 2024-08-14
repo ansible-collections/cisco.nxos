@@ -1125,9 +1125,9 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                 "no_prepend": True,
                                 "replace_as": True,
                             },
-                        }
+                        },
                     ],
-                }
+                },
             ],
             "neighbors": [{"neighbor_address": "192.168.20.2", "remote_as": "56789"}],
         }
