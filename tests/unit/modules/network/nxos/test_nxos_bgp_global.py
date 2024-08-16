@@ -1208,6 +1208,4 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             "local-as 65024 no-prepend replace-as",
         ]
         result = self.execute_module(changed=False)
-        self.maxDiff = None
-        print(result["rendered"])
         self.assertEqual(sorted(result["rendered"]), sorted(rendered))
