@@ -1183,10 +1183,10 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                                     },
                                     "neighbor_address": "10.0.0.1",
                                     "remote_as": "65000",
-                                }
+                                },
                             ],
                             "vrf": "bgp_vrf",
-                        }
+                        },
                     ],
                 },
                 state="rendered",
