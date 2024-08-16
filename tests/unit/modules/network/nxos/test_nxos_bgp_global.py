@@ -1142,7 +1142,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                     "as_number": "123",
                     "neighbors": [
                         {
-                            "local_as_options": {
+                            "local_as_config": {
                                 "as_number": "65022",
                                 "dual_as": True,
                                 "no_prepend": True,
@@ -1151,7 +1151,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             "neighbor_address": "10.0.0.1",
                         },
                         {
-                            "local_as_options": {
+                            "local_as_config": {
                                 "as_number": "65022",
                                 "dual_as": True,
                                 "no_prepend": True,
@@ -1161,7 +1161,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             "neighbor_address": "10.0.0.2",
                         },
                         {
-                            "local_as_options": {
+                            "local_as_config": {
                                 "dual_as": True,
                                 "no_prepend": True,
                                 "replace_as": True,
@@ -1176,7 +1176,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                             "local_as": "651002",
                             "neighbors": [
                                 {
-                                    "local_as_options": {
+                                    "local_as_config": {
                                         "as_number": "65024",
                                         "no_prepend": True,
                                         "replace_as": True,
@@ -1193,12 +1193,19 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             ),
         )
         rendered = [
-            "logging reload message-limit 10 alerts",
-            "logging rate-limit console 2 except warnings",
-            "logging buffered discriminator notifications filtered",
-            "logging persistent url flash0:172.16.0.1 threshold 2 immediate protected notify",
-            "logging queue-limit trap 1000",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7364 transport tcp session-id hostname",
+            "router bgp 123",
+            "router-id 1.1.1.1",
+            "neighbor 10.0.0.1",
+            "local-as 65022 no-prepend replace-as dual-as",
+            "neighbor 10.0.0.2",
+            "local-as 65022 no-prepend replace-as dual-as",
+            "neighbor 10.0.0.3",
+            "local-as 65002 no-prepend replace-as dual-as",
+            "vrf bgp_vrf",
+            "local-as 651002",
+            "neighbor 10.0.0.1",
+            "remote-as 65000",
+            "local-as 65024 no-prepend replace-as",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
