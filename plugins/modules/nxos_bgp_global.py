@@ -1718,12 +1718,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bgp
 )
 
 
-# import debugpy
-
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
-
-
 def main():
     """
     Main entry point for module execution
