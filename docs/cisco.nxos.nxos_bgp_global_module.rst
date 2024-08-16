@@ -1519,7 +1519,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify the local-as number for the eBGP neighbor.</div>
-                        <div><b>Deprecated</b>, Use local_as_options instead, the facts would always render local_as information as a part of local_as_options as_number</div>
+                        <div><b>Deprecated</b>, Use local_as_config instead, the facts would always render local_as information as a part of local_as_config as_number</div>
                         <div>This option has been deprecated and will be removed in a release after 2027-01-01.</div>
                 </td>
             </tr>
@@ -1528,7 +1528,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>local_as_options</b>
+                    <b>local_as_config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
@@ -3736,7 +3736,7 @@ Parameters
                 </td>
                 <td>
                         <div>Specify the local-as number for the eBGP neighbor.</div>
-                        <div><b>Deprecated</b>, Use local_as_options instead, the facts would always render local_as information as a part of local_as_options as_number</div>
+                        <div><b>Deprecated</b>, Use local_as_config instead, the facts would always render local_as information as a part of local_as_config as_number</div>
                         <div>This option has been deprecated and will be removed in a release after 2027-01-01.</div>
                 </td>
             </tr>
@@ -3746,7 +3746,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>local_as_options</b>
+                    <b>local_as_config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">dictionary</span>

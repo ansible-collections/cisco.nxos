@@ -1120,7 +1120,7 @@ class TestNxosBgpGlobalModule(TestNxosModule):
                         {
                             "neighbor_address": "10.239.0.13",
                             "remote_as": "65000",
-                            "local_as_options": {
+                            "local_as_config": {
                                 "as_number": "65024",
                                 "no_prepend": True,
                                 "replace_as": True,
@@ -1134,3 +1134,73 @@ class TestNxosBgpGlobalModule(TestNxosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
+
+    def test_nxos_bgp_global_rendered(self):
+        set_module_args(
+            dict(
+                config={
+                    "as_number": "123",
+                    "neighbors": [
+                        {
+                            "local_as_options": {
+                                "as_number": "65022",
+                                "dual_as": True,
+                                "no_prepend": True,
+                                "replace_as": True,
+                            },
+                            "neighbor_address": "10.0.0.1",
+                        },
+                        {
+                            "local_as_options": {
+                                "as_number": "65022",
+                                "dual_as": True,
+                                "no_prepend": True,
+                                "replace_as": True,
+                            },
+                            "local_as": "65001",
+                            "neighbor_address": "10.0.0.2",
+                        },
+                        {
+                            "local_as_options": {
+                                "dual_as": True,
+                                "no_prepend": True,
+                                "replace_as": True,
+                            },
+                            "local_as": "65002",
+                            "neighbor_address": "10.0.0.3",
+                        },
+                    ],
+                    "router_id": "1.1.1.1",
+                    "vrfs": [
+                        {
+                            "local_as": "651002",
+                            "neighbors": [
+                                {
+                                    "local_as_options": {
+                                        "as_number": "65024",
+                                        "no_prepend": True,
+                                        "replace_as": True,
+                                    },
+                                    "neighbor_address": "10.0.0.1",
+                                    "remote_as": "65000",
+                                }
+                            ],
+                            "vrf": "bgp_vrf",
+                        }
+                    ],
+                },
+                state="rendered",
+            ),
+        )
+        rendered = [
+            "logging reload message-limit 10 alerts",
+            "logging rate-limit console 2 except warnings",
+            "logging buffered discriminator notifications filtered",
+            "logging persistent url flash0:172.16.0.1 threshold 2 immediate protected notify",
+            "logging queue-limit trap 1000",
+            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7364 transport tcp session-id hostname",
+        ]
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+        print(result["rendered"])
+        self.assertEqual(sorted(result["rendered"]), sorted(rendered))

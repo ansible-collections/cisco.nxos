@@ -1010,7 +1010,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "local_as_options",
+            "name": "local_as_config",
             "getval": re.compile(
                 r"""
                 \s+neighbor\s(?P<neighbor_address>\S+)
@@ -1020,16 +1020,16 @@ class Bgp_globalTemplate(NetworkTemplate):
                 (\s(?P<dual_as>dual-as))?
                 $""", re.VERBOSE,
             ),
-            "setval": "local-as {{ local_as_options.as_number|string }}"
-            "{{ (' no-prepend' ) if local_as_options.no_prepend|d(False) else '' }}"
-            "{{ (' replace-as' ) if local_as_options.replace_as|d(False)  else '' }}"
-            "{{ (' dual-as' ) if local_as_options.dual_as|d(False)  else '' }}",
+            "setval": "local-as {{ local_as_config.as_number|string }}"
+            "{{ (' no-prepend' ) if local_as_config.no_prepend|d(False) else '' }}"
+            "{{ (' replace-as' ) if local_as_config.replace_as|d(False)  else '' }}"
+            "{{ (' dual-as' ) if local_as_config.dual_as|d(False)  else '' }}",
             "result": {
                 "vrfs": {
                     '{{ "vrf_" + vrf|d() }}': {
                         "neighbors": {
                             "{{ neighbor_address }}": {
-                                "local_as_options": {
+                                "local_as_config": {
                                     "as_number": "{{ local_as }}",
                                     "no_prepend": "{{ not not no_prepend }}",
                                     "replace_as": "{{ not not replace_as }}",

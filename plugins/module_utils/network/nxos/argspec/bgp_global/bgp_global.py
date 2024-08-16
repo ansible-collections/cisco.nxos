@@ -187,7 +187,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "local_as": {"type": "str"},
-                        "local_as_options": {
+                        "local_as_config": {
                             "type": "dict",
                             "options": {
                                 "as_number": {"type": "str"},
@@ -432,7 +432,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "local_as": {"type": "str"},
-                                "local_as_options": {
+                                "local_as_config": {
                                     "type": "dict",
                                     "options": {
                                         "as_number": {"type": "str"},

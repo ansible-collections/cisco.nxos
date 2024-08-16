@@ -296,10 +296,10 @@ options:
           local_as:
             description:
             - Specify the local-as number for the eBGP neighbor.
-            - B(Deprecated), Use local_as_options instead, the facts would always render local_as information as a part of local_as_options as_number
+            - B(Deprecated), Use local_as_config instead, the facts would always render local_as information as a part of local_as_config as_number
             - This option has been deprecated and will be removed in a release after 2027-01-01.
             type: str
-          local_as_options:
+          local_as_config:
             description: Local Autonomous System Number options.
             type: dict
             suboptions:
@@ -1716,6 +1716,11 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.bg
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.config.bgp_global.bgp_global import (
     Bgp_global,
 )
+
+# import debugpy
+
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
 
 
 def main():
