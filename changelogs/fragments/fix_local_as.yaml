@@ -1,0 +1,6 @@
+---
+minor_changes:
+  - nxos_bgp_global - Deprecate local_as with local_as_config which
+    supports more configuration attributes, under neighbor.
+doc_changes:
+  - nxos_bgp_global - Marks local_as under neighbor deprecated, and some documentation corrections.
