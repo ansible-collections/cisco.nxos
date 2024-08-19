@@ -4,6 +4,19 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v9.2.0
+======
+
+Minor Changes
+-------------
+
+- nxos_bgp_global - Deprecate local_as with local_as_config which supports more configuration attributes, under neighbor.
+
+Documentation Changes
+---------------------
+
+- nxos_bgp_global - Marks local_as under neighbor deprecated, and some documentation corrections.
+
 v9.1.0
 ======
 

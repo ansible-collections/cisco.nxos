@@ -1208,3 +1208,16 @@ releases:
       - fix_820.yaml
       - nxos_vrf_global.yml
     release_date: "2024-08-05"
+  9.2.0:
+    changes:
+      doc_changes:
+        - nxos_bgp_global - Marks local_as under neighbor deprecated, and some documentation
+          corrections.
+      minor_changes:
+        - nxos_bgp_global - Deprecate local_as with local_as_config which supports more
+          configuration attributes, under neighbor.
+    fragments:
+      - 0-readme.yml
+      - fix_local_as.yaml
+      - fix_pylint.yaml
+    release_date: "2024-08-19"
