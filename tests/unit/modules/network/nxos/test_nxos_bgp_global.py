@@ -1086,8 +1086,17 @@ class TestNxosBgpGlobalModule(TestNxosModule):
             """\
             router bgp 65535
               neighbor 192.168.20.2 remote-as 56789
+                local-as 65022 no-prepend replace-as dual-as
                 address-family ipv4 unicast
                   soft-reconfiguration inbound always
+              vrf bgp_vrf
+                local-as 651002
+                address-family ipv4 unicast
+                  network 10.0.6.1/24
+                neighbor 10.239.0.13
+                  remote-as 65000
+                  local-as 65024 no-prepend replace-as
+                  address-family ipv4 unicast
             """,
         )
         self.get_config.return_value = ""
@@ -1103,13 +1112,100 @@ class TestNxosBgpGlobalModule(TestNxosModule):
 
         parsed = {
             "as_number": "65535",
-            "neighbors": [
+            "vrfs": [
                 {
-                    "neighbor_address": "192.168.20.2",
-                    "remote_as": "56789",
+                    "vrf": "bgp_vrf",
+                    "local_as": "651002",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "10.239.0.13",
+                            "remote_as": "65000",
+                            "local_as_config": {
+                                "as_number": "65024",
+                                "no_prepend": True,
+                                "replace_as": True,
+                            },
+                        },
+                    ],
                 },
             ],
+            "neighbors": [{"neighbor_address": "192.168.20.2", "remote_as": "56789"}],
         }
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
+
+    def test_nxos_bgp_global_rendered(self):
+        set_module_args(
+            dict(
+                config={
+                    "as_number": "123",
+                    "neighbors": [
+                        {
+                            "local_as_config": {
+                                "as_number": "65022",
+                                "dual_as": True,
+                                "no_prepend": True,
+                                "replace_as": True,
+                            },
+                            "neighbor_address": "10.0.0.1",
+                        },
+                        {
+                            "local_as_config": {
+                                "as_number": "65022",
+                                "dual_as": True,
+                                "no_prepend": True,
+                                "replace_as": True,
+                            },
+                            "local_as": "65001",
+                            "neighbor_address": "10.0.0.2",
+                        },
+                        {
+                            "local_as_config": {
+                                "dual_as": True,
+                                "no_prepend": True,
+                                "replace_as": True,
+                            },
+                            "local_as": "65002",
+                            "neighbor_address": "10.0.0.3",
+                        },
+                    ],
+                    "router_id": "1.1.1.1",
+                    "vrfs": [
+                        {
+                            "local_as": "651002",
+                            "neighbors": [
+                                {
+                                    "local_as_config": {
+                                        "as_number": "65024",
+                                        "no_prepend": True,
+                                        "replace_as": True,
+                                    },
+                                    "neighbor_address": "10.0.0.1",
+                                    "remote_as": "65000",
+                                },
+                            ],
+                            "vrf": "bgp_vrf",
+                        },
+                    ],
+                },
+                state="rendered",
+            ),
+        )
+        rendered = [
+            "router bgp 123",
+            "router-id 1.1.1.1",
+            "neighbor 10.0.0.1",
+            "local-as 65022 no-prepend replace-as dual-as",
+            "neighbor 10.0.0.2",
+            "local-as 65022 no-prepend replace-as dual-as",
+            "neighbor 10.0.0.3",
+            "local-as 65002 no-prepend replace-as dual-as",
+            "vrf bgp_vrf",
+            "local-as 651002",
+            "neighbor 10.0.0.1",
+            "remote-as 65000",
+            "local-as 65024 no-prepend replace-as",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), sorted(rendered))
