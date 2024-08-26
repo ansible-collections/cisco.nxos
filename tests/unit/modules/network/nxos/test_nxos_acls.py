@@ -1028,33 +1028,4 @@ class TestNxosAclsModule(TestNxosModule):
             "ip access-list SIPS_Automation_Test_ACL_Create",
             "17 permit tcp any 10.247.12.0/24 range ftp-data telnet",
         ]
-        result = self.execute_module(changed=True, commands=commands)
-        expected_config = [
-            {
-                "afi": "ipv4",
-                "acls": [
-                    {
-                        "name": "SIPS_Automation_Test_ACL_Create",
-                        "aces": [
-                            {
-                                "sequence": 17,
-                                "grant": "permit",
-                                "protocol": "tcp",
-                                "source": {"any": True},
-                                "destination": {
-                                    "prefix": "10.247.12.0/24",
-                                    "port_protocol": {
-                                        "range": {
-                                            "start": "ftp-data",  # Assuming conversion was successful
-                                            "end": "telnet",
-                                        }
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                ],
-            }
-        ]
-        self.assertNotEqual(result, expected_config)
-
+        self.execute_module(changed=True, commands=commands)
