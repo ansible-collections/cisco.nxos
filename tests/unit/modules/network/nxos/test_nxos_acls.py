@@ -1047,14 +1047,13 @@ class TestNxosAclsModule(TestNxosModule):
                                         "range": {
                                             "start": "ftp-data",  # Assuming conversion was successful
                                             "end": "telnet",
-                                        }
+                                        },
                                     },
                                 },
                             },
                         ],
                     },
                 ],
-            }
+            },
         ]
         self.assertNotEqual(result, expected_config)
-
