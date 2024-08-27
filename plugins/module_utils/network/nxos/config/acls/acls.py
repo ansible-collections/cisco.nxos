@@ -216,9 +216,9 @@ class Acls(ConfigBase):
                     if "aces" in acl.keys():
                         for ace in acl["aces"]:
                             if "dscp" in ace.keys():
-                                if ace["dscp"].isdigit():
+                                if ace["dscp"] in dscp:
                                     ace["dscp"] = dscp[int(ace["dscp"])]
-                                else:
+                                if not ace["dscp"].isdigit():
                                     ace["dscp"] = ace["dscp"].lower()
                             if "precedence" in ace.keys():
                                 if ace["precedence"].isdigit():
@@ -229,10 +229,12 @@ class Acls(ConfigBase):
                                 and int(ace["protocol"]) in protocol.keys()
                             ):
                                 ace["protocol"] = protocol[int(ace["protocol"])]
+                            # convert number to name
                             if "protocol" in ace.keys() and ace["protocol"] in ["tcp", "udp"]:
                                 for x in ["source", "destination"]:
                                     if "port_protocol" in ace[x].keys():
                                         key = list(ace[x]["port_protocol"].keys())[0]
+                                        # key could be eq,gt,lt,neq or range
                                         if key != "range":
                                             val = ace[x]["port_protocol"][key]
                                             if val.isdigit():
@@ -247,12 +249,12 @@ class Acls(ConfigBase):
                                                 if int(st) in port_protocol.keys():
                                                     ace[x]["port_protocol"]["range"]["start"] = port_protocol[int(st)]
                                             else:
-                                                ace[x]["port_protocol"]["range"]["start"] = st
+                                                ace[x]["port_protocol"]["range"]["start"] = port_protocol[st]
                                             if end.isdigit():
                                                 if int(end) in port_protocol.keys():
                                                     ace[x]["port_protocol"]["range"]["end"] = port_protocol[int(end)]
                                             else:
-                                                ace[x]["port_protocol"]["range"]["end"] = end
+                                                ace[x]["port_protocol"]["range"]["end"] = port_protocol[end]
         return want
 
     def set_state(self, want, have):
