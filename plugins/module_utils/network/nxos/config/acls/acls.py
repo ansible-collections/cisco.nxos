@@ -237,7 +237,9 @@ class Acls(ConfigBase):
                                             val = ace[x]["port_protocol"][key]
                                             if val.isdigit():
                                                 if int(val) in port_protocol.keys():
-                                                    ace[x]["port_protocol"][key] = port_protocol[int(val)]
+                                                    ace[x]["port_protocol"][key] = port_protocol[
+                                                        int(val)
+                                                    ]
                                             else:
                                                 ace[x]["port_protocol"][key] = val
                                         else:
@@ -245,12 +247,16 @@ class Acls(ConfigBase):
                                             end = ace[x]["port_protocol"]["range"]["end"]
                                             if st.isdigit():
                                                 if int(st) in port_protocol.keys():
-                                                    ace[x]["port_protocol"]["range"]["start"] = port_protocol[int(st)]
+                                                    ace[x]["port_protocol"]["range"]["start"] = (
+                                                        port_protocol[int(st)]
+                                                    )
                                             else:
                                                 ace[x]["port_protocol"]["range"]["start"] = st
                                             if end.isdigit():
                                                 if int(end) in port_protocol.keys():
-                                                    ace[x]["port_protocol"]["range"]["end"] = port_protocol[int(end)]
+                                                    ace[x]["port_protocol"]["range"]["end"] = (
+                                                        port_protocol[int(end)]
+                                                    )
                                             else:
                                                 ace[x]["port_protocol"]["range"]["end"] = end
         return want
