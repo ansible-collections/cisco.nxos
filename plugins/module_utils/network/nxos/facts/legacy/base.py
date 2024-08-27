@@ -270,7 +270,7 @@ class Interfaces(FactsBase):
                 self.populate_ipv6_interfaces(interfaces)
 
         data = self.run("show lldp neighbors", output="json")
-        neigh_count = data.get("neigh_count", '0')
+        neigh_count = data.get("neigh_count", "0")
         if data and int(neigh_count) != 0:
             if isinstance(data, dict):
                 self.facts["neighbors"].update(
