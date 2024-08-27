@@ -216,9 +216,9 @@ class Acls(ConfigBase):
                     if "aces" in acl.keys():
                         for ace in acl["aces"]:
                             if "dscp" in ace.keys():
-                                if ace["dscp"] in dscp:
+                                if ace["dscp"].isdigit():
                                     ace["dscp"] = dscp[int(ace["dscp"])]
-                                if not ace["dscp"].isdigit():
+                                else:
                                     ace["dscp"] = ace["dscp"].lower()
                             if "precedence" in ace.keys():
                                 if ace["precedence"].isdigit():
@@ -229,42 +229,30 @@ class Acls(ConfigBase):
                                 and int(ace["protocol"]) in protocol.keys()
                             ):
                                 ace["protocol"] = protocol[int(ace["protocol"])]
-                                # convert number to name
                             if "protocol" in ace.keys() and ace["protocol"] in ["tcp", "udp"]:
                                 for x in ["source", "destination"]:
                                     if "port_protocol" in ace[x].keys():
                                         key = list(ace[x]["port_protocol"].keys())[0]
-                                        # key could be eq,gt,lt,neq or range
                                         if key != "range":
                                             val = ace[x]["port_protocol"][key]
-                                            if val.isdigit() and int(val) in port_protocol.keys():
-                                                ace[x]["port_protocol"][key] = port_protocol[
-                                                    int(val)
-                                                ]
+                                            if val.isdigit():
+                                                if int(val) in port_protocol.keys():
+                                                    ace[x]["port_protocol"][key] = port_protocol[int(val)]
+                                            else:
+                                                ace[x]["port_protocol"][key] = val
                                         else:
                                             st = ace[x]["port_protocol"]["range"]["start"]
                                             end = ace[x]["port_protocol"]["range"]["end"]
-
                                             if st.isdigit():
                                                 if int(st) in port_protocol.keys():
-                                                    ace[x]["port_protocol"]["range"]["start"] = (
-                                                        port_protocol[int(st)]
-                                                    )
+                                                    ace[x]["port_protocol"]["range"]["start"] = port_protocol[int(st)]
                                             else:
-                                                if st in port_protocol.keys():
-                                                    ace[x]["port_protocol"]["range"]["start"] = (
-                                                        port_protocol[st]
-                                                    )
+                                                ace[x]["port_protocol"]["range"]["start"] = st
                                             if end.isdigit():
                                                 if int(end) in port_protocol.keys():
-                                                    ace[x]["port_protocol"]["range"]["end"] = (
-                                                        port_protocol[int(end)]
-                                                    )
+                                                    ace[x]["port_protocol"]["range"]["end"] = port_protocol[int(end)]
                                             else:
-                                                if end in port_protocol.keys():
-                                                    ace[x]["port_protocol"]["range"]["end"] = (
-                                                        port_protocol[end]
-                                                    )
+                                                ace[x]["port_protocol"]["range"]["end"] = end
         return want
 
     def set_state(self, want, have):
