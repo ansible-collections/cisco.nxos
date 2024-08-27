@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - facts - Fixes issue where the LLDP neighbor information returns an error when empty.
