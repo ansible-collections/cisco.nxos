@@ -279,7 +279,8 @@ class Interfaces(FactsBase):
             else:
                 self.facts["neighbors"].update(self.populate_neighbors(data))
         except Exception as e:
-            pass  ### Do nothing as there is no lldp neighbors
+            pass # Do nothing as there is no lldp neighbors
+            
 
         data = self.run("show cdp neighbors detail", output="json")
         if data:
