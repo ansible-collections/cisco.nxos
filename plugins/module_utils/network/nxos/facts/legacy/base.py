@@ -270,7 +270,7 @@ class Interfaces(FactsBase):
                 self.populate_ipv6_interfaces(interfaces)
 
         data = self.run("show lldp neighbors", output="json")
-        
+
         if data:
             if isinstance(data, dict):
                 self.facts["neighbors"].update(
@@ -278,7 +278,6 @@ class Interfaces(FactsBase):
                 )
             else:
                 self.facts["neighbors"].update(self.populate_neighbors(data))
-
 
         data = self.run("show cdp neighbors detail", output="json")
         if data:
@@ -358,9 +357,9 @@ class Interfaces(FactsBase):
                 nbor["host"] = nbor["sysname"] = item["chassis_id"]
                 objects[local_intf].append(nbor)
         except KeyError:
-            pass # No neighbors found as the TABLE_nbor key is missing
+            pass  # No neighbors found as the TABLE_nbor key is missing
 
-        return objects # Return empty dict if no neighbors found else return the neighbors
+        return objects  # Return empty dict if no neighbors found else return the neighbors
 
     def populate_structured_neighbors_cdp(self, data):
         objects = dict()
