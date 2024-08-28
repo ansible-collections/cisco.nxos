@@ -344,19 +344,19 @@ class Interfaces(FactsBase):
         objects = dict()
         try:
             data = data["TABLE_nbor"]["ROW_nbor"]
-
-            if isinstance(data, dict):
-                data = [data]
-
-            for item in data:
-                local_intf = normalize_interface(item["l_port_id"])
-                objects[local_intf] = list()
-                nbor = dict()
-                nbor["port"] = item["port_id"]
-                nbor["host"] = nbor["sysname"] = item["chassis_id"]
-                objects[local_intf].append(nbor)
         except KeyError:
-            pass  # No neighbors found as the TABLE_nbor key is missing
+            return objects  # No neighbors found as the TABLE_nbor key is missing and return empty dict
+
+        if isinstance(data, dict):
+            data = [data]
+
+        for item in data:
+            local_intf = normalize_interface(item["l_port_id"])
+            objects[local_intf] = list()
+            nbor = dict()
+            nbor["port"] = item["port_id"]
+            nbor["host"] = nbor["sysname"] = item["chassis_id"]
+            objects[local_intf].append(nbor)
 
         return objects  # Return empty dict if no neighbors found else return the neighbors
 
