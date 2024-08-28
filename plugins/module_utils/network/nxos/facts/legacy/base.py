@@ -270,16 +270,15 @@ class Interfaces(FactsBase):
                 self.populate_ipv6_interfaces(interfaces)
 
         data = self.run("show lldp neighbors", output="json")
-
-        try:
+        
+        if data:
             if isinstance(data, dict):
                 self.facts["neighbors"].update(
                     self.populate_structured_neighbors_lldp(data),
                 )
             else:
                 self.facts["neighbors"].update(self.populate_neighbors(data))
-        except KeyError:
-            pass  # Do nothing as there is no lldp neighbors
+
 
         data = self.run("show cdp neighbors detail", output="json")
         if data:
@@ -345,20 +344,23 @@ class Interfaces(FactsBase):
 
     def populate_structured_neighbors_lldp(self, data):
         objects = dict()
-        data = data["TABLE_nbor"]["ROW_nbor"]
+        try:
+            data = data["TABLE_nbor"]["ROW_nbor"]
 
-        if isinstance(data, dict):
-            data = [data]
+            if isinstance(data, dict):
+                data = [data]
 
-        for item in data:
-            local_intf = normalize_interface(item["l_port_id"])
-            objects[local_intf] = list()
-            nbor = dict()
-            nbor["port"] = item["port_id"]
-            nbor["host"] = nbor["sysname"] = item["chassis_id"]
-            objects[local_intf].append(nbor)
+            for item in data:
+                local_intf = normalize_interface(item["l_port_id"])
+                objects[local_intf] = list()
+                nbor = dict()
+                nbor["port"] = item["port_id"]
+                nbor["host"] = nbor["sysname"] = item["chassis_id"]
+                objects[local_intf].append(nbor)
+        except KeyError:
+            pass # No neighbors found as the TABLE_nbor key is missing
 
-        return objects
+        return objects # Return empty dict if no neighbors found else return the neighbors
 
     def populate_structured_neighbors_cdp(self, data):
         objects = dict()
