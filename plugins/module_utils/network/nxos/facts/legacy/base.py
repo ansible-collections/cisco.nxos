@@ -345,7 +345,9 @@ class Interfaces(FactsBase):
         try:
             data = data["TABLE_nbor"]["ROW_nbor"]
         except KeyError:
-            return objects  # No neighbors found as the TABLE_nbor key is missing and return empty dict
+            return (
+                objects  # No neighbors found as the TABLE_nbor key is missing and return empty dict
+            )
 
         if isinstance(data, dict):
             data = [data]
