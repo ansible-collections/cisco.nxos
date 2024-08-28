@@ -990,3 +990,42 @@ class TestNxosAclsModule(TestNxosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered)
+
+    def test_nxos_acls_protocol_conversion(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="SIPS_Automation_Test_ACL_Create",
+                                aces=[
+                                    dict(
+                                        sequence=17,
+                                        grant="permit",
+                                        protocol="tcp",
+                                        source=dict(any=True),
+                                        destination=dict(
+                                            prefix="10.247.12.0/24",
+                                            port_protocol=dict(
+                                                range=dict(
+                                                    start="ftp-data",
+                                                    end=23,
+                                                ),
+                                            ),
+                                        ),
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "ip access-list SIPS_Automation_Test_ACL_Create",
+            "17 permit tcp any 10.247.12.0/24 range ftp-data telnet",
+        ]
+        self.execute_module(changed=True, commands=commands)
