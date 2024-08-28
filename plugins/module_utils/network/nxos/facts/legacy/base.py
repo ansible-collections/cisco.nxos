@@ -360,7 +360,7 @@ class Interfaces(FactsBase):
             nbor["host"] = nbor["sysname"] = item["chassis_id"]
             objects[local_intf].append(nbor)
 
-        return objects  # Return empty dict if no neighbors found else return the neighbors
+        return objects
 
     def populate_structured_neighbors_cdp(self, data):
         objects = dict()
