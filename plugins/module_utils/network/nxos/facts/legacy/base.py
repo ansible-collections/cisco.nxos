@@ -342,7 +342,12 @@ class Interfaces(FactsBase):
 
     def populate_structured_neighbors_lldp(self, data):
         objects = dict()
-        data = data["TABLE_nbor"]["ROW_nbor"]
+        try:
+            data = data["TABLE_nbor"]["ROW_nbor"]
+        except KeyError:
+            return (
+                objects  # No neighbors found as the TABLE_nbor key is missing and return empty dict
+            )
 
         if isinstance(data, dict):
             data = [data]
