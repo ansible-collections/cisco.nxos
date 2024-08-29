@@ -4,6 +4,20 @@ Cisco Nxos Collection Release Notes
 
 .. contents:: Topics
 
+v9.2.1
+======
+
+Bugfixes
+--------
+
+- acls - Fix lookup of range port conversion from int to string to allow strings (https://github.com/ansible-collections/cisco.nxos/pull/888).
+- facts - Fixes issue where the LLDP neighbor information returns an error when empty.
+
+Documentation Changes
+---------------------
+
+- Includes a new support related section in the README.
+
 v9.2.0
 ======
 

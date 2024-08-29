@@ -1221,3 +1221,17 @@ releases:
       - fix_local_as.yaml
       - fix_pylint.yaml
     release_date: "2024-08-19"
+  9.2.1:
+    changes:
+      bugfixes:
+        - acls - Fix lookup of range port conversion from int to string to allow strings
+          (https://github.com/ansible-collections/cisco.nxos/pull/888).
+        - facts - Fixes issue where the LLDP neighbor information returns an error when
+          empty.
+      doc_changes:
+        - Includes a new support related section in the README.
+    fragments:
+      - bugfix_vrf_range_resolution.yml
+      - lldp_facts.yaml
+      - readme.yaml
+    release_date: "2024-08-29"
