@@ -20,6 +20,7 @@ created.
 
 try:
     import ipaddress
+
     HAS_IPADDRESS = True
 except ImportError:
     HAS_IPADDRESS = False
@@ -149,10 +150,12 @@ class Prefix_lists(ResourceModule):
             if "prefix" in want_entry_to_compare and "prefix" in have_entry_to_compare:
                 try:
                     want_entry_to_compare["prefix"] = ipaddress.ip_network(
-                        want_entry_to_compare["prefix"], strict=False
+                        want_entry_to_compare["prefix"],
+                        strict=False,
                     )
                     have_entry_to_compare["prefix"] = ipaddress.ip_network(
-                        have_entry_to_compare["prefix"], strict=False
+                        have_entry_to_compare["prefix"],
+                        strict=False,
                     )
                 except ValueError as e:
                     self._module.fail_json(
@@ -171,7 +174,7 @@ class Prefix_lists(ResourceModule):
                     "example, if the playbook specifies prefix: ::0/, the running-config will "
                     "display it as 0::0/0. In this case, running the playbook multiple times will "
                     "cause the existing config to be deleted and re-added each time."
-                )
+                ),
             )
         return want_entry == have_entry
 
