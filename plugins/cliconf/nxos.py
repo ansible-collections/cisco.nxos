@@ -134,6 +134,12 @@ class Cliconf(CliconfBase):
 
         return self._device_info
 
+    def restore(self, filename=None, path=""):
+        if not filename:
+            raise ValueError("'file_name' value is required for restore")
+        cmd = f"configure replace {path}{filename} best-effort"
+        return self.send_command(cmd)
+
     def get_diff(
         self,
         candidate=None,
@@ -204,38 +210,72 @@ class Cliconf(CliconfBase):
 
         return self.send_command(cmd)
 
-    def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
+    def edit_config(
+        self,
+        candidate=None,
+        commit=True,
+        replace=None,
+        diff=False,
+        comment=None,
+        err_responses=None,
+    ):
+        if diff:
+            self._connection.queue_message(
+                "warning",
+                message="setting `diff=True` in edit_config() no effect for platform cisco.nxos",
+            )
+
         resp = {}
         operations = self.get_device_operations()
-        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
+        self.check_edit_config_capability(
+            operations,
+            candidate,
+            commit,
+            replace,
+            comment,
+        )
         results = []
         requests = []
 
+        if err_responses:
+            # update platform default stderr regexes to include modules specific ones
+            err_responses = [re.compile(to_bytes(err_re)) for err_re in err_responses]
+            current_stderr_re = self._connection._get_terminal_std_re(
+                "terminal_stderr_re",
+            )
+            current_stderr_re.extend(err_responses)
+
         if replace:
-            device_info = self.get_device_info()
             # not all NX-OS versions support `config replace`
             # we let the device throw the invalid command error
-            candidate = "config replace {0}".format(replace)
+            candidate = f"config replace {replace}"
 
-        if commit:
-            self.send_command("configure terminal")
+        try:
+            if commit:
+                self.send_command("configure terminal")
 
-            for line in to_list(candidate):
-                if not isinstance(line, Mapping):
-                    line = {"command": line}
+                for line in to_list(candidate):
+                    if not isinstance(line, Mapping):
+                        line = {"command": line}
 
-                cmd = line["command"]
-                if cmd != "end":
-                    results.append(self.send_command(**line))
-                    requests.append(cmd)
+                    cmd = line["command"]
+                    if cmd != "end":
+                        results.append(self.send_command(**line))
+                        requests.append(cmd)
 
-            self.send_command("end")
-        else:
-            raise ValueError("check mode is not supported")
+                self.send_command("end")
+            else:
+                raise ValueError("check mode is not supported")
 
-        resp["request"] = requests
-        resp["response"] = results
-        return resp
+            resp["request"] = requests
+            resp["response"] = results
+            return resp
+
+        finally:
+            # always reset terminal regexes to platform default
+            if err_responses:
+                for x in err_responses:
+                    current_stderr_re.remove(x)
 
     def get(
         self,

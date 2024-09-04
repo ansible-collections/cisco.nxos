@@ -83,6 +83,9 @@
           - "'no ip port access-group PortACL in' in result.commands"
           - "'ipv6 port traffic-filter NewACLv6 in' in result.commands"
 
+    - ansible.builtin.debug:
+        msg: "{{ ansible_facts['network_resources']['acl_interfaces'] }}"
+
     - name: Revert back to base configuration using facts round trip
       register: result
       cisco.nxos.nxos_acl_interfaces:

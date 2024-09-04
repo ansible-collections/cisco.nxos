@@ -2314,7 +2314,7 @@ class TestNxosBGPAddressFamilyModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_bgp_af_delete(self):
+    def test_nxos_bgp_af_delete_1(self):
         # test gathered
         self.get_config.return_value = dedent(
             """\

@@ -1,5 +1,4 @@
 # Cisco NX-OS Collection
-[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.nxos)
 [![Codecov](https://codecov.io/gh/ansible-collections/cisco.nxos/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/cisco.nxos)
 [![CI](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.nxos/actions/workflows/tests.yml)
 
@@ -10,10 +9,33 @@ The Cisco NX-OS connection plugins combined with Cisco NX-OS resource modules al
 This collection has been tested against Cisco N9K-C9300v chassis running NX-OS 9.3.6.
 The modules with full support for Cisco MDS are tested against NX-OS 8.4(1) on MDS Switches.
 
+## Support
+
+As a Red Hat Ansible [Certified Content](https://catalog.redhat.com/software/search?target_platforms=Red%20Hat%20Ansible%20Automation%20Platform), this collection is entitled to [support](https://access.redhat.com/support/) through [Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) (AAP).
+
+If a support case cannot be opened with Red Hat and the collection has been obtained either from [Galaxy](https://galaxy.ansible.com/ui/) or [GitHub](https://github.com/ansible-collections/cisco.nxos), there is community support available at no charge.
+
+You can join us on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) room or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
+
+For more information you can check the communication section below.
+
+## Communication
+
+* Join the Ansible forum:
+  * [Get Help](https://forum.ansible.com/c/help/6): get help or help others.
+  * [Posts tagged with 'network'](https://forum.ansible.com/tag/network): subscribe to participate in collection-related conversations.
+  * [Ansible Network Automation Working Group](https://forum.ansible.com/g/network-wg): by joining the team you will automatically get subscribed to the posts tagged with [network](https://forum.ansible.com/tags/network).
+  * [Social Spaces](https://forum.ansible.com/c/chat/4): gather and interact with fellow enthusiasts.
+  * [News & Announcements](https://forum.ansible.com/c/news/5): track project-wide announcements including social events.
+
+* The Ansible [Bullhorn newsletter](https://docs.ansible.com/ansible/devel/community/communication.html#the-bullhorn): used to announce releases and important changes.
+
+For more information about communication, see the [Ansible communication guide](https://docs.ansible.com/ansible/devel/community/communication.html).
+
 <!--start requires_ansible-->
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.14.0**.
+This collection has been tested against following Ansible versions: **>=2.15.0**.
 
 For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
 fully qualified collection name (for example, `cisco.ios.ios`).
@@ -115,8 +137,9 @@ Name | Description
 [cisco.nxos.nxos_vlans](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vlans_module.rst)|VLANs resource module
 [cisco.nxos.nxos_vpc](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_module.rst)|Manages global VPC configuration
 [cisco.nxos.nxos_vpc_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vpc_interface_module.rst)|Manages interface VPC configuration
-[cisco.nxos.nxos_vrf](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_module.rst)|Manages global VRF configuration.
+[cisco.nxos.nxos_vrf](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_module.rst)|(deprecated, removed after 2026-07-25) Manages global VRF configuration.
 [cisco.nxos.nxos_vrf_af](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_af_module.rst)|Manages VRF AF.
+[cisco.nxos.nxos_vrf_global](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_global_module.rst)|Resource module to configure VRF definitions.
 [cisco.nxos.nxos_vrf_interface](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrf_interface_module.rst)|Manages interface specific VRF configuration.
 [cisco.nxos.nxos_vrrp](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vrrp_module.rst)|Manages VRRP configuration on NX-OS switches.
 [cisco.nxos.nxos_vsan](https://github.com/ansible-collections/cisco.nxos/blob/main/docs/cisco.nxos.nxos_vsan_module.rst)|Configuration of vsan for Cisco NXOS MDS Switches.

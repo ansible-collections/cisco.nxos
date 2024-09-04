@@ -868,7 +868,7 @@ class TestNxosBGPNeighborAddressFamilyModule(TestNxosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-    def test_nxos_bgp_nbr_af_originate_peer_as_merged(self):
+    def test_nxos_bgp_nbr_af_originate_peer_as_merged_1(self):
         # test merged for default_originate, disable_peer_as_check
         self.get_config.return_value = dedent(
             """\

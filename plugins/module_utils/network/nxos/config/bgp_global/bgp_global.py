@@ -61,6 +61,7 @@ class Bgp_global(ResourceModule):
             "bestpath.med.non_deterministic",
             "cluster_id",
             "local_as",
+            "local_as_config",
             "confederation.identifier",
             "graceful_restart",
             "graceful_restart.restart_time",
@@ -212,6 +213,7 @@ class Bgp_global(ResourceModule):
             "inherit.peer",
             "inherit.peer_session",
             "local_as",
+            "local_as_config",
             "log_neighbor_changes",
             "low_memory",
             "password",
@@ -313,8 +315,20 @@ class Bgp_global(ResourceModule):
 
             return (key_1, key_2, key_3, key_4)
 
+        def _update_as_numbers(x):
+            # Check if both 'local_as' and 'local_as_config' are in the dictionary
+            if "local_as" in x and "local_as_config" in x:
+                if x["local_as"] and "as_number" in x["local_as_config"]:
+                    del x["local_as"]
+
+                elif x["local_as"] and "as_number" not in x["local_as_config"]:
+                    # Move 'as_number' from 'local_as' to 'local_as_config'
+                    x["local_as_config"]["as_number"] = x["local_as"]
+                    del x["local_as"]
+
         if "neighbors" in entry:
             for x in entry["neighbors"]:
+                _update_as_numbers(x)  # handle deprecated local_as with local_as_config
                 if "path_attribute" in x:
                     x["path_attribute"] = {
                         _build_key(item): item for item in x.get("path_attribute", [])
