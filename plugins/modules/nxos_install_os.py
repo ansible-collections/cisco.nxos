@@ -58,6 +58,10 @@ options:
     description:
     - Name of the kickstart image file on flash. (Not required on all Nexus platforms)
     type: str
+  epld_image_file:
+    description:
+    - Name of the epld image file on flash. (Not possible on all Nexus platforms)
+    type: str
   issu:
     description:
     - Upgrade using In Service Software Upgrade (ISSU). (Supported on N5k, N7k, N9k
