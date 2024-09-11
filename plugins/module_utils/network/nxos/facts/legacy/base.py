@@ -342,39 +342,41 @@ class Interfaces(FactsBase):
 
     def populate_structured_neighbors_lldp(self, data):
         objects = dict()
-        data = data["TABLE_nbor"]["ROW_nbor"]
+        data = data.get("TABLE_nbor", dict()).get("ROW_nbor")
 
         if isinstance(data, dict):
             data = [data]
 
-        for item in data:
-            local_intf = normalize_interface(item["l_port_id"])
-            objects[local_intf] = list()
-            nbor = dict()
-            nbor["port"] = item["port_id"]
-            nbor["host"] = nbor["sysname"] = item["chassis_id"]
-            objects[local_intf].append(nbor)
+            for item in data:
+                local_intf = normalize_interface(item["l_port_id"])
+                objects[local_intf] = list()
+                nbor = dict()
+                nbor["port"] = item["port_id"]
+                nbor["host"] = nbor["sysname"] = item["chassis_id"]
+                objects[local_intf].append(nbor)
 
         return objects
 
     def populate_structured_neighbors_cdp(self, data):
         objects = dict()
-        data = data["TABLE_cdp_neighbor_detail_info"]["ROW_cdp_neighbor_detail_info"]
+        data = data.get("TABLE_cdp_neighbor_detail_info", dict()).get(
+            "ROW_cdp_neighbor_detail_info"
+        )
 
         if isinstance(data, dict):
             data = [data]
 
-        for item in data:
-            if "intf_id" in item:
-                local_intf = item["intf_id"]
-            else:
-                # in some N7Ks the key has been renamed
-                local_intf = item["interface"]
-            objects[local_intf] = list()
-            nbor = dict()
-            nbor["port"] = item["port_id"]
-            nbor["host"] = nbor["sysname"] = item["device_id"]
-            objects[local_intf].append(nbor)
+            for item in data:
+                if "intf_id" in item:
+                    local_intf = item["intf_id"]
+                else:
+                    # in some N7Ks the key has been renamed
+                    local_intf = item["interface"]
+                objects[local_intf] = list()
+                nbor = dict()
+                nbor["port"] = item["port_id"]
+                nbor["host"] = nbor["sysname"] = item["device_id"]
+                objects[local_intf].append(nbor)
 
         return objects
 
