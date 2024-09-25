@@ -1,5 +1,5 @@
 lab:
-  description: "CML Lab NXOSv9000"
+  description: "CML Lab"
   notes: ""
   title: cisco.nxos.nxos
   version: 0.2.0
