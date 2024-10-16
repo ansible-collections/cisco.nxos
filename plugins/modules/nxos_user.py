@@ -411,14 +411,18 @@ def update_objects(want, have):
                     updates.append((entry, item))
     return updates
 
+
 def get_configured_usernames(module):
-    config_output = run_commands(module, [{"command": "show running-config | section ^username", "output": "text"}])
+    config_output = run_commands(
+        module, [{"command": "show running-config | section ^username", "output": "text"}]
+    )
     usernames = set()
     for line in config_output[0].splitlines():
         if line.startswith("username "):
             username = line.split()[1]
             usernames.add(username)
     return usernames
+
 
 def main():
     """main entry point for module execution"""
