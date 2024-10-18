@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the nxos_vrf_address_family module
 
 
 class Vrf_address_familyArgs(object):  # pylint: disable=R0903
-    """The arg spec for the nxos_vrf_address_family module
-    """
+    """The arg spec for the nxos_vrf_address_family module"""
 
     argument_spec = {
         "config": {
@@ -54,7 +54,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 "max_route_options": {
                                     "type": "dict",
                                     "mutually_exclusive": [
-                                        ["warning_only", "threshold"]
+                                        ["warning_only", "threshold"],
                                     ],
                                     "options": {
                                         "warning_only": {"type": "bool"},
@@ -63,7 +63,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                             "options": {
                                                 "threshold_value": {"type": "int"},
                                                 "reinstall_threshold": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                             },
                                         },

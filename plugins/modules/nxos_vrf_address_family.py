@@ -10,6 +10,7 @@ The module file for nxos_vrf_address_family
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -209,6 +210,7 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vrf_address_family.vrf_address_family import (
     Vrf_address_familyArgs,
 )
