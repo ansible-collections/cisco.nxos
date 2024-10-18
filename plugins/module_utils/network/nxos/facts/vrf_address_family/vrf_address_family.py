@@ -53,7 +53,8 @@ class Vrf_address_familyFacts(object):
 
         # parse native config using the Vrf_address_family template
         vrf_address_family_parser = Vrf_address_familyTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = list(vrf_address_family_parser.parse().values())
 
@@ -61,7 +62,9 @@ class Vrf_address_familyFacts(object):
 
         params = utils.remove_empties(
             vrf_address_family_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 
