@@ -47,7 +47,7 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
               address-family ipv4 unicast
             vrf context VRF2
               address-family ipv6 unicast
-            """
+            """,
         )
 
         set_module_args({})

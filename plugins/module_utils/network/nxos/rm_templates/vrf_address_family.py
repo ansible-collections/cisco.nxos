@@ -21,8 +21,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 VRF_NAME = "{{ name }}"
 UNIQUE_AFI = "{{ 'address_families_'+afi+'_'+safi }}"
+
 
 class Vrf_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -80,12 +82,12 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                     "threshold": {
                                         "threshold_value": "{{ threshold_value }}",
                                         "reinstall_threshold": "{{ reinstall }}",
-                                    }
-                                }
-                            }
+                                    },
+                                },
+                            },
                         },
                     },
-                }
+                },
             },
         },
         {
@@ -103,7 +105,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "afi": "{{ afi }}",
                             "safi": "{{ safi }}",
                             "route_target": [{
-                                "import": "{{ import }}"
+                                "import": "{{ import }}",
                             }],
                         },
                     },
@@ -125,7 +127,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "afi": "{{ afi }}",
                             "safi": "{{ safi }}",
                             "route_target": [{
-                                "export": "{{ export }}"
+                                "export": "{{ export }}",
                             }],
                         },
                     },
