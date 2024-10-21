@@ -22,10 +22,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-VRF_NAME = "{{ name }}"
-UNIQUE_AFI = "{{ 'address_families_'+afi+'_'+safi }}"
-
-
 class Vrf_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Vrf_address_familyTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -128,6 +124,116 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "safi": "{{ safi }}",
                             "route_target": [{
                                 "export": "{{ export }}",
+                            }],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "export.map",
+            "getval": re.compile(
+                r"""
+                \s+export\smap\s(?P<export_map>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "export map {{ map }}",
+            "result": {
+                '{{ name }}': {
+                    "address_families": {
+                        "{{ 'address_families_'+afi+'_'+safi }}": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "export": [{
+                                "map": "{{ export_map }}"
+                            }],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "export.vrf",
+            "getval": re.compile(
+                r"""
+                \s+export\svrf
+                ((\sdefault)
+                (\s(?P<max_prefix>\d+))?
+                (\smap\s(?P<map_import>\S+))?)?
+                (\s(?P<allow_vpn>allow-vpn))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "export vrf default"
+            "{{ ' ' + max_prefix if max_prefix }}"
+            "{{ ' map ' + map_import if map_import }}"
+            "{{ ' allow-vpn' if allow_vpn }}",
+            "result": {
+                '{{ name }}': {
+                    "address_families": {
+                        "{{ 'address_families_'+afi+'_'+safi }}": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "export": [{
+                                "vrf": {
+                                    "allow_vpn": "{{ True if allow_vpn }}",
+                                    "max_prefix": "{{ max_prefix if max_prefix }}",
+                                    "map_import": "{{ map_import if map_import }}",
+                                }
+                            }],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "import.map",
+            "getval": re.compile(
+                r"""
+                \s+import\smap\s(?P<import_map>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "import map {{ map }}",
+            "result": {
+                '{{ name }}': {
+                    "address_families": {
+                        "{{ 'address_families_'+afi+'_'+safi }}": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "import": [{
+                                "map": "{{ import_map }}"
+                            }],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "import.vrf",
+            "getval": re.compile(
+                r"""
+                \s+import\svrf
+                ((\sdefault)
+                (\s(?P<max_prefix>\d+))?
+                (\smap\s(?P<map_import>\S+))?)?
+                (\s(?P<advertise_vpn>advertise-vpn))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "import vrf default"
+            "{{ ' ' + max_prefix if max_prefix }}"
+            "{{ ' map ' + map_import if map_import }}"
+            "{{ ' advertise-vpn' if advertise_vpn }}",
+            "result": {
+                '{{ name }}': {
+                    "address_families": {
+                        "{{ 'address_families_'+afi+'_'+safi }}": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "import": [{
+                                "vrf": {
+                                    "advertise_vpn": "{{ True if advertise_vpn }}",
+                                    "max_prefix": "{{ max_prefix if max_prefix }}",
+                                    "map_import": "{{ map_import if map_import }}",
+                                }
                             }],
                         },
                     },
