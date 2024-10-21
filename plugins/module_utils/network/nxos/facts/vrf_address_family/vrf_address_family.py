@@ -27,6 +27,10 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templat
     Vrf_address_familyTemplate,
 )
 
+import debugpy
+debugpy.listen(3000)
+debugpy.wait_for_client()
+
 
 class Vrf_address_familyFacts(object):
     """The nxos vrf_address_family facts class"""
@@ -34,6 +38,45 @@ class Vrf_address_familyFacts(object):
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Vrf_address_familyArgs.argument_spec
+
+    def get_config(self, connection):
+        """Get the configuration from the device"""
+
+        return connection.get("show running-config | section ^vrf")
+    
+    def _flatten_config(self, data):
+        """Flatten contexts in the vrf address family
+            running-config for easier parsing.
+        :param data: string running-config
+        :returns: flattened running config
+        """
+
+        dataLines = data.split('\n')
+        curData = ""
+
+        for line in dataLines:
+            if "vrf context" in line:
+                curData = line
+            elif "address-family" in line:
+                dataLines[dataLines.index(line)] = curData + ' ' + line
+        
+        return "\n".join(dataLines)
+    
+    def _parse_vrf_af(self, data: dict):
+        """Parse the vrf address family data
+        :param data: dict of vrf address family data
+        :returns: argspec compliant list
+        """
+        if not data:
+            return {}
+        
+        vrf_lists = list(data.values())
+        for item in vrf_lists:
+            if "address_families" in item:
+                item["address_families"] = list(item["address_families"].values())
+        return vrf_lists
+
+
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Vrf_address_family network resource
@@ -46,25 +89,25 @@ class Vrf_address_familyFacts(object):
         :returns: facts
         """
         facts = {}
-        objs = []
+        vrfObjs = []
 
         if not data:
-            data = connection.get()
+            data = self.get_config(connection)
+        
+        flattened_data = self._flatten_config(data)
 
         # parse native config using the Vrf_address_family template
         vrf_address_family_parser = Vrf_address_familyTemplate(
-            lines=data.splitlines(),
-            module=self._module,
+            lines=flattened_data.splitlines(), module=self._module
         )
-        objs = list(vrf_address_family_parser.parse().values())
+        parsed_data = vrf_address_family_parser.parse()
+        vrfObjs = self._parse_vrf_af(parsed_data)
 
         ansible_facts["ansible_network_resources"].pop("vrf_address_family", None)
 
         params = utils.remove_empties(
             vrf_address_family_parser.validate_config(
-                self.argument_spec,
-                {"config": objs},
-                redact=True,
+                self.argument_spec, {"config": vrfObjs}, redact=True
             ),
         )
 

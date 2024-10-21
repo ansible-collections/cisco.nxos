@@ -21,6 +21,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+VRF_NAME = "{{ name }}"
+UNIQUE_AFI = "{{ 'address_families_'+afi+'_'+safi }}"
 
 class Vrf_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -29,26 +31,105 @@ class Vrf_address_familyTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "key_a",
+            "name": "address_family",
             "getval": re.compile(
                 r"""
-                ^key_a\s(?P<key_a>\S+)
+                ^vrf\scontext\s(?P<name>\S+)\s+
+                (?P<address_families>\s+address-family
+                \s(?P<afi>\S+)\s(?P<safi>\S+))
                 $""", re.VERBOSE,
             ),
-            "setval": "",
+            "setval": "vrf context {{ name }}",
             "result": {
+                '{{ name }}': {
+                    "name": "{{ name }}",
+                    "address_families": {
+                        "{{ 'address_families_'+afi+'_'+safi }}": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                        },
+                    },
+                },
             },
             "shared": True,
         },
         {
-            "name": "key_b",
+            "name": "maximum",
             "getval": re.compile(
                 r"""
-                \s+key_b\s(?P<key_b>\S+)
+                \s+maximum\sroutes\s(?P<max_routes>\d+)
+                (\s(?P<threshold_value>\d+))?
+                (\sreinstall\s(?P<reinstall>\d+))?
+                (\s((?P<warning_only>warning-only)))?
                 $""", re.VERBOSE,
             ),
-            "setval": "",
+            "setval": "maximum routes {{ max_routes }} "
+            "{{ max_route_options.threshold_value if max_route_options.threshold_value else '' }}"
+            "{{ ' reinstall' + max_route_options.reinstall_threshold if max_route_options.reinstall_threshold else '' }}"
+            "{{ 'warning-only' if max_route_options.warning_only else '' }}",
             "result": {
+                '{{ name }}': {
+                    "address_families": {
+                        "{{ 'address_families_'+afi+'_'+safi }}": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "maximum": {
+                                "max_routes": "{{ max_routes }}",
+                                "max_route_options": {
+                                    "warning_only": "{{ True if warning_only }}",
+                                    "threshold": {
+                                        "threshold_value": "{{ threshold_value }}",
+                                        "reinstall_threshold": "{{ reinstall }}",
+                                    }
+                                }
+                            }
+                        },
+                    },
+                }
+            },
+        },
+        {
+            "name": "route_target.import",
+            "getval": re.compile(
+                r"""
+                \s+route-target\simport\s(?P<import>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "route-target import {{ import }}",
+            "result": {
+                '{{ name }}': {
+                    "address_families": {
+                        "{{ 'address_families_'+afi+'_'+safi }}": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "route_target": [{
+                                "import": "{{ import }}"
+                            }],
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "route_target.export",
+            "getval": re.compile(
+                r"""
+                \s+route-target\sexport\s(?P<export>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "route-target export {{ export }}",
+            "result": {
+                '{{ name }}': {
+                    "address_families": {
+                        "{{ 'address_families_'+afi+'_'+safi }}": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "route_target": [{
+                                "export": "{{ export }}"
+                            }],
+                        },
+                    },
+                },
             },
         },
     ]
