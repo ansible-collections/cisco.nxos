@@ -145,7 +145,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "afi": "{{ afi }}",
                             "safi": "{{ safi }}",
                             "export": [{
-                                "map": "{{ export_map }}"
+                                "map": "{{ export_map }}",
                             }],
                         },
                     },
@@ -178,7 +178,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                     "allow_vpn": "{{ True if allow_vpn }}",
                                     "max_prefix": "{{ max_prefix if max_prefix }}",
                                     "map_import": "{{ map_import if map_import }}",
-                                }
+                                },
                             }],
                         },
                     },
@@ -200,7 +200,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "afi": "{{ afi }}",
                             "safi": "{{ safi }}",
                             "import": [{
-                                "map": "{{ import_map }}"
+                                "map": "{{ import_map }}",
                             }],
                         },
                     },
@@ -233,7 +233,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                     "advertise_vpn": "{{ True if advertise_vpn }}",
                                     "max_prefix": "{{ max_prefix if max_prefix }}",
                                     "map_import": "{{ map_import if map_import }}",
-                                }
+                                },
                             }],
                         },
                     },
