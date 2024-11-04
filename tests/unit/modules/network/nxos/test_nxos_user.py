@@ -123,19 +123,35 @@ class TestNxosUserModule(TestNxosModule):
                 {
                     "TABLE_template": {
                         "ROW_template": [
-                            {"usr_name": "admin", "expire_date": "this user account has no expiry date", "TABLE_role": {"ROW_role": {"role": "network-admin"}}},
-                            {"usr_name": "ansible-test-1", "expire_date": "this user account has no expiry date", "TABLE_role": {"ROW_role": [{"role": "network-operator"}]}},
-                            {"usr_name": "ansible-test-2", "expire_date": "this user account has no expiry date", "TABLE_role": {"ROW_role": [{"role": "network-operator"}]}},
-                            {"usr_name": "domain\\remote-user", "expire_date": "this user account has no expiry date", "TABLE_role": {"ROW_role": [{"role": "network-operator"}]}},
+                            {
+                                "usr_name": "admin",
+                                "expire_date": "this user account has no expiry date",
+                                "TABLE_role": {"ROW_role": {"role": "network-admin"}},
+                            },
+                            {
+                                "usr_name": "ansible-test-1",
+                                "expire_date": "this user account has no expiry date",
+                                "TABLE_role": {"ROW_role": [{"role": "network-operator"}]},
+                            },
+                            {
+                                "usr_name": "ansible-test-2",
+                                "expire_date": "this user account has no expiry date",
+                                "TABLE_role": {"ROW_role": [{"role": "network-operator"}]},
+                            },
+                            {
+                                "usr_name": "domain\\remote-user",
+                                "expire_date": "this user account has no expiry date",
+                                "TABLE_role": {"ROW_role": [{"role": "network-operator"}]},
+                            },
                         ],
                     },
                 },
             ],
             [
-                'username admin password 5 $5$JFHICC$QwE password\n'
-                'username ansible-test-1 password 5 $5$JFHICC$abc password\n'
-                'username ansible-test-2 password 5 $5$JFHICC$def password\n'
-            ]
+                "username admin password 5 $5$JFHICC$QwE password\n"
+                "username ansible-test-1 password 5 $5$JFHICC$abc password\n"
+                "username ansible-test-2 password 5 $5$JFHICC$def password\n",
+            ],
         ]
         set_module_args(dict(name="new-user", configured_password="ansible123", purge=True))
         result = self.execute_module(
@@ -146,7 +162,7 @@ class TestNxosUserModule(TestNxosModule):
                 "username new-user",
                 "username new-user password ansible123",
                 # domain\remote-user should NOT be in the commands list as it's preserved
-            ]
+            ],
         )
         expected_commands = [
             "no username ansible-test-1",
@@ -154,4 +170,4 @@ class TestNxosUserModule(TestNxosModule):
             "username new-user",
             "username new-user password ansible123",
         ]
-        self.assertEqual(sorted(result['commands']), sorted(expected_commands))
+        self.assertEqual(sorted(result["commands"]), sorted(expected_commands))

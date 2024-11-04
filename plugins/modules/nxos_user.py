@@ -414,7 +414,8 @@ def update_objects(want, have):
 
 def get_configured_usernames(module):
     config_output = run_commands(
-        module, [{"command": "show running-config | section ^username", "output": "text"}]
+        module,
+        [{"command": "show running-config | section ^username", "output": "text"}],
     )
     usernames = set()
     for line in config_output[0].splitlines():
