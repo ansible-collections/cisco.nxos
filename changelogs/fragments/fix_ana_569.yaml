@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "[bgp_templates] - fix the show commands used to ensure task does not fail if BGP is not enabled on the device."
