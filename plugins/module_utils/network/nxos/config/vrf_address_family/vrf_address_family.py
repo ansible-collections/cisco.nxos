@@ -53,10 +53,7 @@ class Vrf_address_family(ResourceModule):
         self.list_parsers = [
             "route_target.import",
             "route_target.export",
-            "export.map"
-            "export.vrf"
-            "import.map"
-            "import.vrf"
+            "export.map" "export.vrf" "import.map" "import.vrf",
         ]
 
     def execute_module(self):
@@ -147,7 +144,7 @@ class Vrf_address_family(ResourceModule):
 
     def _convert_to_dict(self, vrf_af_item: list, parser_item: str) -> dict:
         """Convert to dict based on parser name.
-        
+
         :params vrf_af_item: the vrf af item
         :params parser_item: the parser name based on which it needs to be converted
         :returns: A dictionary with items that have the key parser_item
@@ -165,7 +162,6 @@ class Vrf_address_family(ResourceModule):
                 result[key] = item
         return result
 
-
     def _vrf_address_family_list_to_dict(self, vrf_af_list: list) -> dict:
         """Convert a list of vrf_address_family dictionaries to a dictionary.
 
@@ -177,13 +173,13 @@ class Vrf_address_family(ResourceModule):
 
         items = {}
         for af_item in vrf_af_list:
-            name = af_item.get('name')
-            address_families = af_item.get('address_families', [])
+            name = af_item.get("name")
+            address_families = af_item.get("address_families", [])
             item = {
-                'name': name,
-                'address_families': {
+                "name": name,
+                "address_families": {
                     f"{name}_{af.get('afi')}_{af.get('safi')}": af for af in address_families
-                }
+                },
             }
 
             items[name] = item
