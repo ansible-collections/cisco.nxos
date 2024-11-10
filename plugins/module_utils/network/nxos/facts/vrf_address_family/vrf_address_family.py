@@ -17,8 +17,6 @@ based on the configuration.
 
 from copy import deepcopy
 
-import debugpy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
@@ -28,10 +26,6 @@ from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.argspec.vr
 from ansible_collections.cisco.nxos.plugins.module_utils.network.nxos.rm_templates.vrf_address_family import (
     Vrf_address_familyTemplate,
 )
-
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 class Vrf_address_familyFacts(object):
