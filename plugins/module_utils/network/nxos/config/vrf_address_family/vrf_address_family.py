@@ -53,7 +53,10 @@ class Vrf_address_family(ResourceModule):
         self.list_parsers = [
             "route_target.import",
             "route_target.export",
-            "export.map" "export.vrf" "import.map" "import.vrf",
+            "export.map", 
+            "export.vrf", 
+            "import.map", 
+            "import.vrf",
         ]
 
     def execute_module(self):
