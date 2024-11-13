@@ -39,18 +39,83 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
 
-    def test_nxos_vrf_address_fam_gathered(self):
-        """Test the get_config method."""
-        self.execute_show_command.return_value = dedent(
-            """
-            vrf context VRF1
-              address-family ipv4 unicast
-            vrf context VRF2
-              address-family ipv6 unicast
-            """,
+
+    def test_nxos_vrf_address_fam_parsed(self):
+        """Test parsed."""
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    vrf context VRF1
+                        address-family ipv4 unicast
+                            route-target import 64512:200
+                            route-target export 64512:200
+                            export map 22
+                            export vrf default map 44 allow-vpn
+                            export vrf allow-vpn
+                            maximum routes 900 22 reinstall 44
+                        address-family ipv6 unicast
+                            route-target import 554832:500
+                    """,
+                ),
+                state="parsed",
+            ),
         )
 
-        set_module_args({})
-        self.module.get_config(self.mock_connection)
+        parsed_item = [
+            {
+                "name": "VRF1",
+                "address_families": [
+                    {
+                        "afi": "ipv4",
+                        "safi": "unicast",
+                        "route_target": [
+                            {
+                                "import": "64512:200"
+                            },
+                            {
+                                "export": "64512:200"
+                            }
+                        ],
+                        "export": [
+                            {
+                                "map": "22"
+                            },
+                            {
+                                "vrf": {
+                                    "allow_vpn": True,
+                                    "map_import": "44"
+                                }
+                            },
+                            {
+                                "vrf": {
+                                    "allow_vpn": True
+                                }
+                            }
+                        ],
+                        "maximum": {
+                        "max_routes": 900,
+                        "max_route_options": {
+                            "threshold": {
+                                "threshold_value": 22,
+                                "reinstall_threshold": 44
+                            }
+                        }
+                        }
+                    },
+                    {
+                        "afi": "ipv6",
+                        "safi": "unicast",
+                        "route_target": [
+                            {
+                                "import": "554832:500"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
 
-        self.execute_show_command.assert_called_once_with(self.mock_connection)
+        result = self.execute_module(changed=False)
+        self.assertEqual(parsed_item, result["parsed"])
+
