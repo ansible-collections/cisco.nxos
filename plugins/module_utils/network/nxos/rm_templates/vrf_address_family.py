@@ -43,9 +43,9 @@ def _tmplt_export_vrf(vrf):
     if vrfData.get("max_prefix") or vrfData.get("map_import"):
         cmd += " default"
         if vrfData.get("max_prefix"):
-            cmd += f" {vrfData["max_prefix"]}"
+            cmd += f" {vrfData['max_prefix']}"
         if vrfData.get("map_import"):
-            cmd += f" map {vrfData["map_import"]}"
+            cmd += f" map {vrfData['map_import']}"
     if vrfData.get("allow_vpn"):
         cmd += " allow-vpn"
     return cmd
@@ -57,9 +57,9 @@ def _tmplt_import_vrf(vrf):
     if vrfData.get("max_prefix") or vrfData.get("map_import"):
         cmd += " default"
         if vrfData.get("max_prefix"):
-            cmd += f" {vrfData["max_prefix"]}"
+            cmd += f" {vrfData['max_prefix']}"
         if vrfData.get("map_import"):
-            cmd += f" map {vrfData["map_import"]}"
+            cmd += f" map {vrfData['map_import']}"
     if vrfData.get("advertise_vpn"):
         cmd += " advertise-vpn"
     return cmd
