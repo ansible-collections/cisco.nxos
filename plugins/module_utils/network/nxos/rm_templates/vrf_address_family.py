@@ -22,6 +22,46 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def _tmplt_maximum(maximum):
+    cmd = "maximum routes"
+    maxData = maximum.get("maximum")
+    if maxData.get("max_routes"):
+        cmd += f" {maxData["max_routes"]}"
+    if maxData.get("max_route_options", {}).get("threshold", {}).get("threshold_value"):
+        threshold = maxData["max_route_options"]["threshold"]
+        cmd += f" {threshold["threshold_value"]}"
+        if threshold.get("reinstall_threshold"):
+            cmd += f" reinstall {threshold["reinstall_threshold"]}"
+    if maxData.get("max_route_options", {}).get("warning_only"):
+        cmd += " warning-only"
+    return cmd
+
+def _tmplt_export_vrf(vrf):
+    cmd = "export vrf"
+    vrfData = vrf.get("vrf")
+    if vrfData.get("max_prefix") or vrfData.get("map_import"):
+        cmd += " default"
+        if vrfData.get("max_prefix"):
+            cmd += f" {vrfData["max_prefix"]}"
+        if vrfData.get("map_import"):
+            cmd += f" map {vrfData["map_import"]}"
+    if vrfData.get("allow_vpn"):
+        cmd += " allow-vpn"
+    return cmd
+
+def _tmplt_import_vrf(vrf):
+    cmd = "import vrf"
+    vrfData = vrf.get("vrf")
+    if vrfData.get("max_prefix") or vrfData.get("map_import"):
+        cmd += " default"
+        if vrfData.get("max_prefix"):
+            cmd += f" {vrfData["max_prefix"]}"
+        if vrfData.get("map_import"):
+            cmd += f" map {vrfData["map_import"]}"
+    if vrfData.get("advertise_vpn"):
+        cmd += " advertise-vpn"
+    return cmd
+
 class Vrf_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Vrf_address_familyTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -71,10 +111,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 (\s((?P<warning_only>warning-only)))?
                 $""", re.VERBOSE,
             ),
-            "setval": "maximum routes {{ max_routes }} "
-            "{{ max_route_options.threshold_value if max_route_options.threshold_value else '' }}"
-            "{{ ' reinstall' + max_route_options.reinstall_threshold if max_route_options.reinstall_threshold else '' }}"
-            "{{ 'warning-only' if max_route_options.warning_only else '' }}",
+            "setval": _tmplt_maximum,
             "result": {
                 '{{ name }}': {
                     "address_families": {
@@ -173,10 +210,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 (\s(?P<allow_vpn>allow-vpn))?
                 $""", re.VERBOSE,
             ),
-            "setval": "export vrf default"
-            "{{ ' ' + max_prefix if max_prefix }}"
-            "{{ ' map ' + map_import if map_import }}"
-            "{{ ' allow-vpn' if allow_vpn }}",
+            "setval": _tmplt_export_vrf,
             "result": {
                 '{{ name }}': {
                     "address_families": {
@@ -228,10 +262,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 (\s(?P<advertise_vpn>advertise-vpn))?
                 $""", re.VERBOSE,
             ),
-            "setval": "import vrf default"
-            "{{ ' ' + max_prefix if max_prefix }}"
-            "{{ ' map ' + map_import if map_import }}"
-            "{{ ' advertise-vpn' if advertise_vpn }}",
+            "setval": _tmplt_import_vrf,
             "result": {
                 '{{ name }}': {
                     "address_families": {

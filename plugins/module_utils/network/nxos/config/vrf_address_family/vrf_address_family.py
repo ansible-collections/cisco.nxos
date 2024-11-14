@@ -115,7 +115,7 @@ class Vrf_address_family(ResourceModule):
         haafs = have.get("address_families", {})
         for afk, afv in iteritems(waafs):
             begin = len(self.commands)
-            self._compare_single_af(want=afv, have=haafs.get(afk, {}))
+            self._compare_single_af(wantaf=afv, haveaf=haafs.get(afk, {}))
             if len(self.commands) != begin:
                 self.commands.insert(begin, self._tmplt.render(afv, "address_family", False))
 
@@ -159,7 +159,8 @@ class Vrf_address_family(ResourceModule):
         for item in vrf_af_item:
             if parser_item in item:
                 if parser_item == "vrf":
-                    key = f"vrf_{item.get('max_prefix')}_{item.get('map_import', 'nomap')}"
+                    vrf_item = item.get("vrf", {})
+                    key = f"vrf_{vrf_item.get('max_prefix', 'noprefix')}_{vrf_item.get('map_import', 'nomap')}"
                 else:
                     key = item[parser_item]
                 result[key] = item
