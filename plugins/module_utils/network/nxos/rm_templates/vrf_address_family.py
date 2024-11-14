@@ -36,6 +36,7 @@ def _tmplt_maximum(maximum):
         cmd += " warning-only"
     return cmd
 
+
 def _tmplt_export_vrf(vrf):
     cmd = "export vrf"
     vrfData = vrf.get("vrf")
@@ -49,6 +50,7 @@ def _tmplt_export_vrf(vrf):
         cmd += " allow-vpn"
     return cmd
 
+
 def _tmplt_import_vrf(vrf):
     cmd = "import vrf"
     vrfData = vrf.get("vrf")
@@ -61,6 +63,7 @@ def _tmplt_import_vrf(vrf):
     if vrfData.get("advertise_vpn"):
         cmd += " advertise-vpn"
     return cmd
+
 
 class Vrf_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):

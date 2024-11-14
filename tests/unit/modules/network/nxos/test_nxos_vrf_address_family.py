@@ -39,7 +39,6 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
 
-
     def test_nxos_vrf_address_fam_parsed(self):
         """Test parsed."""
         set_module_args(
@@ -71,54 +70,53 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
                         "safi": "unicast",
                         "route_target": [
                             {
-                                "import": "64512:200"
+                                "import": "64512:200",
                             },
                             {
-                                "export": "64512:200"
-                            }
+                                "export": "64512:200",
+                            },
                         ],
                         "export": [
                             {
-                                "map": "22"
+                                "map": "22",
                             },
                             {
                                 "vrf": {
                                     "allow_vpn": True,
-                                    "map_import": "44"
-                                }
+                                    "map_import": "44",
+                                },
                             },
                             {
                                 "vrf": {
-                                    "allow_vpn": True
-                                }
-                            }
+                                    "allow_vpn": True,
+                                },
+                            },
                         ],
                         "maximum": {
                             "max_routes": 900,
                             "max_route_options": {
                                 "threshold": {
                                     "threshold_value": 22,
-                                    "reinstall_threshold": 44
-                                }
-                            }
-                        }
+                                    "reinstall_threshold": 44,
+                                },
+                            },
+                        },
                     },
                     {
                         "afi": "ipv6",
                         "safi": "unicast",
                         "route_target": [
                             {
-                                "import": "554832:500"
-                            }
-                        ]
-                    }
-                ]
-            }
+                                "import": "554832:500",
+                            },
+                        ],
+                    },
+                ],
+            },
         ]
 
         result = self.execute_module(changed=False)
         self.assertEqual(parsed_item, result["parsed"])
-
 
     def test_vrf_af_merged(self):
         """Test merged."""
@@ -143,33 +141,33 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
                                 "safi": "unicast",
                                 "route_target": [
                                     {
-                                        "export": "65512:200"
-                                    }
+                                        "export": "65512:200",
+                                    },
                                 ],
                                 "maximum": {
                                     "max_routes": 500,
                                     "max_route_options": {
                                         "threshold": {
                                             "threshold_value": 60,
-                                            "reinstall_threshold": 80
-                                        }
-                                    }
+                                            "reinstall_threshold": 80,
+                                        },
+                                    },
                                 },
                                 "export": [
                                     {
-                                        "map": "22"
+                                        "map": "22",
                                     },
                                     {
                                         "vrf": {
                                             "allow_vpn": True,
-                                            "map_import": "44"
-                                        }
+                                            "map_import": "44",
+                                        },
                                     },
                                     {
                                         "vrf": {
-                                            "allow_vpn": True
-                                        }
-                                    }
+                                            "allow_vpn": True,
+                                        },
+                                    },
                                 ],
                             },
                             {
@@ -180,45 +178,45 @@ class TestNxosVrfAddressFamilyModule(TestNxosModule):
                                 },
                                 "route_target": [
                                     {
-                                        "import": "65512:200"
-                                    }
+                                        "import": "65512:200",
+                                    },
                                 ],
                                 "import": [
                                     {
-                                        "map": "22"
+                                        "map": "22",
                                     },
                                     {
                                         "vrf": {
                                             "advertise_vpn": True,
-                                            "map_import": "44"
-                                        }
+                                            "map_import": "44",
+                                        },
                                     },
                                     {
                                         "vrf": {
-                                            "advertise_vpn": True
-                                        }
-                                    }
+                                            "advertise_vpn": True,
+                                        },
+                                    },
                                 ],
-                            }
-                        ]
-                    }
+                            },
+                        ],
+                    },
                 ],
-            )
+            ),
         )
         commands = [
-            'vrf context VRF1', 
-            'address-family ipv4 unicast', 
-            'maximum routes 500 60 reinstall 80', 
-            'route-target export 65512:200', 
-            'export map 22',
-            'export vrf default map 44 allow-vpn',
-            'export vrf allow-vpn',
-            'address-family ipv6 unicast', 
-            'maximum routes 1000', 
-            'route-target import 65512:200',
-            'import map 22',
-            'import vrf default map 44 advertise-vpn',
-            'import vrf advertise-vpn'
+            "vrf context VRF1",
+            "address-family ipv4 unicast",
+            "maximum routes 500 60 reinstall 80",
+            "route-target export 65512:200",
+            "export map 22",
+            "export vrf default map 44 allow-vpn",
+            "export vrf allow-vpn",
+            "address-family ipv6 unicast",
+            "maximum routes 1000",
+            "route-target import 65512:200",
+            "import map 22",
+            "import vrf default map 44 advertise-vpn",
+            "import vrf advertise-vpn",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
