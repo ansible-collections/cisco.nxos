@@ -26,12 +26,12 @@ def _tmplt_maximum(maximum):
     cmd = "maximum routes"
     maxData = maximum.get("maximum")
     if maxData.get("max_routes"):
-        cmd += f" {maxData["max_routes"]}"
+        cmd += f" {maxData['max_routes']}"
     if maxData.get("max_route_options", {}).get("threshold", {}).get("threshold_value"):
         threshold = maxData["max_route_options"]["threshold"]
-        cmd += f" {threshold["threshold_value"]}"
+        cmd += f" {threshold['threshold_value']}"
         if threshold.get("reinstall_threshold"):
-            cmd += f" reinstall {threshold["reinstall_threshold"]}"
+            cmd += f" reinstall {threshold['reinstall_threshold']}"
     if maxData.get("max_route_options", {}).get("warning_only"):
         cmd += " warning-only"
     return cmd
