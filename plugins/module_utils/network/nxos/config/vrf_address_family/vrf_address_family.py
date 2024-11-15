@@ -172,7 +172,11 @@ class Vrf_address_family(ResourceModule):
             return {k: self.filter_dict(haved[k], wantd[k]) for k in haved if k in wantd}
         elif isinstance(haved, list) and isinstance(wantd, list):
             # Filter list elements if they are dictionaries, otherwise return only items that match
-            return [self.filter_dict(h_item, wantd[0]) for h_item in haved if isinstance(h_item, dict)] if wantd and isinstance(wantd[0], dict) else [item for item in haved if item in wantd]
+            return (
+                [self.filter_dict(h_item, wantd[0]) for h_item in haved if isinstance(h_item, dict)]
+                if wantd and isinstance(wantd[0], dict)
+                else [item for item in haved if item in wantd]
+            )
         else:
             # For non-dict and non-list values, just return the value if it matches
             return haved if haved == wantd else None
